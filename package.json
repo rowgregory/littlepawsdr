@@ -1,0 +1,14 @@
+{
+  "name": "lpdr",
+  "version": "1.0.0",
+  "description": "Dachshund Rescue",
+  "main": "server.js",
+  "scripts": {
+    "start": "node backend/server"
+  },
+  "author": "Gregory Row",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.3"
+  }
+}
