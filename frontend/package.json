@@ -17,6 +17,8 @@
     "@types/react-geocode": "^0.2.0",
     "@types/react-redux": "^7.1.15",
     "@types/react-router-dom": "^5.3.3",
+    "@types/react-dom": "^17.0.0",
+    "@types/react-router-bootstrap": "^0.24.5",
     "@types/react-transition-group": "^4.4.1",
     "@types/smoothscroll-polyfill": "^0.3.1",
     "@types/styled-components": "^5.1.7",
