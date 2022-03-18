@@ -65,8 +65,6 @@ app.use('/api/ecard', eCardRoutes);
 app.use('/api/ecard-order', eCardOrderRoutes);
 app.use('/api/raffle-winner', raffleWinnerRoutes);
 app.use('/api/blog', blogRoutes);
-app.use(notFound);
-app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
@@ -84,5 +82,8 @@ if (process.env.NODE_ENV === 'production') {
     res.status(200).send('Welcome to Little Paws API');
   });
 }
+
+// app.use(notFound);
+// app.use(errorHandler);
 
 app.listen(PORT, console.log(`Server running on port ${PORT}`));
