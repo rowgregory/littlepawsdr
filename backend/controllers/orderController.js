@@ -129,8 +129,7 @@ const sendOrderConfirmationEmail = asyncHandler(async (req, res) => {
   const root = path.join(__dirname, 'emails');
 
   const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    secure: false,
+    service: 'hotmail',
     auth: {
       user: `${process.env.EMAIL_ADDRESS}`,
       pass: `${process.env.EMAIL_PASSWORD}`,

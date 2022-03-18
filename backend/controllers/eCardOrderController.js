@@ -39,8 +39,7 @@ const createECardOrder = asyncHandler(async (req, res) => {
     const createdECard = await eCard.save();
 
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      secure: false,
+      service: 'hotmail',
       auth: {
         user: `${process.env.EMAIL_ADDRESS}`,
         pass: `${process.env.EMAIL_PASSWORD}`,

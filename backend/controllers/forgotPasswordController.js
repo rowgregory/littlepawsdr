@@ -31,7 +31,7 @@ const resetPassword = asyncHandler(async (req, res) => {
     await user.save();
 
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
+      service: 'hotmail',
       auth: {
         user: `${process.env.EMAIL_ADDRESS}`,
         pass: `${process.env.EMAIL_PASSWORD}`,
