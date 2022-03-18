@@ -38,6 +38,8 @@ const createBlog = asyncHandler(async (req, res) => {
     image:
       'https://res.cloudinary.com/doyd0ewgk/image/upload/v1641507406/img-placeholder.png',
     publicId: '',
+    author: req.user.name,
+    authorImg: req.user.avatar,
   });
 
   const createdBlog = await blog.save();

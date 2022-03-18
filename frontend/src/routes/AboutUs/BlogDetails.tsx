@@ -59,7 +59,7 @@ const BlogDetails = () => {
               fontSize='1.25rem'
               marginBottom='1rem'
             >
-              {blog?.user.name}
+              {blog?.user?.name}
             </Text>
           )}
         </Col>

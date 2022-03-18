@@ -21,6 +21,12 @@ const blogSchema = mongoose.Schema(
     publicId: {
       type: String,
     },
+    author: {
+      type: String,
+    },
+    authorImg: {
+      type: String,
+    },
   },
   {
     timestamps: true,
