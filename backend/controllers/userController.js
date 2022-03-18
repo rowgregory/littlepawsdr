@@ -287,7 +287,7 @@ const sendRegisterConfirmationEmail = asyncHandler(async (req, res) => {
   const root = path.join(__dirname, 'emails');
 
   const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
     secure: false,
     auth: {
       user: `${process.env.EMAIL_ADDRESS}`,
