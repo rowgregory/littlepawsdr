@@ -1,0 +1,18 @@
+export const eCardCategories = () => [
+  'Holiday',
+  'Get Well Soon',
+  'Best Wishes',
+  'Happy Birthday',
+  'Happy Anniersary',
+  'Baby Shower',
+  'Bon Voyage',
+  'Congratulations',
+  'Engagement',
+  'Farewell',
+  'Graduation',
+  'Good Luck',
+  'New Year',
+  'Wedding',
+  'Sympathy',
+  'Thinking Of You',
+]

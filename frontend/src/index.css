@@ -1,0 +1,257 @@
+html,
+body, 
+* {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Duru+Sans&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Libre+Franklin&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300&display=swap');
+
+
+/* mobile navbar */
+[aria-labelledby="basic-nav-dropdown"] {
+  border-radius: 12px;
+  font-size: 14px;
+  box-shadow: rgba(1, 4, 9, 0.85) 0px 16px 32px 0px;
+}
+
+.carousel-item-next,
+.carousel-item-prev,
+.carousel-item.active {
+  display: flex;
+}
+
+.carousel img {
+  height: 600px;
+  width: 100%;
+  object-fit: contain;
+}
+
+.carousel a {
+  margin: 0 auto;
+}
+
+/* removes radio button */
+input[type="radio"] {
+  visibility: hidden;
+  display: none;
+}
+
+/* removes image path */
+input#image.img-link, .form-control-file, .form-control-range {
+  display: none;
+}
+
+/* removes browse button */
+.custom-file-label::after {
+  display: none;
+}
+
+.custom-file-label{
+  padding: 0;
+  display:flex;
+  justify-content: flex-end;
+}
+
+.custom-file-input {
+  cursor: pointer;
+  display:flex;
+  justify-content: center;
+  align-items:center;
+}
+
+.image-avatar {
+  margin-bottom: 10rem;
+}
+
+/*  removes close button from Toasts */
+.close {
+  display: none;
+}
+
+input[name=cardnumber]{
+  color: #5469d4;
+}
+
+/* Donation Menu ================= */
+
+:root {
+  --bg: #242526;
+  --bg-accent: #484a4d;
+  --text-color: #dadce1;
+  --nav-size: 50px;
+  --border: 1px solid #474a4d;
+  --border-radius: 8px;
+  --speed: 500ms;
+  --menu-speed: 0.75s;
+  --overlay-color: #392a4a;
+}
+
+.menu {
+  width: 100%;
+}
+
+.menu-primary-enter {
+  position: absolute;
+  transform: translateX(-110%);
+}
+.menu-primary-enter-active {
+  transform: translateX(0%);
+  transition: all var(--speed) ease;
+}
+.menu-primary-exit {
+  position: absolute;
+}
+.menu-primary-exit-active {
+  transform: translate(-110%);
+  transition: all var(--speed) ease;
+}
+
+
+.menu-secondary-enter {
+  transform: translateY(-110%);
+}
+.menu-secondary-enter-active {
+  transform: translateY(0%);
+  transition: all var(--speed) ease;
+}
+.menu-secondary-exit {
+  position: absolute;
+}
+.menu-secondary-exit-active {
+  transform: translateY(110%);
+  transition: all var(--speed) ease;
+}
+
+
+.menu-third-enter {
+  transform: translateX(110%);
+}
+.menu-third-enter-active {
+  transform: translateX(0%);
+  transition: all var(--speed) ease;
+}
+.menu-third-exit {
+  position: absolute;
+}
+.menu-third-exit-active {
+  transform: translateX(110%);
+  transition: all var(--speed) ease;
+}
+
+.menu-fourth-enter {
+  transform: translateY(110%);
+}
+.menu-fourth-enter-active {
+  transform: translateY(0%);
+  transition: all var(--speed) ease;
+}
+.menu-fourth-exit {
+  position: absolute;
+}
+.menu-fourth-exit-active {
+  transform: translateY(110%);
+  transition: all var(--speed) ease;
+}
+.menu-fifth-enter {
+  transform: translateX(110%);
+}
+.menu-fifth-enter-active {
+  transform: translateX(0%);
+  transition: all var(--speed) ease;
+}
+.menu-fifth-exit {
+  position: absolute;
+}
+.menu-fifth-exit-active {
+  transform: translateX(110%);
+  transition: all var(--speed) ease;
+}
+
+.pHolderTextColor::placeholder {
+  color: #b4b4b4;
+}
+
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+
+.slide-1-enter {
+  position: absolute;
+  transform: translateX(-110%);
+}
+.slide-1-enter-active {
+  transform: translateX(0%);
+  transition: all var(--speed) ease;
+}
+.slide-1-exit {
+  position: absolute;
+}
+.slide-1-exit-active {
+  transform: translateX(-110%);
+  transition: all var(--speed) ease;
+}
+
+.slide-2-appear {
+  transform: translateX(110%);
+}
+
+.slide-2-enter {
+  transform: translateX(110%);
+}
+.slide-2-enter-active {
+  transform: translateX(0%);
+  transition: all var(--speed) ease;
+}
+.slide-2-exit-active {
+  transform: translateX(110%);
+  transition: all var(--speed) ease;
+}
+
+button.btn.btn-none {
+  box-shadow: none !important;
+  outline: none;
+  border:0;
+}
+
+.fade-enter {
+  opacity: 0.01;
+  transform: translateY(-110%);
+}
+
+.fade-enter.fade-enter-active {
+  opacity: 1;
+  transition: opacity 1000ms ease-in;
+  transform: translateY(0%);
+}
+
+.fade-exit {
+  opacity: 1;
+}
+
+.fade-exit.fade-exit-active {
+  opacity: 0.01;
+  transition: opacity 800ms ease-in;
+}
+
+.item-enter {
+  opacity: 0;
+  /* transform: translateY(40%); */
+}
+.item-enter-active {
+  opacity: 1;
+  transition: all 500ms ease-in;
+  /* transform: translateY(0%); */
+}
+.item-exit {
+  opacity: 1;
+}
+.item-exit-active {
+  opacity: 0;
+  transition: opacity 500ms ease-out;
+}

@@ -6,12 +6,44 @@
   "type": "module",
   "scripts": {
     "start": "node backend/server",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix frontend && npm run build --prefix frontend"
+    "server": "nodemon backend/server",
+    "client": "npm start --prefix frontend",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix frontend && npm run build --prefix frontend",
+    "data:import": "node backend/seeder"
   },
   "author": "Gregory Row",
   "license": "MIT",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cloudinary": "^1.25.1",
+    "colors": "^1.4.0",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
     "dotenv": "^8.2.0",
-    "express": "^4.17.3"
+    "email-templates": "^8.0.7",
+    "express": "^4.17.1",
+    "express-async-handler": "^1.1.4",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "5.11.15",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.2",
+    "node-cron": "^3.0.0",
+    "nodemailer": "^6.4.17",
+    "pug": "^3.0.2",
+    "streamifier": "^0.1.1",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "concurrently": "^5.3.0",
+    "nodemon": "^2.0.7"
+  },
+  "engines": {
+    "node": "14.12.0",
+    "yarn": "1.22.10"
+  },
+  "volta": {
+    "node": "14.12.0",
+    "yarn": "1.22.10"
   }
 }
