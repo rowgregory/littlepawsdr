@@ -15,7 +15,6 @@ import { decrypt } from '../utils/crypto.js';
 // @route   POST /api/users/login
 // @access  Public
 const authUser = asyncHandler(async (req, res) => {
-  console.log('req body: ', req.body);
   const { email, password } = req.body;
 
   const user = await User.findOne({ email });
