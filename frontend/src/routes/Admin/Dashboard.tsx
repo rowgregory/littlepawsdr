@@ -104,7 +104,6 @@ const TopSellingProductsContainer = styled(Col)`
 const Dashboard = () => {
   const dispatch = useDispatch();
   const theme = useTheme() as any;
-  const isDay = theme.mode === 'day';
 
   const userLogin = useSelector((state: any) => state.userLogin);
   const { userInfo } = userLogin;
