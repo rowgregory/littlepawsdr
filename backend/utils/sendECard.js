@@ -2,11 +2,26 @@ import nodemailer from 'nodemailer';
 import Email from 'email-templates';
 import ECardOrder from '../models/eCardOrderModel.js';
 import path from 'path';
+import google from 'googleapis';
 import colors from 'colors';
+import connectGmailOauth from '../config/oauth.js';
+
+const OAuth2 = google.google.auth.OAuth2;
+
+const Oauth2_client = new OAuth2(
+  connectGmailOauth().clientId,
+  connectGmailOauth().clientSecret
+);
+
+Oauth2_client.setCredentials({
+  refresh_token: connectGmailOauth().refreshToken,
+});
 
 export const sendECard = async () => {
   const start = new Date(new Date().setUTCHours(0, 0, 0, 0));
   const end = new Date(new Date().setUTCHours(23, 59, 59, 999));
+
+  const accessToken = Oauth2_client.getAccessToken();
 
   const aggregatedECards = await ECardOrder.aggregate([
     {
@@ -28,10 +43,14 @@ export const sendECard = async () => {
     const root = path.join(__dirname, 'emails');
 
     const transporter = nodemailer.createTransport({
-      service: 'hotmail',
+      service: 'gmail',
       auth: {
+        type: 'OAuth2',
         user: `${process.env.EMAIL_ADDRESS}`,
-        pass: `${process.env.EMAIL_PASSWORD}`,
+        clientId: connectGmailOauth().clientId,
+        clientSecret: connectGmailOauth().clientSecret,
+        refreshToken: connectGmailOauth().refreshToken,
+        accessToken: accessToken,
       },
     });
 

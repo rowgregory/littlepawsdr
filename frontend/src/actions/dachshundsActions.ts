@@ -21,7 +21,7 @@ export const getAvailableDachshunds = () => async (dispatch: any) => {
 
     const response = await API.availableDogs();
 
-    if (response.data) {
+    if (response?.data) {
       getPicturesAndCoordinates(response);
     }
 
@@ -43,7 +43,7 @@ export const getDachshundDetails = (id: number) => async (dispatch: any) => {
 
     const response = await API.getDachshundById(id);
 
-    if (response.data) {
+    if (response?.data) {
       getPicturesAndCoordinates(response);
     }
 
@@ -65,7 +65,7 @@ export const getDachshundSuccessfulAdoptions = () => async (dispatch: any) => {
 
     const response = await API.getAllSuccessfulAdoptions();
 
-    if (response.data) {
+    if (response?.data) {
       getPicturesAndCoordinates(response);
     }
 
@@ -91,7 +91,7 @@ export const getDachshundSanctuaryOrPassedAway =
 
       const response = await API.getSanctuaryAndPassedAway();
 
-      if (response.data) {
+      if (response?.data) {
         getPicturesAndCoordinates(response);
       }
 

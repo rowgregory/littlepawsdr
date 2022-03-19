@@ -4,12 +4,10 @@ import {
   generateToken,
   generateVerificationToken,
 } from '../utils/generateToken.js';
-import nodemailer from 'nodemailer';
-import Email from 'email-templates';
-import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import { encrypt } from '../utils/crypto.js';
 import { decrypt } from '../utils/crypto.js';
+import { send_mail } from '../server.js';
 
 // @desc    Auth user & get token
 // @route   POST /api/users/login
@@ -281,47 +279,7 @@ const userLogout = asyncHandler(async (req, res) => {
 // @route   POST /api/users/register-confirmation
 // @access  Public
 const sendRegisterConfirmationEmail = asyncHandler(async (req, res) => {
-  const { name, email, token, id } = req.body;
-
-  const __dirname = path.resolve();
-  const root = path.join(__dirname, 'emails');
-
-  const transporter = nodemailer.createTransport({
-    service: 'hotmail',
-    auth: {
-      user: `${process.env.EMAIL_ADDRESS}`,
-      pass: `${process.env.EMAIL_PASSWORD}`,
-    },
-  });
-
-  const pugEmail = new Email({
-    transport: transporter,
-    send: true,
-    preview: false,
-    views: {
-      options: {
-        extention: 'pug',
-      },
-      root,
-    },
-  });
-
-  pugEmail
-    .send({
-      template: 'registerconfirmation',
-      message: {
-        from: 'Little Paws Dachshund Rescue <no-reply@littlepawsdr.org',
-        to: email,
-      },
-      locals: {
-        email,
-        name,
-        token,
-        id,
-      },
-    })
-    .then(() => res.status(200).json({ message: 'Confirmation email sent' }))
-    .catch(err => console.log('ERROR: ', err));
+  send_mail(req.body, res, 'sendRegisterConfirmationEmail');
 });
 
 // @desc    Update user to confirmed

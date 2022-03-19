@@ -21,6 +21,7 @@ export const sendEmailReducer = (state = {}, action: any) => {
       return {
         loading: false,
         success: true,
+        message: action.payload,
       };
     case RESET_EMAIL_SEND_FAIL:
       return {

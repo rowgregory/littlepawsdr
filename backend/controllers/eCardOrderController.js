@@ -1,6 +1,6 @@
 import asyncHandler from 'express-async-handler';
 import ECardOrder from '../models/eCardOrderModel.js';
-import nodemailer from 'nodemailer';
+import { send_mail } from '../server.js';
 
 //@desc   Create an eCard order
 //@route  POST api/ecard-order
@@ -38,32 +38,7 @@ const createECardOrder = asyncHandler(async (req, res) => {
 
     const createdECard = await eCard.save();
 
-    const transporter = nodemailer.createTransport({
-      service: 'hotmail',
-      auth: {
-        user: `${process.env.EMAIL_ADDRESS}`,
-        pass: `${process.env.EMAIL_PASSWORD}`,
-      },
-    });
-
-    const mailOptions = {
-      from: `redspeck@prodigy.net`,
-      to: `${email}`,
-      subject: `E-Card purchase confirmation`,
-      text:
-        `You are receiving this because you have just purshased an E-Card from Little Paws Dachshund Rescue for $${totalPrice}.\n` +
-        `Your order will be sent to ${recipientsFirstName} at ${recipientsEmail} on ${
-          dateToSend.split('T')[0]
-        }.\n\n`,
-    };
-
-    transporter.sendMail(mailOptions, (err, res) => {
-      if (err) {
-        console.error('Error: ', err);
-      } else {
-        console.log(`Confirmation email sent to ${res.envelope.to[0]}`);
-      }
-    });
+    send_mail(req.body, res, 'eCardPurchaseConfirmation');
 
     res.status(201).json(createdECard);
   } catch (err) {

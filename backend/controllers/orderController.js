@@ -1,9 +1,7 @@
 import asyncHandler from 'express-async-handler';
 import Order from '../models/orderModel.js';
 import GuestOrder from '../models/guestOrderModel.js';
-import nodemailer from 'nodemailer';
-import Email from 'email-templates';
-import path from 'path';
+import { send_mail } from '../server.js';
 
 // @desc    Create new order
 // @route   POST /api/orders
@@ -120,59 +118,7 @@ const getOrders = asyncHandler(async (req, res) => {
 // @route   POST /api/orders/send-order-confirmation-email
 // @access  Public
 const sendOrderConfirmationEmail = asyncHandler(async (req, res) => {
-  const {
-    order: { _id, orderItems, shippingAddress, email, isPaid, createdAt },
-    email: loggedInUserEmail,
-  } = req.body;
-
-  const __dirname = path.resolve();
-  const root = path.join(__dirname, 'emails');
-
-  const transporter = nodemailer.createTransport({
-    service: 'hotmail',
-    auth: {
-      user: `${process.env.EMAIL_ADDRESS}`,
-      pass: `${process.env.EMAIL_PASSWORD}`,
-    },
-  });
-
-  const pugEmail = new Email({
-    transport: transporter,
-    send: true,
-    preview: false,
-    views: {
-      options: {
-        extention: 'pug',
-      },
-      root,
-    },
-  });
-
-  pugEmail
-    .send({
-      template: 'orderconfirmation',
-      message: {
-        from: 'Little Paws Dachshund Rescue <no-reply@littlepawsdr.org',
-        to: email !== undefined ? email : loggedInUserEmail,
-      },
-      locals: {
-        _id,
-        orderItems,
-        shippingAddress,
-        email: email !== undefined ? email : loggedInUserEmail,
-        isPaid,
-        createdAt,
-        isGuest: email !== undefined ? true : false,
-      },
-    })
-    .then(() => {
-      console.log(
-        `Order confirmation email has been sent to ${
-          loggedInUserEmail ?? email
-        }`
-      );
-      res.json({ success: true });
-    });
+  send_mail(req.body, res, 'sendOrderConfirmationEmail');
 });
 
 export {

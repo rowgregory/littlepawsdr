@@ -12,7 +12,7 @@ const ForgotPassword = () => {
   const dispatch = useDispatch();
 
   const sendEmail = useSelector((state: any) => state.sendEmail);
-  const { loading, success, error } = sendEmail;
+  const { loading, success, error, message } = sendEmail;
 
   const submitHandler = (e: any) => {
     e.preventDefault();
@@ -23,7 +23,7 @@ const ForgotPassword = () => {
     <FormContainer>
       <PageHeader className='my-3'>Forgot Password</PageHeader>
       {error && <Message variant='danger'>{error}</Message>}
-      {success && <Message variant='success'>Check your email</Message>}
+      {success && <Message variant='success'>{message.message}</Message>}
       <Form onSubmit={submitHandler}>
         <Form.Group controlId='email'>
           <Form.Label>Email Address</Form.Label>
@@ -31,7 +31,7 @@ const ForgotPassword = () => {
             type='email'
             placeholder='Enter email'
             value={email}
-            onChange={e => setEmail(e.target.value)}
+            onChange={(e) => setEmail(e.target.value)}
           ></Form.Control>
         </Form.Group>
         <StyledBtn type='submit' variant='primary' className='mb-3'>
