@@ -1,3 +1,4 @@
+import axios from 'axios';
 import {
   DACHSHUND_REQUEST,
   DACHSHUNDS_SUCCESS,
@@ -15,17 +16,28 @@ import {
 import API from '../utils/api';
 import { getPicturesAndCoordinates } from '../utils/getPicturesAndCoordinates';
 
+const headers = {
+  'Content-Type': 'application/vnd.api+json',
+  Authorization: `${process.env.REACT_APP_RESCUE_GROUPS_API_KEY}`,
+  Accept: 'application/vnd.api+json',
+};
+
 export const getAvailableDachshunds = () => async (dispatch: any) => {
   try {
     dispatch({ type: DACHSHUND_REQUEST });
 
-    const response = await API.availableDogs();
+    const { data } = await axios.get(
+      'https://api.rescuegroups.org/v5/public/orgs/5798/animals/search/available/dogs?',
+      { headers }
+    );
 
-    if (response?.data) {
-      getPicturesAndCoordinates(response);
+    console.log('DATA: ', data);
+
+    if (data?.data) {
+      getPicturesAndCoordinates(data);
     }
 
-    dispatch({ type: DACHSHUNDS_SUCCESS, payload: response });
+    dispatch({ type: DACHSHUNDS_SUCCESS, payload: data });
   } catch (error: any) {
     dispatch({
       type: DACHSHUNDS_FAIL,

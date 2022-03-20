@@ -59,7 +59,7 @@ const SectionContainer = styled.div`
 const Mission = () => {
   return (
     <SectionContainer>
-      <SectionTitle>Mission</SectionTitle>
+      <SectionTitle to='/adopt'>Mission</SectionTitle>
       <MissionContainer className='px-0'>
         {missionStatementData().map((d) => (
           <MissionCard key={d.title}>

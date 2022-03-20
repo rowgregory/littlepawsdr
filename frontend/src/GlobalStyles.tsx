@@ -23,6 +23,10 @@ const GlobalStyles = createGlobalStyle<{
     background:auto;    
 }
 
+.Toaster__alert_close {
+  display: none;
+}
+
   .one-time:hover, .monthly:hover, .e-card:hover, .one-time-still, .monthly-still, .e-card-still {
     --angle: 0deg;
     border: 1px solid transparent;
@@ -42,7 +46,6 @@ const GlobalStyles = createGlobalStyle<{
     background: ${({ theme }) => theme.input.bg} !important;
     transition: 300ms;
     height: 40px !important;
-    margin: 0.25rem 0 1rem  !important;
     font-family: 'Libre Franklin', sans-serif  !important;
     border-radius: 0  !important;
     border-bottom: 1px solid ${({ theme }) => theme.separator}  !important;

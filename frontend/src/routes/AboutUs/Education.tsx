@@ -77,9 +77,11 @@ const Education = () => {
     dispatch(listEducationTips());
   }, [dispatch]);
 
-  if (educationTips?.length === 0) {
-    return <NoItemsDefault items='education tips' Icon={NoEducation} />;
-  }
+  console.log(educationTips);
+
+  // if (educationTips?.length === 0) {
+  //   return <NoItemsDefault items='education tips' Icon={NoEducation} />;
+  // }
 
   return (
     <>

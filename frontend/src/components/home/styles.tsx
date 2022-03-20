@@ -2,17 +2,16 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 export const SectionContainer = styled.div`
-  margin: 0 12px;
+  margin: 0 12px 100px;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    margin: 0 48px 96px;
+    margin: 0 48px 250px;
   }
 `;
 
-export const SectionTitle = styled.div`
+export const SectionTitle = styled(Link)`
   font-family: 'Ubuntu', sans-serif;
   color: ${({ theme }) => theme.inverse};
   font-size: 1.5rem;
-  margin-bottom: 24px;
 `;
 
 export const HomeLink = styled(Link)`
@@ -43,10 +42,12 @@ export const ParallaxContent = styled.div`
   background: rgba(0, 0, 0, 0.5);
   position: absolute;
   height: 340px;
-  width: 475px;
+  max-width: 475px;
+  width: 100%;
   bottom: 20px;
   left: 20px;
   border-radius: 12px;
+  margin: 0 12px 0 0;
 
   .support {
     position: absolute;

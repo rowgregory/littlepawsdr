@@ -1,4 +1,4 @@
-import React, { ComponentType, FC, lazy, useState } from 'react';
+import React, { ComponentType, FC, lazy, useEffect, useState } from 'react';
 import { Switch, Route, useLocation, Redirect } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Home from './Home';
@@ -8,7 +8,7 @@ import Profile from './Settings/Profile';
 import Order from './Order';
 import ForgotPassword from './ForgotPassword';
 import ResetPassword from './ResetPassword';
-import { Container } from 'react-bootstrap';
+import { Container, Image } from 'react-bootstrap';
 import MyOrders from './MyOrders';
 import Surrender from './Surrender';
 import styled from 'styled-components';
@@ -22,7 +22,10 @@ import GuestOrder from './GuestOrder';
 import { useHandleIdleUser } from '../utils/useHandleIdleUser';
 import { useRefreshToken } from '../utils/useRefreshToken';
 import ECardOrderReceipt from './ECardOrderReceipt';
-// import Footer from '../components/Footer';
+import Footer from '../components/Footer';
+import { Text } from '../components/styles/Styles';
+import toast from 'toasted-notes';
+import 'toasted-notes/src/styles.css'; // optional styles
 
 type LazyModulePromise<T = {}> = Promise<{ default: ComponentType<T> }>;
 
@@ -43,9 +46,67 @@ const Page = styled(Container)<{ url: string }>`
   min-height: calc(100vh - 182.57px);
   display: flex;
   flex-direction: column;
-  /* padding: ${({ url }) => (url === '/shop' || url === '/' ? '0' : '')}; */
   padding: 0;
 `;
+
+const GenericAlert = styled.div`
+  background: rgba(0, 0, 0, 0.5);
+  padding: 1.5rem 3rem;
+  border-radius: 12px;
+`;
+
+export const ToastAlert = (
+  msg: string,
+  onClose: () => void,
+  type: string,
+  img?: any
+) => (
+  <GenericAlert className='d-flex flex-column align-items-center'>
+    <i
+      onClick={onClose}
+      className='fas fa-times'
+      style={{
+        position: 'absolute',
+        top: '20px',
+        right: '20px',
+        cursor: 'pointer',
+      }}
+    ></i>
+    <Text>
+      {type === 'success' ? (
+        <>
+          {img ? (
+            <Image
+              src={img}
+              alt='alert'
+              width='50px'
+              height='50px'
+              style={{
+                objectFit: 'cover',
+                borderRadius: '25px',
+                marginRight: '0.5rem',
+              }}
+            />
+          ) : (
+            <i
+              className='fa fa-check'
+              aria-hidden='true'
+              style={{ color: 'green', marginRight: '0.5rem' }}
+            ></i>
+          )}
+        </>
+      ) : (
+        type === 'error' && (
+          <i
+            className='fa-solid fa-triangle-exclamation'
+            style={{ color: 'red' }}
+          ></i>
+        )
+      )}{' '}
+      {msg}
+    </Text>
+  </GenericAlert>
+);
 
 export const Routes: FC = () => {
   const dispatch = useDispatch();
@@ -67,6 +128,23 @@ export const Routes: FC = () => {
     userInfo,
     handleShow
   );
+
+  useEffect(() => {
+    userInfo?.online &&
+      toast.notify(
+        ({ onClose }) =>
+          ToastAlert(
+            `${userInfo?.name} signed in.`,
+            onClose,
+            'success',
+            userInfo?.avatar
+          ),
+        {
+          position: 'bottom-left',
+          duration: null,
+        }
+      );
+  }, [userInfo]);
 
   return (
     <>
@@ -110,7 +188,7 @@ export const Routes: FC = () => {
           <Redirect to='/404' />
         </Switch>
       </Page>
-      {/* {pathname !== '/login' && <Footer />} */}
+      {pathname !== '/login' && <Footer />}
     </>
   );
 };

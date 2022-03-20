@@ -66,7 +66,7 @@ const Events = () => {
     <Message variant='danger'>{error}</Message>
   ) : (
     <SectionContainer>
-      <SectionTitle>Events</SectionTitle>
+      <SectionTitle to='/events'>Events</SectionTitle>
       <EventsContainer className='px-0'>
         {events.length === 0 ? (
           <Text>Check back soon for events!</Text>

@@ -2,10 +2,12 @@ import {
   CART_ADD_ITEM,
   CART_ADD_ITEM_FAIL,
   CART_ADD_ITEM_REQUEST,
+  CART_ADD_ITEM_SUCCESS,
   CART_CLEAR_ITEMS,
   CART_REMOVE_ITEM,
   CART_SAVE_PAYMENT_METHOD,
   CART_SAVE_SHIPPING_ADDRESS,
+  CART_ADD_ITEM_RESET,
 } from '../constants/cartConstants';
 
 export const cartReducer = (
@@ -70,6 +72,16 @@ export const cartReducer = (
       return {
         ...state,
         errors: action.payload,
+      };
+    case CART_ADD_ITEM_SUCCESS:
+      return {
+        ...state,
+        success: true,
+      };
+    case CART_ADD_ITEM_RESET:
+      return {
+        ...state,
+        success: false,
       };
     default:
       return state;

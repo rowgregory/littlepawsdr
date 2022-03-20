@@ -19,10 +19,10 @@ const Home = () => {
       <Banner />
       <HomeContainer>
         <OurLovablePals />
-        <Shop />
+        <Blog />
         <Mission />
         <Events />
-        <Blog />
+        <Shop />
       </HomeContainer>
     </>
   );

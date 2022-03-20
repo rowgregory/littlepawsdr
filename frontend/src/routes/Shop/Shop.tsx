@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import { listProducts } from '../../actions/productActions';
 import Message from '../../components/Message';
 import Product from './Product';
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 const Container = styled.div`
   margin-bottom: 20rem;
@@ -49,7 +48,7 @@ const ProductContainer = styled.div<{ islargegrid: boolean }>`
   }
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
     grid-template-columns: ${({ islargegrid }) =>
-      islargegrid ? '1fr 1fr' : '1fr'};
+      islargegrid ? '1fr 1fr 1fr' : '1fr 1fr'};
   }
 `;
 
@@ -66,16 +65,19 @@ const ClearFilter = styled.div`
 
 const GridIconContainer = styled.div`
   display: none;
+  i {
+    transition: 300ms;
+    cursor: pointer;
+    :hover {
+      color: ${({ theme }) => theme.colors.quaternary};
+    }
+  }
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
     width: 5rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
-`;
-
-const GridIcon = styled.i`
-  color: ${({ theme }) => theme.colors.blue04};
 `;
 
 export const categories = () => [
@@ -133,62 +135,28 @@ const Shop = () => {
             <div className='d-flex justify-content-between'>
               <ShopTitle>Little Paws Clothing & Accessories</ShopTitle>
               <GridIconContainer>
-                <GridIcon
+                <i
                   onClick={() => setIsLargeGrid(false)}
-                  className='fas fa-th fa-2x'
-                  style={{ cursor: 'pointer' }}
-                ></GridIcon>
-                <div
+                  className='fa fa-th-large fa-2x'
+                  aria-hidden='true'
+                ></i>
+                <i
                   onClick={() => setIsLargeGrid(true)}
-                  style={{ cursor: 'pointer', marginTop: '1px' }}
-                >
-                  <GridIcon className='fas fa-grip-vertical fa-2x'></GridIcon>
-                  <GridIcon
-                    className='fas fa-grip-vertical fa-2x'
-                    style={{ marginLeft: '3px' }}
-                  ></GridIcon>
-                </div>
+                  className='fa fa-th fa-2x'
+                  aria-hidden='true'
+                ></i>
               </GridIconContainer>
             </div>
             {error && <Message variant='danger'>{error}</Message>}{' '}
             <ProductContainer islargegrid={isLargeGrid}>
-              <TransitionGroup component='div'>
-                {filterProducts?.length === 0 ? (
-                  <CSSTransition timeout={500} classNames='item'>
-                    <div style={{ position: 'relative' }}>
-                      <div
-                        style={{
-                          position:
-                            currentCategory === '' ? 'relative' : 'absolute',
-                        }}
-                      >
-                        <div>Sorry, more {currentCategory} soon to come!</div>{' '}
-                      </div>
-                    </div>
-                  </CSSTransition>
-                ) : (
-                  filterProducts?.map((product: any) => (
-                    <CSSTransition
-                      key={product._id}
-                      timeout={500}
-                      classNames='item'
-                    >
-                      <div style={{ position: 'relative' }}>
-                        <div
-                          style={{
-                            position:
-                              currentCategory === '' ? 'relative' : 'absolute',
-                          }}
-                        >
-                          <Product product={product} key={product._id} />
-                        </div>
-                      </div>
-                    </CSSTransition>
-                  ))
-                )}
-              </TransitionGroup>
+              {filterProducts?.length === 0 ? (
+                <div>Sorry, more {currentCategory} soon to come!</div>
+              ) : (
+                filterProducts?.map((product: any) => (
+                  <Product product={product} key={product._id} />
+                ))
+              )}
             </ProductContainer>
-            {/* )} */}
           </Col>
         </div>
       </PageContent>

@@ -11,7 +11,7 @@ import SBG from '../../components/assets/collage-bg-3.png';
 const Shop = () => {
   return (
     <SectionContainer>
-      <SectionTitle>Featured Items</SectionTitle>
+      <SectionTitle to='/shop'>Featured Items</SectionTitle>
       <Parallax bgImage={SBG} strength={600}>
         <div style={{ height: 650 }}>
           <ParallaxContent>

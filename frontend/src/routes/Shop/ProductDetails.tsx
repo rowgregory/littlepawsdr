@@ -25,8 +25,9 @@ import {
   WriteAReviewBtn,
 } from '../../components/styles/product-details/Styles';
 import { Text } from '../../components/styles/Styles';
-// import ToastPopUp from '../../components/ToastPopUp';
 import { PRODUCT_CREATE_REVIEW_RESET } from '../../constants/productContstants';
+import toaster from 'toasted-notes';
+import { ToastAlert } from '..';
 
 const ProductDetails = ({ match }: any) => {
   const [size, setSize] = useState('');
@@ -34,7 +35,6 @@ const ProductDetails = ({ match }: any) => {
   const [rating, setRating] = useState<number>(0);
   const [comment, setComment] = useState('');
   const [message, setMessage] = useState('');
-  // const [itemAddedToCart, setItemAddedToCart] = useState(false) as any;
   const dispatch = useDispatch();
   const productId = match.params.id;
   const [show, setShow] = useState(false);
@@ -44,7 +44,7 @@ const ProductDetails = ({ match }: any) => {
   const handleShow = () => setShow(true);
 
   const cart = useSelector((state: any) => state.cart);
-  const { loading: loadingCart } = cart;
+  const { loading: loadingCart, success: itemAddedToCartSuccess } = cart;
 
   const productPublicDetails = useSelector(
     (state: any) => state.productPublicDetails
@@ -77,10 +77,19 @@ const ProductDetails = ({ match }: any) => {
     dispatch(getPublicProductDetails(productId));
   }, [dispatch, productId, successProductReview]);
 
+  useEffect(() => {
+    //Todo Pop only show item added to cart
+    if (itemAddedToCartSuccess) {
+      toaster.notify(
+        ({ onClose }) => ToastAlert('Item Added To Cart', onClose, 'success'),
+        { position: 'top' }
+      );
+    }
+  }, [cart.cartItems, dispatch, itemAddedToCartSuccess]);
+
   const addToCartHandler = (item: any) => {
     if (size !== '' || !['Shirts', 'Sweatshirts'].includes(product.category)) {
       dispatch(addToCart(item._id, qty, size));
-      // setItemAddedToCart(true);
     } else setMessage('Select Size');
   };
 
@@ -100,15 +109,6 @@ const ProductDetails = ({ match }: any) => {
         setRating={setRating}
         loading={loadingProductReview}
       />
-      {/* {itemAddedToCart && (
-        <ToastPopUp
-          userInfo={userInfo}
-          message='Cart'
-          setMessage={setMessage}
-          itemAddedToCart={itemAddedToCart}
-          setItemAddedToCart={setItemAddedToCart}
-        />
-      )} */}
 
       {loadingProductPublicDetails ? (
         <Loader />

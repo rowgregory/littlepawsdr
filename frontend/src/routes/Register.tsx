@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Spinner, Image } from 'react-bootstrap';
+import { Form, Spinner, Image, Col } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   register,
@@ -8,30 +8,27 @@ import {
 } from '../actions/userActions';
 import Message from '../components/Message';
 import { Text } from '../components/styles/Styles';
-import { StyledBtn, StyledLink } from './Login';
+import { Container, StyledBtn, StyledLink, ThemeProps } from './Login';
 import HorizontalLoader from '../components/HorizontalLoader';
 import PasswordMeter from '../components/PasswordMeter';
 import { USER_REGISTER_RESET } from '../constants/userConstants';
 import DayLogo from '../components/assets/transparent-logo.png';
-import { Link } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
+import NightLogo from '../components/assets/neon-purple-logo.png';
 
-const WelcomeText = styled.div`
-  color: ${({ theme }) => theme.colors.secondary};
-  font-family: 'Ubuntu', sans-serif;
-  font-size: 1.25rem;
-  margin-bottom: 1rem;
-  text-align: center;
+const FormContainer = styled.div`
+  background: ${({ theme }) => theme.bg};
+  border: 1px solid ${({ theme }) => theme.input.border};
 `;
 
-export const validations = (password: string) => [
-  password.length >= 5 ? 1 : 0,
-  password.search(/[A-Z]/) > -1 ? 1 : 0,
-  password.search(/[0-9]/) > -1 ? 1 : 0,
-  password.search(/[$&+,:;=?@#]/) > -1 ? 1 : 0,
-];
+const LoginContainer = styled(Col)`
+  color: ${({ theme }) => theme.text};
+  text-align: center;\
+  border: 1px solid ${({ theme }) => theme.input.border};
+`;
 
 const Register = ({ location, history, match }: any) => {
+  const theme = useTheme() as ThemeProps;
   const userToken = match.params.to;
   const userEmail = match.params.em;
   const userName = match.params.na;
@@ -41,6 +38,9 @@ const Register = ({ location, history, match }: any) => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [message, setMessage] = useState(null || '');
+  const isDay = theme.mode === 'day' ? true : false;
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -120,35 +120,39 @@ const Register = ({ location, history, match }: any) => {
     }
   };
 
-  const strength = validations(password).reduce((acc, cur) => acc + cur, 0);
+  const validations = [
+    password.length >= 5 ? 1 : 0,
+    password.search(/[A-Z]/) > -1 ? 1 : 0,
+    password.search(/[0-9]/) > -1 ? 1 : 0,
+    password.search(/[$&+,:;=?@#]/) > -1 ? 1 : 0,
+  ];
+
+  const strength = validations.reduce((acc, cur) => acc + cur, 0);
 
   return (
-    <div style={{ maxWidth: '1280px', margin: '0 auto', width: '100%' }}>
-      <div className='d-flex justify-content-between align-items-center'>
-        <Link to='/'>
-          <Image
-            src={DayLogo}
-            alt='Little Paws Dachshund Rescue'
-            width='100px'
-            style={{
-              cursor: 'pointer',
-            }}
-          />
-        </Link>
-
-        <Text>
-          Already have an account?{' '}
-          <StyledLink to={redirect ? `/login?redirect=${redirect}` : '/login'}>
-            Sign in
-          </StyledLink>
+    <Container>
+      <div className='mx-auto' style={{ maxWidth: '340px', width: '100%' }}>
+        <Image
+          onClick={() => history.push('/')}
+          src={isDay ? DayLogo : NightLogo}
+          alt='Little Paws Dachshund Rescue'
+          width='150px'
+          height='100px'
+          style={{
+            objectFit: 'cover',
+            cursor: 'pointer',
+            margin: '1.5rem auto',
+            display: 'flex',
+          }}
+        />
+        <Text
+          fontFamily={`Ubuntu, sans-serif`}
+          fontSize='1.5rem'
+          textAlign='center'
+          marginBottom='1.5rem'
+        >
+          Welcome to Little Paws Dachshund Rescue
         </Text>
-      </div>
-
-      <div
-        className='mx-auto mt-5 p-4'
-        style={{ maxWidth: '340px', width: '100%' }}
-      >
-        <WelcomeText>Welcome to Little Paws Dachshund Rescue</WelcomeText>
         {succesVerifyEmailSent && (
           <Message variant='success'>{userInfoVerifyEmail.message}</Message>
         )}
@@ -165,72 +169,100 @@ const Register = ({ location, history, match }: any) => {
         )}
         {loadingUserConfirmed && <HorizontalLoader />}
         {userRegisterLoading && <HorizontalLoader />}
-        <Form onSubmit={submitHandler}>
-          <Form.Group controlId='name'>
-            <Form.Label>Full name</Form.Label>
-            <Form.Control
-              type='name'
-              placeholder='Enter name'
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-            ></Form.Control>
-          </Form.Group>
-          <Form.Group controlId='email'>
-            <Form.Label>Email address</Form.Label>
-            <Form.Control
-              type='email'
-              placeholder='Enter email'
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            ></Form.Control>
-          </Form.Group>
-          <Form.Group controlId='password'>
-            <Form.Label>Password</Form.Label>
-            <Form.Control
-              type='password'
-              placeholder='Enter password'
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            ></Form.Control>
-          </Form.Group>
-          <Form.Group controlId='confirmpassword'>
-            <Form.Label>Confirm password</Form.Label>
-            <Form.Control
-              type='password'
-              placeholder='Confirm password'
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-            ></Form.Control>
-          </Form.Group>
-          <StyledBtn
-            type='submit'
-            className='d-flex align-items-center border-0 font-weight-bold btn-lg mb-4'
-          >
-            {loadingVerifyEmailSent ? (
-              <>
-                <Spinner
-                  as='span'
-                  animation='border'
-                  size='sm'
-                  role='status'
+        <FormContainer className='p-4'>
+          <Form onSubmit={submitHandler}>
+            <Form.Group controlId='name'>
+              <Form.Label>Full name</Form.Label>
+              <Form.Control
+                type='name'
+                placeholder='Enter name'
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+              ></Form.Control>
+            </Form.Group>
+            <Form.Group controlId='email'>
+              <Form.Label>Email address</Form.Label>
+              <Form.Control
+                type='email'
+                placeholder='Enter email'
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              ></Form.Control>
+            </Form.Group>
+            <Form.Group controlId='password'>
+              <Form.Label>Password</Form.Label>
+              <div
+                className='d-flex align-items-center'
+                style={{ position: 'relative' }}
+              >
+                <Form.Control
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder='Enter password'
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                ></Form.Control>
+                <i
+                  onClick={() => setShowPassword(!showPassword)}
+                  className='fas fa-eye'
                   aria-hidden='true'
-                  className='mr-2'
-                />
-                <Text color='#fff'>Loading...</Text>
-              </>
-            ) : (
-              <Text color='#fff'>Register</Text>
-            )}
-          </StyledBtn>
-        </Form>
-
-        <PasswordMeter validations={validations} strength={strength} />
+                  style={{ position: 'absolute', right: '10px' }}
+                ></i>
+              </div>
+            </Form.Group>
+            <Form.Group controlId='confirmpassword'>
+              <Form.Label>Confirm password</Form.Label>
+              <div
+                className='d-flex align-items-center'
+                style={{ position: 'relative' }}
+              >
+                <Form.Control
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  placeholder='Confirm password'
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                ></Form.Control>
+                <i
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className='fas fa-eye'
+                  aria-hidden='true'
+                  style={{ position: 'absolute', right: '10px' }}
+                ></i>
+              </div>
+            </Form.Group>
+            <StyledBtn
+              type='submit'
+              className='d-flex align-items-center border-0 font-weight-bold btn-lg mb-4'
+            >
+              {loadingVerifyEmailSent ? (
+                <>
+                  <Spinner
+                    as='span'
+                    animation='border'
+                    size='sm'
+                    role='status'
+                    aria-hidden='true'
+                    className='mr-2'
+                  />
+                  <Text color='#fff'>Loading...</Text>
+                </>
+              ) : (
+                <Text color='#fff'>Register</Text>
+              )}
+            </StyledBtn>
+          </Form>
+        </FormContainer>
+        <LoginContainer className='py-3 mt-3'>
+          <PasswordMeter validations={validations} strength={strength} />
+        </LoginContainer>
+        <LoginContainer className='py-3 mt-3'>
+          Already have an account? <StyledLink to='/login'>Sign In</StyledLink>
+        </LoginContainer>
       </div>
-    </div>
+    </Container>
   );
 };
 

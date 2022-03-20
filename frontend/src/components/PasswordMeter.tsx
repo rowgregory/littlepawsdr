@@ -4,6 +4,7 @@ import { Text } from '../components/styles/Styles';
 
 const Strength = styled.div`
   display: flex;
+  justify-content: flex-start;
   height: 20px;
   width: 100%;
 
@@ -18,16 +19,28 @@ const Strength = styled.div`
     box-shadow: none;
   }
   .bar-1 {
-    background: linear-gradient(to right, red, orangered);
+    background: ${({ theme }) =>
+      theme.mode === 'day'
+        ? 'linear-gradient(to right, red, orangered)'
+        : 'linear-gradient(to right, #0347fe, #3e04a4)'};
   }
   .bar-2 {
-    background: linear-gradient(to right, orangered, yellow);
+    background: ${({ theme }) =>
+      theme.mode === 'day'
+        ? 'linear-gradient(to right, orangered, yellow)'
+        : 'linear-gradient(to right, #3e04a4, #8600b0)'};
   }
   .bar-3 {
-    background: linear-gradient(to right, yellow, yellowgreen);
+    background: ${({ theme }) =>
+      theme.mode === 'day'
+        ? 'linear-gradient(to right, yellow, yellowgreen)'
+        : 'linear-gradient(to right, #8600b0, #a7194c)'};
   }
   .bar-4 {
-    background: linear-gradient(to right, yellowgreen, green);
+    background: ${({ theme }) =>
+      theme.mode === 'day'
+        ? 'linear-gradient(to right, yellowgreen, green)'
+        : 'linear-gradient(to right, #a7194c, #fe2812)'};
   }
   .bar:last-child {
     margin-right: 0;
@@ -51,7 +64,7 @@ const PasswordMeter = ({ validations, strength }: any) => {
           className={strength > 3 ? 'bar bar-4 bar-show' : 'bar bar-4 bar'}
         ></span>
       </Strength>
-      <div className='my-3'>
+      <div className='my-3 d-flex align-items-start flex-column'>
         <Text>
           {validations[0] ? (
             <i className='fas fa-check' style={{ color: 'green' }}></i>

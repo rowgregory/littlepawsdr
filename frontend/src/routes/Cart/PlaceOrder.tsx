@@ -28,7 +28,6 @@ import PayPalButtonImg from '../../components/assets/payPalButtons.png';
 import PayPalButtonImgNight from '../../components/assets/payPalButtonsNight.png';
 import { useTheme } from 'styled-components';
 import PasswordMeter from '../../components/PasswordMeter';
-import { validations } from '../Register';
 import { register } from '../../actions/userActions';
 
 const PlaceOrder = ({ history }: any) => {
@@ -218,7 +217,14 @@ const PlaceOrder = ({ history }: any) => {
     totalPrice,
   ]);
 
-  const strength = validations(password).reduce((acc, cur) => acc + cur, 0);
+  const validations = [
+    password.length >= 5 ? 1 : 0,
+    password.search(/[A-Z]/) > -1 ? 1 : 0,
+    password.search(/[0-9]/) > -1 ? 1 : 0,
+    password.search(/[$&+,:;=?@#]/) > -1 ? 1 : 0,
+  ];
+
+  const strength = validations.reduce((acc, cur) => acc + cur, 0);
 
   useEffect(() => {
     if (readyToCreateGuestOrder) {
@@ -429,7 +435,7 @@ const PlaceOrder = ({ history }: any) => {
                           ></Form.Control>
                         </Form.Group>
                         <PasswordMeter
-                          validations={validations(password)}
+                          validations={validations}
                           strength={strength}
                         />
                       </>

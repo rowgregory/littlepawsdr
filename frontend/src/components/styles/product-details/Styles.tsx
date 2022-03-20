@@ -160,13 +160,16 @@ export const SizeContainer = styled.div<{ show: boolean }>`
 export const Size = styled.div<{ active: boolean }>`
   height: 40px;
   width: 50px;
-  border: 1px solid ${({ theme }) => theme.border};
-  color: ${({ theme, active }) => (active ? '#fff' : theme.text)};
+  border: 1px solid
+    ${({ theme, active }) => (active ? theme.colors.quaternary : theme.border)};
+  color: ${({ theme, active }) =>
+    active ? theme.colors.quaternary : theme.text};
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
   background: ${({ theme, active }) => (active ? theme.colors.blue04 : '')};
+  transition: 300ms;
   :hover {
     color: #fff;
     border: 1px solid ${({ theme }) => theme.colors.blue04};

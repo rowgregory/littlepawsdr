@@ -7,7 +7,6 @@ import Message from '../components/Message';
 import { Text } from '../components/styles/Styles';
 import styled, { useTheme } from 'styled-components';
 import { isCapsLock } from '../utils/capsLock';
-import { RightBtn } from '../components/ContinueSessionModal';
 import NightLogo from '../components/assets/neon-purple-logo.png';
 import DayLogo from '../components/assets/transparent-logo.png';
 export interface ThemeProps {
@@ -15,28 +14,29 @@ export interface ThemeProps {
 }
 
 export const StyledBtn = styled(Button)`
-  background: ${({ theme }) => theme.colors.secondary};
+  background: ${({ theme }) => theme.colors.primary};
   transition: 300ms;
   :hover {
-    background: ${({ theme }) => theme.colors.secondary};
+    background: ${({ theme }) => theme.colors.primary};
     filter: brightness(1.1);
   }
 `;
 export const StyledLink = styled(Link)`
-  color: ${({ theme }) => theme.colors.blue06};
+  color: ${({ theme }) => theme.colors.quaternary};
   :hover {
-    color: ${({ theme }) => theme.colors.blue06};
+    color: ${({ theme }) => theme.colors.quaternary};
     text-decoration: none;
   }
 `;
 
 export const Container = styled.div`
   width: 100vw;
-  height: 100vh;
   max-width: 100%;
   display: flex;
   justify-content: flex-start;
   flex-direction: column;
+
+  padding-bottom: 5rem;
 `;
 
 const CreateAccountContainer = styled(Col)`
@@ -54,6 +54,7 @@ const Login = ({ location, history }: any) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [capsLockOn, setCapsLocksOn] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const isDay = theme.mode === 'day' ? true : false;
 
@@ -135,18 +136,32 @@ const Login = ({ location, history }: any) => {
                 </Form.Label>
                 <StyledLink to='/forgot-password'>Forgot Password</StyledLink>
               </div>
-              <Form.Control
-                autoComplete='off'
-                type='password'
-                placeholder='Enter password'
-                value={password}
-                onChange={(e: any) => {
-                  setPassword(e.target.value);
-                }}
-                required
-              ></Form.Control>
+              <div
+                className='d-flex align-items-center'
+                style={{ position: 'relative' }}
+              >
+                <Form.Control
+                  autoComplete='off'
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder='Enter password'
+                  value={password}
+                  onChange={(e: any) => {
+                    setPassword(e.target.value);
+                  }}
+                  required
+                ></Form.Control>
+                <i
+                  onClick={() => setShowPassword(!showPassword)}
+                  className='fas fa-eye'
+                  aria-hidden='true'
+                  style={{ position: 'absolute', right: '10px' }}
+                ></i>
+              </div>
             </Form.Group>
-            <RightBtn type='submit' className='d-flex align-items-center w-100'>
+            <StyledBtn
+              type='submit'
+              className='d-flex align-items-center border-0 font-weight-bold btn-lg mb-4'
+            >
               {loading ? (
                 <div className='d-flex align-items-center mx-auto'>
                   <Spinner
@@ -164,7 +179,7 @@ const Login = ({ location, history }: any) => {
                   Sign In
                 </Text>
               )}
-            </RightBtn>
+            </StyledBtn>
           </Form>
         </FormContainer>
         <CreateAccountContainer className='py-3 mt-3'>
