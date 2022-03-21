@@ -29,8 +29,11 @@ const CurrentImgWrapper = styled.div`
 
 const ECardsContainer = styled.div`
   display: flex;
-  overflow-x: scroll;
   overflow-y: hidden;
+  overflow-x: scroll;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+    overflow-x: hidden;
+  }
 `;
 
 const Shimmer = keyframes`
@@ -138,11 +141,15 @@ const ECardForm = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputs]);
 
+  const selectedECardFromStorage = localStorage.getItem('selectedECard')
+    ? JSON.parse(localStorage.getItem('selectedECard') || '')
+    : '';
+
   useEffect(
     () =>
       placeSelectedECardIntoCurrentImg(
         'eCardToPurchase',
-        !loading && eCards[0]
+        !loading && (selectedECardFromStorage ?? eCards[0])
       ),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [eCards, loading]
@@ -204,7 +211,9 @@ const ECardForm = () => {
   };
 
   const LargeImg =
-    currentImg !== '' ? currentImg : !loading ? eCards[0]?.image : '';
+    currentImg !== ''
+      ? currentImg
+      : !loading && (selectedECardFromStorage?.image || eCards[0]?.image);
 
   if (eCards?.length === 0) {
     return (
@@ -214,22 +223,28 @@ const ECardForm = () => {
 
   return (
     <div className='d-flex flex-column'>
-      <div className='mb-1'>Choose an e-card to send to a friend.</div>
+      <Text className='mb-1'>Choose an e-card</Text>
       <CurrentImgWrapper>
         {loading ? <LoadingLargeImg /> : <Image src={LargeImg} alt='LPDR' />}
       </CurrentImgWrapper>
       <Form>
-        <ECardsContainer>
+        <ECardsContainer className='eCardsContainer mt-3'>
           {eCards?.map((eCard: any, i: number) => (
             <ECardImageContainer
               key={i}
-              active={eCard?._id === inputs?.eCardToPurchase?._id}
+              active={
+                selectedECardFromStorage?._id === eCard?._id ||
+                eCard?._id === inputs?.eCardToPurchase?._id
+              }
               onClick={() => {
                 placeSelectedECardIntoCurrentImg('eCardToPurchase', eCard);
               }}
             >
               <Image
-                onClick={() => setCurrentImg(eCard.image)}
+                onClick={() => {
+                  localStorage.setItem('selectedECard', JSON.stringify(eCard));
+                  setCurrentImg(eCard.image);
+                }}
                 src={eCard.image}
                 alt='LPDR'
               />

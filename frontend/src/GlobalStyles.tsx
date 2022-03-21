@@ -21,6 +21,23 @@ const GlobalStyles = createGlobalStyle<{
     -webkit-border-radius: auto;
     border-radius: auto;
     background:auto;    
+  
+}
+
+
+.eCardsContainer::-webkit-scrollbar,    
+.eCardsContainer::-webkit-scrollbar-button,
+.eCardsContainer::-webkit-scrollbar-track
+{
+  background:${({ theme }) => theme.bg} !important;
+}
+
+.eCardsContainer::-webkit-scrollbar-thumb {
+  background: ${({ theme }) => theme.colors.primary};
+}
+
+.eCardsContainer::-webkit-scrollbar-track-piece {
+  background: ${({ theme }) => theme.input.bg};
 }
 
 .Toaster__alert_close {
