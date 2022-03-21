@@ -19,25 +19,25 @@ import NoItemsDefault from '../../components/common/NoItemsDefault';
 const Container = styled.div<{ emptycart?: boolean }>`
   padding-bottom: 5rem;
   margin: ${({ emptycart }) => (emptycart ? 'auto' : '')};
-  padding-top: 7rem;
 `;
 
 const ProductName = styled(Link)`
   color: ${({ theme }) => theme.card.text};
-  font-family: 'Roboto Condensed';
+  font-family: 'Duru Sans';
   font-size: 1rem;
 `;
 
 const CheckoutBtn = styled(Button)`
-  background: ${({ theme }) => theme.colors.green06};
+  background: ${({ theme }) => theme.colors.green04};
   color: ${({ theme }) => theme.white};
   cursor: pointer;
   height: 50px;
   border-radius: 0;
   font-size: 1rem;
   transition: 300ms;
+  width: 100%;
   :hover {
-    background: ${({ theme }) => theme.colors.green06};
+    background: ${({ theme }) => theme.colors.green04};
     color: ${({ theme }) => theme.white};
     filter: brightness(1.1);
     text-decoration: none;
@@ -48,12 +48,17 @@ const CheckoutBtn = styled(Button)`
     filter: brightness(0.8);
     text-decoration: none;
   }
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+    width: 300px;
+  }
 `;
 
 const CartContainer = styled.div`
   border: 0.5px solid ${({ theme }) => theme.separator};
-  padding: 4rem 9rem;
-  background-color: ${({ theme }) => theme.secondaryBg};
+  padding: 2rem 1rem;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+    padding: 2rem 6rem;
+  }
 `;
 
 const RemoveBtn = styled(Button)`
@@ -70,6 +75,38 @@ const RemoveBtn = styled(Button)`
     border: 1px solid ${({ theme }) => theme.colors.red} !important;
     color: #fff;
     box-shadow: none;
+  }
+`;
+
+const ImgContainer = styled.div`
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+    width: 150px;
+    height: 150px;
+  }
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+    width: 200px;
+    height: 200px;
+  }
+`;
+
+const CheckoutBtnColumn = styled(Col)`
+  margin: 0 auto;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+  }
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
+    display: flex;
+    align-items: center;
+  }
+`;
+
+const SecondSubTotal = styled.div`
+  display: none;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
+    display: block;
+    width: 100%;
   }
 `;
 
@@ -120,7 +157,7 @@ const Cart = ({ history }: any) => {
           style={{
             width: '100%',
             maxWidth: '1280px',
-            margin: '3rem auto 0',
+            margin: '0 auto',
             flexWrap: 'wrap',
           }}
           className='d-flex'
@@ -128,7 +165,7 @@ const Cart = ({ history }: any) => {
           <Col lg={8} md={12} className='align-items-center'>
             <CartContainer>
               <Text
-                fontFamily='Roboto Condensed'
+                fontFamily='Duru Sans'
                 fontSize='1.875rem'
                 marginBottom='0.5rem'
               >
@@ -137,9 +174,9 @@ const Cart = ({ history }: any) => {
               <HorizontalLine margin='1rem 0 4rem' />
 
               {cartItems?.map((item: any, i: number) => (
-                <Col className='mb-5 px-0' key={i}>
+                <div className='mb-5 px-0' key={i}>
                   <div className='d-flex '>
-                    <div style={{ height: '200px', width: '160px' }}>
+                    <ImgContainer>
                       <Image
                         src={item?.image}
                         alt={item?.name}
@@ -148,7 +185,7 @@ const Cart = ({ history }: any) => {
                         height='100%'
                         style={{ objectFit: 'cover' }}
                       />
-                    </div>
+                    </ImgContainer>
 
                     <Col className='d-flex flex-column justify-content-between'>
                       <div>
@@ -198,11 +235,11 @@ const Cart = ({ history }: any) => {
                       </div>
                     </Col>
                   </div>
-                </Col>
+                </div>
               ))}
             </CartContainer>
 
-            <Col className='d-flex justify-content-end align-items-center mt-2 mb-4'>
+            <Col className='d-flex justify-content-end align-items-center px-0 mt-2 mb-4'>
               <Text className='mb-0'>
                 Subtotal (
                 {cartItems?.reduce((acc: any, item: any) => acc + item?.qty, 0)}
@@ -221,34 +258,33 @@ const Cart = ({ history }: any) => {
             </Col>
           </Col>
           {cartItems.length > 0 && (
-            <Col md={4} sm={12} className='px-0' style={{ marginTop: '10rem' }}>
-              <div
-                className='d-flex align-items-center flex-column py-3 mx-auto'
-                style={{ maxWidth: '300px' }}
-              >
+            <CheckoutBtnColumn md={4} sm={12} className='px-0'>
+              <div className='d-flex align-items-center flex-column py-3 mx-auto'>
                 <CheckoutBtn
-                  className='btn-block border-0'
+                  className='border-0'
                   disabled={cartItems.length === 0}
                   onClick={checkoutHandler}
                 >
                   Checkout
                 </CheckoutBtn>
 
-                <HorizontalLine></HorizontalLine>
-                <div className='d-flex align-items-center justify-content-between w-100'>
-                  <Text bold='bold'>Subtotal</Text>
-                  <Text bold='bold'>
-                    $
-                    {cartItems
-                      .reduce(
-                        (acc: any, item: any) => acc + item.qty * item.price,
-                        0
-                      )
-                      .toFixed(2)}
-                  </Text>
-                </div>
+                <SecondSubTotal>
+                  <HorizontalLine></HorizontalLine>
+                  <div className='d-flex align-items-center justify-content-between w-100'>
+                    <Text bold='bold'>Subtotal</Text>
+                    <Text bold='bold'>
+                      $
+                      {cartItems
+                        .reduce(
+                          (acc: any, item: any) => acc + item.qty * item.price,
+                          0
+                        )
+                        .toFixed(2)}
+                    </Text>
+                  </div>
+                </SecondSubTotal>
               </div>
-            </Col>
+            </CheckoutBtnColumn>
           )}
         </div>
       )}

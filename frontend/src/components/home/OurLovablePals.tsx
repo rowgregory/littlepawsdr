@@ -14,7 +14,6 @@ const DogContainer = styled(Row)`
   grid-gap: 10px;
   grid-template-columns: 1fr;
   width: 100%;
-  margin-top: 36px;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
     grid-template-columns: 1fr 1fr;
   }

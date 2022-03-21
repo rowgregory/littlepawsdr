@@ -23,12 +23,14 @@ import BlogEdit from './BlogEdit';
 import EducationTipList from './EducationTipList';
 import EducationTipEdit from './EducationTipEdit';
 import Private from '../../components/common/PrivateRoute';
-import MobileNav from '../../components/dashboard/MobileNav';
+import { useSelector } from 'react-redux';
 
 const AdminRoutes: FC = () => {
   const { path } = useRouteMatch();
+  const userLogin = useSelector((state: any) => state.userLogin);
+  const { userInfo } = userLogin;
   return (
-    <DashboardLayoutWithSideBar sideBar={<SideBar />} mobileNav={<MobileNav />}>
+    <DashboardLayoutWithSideBar sideBar={<SideBar />} userInfo={userInfo}>
       <Switch>
         <Private exact={true} path={path} component={Dashboard} />
         <Private path={`${path}/userList`} component={UserList} />

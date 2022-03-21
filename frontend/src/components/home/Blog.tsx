@@ -10,7 +10,6 @@ import toast from 'toasted-notes';
 import { ToastAlert } from '../../routes';
 
 const BlogsContainer = styled.div`
-  margin-top: 36px;
   display: grid;
   grid-template-columns: 1fr;
   grid-gap: 12px;
@@ -46,14 +45,14 @@ const BlogTitle = styled.div`
   font-size: 1.3rem;
   font-family: Duru Sans;
   margin-bottom: 0.75rem;
-  color: ${({ theme }) => theme.colors.quaternary};
+  color: ${({ theme }) => theme.colors.primary};
 `;
 
 const ReadMoreLink = styled(Link)`
   text-decoration: none;
   padding: 0.5rem 1rem;
   border-radius: 16px;
-  background: ${({ theme }) => theme.colors.secondary};
+  background: ${({ theme }) => theme.colors.tertiary};
   width: fit-content;
   color: ${({ theme }) => theme.white};
   font-family: 'Ubuntu', sans-serif;

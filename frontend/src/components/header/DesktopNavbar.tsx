@@ -32,13 +32,16 @@ const Container = styled.div`
   background: ${({ theme }) => theme.header.bg};
   margin: 0 auto;
   max-width: 1836px;
-  padding: 0.25rem 15px;
+  padding: 0.25rem;
   width: 100%;
   margin: 0 auto;
   display: flex;
   align-items: center;
 
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+    padding: 0.25rem 0.75rem;
+  }
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
     padding: 0.25rem 48px;
   }
 `;
@@ -54,7 +57,7 @@ const Overlay = styled.div<{ open: boolean }>`
   overflow-y: scroll !important;
   transition: 0.3s;
 
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
     display: none;
   }
 `;
@@ -73,14 +76,14 @@ const LogoContainer = styled.div`
   img {
     objectfit: cover;
     height: 100%;
-    max-height: 125px;
-    margin-left: -22px;
+    max-height: 50px;
   }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
     justify-content: flex-start;
 
     img {
       margin-left: -22px;
+      max-height: 125px;
     }
   }
 `;
@@ -116,11 +119,18 @@ const MyLink = styled(Link)<{ active: string }>`
 const SMContianer = styled.div`
   width: 100%;
   height: 50px;
-  background: ${({ theme }) => theme.colors.secondary};
+  background: ${({ theme }) => theme.colors.primary};
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  padding: 0 48px;
+  padding: 0 0.25rem;
+
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+    padding: 0 1rem;
+  }
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
+    padding: 0 48px;
+  }
 `;
 
 const SocialMediaIconContainer = () => {
@@ -224,6 +234,8 @@ const DesktopNavbar = () => {
   const [currentTitle, setTitle] = useState('');
   const overlayRef = useRef(null) as any;
   const menuRefs = useRef([]) as any;
+
+  const isNotDashboard = !['admin'].includes(p.split('/')[1]);
 
   const userLogin = useSelector((state: UserInfoProps) => state.userLogin);
   const { userInfo } = userLogin;
@@ -338,7 +350,7 @@ const DesktopNavbar = () => {
           <CartAndLogin />
         </Container>
       </HeaderContainer>
-      <SocialMediaIconContainer />
+      {isNotDashboard && <SocialMediaIconContainer />}
     </>
   );
 };

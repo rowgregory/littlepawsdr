@@ -13,6 +13,9 @@ export const MissionContainer = styled(Col)`
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
     grid-template-columns: 1fr 1fr 1fr;
   }
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
 `;
 
 export const MissionCard = styled.div`
@@ -25,10 +28,11 @@ export const MissionImg = styled(Image)`
   max-height: '';
   width: 100%;
   height: 100%;
+  object-fit: cover;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
     display: flex;
     width: 100%;
-    height: 100%;
+    max-height: 430px;
   }
 `;
 
@@ -36,24 +40,33 @@ export const MissionBodyContainer = styled.div`
   backdrop-filter: blur(15px);
 `;
 
-export const MissionTitle = styled.h3<{ title?: string }>`
+export const MissionTitle = styled.h4<{ title?: string }>`
   font-family: 'Ubuntu', sans-serif;
   color: ${({ theme }) => theme.text};
   font-weight: bold;
-  margin: 2rem auto;
-  text-align: center;
   position: relative;
+  margin: 0.5rem 0;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    margin: 2rem auto;
+  }
 `;
 
 export const MissionStatement = styled.div`
   font-family: 'Poppins', sans-serif;
   font-size: 1.05rem;
   color: ${({ theme }) => theme.text};
-  padding: 0 3rem 3rem;
+  margin-bottom: 3rem;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    margin-bottom: 0;
+  }
 `;
 
 const SectionContainer = styled.div`
-  margin: 0 48px 84px;
+  margin: 0 12px 84px;
+
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    margin: 0 48px 84px;
+  }
 `;
 
 const Mission = () => {
@@ -64,9 +77,7 @@ const Mission = () => {
         {missionStatementData().map((d) => (
           <MissionCard key={d.title}>
             <Col className='d-flex flex-column px-0 align-items-center'>
-              <div>
-                <MissionImg src={d?.image} alt={d?.title.replace(' ', '-')} />
-              </div>
+              <MissionImg src={d?.image} alt={d?.title.replace(' ', '-')} />
               <MissionBodyContainer>
                 <MissionTitle title={d?.title}>{d?.title}</MissionTitle>
                 <MissionStatement>{d?.text}</MissionStatement>

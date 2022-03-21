@@ -6,7 +6,6 @@ import { Text } from '../components/styles/Styles';
 import { useDispatch, useSelector } from 'react-redux';
 import { createNewsletterEmail } from '../actions/newsletterActions';
 import Message from './Message';
-import SocialMediaIcons from './common/SocialMediaIcons';
 import Checkmark from './svg/Checkmark';
 
 const quickLinks = () => {
@@ -47,25 +46,31 @@ const quickLinks = () => {
 };
 
 const StyledFooter = styled.footer`
-  background: ${({ theme }) => theme.secondaryBg};
+  background: ${({ theme }) => theme.colors.tertiary};
   border-top: ${({ theme }) => `3px solid ${theme.colors.purple04}`};
 `;
 
 const StyledLink = styled(Link)`
-  font-size: 1.125rem;
+  color: ${({ theme }) => theme.white};
+  font-size: 0.8rem;
   transition: 300ms;
   :hover {
-    filter: brightness(1.5);
-    text-decoration: underline;
+    filter: brightness(0.8);
+    text-decoration: none;
+    color: ${({ theme }) => theme.white};
   }
+  font-family: 'Duru Sans';
 `;
 
 const GiveNowBtn = styled(Link)`
   width: 150px;
   color: #fff;
-  background: ${({ theme }) => theme.colors.secondary};
+  background: ${({ theme }) => theme.colors.purple01};
   font-size: 0.75rem;
   margin: 0 auto;
+  transition: 300ms;
+  padding: 0.75rem 1.5rem;
+  font-family: 'Duru Sans';
   :hover {
     color: #fff;
     box-shadow: none;
@@ -75,19 +80,32 @@ const GiveNowBtn = styled(Link)`
 `;
 
 const StyledSubFooter = styled(Col)`
-  background: ${({ theme }) => theme.footer.subFooterBg};
+  background: ${({ theme }) => theme.bg};
+  color: ${({ theme }) => theme.text};
+  font-size: 0.75rem;
 `;
 
 const SubscribeBtn = styled(Button)`
-  background: ${({ theme }) => theme.footer.subscribeBtn};
+  background: ${({ theme }) => theme.colors.secondary};
   font-size: 0.75rem;
   border-radius: 0 25px 25px 0;
   width: 25%;
   border: 0;
   height: 40px;
-  margin-top: 4px;
+  transition: 300ms;
   :hover {
     filter: brightness(1.1);
+    background: ${({ theme }) => theme.colors.secondary};
+  }
+`;
+const CheckmarkContainer = styled.div`
+  background: ${({ theme }) => theme.input.bg};
+  border-radius: 0 25px 25px 0;
+  width: 36px;
+  border: 0;
+  height: 40px;
+  svg {
+    margin-top: 3px;
   }
 `;
 
@@ -107,9 +125,9 @@ const Footer = () => {
   return (
     <>
       {!location.pathname.includes('/admin') && (
-        <StyledFooter className='d-flex align-items-center flex-column pt-5 '>
-          <Row className='mx-3'>
-            <Col className=' text-center'>
+        <StyledFooter className='d-flex align-items-center flex-column pt-3'>
+          <Row className='mx-0 px-0'>
+            <Col className='mx-0 px-0 text-center'>
               {quickLinks().map((l, i) => (
                 <StyledLink
                   key={i}
@@ -125,21 +143,21 @@ const Footer = () => {
               ))}
             </Col>
           </Row>
-          <div style={{ width: '100%', maxWidth: '600px' }}>
-            <SocialMediaIcons />
-          </div>
-          <Col
-            className='d-flex flex-column mt-4 align-items-center'
-            style={{ maxWidth: '600px' }}
-          >
-            <Text fontSize='3rem' bold='bold' color='#fff'>
-              Subscribe!
+          <Col className='d-flex flex-column mt-4 align-items-center'>
+            <Text
+              fontSize='1.75em'
+              bold='bold'
+              color='#fff'
+              fontFamily={`'Ubuntu', sans-serif`}
+            >
+              SUBSCRIBE
             </Text>
-            <Text style={{ textAlign: 'center' }} color='#fff'>
+            <Text textAlign='center' color='#fff' fontFamily='Duru Sans'>
               Get weekly updates on our available dogs for adoption, fundraisers
               and events!
             </Text>
             <Form
+              style={{ maxWidth: '400px' }}
               onSubmit={submitHandler}
               className='d-flex w-100 justify-content-center mt-3'
             >
@@ -163,11 +181,9 @@ const Footer = () => {
                   SUBSCRIBE
                 </SubscribeBtn>
               ) : (
-                <div
-                  style={{ marginTop: '4px', borderRadius: '0px 25px 25px 0' }}
-                >
+                <CheckmarkContainer>
                   <Checkmark />
-                </div>
+                </CheckmarkContainer>
               )}
             </Form>
             {error && (
@@ -178,7 +194,7 @@ const Footer = () => {
           </Col>
           <Row className='d-flex align-items-center mx-3'>
             <Col className='d-flex flex-column mt-5'>
-              <Text className='text-white'>
+              <Text className='text-white' textAlign='center'>
                 All gifts to Little Paws goes directly to help abandoned or
                 surrendered dachshunds.
               </Text>
@@ -188,7 +204,7 @@ const Footer = () => {
             </Col>
           </Row>
           <Row style={{ width: '100%' }}>
-            <StyledSubFooter className='text-center py-4 mt-4'>
+            <StyledSubFooter className='text-center py-2'>
               &copy; {new Date().getFullYear()} Little Paws Dachshund Rescue.
               All Rights Reserved
             </StyledSubFooter>

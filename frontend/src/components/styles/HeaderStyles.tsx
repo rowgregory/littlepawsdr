@@ -1,10 +1,9 @@
 import { Button, Image, Nav } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Link } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 
 interface AvatarInitialsProps {
-  isactive?: string;
   path?: string;
   w?: string;
   h?: string;
@@ -21,11 +20,8 @@ export const AvatarInitials = styled.div<AvatarInitialsProps>`
   display: flex;
   justify-content: center;
   align-items: center;
-  border: ${({ isactive, theme, path }) =>
-    isactive === 'true' ||
-    path === '/admin' ||
-    path === '/my-orders' ||
-    path === '/settings'
+  border: ${({ theme, path }) =>
+    path === '/admin' || path === '/my-orders' || path === '/settings'
       ? `2px solid ${theme.header.link.avatarHover}`
       : '2px solid #fff'};
   :hover {
@@ -37,16 +33,13 @@ export const NavLink = styled(Nav.Link)`
   font-size: 1rem;
 `;
 
-export const StyledAvatar = styled(Image)<{ isactive?: string; path?: string }>`
+export const StyledAvatar = styled(Image)<{ path?: string }>`
   width: 2.8125rem;
   height: 2.8125rem;
   cursor: pointer;
   object-fit: cover;
-  border: ${({ isactive, theme, path }) =>
-    isactive === 'true' ||
-    path === '/admin' ||
-    path === '/my-orders' ||
-    path === '/settings'
+  border: ${({ theme, path }) =>
+    path === '/admin' || path === '/my-orders' || path === '/settings'
       ? `2px solid ${theme.header.link.avatarHover}`
       : `2px solid ${theme.header.cart}`};
   :hover {
@@ -79,7 +72,17 @@ export const Cart = styled(Link)<{ active?: any }>`
   }
 `;
 
-export const Items = styled.span<{ active?: boolean; isMobile?: boolean }>`
+const scale = keyframes`
+   50% {
+    transform: scale(1.2);
+  }
+`;
+
+export const Items = styled.span<{
+  active?: boolean;
+  isMobile?: boolean;
+  itemAdded?: boolean;
+}>`
   color: ${({ theme }) => theme.white};
   font-size: 1.2rem;
   position: absolute;
@@ -90,7 +93,16 @@ export const Items = styled.span<{ active?: boolean; isMobile?: boolean }>`
   text-align: center;
   cursor: pointer;
   font-weight: bold;
-  background: ${({ theme, active }) => theme.colors.red};
+  background: red;
+  animation: ${({ itemAdded }) =>
+    itemAdded
+      ? css`
+          ${scale}
+        `
+      : ''};
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+  animation-timing-function: step-start;
   width: 30px;
   height: 30px;
   border-radius: 15px;

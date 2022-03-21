@@ -1,10 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { Col } from 'react-bootstrap';
+import { Col, Modal } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { listProducts } from '../../actions/productActions';
 import Message from '../../components/Message';
 import Product from './Product';
+import {
+  Body,
+  Content,
+  Footer,
+  Header,
+  LeftBtn,
+  Title,
+} from '../../components/ContinueSessionModal';
 
 const Container = styled.div`
   margin-bottom: 20rem;
@@ -41,15 +49,9 @@ const PageContent = styled.div`
 const ProductContainer = styled.div<{ islargegrid: boolean }>`
   display: grid;
   grid-gap: 0.75rem;
-  grid-template-columns: 1fr;
-  max-width: 100%;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    grid-template-columns: 1fr 1fr;
-  }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    grid-template-columns: ${({ islargegrid }) =>
-      islargegrid ? '1fr 1fr 1fr' : '1fr 1fr'};
-  }
+  width: 100%;
+  grid-template-columns: ${({ islargegrid }) =>
+    islargegrid ? '1fr 1fr 1fr' : '1fr 1fr'};
 `;
 
 const ClearFilter = styled.div`
@@ -64,7 +66,10 @@ const ClearFilter = styled.div`
 `;
 
 const GridIconContainer = styled.div`
-  display: none;
+  width: 7rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   i {
     transition: 300ms;
     cursor: pointer;
@@ -72,11 +77,15 @@ const GridIconContainer = styled.div`
       color: ${({ theme }) => theme.colors.quaternary};
     }
   }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
     width: 5rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  }
+`;
+
+const FilterColumn = styled(Col)`
+  display: none;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+    display: block;
   }
 `;
 
@@ -91,9 +100,59 @@ export const categories = () => [
   'Stickers',
 ];
 
+const ShopFilterModal = ({
+  show,
+  close,
+  currentCategory,
+  setCurrentCategory,
+}: any) => {
+  return (
+    <Modal show={show} onHide={close} centered>
+      <Content>
+        <Header closeButton>
+          <Title>Choose a filter below</Title>
+        </Header>
+        <Body>
+          <CategoryContainer className='d-flex flex-column'>
+            {categories().map((category: string, i: number) => (
+              <Category
+                active={category === currentCategory}
+                key={i}
+                onClick={() => {
+                  close();
+                  setCurrentCategory(category);
+                }}
+              >
+                {category}
+              </Category>
+            ))}
+          </CategoryContainer>
+          <ClearFilter onClick={() => setCurrentCategory('')}>
+            Clear filter
+          </ClearFilter>
+        </Body>
+        <Footer>
+          <LeftBtn onClick={close}>Close</LeftBtn>
+        </Footer>
+      </Content>
+    </Modal>
+  );
+};
+
+const FilterIcon = styled.i`
+  display: block;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+    display: none;
+  }
+`;
+
 const Shop = () => {
   const dispatch = useDispatch();
   const [isLargeGrid, setIsLargeGrid] = useState(false);
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
   const state = useSelector((state: any) => state);
   const {
     // loading,
@@ -112,10 +171,15 @@ const Shop = () => {
 
   return (
     <Container>
+      <ShopFilterModal
+        show={show}
+        close={handleClose}
+        setCurrentCategory={setCurrentCategory}
+      />
       {/* {loading && <Loader />} */}
       <PageContent>
         <div className='d-flex'>
-          <Col lg={2} md={2} sm={3} xs={3}>
+          <FilterColumn lg={2} md={2} sm={3} xs={3}>
             <CategoryContainer className='d-flex flex-column'>
               {categories().map((category: string, i: number) => (
                 <Category
@@ -130,11 +194,16 @@ const Shop = () => {
             <ClearFilter onClick={() => setCurrentCategory('')}>
               Clear filter
             </ClearFilter>
-          </Col>
+          </FilterColumn>
           <Col lg={10}>
             <div className='d-flex justify-content-between'>
               <ShopTitle>Little Paws Clothing & Accessories</ShopTitle>
               <GridIconContainer>
+                <FilterIcon
+                  onClick={() => handleShow()}
+                  className='fa-solid fa-sort fa-2x'
+                  aria-hidden='true'
+                ></FilterIcon>
                 <i
                   onClick={() => setIsLargeGrid(false)}
                   className='fa fa-th-large fa-2x'

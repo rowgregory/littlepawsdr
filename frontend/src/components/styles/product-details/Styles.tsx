@@ -70,7 +70,7 @@ export const SelectInput = styled(Form.Control)`
 `;
 
 export const AddToCartBtn = styled(Button)`
-  background: ${({ theme }) => theme.cart.productDetails.addToCartBtn.bg};
+  background: ${({ theme }) => theme.colors.green04};
   width: inherit;
   border-radius: 0;
   border: 1px solid ${({ theme }) => theme.cart.productDetails.addToCartBtn.bg};
@@ -80,11 +80,19 @@ export const AddToCartBtn = styled(Button)`
   font-family: 'Libre Franklin', sans-serif;
   font-weight: 700;
   font-size: 1rem;
+  outline: none;
   :hover {
-    background: ${({ theme }) => theme.cart.productDetails.addToCartBtn.bg};
-    border: 1px solid
-      ${({ theme }) => theme.cart.productDetails.addToCartBtn.bg};
+    background: ${({ theme }) => theme.colors.green04};
+    border: 1px solid ${({ theme }) => theme.colors.green04};
     filter: brightness(1.2);
+    outline: none;
+  }
+  :focus,
+  :active {
+    background: ${({ theme }) => theme.colors.green04} !important;
+    outline: none;
+    box-shadow: none;
+    border: none;
   }
 `;
 

@@ -93,7 +93,7 @@ export const NAVBAR_DATA_DESKTOP = (userInfo?: UserInfoProps) => {
     {
       title: 'About Us',
       links: [
-        { linkKey: '/about/who-we-are', textKey: 'Who We Are' },
+        { linkKey: '/about/team-members', textKey: 'Team Members' },
         { linkKey: '/about/contact-us', textKey: 'Contact Us' },
         { linkKey: '/about/education', textKey: 'Education' },
         { linkKey: '/about/sanctuary', textKey: 'Sanctuary' },

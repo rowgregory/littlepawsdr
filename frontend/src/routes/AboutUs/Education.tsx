@@ -1,6 +1,5 @@
 import React from 'react';
-import { Card, Col } from 'react-bootstrap';
-import Row from 'react-bootstrap/esm/Row';
+import { Card } from 'react-bootstrap';
 import {
   Text,
   CardTitle,
@@ -77,58 +76,40 @@ const Education = () => {
     dispatch(listEducationTips());
   }, [dispatch]);
 
-  console.log(educationTips);
-
-  // if (educationTips?.length === 0) {
-  //   return <NoItemsDefault items='education tips' Icon={NoEducation} />;
-  // }
+  if (educationTips?.length === 0) {
+    return <NoItemsDefault items='education tips' Icon={NoEducation} />;
+  }
 
   return (
     <>
       {errorEducationTips ? (
         <Message variant='danger'>{errorEducationTips}</Message>
+      ) : loadingEducationTips ? (
+        [1, 2, 3, 4].map((i: number) => (
+          <div className='mr-3' key={i}>
+            <LoadingImg h='368.21px' w='300px' />
+          </div>
+        ))
       ) : (
-        educationTipList.length > 0 && (
-          <>
-            <Row>
-              <Col className='mb-3'>
-                <Text>
-                  You have come to the right spot to further educate yourself on
-                  our favorite breed, THE DACHSHUND!
-                </Text>
-              </Col>
-            </Row>
-            <Row>
-              <Col className='my-3 d-flex flex-wrap'>
-                {loadingEducationTips
-                  ? [1, 2, 3, 4].map((i: number) => (
-                      <div className='mr-3' key={i}>
-                        <LoadingImg h='368.21px' w='300px' />
-                      </div>
-                    ))
-                  : educationTips?.map((obj: any, i: number) => (
-                      <StyledCard
-                        className='mr-3'
-                        key={i}
-                        onClick={() => window.open(obj.externalLink)}
-                        style={{ width: '300px' }}
-                      >
-                        <Card.Img
-                          src={obj.image}
-                          alt='bg'
-                          height='250px'
-                          style={{ objectFit: 'cover' }}
-                        />
-                        <Card.Body>
-                          <CardTitle>{obj.title}</CardTitle>
-                          <Text>Read</Text>
-                        </Card.Body>
-                      </StyledCard>
-                    ))}
-              </Col>
-            </Row>
-          </>
-        )
+        educationTips?.map((obj: any, i: number) => (
+          <StyledCard
+            className='mr-3'
+            key={i}
+            onClick={() => window.open(obj.externalLink)}
+            style={{ width: '300px' }}
+          >
+            <Card.Img
+              src={obj.image}
+              alt='bg'
+              height='250px'
+              style={{ objectFit: 'cover' }}
+            />
+            <Card.Body>
+              <CardTitle>{obj.title}</CardTitle>
+              <Text>Read</Text>
+            </Card.Body>
+          </StyledCard>
+        ))
       )}
     </>
   );

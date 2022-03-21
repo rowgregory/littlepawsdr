@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Switch, Route, useRouteMatch } from 'react-router-dom';
+import { Switch, Route, useRouteMatch, Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { ShopLayoutWithBreadcrumb } from '../../components/shop/ShopLayoutWithBreadcrumb';
 import ProductDetails from './ProductDetails';
@@ -9,7 +9,7 @@ const PageTitle = styled.div`
   font-size: 1rem;
   font-family: Trade Gothic, sans-serif;
   padding: 0.5rem 48px;
-  background: ${({ theme }) => theme.colors.primary};
+  background: ${({ theme }) => theme.colors.tertiary};
   color: ${({ theme }) => theme.text};
 `;
 
@@ -24,6 +24,7 @@ const Breadcrumb = styled.div`
     :active {
       border: 1px dashed #fff;
     }
+    text-decoration: none;
   }
   .crumb-1 {
     color: #fff;
@@ -38,7 +39,9 @@ const ShopRoutes: FC = () => {
       breadcrumb={
         <PageTitle>
           <Breadcrumb>
-            <div className='shop'>LPDR Shop</div>
+            <Link to='/shop' className='shop'>
+              LPDR Shop
+            </Link>
           </Breadcrumb>
         </PageTitle>
       }

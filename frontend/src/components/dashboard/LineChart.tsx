@@ -1,19 +1,49 @@
 import React from 'react';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import styled, { useTheme } from 'styled-components';
+
 const Container = styled.div`
   background: ${({ theme }) => theme.input.bg};
   border: ${({ theme }) => `1px solid ${theme.separator}`};
   padding: 1.5rem;
   border-radius: 0.5rem;
-  height: 100%;
+  height: 400px;
+
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+    height: 500px;
+  }
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
+    height: 100%;
+  }
 `;
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const LineChart = ({ revenueFromOrders }: any) => {
   const theme = useTheme() as any;
   const circles = theme.colors.primary;
   const rods = theme.colors.secondary;
   const year = new Date().getFullYear();
+  const isDay = theme.mode === 'day';
+
   const data = {
     labels: [
       'Jan',
@@ -54,13 +84,25 @@ const LineChart = ({ revenueFromOrders }: any) => {
   };
 
   const options = {
+    maintainAspectRatio: false,
     responsive: true,
     scales: {
       y: {
         beginAtZero: true,
+        grid: {
+          color: isDay ? '#ededed' : '#171717',
+        },
+      },
+      x: {
+        grid: {
+          color: isDay ? '#ededed' : '#171717',
+        },
       },
     },
     plugins: {
+      legend: {
+        position: 'top' as const,
+      },
       title: {
         display: true,
         text: 'Monthly Product Sales',

@@ -47,7 +47,7 @@ const Burger = styled.svg<{ isfixed: boolean }>`
 
   margin-left: -20px;
 
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
     display: none;
   }
 `;

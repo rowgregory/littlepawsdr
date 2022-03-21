@@ -74,7 +74,7 @@ export const LinkContainer = styled.div<{ active?: string }>`
 
 export const SideBarLink = styled(Link)<{ active?: string }>`
   background: ${({ active, theme }) =>
-    active === 'true' ? theme.colors.blue04 : '#fff'};
+    active === 'true' ? theme.colors.secondary : '#fff'};
   color: ${({ theme }) => theme.text};
   font-size: 1rem;
   font-family: 'Duru', sans-serif;

@@ -28,6 +28,7 @@ import { Text } from '../../components/styles/Styles';
 import { PRODUCT_CREATE_REVIEW_RESET } from '../../constants/productContstants';
 import toaster from 'toasted-notes';
 import { ToastAlert } from '..';
+import { CART_ADD_ITEM_RESET } from '../../constants/cartConstants';
 
 const ProductDetails = ({ match }: any) => {
   const [size, setSize] = useState('');
@@ -78,12 +79,13 @@ const ProductDetails = ({ match }: any) => {
   }, [dispatch, productId, successProductReview]);
 
   useEffect(() => {
-    //Todo Pop only show item added to cart
     if (itemAddedToCartSuccess) {
       toaster.notify(
         ({ onClose }) => ToastAlert('Item Added To Cart', onClose, 'success'),
         { position: 'top' }
       );
+
+      setTimeout(() => dispatch({ type: CART_ADD_ITEM_RESET }), 5000);
     }
   }, [cart.cartItems, dispatch, itemAddedToCartSuccess]);
 
@@ -216,7 +218,7 @@ const ProductDetails = ({ match }: any) => {
           <ReviewsAndRatingsContainer>
             <Col className='d-flex flex-column mt-5 column'>
               <Text
-                fontFamily='Roboto Condensed'
+                fontFamily='Duru Sans'
                 fontSize='1.7rem'
                 className='mt-5 mb-4'
               >
@@ -233,7 +235,7 @@ const ProductDetails = ({ match }: any) => {
                     <Col lg={2}>
                       <Text
                         marginBottom='1rem'
-                        fontFamily='Roboto Condensed'
+                        fontFamily='Duru Sans'
                         fontSize='1.25rem'
                       >
                         {review?.name}

@@ -155,6 +155,8 @@ export const send_mail = (body, res, type, token) => {
         );
         res.json({ success: true });
       });
+  } else if (type === 'userExists') {
+    //TODO
   }
 };
 

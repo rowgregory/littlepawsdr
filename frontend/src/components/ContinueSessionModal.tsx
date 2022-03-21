@@ -33,11 +33,11 @@ export const Content = styled.div<{ shake?: any }>`
 `;
 
 export const Header = styled(Modal.Header)`
-  background: ${({ theme }) => theme.secondaryBg};
+  background: ${({ theme }) => theme.bg};
   padding: 3rem 2rem 2rem 2rem;
   border: 0;
   position: relative;
-  border-bottom: 0.5px solid ${({ theme }) => theme.colors.primary};
+  border-bottom: 0.5px solid ${({ theme }) => theme.colors.quaternary};
 `;
 
 export const Title = styled(Modal.Title)`
@@ -50,7 +50,7 @@ export const Title = styled(Modal.Title)`
 
 export const Body = styled(Modal.Body)`
   color: ${({ theme }) => theme.text};
-  background: ${({ theme }) => theme.secondaryBg};
+  background: ${({ theme }) => theme.bg};
   font-size: 1rem;
   padding: 1rem 2rem;
 `;
@@ -58,7 +58,7 @@ export const Body = styled(Modal.Body)`
 export const Footer = styled(Modal.Footer)`
   color: ${({ theme }) => theme.text};
   padding: 2rem;
-  background: ${({ theme }) => theme.secondaryBg};
+  background: ${({ theme }) => theme.bg};
   border: 0;
 `;
 

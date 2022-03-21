@@ -13,6 +13,42 @@ import { LoadingImg, TableBody, Text } from '../../components/styles/Styles';
 import { listECardOrders } from '../../actions/eCardOrderActions';
 import { TableHead } from '../../components/styles/admin/Styles';
 
+const DashboardContainer = styled.div`
+  margin: 0 0.25rem;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+    margin: 0 1rem;
+  }
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
+    margin: 0 1rem;
+  }
+`;
+
+const TopRow = styled(Row)`
+  margin-bottom: 0.25rem;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
+    margin-bottom: 1rem;
+  }
+`;
+
+const DataSquareContainer = styled(Col)`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 0.25rem;
+  padding: 0;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-gap: 1rem;
+    margin: 0 0 1rem 0;
+    padding: 0;
+  }
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 1rem;
+    margin: 0;
+    padding: 0 1rem 0 0;
+  }
+`;
+
 const DataSquare = styled.div<{ loading?: string }>`
   padding: ${({ loading }) => (loading === 'true' ? '0' : '1.5rem')};
   display: flex;
@@ -22,59 +58,6 @@ const DataSquare = styled.div<{ loading?: string }>`
   justify-content: space-between;
   border: ${({ theme }) => `1px solid ${theme.separator}`};
   height: 100%;
-`;
-
-const TopSellingProducts = styled.div`
-  width: 100%;
-  border: ${({ theme }) => `1px solid ${theme.separator}`};
-  height: 100%;
-  background: ${({ theme }) => theme.input.bg};
-  font-family: 'Duru Sans';
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    display: flex;
-    flex-direction: column;
-    border-radius: 0.5rem;
-    height: 100%;
-    border: ${({ theme }) => `1px solid ${theme.separator}`};
-  }
-`;
-const TotalSales = styled.div`
-  width: 100%;
-  height: 100%;
-  border: ${({ theme }) => `1px solid ${theme.separator}`};
-  background: ${({ theme }) => theme.input.bg};
-  padding: 1.5rem;
-  @media (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    display: flex;
-    flex-direction: column;
-    border-radius: 0.5rem;
-    height: 100%;
-    border: ${({ theme }) => `1px solid ${theme.separator}`};
-  }
-`;
-
-const DataSquareContainer = styled(Col)`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-gap: 0.25rem;
-  padding: 0;
-  margin-bottom: 0.25rem;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    grid-gap: 1.5rem;
-    padding: 0 1rem;
-    margin-bottom: 0;
-  }
-`;
-
-const LineChartContainer = styled(Col)`
-  padding: 0;
-  margin-bottom: 0.25rem;
-  background: ${({ theme }) => theme.input.bg};
-  border: ${({ theme }) => `1px solid ${theme.separator}`};
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    padding: 0 0 0 1rem;
-    margin-bottom: 0;
-  }
 `;
 
 const DataSquareTitle = styled.div`
@@ -88,16 +71,61 @@ const DataSquareTitle = styled.div`
   }
 `;
 
-const TopRow = styled(Row)`
-  margin-bottom: 0.25rem;
+const LineChartContainer = styled(Col)`
+  padding: 0;
+  margin: 0.25rem 0 0 0;
+
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+    margin: 0 0 1rem 0;
+  }
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    margin-bottom: 1.875rem;
+    margin: 0;
   }
 `;
+
 const TopSellingProductsContainer = styled(Col)`
+  margin: 0.25rem 0 0 0;
   padding: 0;
+  overflow-x: scroll;
+
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+    margin: 0 0 1rem 0;
+    overflow-x: hidden;
+  }
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    padding: 0 1rem;
+    padding: 0 1rem 0 0;
+    margin: 0;
+  }
+`;
+
+const TopSellingProducts = styled.div`
+  width: 100%;
+  border: ${({ theme }) => `1px solid ${theme.separator}`};
+  height: 100%;
+  background: ${({ theme }) => theme.input.bg};
+  font-family: 'Duru Sans';
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
+    width: 100%;
+    border-radius: 0.5rem;
+    height: 100%;
+    border: ${({ theme }) => `1px solid ${theme.separator}`};
+  }
+`;
+const TotalSalesContainer = styled(Col)`
+  width: 100%;
+  height: 100%;
+  border: ${({ theme }) => `1px solid ${theme.separator}`};
+  background: ${({ theme }) => theme.input.bg};
+  padding: 0;
+  margin: 0.25rem 0 0 0;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+    margin: 0;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    border-radius: 0.5rem;
+    height: 100%;
+    border: ${({ theme }) => `1px solid ${theme.separator}`};
   }
 `;
 
@@ -206,23 +234,24 @@ const Dashboard = () => {
     },
   ];
 
-  let newArr = [] as any;
+  let orderItemsArr = [] as any;
   let loadingTps = true;
 
   orders?.map((obj: any) => {
     return obj?.orderItems.forEach((order: any) => {
-      newArr.push(order);
-      return newArr;
+      orderItemsArr.push(order);
+      return orderItemsArr;
     });
   });
 
   const result = [
-    ...newArr
-      .reduce((r: any, e: any) => {
+    ...orderItemsArr
+      .reduce((acc: any, e: any) => {
         let k = e.product;
-        if (!r.has(k)) r.set(k, { name: e.name, price: e.price, count: e.qty });
-        else r.get(k).count += e.qty;
-        return r;
+        if (!acc.has(k))
+          acc.set(k, { name: e.name, price: e.price, count: e.qty });
+        else acc.get(k).count += e.qty;
+        return acc;
       }, new Map())
       .values(),
   ];
@@ -292,7 +321,7 @@ const Dashboard = () => {
   );
 
   return (
-    <div>
+    <DashboardContainer>
       <TopRow className='mx-auto'>
         <DataSquareContainer lg={12} xl={6}>
           {dashboardSquareData().map((obj, i) => (
@@ -344,7 +373,7 @@ const Dashboard = () => {
         )}
       </TopRow>
       <Row className='mx-auto'>
-        <TopSellingProductsContainer xl={8} lg={8} md={12}>
+        <TopSellingProductsContainer xl={8} lg={12}>
           {result.length === 0 ? (
             <TopSellingProducts className='d-flex justify-content-center align-items-center'>
               <Text>You have not sold any products yet</Text>
@@ -353,10 +382,10 @@ const Dashboard = () => {
             <LoadingImg w='100%' h='100%' />
           ) : (
             <TopSellingProducts>
-              <Text p='1.5rem' fontSize='1.5rem'>
+              <Text textAlign='center' p='1rem' fontSize='0.8rem' bold='900'>
                 Top Selling Products
               </Text>
-              <table className='dashboardTable w-100'>
+              <table className='w-100'>
                 <TableHead>
                   <tr className='topSellingProducts'>
                     <th>NAME</th>
@@ -366,35 +395,33 @@ const Dashboard = () => {
                   </tr>
                 </TableHead>
                 <TableBody>
-                  {sortedArr.map((product, i) => (
-                    <tr key={i} className='hover'>
-                      <td className='dashboard'>{product.name}</td>
-                      <td className='dashboard'>${product.price}</td>
-                      <td className='dashboard'>{product.count}</td>
-                      <td className='dashboard'>
-                        ${product.totalAmount.toFixed(2)}
-                      </td>
-                    </tr>
-                  ))}
+                  {sortedArr
+                    ?.map((product, i) => (
+                      <tr key={i} className='hover'>
+                        <td className='dashboard'>{product.name}</td>
+                        <td className='dashboard'>${product.price}</td>
+                        <td className='dashboard'>{product.count}</td>
+                        <td className='dashboard'>
+                          ${product.totalAmount.toFixed(2)}
+                        </td>
+                      </tr>
+                    ))
+                    .filter((_: any, i: number) => i < 5)}
                 </TableBody>
               </table>
             </TopSellingProducts>
           )}
         </TopSellingProductsContainer>
-        <Col xl={4} lg={4} md={12} className='pr-0'>
-          <TotalSales>
-            <Text fontSize='1.5rem' marginBottom='0.75rem'>
-              Total Sales
-            </Text>
-            <PieChart
-              orders={orderItemsTotal}
-              donations={donationsItemsTotal}
-              eCards={eCardOrdersItemsTotal}
-            />
-          </TotalSales>
-        </Col>
+
+        <TotalSalesContainer xl={4} lg={6} md={6} sm={12}>
+          <PieChart
+            orders={orderItemsTotal}
+            donations={donationsItemsTotal}
+            eCards={eCardOrdersItemsTotal}
+          />
+        </TotalSalesContainer>
       </Row>
-    </div>
+    </DashboardContainer>
   );
 };
 

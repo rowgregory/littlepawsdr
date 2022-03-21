@@ -146,16 +146,6 @@ const GlobalStyles = createGlobalStyle<{
     border: none !important;
   }
 
-
-  table.dashboardTable tr td.dashboard {
-    background: ${({ theme }) => theme.input.bg};
-  }
-
-  table.dashboardTable tr:hover td{
-    background: ${({ theme }) => theme.bg};
-    cursor: normal;
-  }
-
   label.form-label {
     color: ${({ theme }) => theme.text};
   }

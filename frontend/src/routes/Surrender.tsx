@@ -9,24 +9,7 @@ const Container = styled.div`
 
 const SurrenderApplicationIFrame = styled.iframe`
   border: none;
-  @media only screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation: landscape) {
-    min-height: 4100px;
-  }
-  @media only screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation: portrait) {
-    min-height: 4200px;
-  }
-  @media only screen and (min-width: 760px) {
-    height: 3800px;
-  }
-  @media only screen and (max-width: 759px) {
-    height: 3900px;
-  }
-  @media only screen and (max-width: 620px) {
-    height: 3900px;
-  }
-  @media only screen and (max-width: 480px) {
-    height: 4100px;
-  }
+  height: 4250px;
 `;
 
 const Surrender = () => {
@@ -37,11 +20,7 @@ const Surrender = () => {
       <Container>
         <StyledCard>
           <Card.Body className='py-4 px-5'>
-            <Text
-              marginBottom='0.5rem'
-              fontSize='1.15rem'
-              fontFamily='Duru Sans'
-            >
+            <Text marginBottom='0.5rem' fontSize='1rem' fontFamily='Duru Sans'>
               Ideally, all dogs live in one loving home from puppyhood until
               death. However, LPDR understands this is not always possible.
               People become ill, die, divorce, move overseas, develop allergies,
@@ -56,7 +35,7 @@ const Surrender = () => {
             <Text
               marginBottom='0.5rem'
               marginLeft='1rem'
-              fontSize='1.15rem'
+              fontSize='1rem'
               fontFamily='Duru Sans'
             >
               <li>
@@ -72,7 +51,7 @@ const Surrender = () => {
             <Text
               marginBottom='0.5rem'
               marginLeft='1rem'
-              fontSize='1.15rem'
+              fontSize='1rem'
               fontFamily='Duru Sans'
             >
               <li>
@@ -87,7 +66,7 @@ const Surrender = () => {
             <Text
               marginBottom='0.5rem'
               marginLeft='1rem'
-              fontSize='1.15rem'
+              fontSize='1rem'
               fontFamily='Duru Sans'
             >
               <li>
@@ -96,11 +75,7 @@ const Surrender = () => {
                 good home for your dog.
               </li>
             </Text>
-            <Text
-              marginBottom='0.5rem'
-              fontSize='1.15rem'
-              fontFamily='Duru Sans'
-            >
+            <Text marginBottom='0.5rem' fontSize='1rem' fontFamily='Duru Sans'>
               When all options have been considered and you believe that
               surrendering your dog is the best option for you and your
               dachshund, Little Paws Dachshund Rescue may be able to help. All
@@ -111,11 +86,7 @@ const Surrender = () => {
               potential adopters go through a rigorous application process and
               are carefully screened.
             </Text>
-            <Text
-              marginBottom='0.5rem'
-              fontSize='1.15rem'
-              fontFamily='Duru Sans'
-            >
+            <Text marginBottom='0.5rem' fontSize='1rem' fontFamily='Duru Sans'>
               To be considered for surrender, please complete and submit the
               following Surrender Questionnaire:
             </Text>

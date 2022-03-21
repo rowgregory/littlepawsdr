@@ -14,6 +14,8 @@ import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 
+const Container = styled.div``;
+
 const NavDropdownItem = styled(NavDropdown.Item)`
   border-bottom: 0.25px solid rgba(200, 200, 200, 0.2);
   display: flex;
@@ -33,9 +35,9 @@ const AvatarFirstSlide = ({
   firstNameInitial,
   lastNameInitial,
   logoutHandler,
-  activeAvatar,
-  setDropDownData,
   obj,
+  dropDownRef,
+  setIsVisible,
 }: any) => {
   const { pathname } = useLocation();
   const userLogout = useSelector((state: any) => state.userLogout);
@@ -43,16 +45,12 @@ const AvatarFirstSlide = ({
 
   return (
     userInfo && (
-      <>
+      <Container ref={dropDownRef}>
         <NavDropdownItem disabled>
           {userInfo && (userInfo.isAdmin || userInfo.isVolunteer) ? (
             <UserImg roundedCircle src={userInfo?.avatar} alt='avatar-pic' />
           ) : (
-            <AvatarInitials
-              isactive={activeAvatar.toString()}
-              w='100px'
-              h='100px'
-            >
+            <AvatarInitials w='100px' h='100px'>
               {firstNameInitial}
               {lastNameInitial}
             </AvatarInitials>
@@ -65,7 +63,7 @@ const AvatarFirstSlide = ({
         <div>
           {obj?.links?.map((obj: any, i: number) => (
             <AvatarHeaderLinks
-              onClick={() => setDropDownData({})}
+              onClick={() => setIsVisible(false)}
               key={i}
               to={obj?.linkKey}
               className='d-flex justify-content-between align-items-center px-4 py-3'
@@ -95,7 +93,7 @@ const AvatarFirstSlide = ({
         >
           Little Paws Dachshund Rescue
         </div>
-      </>
+      </Container>
     )
   );
 };

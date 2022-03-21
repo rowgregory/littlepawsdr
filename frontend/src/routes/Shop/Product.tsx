@@ -17,9 +17,11 @@ const ProductName = styled(Link)`
 
 const ProductImg = styled(Card.Img)`
   object-fit: cover;
-  height: 480px;
-  width: 100%auto;
-  max-width: 420px;
+  width: 100%;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+    max-width: 420px;
+    width: 100%;
+  }
 `;
 
 const Product = ({ product }: any) => {

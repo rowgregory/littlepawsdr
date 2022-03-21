@@ -17,12 +17,6 @@ const Main = styled.main`
   background-color: ${({ theme }) => theme.secondaryBg};
 `;
 
-const Aside = styled.aside``;
-
-// const Path = styled.path`
-//   fill: ${({ theme }) => theme.text};
-// `;
-
 // const NoProducts = () => {
 //   return (
 //     <svg
@@ -48,7 +42,7 @@ export const ShopLayoutWithBreadcrumb: FC<ShopLayoutWithBreadcrumbProps> = ({
 }) => {
   return (
     <Container>
-      <Aside>{breadcrumb}</Aside>
+      <aside>{breadcrumb}</aside>
       <Main>{children}</Main>
     </Container>
   );

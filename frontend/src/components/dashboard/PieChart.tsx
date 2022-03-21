@@ -1,6 +1,26 @@
 import React from 'react';
 import { Doughnut } from 'react-chartjs-2';
 import { useTheme } from 'styled-components';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const PieChart = ({ orders, donations, eCards }: any) => {
   const theme = useTheme() as any;
@@ -23,7 +43,19 @@ const PieChart = ({ orders, donations, eCards }: any) => {
       },
     ],
   };
-  return <Doughnut data={data} />;
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top' as const,
+      },
+      title: {
+        display: true,
+        text: 'Total Sales',
+      },
+    },
+  } as any;
+  return <Doughnut data={data} options={options} />;
 };
 
 export default PieChart;

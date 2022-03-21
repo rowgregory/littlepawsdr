@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { createRef, useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
@@ -20,7 +20,7 @@ import { UserInfoProps } from '../common/PrivateRoute';
 const Container = styled.nav`
   display: none;
 
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
     display: flex;
     align-items: start;
     justify-content: center;
@@ -60,15 +60,19 @@ const NavLink = styled(Link)<{ active?: string }>`
   }
 `;
 
-export const CartNav = ({ p }: any) => {
+export const CartNav = ({ p, itemAdded, setIsVisible }: any) => {
   const cart = useSelector((state: { cart: { cartItems: [] } }) => state.cart);
   const { cartItems } = cart;
 
   const items = cartItems?.reduce((acc: any, item: any) => acc + item.qty, 0);
 
   return (
-    <Cart active={(p === '/cart').toString()} to='/cart'>
-      <Items active={p === '/cart'} className='item'>
+    <Cart
+      active={(p === '/cart').toString()}
+      to='/cart'
+      onClick={() => setIsVisible(false)}
+    >
+      <Items active={p === '/cart'} className='item' itemAdded={itemAdded}>
         <div>
           {items >= 10 ? `9` : items} {items >= 10 && <sup>+</sup>}
         </div>
@@ -82,11 +86,14 @@ const CartAndLogin = () => {
   const history = useHistory();
   const { pathname: p } = useLocation();
   const dispatch = useDispatch();
-  const [activeAvatar, setActiveAvatar] = useState(false);
-  const [dropDownData, setDropDownData] = useState({}) as any;
+  const dropDownRef = createRef() as any;
+  const [isVisible, setIsVisible] = useState(false);
 
   const userLogin = useSelector((state: UserInfoProps) => state.userLogin);
   const { userInfo } = userLogin;
+
+  const cart = useSelector((state: any) => state.cart);
+  const { success: itemAddedToCartSuccess } = cart;
 
   const logoutHandler = () => dispatch(logout(userInfo));
 
@@ -98,24 +105,30 @@ const CartAndLogin = () => {
 
   const { topNavItems } = NAVBAR_DATA_DESKTOP(userInfo);
 
-  const openAvatarMenu = (obj: any) => {
-    const thereIsNoDropDownData = Object.keys(dropDownData).length === 0;
-    if (thereIsNoDropDownData) {
-      setDropDownData(obj);
-      setActiveAvatar(true);
-    } else {
-      setDropDownData({});
-      setActiveAvatar(false);
-    }
-  };
+  const handleClickOutside = useCallback(
+    (e: any) => {
+      if (dropDownRef?.current && !dropDownRef.current.contains(e.target)) {
+        setIsVisible(false);
+      }
+    },
+    [dropDownRef]
+  );
+
+  useEffect(() => {
+    document.addEventListener('click', handleClickOutside, false);
+    return () => {
+      document.removeEventListener('click', handleClickOutside, false);
+    };
+  }, [handleClickOutside]);
 
   const topNavMenuItems = (obj: any) => {
     switch (obj?.title) {
       case 'Avatar':
         return (
           <StyledAvatar
-            onClick={() => openAvatarMenu(obj)}
-            isactive={activeAvatar.toString()}
+            onClick={() => {
+              setIsVisible(true);
+            }}
             path={p}
             roundedCircle
             src={userInfo?.avatar}
@@ -125,8 +138,9 @@ const CartAndLogin = () => {
       case 'Initials':
         return (
           <AvatarInitials
-            onClick={() => openAvatarMenu(obj)}
-            isactive={activeAvatar.toString()}
+            onClick={() => {
+              setIsVisible(true);
+            }}
             path={p}
             w='2.8125rem'
             h='2.8125rem'
@@ -136,7 +150,13 @@ const CartAndLogin = () => {
           </AvatarInitials>
         );
       case 'Cart':
-        return <CartNav p={p} />;
+        return (
+          <CartNav
+            p={p}
+            itemAdded={itemAddedToCartSuccess}
+            setIsVisible={setIsVisible}
+          />
+        );
 
       case 'Sign in':
         return (
@@ -166,6 +186,7 @@ const CartAndLogin = () => {
           { linkText: 'SHOP', linkKey: '/shop' },
         ].map(({ linkKey, linkText }, i) => (
           <NavLink
+            onClick={() => setIsVisible(false)}
             active={(p.split('/')[1] === linkKey.split('/')[1]).toString()}
             key={i}
             to={linkKey}
@@ -178,7 +199,7 @@ const CartAndLogin = () => {
         {topNavItems.map((obj: any, i) => (
           <div key={i} style={{ position: 'relative' }}>
             {topNavMenuItems(obj)}
-            {dropDownData?.links && dropDownData?.title === obj?.title && (
+            {isVisible && (
               <DropDownContainer className='avatar-slide'>
                 {['Avatar', 'Initials'].includes(obj.title) && (
                   <AvatarFirstSlide
@@ -186,9 +207,9 @@ const CartAndLogin = () => {
                     firstNameInitial={firstNameInitial}
                     lastNameInitial={lastNameInitial}
                     logoutHandler={logoutHandler}
-                    activeAvatar={activeAvatar}
                     obj={obj}
-                    setDropDownData={setDropDownData}
+                    dropDownRef={dropDownRef}
+                    setIsVisible={setIsVisible}
                   />
                 )}
               </DropDownContainer>

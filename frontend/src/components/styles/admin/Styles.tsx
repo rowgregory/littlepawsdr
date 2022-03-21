@@ -3,9 +3,8 @@ import styled from 'styled-components';
 
 export const TableHead = styled.thead<{ bg?: string }>`
   tr {
-    background: ${({ theme, bg }) => (bg ? bg : theme.colors.tertiary)};
+    background: ${({ theme, bg }) => (bg ? bg : theme.colors.primary)};
     &.topSellingProducts {
-      background: ${({ theme }) => theme.colors.tertiary};
       height: 3.125rem;
       text-indent: 0.75rem;
       @media (min-width: ${({ theme }) => theme.breakpoints[2]}) {

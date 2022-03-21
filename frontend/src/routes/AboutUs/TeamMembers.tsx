@@ -31,7 +31,7 @@ const Position = styled(Card.Subtitle)`
   color: ${({ theme }) => theme.card.text};
 `;
 
-const WhoWeAre = () => {
+const TeamMembers = () => {
   const dispatch = useDispatch();
   const [message, setMessage] = useState('');
 
@@ -178,4 +178,4 @@ const WhoWeAre = () => {
   );
 };
 
-export default WhoWeAre;
+export default TeamMembers;

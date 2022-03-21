@@ -15,10 +15,10 @@ const scale = keyframes`
     transform: scale3d(1.1, 1.1, 1);
   }
 `;
-const fill = (theme: any) => {
+const fill = () => {
   return keyframes`
   to {
-    box-shadow:inset 0px 0px 0px 30px ${theme.checkmark.bg};
+    box-shadow:inset 0px 0px 0px 30px green;
   }
 `;
 };
@@ -31,7 +31,7 @@ const CheckmarkSVG = styled.svg`
   stroke-width: 4;
   stroke: #fff;
   stroke-miterlimit: 10;
-  animation: ${({ theme }) => fill(theme)} 0.4s ease-in-out 0.4s forwards,
+  animation: ${fill} 0.4s ease-in-out 0.4s forwards,
     ${scale} 0.3s ease-in-out 0.9s both;
   circle {
     stroke-dasharray: 166;

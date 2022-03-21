@@ -33,7 +33,7 @@ export const colors = {
       // blue04: '#40A4FF',
       // blue05: '#072475',
       // blue06: '#617BE3',
-      // purple: '#3a2949',
+      purple01: '#1F2041',
       // purple02: '#413D65',
       // purple03: '#2B1F31',
       // purple04: '#91a4fe',
@@ -76,7 +76,7 @@ export const colors = {
       // blue04: '#075b75',
       // blue05: '',
       // blue06: '#1C6DD0',
-      // purple: '#0a090a',
+      purple01: '#b98bbf',
       // purple02: '#593a4c',
       // purple03: '#6621c2',
       // purple04: '#b282e5',
@@ -236,7 +236,7 @@ export const themes = {
     ...colors.night,
     mode: 'night',
     adminNav: {
-      bg: '#0e1117',
+      bg: '#060709',
     },
     bg: '#0e1117',
     border: '#5f6e7e',
@@ -324,8 +324,8 @@ export const themes = {
       border: '#388bfd',
     },
     table: {
-      even: '#090d10',
-      odd: '#16191c',
+      even: '#0e1117',
+      odd: '#080a11',
     },
     settings: {
       sidebar: {

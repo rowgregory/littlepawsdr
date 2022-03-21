@@ -57,7 +57,7 @@ export const SettingsLayoutWithSideBar: FC<SettingsLayoutWithSideBarProps> = ({
               {userInfo?.name.split(' ')[0]}
             </Text>
           </div>
-          <StyledLink to='/about/who-we-are'>Go to public profile</StyledLink>
+          <StyledLink to='/about/team-members'>Go to public profile</StyledLink>
         </Col>
       </Row>
       <Row>

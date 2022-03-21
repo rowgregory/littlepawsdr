@@ -31,8 +31,6 @@ export const getAvailableDachshunds = () => async (dispatch: any) => {
       { headers }
     );
 
-    console.log('DATA: ', data);
-
     if (data?.data) {
       getPicturesAndCoordinates(data);
     }

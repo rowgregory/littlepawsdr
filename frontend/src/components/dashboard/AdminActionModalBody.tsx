@@ -1,13 +1,24 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
+import styled from 'styled-components';
 import { LinkContainer, sidebarData, SideBarLink } from './SideBar';
 
-const MobileNav = () => {
+const Container = styled.div`
+  background: ${({ theme }) => theme.bg};
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+`;
+
+const AdminActionModalBody = ({ close }: any) => {
   const { pathname } = useLocation();
   return (
-    <div className='d-flex flex-column mb-4'>
+    <Container>
       {sidebarData().map((obj: any, i: number) => (
         <SideBarLink
+          style={{ border: 'none' }}
+          onClick={close}
           key={i}
           to={obj?.linkKey}
           active={(obj?.linkKey === pathname).toString()}
@@ -22,8 +33,8 @@ const MobileNav = () => {
           </LinkContainer>
         </SideBarLink>
       ))}
-    </div>
+    </Container>
   );
 };
 
-export default MobileNav;
+export default AdminActionModalBody;

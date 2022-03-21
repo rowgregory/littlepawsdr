@@ -28,6 +28,13 @@ import HorizontalLoader from '../../components/HorizontalLoader';
 import uploadFileHandler from '../../utils/uploadFileHandler';
 import { themes } from '../../utils/profileCardThemes';
 
+const Container = styled.div`
+  padding: 0.25rem;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+    padding: 0;
+  }
+`;
+
 const CardTheme = styled(Form.Check)<{ selected?: boolean }>`
   border: ${({ selected, theme }) =>
     selected ? `3px solid ${theme.colors.primary}` : '3px solid transparent'};
@@ -58,6 +65,13 @@ const ProfileCardImg = styled(Image)`
   height: 100px;
   object-fit: cover;
   cursor: pointer;
+`;
+
+const FirstCol = styled(Col)`
+  padding-right: 0.25rem;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+    padding-right: 1.5rem;
+  }
 `;
 
 const Profile = ({ history }: any) => {
@@ -145,7 +159,7 @@ const Profile = ({ history }: any) => {
   };
 
   return (
-    <>
+    <Container>
       {errorMsg && <Message variant='danger'>No photo to remove</Message>}
       <SettingsTitleContainer className='d-flex justify-content-between align-items-center'>
         <SettingsPageHeader>Public profile</SettingsPageHeader>
@@ -161,7 +175,7 @@ const Profile = ({ history }: any) => {
       ) : (
         <Form onSubmit={submitHandler} className='mt-4'>
           <div className='d-flex flex-wrap'>
-            <Col lg={8} md={12} className='pr-4 pl-0'>
+            <FirstCol lg={8} md={12} className='pl-0'>
               <Form.Group controlId='name'>
                 <Form.Label>Name</Form.Label>
                 <Form.Control
@@ -178,7 +192,7 @@ const Profile = ({ history }: any) => {
                     controlId='profileCardTheme'
                   >
                     <Form.Label>Profile card theme</Form.Label>
-                    <div className='d-flex flex-wrap'>
+                    <div className='d-flex flex-wrap w-100'>
                       {themes
                         .map((theme: string, i: number) => (
                           <CardTheme
@@ -277,7 +291,7 @@ const Profile = ({ history }: any) => {
                   </Form.Group>
                 </>
               )}
-            </Col>
+            </FirstCol>
             {(user?.isVolunteer || user?.isAdmin) && (
               <ProfilePicCol className='d-flex pl-3 pr-0' lg={4} md={12}>
                 <Form.Group controlId='image' className='d-flex flex-column'>
@@ -384,7 +398,7 @@ const Profile = ({ history }: any) => {
           </Row>
         </Form>
       )}
-    </>
+    </Container>
   );
 };
 

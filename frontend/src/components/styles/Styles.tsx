@@ -7,13 +7,19 @@ export const PageLayout = styled.div`
   margin: 0 auto;
   padding: 2rem 0;
   @media (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    padding: 7rem 0;
+    padding: 4rem 0;
   }
 `;
 export const AdminPageLayout = styled.div`
   width: 100%;
   display: flex;
-  padding: 7rem 0;
+  flex-direction: column;
+  margin-top: 1.5rem;
+
+  @media (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    padding: 3rem 0;
+    flex-direction: column;
+  }
 `;
 
 export const ScrollTopBtn = styled(Button)`
@@ -63,10 +69,6 @@ export const TableBody = styled.tbody`
       background: ${({ theme }) => theme.table.even};
     }
 
-    :hover {
-      background: ${({ theme }) => theme.adminNav.bg};
-    }
-
     td {
       border: none;
       color: ${({ theme }) => theme.text};
@@ -75,8 +77,6 @@ export const TableBody = styled.tbody`
       cursor: normal;
       &.dashboard {
         padding: 1.5rem 0.75rem;
-        background: ${({ theme }) => theme.card.bg};
-        border-bottom: ${({ theme }) => `1px solid ${theme.separator}`};
 
         @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
           padding: 1.5rem;
@@ -109,6 +109,7 @@ interface TextProps {
   color?: string;
   marginBottom?: string;
   marginLeft?: string;
+  marginRight?: string;
   fontFamily?: string;
   textAlign?: string;
   background?: string;
@@ -123,6 +124,7 @@ export const Text = styled.div<TextProps>`
   font-size: ${({ fontSize }) => (fontSize ? fontSize : '1rem')};
   margin-bottom: ${({ marginBottom }) => (marginBottom ? marginBottom : '0')};
   margin-left: ${({ marginLeft }) => (marginLeft ? marginLeft : '0')};
+  margin-right: ${({ marginRight }) => (marginRight ? marginRight : '0')};
   font-weight: ${({ bold }) => (bold ? 'bold' : 'normal')};
   font-family: ${({ fontFamily }) =>
     fontFamily ? fontFamily : `'Libre Franklin', sans-serif`};

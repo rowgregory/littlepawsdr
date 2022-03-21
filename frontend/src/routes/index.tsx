@@ -26,6 +26,7 @@ import Footer from '../components/Footer';
 import { Text } from '../components/styles/Styles';
 import toast from 'toasted-notes';
 import 'toasted-notes/src/styles.css'; // optional styles
+import Checkmark from '../components/svg/Checkmark';
 
 type LazyModulePromise<T = {}> = Promise<{ default: ComponentType<T> }>;
 
@@ -50,7 +51,7 @@ const Page = styled(Container)<{ url: string }>`
 `;
 
 const GenericAlert = styled.div`
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.85);
   padding: 1.5rem 3rem;
   border-radius: 12px;
 `;
@@ -61,7 +62,7 @@ export const ToastAlert = (
   type: string,
   img?: any
 ) => (
-  <GenericAlert className='d-flex flex-column align-items-center'>
+  <GenericAlert className='d-flex align-items-center'>
     <i
       onClick={onClose}
       className='fas fa-times'
@@ -72,7 +73,7 @@ export const ToastAlert = (
         cursor: 'pointer',
       }}
     ></i>
-    <Text>
+    <Text color='#fff' marginRight='0.5rem'>
       {type === 'success' ? (
         <>
           {img ? (
@@ -105,6 +106,7 @@ export const ToastAlert = (
       )}{' '}
       {msg}
     </Text>
+    {img && <Checkmark />}
   </GenericAlert>
 );
 
@@ -141,7 +143,6 @@ export const Routes: FC = () => {
           ),
         {
           position: 'bottom-left',
-          duration: null,
         }
       );
   }, [userInfo]);

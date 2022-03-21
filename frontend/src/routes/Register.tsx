@@ -15,6 +15,8 @@ import { USER_REGISTER_RESET } from '../constants/userConstants';
 import DayLogo from '../components/assets/transparent-logo.png';
 import styled, { useTheme } from 'styled-components';
 import NightLogo from '../components/assets/neon-purple-logo.png';
+import toaster from 'toasted-notes';
+import { ToastAlert } from './index';
 
 const FormContainer = styled.div`
   background: ${({ theme }) => theme.bg};
@@ -112,8 +114,9 @@ const Register = ({ location, history, match }: any) => {
   const submitHandler = (e: any) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      setMessage('Passwords to not match');
+      setMessage('Passwords do not match');
     } else {
+      setMessage('');
       if (strength === 4) {
         dispatch(register(name, email, password));
       }
@@ -128,6 +131,25 @@ const Register = ({ location, history, match }: any) => {
   ];
 
   const strength = validations.reduce((acc, cur) => acc + cur, 0);
+
+  useEffect(() => {
+    (userRegisterError ||
+      message ||
+      errorVerifyEmailSent ||
+      errorUserConfirmed) &&
+      toaster.notify(
+        ({ onClose }) =>
+          ToastAlert(
+            userRegisterError ||
+              message ||
+              errorVerifyEmailSent ||
+              errorUserConfirmed,
+            onClose,
+            'error'
+          ),
+        { position: 'bottom-left' }
+      );
+  }, [errorUserConfirmed, errorVerifyEmailSent, message, userRegisterError]);
 
   return (
     <Container>
@@ -157,16 +179,6 @@ const Register = ({ location, history, match }: any) => {
           <Message variant='success'>{userInfoVerifyEmail.message}</Message>
         )}
         {expiredToken && <Message variant='warning'>Expired token</Message>}
-        {errorVerifyEmailSent && (
-          <Message variant='danger'>{errorVerifyEmailSent}</Message>
-        )}
-        {errorUserConfirmed && (
-          <Message variant='danger'>{errorUserConfirmed}</Message>
-        )}
-        {message && <Message variant='danger'>{message}</Message>}
-        {userRegisterError && (
-          <Message variant='danger'>{userRegisterError}</Message>
-        )}
         {loadingUserConfirmed && <HorizontalLoader />}
         {userRegisterLoading && <HorizontalLoader />}
         <FormContainer className='p-4'>

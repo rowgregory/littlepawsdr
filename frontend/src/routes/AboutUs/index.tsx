@@ -10,7 +10,7 @@ import SuccessfulAdoptionDetails from './SuccessfulAdoptionDetails';
 import SuccessfulAdoptions from './SuccessfulAdoptions';
 import ContactUs from './ContactUs';
 import Education from './Education';
-import WhoWeAre from './WhoWeAre';
+import WhoWeAre from './TeamMembers';
 import StatusDogDetails from './StatusDogDetails';
 import styled from 'styled-components';
 import PageLayoutWithTabs from '../../components/layouts/PageLayoutWithTabs';
@@ -42,8 +42,8 @@ const Navigation: FC<{
         {[
           { linkText: 'What We Believe', linkKey: '/about' },
           {
-            linkText: 'Who We Are',
-            linkKey: '/about/who-we-are',
+            linkText: 'Team Members',
+            linkKey: '/about/team-members',
           },
           {
             linkText: 'Contact Us',
@@ -194,7 +194,7 @@ const AboutUsRoutes: FC = () => {
       <Container>
         <Switch>
           <Route exact path={path} component={WhatWeBelieve} />
-          <Route path={`${path}/who-we-are`} component={WhoWeAre} />
+          <Route path={`${path}/team-members`} component={WhoWeAre} />
           <Route path={`${path}/contact-us`} component={ContactUs} />
           <Route path={`${path}/education`} component={Education} />
           <Route

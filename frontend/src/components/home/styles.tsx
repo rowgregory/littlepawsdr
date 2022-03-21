@@ -4,7 +4,7 @@ import styled from 'styled-components';
 export const SectionContainer = styled.div`
   margin: 0 12px 100px;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    margin: 0 48px 250px;
+    margin: 0 48px 84px;
   }
 `;
 
