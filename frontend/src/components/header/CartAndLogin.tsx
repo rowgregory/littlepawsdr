@@ -105,21 +105,18 @@ const CartAndLogin = () => {
 
   const { topNavItems } = NAVBAR_DATA_DESKTOP(userInfo);
 
-  const handleClickOutside = useCallback(
-    (e: any) => {
+  useEffect(() => {
+    const handleClickOutside = (e: any) => {
       if (dropDownRef?.current && !dropDownRef.current.contains(e.target)) {
         setIsVisible(false);
       }
-    },
-    [dropDownRef]
-  );
+    };
 
-  useEffect(() => {
     document.addEventListener('click', handleClickOutside, false);
     return () => {
       document.removeEventListener('click', handleClickOutside, false);
     };
-  }, [handleClickOutside]);
+  }, [dropDownRef]);
 
   const topNavMenuItems = (obj: any) => {
     switch (obj?.title) {
