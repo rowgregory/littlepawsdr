@@ -149,7 +149,8 @@ const ECardForm = () => {
     () =>
       placeSelectedECardIntoCurrentImg(
         'eCardToPurchase',
-        !loading && (selectedECardFromStorage ?? eCards[0])
+        !loading &&
+          (selectedECardFromStorage ? selectedECardFromStorage : eCards[0])
       ),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [eCards, loading]
