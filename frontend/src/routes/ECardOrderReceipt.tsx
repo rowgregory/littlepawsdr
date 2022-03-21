@@ -14,6 +14,7 @@ import { Col, Spinner, Image } from 'react-bootstrap';
 import GreenCheckmark from '../components/svg/GreenCheckmark';
 import { HorizontalLine } from '../components/styles/product-details/Styles';
 import Message from '../components/Message';
+import { ECARD_ORDER_CREATE_RESET } from '../constants/eCardOrderContants';
 
 const Container = styled.div`
   background: ${({ theme }) => theme.bg};
@@ -32,6 +33,7 @@ const ECardOrderReceipt = () => {
 
   useEffect(() => {
     dispatch(getECardOrderDetails(eCardOrderId));
+    dispatch({ type: ECARD_ORDER_CREATE_RESET });
   }, [dispatch, eCardOrderId]);
 
   return (
@@ -79,7 +81,6 @@ const ECardOrderReceipt = () => {
               <strong className='mr-2'>{eCardOrder?.email}</strong>
               <GreenCheckmark width='1rem' />
             </Text>
-
             <div className='d-flex mt-1 mb-3'>
               <div style={{ maxWidth: '600px' }}>
                 <Image
@@ -98,7 +99,6 @@ const ECardOrderReceipt = () => {
                 <Text fontSize='0.8rem'>${eCardOrder?.totalPrice}</Text>
               </div>
             </div>
-
             <HorizontalLine />
             <div>
               <CategoryTitles className='d-flex justify-content-between align-items-center'>
@@ -139,7 +139,6 @@ const ECardOrderReceipt = () => {
                 )}
               </Text>
             </div>
-
             <HorizontalLine margin='1rem 0' />
             <div className='d-flex flex-column pl-3'>
               <div className='d-flex justify-content-between'>

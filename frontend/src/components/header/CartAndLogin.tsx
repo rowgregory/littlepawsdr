@@ -60,7 +60,7 @@ const NavLink = styled(Link)<{ active?: string }>`
   }
 `;
 
-export const CartNav = ({ p, itemAdded }: any) => {
+export const CartNav = ({ p }: any) => {
   const cart = useSelector((state: { cart: { cartItems: [] } }) => state.cart);
   const { cartItems } = cart;
 
@@ -68,7 +68,7 @@ export const CartNav = ({ p, itemAdded }: any) => {
 
   return (
     <Cart active={(p === '/cart').toString()} to='/cart'>
-      <Items active={p === '/cart'} className='item' itemAdded={itemAdded}>
+      <Items active={p === '/cart'} className='item'>
         <div>
           {items >= 10 ? `9` : items} {items >= 10 && <sup>+</sup>}
         </div>
@@ -105,9 +105,6 @@ const CartAndLogin = () => {
 
   const userLogin = useSelector((state: UserInfoProps) => state.userLogin);
   const { userInfo } = userLogin;
-
-  const cart = useSelector((state: any) => state.cart);
-  const { success: itemAddedToCartSuccess } = cart;
 
   const logoutHandler = () => dispatch(logout(userInfo));
 
@@ -150,7 +147,7 @@ const CartAndLogin = () => {
           </AvatarInitials>
         );
       case 'Cart':
-        return <CartNav p={p} itemAdded={itemAddedToCartSuccess} />;
+        return <CartNav p={p} />;
 
       case 'Sign in':
         return (

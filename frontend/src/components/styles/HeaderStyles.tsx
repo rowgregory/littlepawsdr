@@ -1,7 +1,7 @@
 import { Button, Image, Nav } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Link } from 'react-router-dom';
-import styled, { css, keyframes } from 'styled-components';
+import styled from 'styled-components';
 
 interface AvatarInitialsProps {
   path?: string;
@@ -72,16 +72,9 @@ export const Cart = styled(Link)<{ active?: any }>`
   }
 `;
 
-const scale = keyframes`
-   50% {
-    transform: scale(1.2);
-  }
-`;
-
 export const Items = styled.span<{
   active?: boolean;
   isMobile?: boolean;
-  itemAdded?: boolean;
 }>`
   color: ${({ theme }) => theme.white};
   font-size: 1.2rem;
@@ -94,15 +87,6 @@ export const Items = styled.span<{
   cursor: pointer;
   font-weight: bold;
   background: red;
-  animation: ${({ itemAdded }) =>
-    itemAdded
-      ? css`
-          ${scale}
-        `
-      : ''};
-  animation-duration: 1s;
-  animation-iteration-count: infinite;
-  animation-timing-function: step-start;
   width: 30px;
   height: 30px;
   border-radius: 15px;
