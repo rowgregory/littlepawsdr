@@ -1,4 +1,4 @@
-import React, { createRef, useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
@@ -60,18 +60,14 @@ const NavLink = styled(Link)<{ active?: string }>`
   }
 `;
 
-export const CartNav = ({ p, itemAdded, setIsVisible }: any) => {
+export const CartNav = ({ p, itemAdded }: any) => {
   const cart = useSelector((state: { cart: { cartItems: [] } }) => state.cart);
   const { cartItems } = cart;
 
   const items = cartItems?.reduce((acc: any, item: any) => acc + item.qty, 0);
 
   return (
-    <Cart
-      active={(p === '/cart').toString()}
-      to='/cart'
-      onClick={() => setIsVisible(false)}
-    >
+    <Cart active={(p === '/cart').toString()} to='/cart'>
       <Items active={p === '/cart'} className='item' itemAdded={itemAdded}>
         <div>
           {items >= 10 ? `9` : items} {items >= 10 && <sup>+</sup>}
@@ -82,11 +78,29 @@ export const CartNav = ({ p, itemAdded, setIsVisible }: any) => {
   );
 };
 
+const useOutsideDetect = (
+  ref: any,
+  setIsVisible: (isVisible: boolean) => void
+) => {
+  useEffect(() => {
+    const handleClickOutside = (e: any) => {
+      if (ref?.current && !ref.current.contains(e.target)) {
+        setIsVisible(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside, false);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside, false);
+    };
+  }, [ref, setIsVisible]);
+};
+
 const CartAndLogin = () => {
   const history = useHistory();
   const { pathname: p } = useLocation();
   const dispatch = useDispatch();
-  const dropDownRef = createRef() as any;
+  const dropDownRef = useRef(null) as any;
   const [isVisible, setIsVisible] = useState(false);
 
   const userLogin = useSelector((state: UserInfoProps) => state.userLogin);
@@ -105,18 +119,7 @@ const CartAndLogin = () => {
 
   const { topNavItems } = NAVBAR_DATA_DESKTOP(userInfo);
 
-  useEffect(() => {
-    const handleClickOutside = (e: any) => {
-      if (dropDownRef?.current && !dropDownRef.current.contains(e.target)) {
-        setIsVisible(false);
-      }
-    };
-
-    document.addEventListener('click', handleClickOutside, false);
-    return () => {
-      document.removeEventListener('click', handleClickOutside, false);
-    };
-  }, [dropDownRef]);
+  useOutsideDetect(dropDownRef, setIsVisible);
 
   const topNavMenuItems = (obj: any) => {
     switch (obj?.title) {
@@ -147,13 +150,7 @@ const CartAndLogin = () => {
           </AvatarInitials>
         );
       case 'Cart':
-        return (
-          <CartNav
-            p={p}
-            itemAdded={itemAddedToCartSuccess}
-            setIsVisible={setIsVisible}
-          />
-        );
+        return <CartNav p={p} itemAdded={itemAddedToCartSuccess} />;
 
       case 'Sign in':
         return (
@@ -183,7 +180,6 @@ const CartAndLogin = () => {
           { linkText: 'SHOP', linkKey: '/shop' },
         ].map(({ linkKey, linkText }, i) => (
           <NavLink
-            onClick={() => setIsVisible(false)}
             active={(p.split('/')[1] === linkKey.split('/')[1]).toString()}
             key={i}
             to={linkKey}
