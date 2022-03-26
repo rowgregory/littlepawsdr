@@ -15,7 +15,6 @@ import styled from 'styled-components';
 import PageNotFound from '../components/common/PageNotFound';
 import PopUp from '../components/common/PopUp';
 import GlobalStyles from '../GlobalStyles';
-import Header from '../components/Header';
 import ContinueSessionModal from '../components/ContinueSessionModal';
 import LoginOptions from './LoginOptions';
 import GuestOrder from './GuestOrder';
@@ -27,6 +26,8 @@ import { Text } from '../components/styles/Styles';
 import toast from 'toasted-notes';
 import 'toasted-notes/src/styles.css'; // optional styles
 import Checkmark from '../components/svg/Checkmark';
+import MyECards from './ECardOrders';
+import Navbar from '../components/Navbar';
 
 type LazyModulePromise<T = {}> = Promise<{ default: ComponentType<T> }>;
 
@@ -158,7 +159,7 @@ export const Routes: FC = () => {
       />
       <PopUp />
       {!['/login', '/register', '/register?redirect=/'].includes(pathname) && (
-        <Header />
+        <Navbar />
       )}
       <GlobalStyles />
       <Page url={pathname} fluid>
@@ -183,7 +184,8 @@ export const Routes: FC = () => {
           <Route path='/forgot-password' component={ForgotPassword} />
           <Route path='/reset/:id' component={ResetPassword} />
           <Route path='/settings' component={Settings} />
-          <Route path='/my-orders' component={MyOrders} />
+          <Route exact path='/my-orders' component={MyOrders} />
+          <Route path='/my-orders/e-cards' component={MyECards} />
           <Route exact path='/' component={Home} />
           <Route path='/404' component={PageNotFound} />
           <Redirect to='/404' />

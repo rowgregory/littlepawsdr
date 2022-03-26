@@ -4,12 +4,22 @@ import styled, { useTheme } from 'styled-components';
 import { Text, StyledCard, PageLayout } from '../components/styles/Styles';
 
 const Container = styled.div`
-  margin: 0 48px;
+  margin: 0 0.25rem;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+    margin: 0 48px;
+  }
 `;
 
 const SurrenderApplicationIFrame = styled.iframe`
   border: none;
-  height: 4250px;
+  height: 4600px;
+`;
+
+const Body = styled(Card.Body)`
+  padding: 0.25rem;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+    padding: 2rem 1.5rem;
+  }
 `;
 
 const Surrender = () => {
@@ -19,7 +29,7 @@ const Surrender = () => {
     <PageLayout>
       <Container>
         <StyledCard>
-          <Card.Body className='py-4 px-5'>
+          <Body>
             <Text marginBottom='0.5rem' fontSize='1rem' fontFamily='Duru Sans'>
               Ideally, all dogs live in one loving home from puppyhood until
               death. However, LPDR understands this is not always possible.
@@ -90,7 +100,7 @@ const Surrender = () => {
               To be considered for surrender, please complete and submit the
               following Surrender Questionnaire:
             </Text>
-          </Card.Body>
+          </Body>
         </StyledCard>
 
         <Row className='mt-5'>

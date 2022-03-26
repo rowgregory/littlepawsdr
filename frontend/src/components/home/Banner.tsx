@@ -14,6 +14,7 @@ const BannerLink = styled(Link)`
   cursor: pointer;
   transition: 300ms;
   text-decoration: none;
+  width: fit-content;
   &.donate {
     margin-right: 0.5rem;
   }
@@ -29,45 +30,37 @@ const BannerLink = styled(Link)`
   }
 `;
 
+const BannerImage = styled(Image)`
+  object-fit: cover;
+  width: 100%;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+    max-height: 45rem;
+    min-height: 39rem;
+  }
+`;
+
+const BtnContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 24px;
+`;
+
 const Banner = () => {
   return (
     <>
-      <Image
-        src={BannerImg}
-        width='100%'
-        alt='Little Paws Dachshund Rescue'
-        style={{
-          minHeight: '39rem',
-          maxHeight: '45rem',
-          objectFit: 'cover',
-        }}
-      />
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          width: '100%',
-        }}
-      >
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            marginTop: '24px',
-          }}
+      <BannerImage src={BannerImg} alt='Little Paws Dachshund Rescue' />
+      <BtnContainer>
+        <BannerLink
+          to={{ pathname: '/donate', state: '100' }}
+          className='donate'
         >
-          <BannerLink
-            to={{ pathname: '/donate', state: '100' }}
-            className='donate'
-          >
-            Donate
-          </BannerLink>
-          <BannerLink to='/about/sanctuary' className='sponsor'>
-            Sponsor A Sanctuary
-          </BannerLink>
-        </div>
-      </div>
+          Donate
+        </BannerLink>
+        <BannerLink to='/about/sanctuary' className='sponsor'>
+          Sponsor A Sanctuary
+        </BannerLink>
+      </BtnContainer>
     </>
   );
 };

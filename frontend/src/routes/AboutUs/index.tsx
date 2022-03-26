@@ -37,7 +37,7 @@ const Navigation: FC<{
   const history = useHistory();
   const { pathname: path } = useLocation();
   return (
-    <Container style={{ width: '100%' }}>
+    <Container>
       <TabContainer>
         {[
           { linkText: 'What We Believe', linkKey: '/about' },
@@ -97,7 +97,7 @@ const Navigation: FC<{
 const WhatWeBelieve = () => {
   return (
     <Row>
-      <Col md={9} className='mb-5'>
+      <Col md={9} className='mb-5 px-0'>
         <Text fontFamily={`Duru Sans`} fontSize='1.15rem' marginBottom='1rem'>
           We believe that dogs truly are man’s (and woman’s) best friend and
           that our beloved companions deserve the right to a soft bed, generous
@@ -132,7 +132,7 @@ const WhatWeBelieve = () => {
           rub his or her tummy.
         </Text>
       </Col>
-      <Col md={3} className='d-flex flex-column '>
+      <Col md={3} className='d-flex flex-column px-0'>
         <h5 className='mb-4'>Where we Rescue</h5>
         {[
           'Alabama',

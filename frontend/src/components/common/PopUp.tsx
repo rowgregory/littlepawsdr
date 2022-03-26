@@ -35,13 +35,12 @@ const StyledModal = styled(Modal)`
 
 const Title = styled.div`
   font-size: 3rem;
-  color: ${({ theme }) => theme.colors.blue04};
+  color: ${({ theme }) => theme.colors.primary};
 `;
 
 const RightSideModal = styled.div`
   background: ${({ theme }) => theme.bg};
   padding: 2rem 1rem;
-
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
     padding: 3rem;
     border-radius: 0.75rem;
@@ -50,12 +49,15 @@ const RightSideModal = styled.div`
 
 const ContinueBtn = styled(Button)`
   border-radius: 25px;
-  background: ${({ theme }) => theme.colors.blue04};
+  background: ${({ theme }) => theme.colors.secondary};
+  border: 1px solid ${({ theme }) => theme.colors.secondary};
+  transition: 300ms;
   :focus {
-    box-shadow: none;
+    background: ${({ theme }) => theme.colors.secondary};
   }
   :hover {
-    filter: brightness(1.1);
+    background: ${({ theme }) => theme.colors.secondary};
+    filter: brightness(0.9);
   }
 `;
 
@@ -65,7 +67,20 @@ const SubscribeBtn = styled(Button)`
   border: 0;
   width: 25%;
   padding: 0;
-  background: ${({ theme }) => theme.colors.blue04};
+  background: ${({ theme }) => theme.colors.primary};
+  transition: 300ms;
+  :hover {
+    background: ${({ theme }) => theme.colors.primary};
+    filter: brightness(0.9);
+  }
+`;
+
+const CheckmarkContainer = styled.div`
+  background: ${({ theme }) => theme.input.bg};
+  border-radius: 0px 25px 25px 0;
+  border-top: 1px solid ${({ theme }) => theme.separator};
+  border-right: 1px solid ${({ theme }) => theme.separator};
+  border-bottom: 1px solid ${({ theme }) => theme.separator};
 `;
 
 const PopUp = () => {
@@ -92,7 +107,9 @@ const PopUp = () => {
   useEffect(() => {
     if (success) {
       dispatch({ type: NEWSLETTER_EMAIL_CREATE_RESET });
-      handleClose();
+      setTimeout(() => {
+        handleClose();
+      }, 2000);
     }
   }, [dispatch, success]);
 
@@ -123,14 +140,16 @@ const PopUp = () => {
               >
                 <Form.Group controlId='newsletterEmail' className='mb-0 w-75'>
                   <Form.Control
-                    className='border-0 pt-0 mt-0'
+                    className='pt-0 mt-0 popup'
                     placeholder='Email address'
                     required
                     as='input'
                     type='email'
                     value={email}
                     onChange={(e) => setNewsletterEmail(e.target.value)}
-                    style={{ borderRadius: '25px 0 0 25px' }}
+                    style={{
+                      borderRadius: '25px 0 0 25px',
+                    }}
                   ></Form.Control>
                 </Form.Group>
                 {!success ? (
@@ -138,14 +157,9 @@ const PopUp = () => {
                     SUBSCRIBE
                   </SubscribeBtn>
                 ) : (
-                  <div
-                    style={{
-                      background: '#fff',
-                      borderRadius: '0px 25px 25px 0',
-                    }}
-                  >
+                  <CheckmarkContainer>
                     <Checkmark />
-                  </div>
+                  </CheckmarkContainer>
                 )}
               </Form>
               <Row className='mt-5'>

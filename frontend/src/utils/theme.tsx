@@ -15,6 +15,7 @@ export const colors = {
       tertiary: '#4B3F72',
       quaternary: '#FFC857',
       quinary: '#1F2041',
+      senary: '#2c3748',
       // primary: '#77b300',
       // secondary: '#26a9df',
       red: '#ff1818',
@@ -57,6 +58,7 @@ export const colors = {
       tertiary: '#8BBF9F',
       quaternary: '#8BBF9F',
       quinary: '#F5E0B7',
+      senary: '#9a82b1',
       // primary: '#9a82b1',
       // secondary: '#22c2b7',
       red: '#ff0011',
@@ -121,22 +123,23 @@ export const themes = {
     separator: '#ededed',
     header: {
       // bg: '#3f505d',
-      // bg: '#3a2949',
+      bg: '#3a2949',
       // bg: '#004f69',
       // bg: '#268fb4',
-      bg: '#fff',
+      // bg: '#fff',
       button: '#fff',
       subNav: {
         bg: '#3a2949',
         linkText: '#fff',
       },
       link: {
-        bg: '#785c91',
-        text: '#3a2949',
-        hoverText: '#785c91',
+        bg: '#9a82b1',
+        text: '#fff',
+        hoverText: '#9a82b1',
         avatarHover: '#22c2b7',
         avatarbg: '#1c1028',
         avatarText: '#333',
+        underline: '#9a82b1',
         dropDown: {
           bg: '#fff',
           active: '#2f114b',
@@ -157,6 +160,10 @@ export const themes = {
       },
       cart: '#b5bbbf',
       cartHover: '#fff',
+    },
+    smcontainer: {
+      bg: '#22c2b7',
+      hoverBg: '#14746d',
     },
     banner: {
       slogan: {
@@ -225,7 +232,8 @@ export const themes = {
       two: '#ddd',
     },
     overlay: {
-      bg: '#3a4c59',
+      content: '',
+      bg: '#3a2949',
     },
     createBtn: {
       bg: colors.day.colors.primary,
@@ -252,7 +260,7 @@ export const themes = {
     inverse: '#fff',
     white: '#fff',
     black: '#000',
-    separator: '#21272c',
+    separator: '#101315',
     header: {
       bg: '#0e1117',
       button: colors.night.colors.secondary,
@@ -261,12 +269,13 @@ export const themes = {
         linkText: '#fff',
       },
       link: {
-        bg: '#0e1117',
+        bg: '#161b23',
         text: '#cfcfcf',
-        hoverText: '#fff',
+        hoverText: '#161b23',
         avatarHover: '#36b1dc',
         avatarbg: '#84ed71',
         avatarText: '#090d10',
+        underline: colors.night.colors.primary,
         dropDown: {
           bg: '#21262c',
           active: '#36b1dc',
@@ -286,6 +295,10 @@ export const themes = {
       },
       cart: '#a5fe91',
       cartHover: '',
+    },
+    smcontainer: {
+      bg: '#119DA4',
+      hoverBg: '#0e6c71',
     },
     banner: {
       slogan: {
@@ -353,7 +366,7 @@ export const themes = {
       two: '#10131a',
     },
     overlay: {
-      bg: '#0e1117',
+      bg: '#161b23',
     },
     createBtn: {
       bg: '#080a11',

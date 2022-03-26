@@ -7,7 +7,7 @@ import { logout } from '../../actions/userActions';
 import GlobalStyles from '../../GlobalStyles';
 import Logo from '../../components/assets/day-logo5.png';
 import { Text } from '../styles/Styles';
-import { Cart, Items, NavLink } from '../styles/HeaderStyles';
+// import { Cart } from '../styles/HeaderStyles';
 import {
   MenuWrap,
   MobileNav,
@@ -24,7 +24,7 @@ import {
   // CategoryTitles,
   LogoutBtn,
   UserAvatar,
-} from '../styles/MobileNavbarStyles';
+} from './MobileNavbarStyles';
 
 const MobileNavbar = () => {
   const history = useHistory();
@@ -34,10 +34,10 @@ const MobileNavbar = () => {
   const userLogin = useSelector((state: any) => state.userLogin);
   const { userInfo } = userLogin;
 
-  const cart = useSelector((state: any) => state.cart);
-  const { cartItems } = cart;
+  // const cart = useSelector((state: any) => state.cart);
+  // const { cartItems } = cart;
 
-  const items = cartItems?.reduce((acc: any, item: any) => acc + item.qty, 0);
+  // const items = cartItems?.reduce((acc: any, item: any) => acc + item.qty, 0);
 
   const logoutHandler = () => {
     if (!userInfo) {
@@ -97,7 +97,7 @@ const MobileNavbar = () => {
                       {userInfo?.name}
                     </Text>
                     <Text color='#fff'>{userInfo?.email}</Text>
-                    <Cart
+                    {/* <Cart
                       className='mt-2'
                       to='/cart'
                       onClick={() => {
@@ -110,7 +110,7 @@ const MobileNavbar = () => {
                       <NavLink className='p-1'>
                         <i className='fas fa-shopping-cart fa-2x cart'></i>
                       </NavLink>
-                    </Cart>
+                    </Cart> */}
                   </HeaderRightSide>
                 </div>
                 <HorizontalRow />

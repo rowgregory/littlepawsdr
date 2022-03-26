@@ -112,17 +112,16 @@ input[name=cardnumber]{
 
 
 .menu-secondary-enter {
-  transform: translateY(-110%);
+  transform: translateX(110%);
 }
 .menu-secondary-enter-active {
-  transform: translateY(0%);
+  transform: translateX(0%);
   transition: all var(--speed) ease;
 }
 .menu-secondary-exit {
-  position: absolute;
 }
 .menu-secondary-exit-active {
-  transform: translateY(110%);
+  transform: translateX(110%);
   transition: all var(--speed) ease;
 }
 
@@ -143,7 +142,7 @@ input[name=cardnumber]{
 }
 
 .menu-fourth-enter {
-  transform: translateY(110%);
+  transform: translateY(-110%);
 }
 .menu-fourth-enter-active {
   transform: translateY(0%);
@@ -153,7 +152,7 @@ input[name=cardnumber]{
   position: absolute;
 }
 .menu-fourth-exit-active {
-  transform: translateY(110%);
+  transform: translateX(110%);
   transition: all var(--speed) ease;
 }
 .menu-fifth-enter {

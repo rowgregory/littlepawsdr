@@ -26,11 +26,7 @@ const Shop = () => {
       <SectionTitle to='/shop'>Featured Items</SectionTitle>
       <ContentContainer>
         <ParallaxContent>
-          <div className='support'>
-            SUPPORT
-            <br /> TEAM
-            <br /> DACHSHUND
-          </div>
+          <div className='support'>SUPPORT TEAM DACHSHUND</div>
           <div className='browse'>Browse Our Products</div>
           <HomeLink to='/shop'>Shop</HomeLink>
         </ParallaxContent>

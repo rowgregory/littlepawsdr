@@ -121,7 +121,7 @@ const SuccessfulAdoptions = () => {
       <Fade in={isScrolledDown}>
         <ScrollTopBtn
           onClick={() => {
-            window.scrollTo(0, 0);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
             localStorage.setItem('pageYOffset', JSON.stringify(0));
           }}
         >

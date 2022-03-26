@@ -1,18 +1,35 @@
-import React, { useEffect } from 'react';
-import { Card, Col } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import {
+  Modal,
+  Card,
+  Col,
+  Form,
+  OverlayTrigger,
+  Popover,
+  Row,
+} from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import styled, { keyframes } from 'styled-components';
 import { listMyOrders } from '../actions/orderActions';
 import NoItemsDefault from '../components/common/NoItemsDefault';
-import Loader from '../components/Loader';
 import Message from '../components/Message';
-import { Text } from '../components/styles/Styles';
+import { LoadingImg, StyledCard, Text } from '../components/styles/Styles';
 import NoOrders from '../components/svg/NoOrders';
 import { localizeDate } from '../utils/localizeDate';
+import { SearchBar } from '../components/styles/admin/Styles';
+import { estimatedDelivery } from './GuestOrder';
+import { Link } from 'react-router-dom';
+import {
+  Content,
+  Footer,
+  Header,
+  LeftBtn,
+  RightBtn,
+} from '../components/ContinueSessionModal';
 
 const CardHeader = styled(Card.Header)`
   background: ${({ theme }) => theme.card.bg};
-  padding: 0;
+  padding: 0.875rem 1.25rem;
 `;
 
 const slideRight = () => keyframes`
@@ -33,11 +50,6 @@ export const ContineShopping = styled(Text)`
   }
 `;
 
-const Container = styled.div`
-  background: ${({ theme }) => theme.bg};
-  padding-bottom: 5rem;
-`;
-
 const MyOrdersContainer = styled(Col)`
   margin: 3rem auto;
   padding: 1rem;
@@ -53,31 +65,40 @@ const MyOrder = styled.div`
   background: ${({ theme }) => theme.secondaryBg};
   width: 100%;
 `;
+const CardBody = styled.div`
+  background: ${({ theme }) => theme.bg};
+  width: 100%;
+  padding: 0.875rem 1.25rem 0.3rem;
+`;
 
-const ViewOrderDetailsBtn = styled.div`
-  background: transparent;
-  color: ${({ theme }) => theme.border};
-  border: 1px solid ${({ theme }) => theme.border};
-  height: 50px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
+const ActionsBtns = styled.div`
+  border: ${({ theme }) => theme.separator} 1px solid;
+  padding: 0.5rem 1rem;
+  width: 100%;
+  text-align: center;
+  margin-bottom: 0.5rem;
   transition: 300ms;
+  cursor: pointer;
   :hover {
-    border: 1px solid ${({ theme }) => theme.colors.blue};
-    background: ${({ theme }) => theme.colors.blue};
-    color: #fff;
+    background: ${({ theme }) => theme.separator};
+    filter: brightness(1.1);
   }
 `;
 
 const MyOrders = ({ history }: any) => {
   const dispatch = useDispatch();
   const orderListMy = useSelector((state: any) => state.orderListMy);
-  const { loading, error, orders } = orderListMy;
+  let { loading, error, orders } = orderListMy;
+
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
   const userLogin = useSelector((state: any) => state.userLogin);
   const { userInfo } = userLogin;
+
+  const [text, setText] = useState('');
 
   useEffect(() => {
     if (!userInfo) {
@@ -91,71 +112,154 @@ const MyOrders = ({ history }: any) => {
     return <NoItemsDefault items='orders' Icon={NoOrders} />;
   }
 
-  return (
-    <Container>
-      {loading && <Loader />}
-      {error ? (
-        <Message variant='danger'>{error}</Message>
-      ) : (
-        orders?.length > 0 && (
-          <MyOrdersContainer>
-            <Text
-              fontFamily={`Ubuntu, sans-serif`}
-              fontSize='1.875rem'
-              marginBottom='2rem'
-            >
-              My Orders
-            </Text>
-            {orders
-              ?.map((order: any) => (
-                <MyOrder className='mb-3 p-4' key={order._id}>
-                  <CardHeader className='py-2 px-0 d-flex'>
-                    <Text bold='bold' fontSize='0.95rem' className='d-flex'>
-                      Order:&nbsp;
-                      <Text style={{ letterSpacing: '0.5px' }}>
-                        {order._id}
-                      </Text>
-                    </Text>
-                  </CardHeader>
-                  <Card.Body className='d-flex px-0'>
-                    <Col
-                      className='pl-0 pr-2 mt-3 w-100 d-flex flex-column'
-                      md={6}
-                    >
-                      <div className='d-flex justify-content-between mb-5'>
-                        <div>Placed</div>
+  const filteredOrders = orders?.filter((order: any) =>
+    order._id.toLowerCase().includes(text.toLowerCase())
+  );
+
+  return error ? (
+    <Message variant='danger'>{error}</Message>
+  ) : (
+    <MyOrdersContainer>
+      <Text
+        fontFamily={`Ubuntu, sans-serif`}
+        fontSize='1.875rem'
+        marginBottom='2rem'
+      >
+        Orders
+      </Text>
+      <SearchBar>
+        <Form.Control
+          as='input'
+          type='text'
+          placeholder='Search by ID'
+          value={text || ''}
+          onChange={(e: any) => setText(e.target.value)}
+        ></Form.Control>
+      </SearchBar>
+      <Modal show={show} onHide={handleClose}>
+        <Content>
+          <Header>
+            <Text>COMING SOON!</Text>
+          </Header>
+          <Footer>
+            <LeftBtn>
+              <Link to='/shop'>Shop</Link>
+            </LeftBtn>
+            <RightBtn onClick={() => handleClose()}>Close</RightBtn>
+          </Footer>
+        </Content>
+      </Modal>
+      {loading
+        ? [1, 2].map((num: number) => (
+            <MyOrder key={num} className='mb-3'>
+              <LoadingImg w='100%' h='200px' />
+            </MyOrder>
+          ))
+        : filteredOrders
+            ?.map((order: any) => (
+              <StyledCard className='my-3' key={order._id}>
+                <CardHeader>
+                  <Row className='d-flex '>
+                    <Col className='d-flex px-0' md={8}>
+                      <Col md={4}>
+                        <Text>Order Placed</Text>
                         <div>{localizeDate(order.createdAt)}</div>
-                      </div>
-                      <div className='d-flex justify-content-between'>
-                        <Text bold='bold' fontSize='0.95rem'>
-                          Order Total
-                        </Text>
-                        <Text bold='bold' fontSize='0.95rem'>
-                          ${order.totalPrice.toFixed(2)}
-                        </Text>
-                      </div>
-                    </Col>
-                    <Col md={6} className='pr-0 pl-2 mt-3'>
-                      <ViewOrderDetailsBtn
-                        onClick={() =>
-                          history.push(
-                            `/${order?.user ? 'order' : 'guest-order'}/${
-                              order._id
-                            }`
-                          )
+                      </Col>
+                      <Col md={3}>
+                        <Text>Total</Text>
+                        <div>${order.totalPrice.toFixed(2)}</div>
+                      </Col>
+                      <Col md={3}>
+                        <Text>Ship To</Text>
+                        {
+                          <OverlayTrigger
+                            trigger={['hover', 'focus']}
+                            placement='bottom'
+                            overlay={
+                              <Popover
+                                id='shipping-address'
+                                className='p-3'
+                                style={{ background: '#0e1117' }}
+                              >
+                                <Popover.Title as='h3'>
+                                  {order.shippingAddress.name}
+                                </Popover.Title>
+                                <Popover.Content>
+                                  <div>{order.shippingAddress.address}</div>
+                                  <div>
+                                    {order.shippingAddress.city},{' '}
+                                    {order.shippingAddress.state}
+                                  </div>
+                                  <div>
+                                    {order.shippingAddress.zipPostalCode}
+                                  </div>
+                                  <div>{order.shippingAddress.country}</div>
+                                </Popover.Content>
+                              </Popover>
+                            }
+                          >
+                            <div className='text-primary'>
+                              {order.shippingAddress.name}
+                            </div>
+                          </OverlayTrigger>
                         }
-                      >
-                        View Order Details
-                      </ViewOrderDetailsBtn>
+                      </Col>
                     </Col>
-                  </Card.Body>
-                </MyOrder>
-              ))
-              .reverse()}
-          </MyOrdersContainer>
-        )
-      )}
-    </Container>
+                    <Col md={4} className='d-flex flex-column align-items-end'>
+                      <Text>Order # {order._id}</Text>
+                      <Link
+                        to={`/order/${order?._id}`}
+                        className='text-primary'
+                      >
+                        View order details
+                      </Link>
+                    </Col>
+                  </Row>
+                </CardHeader>
+                <CardBody>
+                  <Row className='d-flex justify-content-between'>
+                    <Col md={9}>
+                      <Col className='px-0'>
+                        <Text fontSize='1.15rem' bold='bold'>
+                          Estimated Delivery:{' '}
+                          {estimatedDelivery(order.createdAt)}
+                        </Text>
+
+                        {order?.isShipped && (
+                          <Text>Order shipped on {order.shippedOn}</Text>
+                        )}
+                      </Col>
+                      <Col className='py-4 px-0'>
+                        {order?.orderItems.map((item: any) => (
+                          <Row className='mb-3' key={item._id}>
+                            <Col md={3} sm={12}>
+                              <Card.Img
+                                src={item.image}
+                                alt='order-item'
+                                width='90px'
+                              />
+                            </Col>
+                            <Col>
+                              <Text>{item.name}</Text>
+                            </Col>
+                          </Row>
+                        ))}
+                      </Col>
+                    </Col>
+                    <Col
+                      md={3}
+                      className='d-flex flex-column justify-content-start align-items-center w-100'
+                    >
+                      <ActionsBtns onClick={handleShow}>
+                        Track package
+                      </ActionsBtns>
+                    </Col>
+                  </Row>
+                </CardBody>
+              </StyledCard>
+            ))
+            .reverse()}
+    </MyOrdersContainer>
   );
 };
 

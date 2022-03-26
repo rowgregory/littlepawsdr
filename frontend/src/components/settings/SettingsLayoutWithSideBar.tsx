@@ -15,8 +15,15 @@ const Container = styled.section`
   flex-direction: column;
   height: 100%;
   max-width: 1000px;
-  margin: 0 auto;
+  margin: 0 0.25rem;
   width: 100%;
+
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+    margin: 1rem;
+  }
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
+    margin: 0 auto;
+  }
 `;
 
 const StyledLink = styled(Link)`
@@ -43,7 +50,7 @@ export const SettingsLayoutWithSideBar: FC<SettingsLayoutWithSideBarProps> = ({
   return (
     <Container>
       <Row>
-        <Col className='my-4 d-flex justify-content-between align-items-center pr-0'>
+        <Col className='my-4 d-flex justify-content-between align-items-center'>
           <div className='d-flex align-items-center'>
             <Image
               className='mr-3'

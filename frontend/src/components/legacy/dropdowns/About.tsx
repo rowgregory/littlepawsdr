@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Accordion, Col, Row, NavDropdown, Image } from 'react-bootstrap';
+import { Accordion, Col, Row, Image } from 'react-bootstrap';
 import styled from 'styled-components';
 import Paw from '../../assets/transparent-paw.png';
-import { DropDownLinks, DropdownParagraph } from '../../styles/HeaderStyles';
+// import { DropdownParagraph } from '../../styles/HeaderStyles';
 import { Text } from '../../styles/Styles';
 import MapChart from '../../../components/assets/amCharts.jpg';
 
@@ -57,7 +57,7 @@ const AboutFirstSlide = ({
       </Row>
       <Row>
         <Col>
-          <DropdownParagraph className='dogParagraph mb-4'>
+          {/* <DropdownParagraph className='dogParagraph mb-4'>
             We believe that dogs truly are man’s (and woman’s) best friend and
             that our beloved companions deserve the right to a soft bed,
             generous treats and unconditional love.
@@ -69,7 +69,7 @@ const AboutFirstSlide = ({
             dogs who have spent their lives in cramped cages and now have a
             chance at a bright future thanks to the teamwork of Little Paws
             Dachshund Rescue and Carolina Loving Hound Rescue.
-          </DropdownParagraph>
+          </DropdownParagraph> */}
           <Accordion
             defaultActiveKey='0'
             className='d-flex justify-content-center'
@@ -77,7 +77,7 @@ const AboutFirstSlide = ({
             <div className='w-100 mx-auto'>
               <Accordion.Collapse eventKey='1'>
                 <div className='d-flex justify-content-center flex-column align-items-center'>
-                  <DropdownParagraph className='dogParagraph  mb-4'>
+                  {/* <DropdownParagraph className='dogParagraph  mb-4'>
                     We believe that two sweet puppies left behind at a
                     veterinarian’s office deserve a life full of toys and fun
                     and snuggles. We believe Little Paws Dachshund Rescue can
@@ -99,7 +99,7 @@ const AboutFirstSlide = ({
                     behind at an animal shelter, or a dog who has been neglected
                     and abused and deserves a warm bed and a kind hand to rub
                     his or her tummy.
-                  </DropdownParagraph>
+                  </DropdownParagraph> */}
                 </div>
               </Accordion.Collapse>
               <div className='d-flex align-items-center flex-column'>
@@ -118,7 +118,7 @@ const AboutFirstSlide = ({
           </Accordion>
         </Col>
       </Row>
-      <Row>
+      {/* <Row>
         <Col className='mb-4'>
           {obj?.links?.map((obj: any, i: number) => (
             <DropDownLinks key={i} to={obj?.linkKey}>
@@ -128,7 +128,7 @@ const AboutFirstSlide = ({
             </DropDownLinks>
           ))}
         </Col>
-      </Row>
+      </Row> */}
     </SlideContainer>
   );
 };

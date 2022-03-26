@@ -2,7 +2,7 @@ import React from 'react';
 
 const Logout = () => {
   return (
-    <div className='d-flex justify-content-center my-5'>
+    <div className='d-flex justify-content-center mb-5'>
       <svg
         version='1.1'
         id='Capa_1'

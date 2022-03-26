@@ -65,13 +65,12 @@ const GlobalStyles = createGlobalStyle<{
     height: 40px !important;
     font-family: 'Libre Franklin', sans-serif  !important;
     border-radius: 0  !important;
-    border-bottom: 1px solid ${({ theme }) => theme.separator}  !important;
     box-shadow: 0 !important;
     padding: 6px 0px !important;
     color: ${({ theme }) => theme.text} !important;
     text-indent: 0.5rem;
-    border:1px solid ${({ theme }) => theme.input.border} !important;
-
+    border:${({ theme }) => `1px solid ${theme.separator}`} !important;
+    &.popup { border-right: none !important;}
   }
 
   textarea {
@@ -116,7 +115,7 @@ const GlobalStyles = createGlobalStyle<{
   input.form-control:hover, input.form-control:focus, input.form-control:active, select.form-control:hover, select.form-control:focus, select.form-control:active {
     border-radius: 0  !important;
     box-shadow: 0 !important;
-    border-bottom: 1px solid ${({ theme }) => theme.colors.blue04}  !important;
+    border-bottom: 1px solid ${({ theme }) => theme.colors.primary}  !important;
   }
 
   input:-webkit-autofill,

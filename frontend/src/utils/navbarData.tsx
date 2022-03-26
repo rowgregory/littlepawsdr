@@ -15,10 +15,11 @@ interface UserInfoProps {
   publicId: string;
 }
 
-export const NAVBAR_DATA_DESKTOP = (userInfo?: UserInfoProps) => {
-  const topNavItems = [];
-  const sideNavItems = [];
-  topNavItems.push(
+export const NAVBAR_DATA = (userInfo?: UserInfoProps) => {
+  const cartAndUserMenuItems = [];
+  const mobileMenuItems = [];
+  const desktopMenuItems = [];
+  cartAndUserMenuItems.push(
     {
       title: 'Cart',
       link: '/cart',
@@ -29,7 +30,7 @@ export const NAVBAR_DATA_DESKTOP = (userInfo?: UserInfoProps) => {
           ? 'Avatar'
           : userInfo && (!userInfo?.isAdmin || !userInfo?.isVolunteer)
           ? 'Initials'
-          : 'Sign in',
+          : 'Log On',
       links:
         userInfo && userInfo?.isAdmin
           ? [
@@ -42,7 +43,7 @@ export const NAVBAR_DATA_DESKTOP = (userInfo?: UserInfoProps) => {
               { linkKey: '/my-orders', textKey: 'My Orders' },
               { linkKey: '/settings/profile', textKey: 'Settings' },
             ]
-          : userInfo && !userInfo?.isAdmin && !userInfo.isVolunteer
+          : userInfo && !userInfo?.isAdmin && !userInfo?.isVolunteer
           ? [
               { linkKey: '/my-orders', textKey: 'My Orders' },
               { linkKey: '/settings/profile', textKey: 'Settings' },
@@ -51,73 +52,54 @@ export const NAVBAR_DATA_DESKTOP = (userInfo?: UserInfoProps) => {
       slide: 'dropdown-slide-1',
     }
   );
-  sideNavItems.push(
+  mobileMenuItems.push(
     {
-      title: 'Available',
-      links: [
-        { linkKey: '/available/dogs', textKey: 'Available Dogs' },
-        { linkKey: '/available/senior', textKey: 'Adopt a Senior Dog' },
-      ],
+      textKey: 'Available',
+      linkKey: '/available',
     },
     {
-      title: 'Adopt',
-      links: [
-        { linkKey: '/adopt', textKey: 'Adoption' },
-        { linkKey: '/adopt', textKey: 'Application' },
-        { linkKey: '/adopt', textKey: 'Information' },
-        { linkKey: '/adopt', textKey: 'Fees' },
-        { linkKey: '/adopt', textKey: 'FAQ' },
-      ],
+      textKey: 'Adopt',
+      linkKey: '/adopt',
     },
     {
-      title: 'Surrender',
-      link: '/surrender',
+      textKey: 'Surrender',
+      linkKey: '/surrender',
     },
     {
-      title: 'Donate',
-      link: '/donate',
+      textKey: 'Donate',
+      linkKey: '/donate',
     },
     {
-      title: 'Volunteer',
-      links: [
-        {
-          linkKey: '/volunteer/volunteer-application',
-          textKey: 'Volunteer Application',
-        },
-        {
-          linkKey: '/volunteer/foster-application',
-          textKey: 'Foster Application',
-        },
-      ],
+      textKey: 'Volunteer',
+      linkKey: '/volunteer/volunteer-application',
     },
     {
-      title: 'About Us',
-      links: [
-        { linkKey: '/about/team-members', textKey: 'Team Members' },
-        { linkKey: '/about/contact-us', textKey: 'Contact Us' },
-        { linkKey: '/about/education', textKey: 'Education' },
-        { linkKey: '/about/sanctuary', textKey: 'Sanctuary' },
-        { linkKey: '/about/hold', textKey: 'Dogs on Hold' },
-        {
-          linkKey: '/about/successful-adoptions',
-          textKey: 'Successful Adoptions',
-        },
-        { linkKey: '/about/rainbow-bridge', textKey: 'Rainbow Bridge' },
-        { linkKey: '/about/raffle-winners', textKey: 'Raffle Winners' },
-        { linkKey: '/about/blog', textKey: 'Blog' },
-      ],
+      textKey: 'About Us',
+      linkKey: '/about',
     },
     {
-      title: 'Events',
-      link: '/events',
-      num: 5,
+      textKey: 'Events',
+      linkKey: '/events',
     },
     {
-      title: 'Shop',
-      link: '/shop',
-      num: 6,
+      textKey: 'Shop',
+      linkKey: '/shop',
     }
   );
 
-  return { topNavItems, sideNavItems };
+  desktopMenuItems.push(
+    { linkText: 'AVAILABLE', linkKey: '/available' },
+    { linkText: 'ADOPTION', linkKey: '/adopt' },
+    { linkText: 'SURRENDER', linkKey: '/surrender' },
+    { linkText: 'DONATE', linkKey: '/donate' },
+    {
+      linkText: 'VOLUNTEER',
+      linkKey: '/volunteer/volunteer-application',
+    },
+    { linkText: 'ABOUT US', linkKey: '/about' },
+    { linkText: 'EVENTS', linkKey: '/events' },
+    { linkText: 'SHOP', linkKey: '/shop' }
+  );
+
+  return { cartAndUserMenuItems, mobileMenuItems, desktopMenuItems };
 };

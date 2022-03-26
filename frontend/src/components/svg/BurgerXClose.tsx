@@ -10,11 +10,12 @@ const Burger = styled.svg<{ isfixed: boolean }>`
   -ms-user-select: none;
   user-select: none;
   position: ${({ isfixed }) => (isfixed ? 'fixed' : '')};
+  right: 0;
   z-index: 100 !important;
   .line {
     fill: none;
     transition: stroke-dasharray 400ms, stroke-dashoffset 400ms;
-    stroke: ${({ theme }) => theme.inverse};
+    stroke: #fff;
     stroke-width: 6;
     stroke-linecap: round;
   }
@@ -44,8 +45,6 @@ const Burger = styled.svg<{ isfixed: boolean }>`
       stroke-dashoffset: -86px;
     }
   }
-
-  margin-left: -20px;
 
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
     display: none;

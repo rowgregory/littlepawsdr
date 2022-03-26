@@ -164,6 +164,7 @@ const Login = ({ location, history }: any) => {
             >
               {loading ? (
                 <div className='d-flex align-items-center mx-auto'>
+                  <Text color='#fff'>Logging On...</Text>
                   <Spinner
                     as='span'
                     animation='border'
@@ -172,11 +173,10 @@ const Login = ({ location, history }: any) => {
                     aria-hidden='true'
                     className='mr-2'
                   />
-                  <Text color='#fff'>Signing In</Text>
                 </div>
               ) : (
                 <Text className='mx-auto' color='#fff'>
-                  Sign In
+                  Log On
                 </Text>
               )}
             </StyledBtn>

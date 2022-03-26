@@ -47,7 +47,7 @@ export const StyledCard = styled(Card)`
 
 export const CardTitle = styled(Card.Title)`
   font-size: 1.25rem;
-  font-family: 'Duru', sans-serif;
+  font-family: 'Duru Sans';
   margin: 0;
   padding-bottom: 0.25rem;
   color: ${({ theme }) => theme.card.text};

@@ -1,11 +1,10 @@
 import React from 'react';
-import { Button, Col, NavDropdown, Row, Card } from 'react-bootstrap';
-import {
-  DropDownLinks,
-  HealthCheckListCard,
-  DropdownParagraph,
-} from '../../styles/HeaderStyles';
-import Paw from '../../assets/transparent-paw.png';
+import { Button, Col, Row } from 'react-bootstrap';
+import // DropDownLinks,
+// HealthCheckListCard,
+// DropdownParagraph,
+'../../styles/NavbarStyles';
+// import Paw from '../../assets/transparent-paw.png';
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 import Loader from '../../Loader';
@@ -43,7 +42,7 @@ const DogsFirstSlide = ({ setActiveMenu, obj }: any) => {
         </Row>
         <Row>
           <Col>
-            <DropdownParagraph className='dogParagraph'>
+            {/* <DropdownParagraph className='dogParagraph'>
               We are excited that you are interested in adding a dachshund or
               dachshund-mix to your family! Here you can find a list of all dogs
               that are available for adoption. Some of our dogs are not posted
@@ -53,11 +52,11 @@ const DogsFirstSlide = ({ setActiveMenu, obj }: any) => {
                 please feel free to submit an application and we can look for
                 that perfect dog for you!
               </span>
-            </DropdownParagraph>
+            </DropdownParagraph> */}
           </Col>
         </Row>
         <Row>
-          <Col className='my-3'>
+          {/* <Col className='my-3'>
             {obj?.links?.map((obj: any, i: number) => (
               <DropDownLinks key={i} to={obj?.linkKey}>
                 <NavDropdown.Item className='main-links'>
@@ -65,7 +64,7 @@ const DogsFirstSlide = ({ setActiveMenu, obj }: any) => {
                 </NavDropdown.Item>
               </DropDownLinks>
             ))}
-          </Col>
+          </Col> */}
         </Row>
       </div>
       <div className='w-100 justify-content-center d-flex align-items-center'>
@@ -140,7 +139,7 @@ const DogsSecondSlide = ({ setActiveMenu }: any) => {
           </Button>
         </Col>
       </Row>
-      <HealthCheckListCard>
+      {/* <HealthCheckListCard>
         <Col className='mx-4 mb-4'>
           {[
             `Has been spayed or neutered`,
@@ -161,7 +160,7 @@ const DogsSecondSlide = ({ setActiveMenu }: any) => {
             </div>
           ))}
         </Col>
-      </HealthCheckListCard>
+      </HealthCheckListCard> */}
     </div>
   );
 };

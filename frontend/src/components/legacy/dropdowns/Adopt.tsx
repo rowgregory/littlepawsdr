@@ -1,16 +1,15 @@
 import React from 'react';
-import { Col, Row, NavDropdown } from 'react-bootstrap';
-import {
-  DropDownLinks,
-  DropdownParagraph,
-  StyledDropdropParagraphLink,
-} from '../../styles/HeaderStyles';
+import { Row } from 'react-bootstrap';
+import // DropDownLinks,
+// DropdownParagraph,
+// StyledDropdropParagraphLink,
+'../../styles/NavbarStyles';
 
 const AdoptFirstSlide = ({ obj }: any) => {
   return (
     <div style={{ width: '500px' }} className='p-5'>
       <Row>
-        <Col className='d-flex flex-column'>
+        {/* <Col className='d-flex flex-column'>
           <h5>Adopting is a big decision</h5>
           <DropdownParagraph className='dogParagraph'>
             You are taking into your home a dog that is intelligent, loyal, fun
@@ -39,10 +38,10 @@ const AdoptFirstSlide = ({ obj }: any) => {
             Ohio, Pennsylvania, Rhode Island, South Carolina, Tennessee,
             Vermont, Virginia, West Virginia.
           </DropdownParagraph>
-        </Col>
+        </Col> */}
       </Row>
       <Row>
-        <Col className='my-3'>
+        {/* <Col className='my-3'>
           {obj?.links?.map((obj: any, i: number) => (
             <DropDownLinks key={i} to={obj?.linkKey}>
               <NavDropdown.Item className='main-links'>
@@ -50,7 +49,7 @@ const AdoptFirstSlide = ({ obj }: any) => {
               </NavDropdown.Item>
             </DropDownLinks>
           ))}
-        </Col>
+        </Col> */}
       </Row>
     </div>
   );

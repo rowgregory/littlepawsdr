@@ -1,7 +1,7 @@
 import { Button, Navbar, Image } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { Text } from '../../components/styles/Styles';
+import { Text } from '../styles/Styles';
 
 export const MobileNav = styled(Navbar)`
   display: block;

@@ -9,7 +9,6 @@ import styled from 'styled-components';
 import { Text } from '../../components/styles/Styles';
 import { TabContainer, Tab } from '../Adopt/Adoption';
 import { Row, Col } from 'react-bootstrap';
-import { HealthCheckListCard } from '../../components/styles/HeaderStyles';
 
 interface AvailableLayoutWithTabsProps {
   tabs: ReactNode;
@@ -32,6 +31,17 @@ const Main = styled.main`
 
 const Section = styled.section`
   display: flex;
+`;
+
+const HealthCheckListCard = styled.div`
+  background: ${({ theme }) => theme.colors.secondary};
+  margin-top: 1rem;
+  padding: 1.25rem;
+  margin-bottom: 3rem;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
+    margin-bottom: 2rem;
+    margin-top: 0;
+  }
 `;
 
 const AvailableLayoutWithTabs: FC<AvailableLayoutWithTabsProps> = ({

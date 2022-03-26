@@ -39,26 +39,32 @@ export const HomeLink = styled(Link)`
 `;
 
 export const ParallaxContent = styled.div`
-  background: rgba(0, 0, 0, 0.5);
-  position: absolute;
-  height: 340px;
-  max-width: 475px;
   width: 100%;
   bottom: 20px;
-  left: 20px;
   border-radius: 12px;
   margin: 0 12px 0 0;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+    background: rgba(0, 0, 0, 0.5);
+    position: absolute;
+    left: 20px;
+    height: 340px;
+    max-width: 475px;
+  }
 
   .support {
     position: absolute;
     bottom: 120px;
+    font-size: 2rem;
+    line-height: 30px;
     left: 20px;
-    font-size: 72px;
     color: #fff;
     font-weight: bold;
     letter-spacing: -3px;
-    line-height: 65px;
     font-family: 'Ubuntu', sans-serif;
+    @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+      line-height: 65px;
+      font-size: 72px;
+    }
   }
   .browse {
     position: absolute;

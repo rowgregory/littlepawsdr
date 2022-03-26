@@ -83,9 +83,13 @@ export const LeftBtn = styled.button`
   border-radius: 0;
   background: transparent;
   :hover {
-    border: 1.5px solid ${({ theme }) => theme.colors.secondary};
-    background: ${({ theme }) => theme.colors.secondary};
-    color: #fff;
+    transition: 300ms;
+    border: 1.5px solid ${({ theme }) => theme.colors.primary};
+    background: ${({ theme }) => theme.colors.primary};
+    a {
+      text-decoration: none;
+      color: #fff !important;
+    }
   }
 `;
 
@@ -99,9 +103,9 @@ export const RightBtn = styled.button`
   transition: 300ms;
   border-radius: 0;
   :hover {
-    background: ${({ theme }) => theme.colors.secondary};
-    border: 1.5px solid ${({ theme }) => theme.colors.secondary};
-    color: #fff;
+    background: transparent;
+    border: 1.5px solid ${({ theme }) => theme.colors.primary};
+    color: ${({ theme }) => theme.colors.primary};
   }
 `;
 
