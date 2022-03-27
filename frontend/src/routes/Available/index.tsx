@@ -16,12 +16,13 @@ interface AvailableLayoutWithTabsProps {
 }
 
 const Container = styled(Row)`
-  margin: 0 48px;
+  margin: 0 0.25rem;
   display: grid;
   gap: 1.25rem;
   grid-template-columns: 1fr;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
     grid-template-columns: 1fr 0.75fr;
+    margin: 0 48px;
   }
 `;
 
@@ -34,13 +35,20 @@ const Section = styled.section`
 `;
 
 const HealthCheckListCard = styled.div`
-  background: ${({ theme }) => theme.colors.secondary};
-  margin-top: 1rem;
-  padding: 1.25rem;
-  margin-bottom: 3rem;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
+  background: ${({ theme }) => theme.colors.senary};
+  padding: 0.5rem;
+  margin: 0 0.25rem 2rem;
+
+  div {
+    font-size: 0.8rem;
+  }
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
     margin-bottom: 2rem;
     margin-top: 0;
+    padding: 1.25rem;
+    div {
+      font-size: 1.25rem;
+    }
   }
 `;
 
@@ -57,9 +65,15 @@ const AvailableLayoutWithTabs: FC<AvailableLayoutWithTabsProps> = ({
 };
 
 const Column = styled(Col)`
-  padding: 0 1rem;
+  padding: 0;
+  div {
+    font-size: 0.8rem;
+  }
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
     padding: 0;
+    div {
+      font-size: 1.15rem;
+    }
   }
 `;
 

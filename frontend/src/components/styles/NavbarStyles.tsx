@@ -81,6 +81,77 @@ export const AvatarHeaderLinks = styled(Link)`
   }
 `;
 
+export const LoginContainer = styled.div<{ active?: string; open?: boolean }>`
+  cursor: pointer;
+  height: 68px;
+  a {
+    position: relative;
+    height: 100%;
+    transition: 300ms;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    font-size: 1rem;
+    padding: 0 0.5rem;
+    box-shadow: ${({ theme, active }) =>
+      active === 'true'
+        ? `0 -10px 0 -5px ${theme.header.link.underline} inset`
+        : ''};
+    background: ${({ theme, active }) =>
+      active === 'true' ? theme.secondaryBg : ''};
+    span {
+      color: #fff;
+    }
+    :hover {
+      box-shadow: ${({ theme }) =>
+        `0 -10px 0 -5px ${theme.header.link.underline} inset`};
+      color: #fff;
+      text-decoration: none;
+      background: ${({ theme }) => theme.header.link.bg};
+    }
+  }
+  &.mobile-cart {
+    display: block;
+    margin-right: ${({ open }) => (open ? '54px' : '')};
+  }
+
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+    &.mobile-cart {
+      display: none;
+    }
+  }
+`;
+
+interface ItemsProps {
+  active?: boolean;
+  isMobile?: boolean;
+}
+
+export const Items = styled.span<ItemsProps>`
+  color: ${({ theme }) => theme.white};
+  font-size: 1rem;
+  position: absolute;
+  top: 22px;
+  left: ${({ isMobile }) => (isMobile ? '' : '55px')};
+  right: ${({ isMobile }) => (isMobile ? '79px' : '')};
+  z-index: 9;
+  text-align: center;
+  cursor: pointer;
+  font-weight: bold;
+  background: red !important;
+  width: 22.5px;
+  height: 22.5px;
+  border-radius: 50%;
+
+  div {
+    position: absolute;
+    right: -14px;
+    top: 1px;
+    width: 50px;
+    font-size: 14px;
+  }
+`;
+
 export const LogoutContainer = styled.div`
   width: 100%;
   border-top: ${({ theme }) => `1px solid  ${theme.separator}`};
@@ -89,9 +160,9 @@ export const LogoutContainer = styled.div`
 export const LogoutBtn = styled(Button)`
   margin-top: 0.5rem;
   background: transparent;
-  color: #fff;
+  color: ${({ theme }) => theme.inverse};
   border: 1px solid ${({ theme }) => theme.separator};
   :hover {
-    background-color: ${({ theme }) => theme.colors.grey03};
+    background-color: ${({ theme }) => theme.colors.senary};
   }
 `;

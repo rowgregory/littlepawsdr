@@ -4,12 +4,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../actions/userActions';
 import { AvatarInitials, LogoutBtn } from '../styles/NavbarStyles';
 import { CSSTransition } from 'react-transition-group';
-import { ShoppingCart } from '../svg/ShoppingCart';
 import { NAVBAR_DATA } from '../../utils/navbarData';
 import { UserInfoProps } from '../common/PrivateRoute';
 import styled from 'styled-components';
 import { Link, useLocation } from 'react-router-dom';
 import { MobileLoginIcon } from '../svg/MobileLoginIcon';
+import { Text } from '../styles/Styles';
 
 const Container = styled.div<{ open: boolean }>`
   height: 100vh;
@@ -76,12 +76,12 @@ const SideNavLink = styled(Link)`
 `;
 
 const TopSection = styled.div`
-  padding: 60px 0 1.5rem;
-  background: ${({ theme }) => theme.header.bg};
+  padding: 60px 0.75rem 1.5rem;
 `;
 
 const MobileMiddleSection = styled.div`
-  background: ${({ theme }) => theme.colors.senary};
+  overflow-y: auto;
+  overflow-x: hidden;
 `;
 
 const MobileNavbar = ({
@@ -93,7 +93,6 @@ const MobileNavbar = ({
 }) => {
   const dispatch = useDispatch();
   const { pathname: p } = useLocation();
-  const [showLinks, setShowLinks] = useState(false);
   const scrollableDivRef = useRef(null) as any;
   const [activeMenu, setActiveMenu] = useState('main');
   const userLogout = useSelector((state: any) => state.userLogout);
@@ -116,48 +115,71 @@ const MobileNavbar = ({
       overlayRef.current.style.transform = 'translateX(0px)';
     } else {
       overlayRef.current.style.width = '0px';
-      overlayRef.current.style.transform = 'translateX(-100px)';
+      overlayRef.current.style.transform = 'translateX(-400px)';
     }
   }, [openMenu]);
 
   return (
     <Container ref={overlayRef} open={openMenu}>
       <Menu>
-        <TopSection className='d-flex justify-content-around'>
-          {activeMenu === 'secondary' ? (
-            <Circle onClick={() => setActiveMenu('main')}>Go Back</Circle>
-          ) : (
-            <Circle onClick={() => setOpenMenu(false)} active={p === '/cart'}>
-              <ShoppingCart />
-            </Circle>
-          )}
-          <Circle onClick={() => setShowLinks(!showLinks)}>
+        <TopSection className='d-flex align-items-center'>
+          <Circle>
             {userInfo && !userInfo?.isAdmin && !userInfo?.isVolunteer ? (
-              <AvatarInitials path={p} w='100px' h='100px'>
-                {firstNameInitial}
-                {lastNameInitial}
-              </AvatarInitials>
+              activeMenu === 'secondary' ? (
+                <Circle onClick={() => setActiveMenu('main')}>Go Back</Circle>
+              ) : (
+                <AvatarInitials
+                  onClick={() => setActiveMenu('secondary')}
+                  path={p}
+                  w='100px'
+                  h='100px'
+                >
+                  {firstNameInitial}
+                  {lastNameInitial}
+                </AvatarInitials>
+              )
             ) : userInfo?.isAdmin || userInfo?.isVolunteer ? (
-              <Image
-                onClick={() => setActiveMenu('secondary')}
-                src={userInfo?.avatar}
-                alt='user'
-                height='100%'
-                width='100%'
-              />
+              activeMenu === 'secondary' ? (
+                <Circle onClick={() => setActiveMenu('main')}>Go Back</Circle>
+              ) : (
+                <Image
+                  onClick={() => setActiveMenu('secondary')}
+                  src={userInfo?.avatar}
+                  alt='user'
+                  height='100%'
+                  width='100%'
+                />
+              )
             ) : (
-              <Link to='/login' onClick={() => setOpenMenu(false)}>
+              <Link
+                className='d-flex flex-column align-items-center'
+                to='/login'
+                onClick={() => setOpenMenu(false)}
+                style={{ position: 'relative' }}
+              >
                 <MobileLoginIcon />
+                <Text
+                  color='#fff'
+                  fontSize='0.5rem'
+                  className='pt-1'
+                  style={{ position: 'absolute', bottom: '-14px' }}
+                >
+                  Log On
+                </Text>
               </Link>
             )}
           </Circle>
+          <div className='d-flex flex-column ml-2'>
+            <Text fontSize='1.2rem' bold='bold' color='#fff'>
+              {userInfo?.name ?? 'Little Paws Dachshund Rescue'}
+            </Text>
+            <Text color='#fff'>{userInfo?.email}</Text>
+          </div>
         </TopSection>
 
         <MobileMiddleSection
           ref={scrollableDivRef}
           style={{
-            overflowY: 'auto',
-            overflowX: 'hidden',
             height: window.innerHeight > 800 ? '' : '500px',
           }}
         >
@@ -205,8 +227,8 @@ const MobileNavbar = ({
               {userInfo && (
                 <div className='d-flex justify-content-center align-items-center mt-5 w-100'>
                   <LogoutBtn
-                    variant='dark'
                     onClick={() => dispatch(logout(userInfo))}
+                    style={{ color: '#fff' }}
                   >
                     {loading && <Spinner animation='border' size='sm' />} Logout
                   </LogoutBtn>

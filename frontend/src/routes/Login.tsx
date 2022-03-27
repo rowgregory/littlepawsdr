@@ -9,6 +9,7 @@ import styled, { useTheme } from 'styled-components';
 import { isCapsLock } from '../utils/capsLock';
 import NightLogo from '../components/assets/neon-purple-logo.png';
 import DayLogo from '../components/assets/transparent-logo.png';
+import GoBackBtn from '../utils/GoBackBtn';
 export interface ThemeProps {
   mode: string;
 }
@@ -105,10 +106,11 @@ const Login = ({ location, history }: any) => {
           fontFamily={`Ubuntu, sans-serif`}
           fontSize='1.5rem'
           textAlign='center'
-          marginBottom='1.5rem'
+          marginBottom='0.65rem'
         >
           Sign in to Little Paws
         </Text>
+        <GoBackBtn to='/'>Go Back</GoBackBtn>
         <FormContainer className='p-4'>
           <Form onSubmit={submitHandler}>
             <Form.Group controlId='email'>

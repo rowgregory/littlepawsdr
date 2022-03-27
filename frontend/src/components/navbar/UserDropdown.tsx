@@ -130,7 +130,7 @@ const UserDropdown = ({
               className='d-flex justify-content-center'
               style={{
                 fontSize: '0.7rem',
-                padding: '14px 0 6px',
+                padding: '10px 0 6px',
                 transition: 'height 500ms ease',
               }}
             >

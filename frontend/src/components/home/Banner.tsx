@@ -33,6 +33,7 @@ const BannerLink = styled(Link)`
 const BannerImage = styled(Image)`
   object-fit: cover;
   width: 100%;
+  height: calc(100vh - 158px);
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
     max-height: 45rem;
     min-height: 39rem;

@@ -49,9 +49,11 @@ export const Tab = styled.div<{ active: boolean }>`
   align-items: center;
   cursor: pointer;
   transition: 300ms;
-  background: ${({ theme, active }) => (active ? theme.secondaryBg : '')};
+  background: ${({ theme, active }) => (active ? theme.smcontainer.bg : '')};
+  color: ${({ theme, active }) => (active ? '#fff' : theme.text)};
   :hover {
-    background: ${({ theme }) => theme.secondaryBg};
+    background: ${({ theme, active }) =>
+      active ? theme.smcontainer.hoverBg : theme.secondaryBg};
   }
 `;
 

@@ -39,10 +39,9 @@ const Oauth2_client = new OAuth2(
 Oauth2_client.setCredentials({
   refresh_token: connectGmailOauth().refreshToken,
 });
+const accessToken = Oauth2_client.getAccessToken();
 
 export const send_mail = (body, res, type, token) => {
-  const accessToken = Oauth2_client.getAccessToken();
-
   const __dirname = path.resolve();
   const root = path.join(__dirname, 'emails');
 

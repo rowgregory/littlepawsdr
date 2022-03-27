@@ -46,8 +46,8 @@ const quickLinks = () => {
 };
 
 const StyledFooter = styled.footer`
-  background: ${({ theme }) => theme.colors.tertiary};
-  border-top: ${({ theme }) => `3px solid ${theme.colors.purple04}`};
+  background: ${({ theme }) => theme.colors.senary};
+  border-top: ${({ theme }) => `3px solid ${theme.smcontainer.bg}`};
 `;
 
 const StyledLink = styled(Link)`
@@ -65,7 +65,7 @@ const StyledLink = styled(Link)`
 const GiveNowBtn = styled(Link)`
   width: 150px;
   color: #fff;
-  background: ${({ theme }) => theme.colors.purple01};
+  background: ${({ theme }) => theme.smcontainer.bg};
   font-size: 0.75rem;
   margin: 0 auto;
   transition: 300ms;
@@ -86,7 +86,7 @@ const StyledSubFooter = styled(Col)`
 `;
 
 const SubscribeBtn = styled(Button)`
-  background: ${({ theme }) => theme.colors.secondary};
+  background: ${({ theme }) => theme.smcontainer.bg};
   font-size: 0.75rem;
   border-radius: 0 25px 25px 0;
   width: 25%;

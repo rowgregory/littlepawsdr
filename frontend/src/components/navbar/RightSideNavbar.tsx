@@ -6,12 +6,14 @@ import {
   AvatarInitials,
   StyledAvatar,
   AvatarContainer,
+  LoginContainer,
+  Items,
 } from '../styles/NavbarStyles';
 import { UserDropdown } from './UserDropdown';
 import { UserInfoProps } from '../common/PrivateRoute';
-import { Text } from '../styles/Styles';
 import { useOutsideDetect } from '../../utils/useOutsideDetect';
 import styled from 'styled-components';
+import { Text } from '../styles/Styles';
 
 export const DropDownContainer = styled.div`
   z-index: 200;
@@ -25,79 +27,6 @@ export const DropDownContainer = styled.div`
   transition: height 500ms ease;
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
   width: 300px;
-`;
-
-export const LoginContainer = styled.div<{ active?: string }>`
-  cursor: pointer;
-  height: 68px;
-  a {
-    position: relative;
-    height: 100%;
-    transition: 300ms;
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-    font-size: 1rem;
-    padding: 0 0.5rem;
-    box-shadow: ${({ theme, active }) =>
-      active === 'true'
-        ? `0 -10px 0 -5px ${theme.header.link.underline} inset`
-        : ''};
-    background: ${({ theme, active }) =>
-      active === 'true' ? theme.secondaryBg : ''};
-    span {
-      color: #fff;
-    }
-    :hover {
-      box-shadow: ${({ theme }) =>
-        `0 -10px 0 -5px ${theme.header.link.underline} inset`};
-      color: #fff;
-      text-decoration: none;
-      background: ${({ theme }) => theme.header.link.bg};
-    }
-  }
-  svg {
-    path {
-      fill: ${({ theme }) => theme.header.link.text};
-    }
-  }
-  :hover {
-    svg {
-      path {
-        fill: ${({ theme }) => theme.header.link.hoverText};
-      }
-    }
-  }
-`;
-
-interface ItemsProps {
-  active?: boolean;
-  isMobile?: boolean;
-}
-
-export const Items = styled.span<ItemsProps>`
-  color: ${({ theme }) => theme.white};
-  font-size: 1rem;
-  position: absolute;
-  top: 22px;
-  left: ${({ isMobile }) => (isMobile ? '' : '55px')};
-  right: ${({ isMobile }) => (isMobile ? '79px' : '')};
-  z-index: 9;
-  text-align: center;
-  cursor: pointer;
-  font-weight: bold;
-  background: red !important;
-  width: 22.5px;
-  height: 22.5px;
-  border-radius: 50%;
-
-  div {
-    position: absolute;
-    right: -14px;
-    top: 1px;
-    width: 50px;
-    font-size: 14px;
-  }
 `;
 
 export const NavLink = styled(Link)<{ active?: string }>`
@@ -125,6 +54,7 @@ export const NavLink = styled(Link)<{ active?: string }>`
   }
   :active {
     filter: brightness(0.8);
+    box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, 0.22);
   }
 `;
 
