@@ -106,7 +106,7 @@ const RightSideNavbar = () => {
     switch (obj?.title) {
       case 'Avatar':
         return (
-          <AvatarContainer isvisible={isVisible}>
+          <AvatarContainer path={p} isvisible={isVisible}>
             <StyledAvatar
               onClick={() => {
                 setMenuHeight(473.11);
@@ -122,7 +122,7 @@ const RightSideNavbar = () => {
         );
       case 'Initials':
         return (
-          <AvatarContainer isvisible={isVisible}>
+          <AvatarContainer path={p} isvisible={isVisible}>
             <AvatarInitials
               onClick={() => {
                 setIsVisible(true);
@@ -141,7 +141,10 @@ const RightSideNavbar = () => {
           <LoginContainer
             active={(p.split('/')[1] === obj?.link?.split('/')[1]).toString()}
           >
-            <Link to={obj?.link} style={{ width: '80px' }}>
+            <Link
+              to={obj?.link}
+              style={{ width: items > 0 ? '80px' : '', transition: '300ms' }}
+            >
               {items > 0 ? (
                 <Text fontSize='1rem' color='#fff'>
                   <span className='mr-1'>CART</span>
@@ -154,7 +157,7 @@ const RightSideNavbar = () => {
                 </Text>
               ) : (
                 <Text fontSize='1rem' color='#fff'>
-                  <span className='mr-1'>CART</span>
+                  <span>CART</span>
                 </Text>
               )}
             </Link>

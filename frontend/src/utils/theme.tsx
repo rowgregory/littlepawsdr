@@ -309,7 +309,7 @@ export const themes = {
       bg: ' #161b23',
       text: '#a7afb7',
     },
-    pageHeader: '#a5fe91',
+    pageHeader: colors.night.colors.quaternary,
     footer: {
       border: '#9932cc',
       links: '#76b200',

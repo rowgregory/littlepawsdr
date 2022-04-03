@@ -21,7 +21,6 @@ const Container = styled.div`
   padding: 2rem;
   display: flex;
   flex-direction: column;
-  height: 500px;
   background: ${({ theme }) => theme.secondaryBg};
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
     padding: 2rem 3rem;
@@ -47,8 +46,7 @@ const LoginBtn = styled(Button)`
   border-radius: 0;
   background-color: ${({ theme }) => theme.colors.blue04};
   height: 3.125rem !important;
-
-  width: 336px;
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;

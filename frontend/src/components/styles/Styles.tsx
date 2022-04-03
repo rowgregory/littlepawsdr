@@ -4,12 +4,21 @@ import { Button, Card, Carousel, Image } from 'react-bootstrap';
 export const PageLayout = styled.div`
   width: 100%;
   max-width: 1837px;
-  margin: 0 auto;
+  margin: 0 auto 2rem;
+  overflow-x: hidden;
   padding: 2rem 0;
+`;
+
+export const LayoutWrapper = styled.div`
+  margin: 0 0.25rem;
+  @media (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    margin: 1rem;
+  }
   @media (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    padding: 4rem 0;
+    margin: 0 48px;
   }
 `;
+
 export const AdminPageLayout = styled.div`
   width: 100%;
   display: flex;
@@ -43,6 +52,11 @@ export const StyledCard = styled(Card)`
   background: ${({ theme }) => theme.secondaryBg};
   border-radius: 0;
   border: ${({ theme }) => `1px solid ${theme.separator}`};
+  margin: 0 0.25rem;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    margin: 0;
+    padding: 1rem;
+  }
 `;
 
 export const CardTitle = styled(Card.Title)`

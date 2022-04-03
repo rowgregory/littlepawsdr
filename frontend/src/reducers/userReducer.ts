@@ -336,6 +336,7 @@ export const userVerifyEmailReducer = (state = {}, action) => {
         loading: false,
         error: action.payload,
         userInfo: {},
+        success: false,
       };
     default:
       return state;

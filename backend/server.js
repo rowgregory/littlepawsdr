@@ -28,33 +28,65 @@ import google from 'googleapis';
 import connectGmailOauth from './config/oauth.js';
 import nodemailer from 'nodemailer';
 import Email from 'email-templates';
+import fetch from 'node-fetch';
 
 const OAuth2 = google.google.auth.OAuth2;
 
 const Oauth2_client = new OAuth2(
   connectGmailOauth().clientId,
-  connectGmailOauth().clientSecret
+  connectGmailOauth().clientSecret,
+  connectGmailOauth().redirectURL
 );
 
 Oauth2_client.setCredentials({
   refresh_token: connectGmailOauth().refreshToken,
 });
-const accessToken = Oauth2_client.getAccessToken();
 
-export const send_mail = (body, res, type, token) => {
+google.google.options({
+  auth: Oauth2_client,
+});
+
+export const send_mail = async (body, res, type, token) => {
   const __dirname = path.resolve();
   const root = path.join(__dirname, 'emails');
+  let accessToken = await Oauth2_client.getAccessToken();
+  console.log('ACCESS TOKEN: ', accessToken.token);
+
+  if (!accessToken.token) {
+    console.log('GENERATING NEW ACCESS TOKEN');
+    const response = await fetch('https://www.googleapis.com/oauth2/v4/token', {
+      method: 'post',
+      body: JSON.stringify({
+        client_id: connectGmailOauth().clientId,
+        client_secret: connectGmailOauth().clientSecret,
+        refresh_token: connectGmailOauth().refreshToken,
+        grant_type: 'refresh_token',
+      }),
+      headers: { 'Content-Type': 'application/json' },
+    });
+
+    const data = await response.json();
+    accessToken = data;
+  }
 
   const transporter = nodemailer.createTransport({
     service: 'gmail',
+    secure: true,
     auth: {
       type: 'OAuth2',
-      user: `${process.env.EMAIL_ADDRESS}`,
+      user: process.env.EMAIL_ADDRESS,
       clientId: connectGmailOauth().clientId,
       clientSecret: connectGmailOauth().clientSecret,
       refreshToken: connectGmailOauth().refreshToken,
       accessToken: accessToken,
+      expires: 1484314697598,
+      // serviceClient: connectGmailOauth().clientId,
+      // privateKey: process.env.PRIVATE_KEY,
     },
+    tls: {
+      rejectUnauthorized: false,
+    },
+    debug: true,
   });
 
   const pugEmail = new Email({
@@ -205,7 +237,6 @@ const PORT = process.env.PORT || 5000;
 const __dirname = path.resolve();
 
 if (process.env.NODE_ENV === 'production') {
-  console.log('ping');
   app.use(express.static(path.join(__dirname, '/frontend/build')));
 
   app.get('*', (req, res) =>

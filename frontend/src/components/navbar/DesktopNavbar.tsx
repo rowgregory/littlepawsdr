@@ -51,6 +51,7 @@ const LogoContainer = styled(Link)`
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
     width: fit-content;
     img {
+      margin-left: -10px;
       max-height: 125px;
     }
     :hover {
@@ -86,7 +87,7 @@ const DesktopNavbar = ({
           className='mobile-cart'
           active={(p.split('/')[1] === 'cart').toString()}
         >
-          <Link to='/cart' style={{ width: '80px' }}>
+          <Link to='/cart' style={{ width: items > 0 ? '80px' : '' }}>
             {items > 0 ? (
               <Text fontSize='1rem' color='#fff'>
                 <span className='mr-1'>CART</span>
@@ -99,7 +100,7 @@ const DesktopNavbar = ({
               </Text>
             ) : (
               <Text fontSize='1rem' color='#fff'>
-                <span className='mr-1'>CART</span>
+                <span>CART</span>
               </Text>
             )}
           </Link>

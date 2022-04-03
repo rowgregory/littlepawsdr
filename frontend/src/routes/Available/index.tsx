@@ -1,10 +1,16 @@
-import { FC, ReactNode, useState } from 'react';
-import { Switch, Route, useRouteMatch, useHistory } from 'react-router-dom';
+import { FC, ReactNode, useEffect, useState } from 'react';
+import {
+  Switch,
+  Route,
+  useRouteMatch,
+  useHistory,
+  useLocation,
+} from 'react-router-dom';
 import ListAvailableDogs from './ListAvailableDogs';
 import DachshundScreen, { PawPrint } from './DachshundScreen';
 import PageNotFound from '../../components/common/PageNotFound';
 import SeniorDogs from './SeniorDogs';
-import { PageLayout } from '../../components/styles/Styles';
+import { LayoutWrapper, PageLayout } from '../../components/styles/Styles';
 import styled from 'styled-components';
 import { Text } from '../../components/styles/Styles';
 import { TabContainer, Tab } from '../Adopt/Adoption';
@@ -15,39 +21,28 @@ interface AvailableLayoutWithTabsProps {
   children: ReactNode;
 }
 
-const Container = styled(Row)`
-  margin: 0 0.25rem;
-  display: grid;
-  gap: 1.25rem;
-  grid-template-columns: 1fr;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-    grid-template-columns: 1fr 0.75fr;
-    margin: 0 48px;
-  }
+const RowContainer = styled(Row)`
+  margin: 0;
 `;
 
 const Main = styled.main`
   width: 100%;
 `;
 
-const Section = styled.section`
-  display: flex;
-`;
+const Section = styled.section``;
 
 const HealthCheckListCard = styled.div`
   background: ${({ theme }) => theme.colors.senary};
   padding: 0.5rem;
-  margin: 0 0.25rem 2rem;
 
   div {
     font-size: 0.8rem;
   }
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    margin-bottom: 2rem;
     margin-top: 0;
     padding: 1.25rem;
     div {
-      font-size: 1.25rem;
+      font-size: 1.15rem;
     }
   }
 `;
@@ -58,22 +53,25 @@ const AvailableLayoutWithTabs: FC<AvailableLayoutWithTabsProps> = ({
 }) => {
   return (
     <PageLayout>
-      <Section>{tabs}</Section>
-      <Main>{children}</Main>
+      <LayoutWrapper>
+        <Section>{tabs}</Section>
+        <Main>{children}</Main>
+      </LayoutWrapper>
     </PageLayout>
   );
 };
 
-const Column = styled(Col)`
-  padding: 0;
-  div {
-    font-size: 0.8rem;
-  }
+const IntroText = styled.div`
+  margin: 1.25rem 0 1rem 0;
+  font-family: 'Duru Sans';
+  font-size: 0.8rem;
+  color: ${({ theme }) => theme.text};
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
-    padding: 0;
-    div {
-      font-size: 1.15rem;
-    }
+    font-size: 1rem;
+  }
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    font-size: 1.15rem;
+    padding-right: 1rem;
   }
 `;
 
@@ -83,31 +81,21 @@ const Navigation: FC<{
 }> = ({ tabCategory, setTabCategory }) => {
   const history = useHistory();
   return (
-    <div className='d-flex flex-column'>
-      <Container>
-        <Column>
-          <Text
-            fontFamily='Duru Sans'
-            fontSize='1.15rem'
-            marginBottom='1rem'
-            textIndent='1rem'
-          >
+    <div>
+      <RowContainer>
+        <Col lg={8} className='px-0'>
+          <IntroText>
             We are excited that you are interested in adding a dachshund or
             dachshund-mix to your family! Here you can find a list of all dogs
             that are available for adoption. Some of our dogs are not posted to
             the website, so even if you do not find the dog you are looking for
             please feel free to submit an application and we can look for that
             perfect dog for you!
-          </Text>
-        </Column>
-        <Column>
+          </IntroText>
+        </Col>
+        <Col lg={4} className='px-0'>
           <HealthCheckListCard>
-            <Text
-              fontSize='1.5rem'
-              bold='bold'
-              marginBottom='0.75rem'
-              color='#fff'
-            >
+            <Text bold='bold' marginBottom='0.75rem' color='#fff'>
               When you adopt from LPDR, you are getting a dachshund who:
             </Text>
             {[
@@ -124,34 +112,39 @@ const Navigation: FC<{
               </div>
             ))}
           </HealthCheckListCard>
-        </Column>
-      </Container>
-      <Container className='d-flex flex-column'>
-        <TabContainer>
-          {[
-            { linkText: 'Available Dachshunds', linkKey: '/available' },
-            { linkText: 'Adopt A Senior', linkKey: '/available/senior' },
-          ].map((tab: { linkText: string; linkKey: string }, i: number) => (
-            <Tab
-              key={i}
-              onClick={() => {
-                history.push(tab.linkKey);
-                setTabCategory(tab.linkText);
-              }}
-              active={tab.linkText === tabCategory}
-            >
-              {tab.linkText}
-            </Tab>
-          ))}
-        </TabContainer>
-      </Container>
+        </Col>
+      </RowContainer>
+      <TabContainer>
+        {[
+          { linkText: 'Available Dachshunds', linkKey: '/available' },
+          { linkText: 'Adopt A Senior', linkKey: '/available/senior' },
+        ].map((tab: { linkText: string; linkKey: string }, i: number) => (
+          <Tab
+            key={i}
+            onClick={() => {
+              history.push(tab.linkKey);
+              setTabCategory(tab.linkText);
+            }}
+            active={tab.linkText === tabCategory}
+          >
+            {tab.linkText}
+          </Tab>
+        ))}
+      </TabContainer>
     </div>
   );
 };
 
 const AvailableRoutes: FC = () => {
   const { path } = useRouteMatch();
+  const { pathname } = useLocation();
   const [tabCategory, setTabCategory] = useState('Available Dachshunds');
+
+  useEffect(() => {
+    if (pathname === '/available/senior') {
+      setTabCategory('Adopt A Senior');
+    }
+  }, [pathname]);
   return (
     <AvailableLayoutWithTabs
       tabs={

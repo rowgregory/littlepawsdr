@@ -9,7 +9,7 @@ import Pretzel from '../../components/assets/pretzel-1.jpg';
 import { useLocation } from 'react-router-dom';
 
 export const Container = styled.div`
-  margin: 0 0.25rem;
+  margin: 0;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
     margin: 0 1rem;
   }
@@ -28,25 +28,29 @@ const AdoptContainer = styled.div`
 export const TabContainer = styled.div`
   display: flex;
   flex-direction: row;
-  width: fit-content;
+  width: 94vw;
   gap: 3px;
-  margin-bottom: 2rem;
-  flex-wrap: wrap;
+  margin: 1rem 0;
+  overflow-x: scroll !important;
+  ::-webkit-scrollbar-thumb,
+  ::-webkit-scrollbar-track,
+  ::-webkit-scrollbar {
+    display: none;
+  }
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
     grid-gap: 0.25rem;
-    margin-bottom: 5rem;
-    flex-wrap: wrap;
   }
 `;
 
 export const Tab = styled.div<{ active: boolean }>`
-  width: inherit;
-  padding: 0 0.75rem;
-  height: 50px;
-  border: 1px solid ${({ theme }) => theme.input.border};
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  padding: 1rem 1.75rem;
+  width: max-content;
+  white-space: nowrap;
+  text-align: center;
+  border: 1px solid
+    ${({ theme, active }) =>
+      active ? theme.smcontainer.bg : theme.input.border};
+
   cursor: pointer;
   transition: 300ms;
   background: ${({ theme, active }) => (active ? theme.smcontainer.bg : '')};
@@ -109,7 +113,10 @@ const Adoption = () => {
   const { state } = useLocation() as any;
   const [tabCategory, setTabCategory] = useState('Main');
   useEffect(() => {
-    if (state) setTabCategory(state === 'Adopt' ? 'Main' : '');
+    if (state)
+      setTabCategory(
+        state === 'Adopt' ? 'Main' : state === 'Fees' ? 'Fees' : ''
+      );
   }, [state]);
 
   return (

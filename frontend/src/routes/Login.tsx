@@ -23,9 +23,9 @@ export const StyledBtn = styled(Button)`
   }
 `;
 export const StyledLink = styled(Link)`
-  color: ${({ theme }) => theme.colors.quaternary};
+  color: ${({ theme }) => theme.smcontainer.bg};
   :hover {
-    color: ${({ theme }) => theme.colors.quaternary};
+    color: ${({ theme }) => theme.smcontainer.hoverBg};
     text-decoration: none;
   }
 `;
@@ -111,7 +111,7 @@ const Login = ({ location, history }: any) => {
           Sign in to Little Paws
         </Text>
         <GoBackBtn to='/'>Go Back</GoBackBtn>
-        <FormContainer className='p-4'>
+        <FormContainer className='p-4 mt-3'>
           <Form onSubmit={submitHandler}>
             <Form.Group controlId='email'>
               <Form.Label>Email Address</Form.Label>

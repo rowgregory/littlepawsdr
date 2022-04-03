@@ -160,8 +160,9 @@ const OurLovablePals = () => {
       {loading && (
         <SectionContainer>
           <DogContainer className='mx-0'>
+            <SectionTitle to='/available'>Lovable Pals</SectionTitle>
             {[1, 2, 3, 4]?.map((_: any, i: number) => (
-              <LoadingImg h='300px' w='100%' key={i} />
+              <LoadingImg h='597px' w='100%' key={i} />
             ))}
           </DogContainer>
         </SectionContainer>

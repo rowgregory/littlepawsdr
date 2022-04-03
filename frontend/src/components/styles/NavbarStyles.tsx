@@ -28,7 +28,7 @@ export const AvatarInitials = styled.div<AvatarInitialsProps>`
   }
 `;
 
-export const StyledAvatar = styled(Image)<{ path?: string }>`
+export const StyledAvatar = styled(Image)<{ path: string }>`
   width: 2.8125rem;
   height: 2.8125rem;
   cursor: pointer;
@@ -38,21 +38,27 @@ export const StyledAvatar = styled(Image)<{ path?: string }>`
       ? `2px solid ${theme.header.link.avatarHover}`
       : `2px solid ${theme.header.cart}`};
   margin: 0 0.5rem;
+
   :hover {
     border: 2px solid ${({ theme }) => theme.header.link.avatarHover};
     background: ${({ theme }) => theme.header.link.avatarHover};
   }
 `;
 
-export const AvatarContainer = styled.div<{ isvisible?: boolean }>`
+export const AvatarContainer = styled.div<{
+  path: string;
+  isvisible?: boolean;
+}>`
   cursor: pointer;
   height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 0 0.5rem;
-  background: ${({ isvisible, theme }) =>
-    isvisible ? theme.header.link.hoverText : ''};
+  background: ${({ isvisible, theme, path }) =>
+    isvisible || ['admin'].includes(path.split('/')[1])
+      ? theme.header.link.hoverText
+      : ''};
   box-shadow: ${({ theme, isvisible }) =>
     isvisible ? `0 -10px 0 -5px ${theme.header.link.underline} inset` : ''};
   :hover {
@@ -98,7 +104,7 @@ export const LoginContainer = styled.div<{ active?: string; open?: boolean }>`
         ? `0 -10px 0 -5px ${theme.header.link.underline} inset`
         : ''};
     background: ${({ theme, active }) =>
-      active === 'true' ? theme.secondaryBg : ''};
+      active === 'true' ? theme.header.link.hoverText : ''};
     span {
       color: #fff;
     }

@@ -11,7 +11,10 @@ import { Text } from '../components/styles/Styles';
 import { Container, StyledBtn, StyledLink, ThemeProps } from './Login';
 import HorizontalLoader from '../components/HorizontalLoader';
 import PasswordMeter from '../components/PasswordMeter';
-import { USER_REGISTER_RESET } from '../constants/userConstants';
+import {
+  USER_REGISTER_RESET,
+  USER_VERIFY_EMAIL_RESET,
+} from '../constants/userConstants';
 import DayLogo from '../components/assets/transparent-logo.png';
 import styled, { useTheme } from 'styled-components';
 import NightLogo from '../components/assets/neon-purple-logo.png';
@@ -147,9 +150,24 @@ const Register = ({ location, history, match }: any) => {
             onClose,
             'error'
           ),
-        { position: 'bottom-left' }
+        { position: 'top' }
       );
   }, [errorUserConfirmed, errorVerifyEmailSent, message, userRegisterError]);
+
+  useEffect(() => {
+    if (succesVerifyEmailSent) {
+      toaster.notify(
+        ({ onClose }) =>
+          ToastAlert(userInfoVerifyEmail?.message, onClose, 'success'),
+        { position: 'top' }
+      );
+
+      setTimeout(() => {
+        dispatch({ type: USER_REGISTER_RESET });
+        dispatch({ type: USER_VERIFY_EMAIL_RESET });
+      }, 3000);
+    }
+  }, [dispatch, succesVerifyEmailSent, userInfoVerifyEmail]);
 
   return (
     <Container>
@@ -175,9 +193,6 @@ const Register = ({ location, history, match }: any) => {
         >
           Welcome to Little Paws Dachshund Rescue
         </Text>
-        {succesVerifyEmailSent && (
-          <Message variant='success'>{userInfoVerifyEmail.message}</Message>
-        )}
         {expiredToken && <Message variant='warning'>Expired token</Message>}
         {loadingUserConfirmed && <HorizontalLoader />}
         {userRegisterLoading && <HorizontalLoader />}

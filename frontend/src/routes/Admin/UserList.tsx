@@ -76,7 +76,7 @@ const UserList = ({ history }: any) => {
         <Message variant='danger'>{error}</Message>
       ) : (
         <Col>
-          <Table hover responsive className='table-md'>
+          <Table hover responsive className='table-sm'>
             <TableHead>
               <tr>
                 <th>ONLINE</th>

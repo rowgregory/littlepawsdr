@@ -45,7 +45,7 @@ const Donate = lazy((): LazyModulePromise => import('./Donate'));
 const Page = styled(Container)<{ url: string }>`
   width: 100%;
   height: auto;
-  min-height: calc(100vh - 182.57px);
+  min-height: calc(100vh - 98px);
   display: flex;
   flex-direction: column;
   padding: 0;

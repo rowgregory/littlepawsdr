@@ -9,13 +9,6 @@ import { LoadingImg } from '../../components/styles/Styles';
 const Container = styled.div`
   display: flex;
   justify-content: center;
-  margin: 0.25rem;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    margin: 1rem;
-  }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[4]}) {
-    margin: 0 48px;
-  }
 `;
 const CardContainer = styled.div<{ width?: any }>`
   display: grid;
@@ -26,7 +19,7 @@ const CardContainer = styled.div<{ width?: any }>`
     grid-template-columns: 1fr 1fr;
   }
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[4]}) {
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
   }
 `;
 
