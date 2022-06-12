@@ -6,12 +6,9 @@ import {
   DACHSHUND_DETAILS_REQUEST,
   DACHSHUND_DETAILS_SUCCESS,
   DACHSHUND_DETAILS_FAIL,
-  DACHSHUND_SUCCESSFUL_ADOPTIONS_REQUEST,
-  DACHSHUND_SUCCESSFUL_ADOPTIONS_SUCCESS,
-  DACHSHUND_SUCCESSFUL_ADOPTIONS_FAIL,
-  DACHSHUND_SANCTUARY_OR_PASSED_AWAY_REQUEST,
-  DACHSHUND_SANCTUARY_OR_PASSED_AWAY_SUCCESS,
-  DACHSHUND_SANCTUARY_OR_PASSED_AWAY_FAIL,
+  DACHSHUND_PICS_VIDS_STASTUSES_REQUEST,
+  DACHSHUND_PICS_VIDS_STASTUSES_SUCCESS,
+  DACHSHUND_PICS_VIDS_STASTUSES_FAIL,
 } from '../constants/dachshundConstants';
 import API from '../utils/api';
 import { getPicturesAndCoordinates } from '../utils/getPicturesAndCoordinates';
@@ -69,53 +66,24 @@ export const getDachshundDetails = (id: number) => async (dispatch: any) => {
   }
 };
 
-export const getDachshundSuccessfulAdoptions = () => async (dispatch: any) => {
-  try {
-    dispatch({ type: DACHSHUND_SUCCESSFUL_ADOPTIONS_REQUEST });
-
-    const response = await API.getAllSuccessfulAdoptions();
-
-    if (response?.data) {
-      getPicturesAndCoordinates(response);
-    }
-
-    dispatch({
-      type: DACHSHUND_SUCCESSFUL_ADOPTIONS_SUCCESS,
-      payload: response,
-    });
-  } catch (error: any) {
-    dispatch({
-      type: DACHSHUND_SUCCESSFUL_ADOPTIONS_FAIL,
-      payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message,
-    });
-  }
-};
-
-export const getDachshundSanctuaryOrPassedAway =
-  (id: string) => async (dispatch: any) => {
+export const getDogsByStatusPicturesAndVideours =
+  (criteria: string) => async (dispatch: any) => {
     try {
-      dispatch({ type: DACHSHUND_SANCTUARY_OR_PASSED_AWAY_REQUEST });
+      dispatch({ type: DACHSHUND_PICS_VIDS_STASTUSES_REQUEST });
 
-      const response = await API.getSanctuaryAndPassedAway();
+      const response = await API.getPicturesStatusesAndVideo(criteria);
 
       if (response?.data) {
         getPicturesAndCoordinates(response);
       }
 
-      const filteredDogs = response?.data?.filter(
-        (dachshund: any) => dachshund.relationships.statuses.data[0].id === id
-      );
-
       dispatch({
-        type: DACHSHUND_SANCTUARY_OR_PASSED_AWAY_SUCCESS,
-        payload: filteredDogs,
+        type: DACHSHUND_PICS_VIDS_STASTUSES_SUCCESS,
+        payload: response.data,
       });
     } catch (error: any) {
       dispatch({
-        type: DACHSHUND_SANCTUARY_OR_PASSED_AWAY_FAIL,
+        type: DACHSHUND_PICS_VIDS_STASTUSES_FAIL,
         payload:
           error.response && error.response.data.message
             ? error.response.data.message

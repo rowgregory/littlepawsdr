@@ -98,7 +98,7 @@ const PasswordMeter = ({ validations, strength }: any) => {
           ) : (
             <i className='fas fa-times' style={{ color: 'red' }}></i>
           )}
-          &nbsp; must contain one of $&+,:;=?@#
+          &nbsp; must contain one of !$&+,:;=?@#
         </Text>
       </div>
     </>

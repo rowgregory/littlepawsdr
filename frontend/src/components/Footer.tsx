@@ -12,7 +12,7 @@ const quickLinks = () => {
   return [
     {
       linkKey: 'Available Dachshunds',
-      linkPath: '/available/dogs',
+      linkPath: '/available',
     },
     {
       linkKey: 'Adoption Information',
@@ -26,7 +26,7 @@ const quickLinks = () => {
     },
     {
       linkKey: 'Volunteer Information',
-      linkPath: '/volunteer',
+      linkPath: '/volunteer/volunteer-application',
       path: 'Volunteer application',
     },
     {
@@ -146,7 +146,7 @@ const Footer = () => {
           <Col className='d-flex flex-column mt-4 align-items-center'>
             <Text
               fontSize='1.75em'
-              bold='bold'
+              fontWeight='bold'
               color='#fff'
               fontFamily={`'Ubuntu', sans-serif`}
             >

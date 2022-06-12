@@ -42,7 +42,7 @@ const SideBar = () => {
   const { pathname: path } = useLocation();
   return (
     <Container>
-      <Text bold='bold' className='py-2 px-3'>
+      <Text fontWeight='bold' className='py-2 px-3'>
         Account settings
       </Text>
       <div className='d-flex flex-column'>

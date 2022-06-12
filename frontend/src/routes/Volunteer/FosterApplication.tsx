@@ -5,26 +5,9 @@ import { Text, StyledCard } from '../../components/styles/Styles';
 
 const FosterApplicationIFrame = styled.iframe`
   border: none;
-  @media only screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation: landscape) {
-    min-height: 6900px;
-  }
-  @media only screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation: portrait) {
-    min-height: 7000px;
-  }
-  @media only screen and (min-width: 820px) {
-    height: 6700px;
-  }
-  @media only screen and (max-width: 819px) {
-    height: 6750px;
-  }
-  @media only screen and (max-width: 760px) {
-    height: 6800px;
-  }
-  @media only screen and (max-width: 620px) {
-    height: 7100px;
-  }
-  @media only screen and (max-width: 480px) {
-    height: 7400px;
+  height: 8000px;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+    height: 7000px;
   }
 `;
 

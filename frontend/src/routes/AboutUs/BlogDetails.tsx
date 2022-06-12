@@ -42,7 +42,7 @@ const BlogDetails = () => {
             <Text
               fontFamily={`Ubunutu, sans-serif`}
               fontSize='2.5rem'
-              bold='bold'
+              fontWeight='bold'
             >
               {blog?.title}
             </Text>

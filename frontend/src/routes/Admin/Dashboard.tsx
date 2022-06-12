@@ -339,7 +339,7 @@ const Dashboard = () => {
                       <div className='d-flex flex-column'>
                         <DataSquareTitle>{obj?.title}</DataSquareTitle>
                         <Text
-                          bold='bold'
+                          fontWeight='bold'
                           fontSize='1.75rem'
                           marginBottom='1rem'
                         >
@@ -382,7 +382,12 @@ const Dashboard = () => {
             <LoadingImg w='100%' h='100%' />
           ) : (
             <TopSellingProducts>
-              <Text textAlign='center' p='1rem' fontSize='0.8rem' bold='900'>
+              <Text
+                textAlign='center'
+                p='1rem'
+                fontSize='0.8rem'
+                fontWeight='900'
+              >
                 Top Selling Products
               </Text>
               <table className='w-100'>

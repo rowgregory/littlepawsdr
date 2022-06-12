@@ -170,7 +170,7 @@ const MobileNavbar = ({
             )}
           </Circle>
           <div className='d-flex flex-column ml-2'>
-            <Text fontSize='1.2rem' bold='bold' color='#fff'>
+            <Text fontSize='1.2rem' fontWeight='bold' color='#fff'>
               {userInfo?.name ?? 'Little Paws Dachshund Rescue'}
             </Text>
             <Text color='#fff'>{userInfo?.email}</Text>

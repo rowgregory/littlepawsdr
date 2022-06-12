@@ -2,6 +2,7 @@ import { combineReducers } from 'redux';
 import {
   dachshundDetailsReducer,
   dachshundListReducer,
+  dachshundPicturesVideosStatusReducer,
   dachshundSanctuaryOrPassedAwayReducer,
   dachshundSuccessfulAdoptionsReducer,
 } from './dachshundReducer';
@@ -111,6 +112,7 @@ const allReducers = combineReducers({
   dachshundDetails: dachshundDetailsReducer,
   dachshundSuccessfulAdoptions: dachshundSuccessfulAdoptionsReducer,
   dachshundSanctuaryOrPassedAway: dachshundSanctuaryOrPassedAwayReducer,
+  dachshundPicturesVideosStatuses: dachshundPicturesVideosStatusReducer,
   userLogin: userLoginReducer,
   userRegister: userRegisterReducer,
   userDetails: userDetailsReducer,

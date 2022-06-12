@@ -28,26 +28,24 @@ export const PayPalButton = styled.input`
 
 const SponsorSanctuary = () => {
   return (
-    <div className='d-flex flex-column '>
-      <Col className='my-3 w-100 d-flex  px-0'>
-        <StyledCard className='p-3 bg-transparent'>
-          <Text className='mb-3' fontSize='1.15rem'>
-            In addition to our adoptable dogs, we have sanctuary foster dogs.
-            These special dogs are not able to be adopted due to medical or
-            behavioral circumstances, and will remain in LPDR’s care for the
-            remainder of their lives. Many of our sanctuary fosters are in their
-            senior years and require a little extra care. Some require monthly
-            medication, while others need monthly supplies of diapers or more
-            frequent visits to the vet.
-          </Text>
-          <Text fontSize='1.15rem'>
-            Please consider sponsoring one of our dear sanctuary dogs below.
-          </Text>
-        </StyledCard>
+    <Row className='d-flex'>
+      <Col md={6} className='my-3 d-flex flex-column'>
+        <Text className='mb-3' fontSize='1.15rem'>
+          In addition to our adoptable dogs, we have sanctuary foster dogs.
+          These special dogs are not able to be adopted due to medical or
+          behavioral circumstances, and will remain in LPDR’s care for the
+          remainder of their lives. Many of our sanctuary fosters are in their
+          senior years and require a little extra care. Some require monthly
+          medication, while others need monthly supplies of diapers or more
+          frequent visits to the vet.
+        </Text>
+        <Text fontSize='1.15rem'>
+          Please consider sponsoring one of our dear sanctuary dogs below.
+        </Text>
       </Col>
-      <Col className='d-flex px-0'>
-        <PayPalCard className='my-3'>
-          <Text bold='bold' fontSize='20px' className='my-3'>
+      <Col md={6} className='d-flex justify-content-center px-0'>
+        <PayPalCard>
+          <Text fontWeight='bold' fontSize='20px' className='my-3'>
             Monthly Sponsorship
           </Text>
           <Card.Body className='d-flex justify-content-center p-0'>
@@ -124,7 +122,7 @@ const SponsorSanctuary = () => {
         </PayPalCard>
       </Col>
       <HorizontalLine />
-      <Row>
+      {/* <Row>
         <Col className='d-flex flex-column'>
           {sanctuaryDogData().map((dog, i: number) => (
             <div key={i} className='w-100 mb-2'>
@@ -152,8 +150,8 @@ const SponsorSanctuary = () => {
           ))}
         </Col>
       </Row>
-      <HorizontalLine />
-    </div>
+      <HorizontalLine /> */}
+    </Row>
   );
 };
 

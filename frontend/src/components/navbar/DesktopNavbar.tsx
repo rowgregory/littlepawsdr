@@ -54,9 +54,6 @@ const LogoContainer = styled(Link)`
       margin-left: -10px;
       max-height: 125px;
     }
-    :hover {
-      background: #fff;
-    }
   }
 `;
 

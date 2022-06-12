@@ -119,7 +119,7 @@ export const SettingsTitleContainer = styled.div`
 
 interface TextProps {
   fontSize?: string;
-  bold?: string;
+  fontWeight?: string | number;
   color?: string;
   marginBottom?: string;
   marginLeft?: string;
@@ -139,7 +139,7 @@ export const Text = styled.div<TextProps>`
   margin-bottom: ${({ marginBottom }) => (marginBottom ? marginBottom : '0')};
   margin-left: ${({ marginLeft }) => (marginLeft ? marginLeft : '0')};
   margin-right: ${({ marginRight }) => (marginRight ? marginRight : '0')};
-  font-weight: ${({ bold }) => (bold ? 'bold' : 'normal')};
+  font-weight: ${({ fontWeight }) => (fontWeight ? fontWeight : 300)};
   font-family: ${({ fontFamily }) =>
     fontFamily ? fontFamily : `'Libre Franklin', sans-serif`};
   color: ${({ theme, color }) => (color ? color : theme.text)};

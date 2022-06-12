@@ -95,7 +95,7 @@ const Navigation: FC<{
         </Col>
         <Col lg={4} className='px-0'>
           <HealthCheckListCard>
-            <Text bold='bold' marginBottom='0.75rem' color='#fff'>
+            <Text fontWeight='bold' marginBottom='0.75rem' color='#fff'>
               When you adopt from LPDR, you are getting a dachshund who:
             </Text>
             {[

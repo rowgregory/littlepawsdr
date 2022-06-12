@@ -89,7 +89,7 @@ const UserDropdown = ({
                 </AvatarInitials>
               )}
               <div className='py-3 d-flex flex-column align-items-center'>
-                <Text bold='bold'>{userInfo?.name}</Text>
+                <Text fontWeight='bold'>{userInfo?.name}</Text>
                 <Text fontSize='0.75rem'>{userInfo?.email}</Text>
               </div>
             </NavDropdownItem>

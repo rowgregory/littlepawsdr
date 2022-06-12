@@ -21,7 +21,8 @@ const shakeAnim = keyframes`
   }
 `;
 export const Content = styled.div<{ shake?: any }>`
-  background: transparent;
+  background: ${({ theme }) => theme.bg};
+  padding: 1rem;
   transform: translate3d(0, 0, 0);
   perspective: 1000px;
   animation: ${({ shake }) =>

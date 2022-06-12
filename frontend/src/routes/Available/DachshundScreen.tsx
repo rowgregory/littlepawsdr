@@ -5,7 +5,7 @@ import { Row, Col, Carousel, Image } from 'react-bootstrap';
 import { getDachshundDetails } from '../../actions/dachshundsActions';
 import Message from '../../components/Message';
 import Loader from '../../components/Loader';
-import DachshundMap from '../../components/DachshundMap';
+// import DachshundMap from '../../components/DachshundMap';
 import { StyledCarousel, Text } from '../../components/styles/Styles';
 import styled, { useTheme } from 'styled-components';
 import { locationsPromise } from '../../utils/attributePromises';
@@ -29,7 +29,7 @@ interface DachshundDetails {
 }
 
 const Container = styled.div`
-  margin: 0 48px;
+  /* margin: 0 48px; */
 `;
 
 const AdoptMeLink = styled(Link)`
@@ -142,8 +142,8 @@ const DachshundScreen = ({ match, history }: any) => {
     ageGroup,
     sex,
     adultSexesOk,
-    isYardRequired,
-    fenceNeeds,
+    // isYardRequired,
+    // fenceNeeds,
     adoptionFeeString,
     descriptionText,
     photos,
@@ -163,7 +163,7 @@ const DachshundScreen = ({ match, history }: any) => {
       ) : (
         <>
           <Row>
-            <Col lg={5} md={12}>
+            <Col lg={7} md={12}>
               <StyledCarousel pause='hover'>
                 {photos?.map((photo: string, i: number) => (
                   <Carousel.Item key={i} interval={2000}>
@@ -173,7 +173,7 @@ const DachshundScreen = ({ match, history }: any) => {
               </StyledCarousel>
               <div className='d-flex align-items-center justify-content-center mb-3 mt-5 w-100'>
                 <Text
-                  bold='bold'
+                  fontWeight='bold'
                   fontSize='1.5rem'
                   style={{ color: isDay ? '#9a82b1' : '#a5fe91' }}
                 >
@@ -190,11 +190,11 @@ const DachshundScreen = ({ match, history }: any) => {
                 </AdoptMeLink>
               </div>
             </Col>
-            <Col lg={7} md={12} className='d-flex flex-column'>
+            <Col lg={5} md={12} className='d-flex flex-column'>
               <Text
                 fontFamily={`Ubuntu, sans-serif`}
                 fontSize='2rem'
-                bold='bold'
+                fontWeight='bold'
               >
                 {name}
               </Text>
@@ -220,7 +220,7 @@ const DachshundScreen = ({ match, history }: any) => {
                     </Text>
                   </div>
                 )}
-                {isYardRequired && (
+                {/* {isYardRequired && (
                   <div className='d-flex align-items-start'>
                     <PawPrint />
                     <Text marginLeft='1rem' marginBottom='0.4rem'>
@@ -237,7 +237,7 @@ const DachshundScreen = ({ match, history }: any) => {
                         : `Fence required: ${fenceNeeds}`}
                     </Text>
                   </div>
-                )}
+                )} */}
                 <div className='d-flex align-items-start'>
                   <PawPrint />
                   <Text marginLeft='1rem' marginBottom='0.4rem'>
@@ -248,7 +248,7 @@ const DachshundScreen = ({ match, history }: any) => {
               <HorizontalLine />
               <div className='d-flex align-items-baseline'>
                 <Text
-                  bold='bold'
+                  fontWeight='bold'
                   fontFamily={`Ubuntu, sans-serif`}
                   fontSize='1rem'
                 >
@@ -256,31 +256,30 @@ const DachshundScreen = ({ match, history }: any) => {
                 </Text>
                 <Text className='ml-2'>{typeLocations}</Text>
               </div>
-              <div className='my-3'>
+              {/* <div className='my-3'>
                 <DachshundMap location={typeLocations} />
-              </div>
+              </div> */}
               <HorizontalLine />
+              <Text
+                fontSize='1.25rem'
+                textIndent='1rem'
+                style={{ whiteSpace: 'pre-line' }}
+              >
+                {descriptionText !== undefined &&
+                  descriptionText
+                    .replace(/&#39;/g, "'")
+                    .replace(/&rsquo;/g, "'")
+                    .replace(/&amp;/g, '&')
+                    .replace(/&nbsp;/g, '')}
+              </Text>
             </Col>
           </Row>
-          <div className='p-3 mt-4'>
-            <Text
-              fontSize='1.25rem'
-              textIndent='1rem'
-              style={{ whiteSpace: 'pre-line' }}
-            >
-              {descriptionText !== undefined &&
-                descriptionText
-                  .replace(/&#39;/g, "'")
-                  .replace(/&rsquo;/g, "'")
-                  .replace(/&amp;/g, '&')
-                  .replace(/&nbsp;/g, '')}
-            </Text>
-          </div>
+
           <HorizontalLine />
           <BottomSection>
             <div className='d-flex flex-column p-3'>
               <Text
-                bold='bold'
+                fontWeight='bold'
                 fontSize='1.25rem'
                 marginBottom='0.75rem'
                 fontFamily='Duru Sans'
@@ -297,7 +296,7 @@ const DachshundScreen = ({ match, history }: any) => {
             </div>
             <div className='d-flex flex-column p-3'>
               <Text
-                bold='bold'
+                fontWeight='bold'
                 fontSize='1.25rem'
                 marginBottom='0.75rem'
                 fontFamily='Duru Sans'
@@ -311,7 +310,7 @@ const DachshundScreen = ({ match, history }: any) => {
             </div>
             <div className='d-flex flex-column p-3'>
               <Text
-                bold='bold'
+                fontWeight='bold'
                 fontSize='1.25rem'
                 marginBottom='0.75rem'
                 fontFamily='Duru Sans'

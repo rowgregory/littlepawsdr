@@ -220,7 +220,7 @@ const MyOrders = ({ history }: any) => {
                   <Row className='d-flex justify-content-between'>
                     <Col md={9}>
                       <Col className='px-0'>
-                        <Text fontSize='1.15rem' bold='bold'>
+                        <Text fontSize='1.15rem' fontWeight='bold'>
                           Estimated Delivery:{' '}
                           {estimatedDelivery(order.createdAt)}
                         </Text>

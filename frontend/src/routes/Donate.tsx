@@ -21,7 +21,7 @@ const Navigation: FC<{
     <Text
       fontFamily={`Ubuntu, sans-serif`}
       fontSize='24px'
-      bold='bold'
+      fontWeight='bold'
       marginBottom='0.5rem'
     >
       Interested in supporting Little Paws Dachshund Rescue?

@@ -63,23 +63,11 @@ export const patternsPromise = (dachshund: any, setTypePatterns: any) =>
   );
 
 export const locationsPromise = (dachshund: any, setTypeLocations: any) => {
-  new Promise((resolve, reject) => {
-    if (dachshund !== undefined && dachshund !== false) {
-      const locationsObj = dachshund?.included?.find((obj: any) => {
-        if (obj.type === 'locations') {
-          return obj;
-        }
-      });
-      if (locationsObj !== undefined) {
-        resolve(locationsObj);
+  new Promise((resolve, reject) =>
+    dachshund?.included?.find((obj: any) => {
+      if (obj.type === 'locations') {
+        return resolve(setTypeLocations(obj.attributes.name));
       }
-    }
-  }).then(
-    (result: any) => {
-      setTypeLocations(result.attributes.name);
-    },
-    (err) => {
-      console.log(err);
-    }
+    })
   );
 };

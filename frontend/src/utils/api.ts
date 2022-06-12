@@ -37,47 +37,26 @@ const API = {
       console.log('error => ', err);
     }
   },
-  getAllSuccessfulAdoptions: async () => {
+  getPicturesStatusesAndVideo: async (criteria?: string | string) => {
     try {
       const response = await fetch(
-        `https://api.rescuegroups.org/v5/public/orgs/5798/animals/search/dogs?include=pictures&sort=-%2Banimals.adoptedDate&page=1&limit=250`,
+        'https://api.rescuegroups.org/v5/public/orgs/5798/animals/search/dogs?limit=250&sort=-%2Banimals.adoptedDate',
         {
-          method: 'GET',
+          method: 'POST',
           headers,
+          body: JSON.stringify({
+            data: {
+              filters: [
+                {
+                  fieldName: 'statuses.name',
+                  operation: 'equal',
+                  criteria,
+                },
+              ],
+            },
+          }),
         }
       );
-
-      const data = await response.json();
-      return data;
-    } catch (err) {
-      console.log('error => ', err);
-    }
-  },
-  getSanctuaryAndPassedAway: async () => {
-    try {
-      const response = await fetch(
-        `https://api.rescuegroups.org/v5/public/orgs/5798/animals/search/dogs&sort=%2Banimals.name&page=4&limit=250`,
-        {
-          method: 'GET',
-          headers,
-        }
-      );
-
-      const data = await response.json();
-      return data;
-    } catch (err) {
-      console.log('error => ', err);
-    }
-  },
-  getQuotes: async () => {
-    try {
-      const response = await fetch(`https://type.fit/api/quotes`, {
-        method: 'GET',
-        headers: {
-          async: 'true',
-          crossDomain: 'true',
-        },
-      });
 
       const data = await response.json();
       return data;

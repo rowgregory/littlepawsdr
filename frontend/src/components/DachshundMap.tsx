@@ -1,14 +1,16 @@
 import React, { FC, useEffect, useState } from 'react';
 import { GoogleMap, Marker, useLoadScript } from '@react-google-maps/api';
 import Message from './Message';
-import Loader from './Loader';
 import Geocode from 'react-geocode';
+import SpinningGlobe from './SpinningGlobe';
 
 interface MapProps {
   location: string;
 }
 
 const DachshundMap: FC<MapProps> = ({ location }) => {
+  console.log(location);
+  const [, setNoLocation] = useState(false);
   const [latLng, setLatLng] = useState({}) as any;
   const containerStyle = {
     height: '500px',
@@ -39,8 +41,8 @@ const DachshundMap: FC<MapProps> = ({ location }) => {
           const { lat, lng } = response.results[0].geometry.location;
           setLatLng({ lat, lng });
         },
-        (error: any) => {
-          console.error('ERROR', error);
+        () => {
+          setNoLocation(true);
         }
       );
   }, [location]);
@@ -66,7 +68,7 @@ const DachshundMap: FC<MapProps> = ({ location }) => {
       />
     </GoogleMap>
   ) : (
-    <Loader />
+    <SpinningGlobe />
   );
 };
 

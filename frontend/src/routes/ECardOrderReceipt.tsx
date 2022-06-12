@@ -102,7 +102,7 @@ const ECardOrderReceipt = () => {
             <HorizontalLine />
             <div>
               <CategoryTitles className='d-flex justify-content-between align-items-center'>
-                <Text bold='bold' fontSize='1.125rem'>
+                <Text fontWeight='bold' fontSize='1.125rem'>
                   Status<i className='fas fa-info-circle fa-sm ml-2'></i>
                 </Text>
               </CategoryTitles>
@@ -126,12 +126,12 @@ const ECardOrderReceipt = () => {
             </div>
             <HorizontalLine margin='1.875rem 0 1rem' />
             <CategoryTitles>
-              <Text bold='bold' fontSize='1.125rem'>
+              <Text fontWeight='bold' fontSize='1.125rem'>
                 Arrival Date <i className='fas fa-truck-loading fa-sm ml-2'></i>
               </Text>
             </CategoryTitles>
             <div className='mb-1 pl-3'>
-              <Text fontSize='0.85rem' bold='bold' marginBottom='0.3rem'>
+              <Text fontSize='0.85rem' fontWeight='bold' marginBottom='0.3rem'>
                 {loading ? (
                   <Spinner animation='border' size='sm' />
                 ) : (
@@ -154,10 +154,10 @@ const ECardOrderReceipt = () => {
             </div>
             <HorizontalLine margin='1rem 0' />
             <div className='d-flex justify-content-between pl-3'>
-              <Text fontSize='0.85rem' bold='bold'>
+              <Text fontSize='0.85rem' fontWeight='bold'>
                 Total
               </Text>
-              <Text fontSize='0.85rem' bold='bold'>
+              <Text fontSize='0.85rem' fontWeight='bold'>
                 {loading ? (
                   <Spinner animation='border' size='sm' />
                 ) : (

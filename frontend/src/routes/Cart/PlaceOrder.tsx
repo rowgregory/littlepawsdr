@@ -321,7 +321,7 @@ const PlaceOrder = ({ history }: any) => {
               Checkout
             </Text>
             <LeftRailSectionTitle>
-              <Text bold='bold' fontSize='0.9375rem'>
+              <Text fontWeight='bold' fontSize='0.9375rem'>
                 Hi, {userInfo?.name.toUpperCase() ?? guestUserInfo.email}
               </Text>
             </LeftRailSectionTitle>
@@ -478,7 +478,7 @@ const PlaceOrder = ({ history }: any) => {
         </LeftRail>
         <RightRail sm={12} className='right-rail'>
           <Col className='px-0'>
-            <Text bold='bold' fontSize='1.125rem' marginBottom='1.125rem'>
+            <Text fontWeight='bold' fontSize='1.125rem' marginBottom='1.125rem'>
               Your items
             </Text>
 

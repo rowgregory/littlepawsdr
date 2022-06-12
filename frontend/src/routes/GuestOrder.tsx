@@ -197,7 +197,7 @@ const GuestOrder = ({ match }: any) => {
 
             <div>
               <CategoryTitles className='d-flex justify-content-between align-items-center'>
-                <Text bold='bold' fontSize='1.125rem'>
+                <Text fontWeight='bold' fontSize='1.125rem'>
                   Status<i className='fas fa-info-circle fa-sm ml-2'></i>
                 </Text>
                 {userInfo?.isAdmin && (
@@ -236,12 +236,16 @@ const GuestOrder = ({ match }: any) => {
             <HorizontalLine margin='1.875rem 0 1rem' />
             <div>
               <CategoryTitles>
-                <Text bold='bold' fontSize='1.125rem'>
+                <Text fontWeight='bold' fontSize='1.125rem'>
                   Shipping Summary <i className='fas fa-truck fa-sm ml-2'></i>
                 </Text>
               </CategoryTitles>
               <div className='mb-1 pl-3'>
-                <Text fontSize='0.85rem' bold='bold' marginBottom='0.3rem'>
+                <Text
+                  fontSize='0.85rem'
+                  fontWeight='bold'
+                  marginBottom='0.3rem'
+                >
                   Shipping Address
                 </Text>
                 {loadingGuestOrderDetails ? (
@@ -266,13 +270,17 @@ const GuestOrder = ({ match }: any) => {
             <HorizontalLine margin='1rem 0' />
             <div>
               <CategoryTitles>
-                <Text bold='bold' fontSize='1.125rem'>
+                <Text fontWeight='bold' fontSize='1.125rem'>
                   Estimated Delivery Date{' '}
                   <i className='fas fa-truck-loading fa-sm ml-2'></i>
                 </Text>
               </CategoryTitles>
               <div className='mb-1 pl-3'>
-                <Text fontSize='0.85rem' bold='bold' marginBottom='0.3rem'>
+                <Text
+                  fontSize='0.85rem'
+                  fontWeight='bold'
+                  marginBottom='0.3rem'
+                >
                   {loadingGuestOrderDetails ? (
                     <Spinner animation='border' size='sm'></Spinner>
                   ) : (
@@ -322,10 +330,10 @@ const GuestOrder = ({ match }: any) => {
             </div>
             <HorizontalLine margin='1rem 0' />
             <div className='d-flex justify-content-between pl-3'>
-              <Text fontSize='0.85rem' bold='bold'>
+              <Text fontSize='0.85rem' fontWeight='bold'>
                 Total
               </Text>
-              <Text fontSize='0.85rem' bold='bold'>
+              <Text fontSize='0.85rem' fontWeight='bold'>
                 {loadingGuestOrderDetails ? (
                   <Spinner animation='border' size='sm'></Spinner>
                 ) : (

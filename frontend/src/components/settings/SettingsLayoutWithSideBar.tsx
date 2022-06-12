@@ -60,7 +60,7 @@ export const SettingsLayoutWithSideBar: FC<SettingsLayoutWithSideBarProps> = ({
               src={userInfo?.avatar}
               alt='user-avatar'
             />
-            <Text bold='bold' fontSize='1.25rem'>
+            <Text fontWeight='bold' fontSize='1.25rem'>
               {userInfo?.name.split(' ')[0]}
             </Text>
           </div>

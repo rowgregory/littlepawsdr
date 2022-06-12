@@ -93,7 +93,7 @@ const MobileNavbar = () => {
                     </MobileAvatarInitials>
                   )}
                   <HeaderRightSide>
-                    <Text bold='bold' color='#fff'>
+                    <Text fontWeight='bold' color='#fff'>
                       {userInfo?.name}
                     </Text>
                     <Text color='#fff'>{userInfo?.email}</Text>

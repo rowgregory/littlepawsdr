@@ -99,7 +99,7 @@ const ProductDetails = ({ match }: any) => {
 
   return (
     <>
-      <WriteAReviewModal
+      {/* <WriteAReviewModal
         show={show}
         handleClose={handleClose}
         productId={productId}
@@ -110,7 +110,7 @@ const ProductDetails = ({ match }: any) => {
         setComment={setComment}
         setRating={setRating}
         loading={loadingProductReview}
-      />
+      /> */}
 
       {loadingProductPublicDetails ? (
         <Loader />
@@ -126,10 +126,10 @@ const ProductDetails = ({ match }: any) => {
             <Col xl={4} lg={4} md={6} sm={12}>
               <Text fontSize='1.75rem'>{product?.name}</Text>
               <ProductPrice>${product?.price}</ProductPrice>
-              <Rating
+              {/* <Rating
                 value={product?.rating}
                 text={`(${product?.numReviews})`}
-              />
+              /> */}
               <HorizontalLine></HorizontalLine>
               <SizeContainer
                 show={['Shirts', 'Sweatshirts'].includes(product.category)}
@@ -164,7 +164,7 @@ const ProductDetails = ({ match }: any) => {
                       <DetailsContainer>
                         <Text
                           textAlign='center'
-                          bold='bold'
+                          fontWeight='bold'
                           fontSize='1.25rem'
                           marginBottom='2rem'
                         >
@@ -215,7 +215,7 @@ const ProductDetails = ({ match }: any) => {
               </div>
             </Col>
           </ProductDetailsContainer>
-          <ReviewsAndRatingsContainer>
+          {/* <ReviewsAndRatingsContainer>
             <Col className='d-flex flex-column mt-5 column'>
               <Text
                 fontFamily='Duru Sans'
@@ -263,7 +263,7 @@ const ProductDetails = ({ match }: any) => {
                 Write A Review
               </WriteAReviewBtn>
             </Col>
-          </ReviewsAndRatingsContainer>
+          </ReviewsAndRatingsContainer> */}
         </>
       )}
     </>

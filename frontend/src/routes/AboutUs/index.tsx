@@ -6,8 +6,6 @@ import {
   useHistory,
   useLocation,
 } from 'react-router-dom';
-import SuccessfulAdoptionDetails from './SuccessfulAdoptionDetails';
-import SuccessfulAdoptions from './SuccessfulAdoptions';
 import ContactUs from './ContactUs';
 import Education from './Education';
 import WhoWeAre from './TeamMembers';
@@ -198,13 +196,14 @@ const AboutUsRoutes: FC = () => {
           <Route path={`${path}/contact-us`} component={ContactUs} />
           <Route path={`${path}/education`} component={Education} />
           <Route
+            exact
             path={`${path}/successful-adoptions`}
-            component={SuccessfulAdoptions}
+            render={() => <StatusDogList tab={tabCategory} />}
           />
           <Route
             exact
-            path={`${path}/successful-adoption/:id`}
-            component={SuccessfulAdoptionDetails}
+            path={`${path}/successful-adoptions/:id`}
+            component={StatusDogDetails}
           />
           <Route
             exact

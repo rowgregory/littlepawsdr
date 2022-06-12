@@ -24,6 +24,20 @@ const GlobalStyles = createGlobalStyle<{
   
 }
 
+.page-item.active .page-link {
+    background: ${({ theme }) => theme.smcontainer.bg} !important;
+    color: #fff !important;
+    &:hover {
+      background: ${({ theme }) => theme.smcontainer.bg} !important;
+      color: #fff !important;
+
+    }
+}
+
+.carousel-control-prev, .carousel-control-next {
+  background-color: ${({ theme }) => theme.smcontainer.bg};
+}
+
 
 .eCardsContainer::-webkit-scrollbar,    
 .eCardsContainer::-webkit-scrollbar-button,

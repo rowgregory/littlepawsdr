@@ -115,7 +115,7 @@ const Adoption = () => {
   useEffect(() => {
     if (state)
       setTabCategory(
-        state === 'Adopt' ? 'Main' : state === 'Fees' ? 'Fees' : ''
+        state === 'Adopt' ? 'Main' : state === 'Fees' ? 'Fees' : state
       );
   }, [state]);
 

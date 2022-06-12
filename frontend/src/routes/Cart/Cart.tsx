@@ -271,8 +271,8 @@ const Cart = ({ history }: any) => {
                 <SecondSubTotal>
                   <HorizontalLine></HorizontalLine>
                   <div className='d-flex align-items-center justify-content-between w-100'>
-                    <Text bold='bold'>Subtotal</Text>
-                    <Text bold='bold'>
+                    <Text fontWeight='bold'>Subtotal</Text>
+                    <Text fontWeight='bold'>
                       $
                       {cartItems
                         .reduce(

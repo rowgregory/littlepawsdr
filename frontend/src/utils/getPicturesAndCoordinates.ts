@@ -5,6 +5,7 @@ export const getPicturesAndCoordinates = (response: any) => {
     response?.data?.map((obj: any) => {
       obj.attributes.photos = [];
       obj.attributes.coordinates = {};
+      obj.attributes.videos = [];
     });
   } else {
     console.log('Error: No response data from RG -->', response?.data);
@@ -16,6 +17,17 @@ export const getPicturesAndCoordinates = (response: any) => {
   const includedArray = response?.included?.map((obj: any) => {
     if (obj.type === 'pictures') {
       return obj.attributes.original.url;
+    }
+  });
+
+  // eslint-disable-next-line array-callback-return
+  const includedVideourlArray = response?.included?.map((obj: any) => {
+    if (obj.type === 'videourls') {
+      return {
+        url: obj.attributes.url,
+        urlThumbnail: obj.attributes.urlThumbnail,
+        id: obj.id,
+      };
     }
   });
 
@@ -36,6 +48,10 @@ export const getPicturesAndCoordinates = (response: any) => {
       return newArr.push(e);
     }
   });
+  // @ts-ignore
+  const videoObjArray = includedVideourlArray?.filter(
+    (e: any) => typeof e === 'object'
+  );
 
   // if animal id is part of imageUrl
   // put url into photos array
@@ -50,11 +66,18 @@ export const getPicturesAndCoordinates = (response: any) => {
       });
 
       coordinatesArray?.filter((newObj: any) => {
-        if (newObj.id === obj.relationships.locations.data[0].id) {
+        if (newObj.id === obj?.relationships?.locations?.data[0]?.id) {
           obj.attributes.coordinates.lat = newObj.attributes.lat;
           obj.attributes.coordinates.lon = newObj.attributes.lon;
         }
         return coordinatesArray;
+      });
+
+      videoObjArray?.filter((newObj: any) => {
+        if (newObj.id === obj?.relationships?.videourls?.data[0]?.id) {
+          obj.attributes.videos.push(newObj);
+        }
+        return videoObjArray;
       });
 
       return response;
