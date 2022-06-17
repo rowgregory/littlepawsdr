@@ -110,7 +110,7 @@ export const HorizontalLine = styled.div<{
 }>`
   width: ${({ width }) => width ?? '100%'};
   padding: ${({ padding }) => padding ?? ''};
-  border-bottom: 1px solid ${({ theme }) => theme.separator};
+  border-bottom: 1px solid ${({ theme }) => theme.input.border};
   margin: ${({ margin }) => (margin ? margin : '1.875rem 0')};
 `;
 

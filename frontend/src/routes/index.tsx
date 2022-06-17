@@ -48,7 +48,7 @@ const Page = styled(Container)<{ url: string }>`
   min-height: calc(100vh - 98px);
   display: flex;
   flex-direction: column;
-  padding: 0;
+  padding: 97.99px 0 0;
 `;
 
 const GenericAlert = styled.div`

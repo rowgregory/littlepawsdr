@@ -33,6 +33,7 @@ const ProductEdit = () => {
   const [description, setDescription] = useState('');
   const [uploading, setUploading] = useState(false);
   const [publicId, setPublicId] = useState('');
+  const [isLimitedProduct, setisLimitedProduct] = useState(false);
   const [showImageOptions, setShowImageOptions] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [submittedForm, setSubmittedForm] = useState(false);
@@ -70,6 +71,7 @@ const ProductEdit = () => {
       setCountInStock(product?.countInStock);
       setDescription(product?.description);
       setPublicId(product?.publicId);
+      setisLimitedProduct(product?.isLimitedProduct);
     }
   }, [dispatch, history, product, productId, submittedForm, successUpdate]);
 
@@ -80,10 +82,12 @@ const ProductEdit = () => {
     category,
     countInStock,
     description,
+    isLimitedProduct,
   };
 
   const submitHandler = (e: any) => {
     e.preventDefault();
+
     dispatch(
       updateProduct({
         _id: productId,
@@ -95,6 +99,7 @@ const ProductEdit = () => {
         countInStock,
         image,
         publicId,
+        isLimitedProduct,
       })
     );
     setSubmittedForm(true);
@@ -132,10 +137,33 @@ const ProductEdit = () => {
                 onChange={(e) => setPrice(parseFloat(e.target.value))}
               ></Form.Control>
             </Form.Group>
+            <Form.Group controlId='isLimitedProduct'>
+              <Form.Check
+                type='switch'
+                label='Is Limited Product'
+                checked={isLimitedProduct || false}
+                onChange={(e: any) => {
+                  setisLimitedProduct(e.target.checked);
+                }}
+              ></Form.Check>
+            </Form.Group>
+            {isLimitedProduct && (
+              <Form.Group controlId='countInStock'>
+                <Form.Label>Count In Stock</Form.Label>
+                <Form.Control
+                  min={0}
+                  type='number'
+                  placeholder='Enter count in stock'
+                  value={countInStock}
+                  onChange={(e) => setCountInStock(parseInt(e.target.value))}
+                ></Form.Control>
+              </Form.Group>
+            )}
             <Form.Group controlId='image' className='d-flex flex-column'>
               <Form.Label>Product image</Form.Label>
               <div className='mx-auto'>
                 <Form.Control
+                  required={isLimitedProduct}
                   className='img-link'
                   type='text'
                   value={image || ''}
@@ -219,16 +247,7 @@ const ProductEdit = () => {
                 onChange={(e) => setBrand(e.target.value)}
               ></Form.Control>
             </Form.Group>
-            <Form.Group controlId='countInStock'>
-              <Form.Label>Count In Stock</Form.Label>
-              <Form.Control
-                min={0}
-                type='number'
-                placeholder='Enter count in stock'
-                value={isNaN(countInStock) ? 0 : countInStock}
-                onChange={(e) => setCountInStock(parseInt(e.target.value))}
-              ></Form.Control>
-            </Form.Group>
+
             <Form.Group controlId='category'>
               <Form.Label>Category</Form.Label>
               <Form.Control

@@ -1,6 +1,5 @@
 import React, { FC, useState } from 'react';
 import styled from 'styled-components';
-import { HorizontalLine } from '../components/styles/product-details/Styles';
 import { Text } from '../components/styles/Styles';
 import { DonateLayoutWithNav } from '../components/donate/DonateLayoutWithNav';
 import { TabContainer, Tab } from './Adopt/Adoption';
@@ -8,6 +7,7 @@ import DonationForm from '../components/donate/DonationForm';
 import ECardForm from '../components/donate/ECardForm';
 import ShopToHelp from '../components/donate/ShopToHelp';
 import { useLocation } from 'react-router-dom';
+import FeedAFoster from '../components/donate/FeedAFoster';
 
 const Container = styled.div`
   margin: 0 48px;
@@ -20,13 +20,13 @@ const Navigation: FC<{
   <Container className='d-flex flex-column'>
     <Text
       fontFamily={`Ubuntu, sans-serif`}
-      fontSize='24px'
       fontWeight='bold'
       marginBottom='0.5rem'
+      fontSize='1.5rem'
     >
       Interested in supporting Little Paws Dachshund Rescue?
     </Text>
-    <Text fontFamily='Duru Sans' fontSize='1.15rem' marginBottom='1rem'>
+    <Text fontFamily={`Ubuntu, sans-serif`} marginBottom='1rem'>
       Right now, we are in need of monetary donations. Happy endings for our
       dachshunds in need can only happen with your support. Please allow us to
       continue to say “YES WE CAN” to those calls asking for assistance with a
@@ -34,16 +34,17 @@ const Navigation: FC<{
       neglected and abused and deserves a warm bed and a kind hand to rub his or
       her tummy.
     </Text>
-    <Text fontFamily='Duru Sans' fontSize='1.15rem' marginBottom='1rem'>
+    <Text fontFamily={`Ubuntu, sans-serif`} marginBottom='1rem'>
       There are two easy ways to give monetary donations, electronically or
       check*:
     </Text>
-    <Text fontFamily='Duru Sans' fontSize='1.15rem' marginBottom='1rem'>
+    <Text fontFamily={`Ubuntu, sans-serif`} marginBottom='1rem'>
       *Little Paws Dachshund Rescue is federal tax exemption 501(c)(3) public
       charity.
     </Text>
     <TabContainer>
       {[
+        'Feed A Foster',
         'Recurring',
         'One-Time',
         'E-Card',
@@ -75,11 +76,11 @@ const Donate = () => {
       }
     >
       <Container>
-        <HorizontalLine />
         {['Recurring', 'One-Time'].includes(tabCategory) && (
           <DonationForm tab={tabCategory} />
         )}
         {tabCategory === 'E-Card' && <ECardForm />}
+        {tabCategory === 'Feed A Foster' && <FeedAFoster />}
         {tabCategory === 'By Check' && (
           <Text fontFamily={`Ubunutu, sans-serif`}>
             Little Paws Dachshund Rescue

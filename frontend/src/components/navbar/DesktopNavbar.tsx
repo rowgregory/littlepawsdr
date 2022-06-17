@@ -10,6 +10,8 @@ import { Text } from '../styles/Styles';
 import { Items, LoginContainer } from '../styles/NavbarStyles';
 
 const Container = styled.div`
+  position: fixed;
+  z-index: 10;
   width: 100%;
   background: ${({ theme }) => theme.header.bg};
   height: 68px;

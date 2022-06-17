@@ -45,12 +45,10 @@ const productSchema = mongoose.Schema(
     reviews: [reviewSchema],
     rating: {
       type: Number,
-      required: true,
       default: 0,
     },
     numReviews: {
       type: Number,
-      required: true,
       default: 0,
     },
     price: {
@@ -60,7 +58,6 @@ const productSchema = mongoose.Schema(
     },
     countInStock: {
       type: Number,
-      required: true,
       default: 0,
     },
     publicId: {
@@ -68,6 +65,9 @@ const productSchema = mongoose.Schema(
     },
     size: {
       type: String,
+    },
+    isLimitedProduct: {
+      type: Boolean,
     },
   },
   {

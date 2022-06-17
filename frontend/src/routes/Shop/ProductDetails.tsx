@@ -5,8 +5,6 @@ import { addToCart } from '../../actions/cartActions';
 import { getPublicProductDetails } from '../../actions/productActions';
 import Loader from '../../components/Loader';
 import Message from '../../components/Message';
-import Rating from '../../components/shop/Rating';
-import WriteAReviewModal from '../../components/shop/WriteAReviewModal';
 import {
   AddToCartBtn,
   CollapseOnMobile,
@@ -17,15 +15,12 @@ import {
   ProductDetailsContainer,
   ProductPrice,
   Quantity,
-  ReviewsAndRatingsContainer,
   SelectInput,
   SelectInputContainer,
   Size,
   SizeContainer,
-  WriteAReviewBtn,
 } from '../../components/styles/product-details/Styles';
 import { Text } from '../../components/styles/Styles';
-import { PRODUCT_CREATE_REVIEW_RESET } from '../../constants/productContstants';
 import toaster from 'toasted-notes';
 import { ToastAlert } from '..';
 import { CART_ADD_ITEM_RESET } from '../../constants/cartConstants';
@@ -33,16 +28,10 @@ import { CART_ADD_ITEM_RESET } from '../../constants/cartConstants';
 const ProductDetails = ({ match }: any) => {
   const [size, setSize] = useState('');
   const [qty, setQty] = useState<number>(1);
-  const [rating, setRating] = useState<number>(0);
-  const [comment, setComment] = useState('');
   const [message, setMessage] = useState('');
   const dispatch = useDispatch();
   const productId = match.params.id;
-  const [show, setShow] = useState(false);
   const [collapse, setCollapse] = useState(false);
-
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
 
   const cart = useSelector((state: any) => state.cart);
   const { loading: loadingCart, success: itemAddedToCartSuccess } = cart;
@@ -56,27 +45,9 @@ const ProductDetails = ({ match }: any) => {
     product,
   } = productPublicDetails;
 
-  const productReviewCreate = useSelector(
-    (state: any) => state.productReviewCreate
-  );
-  const {
-    loading: loadingProductReview,
-    error: errorProductReview,
-    success: successProductReview,
-  } = productReviewCreate !== undefined && productReviewCreate;
-
-  const userLogin = useSelector((state: any) => state.userLogin);
-  const { userInfo } = userLogin;
-
   useEffect(() => {
-    if (successProductReview) {
-      handleClose();
-      setRating(0);
-      setComment('');
-      dispatch({ type: PRODUCT_CREATE_REVIEW_RESET });
-    }
     dispatch(getPublicProductDetails(productId));
-  }, [dispatch, productId, successProductReview]);
+  }, [dispatch, productId]);
 
   useEffect(() => {
     if (itemAddedToCartSuccess) {
@@ -99,19 +70,6 @@ const ProductDetails = ({ match }: any) => {
 
   return (
     <>
-      {/* <WriteAReviewModal
-        show={show}
-        handleClose={handleClose}
-        productId={productId}
-        rating={rating}
-        comment={comment}
-        errorProductReview={errorProductReview}
-        userInfo={userInfo}
-        setComment={setComment}
-        setRating={setRating}
-        loading={loadingProductReview}
-      /> */}
-
       {loadingProductPublicDetails ? (
         <Loader />
       ) : errorProductPublicDetails ? (
@@ -126,10 +84,9 @@ const ProductDetails = ({ match }: any) => {
             <Col xl={4} lg={4} md={6} sm={12}>
               <Text fontSize='1.75rem'>{product?.name}</Text>
               <ProductPrice>${product?.price}</ProductPrice>
-              {/* <Rating
-                value={product?.rating}
-                text={`(${product?.numReviews})`}
-              /> */}
+              {product?.isLimitedProduct && (
+                <Text>LIMITED AMOUNT OF PRODUCTS</Text>
+              )}
               <HorizontalLine></HorizontalLine>
               <SizeContainer
                 show={['Shirts', 'Sweatshirts'].includes(product.category)}
@@ -188,7 +145,11 @@ const ProductDetails = ({ match }: any) => {
                       value={qty}
                       onChange={(e: any) => setQty(parseInt(e.target.value))}
                     >
-                      {[...Array(10).keys()].map((x) => (
+                      {[
+                        ...Array(
+                          product.isLimitedProduct ? product.countInStock : 10
+                        ).keys(),
+                      ].map((x) => (
                         <option key={x + 1} value={x + 1}>
                           {x + 1}
                         </option>
@@ -215,55 +176,6 @@ const ProductDetails = ({ match }: any) => {
               </div>
             </Col>
           </ProductDetailsContainer>
-          {/* <ReviewsAndRatingsContainer>
-            <Col className='d-flex flex-column mt-5 column'>
-              <Text
-                fontFamily='Duru Sans'
-                fontSize='1.7rem'
-                className='mt-5 mb-4'
-              >
-                Ratings & Reviews
-              </Text>
-              <div className='mb-3'>
-                {product?.reviews?.length === 0 && (
-                  <div>There are currently no reviews</div>
-                )}
-              </div>
-              <div className='mb-5'>
-                {product?.reviews?.map((review: any) => (
-                  <div className='d-flex mb-5' key={review?._id}>
-                    <Col lg={2}>
-                      <Text
-                        marginBottom='1rem'
-                        fontFamily='Duru Sans'
-                        fontSize='1.25rem'
-                      >
-                        {review?.name}
-                      </Text>
-                    </Col>
-                    <Col md={6}>
-                      <div>
-                        <div className='d-flex align-items-center'>
-                          <Rating value={review.rating} />
-                          <div>
-                            {' '}
-                            {`- ${new Date(review?.createdAt)
-                              .toString()
-                              .substring(4, 16)}`}
-                          </div>
-                        </div>
-
-                        <p className='mb-0'>{review?.comment}</p>
-                      </div>
-                    </Col>
-                  </div>
-                ))}
-              </div>
-              <WriteAReviewBtn onClick={() => handleShow()}>
-                Write A Review
-              </WriteAReviewBtn>
-            </Col>
-          </ReviewsAndRatingsContainer> */}
         </>
       )}
     </>

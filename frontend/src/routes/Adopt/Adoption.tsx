@@ -29,16 +29,13 @@ export const TabContainer = styled.div`
   display: flex;
   flex-direction: row;
   width: 94vw;
-  gap: 3px;
   margin: 1rem 0;
+
   overflow-x: scroll !important;
   ::-webkit-scrollbar-thumb,
   ::-webkit-scrollbar-track,
   ::-webkit-scrollbar {
     display: none;
-  }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-    grid-gap: 0.25rem;
   }
 `;
 
@@ -49,15 +46,17 @@ export const Tab = styled.div<{ active: boolean }>`
   text-align: center;
   border: 1px solid
     ${({ theme, active }) =>
-      active ? theme.smcontainer.bg : theme.input.border};
-
+      active ? theme.smcontainer.bg : theme.secondaryBg};
+  text-transform: uppercase;
+  letter-spacing: 0.05rem;
   cursor: pointer;
   transition: 300ms;
-  background: ${({ theme, active }) => (active ? theme.smcontainer.bg : '')};
+  background: ${({ theme, active }) =>
+    active ? theme.smcontainer.bg : theme.secondaryBg};
   color: ${({ theme, active }) => (active ? '#fff' : theme.text)};
   :hover {
     background: ${({ theme, active }) =>
-      active ? theme.smcontainer.hoverBg : theme.secondaryBg};
+      active ? theme.smcontainer.hoverBg : theme.input.border};
   }
 `;
 

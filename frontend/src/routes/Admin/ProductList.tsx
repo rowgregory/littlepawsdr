@@ -117,6 +117,8 @@ const ProductList = () => {
                 <th>PRICE</th>
                 <th>CATEGORY</th>
                 <th>BRAND</th>
+                <td>LIMITED PRODUCT</td>
+                <td>PRODUCT COUNT</td>
                 <th>EDIT</th>
                 <th>DELETE</th>
               </tr>
@@ -125,6 +127,8 @@ const ProductList = () => {
               <TableBody>
                 <tr>
                   <td>Click the plus to create a product.</td>
+                  <td></td>
+                  <td></td>
                   <td></td>
                   <td></td>
                   <td></td>
@@ -143,6 +147,8 @@ const ProductList = () => {
                   <td></td>
                   <td></td>
                   <td></td>
+                  <td></td>
+                  <td></td>
                 </tr>
               </TableBody>
             ) : (
@@ -155,23 +161,45 @@ const ProductList = () => {
                   >
                     <TableRow>
                       <td>
-                        <Text>{product._id}</Text>
+                        <Text>{product?._id}</Text>
                       </td>
                       <td>
-                        <Text>{product.name}</Text>
+                        <Text>{product?.name}</Text>
                       </td>
                       <td>
-                        <Text>${product.price}</Text>
+                        <Text>${product?.price}</Text>
                       </td>
                       <td>
-                        <Text>{product.category}</Text>
+                        <Text>{product?.category}</Text>
                       </td>
                       <td>
-                        <Text>{product.brand}</Text>
+                        <Text>{product?.brand}</Text>
+                      </td>
+                      <td>
+                        {product?.isLimitedProduct ? (
+                          <i
+                            className='fas fa-check'
+                            style={{ color: 'green' }}
+                          ></i>
+                        ) : (
+                          <i
+                            className='fas fa-times'
+                            style={{ color: 'red' }}
+                          ></i>
+                        )}
+                      </td>
+                      <td>
+                        {product?.isLimitedProduct &&
+                        product?.countInStock === 0
+                          ? 'All products have been sold'
+                          : product?.isLimitedProduct &&
+                            product?.countInStock >= 1
+                          ? product?.countInStock
+                          : 'N/A'}
                       </td>
                       <td>
                         <LinkContainer
-                          to={`/admin/product/${product._id}/edit`}
+                          to={`/admin/product/${product?._id}/edit`}
                         >
                           <StyledEditBtn className='btn-lg'>
                             <i className='fas fa-edit'></i>
@@ -183,8 +211,8 @@ const ProductList = () => {
                           variant='danger'
                           className='btn-lg border-0'
                           onClick={() => {
-                            setId(product._id);
-                            setPublicId(product.publicId);
+                            setId(product?._id);
+                            setPublicId(product?.publicId);
                             handleShow();
                           }}
                         >

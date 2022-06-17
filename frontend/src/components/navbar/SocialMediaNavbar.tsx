@@ -14,6 +14,9 @@ const SMContianer = styled.div`
   display: flex;
   align-items: center;
   padding: 0 0.25rem;
+  margin-top: 67.99px;
+  position: fixed;
+  z-index: 10;
 `;
 
 const InsideContainer = styled.div`
