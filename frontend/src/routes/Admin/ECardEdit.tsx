@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Form, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import FormContainer from '../../components/FormContainer';
-import Message from '../../components/Message';
 import Loader from '../../components/Loader';
 import { getECardDetails, updateECard } from '../../actions/eCardActions';
 import { ECARD_UPDATE_RESET } from '../../constants/eCardConstants';
@@ -10,6 +9,7 @@ import {
   UpdateBtn,
   Text,
   StyledUloadedImg,
+  LoadingImg,
 } from '../../components/styles/Styles';
 import GoBackBtn from '../../utils/GoBackBtn';
 import { EditBtn } from './RaffleWinnerEdit';
@@ -18,6 +18,8 @@ import { removePhoto } from '../../utils/removePhoto';
 import uploadFileHandler from '../../utils/uploadFileHandler';
 import { eCardCategories } from '../../utils/eCardCategories';
 import { useRouteMatch, useHistory } from 'react-router-dom';
+import toaster from 'toasted-notes';
+import { ToastAlert } from '..';
 
 const ECardEdit = () => {
   const match = useRouteMatch<{ id: string }>();
@@ -66,6 +68,19 @@ const ECardEdit = () => {
     }
   }, [dispatch, history, eCard, successUpdate, submittedForm, eCardId]);
 
+  useEffect(() => {
+    if (errorUpdate || errorMsg || error) {
+      toaster.notify(
+        ({ onClose }) =>
+          ToastAlert(errorUpdate || errorMsg || error, onClose, 'error'),
+        {
+          position: 'bottom',
+          duration: 20000,
+        }
+      );
+    }
+  }, [errorUpdate, errorMsg, error]);
+
   const eCardDataToUploadWithImg = {
     category,
     price,
@@ -85,18 +100,19 @@ const ECardEdit = () => {
     setSubmittedForm(true);
   };
 
-  return (
+  return error ? (
+    <></>
+  ) : (
     <>
       <GoBackBtn to='/admin/eCardList' />
-      {errorMsg !== '' && <Message variant='danger'>{errorMsg}</Message>}
+
       <FormContainer>
-        {errorUpdate && <Message variant='danger'>{errorUpdate}</Message>}
-        {loading ? (
-          <Loader />
-        ) : error ? (
-          <Message variant='danger'>{error}</Message>
-        ) : (
-          <Form onSubmit={submitHandler}>
+        <Form onSubmit={submitHandler}>
+          {loading ? (
+            <div className='mb-3 mt-4'>
+              <LoadingImg w='100%' h='2.5rem' />
+            </div>
+          ) : (
             <Form.Group controlId='category'>
               <Form.Label>Category</Form.Label>
               <Form.Control
@@ -109,6 +125,12 @@ const ECardEdit = () => {
                 ))}
               </Form.Control>
             </Form.Group>
+          )}
+          {loading ? (
+            <div className='mb-3'>
+              <LoadingImg w='100%' h='2.5rem' />
+            </div>
+          ) : (
             <Form.Group controlId='price'>
               <Form.Label>Price</Form.Label>
               <Form.Control
@@ -119,6 +141,12 @@ const ECardEdit = () => {
                 onChange={(e) => setPrice(e.target.value)}
               ></Form.Control>
             </Form.Group>
+          )}
+          {loading ? (
+            <div className='mb-3 d-flex justify-content-center align-items-center'>
+              <LoadingImg w='200px' h='200px' borderRadius='50%' />
+            </div>
+          ) : (
             <Form.Group controlId='image' className='d-flex flex-column'>
               <Form.Label>Image</Form.Label>
               <div className='mx-auto'>
@@ -193,19 +221,25 @@ const ECardEdit = () => {
                       )}
                     </EditBtn>
                   )}
+                  {uploading && (
+                    <Loader
+                      w='200px'
+                      h='200px'
+                      p='absolute'
+                      z='1'
+                      top='-200px'
+                      left='0px'
+                    />
+                  )}
                 </div>
-                {uploading && (
-                  <Loader
-                    w='200px'
-                    h='200px'
-                    p='absolute'
-                    z='1'
-                    top='-200px'
-                    left='0px'
-                  />
-                )}
               </div>
             </Form.Group>
+          )}
+          {loading ? (
+            <div className='mb-3'>
+              <LoadingImg w='5rem' h='3rem' borderRadius='0.5rem' />
+            </div>
+          ) : (
             <UpdateBtn type='submit'>
               {loadingUpdate ? (
                 <div className='d-flex align-items-center'>
@@ -222,8 +256,8 @@ const ECardEdit = () => {
                 <Text className='text-white'>Update</Text>
               )}
             </UpdateBtn>
-          </Form>
-        )}
+          )}
+        </Form>
       </FormContainer>
     </>
   );

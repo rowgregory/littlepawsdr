@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Row, Col, Image, Form } from 'react-bootstrap';
@@ -10,9 +11,7 @@ import {
   sendOrderConfirmationEmail,
 } from '../../actions/orderActions';
 import { STATES } from '../../utils/states';
-import { createGuestOrder } from '../../actions/guestOrderActions';
 import { CART_CLEAR_ITEMS } from '../../constants/cartConstants';
-import { GUEST_USER_REGISTER_RESET } from '../../constants/guestUserConstants';
 import { Text } from '../../components/styles/Styles';
 import {
   Container,
@@ -21,31 +20,26 @@ import {
   RightRail,
   SubContainer,
   LeftRailContainer,
-  EnterAPaswordBtn,
 } from '../../components/styles/place-order/Styles';
 import { HorizontalLine } from '../../components/styles/product-details/Styles';
 import PayPalButtonImg from '../../components/assets/payPalButtons.png';
 import PayPalButtonImgNight from '../../components/assets/payPalButtonsNight.png';
 import { useTheme } from 'styled-components';
-import PasswordMeter from '../../components/PasswordMeter';
-import { register } from '../../actions/userActions';
+import { listProducts } from '../../actions/productActions';
 
 const PlaceOrder = ({ history }: any) => {
   const dispatch = useDispatch();
   const theme = useTheme() as any;
   const [sdkReady, setSdkReady] = useState(false);
-  const [readyToCreateOrder, setReadyToCreateOrder] = useState(false);
-  const [readyToCreateGuestOrder, setReadyToCreateGuestOrder] = useState(false);
   const [orderLoader, setOrderLoader] = useState(false);
   const [message, setMessage] = useState('');
   const [showMessage, setShowMessage] = useState(false);
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPasswordInput, setShowPasswordInput] = useState(false);
 
-  const cart = useSelector((state: any) => state.cart);
-  const { cartItems, paymentMethod } = cart;
+  const { cartItems } = useSelector((state: any) => state.cart);
+
+  useEffect(() => {
+    dispatch(listProducts());
+  }, [dispatch]);
 
   const orderCreate = useSelector((state: any) => state.orderCreate);
   const {
@@ -53,18 +47,6 @@ const PlaceOrder = ({ history }: any) => {
     success: successOrderCreate,
     error: errorOrderCreate,
   } = orderCreate;
-
-  const guestOrderCreate = useSelector((state: any) => state.guestOrderCreate);
-  const {
-    success: successGuestOrderCreate,
-    error: errorGuestOrderCreate,
-    guestOrder,
-  } = guestOrderCreate;
-
-  const guestUserRegister = useSelector(
-    (state: any) => state.guestUserRegister
-  );
-  const { guestUserInfo } = guestUserRegister;
 
   const userLogin = useSelector((state: any) => state.userLogin);
   const { userInfo } = userLogin;
@@ -78,20 +60,13 @@ const PlaceOrder = ({ history }: any) => {
     safs?.address ?? ''
   );
   const [shippingCity, setShippingCity] = useState(safs?.city ?? '');
-  const [shippingState, setShippingState] = useState(safs?.state ?? '');
+  const [shippingState, setShippingState] = useState(safs?.state ?? 'Alabama');
   const [shippingZipPostalCode, setShippingZipPostalCode] = useState(
     safs?.zipPostalCode ?? ''
   );
   const [country] = useState('US');
 
-  const newOrderFromStorage = localStorage.getItem('newOrder')
-    ? JSON.parse(localStorage.getItem('newOrder') || '')
-    : {};
-
-  const noOrder = Object.keys(newOrderFromStorage).length === 0;
-
   useEffect(() => {
-    if (noOrder) return history.push('/');
     const addPayPalScript = async () => {
       const { data: clientId } = await axios.get('/api/config/paypal');
       const script = document.createElement('script');
@@ -101,46 +76,48 @@ const PlaceOrder = ({ history }: any) => {
       script.onload = () => setSdkReady(true);
       document.body.appendChild(script);
     };
-    if (successOrderCreate || successGuestOrderCreate) {
-      window.scrollTo(0, 0);
-      setReadyToCreateOrder(false);
-      setReadyToCreateGuestOrder(false);
-      setOrderLoader(false);
-
-      dispatch({ type: CART_CLEAR_ITEMS });
-
-      if (successOrderCreate) {
-        dispatch(sendOrderConfirmationEmail(order, userInfo?.email));
-        history.push(`/order/${order?._id}`);
-      }
-
-      if (successGuestOrderCreate) {
-        dispatch(sendOrderConfirmationEmail(guestOrder));
-        history.push(`/guest-order/${guestOrder?._id}`);
-      }
-
-      localStorage.removeItem('newOrder');
-      localStorage.removeItem('cartItems');
-      localStorage.removeItem('guestUserInfo');
-
-      dispatch({ type: GUEST_USER_REGISTER_RESET });
-    } else if (!newOrderFromStorage.isPaid && !sdkReady) {
+    if (!sdkReady) {
       addPayPalScript();
     }
 
     return () => setSdkReady(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [history, order, successOrderCreate, successGuestOrderCreate]);
+  }, [history]);
+
+  useEffect(() => {
+    if (successOrderCreate) {
+      setOrderLoader(false);
+
+      history.push(`/order/${order?._id}`);
+
+      dispatch(sendOrderConfirmationEmail(order, userInfo?.email));
+
+      localStorage.setItem(
+        'shippingAddress',
+        JSON.stringify({
+          name: shippingName,
+          address: formShippingAddress,
+          city: shippingCity,
+          state: shippingState,
+          zipPostalCode: shippingZipPostalCode,
+          country,
+        })
+      );
+
+      dispatch({ type: CART_CLEAR_ITEMS });
+
+      localStorage.removeItem('newOrder');
+      localStorage.removeItem('cartItems');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [order, successOrderCreate]);
 
   const addDecimals = (num: number) => {
     return (Math.round(num * 100) / 100).toFixed(2);
   };
 
   const itemsPrice = addDecimals(
-    cart.cartItems.reduce(
-      (acc: any, item: any) => acc + item.price * item.qty,
-      0
-    )
+    cartItems.reduce((acc: any, item: any) => acc + item.price * item.qty, 0)
   );
 
   const getStateTax = () => {
@@ -168,19 +145,9 @@ const PlaceOrder = ({ history }: any) => {
     Number(itemsPrice) + Number(shippingPrice) + Number(taxPrice)
   );
 
-  useEffect(() => {
-    if (readyToCreateOrder) {
-      localStorage.setItem(
-        'shippingAddress',
-        JSON.stringify({
-          name: shippingName,
-          address: formShippingAddress,
-          city: shippingCity,
-          state: shippingState,
-          zipPostalCode: shippingZipPostalCode,
-          country,
-        })
-      );
+  const successPaymentHandler = (paymentResult: any, data: any) => {
+    setOrderLoader(true);
+    if (paymentResult?.status === 'COMPLETED' && data?.orderID) {
       dispatch(
         createOrder({
           orderItems: cartItems,
@@ -200,101 +167,6 @@ const PlaceOrder = ({ history }: any) => {
         })
       );
     }
-  }, [
-    cartItems,
-    country,
-    dispatch,
-    formShippingAddress,
-    itemsPrice,
-    paymentMethod,
-    readyToCreateOrder,
-    shippingCity,
-    shippingName,
-    shippingPrice,
-    shippingState,
-    shippingZipPostalCode,
-    taxPrice,
-    totalPrice,
-  ]);
-
-  const validations = [
-    password.length >= 5 ? 1 : 0,
-    password.search(/[A-Z]/) > -1 ? 1 : 0,
-    password.search(/[0-9]/) > -1 ? 1 : 0,
-    password.search(/[$&+,:;=?@#]/) > -1 ? 1 : 0,
-  ];
-
-  const strength = validations.reduce((acc, cur) => acc + cur, 0);
-
-  useEffect(() => {
-    if (readyToCreateGuestOrder) {
-      localStorage.setItem(
-        'shippingAddress',
-        JSON.stringify({
-          name: shippingName,
-          address: formShippingAddress,
-          city: shippingCity,
-          state: shippingState,
-          zipPostalCode: shippingZipPostalCode,
-          country,
-        })
-      );
-
-      if (strength === 4) {
-        dispatch(register(name, guestUserInfo?.email, password));
-      }
-
-      dispatch(
-        createGuestOrder({
-          orderItems: cartItems,
-          shippingAddress: {
-            name: shippingName,
-            address: formShippingAddress,
-            city: shippingCity,
-            state: shippingState,
-            zipPostalCode: shippingZipPostalCode,
-            country,
-          },
-          paymentMethod: 'PayPal',
-          itemsPrice,
-          shippingPrice,
-          taxPrice,
-          totalPrice,
-          email: guestUserInfo?.email,
-        })
-      );
-    }
-  }, [
-    cartItems,
-    country,
-    dispatch,
-    formShippingAddress,
-    guestUserInfo?.email,
-    itemsPrice,
-    name,
-    password,
-    paymentMethod,
-    readyToCreateGuestOrder,
-    shippingCity,
-    shippingName,
-    shippingPrice,
-    shippingState,
-    shippingZipPostalCode,
-    strength,
-    taxPrice,
-    totalPrice,
-  ]);
-
-  const successPaymentHandler = (paymentResult: any, data: any) => {
-    setOrderLoader(true);
-    paymentResult.status === 'COMPLETED' &&
-      userInfo?.confirmed &&
-      data.orderID &&
-      setReadyToCreateOrder(true);
-    paymentResult.status === 'COMPLETED' &&
-      Object.keys(guestUserInfo).length > 0 &&
-      data.orderID &&
-      setReadyToCreateGuestOrder(true);
   };
 
   const addressFormIsCompleted = ![
@@ -311,9 +183,6 @@ const PlaceOrder = ({ history }: any) => {
       {errorOrderCreate && (
         <Message variant='danger'>{errorOrderCreate}</Message>
       )}
-      {errorGuestOrderCreate && (
-        <Message variant='danger'>{errorGuestOrderCreate}</Message>
-      )}
       <SubContainer>
         <LeftRail md={8} sm={12} className='left-rail'>
           <LeftRailContainer>
@@ -322,7 +191,7 @@ const PlaceOrder = ({ history }: any) => {
             </Text>
             <LeftRailSectionTitle>
               <Text fontWeight='bold' fontSize='0.9375rem'>
-                Hi, {userInfo?.name.toUpperCase() ?? guestUserInfo.email}
+                Hi, {userInfo?.name.toUpperCase()}
               </Text>
             </LeftRailSectionTitle>
             <LeftRailSectionTitle>Shipping address</LeftRailSectionTitle>
@@ -388,63 +257,6 @@ const PlaceOrder = ({ history }: any) => {
             </Form>
           </LeftRailContainer>
           <LeftRailContainer>
-            {guestUserInfo !== null &&
-              guestUserInfo !== undefined &&
-              Object.keys(guestUserInfo).length > 0 && (
-                <>
-                  <LeftRailSectionTitle>Contact Info</LeftRailSectionTitle>
-                  <Form>
-                    <Form.Group controlId='name'>
-                      <Form.Control
-                        type='name'
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        placeholder='Name'
-                      ></Form.Control>
-                    </Form.Group>
-                    <Form.Group controlId='email'>
-                      <Form.Control
-                        type='email'
-                        value={guestUserInfo?.email || email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder='Email'
-                      ></Form.Control>
-                    </Form.Group>
-                    <EnterAPaswordBtn
-                      onClick={() => setShowPasswordInput(!showPasswordInput)}
-                    >
-                      Enter a password to create an account{' '}
-                      <i
-                        className={`fas fa-angle-${
-                          showPasswordInput ? 'up' : 'down'
-                        }`}
-                      ></i>
-                    </EnterAPaswordBtn>
-                    {showPasswordInput && (
-                      <>
-                        <Text fontSize='0.8rem' marginBottom='1rem'>
-                          Save your information so you can check out faster and
-                          track orders easily.
-                        </Text>
-                        <Form.Group controlId='password'>
-                          <Form.Control
-                            type='password'
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            placeholder='Password'
-                          ></Form.Control>
-                        </Form.Group>
-                        <PasswordMeter
-                          validations={validations}
-                          strength={strength}
-                        />
-                      </>
-                    )}
-                  </Form>
-                </>
-              )}
-          </LeftRailContainer>
-          <LeftRailContainer>
             <LeftRailSectionTitle>
               Secure Payment <i className='fas fa-lock ml-1 fa-sm'></i>
             </LeftRailSectionTitle>
@@ -502,9 +314,13 @@ const PlaceOrder = ({ history }: any) => {
           <div className='d-flex justify-content-between'>
             <Text>
               Subtotal (
-              {cartItems.reduce((acc: any, item: any) => acc + item.qty, 0)}{' '}
+              {cartItems.reduce((acc: any, item: any) => acc + +item.qty, 0)}{' '}
               item
-              {cartItems.length === 1 ? '' : 's'})
+              {cartItems.reduce((acc: any, item: any) => acc + +item.qty, 0) ===
+              1
+                ? ''
+                : 's'}
+              )
             </Text>
             <Text>${itemsPrice}</Text>
           </div>
@@ -514,7 +330,7 @@ const PlaceOrder = ({ history }: any) => {
           </div>
           <div className='d-flex justify-content-between'>
             <Text>Tax</Text>
-            <Text>${taxPrice}</Text>
+            <Text>{taxPrice === 'NaN' ? '--' : `$${taxPrice}`}</Text>
           </div>
           <div className='border-0'>
             <Row>
@@ -530,7 +346,9 @@ const PlaceOrder = ({ history }: any) => {
           </div>
           <div className='d-flex justify-content-between font-weight-bold mb-4'>
             <Text fontSize='1.125rem'>Order total</Text>
-            <Text fontSize='1.125rem'>${totalPrice}</Text>
+            <Text fontSize='1.125rem'>
+              {totalPrice === 'NaN' ? '--' : `$${totalPrice}`}
+            </Text>
           </div>
         </RightRail>
       </SubContainer>

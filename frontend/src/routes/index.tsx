@@ -1,4 +1,4 @@
-import React, { ComponentType, FC, lazy, useEffect, useState } from 'react';
+import React, { ComponentType, FC, lazy, useState } from 'react';
 import { Switch, Route, useLocation, Redirect } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Home from './Home';
@@ -23,11 +23,11 @@ import { useRefreshToken } from '../utils/useRefreshToken';
 import ECardOrderReceipt from './ECardOrderReceipt';
 import Footer from '../components/Footer';
 import { Text } from '../components/styles/Styles';
-import toast from 'toasted-notes';
 import 'toasted-notes/src/styles.css'; // optional styles
 import Checkmark from '../components/svg/Checkmark';
 import MyECards from './ECardOrders';
 import Navbar from '../components/Navbar';
+import EmailConfirmation from './EmailConfirmation';
 
 type LazyModulePromise<T = {}> = Promise<{ default: ComponentType<T> }>;
 
@@ -45,10 +45,14 @@ const Donate = lazy((): LazyModulePromise => import('./Donate'));
 const Page = styled(Container)<{ url: string }>`
   width: 100%;
   height: auto;
-  min-height: calc(100vh - 98px);
+  min-height: ${({ url }) =>
+    url.split('/')[1] === 'admin' ? '100vh' : 'calc(100vh - 466px)'};
   display: flex;
   flex-direction: column;
-  padding: 97.99px 0 0;
+  padding: ${({ url }) =>
+    url === '/' || url === '/login' || url === '/register' ? 0 : '60px 0 0'};
+  background: ${({ theme }) => theme.secondaryBg};
+  margin: 0;
 `;
 
 const GenericAlert = styled.div`
@@ -116,7 +120,6 @@ export const Routes: FC = () => {
   const { pathname } = useLocation();
   const [show, setShow] = useState(false);
   const [continuedSession, setContinuedSession] = useState(false);
-
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
@@ -132,22 +135,6 @@ export const Routes: FC = () => {
     handleShow
   );
 
-  useEffect(() => {
-    userInfo?.online &&
-      toast.notify(
-        ({ onClose }) =>
-          ToastAlert(
-            `${userInfo?.name} signed in.`,
-            onClose,
-            'success',
-            userInfo?.avatar
-          ),
-        {
-          position: 'bottom-left',
-        }
-      );
-  }, [userInfo]);
-
   return (
     <>
       <ContinueSessionModal
@@ -158,10 +145,10 @@ export const Routes: FC = () => {
         setContinuedSession={setContinuedSession}
       />
       <PopUp />
-      {!['/login', '/register', '/register?redirect=/'].includes(pathname) && (
-        <Navbar />
-      )}
+
       <GlobalStyles />
+
+      {!['/login', '/register'].includes(pathname) && <Navbar />}
       <Page url={pathname} fluid>
         <Switch>
           <Route path='/ecard-order/:id' component={ECardOrderReceipt} />
@@ -175,7 +162,7 @@ export const Routes: FC = () => {
           <Route path='/admin' component={Admin} />
           <Route path='/login' component={Login} />
           <Route path='/login-options' component={LoginOptions} />
-          <Route path='/register/:to?/:em?/:na?/:id?' component={Register} />
+          <Route path='/register' component={Register} />
           <Route path='/profile' component={Profile} />
           <Route path='/shop' component={Shop} />
           <Route path='/cart' component={Cart} />
@@ -186,12 +173,16 @@ export const Routes: FC = () => {
           <Route path='/settings' component={Settings} />
           <Route exact path='/my-orders' component={MyOrders} />
           <Route path='/my-orders/e-cards' component={MyECards} />
+          <Route
+            path='/email-confirmation/:to?/:em?/:na?/:id?'
+            component={EmailConfirmation}
+          />
           <Route exact path='/' component={Home} />
           <Route path='/404' component={PageNotFound} />
           <Redirect to='/404' />
         </Switch>
       </Page>
-      {pathname !== '/login' && <Footer />}
+      {!['/login', '/admin', '/register'].includes(pathname) && <Footer />}
     </>
   );
 };

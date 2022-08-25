@@ -13,9 +13,12 @@ const ProfileCard = styled(Card)`
   background-color: ${({ theme }) => theme.card.bg};
   border: none;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
-  width: 300px;
-  min-width: 260px;
+  width: 100%;
   border-radius: 0 0 12px 12px;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    width: 300px;
+    min-width: 260px;
+  }
 `;
 
 const CardImg = styled(Image)`

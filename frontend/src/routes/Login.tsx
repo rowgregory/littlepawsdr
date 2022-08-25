@@ -9,41 +9,30 @@ import styled, { useTheme } from 'styled-components';
 import { isCapsLock } from '../utils/capsLock';
 import NightLogo from '../components/assets/neon-purple-logo.png';
 import DayLogo from '../components/assets/transparent-logo.png';
-import GoBackBtn from '../utils/GoBackBtn';
+import toaster from 'toasted-notes';
+import { ToastAlert } from '.';
 export interface ThemeProps {
   mode: string;
 }
-
-export const StyledBtn = styled(Button)`
-  background: ${({ theme }) => theme.colors.primary};
-  transition: 300ms;
-  :hover {
-    background: ${({ theme }) => theme.colors.primary};
-    filter: brightness(1.1);
-  }
-`;
 export const StyledLink = styled(Link)`
-  color: ${({ theme }) => theme.smcontainer.bg};
   :hover {
-    color: ${({ theme }) => theme.smcontainer.hoverBg};
     text-decoration: none;
   }
 `;
 
 export const Container = styled.div`
-  width: 100vw;
-  max-width: 100%;
   display: flex;
   justify-content: flex-start;
   flex-direction: column;
-
-  padding-bottom: 5rem;
+  background: #fff;
+  min-height: 100vh;
 `;
 
 const CreateAccountContainer = styled(Col)`
   color: ${({ theme }) => theme.text};
   text-align: center;\
   border: 1px solid ${({ theme }) => theme.input.border};
+  border-radius: 0.4rem;
 `;
 const FormContainer = styled.div`
   background: ${({ theme }) => theme.bg};
@@ -56,9 +45,7 @@ const Login = ({ location, history }: any) => {
   const [password, setPassword] = useState('');
   const [capsLockOn, setCapsLocksOn] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-
   const isDay = theme.mode === 'day' ? true : false;
-
   const dispatch = useDispatch();
 
   const userLogin = useSelector((state: any) => state.userLogin);
@@ -73,45 +60,63 @@ const Login = ({ location, history }: any) => {
       history.push('/');
     }
 
-    document.addEventListener('keypress', (e) => {
+    const listener = (e: any) => {
       const result = isCapsLock(e);
       setCapsLocksOn(result);
-    });
+    };
+    document.addEventListener('keypress', listener);
+
+    return () => document.removeEventListener('keypress', listener);
   }, [history, redirect, userInfo]);
 
   const submitHandler = (e: any) => {
     e.preventDefault();
-
     dispatch(login(email, password));
   };
+
+  useEffect(() => {
+    if (error) {
+      toaster.notify(
+        ({ onClose }) =>
+          ToastAlert('Incorrect email address or password', onClose, 'error'),
+        { position: 'bottom' }
+      );
+    }
+  }, [error]);
 
   return (
     <Container>
       {error && <Message variant='danger'>{error}</Message>}
-      <div className='mx-auto' style={{ maxWidth: '340px', width: '100%' }}>
-        <Image
-          onClick={() => history.push('/')}
-          src={isDay ? DayLogo : NightLogo}
-          alt='Little Paws Dachshund Rescue'
-          width='150px'
-          height='100px'
-          style={{
-            objectFit: 'cover',
-            cursor: 'pointer',
-            margin: '1.5rem auto',
-            display: 'flex',
-          }}
-        />
+      <div
+        className='mx-auto px-3'
+        style={{ maxWidth: '340px', width: '100%' }}
+      >
+        <Link to='/'>
+          <Image
+            src={isDay ? DayLogo : NightLogo}
+            alt='Little Paws Dachshund Rescue'
+            width='150px'
+            style={{
+              objectFit: 'cover',
+              cursor: 'pointer',
+              marginInline: 'auto',
+              display: 'flex',
+              aspectRatio: '1/1',
+            }}
+          />
+        </Link>
         <Text
-          fontFamily={`Ubuntu, sans-serif`}
+          letterSpacing='-1px'
           fontSize='1.5rem'
           textAlign='center'
           marginBottom='0.65rem'
         >
           Sign in to Little Paws
         </Text>
-        <GoBackBtn to='/'>Go Back</GoBackBtn>
-        <FormContainer className='p-4 mt-3'>
+        <FormContainer
+          className='p-3 mt-3'
+          style={{ background: '#f5f8fa', borderRadius: '0.4rem' }}
+        >
           <Form onSubmit={submitHandler}>
             <Form.Group controlId='email'>
               <Form.Label>Email Address</Form.Label>
@@ -136,7 +141,9 @@ const Login = ({ location, history }: any) => {
                     </Text>
                   )}
                 </Form.Label>
-                <StyledLink to='/forgot-password'>Forgot Password</StyledLink>
+                <Form.Label>
+                  <StyledLink to='/forgot-password'>Forgot Password</StyledLink>
+                </Form.Label>
               </div>
               <div
                 className='d-flex align-items-center'
@@ -160,13 +167,14 @@ const Login = ({ location, history }: any) => {
                 ></i>
               </div>
             </Form.Group>
-            <StyledBtn
+            <Button
+              disabled={loading}
               type='submit'
-              className='d-flex align-items-center border-0 font-weight-bold btn-lg mb-4'
+              className='d-flex align-items-center border-0 w-100 bg-success'
             >
               {loading ? (
                 <div className='d-flex align-items-center mx-auto'>
-                  <Text color='#fff'>Logging On...</Text>
+                  <Text color='#fff'>Signing In...</Text>
                   <Spinner
                     as='span'
                     animation='border'
@@ -177,11 +185,11 @@ const Login = ({ location, history }: any) => {
                   />
                 </div>
               ) : (
-                <Text className='mx-auto' color='#fff'>
-                  Log On
+                <Text className='mx-auto' color='#fff' fontSize='0.875rem'>
+                  Sign In
                 </Text>
               )}
-            </StyledBtn>
+            </Button>
           </Form>
         </FormContainer>
         <CreateAccountContainer className='py-3 mt-3'>
@@ -191,6 +199,7 @@ const Login = ({ location, history }: any) => {
           >
             Create an account
           </StyledLink>
+          .
         </CreateAccountContainer>
       </div>
     </Container>

@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { Form, Spinner } from 'react-bootstrap';
+import { Button, Form, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { sendResetEmail } from '../actions/forgotPasswordActions';
 import FormContainer from '../components/FormContainer';
 import Message from '../components/Message';
 import { PageHeader } from '../components/styles/Styles';
-import { StyledBtn, StyledLink } from './Login';
+import { StyledLink } from './Login';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
@@ -34,7 +34,7 @@ const ForgotPassword = () => {
             onChange={(e) => setEmail(e.target.value)}
           ></Form.Control>
         </Form.Group>
-        <StyledBtn type='submit' variant='primary' className='mb-3'>
+        <Button type='submit' variant='success' className='mb-3'>
           Send Email{' '}
           {loading && (
             <Spinner
@@ -45,7 +45,7 @@ const ForgotPassword = () => {
               aria-hidden='true'
             />
           )}
-        </StyledBtn>
+        </Button>
       </Form>
       <StyledLink to='/login'>Sign In</StyledLink>
     </FormContainer>

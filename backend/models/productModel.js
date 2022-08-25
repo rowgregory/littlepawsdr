@@ -40,7 +40,6 @@ const productSchema = mongoose.Schema(
     },
     description: {
       type: String,
-      required: true,
     },
     reviews: [reviewSchema],
     rating: {
@@ -68,6 +67,9 @@ const productSchema = mongoose.Schema(
     },
     isLimitedProduct: {
       type: Boolean,
+    },
+    sizes: {
+      type: Array,
     },
   },
   {

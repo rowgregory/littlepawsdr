@@ -1,7 +1,5 @@
 import { Button, Col, Form, Modal, Row } from 'react-bootstrap';
-import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { createProductReview } from '../../actions/productActions';
 import Message from '../Message';
 import { Text } from '../styles/Styles';
 
@@ -17,15 +15,8 @@ const WriteAReviewModal = ({
   setRating,
   loading,
 }: any) => {
-  const dispatch = useDispatch();
   const submitHandler = (e: any) => {
     e.preventDefault();
-    dispatch(
-      createProductReview(productId, {
-        rating,
-        comment,
-      })
-    );
   };
   return (
     <Modal show={show} onHide={handleClose}>

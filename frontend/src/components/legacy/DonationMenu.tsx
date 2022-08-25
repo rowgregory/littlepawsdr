@@ -8,107 +8,107 @@ import { DONATE_CREATE_RESET } from '../../constants/donationConstants';
 import PayPal from '../assets/PayPal-transparent.png';
 import ECardMenu from './ECardMenu';
 
-export const DonationMenuItem = styled.div`
-  display: flex;
-  align-items: center;
-  transition: background var(--sped);
-`;
+// export const DonationMenuItem = styled.div`
+//   display: flex;
+//   align-items: center;
+//   transition: background var(--sped);
+// `;
 
-export const IconRight = styled.span`
-  margin-left: auto;
-`;
+// export const IconRight = styled.span`
+//   margin-left: auto;
+// `;
 
-export const DonationDropDown = styled.div`
-  display: flex;
-  flex-direction: column;
-  transform: translateX(0%);
-  width: 482px;
-  overflow: hidden;
-  transition: height var(--speed) ease;
-`;
+// export const DonationDropDown = styled.div`
+//   display: flex;
+//   flex-direction: column;
+//   transform: translateX(0%);
+//   width: 482px;
+//   overflow: hidden;
+//   transition: height var(--speed) ease;
+// `;
 
-export const OneTimeContainer = styled.div`
-  margin: 0 auto;
-  width: 482px;
-  display: flex;
-  align-items: center;
-  form {
-    width: 100%;
-  }
-`;
+// export const OneTimeContainer = styled.div`
+//   margin: 0 auto;
+//   width: 482px;
+//   display: flex;
+//   align-items: center;
+//   form {
+//     width: 100%;
+//   }
+// `;
 
-export const MoneyAmnt = styled(Button)`
-  :nth-child(1) {
-    margin-left: 0;
-  }
-  :nth-child(7) {
-    margin-right: 0;
-  }
-  background: ${({ theme }) => theme.header.donationBtn.bg};
-  color: ${({ theme }) => theme.header.donationBtn.text};
-  border: 1px solid ${({ theme }) => theme.header.donationBtn.border};
-  border-radius: 0;
-  padding: 0.75rem;
-  width: 58px;
-  :hover,
-  :active,
-  :focus {
-    border-image: ${({ theme }) =>
-      `linear-gradient(to bottom, ${theme.colors.secondary} 0%, ${theme.colors.primary} 100%)`};
-    border-image-slice: 1;
-    background: transparent;
-  }
-  &:not(:disabled):not(.disabled).active {
-    background-image: ${({ theme }) =>
-      `linear-gradient(to bottom, ${theme.colors.secondary} 0%, ${theme.colors.primary} 100%)`};
-  }
-  &:not(:disabled):not(.disabled).active:focus {
-    box-shadow: none;
-  }
-`;
+// export const MoneyAmnt = styled(Button)`
+//   :nth-child(1) {
+//     margin-left: 0;
+//   }
+//   :nth-child(7) {
+//     margin-right: 0;
+//   }
+//   background: ${({ theme }) => theme.header.donationBtn.bg};
+//   color: ${({ theme }) => theme.header.donationBtn.text};
+//   border: 1px solid ${({ theme }) => theme.header.donationBtn.border};
+//   border-radius: 0;
+//   padding: 0.75rem;
+//   width: 58px;
+//   :hover,
+//   :active,
+//   :focus {
+//     border-image: ${({ theme }) =>
+//       `linear-gradient(to bottom, ${theme.colors.secondary} 0%, ${theme.colors.primary} 100%)`};
+//     border-image-slice: 1;
+//     background: transparent;
+//   }
+//   &:not(:disabled):not(.disabled).active {
+//     background-image: ${({ theme }) =>
+//       `linear-gradient(to bottom, ${theme.colors.secondary} 0%, ${theme.colors.primary} 100%)`};
+//   }
+//   &:not(:disabled):not(.disabled).active:focus {
+//     box-shadow: none;
+//   }
+// `;
 
-export const ContinueBtn = styled(Button)`
-  padding: 0.75rem;
-  border-radius: 0;
-  background: transparent;
-  color: #dbdbdb;
-  transition: 500ms;
-  :hover,
-  :active,
-  :focus {
-    background: transparent;
-    color: #ccc;
-    filter: brightness(1.9);
-    outline: none;
-    box-shadow: none;
-    border-color: transparent;
-    border: none;
-  }
-  &:not(:disabled):not(.disabled):active {
-    background: transparent;
-    border: none;
-    box-shadow: none;
-  }
-`;
+// export const ContinueBtn = styled(Button)`
+//   padding: 0.75rem;
+//   border-radius: 0;
+//   background: transparent;
+//   color: #dbdbdb;
+//   transition: 500ms;
+//   :hover,
+//   :active,
+//   :focus {
+//     background: transparent;
+//     color: #ccc;
+//     filter: brightness(1.9);
+//     outline: none;
+//     box-shadow: none;
+//     border-color: transparent;
+//     border: none;
+//   }
+//   &:not(:disabled):not(.disabled):active {
+//     background: transparent;
+//     border: none;
+//     box-shadow: none;
+//   }
+// `;
 
-export const Circle = styled.div<{ active?: boolean }>`
-  width: 20px;
-  height: 20px;
-  border-radius: 10px;
-  background-image: ${({ theme, active }) =>
-    active
-      ? `linear-gradient(to bottom, ${theme.colors.primary} 0%, ${theme.colors.secondary} 100%)`
-      : `linear-gradient(to bottom, ${theme.secondaryBg} 0%, ${theme.secondaryBg} 100%)`};
-`;
+// export const Circle = styled.div<{ active?: boolean }>`
+//   width: 20px;
+//   height: 20px;
+//   border-radius: 10px;
+//   background-image: ${({ theme, active }) =>
+//     active
+//       ? `linear-gradient(to bottom, ${theme.colors.primary} 0%, ${theme.colors.secondary} 100%)`
+//       : `linear-gradient(to bottom, ${theme.secondaryBg} 0%, ${theme.secondaryBg} 100%)`};
+// `;
 
-export const Line = styled.div<{ active?: boolean }>`
-  width: 211px;
-  height: 5px;
-  background-image: ${({ theme, active }) =>
-    active
-      ? `linear-gradient(to bottom, ${theme.colors.primary} 0%, ${theme.colors.secondary} 100%)`
-      : `linear-gradient(to bottom, ${theme.secondaryBg} 0%, ${theme.secondaryBg} 100%)`};
-`;
+// export const Line = styled.div<{ active?: boolean }>`
+//   width: 211px;
+//   height: 5px;
+//   background-image: ${({ theme, active }) =>
+//     active
+//       ? `linear-gradient(to bottom, ${theme.colors.primary} 0%, ${theme.colors.secondary} 100%)`
+//       : `linear-gradient(to bottom, ${theme.secondaryBg} 0%, ${theme.secondaryBg} 100%)`};
+// `;
 
 export const Switch = styled(Form.Check)`
   margin: 1rem 0;
@@ -288,7 +288,7 @@ export const DonationMenu = ({
 
   return (
     <>
-      {(donationType === 'ONE_TIME' ||
+      {/* {(donationType === 'ONE_TIME' ||
         donationType === 'MONTHLY' ||
         donationType === 'E_CARD') &&
         activeMenu !== 'e-card-order-details' && (
@@ -743,7 +743,7 @@ export const DonationMenu = ({
             />
           )}
         </DonationDropDown>
-      )}
+      )} */}
     </>
   );
 };

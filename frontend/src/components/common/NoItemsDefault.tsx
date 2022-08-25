@@ -6,10 +6,12 @@ import { AiOutlineCaretRight } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
 
 const NoItemsContainer = styled.div`
-  position: absolute;
-  transform: translate(-50%, -50%);
-  top: 50%;
-  left: 50%;
+  min-height: calc(100vh - 526px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
 `;
 
 const NoItemsDefault: FC<{ items: string; Icon?: any }> = ({ items, Icon }) => {

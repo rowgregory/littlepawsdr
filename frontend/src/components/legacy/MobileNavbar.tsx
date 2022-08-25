@@ -54,7 +54,7 @@ const MobileNavbar = () => {
       : '';
   return (
     <>
-      <GlobalStyles hasClickedHamburger={hasClickedHamburger} />
+      {/* <GlobalStyles hasClickedHamburger={hasClickedHamburger} /> */}
       <MobileNav variant='dark' expand='xl' className='py-2'>
         <Container fluid>
           <LinkContainer to='/'>
@@ -65,7 +65,7 @@ const MobileNavbar = () => {
         </Container>
       </MobileNav>
       <MenuWrap className='menu-wrap'>
-        <Toggler
+        {/* <Toggler
           hasClickedHamburger={hasClickedHamburger}
           type='checkbox'
           className='toggler'
@@ -73,7 +73,7 @@ const MobileNavbar = () => {
           onChange={(e) => {
             setHasClickedHamburger(e.target.checked);
           }}
-        />
+        /> */}
         <Hamburger className='hamburger'>
           <div></div>
         </Hamburger>

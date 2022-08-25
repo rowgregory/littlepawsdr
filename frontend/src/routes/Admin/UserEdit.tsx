@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Button } from 'react-bootstrap';
+import { Form, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import FormContainer from '../../components/FormContainer';
-import Message from '../../components/Message';
-import Loader from '../../components/Loader';
 import { getUserDetails, updateUser } from '../../actions/userActions';
 import { USER_UPDATE_RESET } from '../../constants/userConstants';
 import GoBackBtn from '../../utils/GoBackBtn';
 import styled from 'styled-components';
 import { useHistory, useRouteMatch } from 'react-router-dom';
+import { LoadingImg, Text, UpdateBtn } from '../../components/styles/Styles';
+import toaster from 'toasted-notes';
+import { ToastAlert } from '..';
 
 const FormControl = styled(Form.Control)`
   :disabled {
@@ -59,6 +60,18 @@ const UserEdit = () => {
     }
   }, [dispatch, history, successUpdate, user, userId]);
 
+  useEffect(() => {
+    if (error || errorUpdate) {
+      toaster.notify(
+        ({ onClose }) => ToastAlert(error || errorUpdate, onClose, 'error'),
+        {
+          position: 'bottom',
+          duration: 20000,
+        }
+      );
+    }
+  }, [errorUpdate, error]);
+
   const submitHandler = (e: any) => {
     e.preventDefault();
     dispatch(
@@ -74,18 +87,18 @@ const UserEdit = () => {
     );
   };
 
-  return (
+  return error ? (
+    <></>
+  ) : (
     <>
       <GoBackBtn to='/admin/userList' />
       <FormContainer>
-        {loadingUpdate && <Loader />}
-        {errorUpdate && <Message variant='danger'>{errorUpdate}</Message>}
-        {loading ? (
-          <Loader />
-        ) : error ? (
-          <Message variant='danger'>{error}</Message>
-        ) : (
-          <Form onSubmit={submitHandler}>
+        <Form onSubmit={submitHandler}>
+          {loading ? (
+            <div className='mb-3'>
+              <LoadingImg w='100%' h='2.5rem' />
+            </div>
+          ) : (
             <Form.Group controlId='name'>
               <Form.Label>Name</Form.Label>
               <FormControl
@@ -96,6 +109,12 @@ const UserEdit = () => {
                 onChange={(e: any) => setName(e.target.value)}
               ></FormControl>
             </Form.Group>
+          )}
+          {loading ? (
+            <div className='mb-3'>
+              <LoadingImg w='100%' h='2.5rem' />
+            </div>
+          ) : (
             <Form.Group controlId='email'>
               <Form.Label>Email Address</Form.Label>
               <FormControl
@@ -106,27 +125,62 @@ const UserEdit = () => {
                 onChange={(e: any) => setEmail(e.target.value)}
               ></FormControl>
             </Form.Group>
-            <Form.Group controlId='isAdmin'>
+          )}
+          {loading ? (
+            <div className='mb-3'>
+              <LoadingImg w='10rem' h='2.5rem' />
+            </div>
+          ) : (
+            <Form.Group
+              className='d-flex align-items-center'
+              controlId='isAdmin'
+            >
               <Form.Check
                 type='switch'
-                label='Is Admin'
                 checked={isAdmin}
                 onChange={(e: any) => setIsAdmin(e.target.checked)}
               ></Form.Check>
+              <Form.Label className='mb-0'>Is Admin</Form.Label>
             </Form.Group>
-            <Form.Group controlId='isVolunteer'>
+          )}
+          {loading ? (
+            <div className='mb-3'>
+              <LoadingImg w='10rem' h='2.5rem' />
+            </div>
+          ) : (
+            <Form.Group
+              className='d-flex align-items-center'
+              controlId='isVolunteer'
+            >
               <Form.Check
                 type='switch'
-                label='Is Volunteer'
                 checked={isVolunteer}
                 onChange={(e: any) => setIsVolunteer(e.target.checked)}
               ></Form.Check>
+              <Form.Label className='mb-0'>Is Volunteer</Form.Label>
             </Form.Group>
-            <Button type='submit' variant='primary'>
-              Update
-            </Button>
-          </Form>
-        )}
+          )}
+          {loading ? (
+            <LoadingImg h='2.5rem' w='5rem' borderRadius='0.5rem' />
+          ) : (
+            <UpdateBtn type='submit'>
+              {loadingUpdate ? (
+                <div className='d-flex align-items-center'>
+                  <Spinner
+                    as='span'
+                    animation='border'
+                    size='sm'
+                    role='status'
+                    aria-hidden='true'
+                  />
+                  <Text className='text-white ml-2'>Updating...</Text>
+                </div>
+              ) : (
+                <Text className='text-white'>Update</Text>
+              )}
+            </UpdateBtn>
+          )}
+        </Form>
       </FormContainer>
     </>
   );

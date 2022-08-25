@@ -7,8 +7,11 @@ import {
   listRaffleWinners,
 } from '../../actions/raffleWinnerActions';
 import DeleteModal from '../../components/DeleteModal';
-import Message from '../../components/Message';
-import { TableBody, Text, StyledEditBtn } from '../../components/styles/Styles';
+import {
+  Text,
+  StyledEditBtn,
+  LoadingImg,
+} from '../../components/styles/Styles';
 import { RAFFLE_WINNER_CREATE_RESET } from '../../constants/raffleWinnerContants';
 import {
   CreateBtn,
@@ -19,6 +22,8 @@ import {
 } from '../../components/styles/admin/Styles';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import { useHistory } from 'react-router-dom';
+import { ToastAlert } from '..';
+import toaster from 'toasted-notes';
 
 const RaffleWinnerList = () => {
   const history = useHistory();
@@ -32,11 +37,7 @@ const RaffleWinnerList = () => {
   const [listOfRaffleWinners, setListOfRafflwWinners] = useState([]) as any;
 
   const raffleWinnerList = useSelector((state: any) => state.raffleWinnerList);
-  const {
-    // loading,
-    error,
-    raffleWinners,
-  } = raffleWinnerList;
+  const { loading, error, raffleWinners } = raffleWinnerList;
 
   const raffleWinnerCreate = useSelector(
     (state: any) => state.raffleWinnerCreate
@@ -72,15 +73,30 @@ const RaffleWinnerList = () => {
     }
   }, [dispatch, history, successCreate, createdRaffleWinner, successDelete]);
 
+  useEffect(() => {
+    if (error || errorCreate || errorDelete) {
+      toaster.notify(
+        ({ onClose }) =>
+          ToastAlert(error || errorCreate || errorDelete, onClose, 'error'),
+        {
+          position: 'bottom',
+          duration: 20000,
+        }
+      );
+    }
+  }, [error, errorCreate, errorDelete]);
+
   const createRaffleWinnerHandler = () => {
     dispatch(createRaffleWinner());
   };
 
   const filteredRaffleWinners = listOfRaffleWinners?.filter(
     (raffleWinners: any) =>
-      raffleWinners._id.toLowerCase().includes(text.toLowerCase())
+      raffleWinners.name.toLowerCase().includes(text.toLowerCase())
   );
-  return (
+  return error ? (
+    <></>
+  ) : (
     <>
       <DeleteModal
         actionFunc='Raffle Winner'
@@ -89,130 +105,98 @@ const RaffleWinnerList = () => {
         id={id}
         publicId={publicId}
       />
-      {(errorDelete || errorCreate) && (
-        <Message variant='danger'>{errorDelete ?? errorCreate}</Message>
-      )}
-      <Col className='d-flex align-items-center justify-content-between'>
-        <SearchBar>
-          <Form.Control
-            as='input'
-            type='text'
-            placeholder='Search by ID'
-            value={text || ''}
-            onChange={(e: any) => setText(e.target.value)}
-          ></Form.Control>
-        </SearchBar>
-        <CreateBtn onClick={createRaffleWinnerHandler}>
-          {loadingRaffleWinnerCreate ? (
-            <Spinner animation='border' size='sm' />
-          ) : (
-            <i className='fas fa-plus fa-2x'></i>
-          )}
-        </CreateBtn>
-      </Col>
-
-      {error ? (
-        <Message variant='danger'>{error}</Message>
+      {loading ? (
+        <Col className='mb-3 d-flex justify-content-between align-items-center'>
+          <LoadingImg w='20rem' h='2.5rem' />
+          <LoadingImg w='2.5rem' h='2.5rem' borderRadius='50%' />
+        </Col>
       ) : (
-        <Col>
-          <Table hover responsive className='table-md'>
-            <TableHead>
-              <tr>
-                <th>ID</th>
-                <th>NAME</th>
-                <th>IMAGE</th>
-                <th>MESSAGE</th>
-                <th>MONTH</th>
-                <th>EDIT</th>
-                <th>DELETE</th>
-              </tr>
-            </TableHead>
-            {raffleWinners?.length === 0 ? (
-              <TableBody>
-                <tr>
-                  <td>Click the plus to create a raffle winner.</td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-              </TableBody>
-            ) : filteredRaffleWinners?.length === 0 ? (
-              <TableBody>
-                <tr>
-                  <td>Sorry, no match!</td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-              </TableBody>
+        <Col className='d-flex align-items-center justify-content-between'>
+          <SearchBar>
+            <Form.Control
+              as='input'
+              type='text'
+              placeholder='Search by Name'
+              value={text || ''}
+              onChange={(e: any) => setText(e.target.value)}
+            ></Form.Control>
+          </SearchBar>
+          <CreateBtn onClick={createRaffleWinnerHandler}>
+            {loadingRaffleWinnerCreate ? (
+              <Spinner animation='border' size='sm' />
             ) : (
-              <TransitionGroup component='tbody'>
-                {filteredRaffleWinners?.map((raffleWinner: any) => (
-                  <CSSTransition
-                    key={raffleWinner?._id}
-                    timeout={500}
-                    classNames='item'
-                  >
-                    <TableRow>
-                      <td>
-                        <Text>{raffleWinner?._id}</Text>
-                      </td>
-                      <td>
-                        <Text>{raffleWinner?.name}</Text>
-                      </td>
-                      <td>
-                        <TableImg
-                          src={raffleWinner?.image}
-                          alt={raffleWinner?.name}
-                        />
-                      </td>
-                      <td>
-                        <Text>{raffleWinner?.message}</Text>
-                      </td>
-                      <td>
-                        <Text>{raffleWinner?.month}</Text>
-                      </td>
-                      <td>
-                        <LinkContainer
-                          to={`/admin/raffleWinner/${raffleWinner?._id}/edit`}
-                        >
-                          <StyledEditBtn className='btn-lg'>
-                            <i className='fas fa-edit'></i>
-                          </StyledEditBtn>
-                        </LinkContainer>
-                      </td>
-                      <td>
-                        <Button
-                          variant='danger'
-                          className='btn-lg border-0'
-                          onClick={() => {
-                            setId(raffleWinner?._id);
-                            setPublicId(raffleWinner?.publicId);
-                            handleShow();
-                          }}
-                        >
-                          {loadingRaffleWinnerDelete &&
-                          id === raffleWinner?._id ? (
-                            <Spinner size='sm' animation='border' />
-                          ) : (
-                            <i className='fas fa-trash'></i>
-                          )}
-                        </Button>
-                      </td>
-                    </TableRow>
-                  </CSSTransition>
-                ))}
-              </TransitionGroup>
+              <i className='fas fa-plus'></i>
             )}
-          </Table>
+          </CreateBtn>
         </Col>
       )}
+      <Col>
+        <Table hover responsive className='table-sm'>
+          <TableHead>
+            <tr>
+              <th>NAME</th>
+              <th>IMAGE</th>
+              <th>MESSAGE</th>
+              <th>MONTH</th>
+              <th>EDIT</th>
+              <th>DELETE</th>
+            </tr>
+          </TableHead>
+          <TransitionGroup component='tbody'>
+            {filteredRaffleWinners?.map((raffleWinner: any) => (
+              <CSSTransition
+                key={raffleWinner?._id}
+                timeout={500}
+                classNames='item'
+              >
+                <TableRow>
+                  <td>
+                    <Text>{raffleWinner?.name}</Text>
+                  </td>
+                  <td>
+                    <TableImg
+                      src={raffleWinner?.image}
+                      alt={raffleWinner?.name}
+                    />
+                  </td>
+                  <td>
+                    <Text>{raffleWinner?.message}</Text>
+                  </td>
+                  <td>
+                    <Text>{raffleWinner?.month}</Text>
+                  </td>
+                  <td>
+                    <LinkContainer
+                      to={`/admin/raffleWinner/${raffleWinner?._id}/edit`}
+                    >
+                      <StyledEditBtn>
+                        <i className='fas fa-edit'></i>
+                      </StyledEditBtn>
+                    </LinkContainer>
+                  </td>
+                  <td>
+                    <Button
+                      variant='danger'
+                      className='border-0'
+                      onClick={() => {
+                        setId(raffleWinner?._id);
+                        setPublicId(raffleWinner?.publicId);
+                        handleShow();
+                      }}
+                    >
+                      {loadingRaffleWinnerDelete && id === raffleWinner?._id ? (
+                        <Spinner size='sm' animation='border' />
+                      ) : (
+                        <i className='fas fa-trash'></i>
+                      )}
+                    </Button>
+                  </td>
+                </TableRow>
+              </CSSTransition>
+            ))}
+          </TransitionGroup>
+        </Table>
+      </Col>
     </>
   );
 };

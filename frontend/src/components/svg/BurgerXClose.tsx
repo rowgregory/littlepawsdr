@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import styled from 'styled-components';
 
-const Burger = styled.svg<{ isfixed: boolean }>`
+const Burger = styled.svg`
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   transition: transform 400ms;
@@ -9,9 +9,18 @@ const Burger = styled.svg<{ isfixed: boolean }>`
   -webkit-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  position: ${({ isfixed }) => (isfixed ? 'fixed' : '')};
-  right: 0;
   z-index: 100 !important;
+  margin-right: 1rem;
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
+  transition: 300ms;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
+    margin-left: 46px;
+  }
+  :hover {
+    background: ${({ theme }) => theme.colors.secondary};
+  }
   .line {
     fill: none;
     transition: stroke-dasharray 400ms, stroke-dashoffset 400ms;
@@ -45,26 +54,22 @@ const Burger = styled.svg<{ isfixed: boolean }>`
       stroke-dashoffset: -86px;
     }
   }
-
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    display: none;
-  }
 `;
 
-const BurgerXClose: FC<{
-  open: any;
-  toggle: any;
-}> = ({ open, toggle }) => {
+interface BurgerXCloseProps {
+  toggle: () => void;
+}
+
+const BurgerXClose: FC<BurgerXCloseProps> = ({ toggle }) => {
   return (
     <Burger
       onClick={() => {
         toggle();
       }}
-      className={open ? 'active' : ''}
+      className='mt-1'
       viewBox='0 0 100 100'
       width='80'
-      height='60'
-      isfixed={open}
+      height='38.39px'
     >
       <path
         className='line top'

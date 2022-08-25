@@ -66,7 +66,14 @@ const UserDropdown = ({
   const logoutHandler = () => dispatch(logout(userInfo));
   return (
     userInfo && (
-      <div ref={dropDownRef} style={{ position: 'absolute', width: '100%' }}>
+      <div
+        ref={dropDownRef}
+        style={{
+          position: 'absolute',
+          width: '100%',
+          zIndex: 500,
+        }}
+      >
         <CSSTransition
           unmountOnExit
           timeout={500}
@@ -118,12 +125,15 @@ const UserDropdown = ({
               className='d-flex justify-content-between align-items-center px-4 py-3'
             >
               <Text>Settings</Text>
-
               <SettingsIcon />
             </AvatarHeaderLinks>
             <LogoutContainer className='d-flex justify-content-center align-items-center'>
-              <LogoutBtn variant='dark' onClick={logoutHandler}>
-                {loading && <Spinner animation='border' size='sm' />} Log Off
+              <LogoutBtn
+                variant='dark'
+                onClick={logoutHandler}
+                disabled={loading}
+              >
+                {loading && <Spinner animation='border' size='sm' />} Sign out
               </LogoutBtn>
             </LogoutContainer>
             <div
@@ -138,7 +148,6 @@ const UserDropdown = ({
             </div>
           </div>
         </CSSTransition>
-
         <CSSTransition
           unmountOnExit
           timeout={500}

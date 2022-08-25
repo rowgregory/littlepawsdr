@@ -24,6 +24,29 @@ const GlobalStyles = createGlobalStyle<{
   
 }
 
+.table-responsive {
+  height:1000px;
+  overflow:scroll;
+} 
+thead tr:nth-child(1) th {
+  background: ${({ theme }) => theme.colors.primary};
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+tbody {
+    tr {
+      :nth-child(even) {
+        background-color: ${({ theme }) => theme.table.odd};
+      }
+    }
+  }
+
+div, a, span, p, h1, h2, h3, h4, h5, h6, input, select, ::placeholder {
+  font-family: Duru Sans;
+}
+
 .page-item.active .page-link {
     background: ${({ theme }) => theme.smcontainer.bg} !important;
     color: #fff !important;
@@ -38,34 +61,9 @@ const GlobalStyles = createGlobalStyle<{
   background-color: ${({ theme }) => theme.smcontainer.bg};
 }
 
-
-.eCardsContainer::-webkit-scrollbar,    
-.eCardsContainer::-webkit-scrollbar-button,
-.eCardsContainer::-webkit-scrollbar-track
-{
-  background:${({ theme }) => theme.bg} !important;
-}
-
-.eCardsContainer::-webkit-scrollbar-thumb {
-  background: ${({ theme }) => theme.colors.primary};
-}
-
-.eCardsContainer::-webkit-scrollbar-track-piece {
-  background: ${({ theme }) => theme.input.bg};
-}
-
 .Toaster__alert_close {
   display: none;
 }
-
-  .one-time:hover, .monthly:hover, .e-card:hover, .one-time-still, .monthly-still, .e-card-still {
-    --angle: 0deg;
-    border: 1px solid transparent;
-    border-image: ${({ theme }) =>
-      `linear-gradient(var(--angle), ${theme.colors.primary}, ${theme.colors.secondary}) 1`} ;
-    border-image-slice:1;
-    animation: 1s rotate linear infinite;
-  }
 
   @keyframes rotate {
     to {
@@ -129,7 +127,6 @@ const GlobalStyles = createGlobalStyle<{
   input.form-control:hover, input.form-control:focus, input.form-control:active, select.form-control:hover, select.form-control:focus, select.form-control:active {
     border-radius: 0  !important;
     box-shadow: 0 !important;
-    border-bottom: 1px solid ${({ theme }) => theme.colors.primary}  !important;
   }
 
   input:-webkit-autofill,
@@ -139,9 +136,9 @@ const GlobalStyles = createGlobalStyle<{
   {
     transition: background-color 5000s ease-in-out 0s;
     -webkit-box-shadow:${({ theme }) =>
-      `0 0 0px 1000px ${theme.secondaryBg} inset`} !important ;
+      `0 0 0px 1000px ${theme.input.bg} inset`} !important ;
     box-shadow:${({ theme }) =>
-      `0 0 0px 1000px ${theme.secondaryBg} inset`} !important;
+      `0 0 0px 1000px ${theme.input.bg} inset`} !important;
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: ${({ theme }) => theme.formControlInput.text};
@@ -155,9 +152,9 @@ const GlobalStyles = createGlobalStyle<{
   {
     transition: background-color 5000s ease-in-out 0s;
     -webkit-box-shadow:${({ theme }) =>
-      `0 0 0px 1000px ${theme.secondaryBg} inset`}  !important;
+      `0 0 0px 1000px ${theme.input.bg} inset`}  !important;
     box-shadow:${({ theme }) =>
-      `0 0 0px 1000px ${theme.secondaryBg} inset`} !important;
+      `0 0 0px 1000px ${theme.input.bg} inset`} !important;
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: ${({ theme }) => theme.text};

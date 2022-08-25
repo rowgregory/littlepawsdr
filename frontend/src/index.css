@@ -1,5 +1,5 @@
 html,
-body, 
+body,
 * {
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
@@ -8,10 +8,12 @@ body,
 @import url('https://fonts.googleapis.com/css2?family=Duru+Sans&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@100;200;300;400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Oswald&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Biryani:wght@400;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Maven+Pro:wght@900&display=swap');
 
 /* mobile navbar */
-[aria-labelledby="basic-nav-dropdown"] {
+[aria-labelledby='basic-nav-dropdown'] {
   border-radius: 12px;
   font-size: 14px;
   box-shadow: rgba(1, 4, 9, 0.85) 0px 16px 32px 0px;
@@ -22,11 +24,17 @@ body,
 .carousel-item.active {
   display: flex;
 }
+.carousel-control-next,
+.carousel-control-prev {
+  top: 50%;
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+}
 
 .carousel img {
-  height: 600px;
   width: 100%;
-  object-fit: contain;
+  object-fit: cover;
 }
 
 .carousel a {
@@ -34,13 +42,15 @@ body,
 }
 
 /* removes radio button */
-input[type="radio"] {
+input[type='radio'] {
   visibility: hidden;
   display: none;
 }
 
 /* removes image path */
-input#image.img-link, .form-control-file, .form-control-range {
+input#image.img-link,
+.form-control-file,
+.form-control-range {
   display: none;
 }
 
@@ -49,17 +59,17 @@ input#image.img-link, .form-control-file, .form-control-range {
   display: none;
 }
 
-.custom-file-label{
+.custom-file-label {
   padding: 0;
-  display:flex;
+  display: flex;
   justify-content: flex-end;
 }
 
 .custom-file-input {
   cursor: pointer;
-  display:flex;
+  display: flex;
   justify-content: center;
-  align-items:center;
+  align-items: center;
 }
 
 .image-avatar {
@@ -71,7 +81,7 @@ input#image.img-link, .form-control-file, .form-control-range {
   display: none;
 }
 
-input[name=cardnumber]{
+input[name='cardnumber'] {
   color: #5469d4;
 }
 
@@ -109,7 +119,6 @@ input[name=cardnumber]{
   transition: all var(--speed) ease;
 }
 
-
 .menu-secondary-enter {
   transform: translateX(110%);
 }
@@ -123,7 +132,6 @@ input[name=cardnumber]{
   transform: translateX(110%);
   transition: all var(--speed) ease;
 }
-
 
 .menu-third-enter {
   transform: translateX(110%);
@@ -179,7 +187,6 @@ input[name=cardnumber]{
   inherits: false;
 }
 
-
 .slide-1-enter {
   position: absolute;
   transform: translateX(-110%);
@@ -215,7 +222,7 @@ input[name=cardnumber]{
 button.btn.btn-none {
   box-shadow: none !important;
   outline: none;
-  border:0;
+  border: 0;
 }
 
 .fade-enter {

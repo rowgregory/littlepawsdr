@@ -1,5 +1,6 @@
 import asyncHandler from 'express-async-handler';
 import Order from '../models/orderModel.js';
+import Product from '../models/productModel.js';
 import GuestOrder from '../models/guestOrderModel.js';
 import { send_mail } from '../server.js';
 
@@ -31,6 +32,30 @@ const addOrderItems = asyncHandler(async (req, res) => {
     });
 
     const createdOrder = await order.save();
+
+    if (createdOrder) {
+      for (const item of createdOrder.orderItems) {
+        const product = await Product.findById(item.product);
+        const objIndex = product?.sizes?.findIndex(
+          obj => obj?.size === item?.size
+        );
+
+        if (product?.sizes?.length > 0) {
+          await Product.updateOne(
+            { 'sizes.size': item.size },
+            {
+              $set: {
+                'sizes.$.amount': product.sizes[objIndex].amount - item.qty,
+              },
+            }
+          );
+        } else {
+          product.countInStock = product.countInStock - item.qty;
+
+          await product.save();
+        }
+      }
+    }
 
     res.status(201).json(createdOrder);
   } catch (error) {

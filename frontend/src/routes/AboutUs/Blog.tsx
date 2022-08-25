@@ -144,7 +144,12 @@ const Blog = () => {
                   key={i}
                   className='mx-auto d-flex align-items-center flex-column mb-3'
                 >
-                  <Image src={product?.image} alt='product' width='100%' />
+                  <Image
+                    src={product?.image}
+                    alt='product'
+                    width='100%'
+                    style={{ aspectRatio: '1/1', objectFit: 'cover' }}
+                  />
                   <div
                     style={{
                       position: 'absolute',

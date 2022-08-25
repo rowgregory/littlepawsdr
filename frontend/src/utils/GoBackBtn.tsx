@@ -1,29 +1,30 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 
-const slideLeft = () => keyframes`
-100% { transform: translateX(-10px); }
-`;
-
-const StyledLink = styled(Link)`
-  color: ${({ theme }) => theme.colors.primary};
-  i {
-    color: ${({ theme }) => theme.colors.primary};
-  }
+const StyledLink = styled(Link)<{ color?: string }>`
+  cursor: pointer;
+  color: ${({ color }) => (color ? color : '')};
+  background: tranparent;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 300ms;
+  position: relative;
   :hover {
     text-decoration: none;
-    i {
-      color: ${({ theme }) => theme.colors.primary};
-      animation: ${slideLeft()} 0.9s infinite;
-    }
+    background: rgba(0, 0, 0, 0.3);
+    color: #fff;
   }
 `;
 
-const GoBackBtn = ({ to }: any) => {
+const GoBackBtn = ({ to, color }: any) => {
   return (
-    <StyledLink to={to} className='my-3'>
-      <i className='fas fa-arrow-left mr-1'></i>Go Back
+    <StyledLink to={to} color={color}>
+      <i className='fas fa-arrow-left'></i>
     </StyledLink>
   );
 };

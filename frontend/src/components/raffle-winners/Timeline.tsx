@@ -1,6 +1,6 @@
 import { Col, Image } from 'react-bootstrap';
 import styled from 'styled-components';
-const timeLineData = () => [
+export const timeLineData = () => [
   {
     month: 'January',
     abbrv: 'JAN',

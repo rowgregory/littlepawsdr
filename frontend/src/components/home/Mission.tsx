@@ -1,92 +1,92 @@
 import React from 'react';
-import { Col, Image } from 'react-bootstrap';
 import styled from 'styled-components';
-import { missionStatementData } from '../../utils/homeData';
-import { SectionTitle } from './styles';
+import { missionStatementData_V2 } from '../../utils/homeData';
+import MaskBtn from './MaskBtn';
 
-export const MissionContainer = styled(Col)`
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-gap: 10px;
+export const MissionContainer = styled.div`
+  display: flex;
   width: 100%;
   margin: 0 auto;
+  padding: 100px 1rem 150px;
+  flex-direction: column;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    grid-template-columns: 1fr 1fr 1fr;
+    max-width: 900px;
+    flex-direction: row;
+    width: 100%;
+    padding: 48px;
+  }
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+    max-width: 1100px;
   }
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    grid-template-columns: 1fr 1fr 1fr;
+    max-width: 1300px;
+  }
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[4]}) {
+    max-width: 1500px;
+  }
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[5]}) {
+    max-width: 1700px;
   }
 `;
 
-export const MissionCard = styled.div`
+const RescueTitle = styled.div`
+  padding-right: 40px;
+  width: 100%;
+  margin-bottom: 2rem;
+  font-family: Duru Sans;
+  font-size: 28px;
+  color: ${({ theme }) => theme.text};
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    width: 40%;
+    display: flex;
+    justify-content: flex-end;
+  }
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[4]}) {
+    padding-right: 80px;
+    width: 40%;
+  }
+`;
+
+const StatementAndLinkContainer = styled.div`
   display: flex;
   flex-direction: column;
-`;
-
-export const MissionImg = styled(Image)`
-  max-width: '';
-  max-height: '';
+  padding: 0;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
     display: flex;
-    width: 100%;
-    max-height: 430px;
+    justify-content: flex-end;
+    padding-left: 40px;
+    width: 60%;
+    border-left: 1px solid rgb(0, 0, 0, 0.1);
   }
-`;
-
-export const MissionBodyContainer = styled.div`
-  backdrop-filter: blur(15px);
-`;
-
-export const MissionTitle = styled.h4<{ title?: string }>`
-  font-family: 'Ubuntu', sans-serif;
-  color: ${({ theme }) => theme.text};
-  font-weight: bold;
-  position: relative;
-  margin: 0.5rem 0;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    margin: 2rem auto;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[4]}) {
+    padding-left: 80px;
+    display: flex;
+    justify-content: flex-end;
   }
 `;
 
 export const MissionStatement = styled.div`
-  font-family: 'Poppins', sans-serif;
-  font-size: 1.05rem;
+  font-family: 'Duru Sans';
+  font-size: 1rem;
   color: ${({ theme }) => theme.text};
-  margin-bottom: 3rem;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    margin-bottom: 0;
-  }
-`;
-
-const SectionContainer = styled.div`
-  margin: 0 12px 84px;
-
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    margin: 0 48px 84px;
-  }
+  font-weight: bold;
+  line-height: 2;
+  margin-bottom: 2rem;
 `;
 
 const Mission = () => {
   return (
-    <SectionContainer>
-      <SectionTitle to='/adopt'>Mission</SectionTitle>
-      <MissionContainer className='px-0'>
-        {missionStatementData().map((d) => (
-          <MissionCard key={d.title}>
-            <Col className='d-flex flex-column px-0 align-items-center'>
-              <MissionImg src={d?.image} alt={d?.title.replace(' ', '-')} />
-              <MissionBodyContainer>
-                <MissionTitle title={d?.title}>{d?.title}</MissionTitle>
-                <MissionStatement>{d?.text}</MissionStatement>
-              </MissionBodyContainer>
-            </Col>
-          </MissionCard>
-        ))}
-      </MissionContainer>
-    </SectionContainer>
+    <MissionContainer>
+      <RescueTitle>Little Paws Dachshund Rescue</RescueTitle>
+      <StatementAndLinkContainer>
+        <MissionStatement>{missionStatementData_V2()}</MissionStatement>
+        <MaskBtn
+          linkKey='/about/successful-adoptions'
+          textKey='VIEW SUCCESSFUL ADOPTIONS'
+        />
+      </StatementAndLinkContainer>
+    </MissionContainer>
   );
 };
 

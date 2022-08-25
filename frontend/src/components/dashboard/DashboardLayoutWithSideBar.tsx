@@ -20,13 +20,21 @@ interface DashboardLayoutWithSideBarProps {
 
 const Main = styled.main`
   width: 100%;
+  margin-left: 0;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
+    margin-left: 320px;
+    width: calc(100vw - 335px);
+  }
 `;
 
 const Aside = styled.aside`
   display: none;
+  position: absolute;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
     width: 320px;
+    height: 50px;
     display: block;
+    position: fixed;
   }
 `;
 
@@ -41,6 +49,8 @@ const ActionBtn = styled.div`
   border-radius: 0.5rem;
   border: 1px solid ${({ theme }) => theme.separator};
   transition: 300ms;
+  display: flex;
+  align-items: end;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
     margin-right: 1rem;
   }
@@ -54,6 +64,8 @@ const ActionBtn = styled.div`
 `;
 
 const WelcomeText = styled.div`
+  position: fixed;
+  left: 0;
   color: ${({ theme }) => theme.text};
   font-family: 'Ubuntu', sans-serif;
   font-size: 1.25rem;
@@ -91,7 +103,7 @@ export const DashboardLayoutWithSideBar: FC<
     <>
       <ActionModal show={show} close={handleClose} />
       <AdminPageLayout>
-        <div className='d-flex justify-content-between align-items-center mb-3'>
+        <div className='d-flex align-items-center mb-3 w-100 justify-content-end'>
           <WelcomeText>Welcome, {userInfo?.name.split(' ')[0]}</WelcomeText>
           <ActionBtn onClick={() => handleShow()}>Actions</ActionBtn>
         </div>

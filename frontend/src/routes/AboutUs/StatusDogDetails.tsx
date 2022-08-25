@@ -8,7 +8,7 @@ import { useLocation } from 'react-router-dom';
 // import { capitalizeFirstLetter } from '../../utils/capitalizeFirstLetter';
 import styled from 'styled-components';
 import GoBackBtn from '../../utils/GoBackBtn';
-import { Text } from '../../components/styles/Styles';
+import { LoadingImg, Text } from '../../components/styles/Styles';
 // import { listProducts } from '../../actions/productActions';
 import { HorizontalLine } from '../../components/styles/product-details/Styles';
 // import { DACHSHUND_DETAILS_RESET } from '../../constants/dachshundConstants';
@@ -27,38 +27,13 @@ const StatusDogDetails = ({ match }: any) => {
   const { dachshund, loading } = dachshundDetails;
 
   useEffect(() => {
-    console.log('PING');
     dispatch(getDachshundDetails(match.params.id));
   }, [dispatch, match]);
 
   const { pathname } = useLocation();
 
-  // const {
-  //   name,
-  //   eyeColor,
-  //   activityLevel,
-  //   isDogsOk,
-  //   indoorOutdoor,
-  //   isSpecialNeeds,
-  //   ageGroup,
-  //   energyLevel,
-  //   exerciseNeeds,
-  //   newPeopleReaction,
-  //   photos,
-  //   sex,
-  //   isCurrentVaccinations,
-  //   sizeGroup,
-  //   coatLength,
-  //   breedPrimary,
-  //   colorDetails,
-  //   qualities,
-  //   videos,
-  // } = dachshund !== undefined && dachshund?.data[0]?.attributes;
-
-  console.log('dachshund: ', dachshund);
-
   return loading ? (
-    <></>
+    <LoadingImg w='100%' h='100%' />
   ) : (
     <>
       <GoBackBtn to={`/about/${pathname.split('/')[2]}`} />

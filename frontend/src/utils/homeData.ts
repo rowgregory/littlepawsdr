@@ -22,6 +22,10 @@ const missionStatementData = () => {
   ];
 };
 
+const missionStatementData_V2 = () => {
+  return `LITTLE PAWS DACHSHUND RESCUE is an east coast based 501(c)3 exempt nonprofit dedicated to the rescue and re-homing of our favorite short legged breed. We specialize in finding permanent homes for dachshund and dachshund mixes. It is LPDR’s goal to identify abandoned, mistreated, or homeless dogs and oversee their treatment and wellbeing while working to find loving owners for those in our care. We strive to make the lives of all dogs better through action, advocacy, awareness and education. If you are looking for a new family member take a look at our available dachshund and dachshund mixes.`;
+};
+
 const mockNewsData = () => [
   {
     title: 'Lorem ipsum dolor sit amet.',
@@ -42,4 +46,4 @@ const mockNewsData = () => [
   },
 ];
 
-export { missionStatementData, mockNewsData };
+export { missionStatementData, missionStatementData_V2, mockNewsData };

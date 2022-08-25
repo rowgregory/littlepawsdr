@@ -1,51 +1,71 @@
 import { useState } from 'react';
+interface DonationFormProps {
+  donationAmount: any;
+  email: string;
+  firstName: string;
+  lastName: string;
+  address: string;
+  city: string;
+  state: string;
+  zipPostalCode: string;
+  inMemoryOfWho: string;
+  inHonorOfWho: string;
+  addressForAcknowledgementMemory: string;
+  addressForAcknowledgementHonor: string;
+  donationType: string;
+  customAmount: boolean;
+  twenty: boolean;
+}
 
 export const useDonationForm = () => {
-  const [inputs, setInputs] = useState({
-    donationAmount: '5',
+  const [inputs, setInputs] = useState<DonationFormProps>({
+    donationAmount: '20',
     email: '',
     firstName: '',
     lastName: '',
     address: '',
     city: '',
-    state: '',
+    state: 'Alabama',
     zipPostalCode: '',
     inMemoryOfWho: '',
     inHonorOfWho: '',
     addressForAcknowledgementMemory: '',
     addressForAcknowledgementHonor: '',
-    donationType: '',
+    donationType: 'one-time',
+    customAmount: false,
+    twenty: true,
   });
 
-  const handleInputChange = (event: any) => {
+  const handleInputChange = (
+    event: any,
+    setTwenty?: any,
+    setCustomAmount?: any
+  ) => {
     event.persist();
-    const convertDonationAmount = () => {
-      switch (event.target.value) {
-        case 'Option 1':
-          return setInputs((inputs) => ({ ...inputs, donationAmount: '5' }));
-        case 'Option 2':
-          return setInputs((inputs) => ({ ...inputs, donationAmount: '10' }));
-        case 'Option 3':
-          return setInputs((inputs) => ({ ...inputs, donationAmount: '20' }));
-        case 'Option 4':
-          return setInputs((inputs) => ({ ...inputs, donationAmount: '25' }));
-        case 'Option 5':
-          return setInputs((inputs) => ({ ...inputs, donationAmount: '50' }));
-        case 'Option 6':
-          return setInputs((inputs) => ({
-            ...inputs,
-            donationAmount: '100',
-          }));
-        default:
-          return;
+
+    const eventValue = event.target.value;
+    const eventName = event.target.name;
+
+    if (eventName === 'donationAmount') {
+      if (eventValue !== '20') {
+        setTwenty(false);
+        setCustomAmount(true);
+      } else {
+        setTwenty(true);
+        setCustomAmount(false);
       }
-    };
+    }
 
-    convertDonationAmount();
-
-    setInputs((inputs) => ({
+    setInputs(() => ({
       ...inputs,
-      [event.target.name]: event.target.value,
+      [['customAmount', 'twenty'].includes(eventName)
+        ? 'donationAmount'
+        : event.target.name]:
+        eventName === 'twenty'
+          ? '20'
+          : eventName === 'customAmount'
+          ? ''
+          : eventValue,
     }));
   };
 

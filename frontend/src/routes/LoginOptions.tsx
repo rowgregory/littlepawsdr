@@ -87,11 +87,10 @@ const LoginOptions = () => {
   const {
     loading: loadingGuestUserRegister,
     error: errorGuestUserRegister,
-    success: successGuestUserRegister,
     guestUserInfo,
   } = guestUserRegister;
 
-  const [guestEmail, setGuestEmail] = useState(guestUserInfo?.email || '');
+  const [guestEmail, setGuestEmail] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [forgotPasswordEmail, setforgotPasswordEmail] = useState('');
@@ -129,8 +128,9 @@ const LoginOptions = () => {
       ).length === 0;
     if (thereIsNoOrderInLocalStorage) history.push('/');
 
-    if (successGuestUserRegister || userInfo) history.push('/cart/place-order');
-  }, [history, successGuestUserRegister, userInfo]);
+    if (userInfo?._id) history.push('/cart/place-order');
+    if (guestUserInfo?._id) history.push('/cart/place-order-guest');
+  }, [history, userInfo, guestUserInfo]);
 
   const submitHandler = (e: any) => {
     e.preventDefault();

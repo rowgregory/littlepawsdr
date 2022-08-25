@@ -2,14 +2,18 @@ import { Button, Col, Form } from 'react-bootstrap';
 import styled from 'styled-components';
 
 export const ProductDetailsContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin: 5rem auto 0;
-  max-width: 100rem;
-  width: 100%;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    display: flex;
-    flex-direction: row;
+  display: grid;
+  grid-template-columns: 100%;
+  padding: 0 2rem;
+  margin-bottom: 5rem;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+    grid-template-columns: 40% 30% 300px;
+    justify-content: center;
+  }
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
+    grid-template-columns: 50% 30% 300px;
+    justify-content: center;
+    padding-top: 2.5rem;
   }
 `;
 
@@ -41,7 +45,6 @@ export const SelectInputContainer = styled.div`
   }
   :hover {
     border: 1px solid ${({ theme }) => theme.colors.purple05};
-
     color: ${({ theme }) => theme.colors.purple05};
   }
 `;
@@ -66,33 +69,45 @@ export const SelectInput = styled(Form.Control)`
   :focus-visible {
     outline: none !important;
   }
-  border: none !important;
+  border: 1px solid ${({ theme }) => theme.input.bg} !important;
+  :hover {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  }
+`;
+
+export const ThirdColumnWrapper = styled.div`
+  border: 1px solid ${({ theme }) => theme.input.border};
+  height: fit-content;
+  border-radius: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  padding: 18px 14px;
 `;
 
 export const AddToCartBtn = styled(Button)`
-  background: ${({ theme }) => theme.colors.green04};
-  width: inherit;
-  border-radius: 0;
-  border: 1px solid ${({ theme }) => theme.cart.productDetails.addToCartBtn.bg};
-  color: #fff;
-  font-family: 'Roboto';
+  background: ${({ theme }) => theme.colors.yellow} !important;
+  color: ${({ theme }) => theme.black};
+  width: 100%;
+  border-radius: 0.75rem;
+  border: none;
   transition: 300ms;
   font-family: 'Libre Franklin', sans-serif;
-  font-weight: 700;
-  font-size: 1rem;
+
+  font-size: 0.9rem;
   outline: none;
   :hover {
-    background: ${({ theme }) => theme.colors.green04};
-    border: 1px solid ${({ theme }) => theme.colors.green04};
-    filter: brightness(1.2);
+    color: ${({ theme }) => theme.text};
+    background: #f3ce13 !important;
     outline: none;
   }
   :focus,
   :active {
-    background: ${({ theme }) => theme.colors.green04} !important;
     outline: none;
     box-shadow: none;
     border: none;
+  }
+  :disabled {
+    color: ${({ theme }) => theme.black};
   }
 `;
 
@@ -135,7 +150,7 @@ export const PlusMinusBtn = styled.div<{ active: boolean }>`
   align-items: center;
   border: ${({ theme, active }) => (active ? `2px dashed #fff` : '')};
   i {
-    color: #fff;
+    color: ${({ theme }) => theme.text};
   }
 `;
 
@@ -165,23 +180,21 @@ export const SizeContainer = styled.div<{ show: boolean }>`
   margin-bottom: 3rem;
 `;
 
-export const Size = styled.div<{ active: boolean }>`
+export const Size = styled.div<{ active?: boolean }>`
   height: 40px;
   width: 50px;
-  border: 1px solid
-    ${({ theme, active }) => (active ? theme.colors.quaternary : theme.border)};
+  border: 1px solid ${({ theme }) => theme.colors.primary};
   color: ${({ theme, active }) =>
-    active ? theme.colors.quaternary : theme.text};
+    active ? theme.white : theme.colors.primary};
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  background: ${({ theme, active }) => (active ? theme.colors.blue04 : '')};
+  background: ${({ theme, active }) => (active ? theme.colors.primary : '')};
   transition: 300ms;
   :hover {
-    color: #fff;
-    border: 1px solid ${({ theme }) => theme.colors.blue04};
-    background: ${({ theme }) => theme.colors.blue04};
+    color: ${({ theme, active }) => theme.white};
+    background: ${({ theme, active }) => (active ? '' : theme.colors.primary)};
   }
 `;
 

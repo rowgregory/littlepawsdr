@@ -9,6 +9,7 @@ interface AvatarInitialsProps {
 }
 
 export const AvatarInitials = styled.div<AvatarInitialsProps>`
+  text-transform: uppercase;
   cursor: pointer;
   height: ${({ h }) => h};
   width: ${({ w }) => w};
@@ -24,17 +25,21 @@ export const AvatarInitials = styled.div<AvatarInitialsProps>`
       ? `2px solid ${theme.header.link.avatarHover}`
       : '2px solid #fff'};
   :hover {
-    border: 2px solid ${({ theme }) => theme.header.link.avatarHover};
+    border: 2px solid ${({ theme }) => theme.colors.senary};
+    filter: brightness(1.3);
   }
 `;
 
-export const StyledAvatar = styled(Image)<{ path: string }>`
+export const StyledAvatar = styled(Image)<{
+  path: string;
+  isvisible?: string;
+}>`
   width: 2.8125rem;
   height: 2.8125rem;
   cursor: pointer;
   object-fit: cover;
-  border: ${({ theme, path }) =>
-    path === '/admin' || path === '/my-orders' || path === '/settings'
+  border: ${({ theme, path, isvisible }) =>
+    isvisible === 'true'
       ? `2px solid ${theme.header.link.avatarHover}`
       : `2px solid ${theme.header.cart}`};
   margin: 0 0.5rem;
@@ -48,6 +53,7 @@ export const StyledAvatar = styled(Image)<{ path: string }>`
 export const AvatarContainer = styled.div<{
   path: string;
   isvisible?: boolean;
+  showSideBar?: boolean;
 }>`
   cursor: pointer;
   height: 100%;
@@ -55,17 +61,17 @@ export const AvatarContainer = styled.div<{
   justify-content: center;
   align-items: center;
   padding: 0 0.5rem;
-  background: ${({ isvisible, theme, path }) =>
+  /* background: ${({ isvisible, theme, path }) =>
     isvisible || ['admin'].includes(path.split('/')[1])
       ? theme.header.link.hoverText
-      : ''};
+      : ''}; */
   box-shadow: ${({ theme, isvisible }) =>
     isvisible ? `0 -10px 0 -5px ${theme.header.link.underline} inset` : ''};
-  :hover {
+  /* :hover {
     box-shadow: ${({ theme }) =>
-      `0 -10px 0 -5px ${theme.header.link.underline} inset`};
+    `0 -10px 0 -5px ${theme.header.link.underline} inset`};
     background: ${({ theme }) => theme.header.link.hoverText};
-  }
+  } */
 `;
 
 export const AvatarHeaderLinks = styled(Link)`
@@ -89,31 +95,23 @@ export const AvatarHeaderLinks = styled(Link)`
 
 export const LoginContainer = styled.div<{ active?: string; open?: boolean }>`
   cursor: pointer;
-  height: 68px;
-  a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  a,
+  svg {
     position: relative;
-    height: 100%;
     transition: 300ms;
     display: flex;
     align-items: center;
     text-decoration: none;
-    font-size: 1rem;
-    padding: 0 0.5rem;
-    box-shadow: ${({ theme, active }) =>
-      active === 'true'
-        ? `0 -10px 0 -5px ${theme.header.link.underline} inset`
-        : ''};
-    background: ${({ theme, active }) =>
-      active === 'true' ? theme.header.link.hoverText : ''};
-    span {
-      color: #fff;
-    }
+    /* padding: 0 0.5rem; */
+    height: 50px;
+    width: 50px !important;
+    border-radius: 25px;
     :hover {
-      box-shadow: ${({ theme }) =>
-        `0 -10px 0 -5px ${theme.header.link.underline} inset`};
       color: #fff;
-      text-decoration: none;
-      background: ${({ theme }) => theme.header.link.bg};
+      background: ${({ theme }) => theme.colors.secondary};
     }
   }
   &.mobile-cart {
@@ -137,8 +135,8 @@ export const Items = styled.span<ItemsProps>`
   color: ${({ theme }) => theme.white};
   font-size: 1rem;
   position: absolute;
-  top: 22px;
-  left: ${({ isMobile }) => (isMobile ? '' : '55px')};
+  top: 3px;
+  left: ${({ isMobile }) => (isMobile ? '' : '26px')};
   right: ${({ isMobile }) => (isMobile ? '79px' : '')};
   z-index: 9;
   text-align: center;

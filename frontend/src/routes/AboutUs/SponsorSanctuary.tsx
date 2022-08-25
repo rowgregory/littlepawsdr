@@ -1,9 +1,8 @@
 import React from 'react';
-import { Card, Col, Row, Image } from 'react-bootstrap';
+import { Card, Col, Row } from 'react-bootstrap';
 import { PayPalURI } from '../../components/svg/PayPalURI';
 import styled from 'styled-components';
-import { sanctuaryDogData } from '../../utils/sanctuaryDogs';
-import { StyledCard, Text } from '../../components/styles/Styles';
+import { Text } from '../../components/styles/Styles';
 import { HorizontalLine } from '../../components/styles/product-details/Styles';
 
 export const PayPalCard = styled.div`
@@ -30,7 +29,7 @@ const SponsorSanctuary = () => {
   return (
     <Row className='d-flex'>
       <Col md={6} className='my-3 d-flex flex-column'>
-        <Text className='mb-3' fontSize='1.15rem'>
+        <Text className='mb-3'>
           In addition to our adoptable dogs, we have sanctuary foster dogs.
           These special dogs are not able to be adopted due to medical or
           behavioral circumstances, and will remain in LPDR’s care for the
@@ -39,7 +38,7 @@ const SponsorSanctuary = () => {
           medication, while others need monthly supplies of diapers or more
           frequent visits to the vet.
         </Text>
-        <Text fontSize='1.15rem'>
+        <Text>
           Please consider sponsoring one of our dear sanctuary dogs below.
         </Text>
       </Col>
@@ -122,35 +121,6 @@ const SponsorSanctuary = () => {
         </PayPalCard>
       </Col>
       <HorizontalLine />
-      {/* <Row>
-        <Col className='d-flex flex-column'>
-          {sanctuaryDogData().map((dog, i: number) => (
-            <div key={i} className='w-100 mb-2'>
-              <Row className=' d-flex align-items-center'>
-                <Col
-                  className='d-flex justify-content-center w-100'
-                  style={{
-                    maxWidth: '300px',
-                    maxHeight: '300px',
-                  }}
-                >
-                  <Image
-                    src={dog.img}
-                    alt={`dog-${i}`}
-                    fluid
-                    rounded
-                    style={{ objectFit: 'cover' }}
-                  />
-                </Col>
-                <Col className='d-flex w-100'>
-                  <Text className='text-left my-3 mb-5'>{dog.text}</Text>
-                </Col>
-              </Row>
-            </div>
-          ))}
-        </Col>
-      </Row>
-      <HorizontalLine /> */}
     </Row>
   );
 };

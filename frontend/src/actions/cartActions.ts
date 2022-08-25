@@ -10,7 +10,7 @@ import {
 } from '../constants/cartConstants';
 
 export const addToCart =
-  (id: any, qty: number, size: string) =>
+  (id: any, qty: number, size: string, sizes: any) =>
   async (dispatch: any, getState: any) => {
     try {
       dispatch({ type: CART_ADD_ITEM_REQUEST });
@@ -27,6 +27,7 @@ export const addToCart =
           countInStock: data.countInStock,
           qty,
           size,
+          sizes,
         },
       });
 

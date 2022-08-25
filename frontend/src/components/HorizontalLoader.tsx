@@ -43,7 +43,7 @@ const Loader = styled.div<{ path: string }>`
     position: absolute;
     height: 3px;
 
-    background-color: ${({ theme }) => theme.colors.primary};
+    background-color: ${({ theme }) => theme.colors.secondary};
     animation-name: ${({ path }) =>
       path === '/'
         ? css`
@@ -63,7 +63,10 @@ const HorizontalLoader = () => {
   return (
     <div
       style={{
-        position: pathname === '/settings/security' ? 'relative' : 'static',
+        position:
+          pathname === '/settings/security' || pathname === '/register'
+            ? 'relative'
+            : 'static',
         overflow: 'hidden',
       }}
     >

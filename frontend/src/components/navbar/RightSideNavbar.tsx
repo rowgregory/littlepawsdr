@@ -13,12 +13,12 @@ import { UserDropdown } from './UserDropdown';
 import { UserInfoProps } from '../common/PrivateRoute';
 import { useOutsideDetect } from '../../utils/useOutsideDetect';
 import styled from 'styled-components';
-import { Text } from '../styles/Styles';
 
-export const DropDownContainer = styled.div`
-  z-index: 200;
+export const DropDownContainer = styled.div<{ p: string }>`
+  z-index: 500;
   position: absolute;
-  top: 68px;
+  top: ${({ p }) => (p !== '/' ? '60px' : '90px')};
+  right: 60px;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -27,6 +27,7 @@ export const DropDownContainer = styled.div`
   transition: height 500ms ease;
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
   width: 300px;
+  border-radius: 0.5rem;
 `;
 
 export const NavLink = styled(Link)<{ active?: string }>`
@@ -35,7 +36,6 @@ export const NavLink = styled(Link)<{ active?: string }>`
   transition: 300ms;
   font-size: 1rem;
   padding: 0 0.5rem;
-  height: 68px;
   display: flex;
   align-items: center;
   background: ${({ theme, active }) =>
@@ -59,17 +59,19 @@ export const NavLink = styled(Link)<{ active?: string }>`
 `;
 
 export const Container = styled.nav`
-  display: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  height: 100%;
+  padding: 0 1rem;
+  border-left: 1px solid rgb(255, 255, 255, 0.5);
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    display: flex;
-    align-items: start;
-    justify-content: flex-end;
-    width: 100%;
-    height: 100%;
+    padding: 0 3rem;
+    width: 250px;
   }
 `;
 
-const RightSideNavbar = () => {
+const RightSideNavbar = ({ addHeaderBg, isMobile }: any) => {
   const { pathname: p } = useLocation();
   const dropDownRef = useRef(null) as any;
   const [isVisible, setIsVisible] = useState(false);
@@ -81,7 +83,7 @@ const RightSideNavbar = () => {
   const userLogin = useSelector((state: UserInfoProps) => state.userLogin);
   const { userInfo } = userLogin;
 
-  const { cartAndUserMenuItems, desktopMenuItems } = NAVBAR_DATA(userInfo);
+  const { cartAndUserMenuItems } = NAVBAR_DATA(userInfo);
 
   const firstNameInitial = userInfo ? userInfo?.name[0]?.trim() : '';
   const lastNameInitial =
@@ -89,25 +91,25 @@ const RightSideNavbar = () => {
       ? userInfo?.name?.split(' ')[1][0].toUpperCase().trim()
       : '';
 
-  const items = cartItems?.reduce((acc: any, item: any) => acc + item.qty, 0);
+  const items = cartItems?.reduce((acc: any, item: any) => acc + +item.qty, 0);
 
   const [menuHeight, setMenuHeight] = useState(
     !userInfo?.isAdmin ? 387 : null
   ) as any;
 
-  useOutsideDetect(dropDownRef, setIsVisible, setActiveMenu);
+  useOutsideDetect(dropDownRef, setActiveMenu, setIsVisible, 'USER_DROP_DOWN');
 
   const calcHeight = (el: any) => {
     const height = el.offsetHeight;
     setMenuHeight(height);
   };
-
   const filteredUserNavItem = (obj: any) => {
     switch (obj?.title) {
       case 'Avatar':
         return (
-          <AvatarContainer path={p} isvisible={isVisible}>
+          <AvatarContainer path={p}>
             <StyledAvatar
+              isvisible={isVisible.toString()}
               onClick={() => {
                 setMenuHeight(473.11);
                 setIsVisible(true);
@@ -122,11 +124,9 @@ const RightSideNavbar = () => {
         );
       case 'Initials':
         return (
-          <AvatarContainer path={p} isvisible={isVisible}>
+          <AvatarContainer path={p}>
             <AvatarInitials
-              onClick={() => {
-                setIsVisible(true);
-              }}
+              onClick={() => setIsVisible(true)}
               path={p}
               w='2.8125rem'
               h='2.8125rem'
@@ -142,35 +142,30 @@ const RightSideNavbar = () => {
             active={(p.split('/')[1] === obj?.link?.split('/')[1]).toString()}
           >
             <Link
-              to={obj?.link}
-              style={{ width: items > 0 ? '80px' : '', transition: '300ms' }}
+              to='/cart'
+              className='d-flex justify-content-center align-items-center'
             >
-              {items > 0 ? (
-                <Text fontSize='1rem' color='#fff'>
-                  <span className='mr-1'>CART</span>
-                  <Items
-                    active={p === '/cart'}
-                    className='d-flex justify-content-center align-items-center'
-                  >
-                    <div>{items}</div>
-                  </Items>
-                </Text>
-              ) : (
-                <Text fontSize='1rem' color='#fff'>
-                  <span>CART</span>
-                </Text>
-              )}
+              <Items>{items}</Items>
+              <i
+                className={`fas fa-shopping-cart ${!isMobile && 'fa-2x'}`}
+                style={{ color: '#fff' }}
+              ></i>
             </Link>
           </LoginContainer>
         );
-      case 'Log On':
+      case 'Sign In':
         return (
           <LoginContainer
             active={(p.split('/')[1] === obj?.link?.split('/')[1]).toString()}
           >
-            <Link to={obj.links[0]}>
-              <span className='mr-1'>LOG ON</span>
-              <i className='fas fa-user' style={{ color: '#fff' }}></i>
+            <Link
+              to={obj.links[0]}
+              className='d-flex justify-content-center align-items-center'
+            >
+              <i
+                className={`fas fa-user ${!isMobile && 'fa-2x'}`}
+                style={{ color: '#fff' }}
+              ></i>
             </Link>
           </LoginContainer>
         );
@@ -181,48 +176,45 @@ const RightSideNavbar = () => {
 
   return (
     <Container>
-      {desktopMenuItems.map(({ linkKey, linkText }, i) => (
-        <NavLink
-          active={(p.split('/')[1] === linkKey.split('/')[1]).toString()}
-          key={i}
-          to={linkKey}
-        >
-          <div className='d-flex flex-column justify-content-center'>
-            {linkText}
-          </div>
-        </NavLink>
-      ))}
       {cartAndUserMenuItems.map((obj: any, i) => (
-        <div
-          style={{ height: '68px' }}
-          key={i}
-          className='d-flex align-items-center'
-        >
+        <div key={i} className='d-flex align-items-center'>
           {filteredUserNavItem(obj)}
         </div>
       ))}
       {isVisible && (
-        <DropDownContainer
-          style={{
-            height:
-              activeMenu === 'secondary'
-                ? menuHeight
-                : !userInfo?.isAdmin
-                ? 387
-                : menuHeight,
-          }}
-        >
-          <UserDropdown
-            userInfo={userInfo}
-            dropDownRef={dropDownRef}
-            setIsVisible={setIsVisible}
-            activeMenu={activeMenu}
-            setActiveMenu={setActiveMenu}
-            calcHeight={calcHeight}
-            firstNameInitial={firstNameInitial}
-            lastNameInitial={lastNameInitial}
-          />
-        </DropDownContainer>
+        <>
+          <i
+            style={{
+              position: 'absolute',
+              right: '86px',
+              top: p !== '/' ? '49px' : '79px',
+              color: '#fff',
+            }}
+            className='fa-solid fa-sort-up fa-2x'
+          ></i>
+          <DropDownContainer
+            p={p}
+            style={{
+              height:
+                activeMenu === 'secondary'
+                  ? menuHeight
+                  : !userInfo?.isAdmin
+                  ? 387
+                  : menuHeight,
+            }}
+          >
+            <UserDropdown
+              userInfo={userInfo}
+              dropDownRef={dropDownRef}
+              setIsVisible={setIsVisible}
+              activeMenu={activeMenu}
+              setActiveMenu={setActiveMenu}
+              calcHeight={calcHeight}
+              firstNameInitial={firstNameInitial}
+              lastNameInitial={lastNameInitial}
+            />
+          </DropDownContainer>
+        </>
       )}
     </Container>
   );

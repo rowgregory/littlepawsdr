@@ -1,32 +1,24 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Col, Form, Row, Spinner } from 'react-bootstrap';
+import { Form, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { getBlogDetails, updateBlog } from '../../actions/blogActions';
 import FormContainer from '../../components/FormContainer';
 import Loader from '../../components/Loader';
-import Message from '../../components/Message';
 import { BLOG_UPDATE_RESET } from '../../constants/blogConstants';
 import {
+  LoadingImg,
   StyledUloadedImg,
   Text,
   UpdateBtn,
 } from '../../components/styles/Styles';
 import GoBackBtn from '../../utils/GoBackBtn';
-import styled from 'styled-components';
 import { useRouteMatch, useHistory } from 'react-router-dom';
 import { EditBtn } from './RaffleWinnerEdit';
 import { FormFile } from './EventEdit';
 import uploadFileHandler from '../../utils/uploadFileHandler';
 import { removePhoto } from '../../utils/removePhoto';
-
-const BlogRow = styled(Row)`
-  display: flex;
-  flex-direction: column;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    flex-direction: row;
-    justify-content: space-between;
-  }
-`;
+import toaster from 'toasted-notes';
+import { ToastAlert } from '..';
 
 const BlogEdit = () => {
   const match = useRouteMatch<{ id: string }>();
@@ -43,16 +35,12 @@ const BlogEdit = () => {
   const [publicId, setPublicId] = useState('');
 
   const blogDetails = useSelector((state: any) => state.blogDetails);
-  const {
-    loading: loadingBlogDetails,
-    error: errorBlogDetails,
-    blog,
-  } = blogDetails;
+  const { loading, error, blog } = blogDetails;
 
   const blogUpdate = useSelector((state: any) => state.blogUpdate);
   const {
     loading: loadingBlogUpdate,
-    error: errorBlogUpdate,
+    error: errorUpdate,
     success: successBlogUpdate,
   } = blogUpdate;
 
@@ -76,6 +64,19 @@ const BlogEdit = () => {
     }
   }, [dispatch, history, blog, blogId, submittedForm, successBlogUpdate]);
 
+  useEffect(() => {
+    if (error || errorUpdate || errorMsg) {
+      toaster.notify(
+        ({ onClose }) =>
+          ToastAlert(error || errorUpdate || errorMsg, onClose, 'error'),
+        {
+          position: 'bottom',
+          duration: 20000,
+        }
+      );
+    }
+  }, [errorUpdate, error, errorMsg]);
+
   const submitHandler = (e: any) => {
     e.preventDefault();
     dispatch(
@@ -98,129 +99,142 @@ const BlogEdit = () => {
     article,
   };
 
-  return (
+  return error ? (
+    <></>
+  ) : (
     <>
       <GoBackBtn to='/admin/blogs' />
-      {errorMsg !== '' && <Message variant='danger'>{errorMsg}</Message>}
       <FormContainer>
-        {errorBlogUpdate && (
-          <Message variant='danger'>{errorBlogUpdate}</Message>
-        )}
-        {loadingBlogDetails ? (
-          <Loader />
-        ) : errorBlogDetails ? (
-          <Message variant='danger'>{errorBlogDetails}</Message>
-        ) : (
-          <Form onSubmit={submitHandler}>
-            <BlogRow>
-              <Col xl={8} md={12}>
-                <Form.Group controlId='name'>
-                  <Form.Label>Title</Form.Label>
-                  <Form.Control
-                    type='text'
-                    value={title || ''}
-                    onChange={(e) => setTitle(e.target.value)}
-                  ></Form.Control>
-                </Form.Group>
-                <Form.Group controlId='image' className='d-flex flex-column'>
-                  <Form.Label>Blog image</Form.Label>
-                  <div className='mx-auto'>
-                    <Form.Control
-                      className='img-link'
-                      type='text'
-                      value={blogImg || ''}
-                      onChange={(e) => setBlogImg(e.target.value)}
-                    ></Form.Control>
-                    <StyledUloadedImg
-                      src={blogImg || ''}
-                      alt='avatar'
-                      onClick={() => setShowImageOptions(!showImageOptions)}
+        <Form onSubmit={submitHandler}>
+          {loading ? (
+            <div className='mb-4 mt-4'>
+              <LoadingImg w='100%' h='2.5rem' />
+            </div>
+          ) : (
+            <Form.Group controlId='name'>
+              <Form.Label>Title</Form.Label>
+              <Form.Control
+                type='text'
+                value={title || ''}
+                onChange={(e) => setTitle(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
+          )}
+          {loading ? (
+            <div className='mb-4 mt-4 d-flex justify-content-center align-items-center'>
+              <LoadingImg w='200px' h='200px' borderRadius='50%' />
+            </div>
+          ) : (
+            <Form.Group controlId='image' className='d-flex flex-column'>
+              <Form.Label>Blog image</Form.Label>
+              <div className='mx-auto'>
+                <Form.Control
+                  className='img-link'
+                  type='text'
+                  value={blogImg || ''}
+                  onChange={(e) => setBlogImg(e.target.value)}
+                ></Form.Control>
+                <StyledUloadedImg
+                  src={blogImg || ''}
+                  alt='avatar'
+                  onClick={() => setShowImageOptions(!showImageOptions)}
+                />
+                <div style={{ position: 'relative' }}>
+                  {uploading && (
+                    <Loader
+                      w='200px'
+                      h='200px'
+                      p='absolute'
+                      z='1'
+                      top='-200px'
+                      left='0px'
                     />
-                    {uploading && (
-                      <Loader
-                        w='200px'
-                        h='200px'
-                        p='absolute'
-                        z='1'
-                        top='-200px'
-                        left='0px'
-                      />
-                    )}
-                    <div style={{ position: 'relative' }}>
-                      <EditBtn
-                        top='-45px'
-                        left='0px'
-                        onClick={() => {
-                          setShowImageOptions(!showImageOptions);
-                        }}
-                      >
-                        <i className='fas fa-edit mr-2'></i>Edit
-                      </EditBtn>
-                      {showImageOptions && (
-                        <EditBtn
-                          top='-17px'
-                          left='0px'
-                          className='d-flex flex-column imgOptions'
+                  )}
+                  <EditBtn
+                    top='-45px'
+                    left='0px'
+                    onClick={() => {
+                      setShowImageOptions(!showImageOptions);
+                    }}
+                  >
+                    <i className='fas fa-edit mr-2'></i>Edit
+                  </EditBtn>
+                  {showImageOptions && (
+                    <EditBtn
+                      top='-17px'
+                      left='0px'
+                      className='d-flex flex-column imgOptions'
+                    >
+                      <FormFile
+                        mb={(blogImg !== uploadBlogImgUrl).toString()}
+                        id='image-file'
+                        label='Upload a photo...'
+                        onChange={(e: any) =>
+                          uploadFileHandler(
+                            e,
+                            setUploading,
+                            setShowImageOptions,
+                            setErrorMsg,
+                            setPublicId,
+                            updateBlog,
+                            dispatch,
+                            publicId,
+                            blogId,
+                            blogDataToUploadWithImg,
+                            '',
+                            blogImg,
+                            () => {},
+                            setBlogImg,
+                            'blog'
+                          )
+                        }
+                      ></FormFile>
+                      {blogImg !== uploadBlogImgUrl && (
+                        <div
+                          className='remove-img'
+                          onClick={() =>
+                            removePhoto(
+                              blog.publicId,
+                              setPublicId,
+                              dispatch,
+                              updateBlog,
+                              blogId,
+                              setErrorMsg,
+                              false,
+                              'blog'
+                            )
+                          }
                         >
-                          <FormFile
-                            mb={(blogImg !== uploadBlogImgUrl).toString()}
-                            id='image-file'
-                            label='Upload a photo...'
-                            onChange={(e: any) =>
-                              uploadFileHandler(
-                                e,
-                                setUploading,
-                                setShowImageOptions,
-                                setErrorMsg,
-                                setPublicId,
-                                updateBlog,
-                                dispatch,
-                                publicId,
-                                blogId,
-                                blogDataToUploadWithImg,
-                                '',
-                                blogImg,
-                                () => {},
-                                setBlogImg,
-                                'blog'
-                              )
-                            }
-                          ></FormFile>
-                          {blogImg !== uploadBlogImgUrl && (
-                            <div
-                              className='remove-img'
-                              onClick={() =>
-                                removePhoto(
-                                  blog.publicId,
-                                  setPublicId,
-                                  dispatch,
-                                  updateBlog,
-                                  blogId,
-                                  setErrorMsg,
-                                  false,
-                                  'blog'
-                                )
-                              }
-                            >
-                              Remove photo
-                            </div>
-                          )}
-                        </EditBtn>
+                          Remove photo
+                        </div>
                       )}
-                    </div>
-                  </div>
-                </Form.Group>
-                <Form.Group controlId='message' className='mt-5'>
-                  <Form.Label>Article</Form.Label>
-                  <Form.Control
-                    rows={5}
-                    as='textarea'
-                    value={article || ''}
-                    onChange={(e) => setArticle(e.target.value)}
-                  ></Form.Control>
-                </Form.Group>
-              </Col>
-            </BlogRow>
+                    </EditBtn>
+                  )}
+                </div>
+              </div>
+            </Form.Group>
+          )}
+          {loading ? (
+            <div className='mb-4 mt-4'>
+              <LoadingImg w='100%' h='10rem' />
+            </div>
+          ) : (
+            <Form.Group controlId='message' className='mt-5'>
+              <Form.Label>Article</Form.Label>
+              <Form.Control
+                rows={5}
+                as='textarea'
+                value={article || ''}
+                onChange={(e) => setArticle(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
+          )}
+
+          {loading ? (
+            <div className='mb-4 mt-4'>
+              <LoadingImg w='8rem' h='2.5rem' borderRadius='0.5rem' />
+            </div>
+          ) : (
             <UpdateBtn type='submit'>
               {loadingBlogUpdate ? (
                 <div className='d-flex align-items-center'>
@@ -237,8 +251,8 @@ const BlogEdit = () => {
                 <Text className='text-white'>Update</Text>
               )}
             </UpdateBtn>
-          </Form>
-        )}
+          )}
+        </Form>
       </FormContainer>
     </>
   );

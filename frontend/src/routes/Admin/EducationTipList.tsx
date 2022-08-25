@@ -7,8 +7,11 @@ import {
   listEducationTips,
 } from '../../actions/educationTipActions';
 import DeleteModal from '../../components/DeleteModal';
-import Message from '../../components/Message';
-import { TableBody, StyledEditBtn, Text } from '../../components/styles/Styles';
+import {
+  LoadingImg,
+  StyledEditBtn,
+  Text,
+} from '../../components/styles/Styles';
 import { EDUCATION_TIP_CREATE_RESET } from '../../constants/educationTipConstants';
 import { useHistory } from 'react-router-dom';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
@@ -19,7 +22,8 @@ import {
   TableImg,
   TableRow,
 } from '../../components/styles/admin/Styles';
-// import HorizontalLoader from '../../components/HorizontalLoader';
+import toaster from 'toasted-notes';
+import { ToastAlert } from '..';
 
 const RaffleWinnerList = () => {
   const history = useHistory();
@@ -33,18 +37,14 @@ const RaffleWinnerList = () => {
   const [tips, setTips] = useState([]) as any;
 
   const educationTipList = useSelector((state: any) => state.educationTipList);
-  const {
-    // loading: loadingEducationTips,
-    error: errorEducationTips,
-    educationTips,
-  } = educationTipList;
+  const { loading, error, educationTips } = educationTipList;
 
   const educationTipCreate = useSelector(
     (state: any) => state.educationTipCreate
   );
   const {
     loading: loadingEducationTipCreate,
-    error: errorEducationTipCreate,
+    error: errorCreate,
     success: successEducationTipCreate,
     educationTip: createdEducationTip,
   } = educationTipCreate;
@@ -54,7 +54,7 @@ const RaffleWinnerList = () => {
   );
   const {
     loading: loadingEducationTipDelete,
-    error: errorEducationTipDelete,
+    error: errorDelete,
     success: successEducationTipDelete,
   } = educationTipDelete;
 
@@ -80,15 +80,30 @@ const RaffleWinnerList = () => {
     successEducationTipDelete,
   ]);
 
+  useEffect(() => {
+    if (error || errorCreate || errorDelete) {
+      toaster.notify(
+        ({ onClose }) =>
+          ToastAlert(error || errorCreate || errorDelete, onClose, 'error'),
+        {
+          position: 'bottom',
+          duration: 20000,
+        }
+      );
+    }
+  }, [error, errorCreate, errorDelete]);
+
   const createRaffleWinnerHandler = () => {
     dispatch(createEducationTip());
   };
 
   const filteredEducationTips = tips?.filter((tip: any) =>
-    tip?._id.toLowerCase().includes(text.toLowerCase())
+    tip?.title.toLowerCase().includes(text.toLowerCase())
   );
 
-  return (
+  return error ? (
+    <></>
+  ) : (
     <>
       <DeleteModal
         actionFunc='Education Tip'
@@ -97,116 +112,90 @@ const RaffleWinnerList = () => {
         id={id}
         publicId={publicId}
       />
-      {/* {loadingEducationTips && <HorizontalLoader />} */}
-      {(errorEducationTipDelete || errorEducationTipCreate) && (
-        <Message variant='danger'>
-          {errorEducationTipDelete || errorEducationTipCreate}
-        </Message>
-      )}
-      <Col className='d-flex align-items-center justify-content-between'>
-        <SearchBar>
-          <Form.Control
-            as='input'
-            type='text'
-            placeholder='Search by ID'
-            value={text || ''}
-            onChange={(e: any) => setText(e.target.value)}
-          ></Form.Control>
-        </SearchBar>
-        <CreateBtn className='border-0' onClick={createRaffleWinnerHandler}>
-          {loadingEducationTipCreate ? (
-            <Spinner animation='border' size='sm' />
-          ) : (
-            <i className='fas fa-plus fa-2x'></i>
-          )}
-        </CreateBtn>
-      </Col>
-
-      {errorEducationTips ? (
-        <Message variant='danger'>{errorEducationTips}</Message>
+      {loading ? (
+        <Col className='mb-3 d-flex justify-content-between align-items-center'>
+          <LoadingImg w='20rem' h='2.5rem' />
+          <LoadingImg w='2.5rem' h='2.5rem' borderRadius='50%' />
+        </Col>
       ) : (
-        <Col>
-          <Table hover responsive className='table-md'>
-            <TableHead>
-              <tr>
-                <th>ID</th>
-                <th>TITLE</th>
-                <th>IMAGE</th>
-                <th>EDIT</th>
-                <th>DELETE</th>
-              </tr>
-            </TableHead>
-            {tips?.length === 0 ? (
-              <TableBody>
-                <tr>
-                  <td className='p-3'>
-                    Click the pen and paper icon to create an education tip.
-                  </td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-              </TableBody>
-            ) : filteredEducationTips?.length === 0 ? (
-              <TableBody>
-                <tr>
-                  <td>Sorry, no match!</td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-              </TableBody>
+        <Col className='d-flex align-items-center justify-content-between'>
+          <SearchBar>
+            <Form.Control
+              as='input'
+              type='text'
+              placeholder='Search by Title'
+              value={text || ''}
+              onChange={(e: any) => setText(e.target.value)}
+            ></Form.Control>
+          </SearchBar>
+          <CreateBtn className='border-0' onClick={createRaffleWinnerHandler}>
+            {loadingEducationTipCreate ? (
+              <Spinner animation='border' size='sm' />
             ) : (
-              <TransitionGroup component='tbody'>
-                {filteredEducationTips?.map((tip: any) => (
-                  <CSSTransition key={tip._id} timeout={500} classNames='item'>
-                    <TableRow>
-                      <td>
-                        <Text>{tip?._id}</Text>
-                      </td>
-                      <td>
-                        <Text>{tip?.title}</Text>
-                      </td>
-                      <td>
-                        <TableImg src={tip?.image} alt={tip?.title} />
-                      </td>
-                      <td>
-                        <LinkContainer
-                          to={`/admin/education-tip/${tip?._id}/edit`}
-                        >
-                          <StyledEditBtn className='btn-lg'>
-                            <i className='fas fa-edit'></i>
-                          </StyledEditBtn>
-                        </LinkContainer>
-                      </td>
-                      <td>
-                        <Button
-                          variant='danger'
-                          className='btn-lg border-0'
-                          onClick={() => {
-                            setId(tip?._id);
-                            setPublicId(tip?.publicId);
-                            handleShow();
-                          }}
-                        >
-                          {loadingEducationTipDelete && id === tip._id ? (
-                            <Spinner size='sm' animation='border' />
-                          ) : (
-                            <i className='fas fa-trash'></i>
-                          )}
-                        </Button>
-                      </td>
-                    </TableRow>
-                  </CSSTransition>
-                ))}
-              </TransitionGroup>
+              <i className='fas fa-plus'></i>
             )}
-          </Table>
+          </CreateBtn>
         </Col>
       )}
+      <Col>
+        <Table hover responsive className='table-sm'>
+          <TableHead>
+            <tr>
+              <th>TITLE</th>
+              <th>IMAGE</th>
+              <th>LINK</th>
+              <th>EDIT</th>
+              <th>DELETE</th>
+            </tr>
+          </TableHead>
+          <TransitionGroup component='tbody'>
+            {filteredEducationTips?.map((tip: any) => (
+              <CSSTransition key={tip._id} timeout={500} classNames='item'>
+                <TableRow>
+                  <td>
+                    <Text>{tip?.title}</Text>
+                  </td>
+                  <td>
+                    <TableImg src={tip?.image} alt={tip?.title} />
+                  </td>
+                  <td>
+                    <Text
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => window.open(tip?.externalLink, '_target')}
+                    >
+                      {tip?.title}
+                    </Text>
+                  </td>
+                  <td>
+                    <LinkContainer to={`/admin/education-tip/${tip?._id}/edit`}>
+                      <StyledEditBtn>
+                        <i className='fas fa-edit'></i>
+                      </StyledEditBtn>
+                    </LinkContainer>
+                  </td>
+                  <td>
+                    <Button
+                      variant='danger'
+                      className='border-0'
+                      onClick={() => {
+                        setId(tip?._id);
+                        setPublicId(tip?.publicId);
+                        handleShow();
+                      }}
+                    >
+                      {loadingEducationTipDelete && id === tip._id ? (
+                        <Spinner size='sm' animation='border' />
+                      ) : (
+                        <i className='fas fa-trash'></i>
+                      )}
+                    </Button>
+                  </td>
+                </TableRow>
+              </CSSTransition>
+            ))}
+          </TransitionGroup>
+        </Table>
+      </Col>
     </>
   );
 };

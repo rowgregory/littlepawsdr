@@ -75,14 +75,12 @@ export const PetMedsMiddleLeft = styled.div`
   color: #dc373d;
   border: 8px solid #005ba5;
   border-radius: 12px;
-  /* padding: 1rem; */
 `;
 export const PetMedsBottom = styled.div`
   font-family: Arial;
   color: #005ba5;
   font-size: 25px;
   font-weight: bold;
-  /* padding: 0.5rem; */
 `;
 
 export const PetMedsIGiveHorizontalLine = styled(HorizontalLine)`

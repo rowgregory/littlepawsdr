@@ -5,7 +5,7 @@ import { getDogsByStatusPicturesAndVideours } from '../../actions/dachshundsActi
 import styled from 'styled-components';
 import Message from '../../components/Message';
 import { Link } from 'react-router-dom';
-import { LoadingImg, StyledCard, Text } from '../../components/styles/Styles';
+import { LoadingImg, Text } from '../../components/styles/Styles';
 import { formatDate } from '../../utils/formatDate';
 import SponsorSanctuary from './SponsorSanctuary';
 import ReactPlayer from 'react-player/lazy';
@@ -14,8 +14,12 @@ const DogContainer = styled(Col)`
   display: grid;
   grid-gap: 1.5rem;
   grid-template-columns: 1fr;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+  padding: 1rem;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
     grid-template-columns: 1fr 1fr;
+  }
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+    grid-template-columns: 1fr 1fr 1fr;
   }
 `;
 
@@ -55,6 +59,7 @@ const StatusDogList = ({ tab }: any) => {
             onClick={(e) => {
               if (+paginatedPage !== i) {
                 setPaginatedPage(i);
+                window.scrollTo(0, 0);
               }
             }}
           >
@@ -81,136 +86,107 @@ const StatusDogList = ({ tab }: any) => {
       ) : (
         <>
           {tab === 'sanctuary' && <SponsorSanctuary />}
-          <Row className='justify-content-center'>
-            <Pagination className='my-3'>{range()}</Pagination>
-          </Row>
-          <DogContainer className='px-0' lg={12}>
+
+          <DogContainer lg={12}>
             {loading
               ? [...Array(10).keys()]?.map((_: any, i: number) => (
                   <LoadingImg h='384px' w='100%' key={i} />
                 ))
               : paginatedDogs?.map((dachshund: any) => {
                   return (
-                    <div key={dachshund.id} style={{ height: '384px' }}>
-                      <StyledCard
-                        key={dachshund.id}
-                        className=' p-3 rounded d-flex justify-content-center h-100'
-                      >
-                        {dachshund?.attributes?.photos?.length > 0 ? (
-                          <Row>
-                            <Col
-                              xl={
-                                dachshund?.attributes?.videos?.length > 0
-                                  ? 8
-                                  : 6
+                    <div
+                      style={{ border: '1px solid rgba(0, 0, 0, 0.2)' }}
+                      key={dachshund.id}
+                      className='rounded d-flex justify-content-center h-100'
+                    >
+                      {dachshund?.attributes?.photos?.length > 0 ? (
+                        <div>
+                          {dachshund?.attributes?.videos?.length > 0 ? (
+                            <ReactPlayer
+                              controls={true}
+                              playing={true}
+                              volume={5}
+                              light={
+                                dachshund?.attributes?.videos[0].urlThumbnail
                               }
-                              lg={12}
-                            >
-                              {dachshund?.attributes?.videos?.length > 0 ? (
-                                <ReactPlayer
-                                  controls={true}
-                                  playing={true}
-                                  volume={5}
-                                  light={
-                                    dachshund?.attributes?.videos[0]
-                                      .urlThumbnail
-                                  }
-                                  muted={true}
-                                  loop={true}
-                                  url={dachshund?.attributes?.videos[0]?.url}
-                                  width='100%'
-                                />
-                              ) : (
-                                <Card.Img
-                                  style={{
-                                    maxHeight: '350px',
-                                    objectFit: 'cover',
-                                  }}
-                                  onClick={() => {
-                                    localStorage.setItem(
-                                      'pageYOffset',
-                                      JSON.stringify(window.pageYOffset)
-                                    );
-                                  }}
-                                  src={dachshund?.attributes?.photos[0]}
-                                  alt='successes'
-                                />
-                              )}
-                            </Col>
-                            <Col
-                              className='align-self-center'
-                              xl={
-                                dachshund?.attributes?.videos?.length > 0
-                                  ? 3
-                                  : 6
-                              }
-                              lg={12}
-                            >
-                              <Link
-                                to={`/about/${tab}/${dachshund.id}`}
-                                className='d-flex align-self-center justify-content-center mt-3'
-                              >
-                                <Text
-                                  fontSize={
-                                    dachshund?.attributes?.videos?.length
-                                      ? '1.3rem'
-                                      : '1.46rem'
-                                  }
-                                  className='name'
-                                >
-                                  {dachshund?.attributes?.name}
-                                </Text>
-                              </Link>
-                              <Card.Body className='d-block text-center'>
-                                {tab !== 'rainbow-bridge' &&
-                                  tab !== 'hold' &&
-                                  dachshund?.attributes?.adoptedDate && (
-                                    <Text>
-                                      Adopted:{' '}
-                                      {formatDate(
-                                        dachshund?.attributes?.adoptedDate?.split(
-                                          'T'
-                                        )[0]
-                                      )}
-                                    </Text>
-                                  )}
-                                <Text>
-                                  {dachshund?.attributes?.breedString}
-                                </Text>
-                              </Card.Body>
-                            </Col>
-                          </Row>
-                        ) : (
-                          <Text className='mb-0 d-flex justify-content-center align-items-center h-100'>
-                            We're sorry, we don't have any pictures in our
-                            records of &nbsp;
+                              muted={true}
+                              loop={true}
+                              url={dachshund?.attributes?.videos[0]?.url}
+                              width='100%'
+                            />
+                          ) : (
+                            <Card.Img
+                              style={{
+                                aspectRatio: '1 / 1',
+                                objectFit: 'cover',
+                              }}
+                              onClick={() => {
+                                localStorage.setItem(
+                                  'pageYOffset',
+                                  JSON.stringify(window.pageYOffset)
+                                );
+                              }}
+                              src={dachshund?.attributes?.photos[0]}
+                              alt='successes'
+                            />
+                          )}
+                          <div className='px-3 pb-5'>
                             <Link
                               to={`/about/${tab}/${dachshund.id}`}
-                              style={{
-                                cursor: 'pointer',
-                                fontWeight: 'bold',
-                              }}
+                              className='d-flex align-self-center mt-3'
                             >
-                              {dachshund?.attributes?.name}
-                            </Link>{' '}
-                            {/* {dachshund?.attributes?.adoptedDate && (
-                              <div>
-                                but, don't worry, they were adopted on{' '}
-                                {formatDate(
-                                  dachshund?.attributes?.adoptedDate?.split(
-                                    'T'
-                                  )[0]
-                                )}{' '}
-                                by a loving family 😍
-                              </div>
-                            )} */}
-                          </Text>
-                        )}
-                      </StyledCard>
+                              <Text
+                                fontSize={
+                                  dachshund?.attributes?.videos?.length
+                                    ? '1.3rem'
+                                    : '1.46rem'
+                                }
+                                className='name'
+                              >
+                                {dachshund?.attributes?.name}
+                              </Text>
+                            </Link>
+                            <div>
+                              {tab !== 'rainbow-bridge' &&
+                                tab !== 'hold' &&
+                                dachshund?.attributes?.adoptedDate && (
+                                  <Text>
+                                    Adopted:{' '}
+                                    {formatDate(
+                                      dachshund?.attributes?.adoptedDate?.split(
+                                        'T'
+                                      )[0]
+                                    )}
+                                  </Text>
+                                )}
+                              <Text>{dachshund?.attributes?.breedString}</Text>
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        <Text className='mb-0 p-3 d-flex flex-column justify-content-center align-items-center h-100'>
+                          We're sorry, we don't have any pictures in our records
+                          of
+                          <Link
+                            to={`/about/${tab}/${dachshund.id}`}
+                            style={{
+                              cursor: 'pointer',
+                              fontWeight: 'bold',
+                              color: '#121212',
+                              fontSize: '1.3rem',
+                            }}
+                          >
+                            {dachshund?.attributes?.name}
+                          </Link>
+                        </Text>
+                      )}
                     </div>
                   );
                 })}
           </DogContainer>
+          <Row className='justify-content-center mx-0'>
+            <Pagination className='my-3'>{range()}</Pagination>
+          </Row>
         </>
       )}
     </>

@@ -1,9 +1,11 @@
 import React from 'react';
 import { Card, Button, Col } from 'react-bootstrap';
 import styled from 'styled-components';
+import { formatDateTime } from '../utils/formatDateTime';
+import { Text } from './styles/Styles';
 
-const EventsCard = styled(Card)`
-  max-width: 360px;
+const EventsCard = styled.div`
+  max-width: 1000px;
   width: 100%;
   border: none;
   transition: box-shadow 500ms ease;
@@ -11,17 +13,6 @@ const EventsCard = styled(Card)`
   position: relative;
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
   cursor: pointer;
-  > div {
-    > div {
-      > div {
-        img {
-          object-fit: cover;
-          object-position: 0 10px;
-          height: 260px;
-        }
-      }
-    }
-  }
 `;
 
 interface TextProps {
@@ -141,7 +132,7 @@ const EventCard = ({ event, history }: any) => {
     <EventsCard
       onClick={() => history.push(`/events/${event._id}`)}
       key={event._id}
-      className='m-3 d-flex'
+      className='mx-3 d-flex align-items-center'
       style={{
         backgroundImage: event.background,
       }}
@@ -149,17 +140,28 @@ const EventCard = ({ event, history }: any) => {
       <Ribbon className='ribbon ribbon-top-right' status={event.status}>
         <span>{event.status}</span>
       </Ribbon>
-      <Card.Body className='p-3'>
+
+      <Card.Img
+        className='mr-3'
+        src={event.image}
+        style={{ aspectRatio: '1/1', objectFit: 'cover', width: '150px' }}
+      ></Card.Img>
+
+      <div className='d-flex flex-column justify-content-center'>
         <Text3D
           fonttitlecolor={event.color}
           style={{
-            height: event.title.split('').length >= 25 ? '60px' : 'auto',
+            // height: event.title.split('').length >= 25 ? '60px' : 'auto',
             color: event.color,
           }}
         >
           {event.title}
         </Text3D>
-        <DescriptionText
+        <Text color={event.color}>
+          {formatDateTime(event.startDate, { year: '2-digit' })} -
+          {formatDateTime(event.endDate, { year: '2-digit' })}
+        </Text>
+        {/* <DescriptionText
           className='mb-0'
           bgcolor={
             event.description.split('').length > 100
@@ -183,16 +185,16 @@ const EventCard = ({ event, history }: any) => {
                 .filter((_: any, c: number) => c < 100)
                 .join('')} ...`
             : event.description}
-        </DescriptionText>
-        <Col className='d-flex justify-content-center'>
-          <ReadMoreText
-            className='btn m-0 p-0 bg-transparent'
-            style={{ color: event.color, border: 'none' }}
-          >
-            READ MORE
-          </ReadMoreText>
-        </Col>
-      </Card.Body>
+        </DescriptionText> */}
+      </div>
+      {/* <Col className='d-flex justify-content-center'>
+        <ReadMoreText
+          className='btn m-0 p-0 bg-transparent'
+          style={{ color: event.color, border: 'none' }}
+        >
+          READ MORE
+        </ReadMoreText>
+      </Col> */}
     </EventsCard>
   );
 };

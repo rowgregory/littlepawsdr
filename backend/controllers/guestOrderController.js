@@ -1,5 +1,6 @@
 import asyncHandler from 'express-async-handler';
 import GuestOrder from '../models/guestOrderModel.js';
+import Product from '../models/productModel.js';
 
 // @desc    Create new order
 // @route   POST /api/guest-orders
@@ -19,7 +20,6 @@ const addGuestOrderItems = asyncHandler(async (req, res) => {
 
   try {
     const guestOrder = new GuestOrder({
-      // user: req.user._id,
       orderItems,
       shippingAddress,
       paymentMethod,
@@ -33,6 +33,30 @@ const addGuestOrderItems = asyncHandler(async (req, res) => {
     });
 
     const createdGuestOrder = await guestOrder.save();
+
+    if (createdGuestOrder) {
+      for (const item of createdGuestOrder.orderItems) {
+        const product = await Product.findById(item.product);
+        const objIndex = product?.sizes?.findIndex(
+          obj => obj?.size === item?.size
+        );
+
+        if (product?.sizes?.length > 0) {
+          await Product.updateOne(
+            { 'sizes.size': item.size },
+            {
+              $set: {
+                'sizes.$.amount': product.sizes[objIndex].amount - item.qty,
+              },
+            }
+          );
+        } else {
+          product.countInStock = product.countInStock - item.qty;
+
+          await product.save();
+        }
+      }
+    }
 
     res.status(201).json(createdGuestOrder);
   } catch (error) {

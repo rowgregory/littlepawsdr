@@ -1,28 +1,111 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Col, Form, Image, Row } from 'react-bootstrap';
-import { ECardImageContainer, ECardPrice } from '../legacy/ECardMenu';
+import { Col, Form, Image } from 'react-bootstrap';
 import { listECards } from '../../actions/eCardActions';
 import axios from 'axios';
 import styled, { keyframes } from 'styled-components';
 import { Text } from '../../components/styles/Styles';
-import { HorizontalLine } from '../styles/product-details/Styles';
+import { HorizontalLine } from '../../components/styles/product-details/Styles';
 import { PayPalButton } from 'react-paypal-button-v2';
 import { createECardOrder } from '../../actions/eCardOrderActions';
-import { validateECardForm } from './validate';
+import { validateECardForm } from '../../components/donate/validate';
 import { useTheme } from 'styled-components';
 import PayPalButtonImgDay from '../../components/assets/ecard-paypal-day.png';
 import PayPalButtonImgNight from '../../components/assets/ecard-paypal-night.png';
 import { useHistory } from 'react-router-dom';
+import { DonateTitle, ErrorText, FormInput, FormLabel } from './DonationForm';
+import { validateEmailRegex } from '../../utils/regex';
+
+const Container = styled.div`
+  margin: 0 auto;
+  width: 100%;
+`;
+
+const ECardImageContainer = styled.div<{ active: boolean }>`
+  cursor: pointer;
+  z-index: 4;
+  width: 100px;
+  height: 100px;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    height: 250px;
+    width: 250px;
+  }
+  object-fit: cover;
+  transition: 300ms;
+  position: relative;
+  img {
+    object-fit: cover;
+    height: 100px;
+    width: 100px;
+    @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+      height: 250px;
+      width: 250px;
+    }
+  }
+  :before {
+    content: '';
+    position: absolute;
+    bottom: 0px;
+    left: 45%;
+    z-index: 3;
+    border-bottom: 15px solid ${({ theme }) => theme.header.donationBG};
+    border-right: ${({ active }) => (active ? '10px solid transparent' : '')};
+    border-left: ${({ active }) => (active ? '10px solid transparent' : '')};
+    opacity: 0.8;
+  }
+  :after {
+    content: '';
+    position: absolute;
+    top: 0px;
+    left: 45%;
+    z-index: 3;
+    border-top: 15px solid ${({ theme }) => theme.header.donationBG};
+    border-right: ${({ active }) => (active ? '10px solid transparent' : '')};
+    border-left: ${({ active }) => (active ? '10px solid transparent' : '')};
+    opacity: 0.8;
+  }
+`;
+
+const ECardPrice = styled.div`
+  position: absolute;
+  z-index: 10;
+  top: 5px;
+  right: 5px;
+  background: yellow;
+  color: #000;
+  height: 20px;
+  width: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.7rem;
+  :before,
+  :after {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: 0;
+    height: 20px;
+    width: 20px;
+    background: yellow;
+  }
+
+  :before {
+    transform: rotate(30deg);
+  }
+  :after {
+    transform: rotate(60deg);
+  }
+`;
 
 const CurrentImgWrapper = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
   img {
-    max-width: 800px;
-    max-height: 600px;
     width: 100%;
+    aspect-ratio: 16/9;
     object-fit: contain;
   }
 `;
@@ -31,8 +114,10 @@ const ECardsContainer = styled.div`
   display: flex;
   overflow-y: hidden;
   overflow-x: scroll;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-    overflow-x: hidden;
+  width: 100%;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
+    max-width: 857px;
+    overflow-x: scroll;
   }
 `;
 
@@ -43,8 +128,7 @@ const Shimmer = keyframes`
 
 const LoadingPayPalButton = styled.div`
   width: 100%;
-  max-width: 750px;
-  height: 322px;
+  max-width: 500px;
   position: relative;
   animation: ${Shimmer} 1500ms infinite;
   background-size: 400%;
@@ -60,8 +144,7 @@ const LoadingPayPalButton = styled.div`
 `;
 const LoadingLargeImg = styled.div`
   width: 100%;
-  max-width: 800px;
-  height: 600px;
+  aspect-ratio: 16/9;
   position: relative;
   animation: ${Shimmer} 1500ms infinite;
   background-size: 400%;
@@ -114,11 +197,11 @@ const ECardForm = () => {
   const debitCreditRef = useRef(null) as any;
   const [timeToValidate, setTimeToValidate] = useState(false);
   const [errors, setErrors] = useState({}) as any;
+  const [currentImg, setCurrentImg] = useState('');
 
   const eCardList = useSelector((state: any) => state.eCardList);
   const { loading, eCards } = eCardList;
 
-  const [currentImg, setCurrentImg] = useState('');
   const eCardOrderCreate = useSelector((state: any) => state.eCardOrderCreate);
   const { eCardOrder, success } = eCardOrderCreate;
 
@@ -129,11 +212,11 @@ const ECardForm = () => {
 
   const formIsCompleted =
     inputs.recipientsFirstName !== '' &&
-    inputs.recipientsEmail !== '' &&
+    validateEmailRegex.test(inputs.recipientsEmail) &&
     inputs.dateToSend !== '' &&
     inputs.firstName !== '' &&
     inputs.lastName !== '' &&
-    inputs.email !== '' &&
+    validateEmailRegex.test(inputs.email) &&
     inputs.message !== '';
 
   useEffect(() => {
@@ -223,36 +306,36 @@ const ECardForm = () => {
   }
 
   return (
-    <div className='d-flex flex-column'>
-      <Text className='mb-1'>Choose an e-card</Text>
+    <Container>
+      <DonateTitle>CHOOSE AN E-CARD</DonateTitle>
       <CurrentImgWrapper>
         {loading ? <LoadingLargeImg /> : <Image src={LargeImg} alt='LPDR' />}
       </CurrentImgWrapper>
-      <Form>
-        <ECardsContainer className='eCardsContainer mt-3'>
-          {eCards?.map((eCard: any, i: number) => (
-            <ECardImageContainer
-              key={i}
-              active={
-                selectedECardFromStorage?._id === eCard?._id ||
-                eCard?._id === inputs?.eCardToPurchase?._id
-              }
+      <ECardsContainer className='eCardsContainer mt-3'>
+        {eCards?.map((eCard: any, i: number) => (
+          <ECardImageContainer
+            key={i}
+            active={
+              selectedECardFromStorage?._id === eCard?._id ||
+              eCard?._id === inputs?.eCardToPurchase?._id
+            }
+            onClick={() => {
+              placeSelectedECardIntoCurrentImg('eCardToPurchase', eCard);
+            }}
+          >
+            <Image
               onClick={() => {
-                placeSelectedECardIntoCurrentImg('eCardToPurchase', eCard);
+                localStorage.setItem('selectedECard', JSON.stringify(eCard));
+                setCurrentImg(eCard.image);
               }}
-            >
-              <Image
-                onClick={() => {
-                  localStorage.setItem('selectedECard', JSON.stringify(eCard));
-                  setCurrentImg(eCard.image);
-                }}
-                src={eCard.image}
-                alt='LPDR'
-              />
-              <ECardPrice>${eCard.price}</ECardPrice>
-            </ECardImageContainer>
-          ))}
-        </ECardsContainer>
+              src={eCard.image}
+              alt='LPDR'
+            />
+            <ECardPrice>${eCard.price}</ECardPrice>
+          </ECardImageContainer>
+        ))}
+      </ECardsContainer>
+      <Form>
         <HorizontalLine />
         <Text
           fontFamily={`Ubuntu, sans-serif`}
@@ -263,43 +346,43 @@ const ECardForm = () => {
         </Text>
         <Form.Row>
           <Form.Group as={Col} controlId='recipientsFirstName'>
-            <Form.Label>Who will be receiving the eCard?</Form.Label>
-            <Form.Control
+            <FormLabel>Recipients Full Name</FormLabel>
+            <FormInput
               required
               name='recipientsFirstName'
               value={inputs.recipientsFirstName || ''}
               type='text'
-              placeholder='Enter recipients first name'
+              placeholder='Recipients Full Name'
               onChange={handleInputChange}
             />
-            <Text color='red'>{errors?.recipientsFirstName}</Text>
+            <ErrorText>{errors?.recipientsFirstName}</ErrorText>
           </Form.Group>
 
           <Form.Group as={Col} controlId='recipientsEmail'>
-            <Form.Label>Recipients email</Form.Label>
-            <Form.Control
+            <FormLabel>Recipients Email</FormLabel>
+            <FormInput
               required
               name='recipientsEmail'
               value={inputs.recipientsEmail || ''}
-              placeholder='Enter recipients email'
+              placeholder='Recipients Email'
               onChange={handleInputChange}
             />
-            <Text color='red'>{errors?.recipientsEmail}</Text>
+            <ErrorText>{errors?.recipientsEmail}</ErrorText>
           </Form.Group>
         </Form.Row>
         <Form.Row>
           <Form.Group as={Col} controlId='dateToSend'>
-            <Form.Label>Date to send</Form.Label>
-            <Form.Control
+            <FormLabel>Date To Send</FormLabel>
+            <FormInput
               min={todaysDate}
               required
               name='dateToSend'
               value={inputs.dateToSend || ''}
               type='date'
-              placeholder='Enter date to send'
               onChange={handleInputChange}
+              style={{ textTransform: 'uppercase' }}
             />
-            <Text color='red'>{errors?.dateToSend}</Text>
+            <ErrorText>{errors?.dateToSend}</ErrorText>
           </Form.Group>
         </Form.Row>
         <HorizontalLine />
@@ -312,67 +395,64 @@ const ECardForm = () => {
         </Text>
         <Form.Row>
           <Form.Group as={Col} controlId='firstName'>
-            <Form.Label>First name</Form.Label>
-            <Form.Control
+            <FormLabel>First Name</FormLabel>
+            <FormInput
               required
               name='firstName'
               value={inputs.firstName || ''}
-              placeholder='Enter first name'
+              placeholder='First Name'
               onChange={handleInputChange}
             />
-            <Text color='red'>{errors?.firstName}</Text>
+            <ErrorText>{errors?.firstName}</ErrorText>
           </Form.Group>
           <Form.Group as={Col} controlId='lastName'>
-            <Form.Label>Last name</Form.Label>
-            <Form.Control
+            <FormLabel>Last Name</FormLabel>
+            <FormInput
               required
               name='lastName'
               value={inputs.lastName || ''}
-              placeholder='Enter last name'
+              placeholder='Last Name'
               onChange={handleInputChange}
             />
-            <Text color='red'>{errors?.lastName}</Text>
+            <ErrorText>{errors?.lastName}</ErrorText>
           </Form.Group>
         </Form.Row>
         <Form.Group controlId='email'>
-          <Form.Label>Email address</Form.Label>
-          <Form.Control
+          <FormLabel>Email Address</FormLabel>
+          <FormInput
             required
             name='email'
             value={inputs.email || ''}
-            placeholder='Enter email'
+            placeholder='Email Address'
             onChange={handleInputChange}
           />
-          <Text color='red'>{errors?.email}</Text>
+          <ErrorText>{errors?.email}</ErrorText>
         </Form.Group>
         <Form.Group controlId='message'>
-          <Form.Label>Enter message</Form.Label>
-          <Form.Control
+          <FormLabel>Message</FormLabel>
+          <FormInput
+            className='w-100 mb-0'
             as='textarea'
             rows={10}
             required
             name='message'
             value={inputs.message || ''}
-            placeholder='Enter message'
+            placeholder='Message'
             onChange={handleInputChange}
           />
-          <Text color='red'>{errors?.message}</Text>
+          <ErrorText>{errors?.message}</ErrorText>
         </Form.Group>
       </Form>
       {formIsCompleted ? (
-        <div>
+        <div style={{ maxWidth: '500px', width: '100%' }}>
           {!sdkReady ? (
             <LoadingPayPalButton />
           ) : (
-            <Row ref={debitCreditRef}>
-              <Col className='my-3'>
-                <PayPalButton
-                  amount={totalPrice}
-                  onSuccess={successPaymentHandler}
-                  shippingPreference='NO_SHIPPING'
-                />
-              </Col>
-            </Row>
+            <PayPalButton
+              amount={totalPrice}
+              onSuccess={successPaymentHandler}
+              shippingPreference='NO_SHIPPING'
+            />
           )}
         </div>
       ) : (
@@ -383,13 +463,13 @@ const ECardForm = () => {
           src={theme.mode === 'day' ? PayPalButtonImgDay : PayPalButtonImgNight}
           alt='paypal-buttons'
           style={{
-            maxWidth: '750px',
+            maxWidth: '500px',
             width: '100%',
             cursor: 'pointer',
           }}
         />
       )}
-    </div>
+    </Container>
   );
 };
 

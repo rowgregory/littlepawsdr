@@ -7,31 +7,31 @@ import NightGram from '../../components/assets/littlepawsdr_qr 2.png';
 import DayGram from '../../components/assets/littlepawsdr_qr 3.png';
 import { Text } from '../../components/styles/Styles';
 
-const SMContianer = styled.div`
-  width: 100%;
-  height: 30px;
-  background: ${({ theme }) => theme.smcontainer.bg};
-  display: flex;
-  align-items: center;
-  padding: 0 0.25rem;
-  margin-top: 67.99px;
-  position: fixed;
-  z-index: 10;
-`;
+// const SMContianer = styled.div`
+//   width: 100%;
+//   height: 30px;
+//   background: ${({ theme }) => theme.smcontainer.bg};
+//   display: flex;
+//   align-items: center;
+//   padding: 0 0.25rem;
+//   margin-top: 67.99px;
+//   position: fixed;
+//   z-index: 10;
+// `;
 
 const InsideContainer = styled.div`
-  max-width: 1836px;
-  width: 100%;
+  /* max-width: 1836px; */
+  /* width: 100%; */
   display: flex;
-  justify-content: flex-end;
+  /* justify-content: flex-end; */
   align-items: center;
-  margin: 0 auto;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+  /* margin: 0 auto; */
+  /* @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
     padding: 0 1px;
   }
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
     padding: 0 48px;
-  }
+  } */
 `;
 
 const SMIconContainer = styled.div`
@@ -42,8 +42,9 @@ const SMIconContainer = styled.div`
   width: 30px;
   transition: 300ms;
   cursor: pointer;
+  border-radius: 15px;
   :hover {
-    background: ${({ theme }) => theme.smcontainer.hoverBg};
+    background: ${({ theme }) => theme.colors.secondary};
     color: #000;
   }
 `;
@@ -62,10 +63,10 @@ const InstagramBtn = styled.div`
   margin-bottom: 1rem;
   cursor: pointer;
   transition: 300ms;
-  :hover {
+  /* :hover {
     letter-spacing: 2px;
     background: linear-gradient(45deg, #ebcc50 0%, #e14d3a 52%, #a7308f 100%);
-  }
+  } */
 `;
 
 const moveUpAndDown = keyframes`
@@ -122,34 +123,34 @@ const SocialMediaNavbar = () => {
         </Content>
       </Modal>
 
-      <SMContianer>
-        <InsideContainer>
-          {SMData().map((obj: any, i: number) => (
-            <OverlayTrigger
-              key={i}
-              trigger={['hover', 'focus']}
-              placement='bottom'
-              overlay={
-                <Popover className='p-2' id='popover-positioned-bottom'>
-                  {obj.popTag}
-                </Popover>
+      {/* <SMContianer> */}
+      <InsideContainer>
+        {SMData().map((obj: any, i: number) => (
+          <OverlayTrigger
+            key={i}
+            trigger={['hover', 'focus']}
+            placement='top'
+            overlay={
+              <Popover className='p-2' id='popover-positioned-bottom'>
+                {obj.popTag}
+              </Popover>
+            }
+          >
+            <SMIconContainer
+              onClick={() =>
+                obj.popTag === 'Instagram'
+                  ? handleShow()
+                  : obj.linkKey
+                  ? window.open(obj.linkKey, '_blank')
+                  : window.scrollTo(0, document.body.scrollHeight)
               }
             >
-              <SMIconContainer
-                onClick={() =>
-                  obj.popTag === 'Instagram'
-                    ? handleShow()
-                    : obj.linkKey
-                    ? window.open(obj.linkKey, '_blank')
-                    : window.scrollTo(0, document.body.scrollHeight)
-                }
-              >
-                <i className={obj.className} style={obj.color}></i>
-              </SMIconContainer>
-            </OverlayTrigger>
-          ))}
-        </InsideContainer>
-      </SMContianer>
+              <i className={obj.className} style={obj.color}></i>
+            </SMIconContainer>
+          </OverlayTrigger>
+        ))}
+      </InsideContainer>
+      {/* </SMContianer> */}
     </>
   );
 };

@@ -15,6 +15,7 @@ import {
   SelectInputContainer,
 } from '../../components/styles/product-details/Styles';
 import NoItemsDefault from '../../components/common/NoItemsDefault';
+import GoBackBtn from '../../utils/GoBackBtn';
 
 const Container = styled.div<{ emptycart?: boolean }>`
   padding-bottom: 5rem;
@@ -63,11 +64,12 @@ const CartContainer = styled.div`
 
 const RemoveBtn = styled(Button)`
   border-radius: 0;
-  background: none;
+  background: #fff;
   color: ${({ theme }) => theme.text};
   border: 1px solid ${({ theme }) => theme.border};
   font-family: 'Libre Franklin', sans-serif;
   transition: 300ms;
+  height: 60px;
   :hover,
   :active,
   :focus {
@@ -163,6 +165,7 @@ const Cart = ({ history }: any) => {
           className='d-flex'
         >
           <Col lg={8} md={12} className='align-items-center'>
+            <GoBackBtn to='/shop' />
             <CartContainer>
               <Text
                 fontFamily='Duru Sans'
@@ -193,10 +196,10 @@ const Cart = ({ history }: any) => {
                           style={{ fontSize: '1rem' }}
                           to={`/shop/product/${item?.product}`}
                         >
-                          {item.name}
+                          {item.name} ({item.qty})
                         </ProductName>
-                        <Text fontSize='0.875rem'>{item.size}</Text>
-                        <Text fontSize='0.875rem'>${item.price}</Text>
+                        <Text fontSize='0.875rem'>{item?.size}</Text>
+                        <Text fontSize='0.875rem'>${item?.price}</Text>
                       </div>
                       <div className='d-flex mt-3'>
                         <SelectInputContainer
@@ -213,14 +216,23 @@ const Cart = ({ history }: any) => {
                                 addToCart(
                                   item?.product,
                                   Number(e.target.value),
-                                  item.size
+                                  item.size,
+                                  item?.sizes
                                 )
                               )
                             }
                           >
-                            {[...Array(10).keys()].map((x) => (
+                            {[
+                              ...Array(
+                                item?.sizes?.length > 0
+                                  ? item?.sizes?.filter(
+                                      (x: any) => x?.size === item?.size
+                                    )[0]?.amount
+                                  : item.countInStock
+                              ).keys(),
+                            ].map((x: any, i: number) => (
                               <option key={x + 1} value={x + 1}>
-                                {x + 1}
+                                {i + 1}
                               </option>
                             ))}
                           </SelectInput>
@@ -242,7 +254,10 @@ const Cart = ({ history }: any) => {
             <Col className='d-flex justify-content-end align-items-center px-0 mt-2 mb-4'>
               <Text className='mb-0'>
                 Subtotal (
-                {cartItems?.reduce((acc: any, item: any) => acc + item?.qty, 0)}
+                {cartItems?.reduce(
+                  (acc: any, item: any) => acc + +item?.qty,
+                  0
+                )}
                 &nbsp;items):&nbsp;
               </Text>
 
@@ -250,7 +265,7 @@ const Cart = ({ history }: any) => {
                 $
                 {cartItems
                   .reduce(
-                    (acc: any, item: any) => acc + item.qty * item.price,
+                    (acc: any, item: any) => acc + item?.qty * item?.price,
                     0
                   )
                   .toFixed(2)}
@@ -262,7 +277,7 @@ const Cart = ({ history }: any) => {
               <div className='d-flex align-items-center flex-column py-3 mx-auto'>
                 <CheckoutBtn
                   className='border-0'
-                  disabled={cartItems.length === 0}
+                  disabled={cartItems?.length === 0}
                   onClick={checkoutHandler}
                 >
                   Checkout
@@ -276,7 +291,8 @@ const Cart = ({ history }: any) => {
                       $
                       {cartItems
                         .reduce(
-                          (acc: any, item: any) => acc + item.qty * item.price,
+                          (acc: any, item: any) =>
+                            acc + item?.qty * item?.price,
                           0
                         )
                         .toFixed(2)}

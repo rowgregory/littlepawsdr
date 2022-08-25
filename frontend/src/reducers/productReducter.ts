@@ -13,6 +13,10 @@ import {
   PRODUCT_DETAILS_FAIL,
   PRODUCT_DETAILS_REQUEST,
   PRODUCT_DETAILS_SUCCESS,
+  PRODUCT_GUEST_UPDATE_FAIL,
+  PRODUCT_GUEST_UPDATE_REQUEST,
+  PRODUCT_GUEST_UPDATE_RESET,
+  PRODUCT_GUEST_UPDATE_SUCCESS,
   PRODUCT_LIST_FAIL,
   PRODUCT_LIST_REQUEST,
   PRODUCT_LIST_SUCCESS,
@@ -25,8 +29,10 @@ import {
   PRODUCT_UPDATE_SUCCESS,
 } from '../constants/productContstants';
 
-// @ts-ignore
-export const productListReducer = (state = { products: [] }, action) => {
+export const productListReducer = (
+  state = { products: [] },
+  action: { type: any; payload: any }
+) => {
   switch (action.type) {
     case PRODUCT_LIST_REQUEST:
       return {
@@ -46,8 +52,11 @@ export const productListReducer = (state = { products: [] }, action) => {
       return state;
   }
 };
-// @ts-ignore
-export const productDetailsReducer = (state = { product: {} }, action) => {
+
+export const productDetailsReducer = (
+  state = { product: {} },
+  action: { type: any; payload: any }
+) => {
   switch (action.type) {
     case PRODUCT_DETAILS_REQUEST:
       return {
@@ -92,8 +101,10 @@ export const productPublicDetailsReducer = (
   }
 };
 
-// @ts-ignore
-export const productDeletesReducer = (state = {}, action) => {
+export const productDeletesReducer = (
+  state = {},
+  action: { type: any; payload: any }
+) => {
   switch (action.type) {
     case PRODUCT_DELETE_REQUEST:
       return {
@@ -114,8 +125,10 @@ export const productDeletesReducer = (state = {}, action) => {
   }
 };
 
-// @ts-ignore
-export const productCreateReducer = (state = {}, action) => {
+export const productCreateReducer = (
+  state = {},
+  action: { type: any; payload: any }
+) => {
   switch (action.type) {
     case PRODUCT_CREATE_REQUEST:
       return {
@@ -139,8 +152,10 @@ export const productCreateReducer = (state = {}, action) => {
   }
 };
 
-// @ts-ignore
-export const productUpdateReducer = (state = { product: {} }, action) => {
+export const productUpdateReducer = (
+  state = { product: {} },
+  action: { type: any; payload: any }
+) => {
   switch (action.type) {
     case PRODUCT_UPDATE_REQUEST:
       return {
@@ -166,8 +181,39 @@ export const productUpdateReducer = (state = { product: {} }, action) => {
   }
 };
 
-// @ts-ignore
-export const productReviewCreateReducer = (state = {}, action) => {
+export const productUpdateGuestReducer = (
+  state = { product: {} },
+  action: { type: any; payload: any }
+) => {
+  switch (action.type) {
+    case PRODUCT_GUEST_UPDATE_REQUEST:
+      return {
+        loading: true,
+      };
+    case PRODUCT_GUEST_UPDATE_SUCCESS:
+      return {
+        loading: false,
+        success: true,
+        product: action.payload,
+      };
+    case PRODUCT_GUEST_UPDATE_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      };
+    case PRODUCT_GUEST_UPDATE_RESET:
+      return {
+        product: {},
+      };
+    default:
+      return state;
+  }
+};
+
+export const productReviewCreateReducer = (
+  state = {},
+  action: { type: any; payload: any }
+) => {
   switch (action.type) {
     case PRODUCT_CREATE_REVIEW_REQUEST:
       return {

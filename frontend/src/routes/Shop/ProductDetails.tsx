@@ -1,40 +1,32 @@
 import React, { useEffect, useState } from 'react';
-import { Accordion, Col, Image, Spinner } from 'react-bootstrap';
+import { Col, Image, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
+import toaster from 'toasted-notes';
+import { ToastAlert } from '..';
 import { addToCart } from '../../actions/cartActions';
 import { getPublicProductDetails } from '../../actions/productActions';
-import Loader from '../../components/Loader';
 import Message from '../../components/Message';
 import {
   AddToCartBtn,
-  CollapseOnMobile,
-  DetailsBtn,
-  DetailsContainer,
   HorizontalLine,
-  PlusMinusBtn,
   ProductDetailsContainer,
-  ProductPrice,
   Quantity,
   SelectInput,
   SelectInputContainer,
-  Size,
-  SizeContainer,
+  ThirdColumnWrapper,
 } from '../../components/styles/product-details/Styles';
-import { Text } from '../../components/styles/Styles';
-import toaster from 'toasted-notes';
-import { ToastAlert } from '..';
-import { CART_ADD_ITEM_RESET } from '../../constants/cartConstants';
+import { LoadingImg, Text } from '../../components/styles/Styles';
 
 const ProductDetails = ({ match }: any) => {
-  const [size, setSize] = useState('');
+  const productId = match.params.id;
+  const dispatch = useDispatch();
   const [qty, setQty] = useState<number>(1);
   const [message, setMessage] = useState('');
-  const dispatch = useDispatch();
-  const productId = match.params.id;
-  const [collapse, setCollapse] = useState(false);
+  const [size, setSize] = useState('');
+  const [outOfStock, setOutOfStock] = useState(false);
 
   const cart = useSelector((state: any) => state.cart);
-  const { loading: loadingCart, success: itemAddedToCartSuccess } = cart;
+  const { loading: loadingCart } = cart;
 
   const productPublicDetails = useSelector(
     (state: any) => state.productPublicDetails
@@ -50,115 +42,206 @@ const ProductDetails = ({ match }: any) => {
   }, [dispatch, productId]);
 
   useEffect(() => {
-    if (itemAddedToCartSuccess) {
-      toaster.notify(
-        ({ onClose }) => ToastAlert('Item Added To Cart', onClose, 'success'),
-        { position: 'top' }
-      );
+    const objIndex = product?.sizes?.findIndex(
+      (obj: any) => obj?.size === size
+    );
 
-      setTimeout(() => dispatch({ type: CART_ADD_ITEM_RESET }), 5000);
+    if (objIndex !== undefined) {
+      if (product?.sizes?.length > 0) {
+        if (product?.sizes[objIndex]?.amount === 0) {
+          setOutOfStock(true);
+        } else setOutOfStock(false);
+      } else if (product?.countInStock === 0) {
+        setOutOfStock(true);
+      } else setOutOfStock(false);
     }
-  }, [cart.cartItems, dispatch, itemAddedToCartSuccess]);
+  }, [product, size]);
 
-  const addToCartHandler = (item: any) => {
-    if (size !== '' || !['Shirts', 'Sweatshirts'].includes(product.category)) {
-      dispatch(addToCart(item._id, qty, size));
-    } else setMessage('Select Size');
+  useEffect(() => {
+    if (product && Object.keys(product).length > 0)
+      setSize(product?.sizes[0]?.size);
+  }, [product]);
+
+  const addToCartHandler = (item?: any) => {
+    dispatch(addToCart(item?._id, qty, size, product?.sizes));
+    toaster.notify(
+      ({ onClose }) => ToastAlert('Item added to cart', onClose, 'success'),
+      { position: 'bottom' }
+    );
   };
-
-  const sizes = () => ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
 
   return (
     <>
-      {loadingProductPublicDetails ? (
-        <Loader />
-      ) : errorProductPublicDetails ? (
+      {errorProductPublicDetails ? (
         <Message variant='danger'>{errorProductPublicDetails}</Message>
       ) : (
-        <>
-          <ProductDetailsContainer>
-            <CollapseOnMobile xl={1} lg={1} md={1}></CollapseOnMobile>
-            <Col xl={6} lg={6} md={6} sm={12}>
-              <Image src={product?.image} alt={product?.name} fluid />
-            </Col>
-            <Col xl={4} lg={4} md={6} sm={12}>
-              <Text fontSize='1.75rem'>{product?.name}</Text>
-              <ProductPrice>${product?.price}</ProductPrice>
-              {product?.isLimitedProduct && (
-                <Text>LIMITED AMOUNT OF PRODUCTS</Text>
-              )}
-              <HorizontalLine></HorizontalLine>
-              <SizeContainer
-                show={['Shirts', 'Sweatshirts'].includes(product.category)}
-              >
-                {sizes().map((s, i) => (
-                  <Size active={s === size} onClick={() => setSize(s)} key={i}>
-                    {s}
-                  </Size>
-                ))}
-              </SizeContainer>
-              <Accordion
-                defaultActiveKey='0'
-                className='d-flex justify-content-center'
-              >
-                <div className='w-100 mx-auto'>
-                  <Accordion.Toggle
-                    className='d-flex border-0 bg-transparent w-100'
-                    eventKey='1'
-                    onClick={() => setCollapse(!collapse)}
+        <ProductDetailsContainer>
+          <Col className='d-flex justify-content-center'>
+            {loadingProductPublicDetails ? (
+              <LoadingImg w='100%' h='100%' />
+            ) : (
+              <Image
+                src={product?.image}
+                alt={product?.name}
+                fluid
+                width='100%'
+                style={{
+                  aspectRatio: '1/1',
+                  objectFit: 'cover',
+                }}
+              />
+            )}
+          </Col>
+          <Col>
+            {loadingProductPublicDetails ? (
+              <LoadingImg />
+            ) : (
+              <>
+                <Text fontSize='1.75rem'>{product?.name}</Text>
+                <HorizontalLine margin='0 0 1rem 0' />
+                <div className='d-flex'>
+                  <div style={{ position: 'relative' }}>
+                    <Text style={{ position: 'absolute', top: '6px' }}>$</Text>
+                  </div>
+                  <Text
+                    marginLeft='0.7rem'
+                    fontWeight='bold'
+                    fontSize='2rem'
+                    style={{ position: 'relative' }}
+                    marginBottom='0.8rem'
                   >
-                    <div className='d-flex w-100 justify-content-between align-items-center mb-4'>
-                      <DetailsBtn>Details & Material</DetailsBtn>
-                      <PlusMinusBtn active={collapse} className='plus-minus'>
-                        <i
-                          className={`fas fa-${collapse ? 'minus' : 'plus'}`}
-                        ></i>
-                      </PlusMinusBtn>
-                    </div>
-                  </Accordion.Toggle>
-                  <Accordion.Collapse eventKey='1'>
-                    <div className='d-flex justify-content-center flex-column align-items-center'>
-                      <DetailsContainer>
-                        <Text
-                          textAlign='center'
-                          fontWeight='bold'
-                          fontSize='1.25rem'
-                          marginBottom='2rem'
-                        >
-                          Details
-                        </Text>
-                        <Text>{product?.description}</Text>
-                      </DetailsContainer>
-                    </div>
-                  </Accordion.Collapse>
-                </div>
-              </Accordion>
-              {message && size === '' && (
-                <Message variant='danger'>{message}</Message>
-              )}
-              <div className='d-flex w-100 justify-content-between'>
-                {product?.countInStock > 0 && (
-                  <SelectInputContainer>
-                    <Quantity>QTY</Quantity>
-                    <SelectInput
-                      as='select'
-                      value={qty}
-                      onChange={(e: any) => setQty(parseInt(e.target.value))}
+                    {product?.price?.toString()?.split('.')[0]}
+                    <sup
+                      style={{
+                        fontWeight: '500',
+                        fontSize: '0.8rem',
+                        top: '-15px',
+                      }}
                     >
-                      {[
-                        ...Array(
-                          product.isLimitedProduct ? product.countInStock : 10
-                        ).keys(),
-                      ].map((x) => (
-                        <option key={x + 1} value={x + 1}>
-                          {x + 1}
+                      {product?.price?.toString()?.split('.')[1]}
+                    </sup>
+                  </Text>
+                </div>
+                {message && (
+                  <Message variant='success'>
+                    {message} <span onClick={() => setMessage('')}>X</span>
+                  </Message>
+                )}
+                {product?.sizes?.length !== 0 && (
+                  <SelectInputContainer
+                    style={{
+                      width: '84px',
+                      border: 0,
+                      marginBottom: '1rem',
+                    }}
+                  >
+                    <Quantity>Size</Quantity>
+                    <SelectInput
+                      value={size}
+                      as='select'
+                      onChange={(e: any) => setSize(e.target.value)}
+                    >
+                      {product?.sizes?.map((x: any, i: number) => (
+                        <option key={i} value={x?.size}>
+                          {x.size}
                         </option>
                       ))}
                     </SelectInput>
                   </SelectInputContainer>
                 )}
+                <HorizontalLine margin='0 0 1rem 0' />
+                <Text fontWeight='bold'>About this item</Text>
+                <ul className='pl-4'>
+                  {product?.description
+                    ?.split('|')
+                    .map((item: any, i: number) => (
+                      <Text key={i}>
+                        <li>{item}</li>
+                      </Text>
+                    ))}
+                </ul>
+              </>
+            )}
+          </Col>
+          <Col>
+            {loadingProductPublicDetails ? (
+              <LoadingImg w='100%' />
+            ) : (
+              <ThirdColumnWrapper>
+                <div className='d-flex'>
+                  <div style={{ position: 'relative' }}>
+                    <Text style={{ position: 'absolute', top: '6px' }}>$</Text>
+                  </div>
+                  <Text
+                    marginLeft='0.7rem'
+                    fontWeight='bold'
+                    fontSize='2rem'
+                    style={{ position: 'relative' }}
+                    marginBottom='0.8rem'
+                  >
+                    {product?.price?.toString()?.split('.')[0]}
+                    <sup
+                      style={{
+                        fontWeight: '500',
+                        fontSize: '0.8rem',
+                        top: '-15px',
+                      }}
+                    >
+                      {product?.price?.toString()?.split('.')[1]}
+                    </sup>
+                  </Text>
+                </div>
+                <Text
+                  color={outOfStock ? 'red' : '#007600'}
+                  fontSize='1.5rem'
+                  fontWeight='500'
+                  fontFamily='Duru Sans'
+                  marginBottom='0.2rem'
+                  style={{
+                    textRendering: 'optimizeLegibility',
+                    lineHeight: '24px',
+                  }}
+                >
+                  {outOfStock ? 'Not In stock' : 'In stock'}
+                </Text>
+                {!outOfStock && (
+                  <>
+                    <Text marginBottom='1rem' fontWeight='400'>
+                      Usually ships within 4 to 5 days
+                    </Text>
+
+                    <SelectInputContainer
+                      style={{
+                        width: '84px',
+                        border: 0,
+                        marginBottom: '0.75rem',
+                      }}
+                    >
+                      <Quantity>Qty</Quantity>
+                      <SelectInput
+                        value={qty}
+                        as='select'
+                        onChange={(e: any) => setQty(e.target.value)}
+                      >
+                        {[
+                          ...Array(
+                            product?.sizes?.length > 0
+                              ? product?.sizes?.filter(
+                                  (item: any) => item?.size === size
+                                )[0]?.amount
+                              : product.countInStock
+                          ).keys(),
+                        ].map((x: any, i: number) => (
+                          <option key={i} value={x?.amount}>
+                            {x + 1}
+                          </option>
+                        ))}
+                      </SelectInput>
+                    </SelectInputContainer>
+                  </>
+                )}
                 <AddToCartBtn
-                  disabled={product?.countInStock === 0}
+                  disabled={outOfStock}
                   onClick={() => addToCartHandler(product)}
                 >
                   {loadingCart ? (
@@ -173,10 +256,10 @@ const ProductDetails = ({ match }: any) => {
                     'Add To Cart'
                   )}
                 </AddToCartBtn>
-              </div>
-            </Col>
-          </ProductDetailsContainer>
-        </>
+              </ThirdColumnWrapper>
+            )}
+          </Col>
+        </ProductDetailsContainer>
       )}
     </>
   );

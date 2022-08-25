@@ -18,17 +18,17 @@ const ProductName = styled(Link)`
 const ProductImg = styled(Card.Img)`
   object-fit: cover;
   width: 100%;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-    max-width: 420px;
-    width: 100%;
-  }
+  aspect-ratio: 1/1;
 `;
 
 const Product = ({ product }: any) => {
   return (
     <div className='d-flex flex-column'>
       <Link to={`/shop/product/${product._id}`}>
-        <div className='h-100 w-100'>
+        <div
+          className='h-100 w-100 d-flex justify-content-center py-3'
+          style={{ aspectRatio: '1 / 1' }}
+        >
           <ProductImg src={product.image} variant='top' />
         </div>
       </Link>

@@ -1,35 +1,58 @@
-import { FC, ReactNode, useEffect, useState } from 'react';
-import { Switch, Route, useRouteMatch, useLocation } from 'react-router-dom';
-import styled from 'styled-components';
-import { PageLayout } from '../../components/styles/Styles';
+import { FC, useEffect, useState } from 'react';
+import {
+  Switch,
+  Route,
+  useRouteMatch,
+  useLocation,
+  Link,
+} from 'react-router-dom';
+import GenericPageLayout from '../../components/GenericPageLayout';
+import {
+  IntroText,
+  Jumbo,
+  JumboAndWaveContainer,
+  Title,
+  TitleAndIntroTextContainer,
+} from '../../components/styles/Styles';
 import FosterApplication from './FosterApplication';
-import Volunteer from './Volunteer';
 import VolunteerApplication from './VolunteerApplication';
 
-interface VolunteerLayoutWithTabsProps {
-  tabs: ReactNode;
-  children: ReactNode;
-}
-
-const Main = styled.main`
-  width: 100%;
-`;
-
-const Section = styled.section`
-  display: flex;
-`;
-
-const VolunteerLayoutWithTabs: FC<VolunteerLayoutWithTabsProps> = ({
-  tabs,
-  children,
-}) => {
-  return (
-    <PageLayout>
-      <Section>{tabs}</Section>
-      <Main>{children}</Main>
-    </PageLayout>
-  );
-};
+const Navigation = () => (
+  <JumboAndWaveContainer>
+    <Jumbo>
+      <TitleAndIntroTextContainer>
+        <Title>What Can I Do?</Title>
+        <IntroText style={{ fontSize: '1.5rem' }}>Get Involved!</IntroText>
+        <IntroText>
+          Would you like to donate to Little Paws?{' '}
+          <Link to='/donate'>Go to our donation page!</Link> Or would you rather
+          give to Little Paws as you do your daily online shopping?{' '}
+          <Link to={{ pathname: '/donate', search: `?Shop to Help` }}>
+            Visit our Shop to Help page to learn more.
+          </Link>
+        </IntroText>
+        <IntroText style={{ fontSize: '1.5rem' }}>
+          Join the Little Paws Family!
+        </IntroText>
+        <IntroText>
+          We are always seeking new volunteers or fosters! Visit our{' '}
+          <Link to='/volunteer/foster-application'>Foster Application</Link> or
+          our{' '}
+          <Link to='/volunteer/volunteer-application'>
+            Volunteer Application
+          </Link>{' '}
+          page below.
+        </IntroText>
+        <IntroText>
+          Are you crafty? We need your help! We are also looking for artists and
+          crafters both for our{' '}
+          <Link to='/events'>upcoming auctions and events</Link> along with our{' '}
+          <Link to='/donate'>ETSY store</Link>.
+        </IntroText>
+      </TitleAndIntroTextContainer>
+    </Jumbo>
+  </JumboAndWaveContainer>
+);
 
 const VolunteerRoutes: FC = () => {
   const { path } = useRouteMatch();
@@ -42,11 +65,7 @@ const VolunteerRoutes: FC = () => {
   }, [currentRoute, tabCategory]);
 
   return (
-    <VolunteerLayoutWithTabs
-      tabs={
-        <Volunteer tabCategory={tabCategory} setTabCategory={setTabCategory} />
-      }
-    >
+    <GenericPageLayout jumbotron={<Navigation />}>
       <Switch>
         <Route
           exact
@@ -58,7 +77,7 @@ const VolunteerRoutes: FC = () => {
           component={FosterApplication}
         />
       </Switch>
-    </VolunteerLayoutWithTabs>
+    </GenericPageLayout>
   );
 };
 

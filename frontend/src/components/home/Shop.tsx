@@ -1,37 +1,39 @@
 import React from 'react';
 import styled from 'styled-components';
-import {
-  HomeLink,
-  ParallaxContent,
-  SectionContainer,
-  SectionTitle,
-} from '../../components/home/styles';
+import { Text } from '../../components/styles/Styles';
+import MaskBtn from './MaskBtn';
+
+const Container = styled.div`
+  width: 100%;
+  background: #2c2a3b;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  padding: 5.3125rem 0;
+`;
 
 const ContentContainer = styled.div`
-  background: ${({ theme }) =>
-    theme.mode === 'day'
-      ? 'radial-gradient(circle, hsla(40, 76%, 84%, 1) 0%, hsla(143, 29%, 65%, 1) 100%)'
-      : 'radial-gradient(circle, hsla(183, 81%, 35%, 1) 0%, hsla(40, 100%, 67%, 1) 100%)'};
-  position: relative;
-  height: 300px;
-
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-    height: 500px;
-  }
+  max-width: 1300px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
 `;
 
 const Shop = () => {
   return (
-    <SectionContainer>
-      <SectionTitle to='/shop'>Featured Items</SectionTitle>
+    <Container>
       <ContentContainer>
-        <ParallaxContent>
-          <div className='support'>SUPPORT TEAM DACHSHUND</div>
-          <div className='browse'>Browse Our Products</div>
-          <HomeLink to='/shop'>Shop</HomeLink>
-        </ParallaxContent>
+        <Text
+          fontSize='2rem'
+          fontFamily='Duru Sans'
+          color='#d89253'
+          letterSpacing='-2px'
+        >
+          Check out our latest products
+        </Text>
+        <MaskBtn linkKey='/shop' textKey='LITTLE PAWS SHOP' />
       </ContentContainer>
-    </SectionContainer>
+    </Container>
   );
 };
 

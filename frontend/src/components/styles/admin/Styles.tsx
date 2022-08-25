@@ -30,8 +30,8 @@ export const TableRow = styled.tr`
 export const TableImg = styled(Image)`
   border-radius: 50%;
   object-fit: cover;
-  width: 50px;
-  height: 50px;
+  width: 2.875rem;
+  height: 2.875rem;
 `;
 
 export const SearchBar = styled(Form.Group)`
@@ -46,8 +46,8 @@ export const CreateBtn = styled(Button)`
   border: none;
   font-family: 'Duru', sans-serif;
   margin-bottom: 1rem;
-  height: 50px;
-  width: 50px;
+  height: 2.5rem;
+  width: 2.5rem;
   padding: 0.75rem;
   border-radius: 50%;
   transition: 300ms;

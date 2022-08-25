@@ -1,3 +1,5 @@
+import { validateEmailRegex } from '../../utils/regex';
+
 export const validate = (
   setTimeToValidate: (timeToValidate: boolean) => void,
   setErrors: (errors: any) => void,
@@ -7,7 +9,7 @@ export const validate = (
   if (!inputs['firstName']) {
     setErrors((errors: any) => ({
       ...errors,
-      firstName: 'First name is required',
+      firstName: 'First Name is required',
     }));
   } else {
     setErrors((errors: any) => ({ ...errors, firstName: '' }));
@@ -15,13 +17,16 @@ export const validate = (
   if (!inputs['lastName']) {
     setErrors((errors: any) => ({
       ...errors,
-      lastName: 'Last name is required',
+      lastName: 'Last Name is required',
     }));
   } else {
     setErrors((errors: any) => ({ ...errors, lastName: '' }));
   }
-  if (!inputs['email']) {
-    setErrors((errors: any) => ({ ...errors, email: 'Email is required' }));
+  if (validateEmailRegex.test(inputs['email'])) {
+    setErrors((errors: any) => ({
+      ...errors,
+      email: 'Email Address is required',
+    }));
   } else {
     setErrors((errors: any) => ({ ...errors, email: '' }));
   }
@@ -46,18 +51,10 @@ export const validate = (
   if (!inputs['zipPostalCode']) {
     setErrors((errors: any) => ({
       ...errors,
-      zipPostalCode: 'Zip code is required',
+      zipPostalCode: 'Zip / Postal Code is required',
     }));
   } else {
     setErrors((errors: any) => ({ ...errors, zipPostalCode: '' }));
-  }
-  if (!inputs['donationAmount']) {
-    setErrors((errors: any) => ({
-      ...errors,
-      donationAmount: 'Donation amount is required',
-    }));
-  } else {
-    setErrors((errors: any) => ({ ...errors, donationAmount: '' }));
   }
 };
 
@@ -75,7 +72,8 @@ export const validateECardForm = (
   } else {
     setErrors((errors: any) => ({ ...errors, recipientsFirstName: '' }));
   }
-  if (!inputs['recipientsEmail']) {
+
+  if (!validateEmailRegex.test(inputs['recipientsEmail'])) {
     setErrors((errors: any) => ({
       ...errors,
       recipientsEmail: 'Recipients email address is required',
@@ -107,7 +105,7 @@ export const validateECardForm = (
   } else {
     setErrors((errors: any) => ({ ...errors, lastName: '' }));
   }
-  if (!inputs['email']) {
+  if (!validateEmailRegex.test(inputs['email'])) {
     setErrors((errors: any) => ({ ...errors, email: 'Email is required' }));
   } else {
     setErrors((errors: any) => ({ ...errors, email: '' }));

@@ -1,12 +1,9 @@
-import React, { useState } from 'react';
-import { Row, Col, Button, Form } from 'react-bootstrap';
+import React from 'react';
+import { Image } from 'react-bootstrap';
 import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-import { Text } from '../components/styles/Styles';
-import { useDispatch, useSelector } from 'react-redux';
-import { createNewsletterEmail } from '../actions/newsletterActions';
-import Message from './Message';
-import Checkmark from './svg/Checkmark';
+import Logo from '../components/assets/logo-background-transparent.png';
+import SocialMediaNavbar from './navbar/SocialMediaNavbar';
 
 const quickLinks = () => {
   return [
@@ -46,13 +43,70 @@ const quickLinks = () => {
 };
 
 const StyledFooter = styled.footer`
-  background: ${({ theme }) => theme.colors.senary};
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: ${({ theme }) => theme.colors.primary};
   border-top: ${({ theme }) => `3px solid ${theme.smcontainer.bg}`};
+  padding: 1rem;
+`;
+
+const TopFooter = styled.div`
+  display: flex;
+  flex-direction: column;
+  max-width: 1300px;
+  width: 100%;
+  max-width: ${({ theme }) => theme.breakpoints[4]};
+  margin: 0 6rem;
+  display: flex;
+  align-items: start;
+  padding: 2rem 0 0;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
+    padding: 4.5rem 0;
+    align-items: center;
+    flex-direction: row;
+  }
+`;
+const LogoImage = styled(Image)`
+  max-width: 180px;
+  width: 100%;
+  margin-right: 4rem;
+  aspect-ratio: 16/9;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
+    margin-right: 4rem;
+  }
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[4]}) {
+    margin-right: 6rem;
+  }
+`;
+const LinkWrapper = styled.div`
+  width: 100%;
+  margin: 2rem 0;
+  display: flex;
+  flex-direction: column;
+
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+    display: grid;
+    grid-template-columns: 0.75fr 0.6fr 1.5fr;
+  }
+`;
+const LinkSection = styled.div`
+  margin-bottom: 1.25rem;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[4]}) {
+    margin-bottom: 0;
+  }
+`;
+
+const LinkCategory = styled.div`
+  color: #fff;
+  margin-bottom: 0.5rem;
+  font-family: 'Duru Sans';
+  font-size: 1rem;
 `;
 
 const StyledLink = styled(Link)`
-  color: ${({ theme }) => theme.white};
-  font-size: 0.8rem;
+  color: ${({ theme }) => theme.footer.text};
+  font-size: 0.75rem;
   transition: 300ms;
   :hover {
     filter: brightness(0.8);
@@ -60,155 +114,150 @@ const StyledLink = styled(Link)`
     color: ${({ theme }) => theme.white};
   }
   font-family: 'Duru Sans';
+  letter-spacing: 0.06153846154em;
+  line-height: 1.9230769231;
+  font-weight: bold;
 `;
 
-const GiveNowBtn = styled(Link)`
-  width: 150px;
-  color: #fff;
-  background: ${({ theme }) => theme.smcontainer.bg};
+const StyledExternalLink = styled.div`
+  color: ${({ theme }) => theme.footer.text};
   font-size: 0.75rem;
-  margin: 0 auto;
   transition: 300ms;
-  padding: 0.75rem 1.5rem;
-  font-family: 'Duru Sans';
+  cursor: pointer;
   :hover {
-    color: #fff;
-    box-shadow: none;
-    filter: brightness(1.1);
+    filter: brightness(0.8);
     text-decoration: none;
+    color: ${({ theme }) => theme.white};
+  }
+  font-family: 'Duru Sans';
+  letter-spacing: 0.06153846154em;
+  line-height: 1.9230769231;
+  font-weight: bold;
+`;
+
+const StyledText = styled.div`
+  color: ${({ theme }) => theme.footer.text};
+  font-size: 0.75rem;
+  font-family: 'Duru Sans';
+  letter-spacing: 0.06153846154em;
+  line-height: 1.9230769231;
+  font-weight: bold;
+`;
+
+const BottomFooter = styled.div`
+  display: flex;
+  max-width: ${({ theme }) => theme.breakpoints[4]};
+  width: 100%;
+  align-items: start;
+  justify-content: space-between;
+  flex-direction: column;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    flex-direction: row;
+    align-items: center;
   }
 `;
 
-const StyledSubFooter = styled(Col)`
-  background: ${({ theme }) => theme.bg};
-  color: ${({ theme }) => theme.text};
+const Signature = styled.div`
+  color: ${({ theme }) => theme.footer.text};
   font-size: 0.75rem;
-`;
-
-const SubscribeBtn = styled(Button)`
-  background: ${({ theme }) => theme.smcontainer.bg};
-  font-size: 0.75rem;
-  border-radius: 0 25px 25px 0;
-  width: 25%;
-  border: 0;
-  height: 40px;
   transition: 300ms;
+  cursor: pointer;
   :hover {
-    filter: brightness(1.1);
-    background: ${({ theme }) => theme.colors.secondary};
+    filter: brightness(0.8);
+    text-decoration: none;
+    color: ${({ theme }) => theme.white};
   }
+  font-family: 'Duru Sans';
+  letter-spacing: 0.06153846154em;
+  line-height: 1.9230769231;
+  font-weight: bold;
 `;
-const CheckmarkContainer = styled.div`
-  background: ${({ theme }) => theme.input.bg};
-  border-radius: 0 25px 25px 0;
-  width: 36px;
-  border: 0;
-  height: 40px;
-  svg {
-    margin-top: 3px;
+
+const LegalWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[4]}) {
+    flex-direction: row;
   }
 `;
 
 const Footer = () => {
   const location = useLocation();
-  const dispatch = useDispatch();
-  const [email, setNewsletterEmail] = useState('');
-  const newsletterCreate = useSelector((state: any) => state.newsletterCreate);
-  const { success, error } = newsletterCreate;
-
-  const submitHandler = (e: any) => {
-    e.preventDefault();
-    dispatch(createNewsletterEmail(email));
-    setNewsletterEmail('');
-  };
 
   return (
     <>
       {!location.pathname.includes('/admin') && (
-        <StyledFooter className='d-flex align-items-center flex-column pt-3'>
-          <Row className='mx-0 px-0'>
-            <Col className='mx-0 px-0 text-center'>
-              {quickLinks().map((l, i) => (
-                <StyledLink
-                  key={i}
-                  className={'px-2 font-weight-bolder'}
-                  to={{ pathname: l.linkPath, state: l.path }}
-                  style={{
-                    borderRight:
-                      l.linkKey !== 'Contact Us' ? '1px solid #fff' : '',
-                  }}
-                >
-                  {l.linkKey}
-                </StyledLink>
-              ))}
-            </Col>
-          </Row>
-          <Col className='d-flex flex-column mt-4 align-items-center'>
-            <Text
-              fontSize='1.75em'
-              fontWeight='bold'
-              color='#fff'
-              fontFamily={`'Ubuntu', sans-serif`}
+        <StyledFooter>
+          <TopFooter>
+            <LogoImage src={Logo} alt='LPDR' />
+            <LinkWrapper>
+              <LinkSection>
+                <LinkCategory>Our Address</LinkCategory>
+                <StyledText>Little Paws Dachshund Rescue</StyledText>
+                <StyledText>PO Box 232</StyledText>
+                <StyledText>College Park, MD 20741</StyledText>
+              </LinkSection>
+              <LinkSection>
+                <LinkCategory>Quick Links</LinkCategory>
+                <div className='d-flex flex-column'>
+                  {quickLinks().map((l, i) => (
+                    <StyledLink
+                      key={i}
+                      to={{ pathname: l.linkPath, state: l.path }}
+                    >
+                      {l.linkKey}
+                    </StyledLink>
+                  ))}
+                </div>
+              </LinkSection>
+              <LinkSection>
+                <LinkCategory>Legal</LinkCategory>
+                <StyledText>
+                  &copy; {new Date().getFullYear()} Little Paws Dachshund
+                  Rescue.
+                </StyledText>
+                <StyledText>All Rights Reserved.</StyledText>
+                <LegalWrapper>
+                  <StyledExternalLink
+                    onClick={() =>
+                      window.open(
+                        'https://www.privacypolicies.com/live/c37902bc-11cd-430e-a925-2b82ce905c88',
+                        '_blank'
+                      )
+                    }
+                  >
+                    Privacy Policy
+                  </StyledExternalLink>
+                  <StyledExternalLink
+                    onClick={() =>
+                      window.open('https://oag.ca.gov/privacy/ccpa', '_blank')
+                    }
+                  >
+                    California Consumer Privacy Act
+                  </StyledExternalLink>{' '}
+                  <StyledExternalLink
+                    onClick={() =>
+                      window.open(
+                        'https://www.termsandconditionsgenerator.com/live.php?token=K9R7fXZjABJKZhIWlXr43oY6qca6jjVn',
+                        '_blank'
+                      )
+                    }
+                  >
+                    Terns & Conditions
+                  </StyledExternalLink>
+                </LegalWrapper>
+              </LinkSection>
+            </LinkWrapper>
+          </TopFooter>
+          <BottomFooter>
+            <SocialMediaNavbar />
+            <StyledExternalLink
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             >
-              SUBSCRIBE
-            </Text>
-            <Text textAlign='center' color='#fff' fontFamily='Duru Sans'>
-              Get weekly updates on our available dogs for adoption, fundraisers
-              and events!
-            </Text>
-            <Form
-              style={{ maxWidth: '400px' }}
-              onSubmit={submitHandler}
-              className='d-flex w-100 justify-content-center mt-3'
-            >
-              <Form.Group
-                controlId='newsletterEmail'
-                className='mb-0 d-flex flex-column w-75'
-              >
-                <Form.Control
-                  className='border-0'
-                  placeholder='Enter email'
-                  required
-                  as='input'
-                  type='email'
-                  value={email}
-                  onChange={(e) => setNewsletterEmail(e.target.value)}
-                  style={{ borderRadius: '25px 0 0 25px' }}
-                ></Form.Control>
-              </Form.Group>
-              {!success ? (
-                <SubscribeBtn type='submit' disabled={success}>
-                  SUBSCRIBE
-                </SubscribeBtn>
-              ) : (
-                <CheckmarkContainer>
-                  <Checkmark />
-                </CheckmarkContainer>
-              )}
-            </Form>
-            {error && (
-              <div className='mt-2'>
-                <Message variant='danger'>{error}</Message>
-              </div>
-            )}
-          </Col>
-          <Row className='d-flex align-items-center mx-3'>
-            <Col className='d-flex flex-column mt-5'>
-              <Text className='text-white' textAlign='center'>
-                All gifts to Little Paws goes directly to help abandoned or
-                surrendered dachshunds.
-              </Text>
-              <GiveNowBtn to='/donate' className='my-3 btn border-0'>
-                GIVE NOW
-              </GiveNowBtn>
-            </Col>
-          </Row>
-          <Row style={{ width: '100%' }}>
-            <StyledSubFooter className='text-center py-2'>
-              &copy; {new Date().getFullYear()} Little Paws Dachshund Rescue.
-              All Rights Reserved
-            </StyledSubFooter>
-          </Row>
+              Top
+            </StyledExternalLink>
+            <Signature>Developed by Gregory Row</Signature>
+          </BottomFooter>
         </StyledFooter>
       )}
     </>

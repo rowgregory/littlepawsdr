@@ -52,11 +52,11 @@ const createProduct = asyncHandler(async (req, res) => {
     brand: 'Little Paws',
     category: 'Totes',
     countInStock: 0,
-    numReviews: 0,
     description: 'Sample description',
     publicId: '',
     size: '',
-    isLimitedProduct: false,
+    isLimitedProduct: true,
+    sizes: [],
   });
 
   const createdProduct = await product.save();
@@ -68,6 +68,50 @@ const createProduct = asyncHandler(async (req, res) => {
 // @route   PUT /api/products/:id
 // @access  Private/Admin
 const updateProduct = asyncHandler(async (req, res) => {
+  const {
+    name,
+    price,
+    image,
+    brand,
+    category,
+    description,
+    publicId,
+    size,
+    countInStock,
+  } = req.body;
+
+  const product = await Product.findById(req.params.id);
+
+  if (product) {
+    product.name = name || product.name;
+    product.price = price || product.price;
+    product.image = image || product.image;
+    product.brand = brand || product.brand;
+    product.category = category || product.category;
+    product.countInStock =
+      countInStock === 0
+        ? 0
+        : countInStock > 0
+        ? countInStock
+        : product.countInStock;
+    product.description = description || product.description;
+    product.publicId = publicId || product.publicId;
+    product.size = size || product.size;
+    product.isLimitedProduct = req.body.isLimitedProduct;
+    product.sizes = req.body.sizes || product.sizes;
+
+    const updatedProduct = await product.save();
+    res.json(updatedProduct);
+  } else {
+    res.status(404);
+    throw new Error('Product not found');
+  }
+});
+
+// @desc    Update a product by gyest
+// @route   PUT /api/products/:id/guest
+// @access  Public
+const updateProductGuest = asyncHandler(async (req, res) => {
   const { name, price, image, brand, category, description, publicId, size } =
     req.body;
 
@@ -84,6 +128,7 @@ const updateProduct = asyncHandler(async (req, res) => {
     product.publicId = publicId || product.publicId;
     product.size = size || product.size;
     product.isLimitedProduct = req.body.isLimitedProduct;
+    product.sizes = req.body.sizes;
 
     const updatedProduct = await product.save();
 
@@ -94,50 +139,9 @@ const updateProduct = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Create new review
-// @route   POST /api/products/:id/reviews
-// @access  Private
-const createProductReview = asyncHandler(async (req, res) => {
-  const { rating, comment } = req.body;
-
-  const product = await Product.findById(req.params.id);
-
-  if (product) {
-    const alreadyReviewed = product.reviews.find(
-      r => r.user.toString() == req.user._id.toString()
-    );
-
-    if (alreadyReviewed) {
-      res.status(400);
-      throw new Error('Product already reviewed');
-    }
-
-    const review = {
-      name: req.user.name,
-      rating: Number(rating),
-      comment,
-      user: req.user._id,
-    };
-
-    product.reviews.push(review);
-
-    product.numReviews = product.reviews.length;
-
-    product.rating =
-      product.reviews.reduce((acc, item) => item.rating + acc, 0) /
-      product.reviews.length;
-
-    await product.save();
-    res.status(201).json({ message: 'Review Added' });
-  } else {
-    res.status(404);
-    throw new Error('Product not found');
-  }
-});
-
 // @desc    Fetch single product
 // @route   GET /api/products/client/:id
-// @access  Private/Admin
+// @access  Public
 const getPublicProductDetails = asyncHandler(async (req, res) => {
   const product = await Product.findById(req.params.id);
 
@@ -155,6 +159,6 @@ export {
   deleteProduct,
   createProduct,
   updateProduct,
-  createProductReview,
+  updateProductGuest,
   getPublicProductDetails,
 };

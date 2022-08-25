@@ -2,14 +2,19 @@ import { useEffect } from 'react';
 
 export const useOutsideDetect = (
   ref: any,
-  setIsVisible: (isVisible: boolean) => void,
-  setActiveMenu: (activeMenu: string) => void
+  setActiveMenu: any,
+  setIsVisible?: any,
+  type?: string
 ) => {
   useEffect(() => {
     const handleClickOutside = (e: any) => {
       if (ref?.current && !ref.current.contains(e.target)) {
-        setIsVisible(false);
-        setActiveMenu('main');
+        if (type === 'USER_DROP_DOWN') {
+          setActiveMenu('main');
+          setIsVisible && setIsVisible(false);
+        } else {
+          setActiveMenu(false);
+        }
       }
     };
 
@@ -17,5 +22,5 @@ export const useOutsideDetect = (
     return () => {
       document.removeEventListener('mousedown', handleClickOutside, false);
     };
-  }, [ref, setActiveMenu, setIsVisible]);
+  }, [ref, setActiveMenu, setIsVisible, type]);
 };

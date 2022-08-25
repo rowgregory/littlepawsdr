@@ -4,88 +4,13 @@ import { Button, Col, Form, Image, Row, Spinner } from 'react-bootstrap';
 import { CSSTransition } from 'react-transition-group';
 import Message from '../Message';
 import styled from 'styled-components';
-import { ContinueBtn, DonateInput } from './DonationMenu';
+// import { ContinueBtn, DonateInput } from './DonationMenu';
 import { listECards } from '../../actions/eCardActions';
 import { PayPalButton } from 'react-paypal-button-v2';
 import axios from 'axios';
 import { createECardOrder } from '../../actions/eCardOrderActions';
 import Loader from '../Loader';
 import { ECARD_ORDER_CREATE_RESET } from '../../constants/eCardOrderContants';
-
-export const ECardPrice = styled.div`
-  position: absolute;
-  z-index: 10;
-  top: 5px;
-  right: 5px;
-  background-image: ${({ theme }) =>
-    `linear-gradient(to bottom, ${theme.colors.secondary} 0%, ${theme.colors.primary} 100%)`};
-
-  color: #000;
-  height: 20px;
-  width: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 0.7rem;
-  :before,
-  :after {
-    content: '';
-    position: absolute;
-    z-index: -1;
-    top: 0;
-    left: 0;
-    height: 20px;
-    width: 20px;
-
-    background-image: ${({ theme }) =>
-      `linear-gradient(to bottom, ${theme.colors.secondary} 0%, ${theme.colors.primary} 100%)`};
-  }
-
-  :before {
-    transform: rotate(30deg);
-  }
-  :after {
-    transform: rotate(60deg);
-  }
-`;
-
-export const ECardImageContainer = styled.div<{ active: boolean }>`
-  cursor: pointer;
-  z-index: 4;
-  width: 250px;
-  height: 250px;
-  object-fit: cover;
-  transition: 300ms;
-  position: relative;
-  margin-bottom: 3rem;
-  img {
-    height: 250px;
-    width: 250px;
-    object-fit: cover;
-  }
-  :before {
-    content: '';
-    position: absolute;
-    bottom: 0px;
-    left: 45%;
-    z-index: 3;
-    border-bottom: 15px solid ${({ theme }) => theme.header.donationBG};
-    border-right: ${({ active }) => (active ? '10px solid transparent' : '')};
-    border-left: ${({ active }) => (active ? '10px solid transparent' : '')};
-    opacity: 0.8;
-  }
-  :after {
-    content: '';
-    position: absolute;
-    top: 0px;
-    left: 45%;
-    z-index: 3;
-    border-top: 15px solid ${({ theme }) => theme.header.donationBG};
-    border-right: ${({ active }) => (active ? '10px solid transparent' : '')};
-    border-left: ${({ active }) => (active ? '10px solid transparent' : '')};
-    opacity: 0.8;
-  }
-`;
 
 const ECardMenu = ({
   menuHeight,
@@ -245,7 +170,7 @@ const ECardMenu = ({
 
   return (
     <>
-      <CSSTransition
+      {/* <CSSTransition
         in={activeMenu === 'main'}
         unmountOnExit
         timeout={500}
@@ -576,7 +501,7 @@ const ECardMenu = ({
             </Button>
           </div>
         </div>
-      </CSSTransition>
+      </CSSTransition> */}
     </>
   );
 };

@@ -1,15 +1,17 @@
 import React, { FC, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { Row, Col, Carousel, Image } from 'react-bootstrap';
+import { Carousel, Image } from 'react-bootstrap';
 import { getDachshundDetails } from '../../actions/dachshundsActions';
 import Message from '../../components/Message';
-import Loader from '../../components/Loader';
-// import DachshundMap from '../../components/DachshundMap';
-import { StyledCarousel, Text } from '../../components/styles/Styles';
-import styled, { useTheme } from 'styled-components';
+import {
+  LoadingImg,
+  StyledCarousel,
+  Text,
+} from '../../components/styles/Styles';
+import styled from 'styled-components';
 import { locationsPromise } from '../../utils/attributePromises';
-import { HorizontalLine } from '../../components/styles/product-details/Styles';
+import GoBackBtn from '../../utils/GoBackBtn';
 
 interface DachshundDetails {
   dachshundDetails: {
@@ -29,19 +31,21 @@ interface DachshundDetails {
 }
 
 const Container = styled.div`
-  /* margin: 0 48px; */
+  max-width: ${({ theme }) => theme.breakpoints[3]};
+  margin: 0rem;
 `;
 
 const AdoptMeLink = styled(Link)`
-  background: ${({ theme }) => theme.colors.secondary};
-  color: ${({ theme }) => theme.white};
+  color: ${({ theme }) => theme.colors.secondary};
   width: fit-content;
   font-family: 'Ubuntu', sans-serif;
   font-size: 1.25rem;
+  padding: 0.375rem 1.5rem;
+  border: 2px solid ${({ theme }) => theme.colors.secondary};
+  transition: 300ms;
   :hover {
     background: ${({ theme }) => theme.colors.secondary};
     color: ${({ theme }) => theme.white};
-    filter: brightness(0.9);
     text-decoration: none;
   }
   :active {
@@ -53,28 +57,20 @@ const BottomSection = styled.div`
   display: grid;
   gap: 1rem;
   grid-template-columns: 1fr;
-  margin-top: 5rem;
+  margin: 5rem 0rem;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    grid-template-columns: 1fr 1fr 1fr;\
+    grid-template-columns: 1fr 1fr 1fr;
   }
   div {
     color: #fff;
     background: ${({ theme }) => theme.colors.secondary};
-
   }
 `;
 
-const GoBack = styled.div`
-  cursor: pointer;
-  color: ${({ theme }) => theme.text};
-  margin-bottom: 2rem;
-`;
 const DogDetailsContainer = styled.div`
-  background: ${({ theme }) => theme.tertiary};
-  padding: 1rem;
-  div {
-    font-family: 'Ubuntu', sans-serif;
-    font-size: 1.15rem;
+  margin: 0.75rem 0 0;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    margin-left: 1.875rem;
   }
 `;
 
@@ -118,10 +114,24 @@ export const PawPrint: FC<{ fill?: string }> = ({ fill }) => {
   );
 };
 
+const DetailsGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 2rem;
+`;
+
+const FlexContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin: 1rem;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    margin: 0;
+    flex-direction: row;
+  }
+`;
+
 const DachshundScreen = ({ match, history }: any) => {
   const dispatch = useDispatch();
-  const theme = useTheme() as any;
-  const isDay = theme.mode === 'day';
   const [typeLocations, setTypeLocations] = useState('');
 
   const dachshundDetails = useSelector(
@@ -141,192 +151,195 @@ const DachshundScreen = ({ match, history }: any) => {
     breedString,
     ageGroup,
     sex,
-    adultSexesOk,
-    // isYardRequired,
-    // fenceNeeds,
     adoptionFeeString,
     descriptionText,
     photos,
     isDogsOk,
     isKidsOk,
+    ageString,
+    sizeGroup,
+    colorDetails,
+    groomingNeeds,
+    isHousetrained,
+    housetrainedReasonNot,
+    newPeopleReaction,
+    isCatsOk,
+    vocalLevel,
   } = dachshund !== undefined && dachshund?.data[0]?.attributes;
+
+  const detailsData = () => [
+    {
+      title: 'Name',
+      textKey: name,
+    },
+    {
+      title: 'Age',
+      textKey: ageString,
+    },
+    {
+      title: 'Gender',
+      textKey: sex,
+    },
+    {
+      title: 'Size',
+      textKey: sizeGroup,
+    },
+    {
+      title: 'Primary Color',
+      textKey: colorDetails,
+    },
+    {
+      title: 'Grooming Needs',
+      textKey: groomingNeeds,
+    },
+    {
+      title: 'Ok with kids',
+      textKey: isKidsOk ? 'YES' : 'NO',
+    },
+    {
+      title: 'Housetrained',
+      textKey: isHousetrained ? 'YES' : housetrainedReasonNot,
+    },
+    {
+      title: 'New People Reaction',
+      textKey: newPeopleReaction,
+    },
+    {
+      title: 'Vocal Level',
+      textKey: vocalLevel,
+    },
+    {
+      title: 'Ok with dogs',
+      textKey: isDogsOk ? 'YES' : 'NO',
+    },
+    {
+      title: 'Okay with cats',
+      textKey: isCatsOk ? 'YES' : 'NO',
+    },
+  ];
 
   return (
     <Container>
-      <GoBack onClick={() => history.push('/available')}>
-        <i className='fas fa-arrow-left mr-1'></i>Go Back
-      </GoBack>
+      <GoBackBtn to='/available' />
 
-      {loading && <Loader />}
-      {error ? (
-        <Message variant='danger'>{error}</Message>
-      ) : (
-        <>
-          <Row>
-            <Col lg={7} md={12}>
-              <StyledCarousel pause='hover'>
-                {photos?.map((photo: string, i: number) => (
-                  <Carousel.Item key={i} interval={2000}>
-                    <Image src={photo} alt={`${photo}-${i}`} fluid />
-                  </Carousel.Item>
-                ))}
-              </StyledCarousel>
-              <div className='d-flex align-items-center justify-content-center mb-3 mt-5 w-100'>
-                <Text
-                  fontWeight='bold'
-                  fontSize='1.5rem'
-                  style={{ color: isDay ? '#9a82b1' : '#a5fe91' }}
-                >
-                  {adoptionFeeString?.split('').includes('$')
-                    ? adoptionFeeString
-                    : `$${adoptionFeeString}`}
-                </Text>
-                <AdoptMeLink
-                  to='/adopt/application'
-                  className='btn-block border-0 d-flex justify-content-center align-items-center p-2 ml-3'
-                  type='button'
-                >
-                  Adopt Me
-                </AdoptMeLink>
-              </div>
-            </Col>
-            <Col lg={5} md={12} className='d-flex flex-column'>
-              <Text
-                fontFamily={`Ubuntu, sans-serif`}
-                fontSize='2rem'
-                fontWeight='bold'
-              >
-                {name}
-              </Text>
-              <Text letterSpacing='2px'>{breedString}</Text>
-              <Text>
-                {ageGroup} {sex}
-              </Text>
-              <HorizontalLine />
-              <DogDetailsContainer>
-                {adultSexesOk && (
-                  <div className='d-flex align-items-start'>
-                    <PawPrint />
-                    <Text marginLeft='1rem' marginBottom='0.4rem'>
-                      Preferred owner: {adultSexesOk}
-                    </Text>
-                  </div>
-                )}
-                {isDogsOk && (
-                  <div className='d-flex align-items-start'>
-                    <PawPrint />
-                    <Text marginLeft='1rem' marginBottom='0.4rem'>
-                      Good with Dogs
-                    </Text>
-                  </div>
-                )}
-                {/* {isYardRequired && (
-                  <div className='d-flex align-items-start'>
-                    <PawPrint />
-                    <Text marginLeft='1rem' marginBottom='0.4rem'>
-                      Needs a yard
-                    </Text>
-                  </div>
-                )}
-                {fenceNeeds && (
-                  <div className='d-flex align-items-start'>
-                    <PawPrint />
-                    <Text marginLeft='1rem' marginBottom='0.4rem'>
-                      {fenceNeeds === 'Not Required'
-                        ? 'No fence required'
-                        : `Fence required: ${fenceNeeds}`}
-                    </Text>
-                  </div>
-                )} */}
-                <div className='d-flex align-items-start'>
-                  <PawPrint />
-                  <Text marginLeft='1rem' marginBottom='0.4rem'>
-                    {isKidsOk ? 'Good with Kids' : 'Not good with Kids'}
-                  </Text>
-                </div>
-              </DogDetailsContainer>
-              <HorizontalLine />
-              <div className='d-flex align-items-baseline'>
-                <Text
-                  fontWeight='bold'
-                  fontFamily={`Ubuntu, sans-serif`}
-                  fontSize='1rem'
-                >
-                  Location:{' '}
-                </Text>
-                <Text className='ml-2'>{typeLocations}</Text>
-              </div>
-              {/* <div className='my-3'>
-                <DachshundMap location={typeLocations} />
-              </div> */}
-              <HorizontalLine />
-              <Text
-                fontSize='1.25rem'
-                textIndent='1rem'
-                style={{ whiteSpace: 'pre-line' }}
-              >
-                {descriptionText !== undefined &&
-                  descriptionText
-                    .replace(/&#39;/g, "'")
-                    .replace(/&rsquo;/g, "'")
-                    .replace(/&amp;/g, '&')
-                    .replace(/&nbsp;/g, '')}
-              </Text>
-            </Col>
-          </Row>
+      {error && <Message variant='danger'>{error}</Message>}
 
-          <HorizontalLine />
-          <BottomSection>
-            <div className='d-flex flex-column p-3'>
-              <Text
-                fontWeight='bold'
-                fontSize='1.25rem'
-                marginBottom='0.75rem'
-                fontFamily='Duru Sans'
-              >
-                Dogs Adopted in New England
-              </Text>
-              <Text fontFamily='Duru Sans'>
-                Dogs adopted in New England are subject to additional rules and
-                regulations by the state departments of agriculture. Complying
-                with these regulations is expensive for our rescue, and some
-                dogs adopted in New England states are charged an additional
-                $175.00 to cover regulatory requirements.
-              </Text>
-            </div>
-            <div className='d-flex flex-column p-3'>
-              <Text
-                fontWeight='bold'
-                fontSize='1.25rem'
-                marginBottom='0.75rem'
-                fontFamily='Duru Sans'
-              >
-                Adoption Fee Info
-              </Text>
-              <Text fontFamily='Duru Sans'>
-                There will be a $45 fee for a health certificate if you will be
-                traveling over state lines. This is required by law.
-              </Text>
-            </div>
-            <div className='d-flex flex-column p-3'>
-              <Text
-                fontWeight='bold'
-                fontSize='1.25rem'
-                marginBottom='0.75rem'
-                fontFamily='Duru Sans'
-              >
-                Transportation Help
-              </Text>
-              <Text fontFamily='Duru Sans'>
-                If you see a furbaby that would be a match for your family,
-                please don’t let distance stand in the way of your adoption.
-                LPDR can work with you to have a volunteer transport to assist
-                with transportation or refer you to a paid transport.
-              </Text>
-            </div>
-          </BottomSection>
-        </>
-      )}
+      <FlexContainer style={{ marginBottom: '3.75rem' }}>
+        {loading ? (
+          <StyledCarousel>
+            <LoadingImg w='100%' />
+          </StyledCarousel>
+        ) : (
+          <StyledCarousel pause='hover'>
+            {photos?.map((photo: string, i: number) => (
+              <Carousel.Item key={i} interval={4000}>
+                <Image
+                  src={photo}
+                  alt={`${photo}-${i}`}
+                  style={{ aspectRatio: '1/1' }}
+                />
+              </Carousel.Item>
+            ))}
+          </StyledCarousel>
+        )}
+        <DogDetailsContainer>
+          <Text fontSize='2.25rem' fontWeight='500'>
+            {name}
+          </Text>
+          <Text>
+            {ageGroup} {sex} {breedString}
+          </Text>
+          <Text marginBottom='1.875rem'>{typeLocations}</Text>
+          <AdoptMeLink to='/adopt/application' type='button'>
+            Adopt
+          </AdoptMeLink>
+        </DogDetailsContainer>
+      </FlexContainer>
+      <FlexContainer>
+        <div className='d-flex flex-column mr-4' style={{ flex: '1 1 0px' }}>
+          <Text fontSize='1.5rem' fontWeight='600' marginBottom='1.875rem'>
+            About {name}
+          </Text>
+          <Text
+            border='1px solid rgb(68, 68, 68)'
+            p='0.5rem 1rem'
+            fontSize='1.15rem'
+          >
+            Adoption Fee: {adoptionFeeString}
+          </Text>
+          <Text fontSize='0.875rem' style={{ whiteSpace: 'pre-line' }}>
+            {descriptionText !== undefined &&
+              descriptionText
+                .replace(/&#39;/g, "'")
+                .replace(/&rsquo;/g, "'")
+                .replace(/&amp;/g, '&')
+                .replace(/&nbsp;/g, '')}
+          </Text>
+        </div>
+        <div style={{ flex: '1 1 0px' }}>
+          <Text fontSize='1.5rem' fontWeight='600' marginBottom='1.875rem'>
+            Details
+          </Text>
+          <DetailsGrid>
+            {detailsData().map((obj: any, i: number) => (
+              <div className='d-flex flex-column' key={i}>
+                <Text>{obj.title}</Text>
+                <Text fontSize='0.875rem'>{obj.textKey}</Text>
+              </div>
+            ))}
+          </DetailsGrid>
+        </div>
+      </FlexContainer>
+
+      <BottomSection>
+        <div className='d-flex flex-column p-3'>
+          <Text
+            fontWeight='bold'
+            fontSize='1.25rem'
+            marginBottom='0.75rem'
+            fontFamily='Duru Sans'
+          >
+            Dogs Adopted in New England
+          </Text>
+          <Text fontFamily='Duru Sans'>
+            Dogs adopted in New England are subject to additional rules and
+            regulations by the state departments of agriculture. Complying with
+            these regulations is expensive for our rescue, and some dogs adopted
+            in New England states are charged an additional $175.00 to cover
+            regulatory requirements.
+          </Text>
+        </div>
+        <div className='d-flex flex-column p-3'>
+          <Text
+            fontWeight='bold'
+            fontSize='1.25rem'
+            marginBottom='0.75rem'
+            fontFamily='Duru Sans'
+          >
+            Adoption Fee Info
+          </Text>
+          <Text fontFamily='Duru Sans'>
+            There will be a $45 fee for a health certificate if you will be
+            traveling over state lines. This is required by law.
+          </Text>
+        </div>
+        <div className='d-flex flex-column p-3'>
+          <Text
+            fontWeight='bold'
+            fontSize='1.25rem'
+            marginBottom='0.75rem'
+            fontFamily='Duru Sans'
+          >
+            Transportation Help
+          </Text>
+          <Text fontFamily='Duru Sans'>
+            If you see a furbaby that would be a match for your family, please
+            don’t let distance stand in the way of your adoption. LPDR can work
+            with you to have a volunteer transport to assist with transportation
+            or refer you to a paid transport.
+          </Text>
+        </div>
+      </BottomSection>
     </Container>
   );
 };

@@ -31,13 +31,15 @@ const Loader: FC<LoaderProps> = ({
       animation={animation ? animation : 'border'}
       role='status'
       style={{
+        position: 'absolute',
         width: w ? w : '100px',
         height: h ? h : '100px',
         margin: 'auto',
         top: top ? top : '',
         left: left ? left : '',
         zIndex: z ? z : 'auto',
-        color: theme.mode === 'day' ? '#22c2b7' : theme.colors.blue05,
+        color:
+          theme.mode === 'day' ? theme.colors.primary : theme.colors.blue05,
       }}
       size={size}
       as={as}

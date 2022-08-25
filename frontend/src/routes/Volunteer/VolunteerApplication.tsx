@@ -1,7 +1,5 @@
-import React from 'react';
-import { Card, Col, Row } from 'react-bootstrap';
 import styled, { useTheme } from 'styled-components';
-import { Text, StyledCard } from '../../components/styles/Styles';
+import { Text } from '../../components/styles/Styles';
 
 const VolunteerApplicationIFrame = styled.iframe`
   border: none;
@@ -23,7 +21,8 @@ const VolunteerApplicationIFrame = styled.iframe`
 `;
 
 const Container = styled.div`
-  margin: 0 48px;
+  max-width: ${({ theme }) => theme.breakpoints[3]};
+  width: 100%;
 `;
 
 const VolunteerApplication = () => {
@@ -31,30 +30,20 @@ const VolunteerApplication = () => {
   const isDay = theme.mode === 'day';
   return (
     <Container>
-      <Row>
-        <Col className='my-3'>
-          <StyledCard>
-            <Card.Body>
-              <Text>
-                {' '}
-                Thank you for applying to volunteer with Little Paws Dachshund
-                Rescue (LPDR)!
-              </Text>
-              <Text>
-                This application will take 15 - 30 minutes to complete.
-              </Text>
-              <Text>
-                We look forward to having you join our team. We rely on our
-                volunteers to accomplish our mission of helping unwanted and
-                abandoned animals find new homes, and we sincerely thank you for
-                helping us to achieve that goal.
-              </Text>
-              <Text>Little Paws Dachshund Rescue Board of Directors</Text>
-            </Card.Body>
-          </StyledCard>
-        </Col>
-      </Row>
-
+      <div>
+        <Text>
+          Thank you for applying to volunteer with Little Paws Dachshund Rescue
+          (LPDR)!
+        </Text>
+        <Text>This application will take 15 - 30 minutes to complete.</Text>
+        <Text>
+          We look forward to having you join our team. We rely on our volunteers
+          to accomplish our mission of helping unwanted and abandoned animals
+          find new homes, and we sincerely thank you for helping us to achieve
+          that goal.
+        </Text>
+        <Text>Little Paws Dachshund Rescue Board of Directors</Text>
+      </div>
       {isDay ? (
         <VolunteerApplicationIFrame
           title='Volunteer-Application'

@@ -9,7 +9,6 @@ interface MapProps {
 }
 
 const DachshundMap: FC<MapProps> = ({ location }) => {
-  console.log(location);
   const [, setNoLocation] = useState(false);
   const [latLng, setLatLng] = useState({}) as any;
   const containerStyle = {

@@ -10,8 +10,18 @@ export const SectionContainer = styled.div`
 
 export const SectionTitle = styled(Link)`
   font-family: 'Ubuntu', sans-serif;
-  color: ${({ theme }) => theme.inverse};
-  font-size: 1.5rem;
+  font-size: 2.5rem;
+  color: ${({ theme }) => theme.colors.primary};
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  cursor: pointer;
+  transition: 300ms;
+  :hover {
+    text-decoration: none;
+    color: ${({ theme }) => theme.colors.primary};
+    letter-spacing: 0.5px;
+  }
 `;
 
 export const HomeLink = styled(Link)`

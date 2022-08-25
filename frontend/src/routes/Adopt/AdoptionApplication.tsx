@@ -1,16 +1,21 @@
 import React from 'react';
 import styled, { useTheme } from 'styled-components';
-import { MainText } from './Adoption';
+import { Text } from '../../components/styles/Styles';
 
 const AdoptionApplicationIFrame = styled.iframe<{ pageKey?: string }>`
   border: none;
-  height: 8800px;
+  height: 13500px;
+  max-width: ${({ theme }) => theme.breakpoints[3]};
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+    height: 11000px;
+  }
 `;
 
 const Container = styled.div`
-  margin: 0 0.25rem;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-    margin: 0 48px;
+  max-width: ${({ theme }) => theme.breakpoints[3]};
+  margin: 1rem;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    margin: 2rem 0 0;
   }
 `;
 
@@ -20,15 +25,15 @@ const AdoptionApplication = () => {
   return (
     <>
       <Container>
-        <MainText>
+        <Text>
           Thank you for considering adopting a rescued dachshund. Submission of
           this application does not guarantee that you will receive a dog. We do
           not adopt to anyone under the age of 21.
-        </MainText>
-        <MainText className='my-3'>
+        </Text>
+        <Text className='my-3'>
           This application can take 15 - 30 minutes to complete.
-        </MainText>
-        <MainText>
+        </Text>
+        <Text>
           Once your application is received and your vet and personal references
           are approved, you will be notified that a LPDR volunteer will conduct
           a homevisit. A homevisit is scheduled at a time that is convenient for
@@ -36,27 +41,27 @@ const AdoptionApplication = () => {
           the time of the homevisit, including all animals. The homevisit
           volunteer will inspect the locations where the dachshund will eat,
           sleep and play.
-        </MainText>
-        <MainText className='my-3'>
+        </Text>
+        <Text className='my-3'>
           <u>TRANSPORTATION HELP!</u>
-        </MainText>
-        <MainText>
+        </Text>
+        <Text>
           If you see a furbaby that would be a match for your family, please
           don’t let distance stand in the way of your adoption. LPDR can work
           with you to have a volunteer transport to assist with transportation
           or refer you to a paid transport. We are currently working with mainly
           inSectioniduals on the East Coast but will consider other locations
           also!
-        </MainText>
-        <MainText className='my-3'>
+        </Text>
+        <Text className='my-3'>
           <u>OFF-LEASH AND INVISIBLE FENCE POLICY</u>
-        </MainText>
-        <MainText>
+        </Text>
+        <Text>
           We understand that some of the very best adopters don't have fenced
           yards. Unlike some other rescues, we do not impose the rule that all
           adopters must have fenced yards in order to adopt.
-        </MainText>
-        <MainText className='my-3'>
+        </Text>
+        <Text className='my-3'>
           Dachshunds are, by breed definition, scent hounds. They wi ll often go
           into hunting mode, zoning out their humans. For their own protection,
           the majority of LPDR dogs will need to be adopted into home
@@ -64,8 +69,8 @@ const AdoptionApplication = () => {
           and/or with people who are devoted to leash walking. Please understand
           that there is a subset of dogs that do not do well on leashes and will
           only be adoptable to applicants with fenced homes.
-        </MainText>
-        <MainText>
+        </Text>
+        <Text>
           It is LPDR's position that invisible fences are not suitable for
           dachshunds for a number of reasons. Dachshunds are known for
           protecting their humans and others they view as part of their pack.
@@ -78,14 +83,12 @@ const AdoptionApplication = () => {
           animals entering their territory. This false sense of security has
           been the downfall of many small dogs. For those reasons, it will be
           uncommon that we adopt to people who utilize invisible fences.
-        </MainText>
-        <MainText className='my-3'>
-          Again, thank you for wanting to adopt.
-        </MainText>
-        <MainText>Sincerely,</MainText>
-        <MainText className='mb-3'>
+        </Text>
+        <Text className='my-3'>Again, thank you for wanting to adopt.</Text>
+        <Text>Sincerely,</Text>
+        <Text className='mb-3'>
           Little Paws Dachshund Rescue Board of Directors
-        </MainText>
+        </Text>
       </Container>
 
       {isDay ? (

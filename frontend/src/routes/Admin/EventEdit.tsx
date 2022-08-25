@@ -2,13 +2,13 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Form, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import FormContainer from '../../components/FormContainer';
-import Message from '../../components/Message';
 import Loader from '../../components/Loader';
 import { listEventDetails, updateEvent } from '../../actions/eventActions';
 import { EVENT_UPDATE_RESET } from '../../constants/eventConstants';
 import styled from 'styled-components';
 import GoBackBtn from '../../utils/GoBackBtn';
 import {
+  LoadingImg,
   StyledUloadedImg,
   Text,
   UpdateBtn,
@@ -17,6 +17,8 @@ import { EditBtn } from './RaffleWinnerEdit';
 import { removePhoto } from '../../utils/removePhoto';
 import uploadFileHandler from '../../utils/uploadFileHandler';
 import { useRouteMatch, useHistory } from 'react-router-dom';
+import toaster from 'toasted-notes';
+import { ToastAlert } from '..';
 
 const Gradient = styled(Form.Check)<{ selected?: boolean }>`
   border: ${({ selected }) =>
@@ -27,7 +29,7 @@ const Gradient = styled(Form.Check)<{ selected?: boolean }>`
 
 export const FormFile = styled(Form.File)<{ mb?: string }>`
   label {
-    margin-bottom: ${({ mb }) => (mb === 'true' ? '0.25rem' : '0')};
+    margin-bottom: 0 !important;
   }
 `;
 
@@ -57,7 +59,7 @@ const EventEdit = () => {
   const { loading, error, event } = eventDetails;
 
   const eventUpdate = useSelector((state: any) => state.eventUpdate);
-  let {
+  const {
     loading: loadingUpdate,
     error: errorUpdate,
     success: successUpdate,
@@ -87,6 +89,18 @@ const EventEdit = () => {
       setStatus(event?.status);
     }
   }, [dispatch, event, history, eventId, successUpdate, submittedForm]);
+
+  useEffect(() => {
+    if (error || errorUpdate || errorMsg) {
+      toaster.notify(
+        ({ onClose }) => ToastAlert(error || errorUpdate, onClose, 'error'),
+        {
+          position: 'bottom',
+          duration: 20000,
+        }
+      );
+    }
+  }, [errorUpdate, error, errorMsg]);
 
   const eventDataToUploadWithImg = {
     title,
@@ -170,15 +184,13 @@ const EventEdit = () => {
   return (
     <>
       <GoBackBtn to='/admin/eventList' />
-      {errorMsg !== '' && <Message variant='danger'>{errorMsg}</Message>}
       <FormContainer>
-        {errorUpdate && <Message variant='danger'>{errorUpdate}</Message>}
-        {loading ? (
-          <Loader />
-        ) : error ? (
-          <Message variant='danger'>{error}</Message>
-        ) : (
-          <Form onSubmit={submitHandler}>
+        <Form onSubmit={submitHandler}>
+          {loading ? (
+            <div className='mb-3'>
+              <LoadingImg w='100%' h='2.5rem' />
+            </div>
+          ) : (
             <Form.Group controlId='title'>
               <Form.Label>Title</Form.Label>
               <Form.Control
@@ -188,6 +200,12 @@ const EventEdit = () => {
                 onChange={(e) => setTitle(e.target.value)}
               ></Form.Control>
             </Form.Group>
+          )}
+          {loading ? (
+            <div className='mb-3'>
+              <LoadingImg w='100%' h='5rem' />
+            </div>
+          ) : (
             <Form.Group controlId='description'>
               <Form.Label>Description</Form.Label>
               <Form.Control
@@ -199,6 +217,12 @@ const EventEdit = () => {
                 onChange={(e) => setDescription(e.target.value)}
               ></Form.Control>
             </Form.Group>
+          )}
+          {loading ? (
+            <div className='mb-3'>
+              <LoadingImg w='100%' h='2.5rem' />
+            </div>
+          ) : (
             <Form.Group controlId='startDate'>
               <Form.Label>Start Date</Form.Label>
               <Form.Control
@@ -209,6 +233,12 @@ const EventEdit = () => {
                 onChange={(e) => setStartDate(e.target.value)}
               ></Form.Control>
             </Form.Group>
+          )}
+          {loading ? (
+            <div className='mb-3'>
+              <LoadingImg w='100%' h='2.5rem' />
+            </div>
+          ) : (
             <Form.Group controlId='endDate'>
               <Form.Label>End Date</Form.Label>
               <Form.Control
@@ -219,6 +249,12 @@ const EventEdit = () => {
                 onChange={(e) => setEndDate(e.target.value)}
               ></Form.Control>
             </Form.Group>
+          )}
+          {loading ? (
+            <div className='mb-3 d-flex justify-content-center align-items-center'>
+              <LoadingImg w='200px' h='200px' borderRadius='50%' />
+            </div>
+          ) : (
             <Form.Group controlId='image' className='d-flex flex-column'>
               <Form.Label>Event image</Form.Label>
               <div className='mx-auto'>
@@ -233,17 +269,17 @@ const EventEdit = () => {
                   alt='avatar'
                   onClick={() => setShowImageOptions(!showImageOptions)}
                 />
-                {uploading && (
-                  <Loader
-                    w='200px'
-                    h='200px'
-                    p='absolute'
-                    z='1'
-                    top='-200px'
-                    left='0px'
-                  />
-                )}
                 <div style={{ position: 'relative' }}>
+                  {uploading && (
+                    <Loader
+                      w='200px'
+                      h='200px'
+                      p='absolute'
+                      z='1'
+                      top='-200px'
+                      left='0px'
+                    />
+                  )}
                   <EditBtn
                     top='-45px'
                     left='0px'
@@ -305,6 +341,12 @@ const EventEdit = () => {
                 </div>
               </div>
             </Form.Group>
+          )}
+          {loading ? (
+            <div className='mb-3'>
+              <LoadingImg w='100%' h='2.5rem' />
+            </div>
+          ) : (
             <Form.Group
               controlId='backgroundColor'
               style={{
@@ -340,6 +382,12 @@ const EventEdit = () => {
                 ))}
               </div>
             </Form.Group>
+          )}
+          {loading ? (
+            <div className='mb-3'>
+              <LoadingImg w='100%' h='2.5rem' />
+            </div>
+          ) : (
             <Form.Group
               controlId='fontColor'
               style={{ display: 'flex', flexDirection: 'column' }}
@@ -371,6 +419,12 @@ const EventEdit = () => {
                 ))}
               </div>
             </Form.Group>
+          )}
+          {loading ? (
+            <div className='mb-3'>
+              <LoadingImg w='8rem' h='2.5rem' borderRadius='0.5rem' />
+            </div>
+          ) : (
             <UpdateBtn type='submit'>
               {loadingUpdate ? (
                 <div className='d-flex align-items-center'>
@@ -387,8 +441,8 @@ const EventEdit = () => {
                 <Text className='text-white'>Update</Text>
               )}
             </UpdateBtn>
-          </Form>
-        )}
+          )}
+        </Form>
       </FormContainer>
     </>
   );

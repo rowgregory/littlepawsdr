@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Col, Modal } from 'react-bootstrap';
+import { Col, Modal, Image } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { listProducts } from '../../actions/productActions';
@@ -13,6 +13,7 @@ import {
   LeftBtn,
   Title,
 } from '../../components/ContinueSessionModal';
+import ComingSoon from '../../components/assets/coming-soon.webp';
 
 const Container = styled.div`
   margin-bottom: 20rem;
@@ -51,7 +52,12 @@ const ProductContainer = styled.div<{ islargegrid: boolean }>`
   grid-gap: 0.75rem;
   width: 100%;
   grid-template-columns: ${({ islargegrid }) =>
-    islargegrid ? '1fr 1fr 1fr' : '1fr 1fr'};
+    islargegrid ? '1fr 1fr' : '1fr'};
+
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    grid-template-columns: ${({ islargegrid }) =>
+      islargegrid ? '1fr 1fr 1fr 1fr' : '1fr 1fr 1fr'};
+  }
 `;
 
 const ClearFilter = styled.div`
@@ -98,6 +104,8 @@ export const categories = () => [
   'Mugs',
   'Car magnets',
   'Stickers',
+  'Purse',
+  'Other',
 ];
 
 const ShopFilterModal = ({
@@ -169,6 +177,18 @@ const Shop = () => {
     product?.category.includes(currentCategory)
   );
 
+  if (products?.length === 0) {
+    return (
+      <div className='d-flex justify-content-center align-items-center'>
+        <Image
+          src={ComingSoon}
+          alt='coming-soon'
+          style={{ maxWidth: '1000px', width: '100%' }}
+        />
+      </div>
+    );
+  }
+
   return (
     <Container>
       <ShopFilterModal
@@ -176,7 +196,6 @@ const Shop = () => {
         close={handleClose}
         setCurrentCategory={setCurrentCategory}
       />
-      {/* {loading && <Loader />} */}
       <PageContent>
         <div className='d-flex'>
           <FilterColumn lg={2} md={2} sm={3} xs={3}>
@@ -205,11 +224,13 @@ const Shop = () => {
                   aria-hidden='true'
                 ></FilterIcon>
                 <i
+                  style={{ color: isLargeGrid ? '' : '#22c2b7' }}
                   onClick={() => setIsLargeGrid(false)}
                   className='fa fa-th-large fa-2x'
                   aria-hidden='true'
                 ></i>
                 <i
+                  style={{ color: isLargeGrid ? '#22c2b7' : '' }}
                   onClick={() => setIsLargeGrid(true)}
                   className='fa fa-th fa-2x'
                   aria-hidden='true'

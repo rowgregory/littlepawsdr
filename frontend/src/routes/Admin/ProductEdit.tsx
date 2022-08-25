@@ -1,12 +1,12 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Form, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import FormContainer from '../../components/FormContainer';
-import Message from '../../components/Message';
 import Loader from '../../components/Loader';
 import { getProductDetails, updateProduct } from '../../actions/productActions';
 import { PRODUCT_UPDATE_RESET } from '../../constants/productContstants';
 import {
+  LoadingImg,
   StyledUloadedImg,
   Text,
   UpdateBtn,
@@ -18,6 +18,21 @@ import { removePhoto } from '../../utils/removePhoto';
 import uploadFileHandler from '../../utils/uploadFileHandler';
 import { categories } from '../Shop/Shop';
 import { useRouteMatch, useHistory } from 'react-router-dom';
+import styled from 'styled-components';
+import {
+  Quantity,
+  SelectInput,
+  SelectInputContainer,
+  Size,
+} from '../../components/styles/product-details/Styles';
+import toaster from 'toasted-notes';
+import { ToastAlert } from '..';
+
+const SizeContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 3rem;
+`;
 
 const ProductEdit = () => {
   const match = useRouteMatch<{ id: string }>();
@@ -37,6 +52,8 @@ const ProductEdit = () => {
   const [showImageOptions, setShowImageOptions] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [submittedForm, setSubmittedForm] = useState(false);
+  const [productSizes, setProductSizes] = useState([]) as any;
+  const [doesProductHaveSizes, setDoesProductHaveSizes] = useState(false);
 
   const productDetails = useSelector((state: any) => state.productDetails);
   const { loading, error, product } = productDetails;
@@ -51,7 +68,7 @@ const ProductEdit = () => {
   const uploadDefaultImgUrl =
     'https://res.cloudinary.com/doyd0ewgk/image/upload/v1628374521/upload_2.png';
 
-  useMemo(() => {
+  useEffect(() => {
     dispatch(getProductDetails(productId));
   }, [dispatch, productId]);
 
@@ -72,21 +89,69 @@ const ProductEdit = () => {
       setDescription(product?.description);
       setPublicId(product?.publicId);
       setisLimitedProduct(product?.isLimitedProduct);
+      setProductSizes(product?.sizes);
     }
   }, [dispatch, history, product, productId, submittedForm, successUpdate]);
+
+  useEffect(() => {
+    product?.sizes?.length >= 1 && setDoesProductHaveSizes(true);
+    product?.sizes?.length === 0 && setDoesProductHaveSizes(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [product]);
+
+  let sizeIsGone = useRef(null) as any;
+
+  useEffect(() => {
+    if (product) {
+      sizeIsGone.current = product?.sizes?.every(
+        (obj: any) => obj.amount === 0
+      );
+      if (sizeIsGone.current) {
+        setDoesProductHaveSizes(false);
+        setProductSizes([]);
+      }
+    }
+  }, [product]);
+
+  useEffect(() => {
+    if (error || errorUpdate || errorMsg) {
+      toaster.notify(
+        ({ onClose }) =>
+          ToastAlert(error || errorUpdate || errorMsg, onClose, 'error'),
+        {
+          position: 'bottom',
+          duration: 20000,
+        }
+      );
+    }
+  }, [errorUpdate, errorMsg, error]);
 
   const productDataToUploadWithImg = {
     name,
     price,
     brand,
     category,
-    countInStock,
+    countInStock: productSizes?.length > 0 ? 0 : countInStock,
     description,
     isLimitedProduct,
+    sizes: productSizes,
   };
 
   const submitHandler = (e: any) => {
     e.preventDefault();
+
+    let weights = {
+      XS: 1,
+      S: 2,
+      M: 3,
+      L: 4,
+      XL: 5,
+      XXL: 6,
+    } as any;
+
+    let sortedSizes = productSizes?.sort(
+      (a: any, b: any) => weights[a?.size] - weights[b?.size]
+    );
 
     dispatch(
       updateProduct({
@@ -96,27 +161,51 @@ const ProductEdit = () => {
         brand,
         category,
         description,
-        countInStock,
+        countInStock: doesProductHaveSizes ? 0 : countInStock,
         image,
         publicId,
         isLimitedProduct,
+        sizes: sortedSizes,
       })
     );
     setSubmittedForm(true);
   };
 
-  return (
+  const sizes_v2 = () => [
+    { size: 'XS', amount: 1 },
+    { size: 'S', amount: 1 },
+    { size: 'M', amount: 1 },
+    { size: 'L', amount: 1 },
+    { size: 'XL', amount: 1 },
+    { size: 'XXL', amount: 1 },
+  ];
+
+  const chooseSizes = (obj: any) => {
+    if (
+      productSizes?.some((productSize: any) => productSize.size === obj?.size)
+    ) {
+      setProductSizes(productSizes?.filter((s: any) => s?.size !== obj?.size));
+    } else
+      setProductSizes((prev: any) => [
+        ...prev,
+        { size: obj.size, amount: obj?.amount },
+      ]);
+  };
+
+  return error ? (
+    <></>
+  ) : (
     <>
-      <GoBackBtn to='/admin/productList' />
-      {errorMsg && <Message variant='danger'>No photo to remove</Message>}
+      <div onClick={() => setDoesProductHaveSizes(false)}>
+        <GoBackBtn to='/admin/productList' />
+      </div>
       <FormContainer>
-        {errorUpdate && <Message variant='danger'>{errorUpdate}</Message>}
-        {loading ? (
-          <Loader />
-        ) : error ? (
-          <Message variant='danger'>{error}</Message>
-        ) : (
-          <Form onSubmit={submitHandler}>
+        <Form onSubmit={submitHandler}>
+          {loading ? (
+            <div className='mb-5 mt-4'>
+              <LoadingImg h='2.5rem' w='100%' />
+            </div>
+          ) : (
             <Form.Group controlId='name'>
               <Form.Label>Name</Form.Label>
               <Form.Control
@@ -126,6 +215,12 @@ const ProductEdit = () => {
                 onChange={(e) => setName(e.target.value)}
               ></Form.Control>
             </Form.Group>
+          )}
+          {loading ? (
+            <div className='mb-5'>
+              <LoadingImg h='2.5rem' w='100%' />
+            </div>
+          ) : (
             <Form.Group controlId='price'>
               <Form.Label>Price</Form.Label>
               <Form.Control
@@ -137,31 +232,116 @@ const ProductEdit = () => {
                 onChange={(e) => setPrice(parseFloat(e.target.value))}
               ></Form.Control>
             </Form.Group>
-            <Form.Group controlId='isLimitedProduct'>
-              <Form.Check
-                type='switch'
-                label='Is Limited Product'
-                checked={isLimitedProduct || false}
-                onChange={(e: any) => {
-                  setisLimitedProduct(e.target.checked);
-                }}
-              ></Form.Check>
-            </Form.Group>
-            {isLimitedProduct && (
+          )}
+          {loading ? (
+            <div className='mb-5'>
+              <LoadingImg h='2.5rem' w='100%' />
+            </div>
+          ) : (
+            !doesProductHaveSizes && (
               <Form.Group controlId='countInStock'>
                 <Form.Label>Count In Stock</Form.Label>
                 <Form.Control
                   min={0}
                   type='number'
                   placeholder='Enter count in stock'
-                  value={countInStock}
+                  value={countInStock || 0}
                   onChange={(e) => setCountInStock(parseInt(e.target.value))}
                 ></Form.Control>
               </Form.Group>
-            )}
+            )
+          )}
+          {loading ? (
+            <div className='mb-5'>
+              <LoadingImg h='2.5rem' w='3rem' />
+            </div>
+          ) : (
+            <Form.Group
+              controlId='doesProductHaveSizes'
+              className='d-flex align-items-center'
+            >
+              <Form.Check
+                type='switch'
+                checked={doesProductHaveSizes || false}
+                onChange={(e: any) => {
+                  setDoesProductHaveSizes(e.target.checked);
+                }}
+              ></Form.Check>
+              <Form.Label className='mb-0'>
+                Does this product have sizes?
+              </Form.Label>
+            </Form.Group>
+          )}
+          {doesProductHaveSizes && (
+            <Form.Group className='d-flex flex-column' controlId='chooseSizes'>
+              <Form.Label>Choose which sizes you want.</Form.Label>
+              <SizeContainer>
+                {sizes_v2().map((s, i) => (
+                  <div key={i} className='d-flex'>
+                    <Size
+                      style={{
+                        height: '3.75rem',
+                        width: '81.77px',
+                        margin: '0 1rem 0.5rem 0',
+                      }}
+                      active={productSizes?.some(
+                        (productSize: any) => productSize?.size === s?.size
+                      )}
+                      onClick={() => chooseSizes(s)}
+                      key={i}
+                    >
+                      {s?.size}
+                    </Size>
+                    {productSizes?.some(
+                      (productSize: any) => productSize?.size === s?.size
+                    ) && (
+                      <SelectInputContainer
+                        style={{
+                          width: '84px',
+                          border: 0,
+                        }}
+                      >
+                        <Quantity>QTY</Quantity>
+
+                        <SelectInput
+                          value={
+                            productSizes?.filter(
+                              (productSize: any) =>
+                                productSize?.size === s?.size
+                            )[0].amount
+                          }
+                          as='select'
+                          onChange={(e: any) => {
+                            setProductSizes(
+                              productSizes?.map((item: any) =>
+                                item?.size === s?.size
+                                  ? { ...item, amount: +e.target.value }
+                                  : item
+                              )
+                            );
+                          }}
+                        >
+                          {[...Array(20).keys()].map((x, i) => (
+                            <option key={i} value={x + 1}>
+                              {i + 1}
+                            </option>
+                          ))}
+                        </SelectInput>
+                      </SelectInputContainer>
+                    )}
+                  </div>
+                ))}
+              </SizeContainer>
+            </Form.Group>
+          )}
+          {loading ? (
+            <div className='mb-5 d-flex justify-content-center'>
+              <LoadingImg h='200px' w='200px' borderRadius='50%' />
+            </div>
+          ) : (
             <Form.Group controlId='image' className='d-flex flex-column'>
               <Form.Label>Product image</Form.Label>
-              <div className='mx-auto'>
+              <div className='mx-auto' style={{ position: 'relative' }}>
                 <Form.Control
                   required={isLimitedProduct}
                   className='img-link'
@@ -180,7 +360,7 @@ const ProductEdit = () => {
                     h='200px'
                     p='absolute'
                     z='1'
-                    top='-200px'
+                    top='0px'
                     left='0px'
                   />
                 )}
@@ -238,6 +418,12 @@ const ProductEdit = () => {
                 </div>
               </div>
             </Form.Group>
+          )}
+          {loading ? (
+            <div className='mb-5'>
+              <LoadingImg h='2.5rem' w='100%' />
+            </div>
+          ) : (
             <Form.Group controlId='brand'>
               <Form.Label>Brand</Form.Label>
               <Form.Control
@@ -247,7 +433,13 @@ const ProductEdit = () => {
                 onChange={(e) => setBrand(e.target.value)}
               ></Form.Control>
             </Form.Group>
+          )}
 
+          {loading ? (
+            <div className='mb-5'>
+              <LoadingImg h='2.5rem' w='100%' />
+            </div>
+          ) : (
             <Form.Group controlId='category'>
               <Form.Label>Category</Form.Label>
               <Form.Control
@@ -260,15 +452,28 @@ const ProductEdit = () => {
                 ))}
               </Form.Control>
             </Form.Group>
+          )}
+          {loading ? (
+            <div className='mb-5'>
+              <LoadingImg h='7rem' w='100%' />
+            </div>
+          ) : (
             <Form.Group controlId='description'>
-              <Form.Label>Description</Form.Label>
+              <Form.Label>
+                Enter description separated by a pipe ( | )
+              </Form.Label>
               <Form.Control
-                type='text'
-                placeholder='Enter description'
+                as='textarea'
+                rows={6}
+                placeholder='i.e. Comfortable|Stylish|Attractive'
                 value={description || ''}
                 onChange={(e) => setDescription(e.target.value)}
               ></Form.Control>
             </Form.Group>
+          )}
+          {loading ? (
+            <LoadingImg h='2.5rem' w='5rem' borderRadius='0.5rem' />
+          ) : (
             <UpdateBtn type='submit'>
               {loadingUpdate ? (
                 <div className='d-flex align-items-center'>
@@ -285,8 +490,8 @@ const ProductEdit = () => {
                 <Text className='text-white'>Update</Text>
               )}
             </UpdateBtn>
-          </Form>
-        )}
+          )}
+        </Form>
       </FormContainer>
     </>
   );

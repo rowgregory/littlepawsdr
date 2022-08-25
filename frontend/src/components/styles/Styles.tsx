@@ -1,12 +1,10 @@
 import styled, { keyframes } from 'styled-components';
 import { Button, Card, Carousel, Image } from 'react-bootstrap';
+import { FC } from 'react';
 
 export const PageLayout = styled.div`
   width: 100%;
-  max-width: 1837px;
-  margin: 0 auto 2rem;
   overflow-x: hidden;
-  padding: 2rem 0;
 `;
 
 export const LayoutWrapper = styled.div`
@@ -26,7 +24,7 @@ export const AdminPageLayout = styled.div`
   margin-top: 1.5rem;
 
   @media (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    padding: 3rem 0;
+    padding: 0;
     flex-direction: column;
   }
 `;
@@ -60,10 +58,8 @@ export const StyledCard = styled(Card)`
 `;
 
 export const CardTitle = styled(Card.Title)`
-  font-size: 1.25rem;
-  font-family: 'Duru Sans';
+  font-size: 1.15rem;
   margin: 0;
-  padding-bottom: 0.25rem;
   color: ${({ theme }) => theme.card.text};
   font-weight: bold;
 `;
@@ -71,6 +67,13 @@ export const CardTitle = styled(Card.Title)`
 export const StyledCarousel = styled(Carousel)`
   background: ${({ theme }) => theme.card.bg};
   border: 1px solid ${({ theme }) => theme.input.border};
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 1/1;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    width: 425px;
+    height: 425px;
+  }
 `;
 
 export const TableBody = styled.tbody`
@@ -101,11 +104,23 @@ export const TableBody = styled.tbody`
 `;
 
 export const StyledEditBtn = styled(Button)`
-  background: ${({ theme }) => theme.colors.primary};
+  background: transparent;
+  border-radius: 50%;
   border: none;
-  :hover {
-    background: ${({ theme }) => theme.colors.primary};
-    filter: brightness(1.1);
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  i {
+    color: ${({ theme }) => theme.colors.primary};
+  }
+  :hover,
+  :active,
+  :focus {
+    background: ${({ theme }) => theme.separator} !important;
+    border: none !important;
+    box-shadow: none !important;
   }
 `;
 
@@ -132,16 +147,18 @@ interface TextProps {
   width?: string;
   letterSpacing?: string;
   textIndent?: string;
+  border?: string;
+  borderBottom?: string;
+  lineHeight?: string;
 }
 
 export const Text = styled.div<TextProps>`
-  font-size: ${({ fontSize }) => (fontSize ? fontSize : '1rem')};
+  font-size: ${({ fontSize }) => (fontSize ? fontSize : '0.875rem')};
   margin-bottom: ${({ marginBottom }) => (marginBottom ? marginBottom : '0')};
   margin-left: ${({ marginLeft }) => (marginLeft ? marginLeft : '0')};
   margin-right: ${({ marginRight }) => (marginRight ? marginRight : '0')};
   font-weight: ${({ fontWeight }) => (fontWeight ? fontWeight : 300)};
-  font-family: ${({ fontFamily }) =>
-    fontFamily ? fontFamily : `'Libre Franklin', sans-serif`};
+  font-family: ${({ fontFamily }) => (fontFamily ? fontFamily : `Duru Sans`)};
   color: ${({ theme, color }) => (color ? color : theme.text)};
   text-align: ${({ textAlign }) => (textAlign ? textAlign : '')};
   padding: ${({ p }) => (p ? p : '')};
@@ -151,6 +168,9 @@ export const Text = styled.div<TextProps>`
   letter-spacing: ${({ letterSpacing }) =>
     letterSpacing ? letterSpacing : ''};
   text-indent: ${({ textIndent }) => (textIndent ? textIndent : '')};
+  border: ${({ border }) => (border ? border : '')};
+  border-bottom: ${({ borderBottom }) => (borderBottom ? borderBottom : '')};
+  line-height: ${({ lineHeight }) => (lineHeight ? lineHeight : '')};
 `;
 
 export const SettingsPageHeader = styled.h4`
@@ -180,9 +200,16 @@ export const Shimmer = keyframes`
   100% { background-position: 0% 0%; }
 `;
 
-const LoadingContainer = styled.div<{ h: string; w: string }>`
+const LoadingContainer = styled.div<{
+  h: string;
+  w: string;
+  mw: string;
+  borderRadius?: string;
+}>`
   height: ${({ h }) => h};
   width: ${({ w }) => w};
+  max-width: ${({ mw }) => (mw ? mw : '')};
+  border-radius: ${({ borderRadius }) => (borderRadius ? borderRadius : '')};
   border: none;
   position: relative;
   animation: ${Shimmer} 1500ms infinite;
@@ -196,8 +223,73 @@ const LoadingContainer = styled.div<{ h: string; w: string }>`
     ${theme.loading.one} 65%,
     ${theme.loading.one} 100%
   );`};
+  aspect-ratio: 1/1;
 `;
 
-export const LoadingImg = ({ h, w }: any) => {
-  return <LoadingContainer h={h} w={w} />;
+interface LoadingImmProps {
+  h?: any;
+  w?: any;
+  mw?: any;
+  borderRadius?: any;
+}
+
+export const LoadingImg: FC<LoadingImmProps> = ({ h, w, mw, borderRadius }) => {
+  return <LoadingContainer h={h} w={w} mw={mw} borderRadius={borderRadius} />;
 };
+
+export const JumboAndWaveContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+`;
+
+export const Jumbo = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem 1rem;
+  border-radius: 0;
+  width: 100%;
+  max-width: ${({ theme }) => theme.breakpoints[3]};
+  background: ${({ theme }) => theme.colors.tertiary};
+  margin: 0rem;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    border-radius: 1.25rem;
+    padding: 3rem 3.7rem;
+    margin: 2rem;
+    flex-direction: column;
+  }
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+    flex-direction: column;
+  }
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
+    flex-direction: row;
+  }
+`;
+
+export const TitleAndIntroTextContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    margin-right: 3rem;
+  }
+`;
+
+export const IntroText = styled.div`
+  font-family: 'Duru Sans';
+  font-size: 1rem;
+  color: #fff;
+  flex: 1;
+  margin-bottom: 1.5rem;
+`;
+export const Title = styled.div`
+  font-family: 'Duru Sans';
+  font-size: 2rem;
+  color: #fff;
+  margin-bottom: 1rem;
+  text-align: center;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    text-align: start;
+  }
+`;

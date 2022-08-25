@@ -9,14 +9,14 @@ const PageTitle = styled.div`
   font-size: 1rem;
   font-family: Trade Gothic, sans-serif;
   padding: 0.5rem 48px;
-  background: ${({ theme }) => theme.colors.tertiary};
+  background: ${({ theme }) => theme.colors.secondary};
   color: ${({ theme }) => theme.text};
 `;
 
 const Breadcrumb = styled.div`
   width: fit-content;
   font-size: 0.875rem;
-  .shop {
+  a {
     cursor: pointer;
     color: #fff;
     padding: 0.5rem;
@@ -25,9 +25,6 @@ const Breadcrumb = styled.div`
       border: 1px dashed #fff;
     }
     text-decoration: none;
-  }
-  .crumb-1 {
-    color: #fff;
   }
 `;
 
@@ -39,9 +36,7 @@ const ShopRoutes: FC = () => {
       breadcrumb={
         <PageTitle>
           <Breadcrumb>
-            <Link to='/shop' className='shop'>
-              LPDR Shop
-            </Link>
+            <Link to='/shop'>LPDR Shop</Link>
           </Breadcrumb>
         </PageTitle>
       }

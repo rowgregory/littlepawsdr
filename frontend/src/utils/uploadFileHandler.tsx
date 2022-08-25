@@ -1,5 +1,6 @@
 import axios from 'axios';
 import Compressor from 'compressorjs';
+import heic2any from 'heic2any';
 
 const uploadFileHandler = async (
   e: any,
@@ -52,143 +53,289 @@ const uploadFileHandler = async (
       }
     }
 
-    const file = e.target.files[0];
+    let file = e.target.files[0];
 
-    new Compressor(file, {
-      quality: 0.6,
-      async success(res) {
-        const formData = new FormData();
-        formData.append('image', res);
+    if (file.type === 'image/heic') {
+      heic2any({ blob: file, toType: 'image/jpg', quality: 1 }).then(
+        async (newImage: any) => {
+          file = newImage;
 
-        const { data } = await axios.post('/upload', formData, config);
+          new Compressor(file, {
+            quality: 0.6,
+            async success(res) {
+              const formData = new FormData();
+              formData.append('image', file);
 
-        if (data.msg === 'Upload cancelled') {
-          return setUploading(false);
-        } else if (data.msg === 'Please upload a photo first') {
-          return setErrorMsg(data.msg);
+              const { data } = await axios.post('/upload', formData, config);
+
+              if (data.msg === 'Upload cancelled') {
+                return setUploading(false);
+              } else if (data.msg === 'Please upload a photo first') {
+                return setErrorMsg(data.msg);
+              }
+
+              if (currentPage === 'profile') {
+                setAvatar(data?.secure_url);
+              } else {
+                setImage(data?.secure_url);
+              }
+
+              setPublicId(data?.public_id);
+              setUploading(false);
+              setShowImageOptions(false);
+
+              switch (currentPage) {
+                case 'profile':
+                  const {
+                    name: username,
+                    volunteerTitle,
+                    volunteerEmail,
+                    profileCardTheme,
+                  } = dataToUploadWithImg;
+                  return dispatch(
+                    update({
+                      _id: objectId, // user._id
+                      name: username,
+                      avatar: data.secure_url,
+                      volunteerTitle,
+                      volunteerEmail,
+                      profileCardTheme,
+                      publicId: data.public_id,
+                    })
+                  );
+                case 'e-card':
+                  const { category: eCardCategory, price: eCardPrice } =
+                    dataToUploadWithImg;
+                  return dispatch(
+                    update({
+                      _id: objectId,
+                      category: eCardCategory,
+                      image: data.secure_url,
+                      price: eCardPrice,
+                      publicId: data.public_id,
+                    })
+                  );
+                case 'product':
+                  const {
+                    name: productName,
+                    price: productPrice,
+                    brand,
+                    category: productCategory,
+                    countInStock,
+                    description,
+                    sizes,
+                  } = dataToUploadWithImg;
+                  return dispatch(
+                    update({
+                      _id: objectId,
+                      name: productName,
+                      price: productPrice,
+                      brand,
+                      category: productCategory,
+                      description,
+                      countInStock,
+                      image: data.secure_url,
+                      publicId: data.public_id,
+                      sizes,
+                    })
+                  );
+                case 'event':
+                  const {
+                    title,
+                    description: eventDescription,
+                    background,
+                    color,
+                    startDate,
+                    endDate,
+                    status,
+                  } = dataToUploadWithImg;
+                  return dispatch(
+                    update({
+                      _id: objectId,
+                      title,
+                      description: eventDescription,
+                      startDate,
+                      endDate,
+                      image: data.secure_url,
+                      background,
+                      color,
+                      status,
+                      publicId: data.public_id,
+                    })
+                  );
+                case 'raffle-winner':
+                  const {
+                    name: raffleWinnerName,
+                    message,
+                    month,
+                  } = dataToUploadWithImg;
+                  return dispatch(
+                    update({
+                      _id: objectId,
+                      name: raffleWinnerName,
+                      image: data.secure_url,
+                      publicId: data.public_id,
+                      month,
+                      message,
+                    })
+                  );
+                case 'blog':
+                  const { title: blogTitle, article } = dataToUploadWithImg;
+                  return dispatch(
+                    update({
+                      _id: objectId,
+                      title: blogTitle,
+                      article,
+                      image: data.secure_url,
+                      publicId: data.public_id,
+                    })
+                  );
+                default:
+                  return;
+              }
+            },
+          });
         }
+      );
+    } else {
+      new Compressor(file, {
+        quality: 0.6,
+        async success(res) {
+          const formData = new FormData();
+          formData.append('image', file);
 
-        if (currentPage === 'profile') {
-          setAvatar(data?.secure_url);
-        } else {
-          setImage(data?.secure_url);
-        }
+          const { data } = await axios.post('/upload', formData, config);
 
-        setPublicId(data?.public_id);
-        setUploading(false);
-        setShowImageOptions(false);
+          if (data.msg === 'Upload cancelled') {
+            return setUploading(false);
+          } else if (data.msg === 'Please upload a photo first') {
+            return setErrorMsg(data.msg);
+          }
 
-        switch (currentPage) {
-          case 'profile':
-            const {
-              name: username,
-              volunteerTitle,
-              volunteerEmail,
-              profileCardTheme,
-            } = dataToUploadWithImg;
-            return dispatch(
-              update({
-                _id: objectId, // user._id
+          if (currentPage === 'profile') {
+            setAvatar(data?.secure_url);
+          } else {
+            setImage(data?.secure_url);
+          }
+
+          setPublicId(data?.public_id);
+          setUploading(false);
+          setShowImageOptions(false);
+
+          switch (currentPage) {
+            case 'profile':
+              const {
                 name: username,
-                avatar: data.secure_url,
                 volunteerTitle,
                 volunteerEmail,
                 profileCardTheme,
-                publicId: data.public_id,
-              })
-            );
-          case 'e-card':
-            const { category: eCardCategory, price: eCardPrice } =
-              dataToUploadWithImg;
-            return dispatch(
-              update({
-                _id: objectId,
-                category: eCardCategory,
-                image: data.secure_url,
-                price: eCardPrice,
-                publicId: data.public_id,
-              })
-            );
-          case 'product':
-            const {
-              name: productName,
-              price: productPrice,
-              brand,
-              category: productCategory,
-              countInStock,
-              description,
-            } = dataToUploadWithImg;
-            return dispatch(
-              update({
-                _id: objectId,
+              } = dataToUploadWithImg;
+              return dispatch(
+                update({
+                  _id: objectId, // user._id
+                  name: username,
+                  avatar: data.secure_url,
+                  volunteerTitle,
+                  volunteerEmail,
+                  profileCardTheme,
+                  publicId: data.public_id,
+                })
+              );
+            case 'e-card':
+              const { category: eCardCategory, price: eCardPrice } =
+                dataToUploadWithImg;
+              return dispatch(
+                update({
+                  _id: objectId,
+                  category: eCardCategory,
+                  image: data.secure_url,
+                  price: eCardPrice,
+                  publicId: data.public_id,
+                })
+              );
+            case 'product':
+              const {
                 name: productName,
                 price: productPrice,
                 brand,
                 category: productCategory,
-                description,
                 countInStock,
-                image: data.secure_url,
-                publicId: data.public_id,
-              })
-            );
-          case 'event':
-            const {
-              title,
-              description: eventDescription,
-              background,
-              color,
-              startDate,
-              endDate,
-              status,
-            } = dataToUploadWithImg;
-            return dispatch(
-              update({
-                _id: objectId,
+                description,
+                sizes,
+              } = dataToUploadWithImg;
+              return dispatch(
+                update({
+                  _id: objectId,
+                  name: productName,
+                  price: productPrice,
+                  brand,
+                  category: productCategory,
+                  description,
+                  countInStock,
+                  image: data.secure_url,
+                  publicId: data.public_id,
+                  sizes,
+                })
+              );
+            case 'event':
+              const {
                 title,
                 description: eventDescription,
-                startDate,
-                endDate,
-                image: data.secure_url,
                 background,
                 color,
+                startDate,
+                endDate,
                 status,
-                publicId: data.public_id,
-              })
-            );
-          case 'raffle-winner':
-            const {
-              name: raffleWinnerName,
-              message,
-              month,
-            } = dataToUploadWithImg;
-            return dispatch(
-              update({
-                _id: objectId,
+              } = dataToUploadWithImg;
+              return dispatch(
+                update({
+                  _id: objectId,
+                  title,
+                  description: eventDescription,
+                  startDate,
+                  endDate,
+                  image: data.secure_url,
+                  background,
+                  color,
+                  status,
+                  publicId: data.public_id,
+                })
+              );
+            case 'raffle-winner':
+              const {
                 name: raffleWinnerName,
-                image: data.secure_url,
-                publicId: data.public_id,
-                month,
                 message,
-              })
-            );
-          case 'blog':
-            const { title: blogTitle, article } = dataToUploadWithImg;
-            return dispatch(
-              update({
-                _id: objectId,
-                title: blogTitle,
-                article,
-                image: data.secure_url,
-                publicId: data.public_id,
-              })
-            );
-          default:
-            return;
-        }
-      },
-    });
+                month,
+              } = dataToUploadWithImg;
+              return dispatch(
+                update({
+                  _id: objectId,
+                  name: raffleWinnerName,
+                  image: data.secure_url,
+                  publicId: data.public_id,
+                  month,
+                  message,
+                })
+              );
+            case 'blog':
+              const { title: blogTitle, article } = dataToUploadWithImg;
+              return dispatch(
+                update({
+                  _id: objectId,
+                  title: blogTitle,
+                  article,
+                  image: data.secure_url,
+                  publicId: data.public_id,
+                })
+              );
+            default:
+              return;
+          }
+        },
+      });
+    }
   } catch (err) {
-    console.error(err);
+    console.error('err: ', err);
     setUploading(false);
   }
 };

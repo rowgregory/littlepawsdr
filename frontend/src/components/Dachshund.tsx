@@ -11,10 +11,10 @@ const DachshundCard = styled(Card)`
   border: none;
   transition: box-shadow 500ms ease;
   padding: 0;
-  background-color: ${({ theme }) => theme.secondaryBg};
+  background-color: #fff;
   height: 100%;
   img.dog {
-    max-height: 375px;
+    aspect-ratio: 1/1;
     width: 100%;
     object-fit: cover;
   }
@@ -25,7 +25,8 @@ const StyledCarousel = styled(Carousel)`
 `;
 
 const CardHeader = styled.div`
-  background: ${({ theme }) => theme.colors.primary};
+  padding: 1.25rem;
+  border-bottom: 1px solid ${({ theme }) => theme.separator};
 `;
 
 const CarouselItem = styled(Carousel.Item)`
@@ -36,17 +37,19 @@ const CarouselItem = styled(Carousel.Item)`
 `;
 
 const ShowMoreLink = styled(Link)`
-  background: ${({ theme }) => theme.smcontainer.bg};
-  color: ${({ theme }) => theme.white};
-  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: ${({ theme }) => theme.colors.secondary};
   letter-spacing: 0.5px;
+  margin: 0 auto;
+  width: fit-content;
+  padding: 0.5rem 1rem;
+  border: 2px solid ${({ theme }) => theme.colors.secondary};
   transition: 300ms;
-  position: absolute;
-  width: 90%;
-  margin: 0;
-  bottom: 0;
   :hover {
-    background: ${({ theme }) => theme.smcontainer.hoverBg};
+    text-decoration: none;
+    background: ${({ theme }) => theme.colors.secondary};
     color: ${({ theme }) => theme.white};
   }
 `;
@@ -71,7 +74,12 @@ const Dachshund = ({ dachshund }: any) => {
           <StyledCarousel pause='hover' className='p-3'>
             {dachshund?.attributes?.photos?.map((senior: string, i: number) => (
               <CarouselItem key={i}>
-                <Image src={senior} alt={`available-lpdr-${i}`} width='100%' />
+                <Image
+                  loading='lazy'
+                  src={senior}
+                  alt={`available-lpdr-${i}`}
+                  width='100%'
+                />
               </CarouselItem>
             ))}
           </StyledCarousel>
@@ -88,67 +96,21 @@ const Dachshund = ({ dachshund }: any) => {
           fluid
         />
 
-        <Card.Body
-          className='d-flex flex-column justify-content-start p-0'
-          style={{ height: '350px' }}
-        >
-          <CardHeader className='p-3'>
-            <Text
-              color='#fff'
-              fontSize='1.5rem'
-              className='d-flex align-items-center justify-content-center'
-              marginBottom='0.8rem'
-              fontFamily={`Duru Sans`}
-            >
+        <Card.Body className='d-flex flex-column justify-content-start p-0'>
+          <CardHeader>
+            <Text fontSize='1.25rem' letterSpacing='-1px' fontWeight='300'>
               {dachshund?.attributes?.name}
-              <Image src={Paw} alt='paw' width='20px' className='ml-2' />
             </Text>
-            <Card.Text as='div' className='mb-3'>
-              <Text color='#fff' fontSize='0.8rem'>
+            <Card.Text as='div'>
+              <Text fontSize='0.8rem' fontWeight='200'>
                 {dachshund?.attributes?.sex} {dachshund?.attributes?.ageGroup}{' '}
-              </Text>{' '}
-              <Text fontSize='0.8rem' color='#fff'>
                 {dachshund?.attributes?.breedString}
               </Text>
             </Card.Text>
           </CardHeader>
           <div className='p-3'>
-            <Card.Text as='div'>
-              <Text>Please only apply for me if:</Text>{' '}
-              <ul>
-                <Text>
-                  {dachshund?.attributes?.isYardRequired && (
-                    <li>you have a yard</li>
-                  )}
-                </Text>
-
-                <Text>
-                  {!dachshund?.attributes?.isKidsOk && (
-                    <li>you do not have kids</li>
-                  )}
-                </Text>
-                <Text>
-                  {!dachshund?.attributes?.isDogsOk && (
-                    <li>you do not have other dogs</li>
-                  )}
-                </Text>
-                <Text>
-                  {!dachshund?.attributes?.isCatsOk && (
-                    <li>you do not have cats</li>
-                  )}
-                </Text>
-                <Text>
-                  {!dachshund?.attributes?.isHousetrained && (
-                    <li>you're okay with me not being house trained</li>
-                  )}
-                </Text>
-              </ul>
-            </Card.Text>
-            <ShowMoreLink
-              to={`/available/dogs/${dachshund?.id}`}
-              className='btn btn-md my-3 border-0'
-            >
-              SHOW MORE
+            <ShowMoreLink to={`/available/dogs/${dachshund?.id}`}>
+              ADOPT
             </ShowMoreLink>
           </div>
         </Card.Body>
