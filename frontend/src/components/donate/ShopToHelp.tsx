@@ -93,15 +93,10 @@ export const PetMedsIGiveHorizontalLine = styled(HorizontalLine)`
 const ShopToHelp = () => {
   return (
     <>
-      <Text
-        textAlign='center'
-        fontSize='1.5rem'
-        fontFamily='Duru Sans'
-        marginBottom='1rem'
-      >
+      <Text textAlign='center' fontSize='1.5rem' marginBottom='1rem'>
         You can also SHOP to HELP!
       </Text>
-      <Text fontFamily='Duru Sans'>
+      <Text>
         We fundraise with partnerships with Amazon, Ebay, and other dog-loving
         organizations. A few times a year we hold our popular, seasonal
         auctions. Check out ways that you can shop and help keep our fosters’
@@ -124,7 +119,7 @@ const ShopToHelp = () => {
           }}
         />
       </div>
-      <Text fontFamily='Duru Sans'>
+      <Text>
         Would you rather donate items instead of money? LPDR maintains an Amazon
         Wish List for any basic needs such as leashes, harnesses, collars,
         treats, etc. Simply select the item that you would like to donate and
@@ -147,13 +142,13 @@ const ShopToHelp = () => {
           }}
         />
       </div>
-      <Text fontFamily='Duru Sans'>
+      <Text>
         We are thankful to be part of the Chewy.com Shelter & Rescue Network.
         That means using the link below will get NEW customers who use it a
         donation of $20 for LPDR!
       </Text>
       <br />
-      <Text fontFamily='Duru Sans'>
+      <Text>
         Shopping to get your pet their monthly food, treats and toys will help
         LPDR help dogs!
       </Text>

@@ -15,6 +15,8 @@ import GreenCheckmark from '../components/svg/GreenCheckmark';
 import { HorizontalLine } from '../components/styles/product-details/Styles';
 import Message from '../components/Message';
 import { ECARD_ORDER_CREATE_RESET } from '../constants/eCardOrderContants';
+import toaster from 'toasted-notes';
+import { ToastAlert } from '../components/common/ToastAlert';
 
 const Container = styled.div`
   background: ${({ theme }) => theme.bg};
@@ -36,10 +38,18 @@ const ECardOrderReceipt = () => {
     dispatch({ type: ECARD_ORDER_CREATE_RESET });
   }, [dispatch, eCardOrderId]);
 
+  useEffect(() => {
+    if (error) {
+      toaster.notify(({ onClose }) => ToastAlert(error, onClose, 'error'), {
+        position: 'bottom',
+        duration: 20000,
+      });
+    }
+  }, [error]);
+
   return (
     <Container>
       <Wrapper>
-        {error && <Message variant='danger'>{error}</Message>}
         {loading ? (
           <Spinner
             animation='border'

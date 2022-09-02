@@ -67,7 +67,7 @@ const PasswordMeter = ({ validations, strength }: any) => {
       <div className='d-flex align-items-start flex-column'>
         <Text fontSize='0.875rem'>
           {validations[0] ? (
-            <i className='fas fa-check' style={{ color: 'green' }}></i>
+            <i className='fas fa-check' style={{ color: '#77b300' }}></i>
           ) : (
             <i className='fas fa-times' style={{ color: 'red' }}></i>
           )}
@@ -76,7 +76,7 @@ const PasswordMeter = ({ validations, strength }: any) => {
         <Text fontSize='0.875rem'>
           {' '}
           {validations[1] ? (
-            <i className='fas fa-check' style={{ color: 'green' }}></i>
+            <i className='fas fa-check' style={{ color: '#77b300' }}></i>
           ) : (
             <i className='fas fa-times' style={{ color: 'red' }}></i>
           )}
@@ -85,7 +85,7 @@ const PasswordMeter = ({ validations, strength }: any) => {
         <Text fontSize='0.875rem'>
           {' '}
           {validations[2] ? (
-            <i className='fas fa-check' style={{ color: 'green' }}></i>
+            <i className='fas fa-check' style={{ color: '#77b300' }}></i>
           ) : (
             <i className='fas fa-times' style={{ color: 'red' }}></i>
           )}
@@ -94,7 +94,7 @@ const PasswordMeter = ({ validations, strength }: any) => {
         <Text fontSize='0.875rem'>
           {' '}
           {validations[3] ? (
-            <i className='fas fa-check' style={{ color: 'green' }}></i>
+            <i className='fas fa-check' style={{ color: '#77b300' }}></i>
           ) : (
             <i className='fas fa-times' style={{ color: 'red' }}></i>
           )}

@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Text } from '../../components/styles/Styles';
 import MaskBtn from './MaskBtn';
 
 const Container = styled.div`
@@ -9,28 +8,36 @@ const Container = styled.div`
   margin: 0 auto;
   display: flex;
   justify-content: center;
-  padding: 5.3125rem 0;
+  padding: 5.3125rem 1rem;
 `;
 
 const ContentContainer = styled.div`
   max-width: 1300px;
   width: 100%;
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  justify-content: center;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+`;
+
+const CheckOutText = styled.div`
+  font-size: 2rem;
+  color: #d89253;
+  letter-spacing: -1.5px;
+  margin-bottom: 1rem;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    margin-bottom: 0;
+  }
 `;
 
 const Shop = () => {
   return (
     <Container>
       <ContentContainer>
-        <Text
-          fontSize='2rem'
-          fontFamily='Duru Sans'
-          color='#d89253'
-          letterSpacing='-2px'
-        >
-          Check out our latest products
-        </Text>
+        <CheckOutText>Check out our latest products</CheckOutText>
         <MaskBtn linkKey='/shop' textKey='LITTLE PAWS SHOP' />
       </ContentContainer>
     </Container>

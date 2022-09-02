@@ -18,6 +18,7 @@ import RaffleWinners from './RaffleWinners';
 import StatusDogList from './StatusDogList';
 import Blog from './Blog';
 import BlogDetails from './BlogDetails';
+import PageNotFound from '../../components/common/PageNotFound';
 
 const Container = styled.div`
   max-width: ${({ theme }) => theme.breakpoints[3]};
@@ -25,7 +26,7 @@ const Container = styled.div`
   margin-inline: auto;
   margin-bottom: 5rem;
   padding: 1rem;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[4]}) {
     margin-top: 5rem;
     padding: 0;
   }
@@ -110,11 +111,7 @@ const WhatWeBelieve = () => {
           <div key={i}>
             <div className='mb-2 d-flex align-items-center'>
               <PawPrint />
-              <Text
-                fontFamily={`'Duru Sans', sans-serif`}
-                fontSize='0.75rem'
-                marginLeft='0.5rem'
-              >
+              <Text fontSize='0.75rem' marginLeft='0.5rem'>
                 {state}
               </Text>
             </div>
@@ -181,6 +178,9 @@ const AboutUsRoutes: FC = () => {
         <Route path={`${path}/raffle-winners`} component={RaffleWinners} />
         <Route exact path={`${path}/blog`} component={Blog} />
         <Route path={`${path}/blog/:id`} component={BlogDetails} />
+        <Route>
+          <PageNotFound />
+        </Route>
       </Switch>
     </Container>
   );

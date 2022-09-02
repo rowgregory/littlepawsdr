@@ -46,7 +46,7 @@ const StyledFooter = styled.footer`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: ${({ theme }) => theme.colors.primary};
+  background: ${({ theme }) => theme.footer.bg};
   border-top: ${({ theme }) => `3px solid ${theme.smcontainer.bg}`};
   padding: 1rem;
 `;
@@ -100,7 +100,6 @@ const LinkSection = styled.div`
 const LinkCategory = styled.div`
   color: #fff;
   margin-bottom: 0.5rem;
-  font-family: 'Duru Sans';
   font-size: 1rem;
 `;
 
@@ -113,7 +112,6 @@ const StyledLink = styled(Link)`
     text-decoration: none;
     color: ${({ theme }) => theme.white};
   }
-  font-family: 'Duru Sans';
   letter-spacing: 0.06153846154em;
   line-height: 1.9230769231;
   font-weight: bold;
@@ -129,7 +127,6 @@ const StyledExternalLink = styled.div`
     text-decoration: none;
     color: ${({ theme }) => theme.white};
   }
-  font-family: 'Duru Sans';
   letter-spacing: 0.06153846154em;
   line-height: 1.9230769231;
   font-weight: bold;
@@ -138,7 +135,6 @@ const StyledExternalLink = styled.div`
 const StyledText = styled.div`
   color: ${({ theme }) => theme.footer.text};
   font-size: 0.75rem;
-  font-family: 'Duru Sans';
   letter-spacing: 0.06153846154em;
   line-height: 1.9230769231;
   font-weight: bold;
@@ -167,7 +163,6 @@ const Signature = styled.div`
     text-decoration: none;
     color: ${({ theme }) => theme.white};
   }
-  font-family: 'Duru Sans';
   letter-spacing: 0.06153846154em;
   line-height: 1.9230769231;
   font-weight: bold;

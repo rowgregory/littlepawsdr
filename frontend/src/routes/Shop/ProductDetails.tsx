@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Col, Image, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import toaster from 'toasted-notes';
-import { ToastAlert } from '..';
+import { ToastAlert } from '../../components/common/ToastAlert';
 import { addToCart } from '../../actions/cartActions';
 import { getPublicProductDetails } from '../../actions/productActions';
 import Message from '../../components/Message';
@@ -15,7 +15,8 @@ import {
   SelectInputContainer,
   ThirdColumnWrapper,
 } from '../../components/styles/product-details/Styles';
-import { LoadingImg, Text } from '../../components/styles/Styles';
+import { Text } from '../../components/styles/Styles';
+import { LoadingImg } from '../../components/LoadingImg';
 
 const ProductDetails = ({ match }: any) => {
   const productId = match.params.id;

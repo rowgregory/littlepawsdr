@@ -23,6 +23,7 @@ import eCardOrderRoutes from './routes/eCardOrderRoutes.js';
 import raffleWinnerRoutes from './routes/raffleWinnerRoutes.js';
 import blogRoutes from './routes/BlogRoutes.js';
 import educationTipRoutes from './routes/educationTipRoutes.js';
+import manuallyAddedUserRoutes from './routes/manuallyAddedUserRoutes.js';
 import cors from 'cors';
 import google from 'googleapis';
 import connectGmailOauth from './config/oauth.js';
@@ -155,9 +156,9 @@ export const send_mail = async (body, res, type, token) => {
           .status(400)
           .send({ message: `There was an error sending that email: ${err}` });
       } else {
-        res
-          .status(200)
-          .json({ message: `Reset password email sent to ${body.email}` });
+        res.status(200).json({
+          message: `An email has been sent if an account has been located.`,
+        });
       }
     });
   } else if (type === 'sendOrderConfirmationEmail') {
@@ -231,6 +232,7 @@ app.use('/api/ecard', eCardRoutes);
 app.use('/api/ecard-order', eCardOrderRoutes);
 app.use('/api/raffle-winner', raffleWinnerRoutes);
 app.use('/api/blog', blogRoutes);
+app.use('/api/manually-add-user', manuallyAddedUserRoutes);
 
 const PORT = process.env.PORT || 5000;
 

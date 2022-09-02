@@ -11,7 +11,6 @@ export const AnimatedBtn = styled(Link)`
   color: ${({ theme }) => theme.colors.primary};
   transition: 0.25s;
   width: fit-content;
-  font-family: Duru Sans;
   font-size: 1rem;
   text-decoration: none;
   :hover,

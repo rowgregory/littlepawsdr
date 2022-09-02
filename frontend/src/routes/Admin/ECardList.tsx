@@ -5,11 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import DeleteModal from '../../components/DeleteModal';
 import { createECard, listECards } from '../../actions/eCardActions';
 import { ECARD_CREATE_RESET } from '../../constants/eCardConstants';
-import {
-  LoadingImg,
-  StyledEditBtn,
-  Text,
-} from '../../components/styles/Styles';
+import { Text } from '../../components/styles/Styles';
 import { useHistory } from 'react-router-dom';
 import {
   CreateBtn,
@@ -17,10 +13,12 @@ import {
   TableHead,
   TableImg,
   TableRow,
+  StyledEditBtn,
 } from '../../components/styles/admin/Styles';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import toaster from 'toasted-notes';
-import { ToastAlert } from '..';
+import { ToastAlert } from '../../components/common/ToastAlert';
+import { LoadingImg } from '../../components/LoadingImg';
 
 const ECardList = () => {
   const history = useHistory();

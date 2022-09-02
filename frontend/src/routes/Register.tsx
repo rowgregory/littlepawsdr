@@ -1,30 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Spinner, Image, Col, Button } from 'react-bootstrap';
+import { Form, Spinner, Col, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   register,
   sendRegisterConfirmationEmail,
 } from '../actions/userActions';
 import { Text } from '../components/styles/Styles';
-import { Container, StyledLink, ThemeProps } from './Login';
+import { Container, FormContainer, StyledLink } from './Login';
 import HorizontalLoader from '../components/HorizontalLoader';
 import PasswordMeter from '../components/PasswordMeter';
 import {
   USER_REGISTER_RESET,
   USER_VERIFY_EMAIL_RESET,
 } from '../constants/userConstants';
-import DayLogo from '../components/assets/transparent-logo.png';
-import styled, { useTheme } from 'styled-components';
-import NightLogo from '../components/assets/neon-purple-logo.png';
+import styled from 'styled-components';
 import toaster from 'toasted-notes';
-import { ToastAlert } from './index';
-import { Link } from 'react-router-dom';
+import { ToastAlert } from '../components/common/ToastAlert';
 import { validateEmailRegex } from '../utils/regex';
-
-const FormContainer = styled.div`
-  background: ${({ theme }) => theme.bg};
-  border: 1px solid ${({ theme }) => theme.input.border};
-`;
 
 const LoginContainer = styled(Col)`
   color: ${({ theme }) => theme.text};
@@ -33,7 +25,6 @@ const LoginContainer = styled(Col)`
 `;
 
 const Register = () => {
-  const theme = useTheme() as ThemeProps;
   const dispatch = useDispatch();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -41,7 +32,6 @@ const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const isDay = theme.mode === 'day' ? true : false;
 
   const userRegister = useSelector((state: any) => state.userRegister);
   let {
@@ -152,29 +142,10 @@ const Register = () => {
   return (
     <Container>
       <div
-        className='mx-auto px-3'
+        className='mx-auto px-3  pt-4'
         style={{ maxWidth: '340px', width: '100%' }}
       >
-        <Link to='/'>
-          <Image
-            src={isDay ? DayLogo : NightLogo}
-            alt='Little Paws Dachshund Rescue'
-            width='150px'
-            style={{
-              objectFit: 'cover',
-              cursor: 'pointer',
-              marginInline: 'auto',
-              display: 'flex',
-              aspectRatio: '1/1',
-            }}
-          />
-        </Link>
-        <Text
-          letterSpacing='-1px'
-          fontSize='1.5rem'
-          textAlign='center'
-          marginBottom='0.65rem'
-        >
+        <Text fontSize='1.5rem' textAlign='center' marginBottom='0.65rem'>
           Welcome to Little Paws
         </Text>
         <div
@@ -187,10 +158,7 @@ const Register = () => {
         >
           {userRegisterLoading && <HorizontalLoader />}
         </div>
-        <FormContainer
-          className='p-3 mt-3'
-          style={{ background: '#f5f8fa', borderRadius: '0.4rem' }}
-        >
+        <FormContainer>
           <Form onSubmit={submitHandler}>
             <Form.Group controlId='name'>
               <Form.Label>Full Name</Form.Label>

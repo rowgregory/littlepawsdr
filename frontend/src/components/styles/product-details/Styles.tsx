@@ -44,8 +44,8 @@ export const SelectInputContainer = styled.div`
     padding: 1.5rem 2rem 1rem 1rem !important;
   }
   :hover {
-    border: 1px solid ${({ theme }) => theme.colors.purple05};
-    color: ${({ theme }) => theme.colors.purple05};
+    border: 1px solid ${({ theme }) => theme.colors.pink};
+    color: ${({ theme }) => theme.colors.pink};
   }
 `;
 
@@ -55,6 +55,9 @@ export const Quantity = styled.div`
   top: 9px;
   left: 16px;
   z-index: 6;
+  :hover {
+    color: ${({ theme }) => theme.colors.pink};
+  }
 `;
 
 export const SelectInput = styled(Form.Control)`
@@ -72,6 +75,7 @@ export const SelectInput = styled(Form.Control)`
   border: 1px solid ${({ theme }) => theme.input.bg} !important;
   :hover {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    color: ${({ theme }) => theme.colors.pink} !important;
   }
 `;
 

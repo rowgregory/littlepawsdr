@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Col, Row, Form, Button, Modal } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import Message from '../Message';
 import { createNewsletterEmail } from '../../actions/newsletterActions';
 import styled from 'styled-components';
 import { Text } from '../../components/styles/Styles';
 import Checkmark from '../svg/Checkmark';
 import HorizontalLoader from '../HorizontalLoader';
 import { NEWSLETTER_EMAIL_CREATE_RESET } from '../../constants/newsletterConstants';
+import toaster from 'toasted-notes';
+import { ToastAlert } from './ToastAlert';
 
 const StyledModal = styled(Modal)`
   background: rgba(0, 0, 0, 0.7) !important;
@@ -113,6 +114,15 @@ const PopUp = () => {
     }
   }, [dispatch, success]);
 
+  useEffect(() => {
+    if (error) {
+      toaster.notify(({ onClose }) => ToastAlert(error, onClose, 'error'), {
+        position: 'bottom',
+        duration: 20000,
+      });
+    }
+  }, [error]);
+
   const showPopup = ![continuedSession, hasSubmittedNewsletterEmail].includes(
     true
   );
@@ -133,7 +143,6 @@ const PopUp = () => {
                 fundraisers and events!
               </Text>
               {loading && <HorizontalLoader />}
-              {error && <Message variant='danger'>{error}</Message>}
               <Form
                 onSubmit={submitHandler}
                 className='d-flex w-100 justify-content-center'

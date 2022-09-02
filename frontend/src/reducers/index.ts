@@ -107,6 +107,13 @@ import {
   guestOrderListReducer,
   guestOrderShipReducer,
 } from './guestOrderReducer';
+import {
+  manuallyAddUserCreateReducer,
+  manuallyAddUserDeleteReducer,
+  manuallyAddUserDetailsReducer,
+  manuallyAddUserListReducer,
+  manuallyAddUserUpdateReducer,
+} from './manuallyAddUserReducer';
 
 const allReducers = combineReducers({
   dachshunds: dachshundListReducer,
@@ -189,6 +196,11 @@ const allReducers = combineReducers({
   guestOrderCreate: guestOrderCreateReducer,
   guestOrderList: guestOrderListReducer,
   guestOrderShip: guestOrderShipReducer,
+  manuallyAddedUserList: manuallyAddUserListReducer,
+  manuallyAddedUserCreate: manuallyAddUserCreateReducer,
+  manuallyAddedUserUpdate: manuallyAddUserUpdateReducer,
+  manuallyAddedUserDelete: manuallyAddUserDeleteReducer,
+  manuallyAddedUserDetails: manuallyAddUserDetailsReducer,
 });
 
 export default allReducers;

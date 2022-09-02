@@ -10,11 +10,11 @@ export const base = {
 export const colors = {
   night: {
     colors: {
-      primary: '#19647E',
+      primary: '#179fcd',
       secondary: '#00acb5',
       tertiary: '#4B3F72',
-      quaternary: '#FFC857',
-      quinary: '#1F2041',
+      quaternary: '#1F2041',
+      quinary: '#A117F2',
       senary: '#2c3748',
       // primary: '#77b300',
       // secondary: '#26a9df',
@@ -58,7 +58,8 @@ export const colors = {
       secondary: '#22c2b7',
       tertiary: '#2c2a3b',
       quaternary: '#8BBF9F',
-      quinary: '#d89253',
+      quinary: '#9d6ab0',
+      // quinary: '#d89253',
       senary: '#9a82b1',
       // primary: '#9a82b1',
       // secondary: '#22c2b7',
@@ -139,7 +140,7 @@ export const themes = {
         text: '#fff',
         hoverText: '#9a82b1',
         avatarHover: '#22c2b7',
-        avatarbg: '#1c1028',
+        avatarbg: '#e3e6ea',
         avatarText: '#333',
         underline: '#9a82b1',
         dropDown: {
@@ -191,7 +192,7 @@ export const themes = {
       },
       subscribeBtn: colors.day.colors.primary,
       subFooterBg: colors.day.colors.quaternary,
-      bg: colors.day.colors.quinary,
+      bg: colors.day.colors.primary,
       text: '#918f98',
     },
     home: {
@@ -236,7 +237,8 @@ export const themes = {
     },
     overlay: {
       content: '',
-      bg: '#3a2949',
+      bg: '#fff',
+      // bg: '#3a2949',
     },
     createBtn: {
       bg: colors.day.colors.primary,
@@ -265,8 +267,8 @@ export const themes = {
     black: '#000',
     separator: '#101315',
     header: {
-      bg: '#211e2f',
-      // bg: '#0e1117',
+      // bg: '#252526',
+      bg: '#0e1117',
       button: colors.night.colors.secondary,
       subNav: {
         bg: '',
@@ -277,8 +279,8 @@ export const themes = {
         text: '#cfcfcf',
         hoverText: '#161b23',
         avatarHover: '#36b1dc',
-        avatarbg: '#84ed71',
-        avatarText: '#090d10',
+        avatarbg: '#3a3b3c',
+        avatarText: '#ededed',
         underline: colors.night.colors.primary,
         dropDown: {
           bg: '#21262c',
@@ -371,7 +373,7 @@ export const themes = {
       two: '#10131a',
     },
     overlay: {
-      bg: '#161b23',
+      bg: '#0e1117',
     },
     createBtn: {
       bg: '#080a11',

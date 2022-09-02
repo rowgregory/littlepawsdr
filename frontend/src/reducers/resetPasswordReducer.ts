@@ -31,7 +31,7 @@ export const sendEmailReducer = (state = {}, action: any) => {
     case RESET_EMAIL_SEND_RESET:
       return {
         loading: false,
-        error: {},
+        error: '',
         success: false,
       };
     default:
@@ -48,7 +48,7 @@ export const verifyTokenReducer = (state = {}, action: any) => {
     case VERIFY_TOKEN_SUCCESS:
       return {
         loading: false,
-        user: action.payload,
+        result: action.payload,
       };
     case VERIFY_TOKEN_FAIL:
       return {

@@ -190,6 +190,22 @@ const uploadFileHandler = async (
                       publicId: data.public_id,
                     })
                   );
+                case 'manually-added-user':
+                  const {
+                    name: manuallyAddedUserName,
+                    affiliation,
+                    message: manuallyAddedUserMessage,
+                  } = dataToUploadWithImg;
+                  return dispatch(
+                    update({
+                      _id: objectId,
+                      name: manuallyAddedUserName,
+                      affiliation,
+                      message: manuallyAddedUserMessage,
+                      image: data.secure_url,
+                      publicId: data.public_id,
+                    })
+                  );
                 default:
                   return;
               }
@@ -324,6 +340,22 @@ const uploadFileHandler = async (
                   _id: objectId,
                   title: blogTitle,
                   article,
+                  image: data.secure_url,
+                  publicId: data.public_id,
+                })
+              );
+            case 'manually-added-user':
+              const {
+                name: manuallyAddedUserName,
+                affiliation,
+                message: manuallyAddedUserMessage,
+              } = dataToUploadWithImg;
+              return dispatch(
+                update({
+                  _id: objectId,
+                  name: manuallyAddedUserName,
+                  affiliation,
+                  message: manuallyAddedUserMessage,
                   image: data.secure_url,
                   publicId: data.public_id,
                 })

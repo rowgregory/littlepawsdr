@@ -7,9 +7,10 @@ import { USER_UPDATE_RESET } from '../../constants/userConstants';
 import GoBackBtn from '../../utils/GoBackBtn';
 import styled from 'styled-components';
 import { useHistory, useRouteMatch } from 'react-router-dom';
-import { LoadingImg, Text, UpdateBtn } from '../../components/styles/Styles';
+import { Text, UpdateBtn } from '../../components/styles/Styles';
 import toaster from 'toasted-notes';
-import { ToastAlert } from '..';
+import { ToastAlert } from '../../components/common/ToastAlert';
+import { LoadingImg } from '../../components/LoadingImg';
 
 const FormControl = styled(Form.Control)`
   :disabled {

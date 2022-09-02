@@ -1,17 +1,13 @@
 import React from 'react';
 import { Card } from 'react-bootstrap';
-import {
-  Text,
-  CardTitle,
-  StyledCard,
-  LoadingImg,
-} from '../../components/styles/Styles';
+import { Text, CardTitle, StyledCard } from '../../components/styles/Styles';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../../components/Message';
 import { useEffect } from 'react';
 import { listEducationTips } from '../../actions/educationTipActions';
 import NoItemsDefault from '../../components/common/NoItemsDefault';
 import styled from 'styled-components';
+import { LoadingImg } from '../../components/LoadingImg';
 
 const Path = styled.path`
   fill: ${({ theme }) => theme.text};
@@ -82,6 +78,9 @@ const Education = () => {
 
   return (
     <>
+      <Text fontSize='2rem' marginBottom='1rem'>
+        Education
+      </Text>
       {errorEducationTips ? (
         <Message variant='danger'>{errorEducationTips}</Message>
       ) : loadingEducationTips ? (

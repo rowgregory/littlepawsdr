@@ -8,7 +8,6 @@ import {
 import FormContainer from '../../components/FormContainer';
 import { EDUCATION_TIP_UPDATE_RESET } from '../../constants/educationTipConstants';
 import {
-  LoadingImg,
   StyledUloadedImg,
   Text,
   UpdateBtn,
@@ -20,8 +19,9 @@ import uploadFileHandler from '../../utils/uploadFileHandler';
 import { useRouteMatch, useHistory } from 'react-router-dom';
 import { EditBtn } from './RaffleWinnerEdit';
 import toaster from 'toasted-notes';
-import { ToastAlert } from '..';
+import { ToastAlert } from '../../components/common/ToastAlert';
 import Loader from '../../components/Loader';
+import { LoadingImg } from '../../components/LoadingImg';
 
 const EducationTipEdit = () => {
   const match = useRouteMatch<{ id: string }>();

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Button, Col } from 'react-bootstrap';
+import { Card } from 'react-bootstrap';
 import styled from 'styled-components';
 import { formatDateTime } from '../utils/formatDateTime';
 import { Text } from './styles/Styles';
@@ -8,28 +8,15 @@ const EventsCard = styled.div`
   max-width: 1000px;
   width: 100%;
   border: none;
-  transition: box-shadow 500ms ease;
+  transition: all 500ms ease;
   border-radius: 12px;
   position: relative;
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
   cursor: pointer;
-`;
-
-interface TextProps {
-  bgcolor?: string;
-  fontcolor?: string;
-}
-
-const DescriptionText = styled(Card.Text)<TextProps>`
-  background: -webkit-linear-gradient(#eee, #333);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-size: 16px;
-  background-image: ${({ bgcolor, fontcolor }) =>
-    bgcolor
-      ? `linear-gradient(to bottom, ${fontcolor} 0%, ${bgcolor} 100%)`
-      : ''};
+  :hover {
+    transform: translateY(-5px);
+    box-shadow: 0 19px 100px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, 0.22);
+  }
 `;
 
 interface ThreeDTextProps {
@@ -47,17 +34,6 @@ const Text3D = styled(Card.Title)<ThreeDTextProps>`
   font-size: 25px;
   text-shadow: 2px 8px 6px rgba(0, 0, 0, 0.2),
     0px -5px 35px rgba(255, 255, 255, 0.3);
-`;
-
-const ReadMoreText = styled(Button)`
-  text-shadow: 2px 8px 6px rgba(0, 0, 0, 0.2),
-    0px -5px 35px rgba(255, 255, 255, 0.3);
-
-  transition: all 500ms ease;
-  :hover {
-    text-shadow: 2px 8px 6px rgba(0, 0, 0, 0.4),
-      0px -5px 35px rgba(255, 255, 255, 0.4);
-  }
 `;
 
 export const Ribbon = styled.div<{ status?: string }>`
@@ -123,78 +99,42 @@ export const Ribbon = styled.div<{ status?: string }>`
 `;
 
 const EventCard = ({ event, history }: any) => {
-  const colorTextFade =
-    event !== undefined
-      ? event.background.split(',')[1].trim().slice(0, 7)
-      : '';
-
   return (
     <EventsCard
-      onClick={() => history.push(`/events/${event._id}`)}
-      key={event._id}
+      onClick={() => history.push(`/events/${event?._id}`)}
+      key={event?._id}
       className='mx-3 d-flex align-items-center'
       style={{
-        backgroundImage: event.background,
+        backgroundImage: event?.background,
       }}
     >
-      <Ribbon className='ribbon ribbon-top-right' status={event.status}>
-        <span>{event.status}</span>
+      <Ribbon className='ribbon ribbon-top-right' status={event?.status}>
+        <span>{event?.status}</span>
       </Ribbon>
 
       <Card.Img
         className='mr-3'
-        src={event.image}
+        src={event?.image}
         style={{ aspectRatio: '1/1', objectFit: 'cover', width: '150px' }}
       ></Card.Img>
 
       <div className='d-flex flex-column justify-content-center'>
         <Text3D
-          fonttitlecolor={event.color}
+          fonttitlecolor={event?.color}
           style={{
-            // height: event.title.split('').length >= 25 ? '60px' : 'auto',
-            color: event.color,
+            color: event?.color,
           }}
         >
-          {event.title}
+          {event?.title}
         </Text3D>
-        <Text color={event.color}>
-          {formatDateTime(event.startDate, { year: '2-digit' })} -
-          {formatDateTime(event.endDate, { year: '2-digit' })}
+        <Text color={event?.color}>
+          {event?.startDate &&
+            formatDateTime(event?.startDate, { year: '2-digit' })}{' '}
+          -
+          {event?.endDate &&
+            formatDateTime(event?.endDate, { year: '2-digit' })}
         </Text>
-        {/* <DescriptionText
-          className='mb-0'
-          bgcolor={
-            event.description.split('').length > 100
-              ? colorTextFade
-              : event.color
-          }
-          fontcolor={event.color}
-          style={{
-            color: event.color,
-            height:
-              event.title.split('').length < 25
-                ? '102px'
-                : event.description.split('').length <= 100
-                ? '72px'
-                : 'auto',
-          }}
-        >
-          {event.description.split('').length > 100
-            ? `${event.description
-                .split('')
-                .filter((_: any, c: number) => c < 100)
-                .join('')} ...`
-            : event.description}
-        </DescriptionText> */}
       </div>
-      {/* <Col className='d-flex justify-content-center'>
-        <ReadMoreText
-          className='btn m-0 p-0 bg-transparent'
-          style={{ color: event.color, border: 'none' }}
-        >
-          READ MORE
-        </ReadMoreText>
-      </Col> */}
     </EventsCard>
   );
 };

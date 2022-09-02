@@ -1,13 +1,23 @@
 import React, { useState, useEffect, createRef } from 'react';
 import { Form, Col } from 'react-bootstrap';
 import { STATES } from '../../utils/states';
-import { Switch } from '../../components/legacy/DonationMenu';
 import { createDonation } from '../../actions/donationActions';
 import { useDispatch } from 'react-redux';
 import { useDonationForm } from '../../components/donate/useDonationForm';
 import { Text } from '../../components/styles/Styles';
 import { validate } from '../../components/donate/validate';
 import styled from 'styled-components';
+
+const Switch = styled(Form.Check)`
+  margin: 1rem 0;
+  .memory-dd {
+    transition: 500ms;
+  }
+  .custom-control-input:checked ~ .custom-control-label::before {
+    background-image: ${({ theme }) =>
+      `linear-gradient(to bottom, ${theme.colors.primary} 0%, ${theme.colors.secondary} 100%)`};
+  }
+`;
 
 const Container = styled.div`
   margin: 0 auto;
@@ -57,7 +67,7 @@ export const FormInput = styled(Form.Control)`
   }
 `;
 
-const DonateBtn = styled.button`
+export const DonateBtn = styled.button`
   font-family: Oswald;
   font-size: 1.125rem;
   background: ${({ theme }) => theme.colors.secondary};
@@ -419,7 +429,6 @@ const DonationForm = () => {
       >
         DONATION TOTAL: ${inputs.donationAmount} / {inputs.donationType}
       </Text>
-
       {formIsCompleted ? (
         <form
           className='d-flex flex-column align-items-start'

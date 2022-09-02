@@ -1,5 +1,4 @@
 import React from 'react';
-import { Row, Col, Carousel, Image } from 'react-bootstrap';
 import {
   mandatoryRequirementsForAdoptionData,
   fiveStepProcess,
@@ -56,19 +55,37 @@ export const Step = styled(Link)<{ link?: string }>`
   font-size: 1rem;
 `;
 
-const Container = styled.div`
-  max-width: ${({ theme }) => theme.breakpoints[3]};
-  margin: 1rem;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    margin: 2rem 0 0;
-  }
-`;
-
 const AdoptionInformation = () => {
   return (
-    <Container>
+    <>
+      <Text fontSize='2rem' marginBottom='1rem'>
+        Adoption Information
+      </Text>
+      <Text className='mb-3'>
+        Adopting is a big decision. You are taking into your home a dog that is
+        intelligent, loyal, fun loving, full of love, and more than likely very
+        vocal. However, owning a dachshund will bring you so much enjoyment, fun
+        and fulfillment. They have this fantastic way of bringing joy to their
+        families every day!
+      </Text>
+      <Text className='mb-3'>
+        We are committed to matching our dachshunds with good, responsible and
+        loving new owners. We strive to make the best match we can, setting each
+        dog and adopter up for success. Our number one concern is for our
+        dachshunds.
+      </Text>
+      <Text className='mb-3'>
+        For more information visit our{' '}
+        <span>
+          <u>Adoption Information</u>
+        </span>
+        &nbsp;page. We currently adopt to the following states: Alabama,
+        Connecticut, Delaware, DC, Florida, Georgia, Kentucky, Maine, Maryland,
+        Massachusetts, New Hampshire, New Jersey, North Carolina, Ohio,
+        Pennsylvania, Rhode Island, South Carolina, Tennessee, Vermont,
+        Virginia, West Virginia.
+      </Text>
       <Text fontSize='1.5rem'>LPDR Adopting Guidelines</Text>
-
       <Text className='my-3'>
         We want you to inquire with us if you are interested in a specific dog.
         It’s important to us that we help you find a dog that will fit your
@@ -135,7 +152,7 @@ const AdoptionInformation = () => {
           </div>
         ))}
       </SixStepSection>
-    </Container>
+    </>
   );
 };
 

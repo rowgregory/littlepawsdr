@@ -16,6 +16,9 @@ const ContactUs = () => {
   const isDay = theme.mode === 'day';
   return (
     <>
+      <Text fontSize='2rem' marginBottom='1rem'>
+        Contact Us
+      </Text>
       <Row>
         <Col>
           <Text>

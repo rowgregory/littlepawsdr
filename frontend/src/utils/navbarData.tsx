@@ -19,6 +19,10 @@ export const NAVBAR_DATA = (userInfo?: UserInfoProps) => {
   const cartAndUserMenuItems = [];
   cartAndUserMenuItems.push(
     {
+      title: 'Donate',
+      link: '/donate',
+    },
+    {
       title: 'Cart',
       link: '/cart',
     },

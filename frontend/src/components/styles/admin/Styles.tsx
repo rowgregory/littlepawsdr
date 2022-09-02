@@ -1,6 +1,33 @@
 import { Button, Form, Image } from 'react-bootstrap';
 import styled from 'styled-components';
 
+export const TableBody = styled.tbody`
+  tr {
+    cursor: normal;
+    :nth-child(odd) {
+      background: ${({ theme }) => theme.table.odd};
+    }
+    :nth-child(even) {
+      background: ${({ theme }) => theme.table.even};
+    }
+
+    td {
+      border: none;
+      color: ${({ theme }) => theme.text};
+      font-size: 1rem;
+      vertical-align: inherit;
+      cursor: normal;
+      &.dashboard {
+        padding: 1.5rem 0.75rem;
+
+        @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+          padding: 1.5rem;
+        }
+      }
+    }
+  }
+`;
+
 export const TableHead = styled.thead<{ bg?: string }>`
   tr {
     background: ${({ theme, bg }) => (bg ? bg : theme.colors.primary)};
@@ -58,5 +85,26 @@ export const CreateBtn = styled(Button)`
   }
   :focus {
     box-shadow: none;
+  }
+`;
+
+export const StyledEditBtn = styled(Button)`
+  background: transparent;
+  border-radius: 50%;
+  border: none;
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  i {
+    color: ${({ theme }) => theme.colors.primary};
+  }
+  :hover,
+  :active,
+  :focus {
+    background: ${({ theme }) => theme.separator} !important;
+    border: none !important;
+    box-shadow: none !important;
   }
 `;

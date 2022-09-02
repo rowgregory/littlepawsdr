@@ -24,6 +24,15 @@ const GlobalStyles = createGlobalStyle<{
   
 }
 
+.accordion .faq:hover {
+  background: ${({ theme }) => theme.colors.primary};
+  transition: 300ms;
+  border-radius: 0;
+}
+.accordion .faq:hover div {
+  color: #fff;
+}
+
 .table-responsive {
   height:1000px;
   overflow:scroll;
@@ -43,8 +52,9 @@ tbody {
     }
   }
 
-div, a, span, p, h1, h2, h3, h4, h5, h6, input, select, ::placeholder {
-  font-family: Duru Sans;
+div, span, p, h1, h2, h3, h4, h5, h6, input, select, ::placeholder, label, li {
+  font-family: Oswald;
+  color: ${({ theme }) => theme.text};
 }
 
 .page-item.active .page-link {

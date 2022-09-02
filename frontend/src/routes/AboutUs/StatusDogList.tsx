@@ -5,10 +5,11 @@ import { getDogsByStatusPicturesAndVideours } from '../../actions/dachshundsActi
 import styled from 'styled-components';
 import Message from '../../components/Message';
 import { Link } from 'react-router-dom';
-import { LoadingImg, Text } from '../../components/styles/Styles';
+import { Text } from '../../components/styles/Styles';
 import { formatDate } from '../../utils/formatDate';
 import SponsorSanctuary from './SponsorSanctuary';
 import ReactPlayer from 'react-player/lazy';
+import { LoadingImg } from '../../components/LoadingImg';
 
 const DogContainer = styled(Col)`
   display: grid;
@@ -32,6 +33,19 @@ const StatusDogList = ({ tab }: any) => {
     (state: any) => state.dachshundPicturesVideosStatuses
   );
   const { error, dachshunds, loading } = dachshund;
+
+  const title = () => {
+    switch (tab) {
+      case 'rainbow-bridge':
+        return 'Rainbow Bridge';
+      case 'successful-adoptions':
+        return 'Successful Adoptions';
+      case 'sanctuary':
+        return '';
+      default:
+        return 'On Hold';
+    }
+  };
 
   useEffect(() => {
     setPaginatedPage(1);
@@ -86,7 +100,9 @@ const StatusDogList = ({ tab }: any) => {
       ) : (
         <>
           {tab === 'sanctuary' && <SponsorSanctuary />}
-
+          <Text fontSize='2rem' marginBottom='1rem'>
+            {title()}
+          </Text>
           <DogContainer lg={12}>
             {loading
               ? [...Array(10).keys()]?.map((_: any, i: number) => (

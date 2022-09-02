@@ -4,21 +4,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import { LinkContainer } from 'react-router-bootstrap';
 import { listDonations } from '../../actions/donationActions';
 import DeleteModal from '../../components/DeleteModal';
-import {
-  LoadingImg,
-  StyledEditBtn,
-  Text,
-} from '../../components/styles/Styles';
+import { Text } from '../../components/styles/Styles';
 import { formatDate } from '../../utils/formatDate';
 import { AiFillDelete } from 'react-icons/ai';
 import {
   SearchBar,
   TableHead,
   TableRow,
+  StyledEditBtn,
 } from '../../components/styles/admin/Styles';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import toaster from 'toasted-notes';
-import { ToastAlert } from '..';
+import { LoadingImg } from '../../components/LoadingImg';
+import { ToastAlert } from '../../components/common/ToastAlert';
 
 const DonationList = () => {
   const dispatch = useDispatch();

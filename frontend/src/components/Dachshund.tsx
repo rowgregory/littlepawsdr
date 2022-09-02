@@ -4,14 +4,14 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import Paw from '../components/assets/transparent-paw.png';
 import { Content, Header } from './ContinueSessionModal';
-import { PageHeader, Text } from './styles/Styles';
+import { Text } from './styles/Styles';
 
 const DachshundCard = styled(Card)`
   width: 100%;
   border: none;
   transition: box-shadow 500ms ease;
   padding: 0;
-  background-color: #fff;
+  background-color: ${({ theme }) => theme.input.bg};
   height: 100%;
   img.dog {
     aspect-ratio: 1/1;
@@ -65,10 +65,13 @@ const Dachshund = ({ dachshund }: any) => {
       <Modal show={show} centered>
         <Content>
           <Header className='pb-3'>
-            <PageHeader className='d-flex align-items-center justify-content-center'>
+            <Text
+              fontSize='2rem'
+              className='d-flex align-items-center justify-content-center'
+            >
               {dachshund?.attributes?.name}
               <Image src={Paw} alt='paw' width='20px' className='ml-2' />
-            </PageHeader>
+            </Text>
             <i onClick={handleClose} className='fas fa-times fa-2x'></i>
           </Header>
           <StyledCarousel pause='hover' className='p-3'>
@@ -98,11 +101,11 @@ const Dachshund = ({ dachshund }: any) => {
 
         <Card.Body className='d-flex flex-column justify-content-start p-0'>
           <CardHeader>
-            <Text fontSize='1.25rem' letterSpacing='-1px' fontWeight='300'>
+            <Text fontSize='1.25rem' letterSpacing='-1px'>
               {dachshund?.attributes?.name}
             </Text>
             <Card.Text as='div'>
-              <Text fontSize='0.8rem' fontWeight='200'>
+              <Text fontSize='0.8rem'>
                 {dachshund?.attributes?.sex} {dachshund?.attributes?.ageGroup}{' '}
                 {dachshund?.attributes?.breedString}
               </Text>

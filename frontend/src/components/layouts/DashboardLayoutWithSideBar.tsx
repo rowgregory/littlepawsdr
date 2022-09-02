@@ -1,6 +1,5 @@
 import React, { ReactNode, FC, useState } from 'react';
 import styled from 'styled-components';
-import { AdminPageLayout } from '../styles/Styles';
 import { Modal } from 'react-bootstrap';
 import {
   Body,
@@ -10,7 +9,19 @@ import {
   LeftBtn,
   Title,
 } from '../ContinueSessionModal';
-import AdminActionModalBody from './AdminActionModalBody';
+import AdminActionModalBody from '../dashboard/AdminActionModalBody';
+
+const AdminPageLayout = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-top: 1.5rem;
+
+  @media (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    padding: 0;
+    flex-direction: column;
+  }
+`;
 
 interface DashboardLayoutWithSideBarProps {
   sideBar: ReactNode;

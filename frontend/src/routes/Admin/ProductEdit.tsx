@@ -6,7 +6,6 @@ import Loader from '../../components/Loader';
 import { getProductDetails, updateProduct } from '../../actions/productActions';
 import { PRODUCT_UPDATE_RESET } from '../../constants/productContstants';
 import {
-  LoadingImg,
   StyledUloadedImg,
   Text,
   UpdateBtn,
@@ -26,7 +25,8 @@ import {
   Size,
 } from '../../components/styles/product-details/Styles';
 import toaster from 'toasted-notes';
-import { ToastAlert } from '..';
+import { ToastAlert } from '../../components/common/ToastAlert';
+import { LoadingImg } from '../../components/LoadingImg';
 
 const SizeContainer = styled.div`
   display: flex;

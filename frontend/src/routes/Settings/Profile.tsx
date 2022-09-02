@@ -9,13 +9,11 @@ import {
   Accordion,
 } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import Message from '../../components/Message';
 import Loader from '../../components/Loader';
 import { getUserDetails, updateUserProfile } from '../../actions/userActions';
 import { USER_UPDATE_PROFILE_RESET } from '../../constants/userConstants';
 import styled from 'styled-components';
 import {
-  SettingsPageHeader,
   SettingsTitleContainer,
   StyledUloadedImg,
   Text,
@@ -27,6 +25,8 @@ import { removePhoto } from '../../utils/removePhoto';
 import HorizontalLoader from '../../components/HorizontalLoader';
 import uploadFileHandler from '../../utils/uploadFileHandler';
 import { themes } from '../../utils/profileCardThemes';
+import { ToastAlert } from '../../components/common/ToastAlert';
+import toaster from 'toasted-notes';
 
 const Container = styled.div`
   padding: 0.25rem;
@@ -37,9 +37,12 @@ const Container = styled.div`
 
 const CardTheme = styled(Form.Check)<{ selected?: boolean }>`
   border: ${({ selected, theme }) =>
-    selected ? `3px solid ${theme.colors.primary}` : '3px solid transparent'};
+    selected ? `3px solid ${theme.colors.secondary}` : '3px solid transparent'};
   padding: 0.2rem;
   margin-right: 0;
+  :hover {
+    border: 3px solid ${({ theme }) => theme.input.bg};
+  }
 `;
 
 const ProfilePicCol = styled(Col)`
@@ -50,7 +53,8 @@ const ProfilePicCol = styled(Col)`
 `;
 
 const UpdateBtn = styled(Button)`
-  background: ${({ theme }) => theme.colors.secondary};
+  display: flex;
+  align-items: center;
 `;
 
 const HorizontalLoaderContainer = styled.div`
@@ -90,6 +94,7 @@ const Profile = ({ history }: any) => {
 
   const userDetails = useSelector((state: any) => state.userDetails);
   const { loading, error, user } = userDetails;
+
   const userLogin = useSelector((state: any) => state.userLogin);
   const { userInfo } = userLogin;
 
@@ -136,6 +141,24 @@ const Profile = ({ history }: any) => {
     };
   }, [dispatch, history, user, userInfo, successUpdateProfile]);
 
+  useEffect(() => {
+    if (errorMsg || error) {
+      toaster.notify(
+        ({ onClose }) =>
+          ToastAlert(errorMsg ? 'No photo to remove' : error, onClose, 'error'),
+        {
+          position: 'bottom',
+          duration: 20000,
+          type: 'error',
+        }
+      );
+    }
+
+    return () => {
+      setErrorMsg('');
+    };
+  }, [error, errorMsg]);
+
   const profileDataToUploadWithImg = {
     name,
     volunteerTitle,
@@ -160,9 +183,8 @@ const Profile = ({ history }: any) => {
 
   return (
     <Container>
-      {errorMsg && <Message variant='danger'>No photo to remove</Message>}
       <SettingsTitleContainer className='d-flex justify-content-between align-items-center'>
-        <SettingsPageHeader>Public profile</SettingsPageHeader>
+        <Text fontSize='1.5rem'>Profile</Text>
         {checkmark && <Checkmark />}
       </SettingsTitleContainer>
       {(loading || loadingUpdateProfile) && (
@@ -171,7 +193,7 @@ const Profile = ({ history }: any) => {
         </HorizontalLoaderContainer>
       )}
       {error ? (
-        <Message variant='danger'>{error}</Message>
+        <></>
       ) : (
         <Form onSubmit={submitHandler} className='mt-4'>
           <div className='d-flex flex-wrap'>
@@ -216,7 +238,7 @@ const Profile = ({ history }: any) => {
                             name='profileCardTheme'
                           />
                         ))
-                        .filter((_: any, i: number) => i > 0 && i < 13)}
+                        .filter((_: any, i: number) => i > 0 && i < 16)}
                     </div>
                     <Accordion
                       defaultActiveKey='0'
@@ -231,15 +253,9 @@ const Profile = ({ history }: any) => {
                                 selected={theme === profileCardTheme}
                                 inline
                                 label={
-                                  <Image
+                                  <ProfileCardImg
                                     src={theme}
                                     alt={`${theme}-${i}`}
-                                    style={{
-                                      width: '100px',
-                                      height: '100px',
-                                      objectFit: 'cover',
-                                      cursor: 'pointer',
-                                    }}
                                   />
                                 }
                                 type='radio'
@@ -304,6 +320,7 @@ const Profile = ({ history }: any) => {
                       onChange={(e) => setAvatar(e.target.value)}
                     ></Form.Control>
                     <StyledUloadedImg
+                      show={showImageOptions.toString()}
                       src={avatar || ''}
                       alt='avatar'
                       onClick={() => setShowImageOptions(!showImageOptions)}
@@ -378,9 +395,13 @@ const Profile = ({ history }: any) => {
           </div>
           <Row style={{ marginRight: '0px' }}>
             <Col className='my-5'>
-              <UpdateBtn type='submit'>
-                {loadingUpdateProfile ? (
-                  <div className='d-flex align-items-center'>
+              <UpdateBtn variant='success' type='submit'>
+                <Text className='text-white'>
+                  Updat{loadingUpdateProfile ? 'ing...' : 'e'}
+                </Text>
+                {loadingUpdateProfile && (
+                  <>
+                    &nbsp;&nbsp;
                     <Spinner
                       as='span'
                       animation='border'
@@ -388,10 +409,7 @@ const Profile = ({ history }: any) => {
                       role='status'
                       aria-hidden='true'
                     />
-                    <Text className='text-white ml-2'>Loading...</Text>
-                  </div>
-                ) : (
-                  <Text className='text-white'>Update</Text>
+                  </>
                 )}
               </UpdateBtn>
             </Col>

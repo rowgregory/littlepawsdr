@@ -37,7 +37,16 @@ export const verifyToken = (token: any) => async (dispatch: any) => {
       token,
     });
 
-    dispatch({ type: VERIFY_TOKEN_SUCCESS, payload: data });
+    console.log(data);
+
+    if (
+      data === 'Link has expired. Please register again.' ||
+      typeof data === 'string'
+    ) {
+      dispatch({ type: VERIFY_TOKEN_FAIL, payload: data });
+    } else {
+      dispatch({ type: VERIFY_TOKEN_SUCCESS, payload: data });
+    }
   } catch (error: any) {
     dispatch({
       type: VERIFY_TOKEN_FAIL,

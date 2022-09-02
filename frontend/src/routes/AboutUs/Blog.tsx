@@ -7,7 +7,7 @@ import { Col, Image, Row } from 'react-bootstrap';
 import { HorizontalLine } from '../../components/styles/product-details/Styles';
 import { listProducts } from '../../actions/productActions';
 import { Link } from 'react-router-dom';
-import { LoadingImg } from '../../components/styles/Styles';
+import { LoadingImg } from '../../components/LoadingImg';
 import { localizeDate } from '../../utils/localizeDate';
 
 const BlogTitle = styled.div<{ isnight: boolean }>`
@@ -102,7 +102,7 @@ const Blog = () => {
     <>
       <BlogTitle isnight={theme.mode === 'night'}>Blog</BlogTitle>
       <Row style={{ margin: '0 auto' }} className='pl-0'>
-        <Container md={8} className='px-0'>
+        <Container md={9} className='px-0'>
           {loadingBlogList
             ? [1, 2, 3, 4].map((i: number) => (
                 <div key={i} style={{ marginBottom: '5rem' }}>
@@ -132,7 +132,7 @@ const Blog = () => {
                 </StyledLink>
               ))}
         </Container>
-        <Container md={4} className='pr-0'>
+        <Container md={3} className='pr-0'>
           {loadingProductList ? (
             <LoadingImg h='50%' w='100%' />
           ) : (

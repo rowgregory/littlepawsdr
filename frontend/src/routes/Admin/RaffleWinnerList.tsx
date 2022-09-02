@@ -7,11 +7,7 @@ import {
   listRaffleWinners,
 } from '../../actions/raffleWinnerActions';
 import DeleteModal from '../../components/DeleteModal';
-import {
-  Text,
-  StyledEditBtn,
-  LoadingImg,
-} from '../../components/styles/Styles';
+import { Text } from '../../components/styles/Styles';
 import { RAFFLE_WINNER_CREATE_RESET } from '../../constants/raffleWinnerContants';
 import {
   CreateBtn,
@@ -19,11 +15,13 @@ import {
   TableHead,
   TableImg,
   TableRow,
+  StyledEditBtn,
 } from '../../components/styles/admin/Styles';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import { useHistory } from 'react-router-dom';
-import { ToastAlert } from '..';
+import { ToastAlert } from '../../components/common/ToastAlert';
 import toaster from 'toasted-notes';
+import { LoadingImg } from '../../components/LoadingImg';
 
 const RaffleWinnerList = () => {
   const history = useHistory();

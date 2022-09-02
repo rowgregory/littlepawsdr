@@ -3,9 +3,10 @@ import { Row, Col, Image } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouteMatch } from 'react-router-dom';
 import { getBlogDetails } from '../../actions/blogActions';
-import { LoadingImg, Text } from '../../components/styles/Styles';
+import { Text } from '../../components/styles/Styles';
 import Message from '../../components/Message';
 import GoBackBtn from '../../utils/GoBackBtn';
+import { LoadingImg } from '../../components/LoadingImg';
 
 const BlogDetails = () => {
   const match = useRouteMatch() as any;

@@ -1,28 +1,26 @@
 import React, { ReactNode, FC } from 'react';
-import { Col, Row, Image } from 'react-bootstrap';
+import { Image } from 'react-bootstrap';
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 import { Text } from '../../components/styles/Styles';
 import { Link } from 'react-router-dom';
+import { AvatarInitials } from '../styles/NavbarStyles';
+import { capitalizeFirstLetter } from '../../utils/capitalizeFirstLetter';
 
 interface SettingsLayoutWithSideBarProps {
   sideBar: ReactNode;
   children: ReactNode;
 }
 
-const Container = styled.section`
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  max-width: 1000px;
-  margin: 0 0.25rem;
+const Container = styled.div`
+  max-width: ${({ theme }) => theme.breakpoints[3]};
   width: 100%;
-
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-    margin: 1rem;
-  }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    margin: 0 auto;
+  margin-inline: auto;
+  margin-bottom: 5rem;
+  padding: 1rem;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[4]}) {
+    margin-top: 5rem;
+    padding: 0;
   }
 `;
 
@@ -36,8 +34,23 @@ const StyledLink = styled(Link)`
     text-decoration: none;
     box-shadow: ${({ theme }) =>
       `-10px 0 0 -5px ${theme.colors.primary} inset`};
-    background: ${({ theme }) => theme.link.hoverBG};
+    background: ${({ theme }) => theme.input.bg};
     border: 1px solid transparent;
+  }
+`;
+
+const SideBarChildrenWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+    flex-direction: row;
+  }
+`;
+
+const SideBar = styled.div`
+  width: 100%;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+    width: 300px;
   }
 `;
 
@@ -49,9 +62,9 @@ export const SettingsLayoutWithSideBar: FC<SettingsLayoutWithSideBarProps> = ({
   const { userInfo } = userLogin;
   return (
     <Container>
-      <Row>
-        <Col className='my-4 d-flex justify-content-between align-items-center'>
-          <div className='d-flex align-items-center'>
+      <div className='d-flex align-items-center justify-content-between mb-4'>
+        <div className='d-flex align-items-center'>
+          {userInfo?.isAdmin ? (
             <Image
               className='mr-3'
               height='48px'
@@ -60,21 +73,21 @@ export const SettingsLayoutWithSideBar: FC<SettingsLayoutWithSideBarProps> = ({
               src={userInfo?.avatar}
               alt='user-avatar'
             />
-            <Text fontWeight='bold' fontSize='1.25rem'>
-              {userInfo?.name.split(' ')[0]}
-            </Text>
-          </div>
-          <StyledLink to='/about/team-members'>Go to public profile</StyledLink>
-        </Col>
-      </Row>
-      <Row>
-        <Col lg={3} md={12}>
-          {sideBar}
-        </Col>
-        <Col lg={9} md={12} className='pr-0'>
-          {children}
-        </Col>
-      </Row>
+          ) : (
+            <AvatarInitials h='48px' w='48px' className='mr-3 settings'>
+              {userInfo?.name[0]}
+            </AvatarInitials>
+          )}
+          <Text fontWeight='bold' fontSize='1.25rem'>
+            {capitalizeFirstLetter(userInfo?.name.split(' ')[0])}
+          </Text>
+        </div>
+        <StyledLink to='/about/team-members'>Go to public profile</StyledLink>
+      </div>
+      <SideBarChildrenWrapper>
+        <SideBar>{sideBar}</SideBar>
+        <div className='w-100 px-3'>{children}</div>
+      </SideBarChildrenWrapper>
     </Container>
   );
 };

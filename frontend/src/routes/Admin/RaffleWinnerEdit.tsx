@@ -9,7 +9,6 @@ import FormContainer from '../../components/FormContainer';
 import Loader from '../../components/Loader';
 import { RAFFLE_WINNER_UPDATE_RESET } from '../../constants/raffleWinnerContants';
 import {
-  LoadingImg,
   StyledUloadedImg,
   Text,
   UpdateBtn,
@@ -21,7 +20,8 @@ import { removePhoto } from '../../utils/removePhoto';
 import uploadFileHandler from '../../utils/uploadFileHandler';
 import { useRouteMatch, useHistory } from 'react-router-dom';
 import toaster from 'toasted-notes';
-import { ToastAlert } from '..';
+import { ToastAlert } from '../../components/common/ToastAlert';
+import { LoadingImg } from '../../components/LoadingImg';
 
 export const EditBtn = styled.div<{ top?: string; left?: string }>`
   border: ${({ theme }) => `1px solid ${theme.input.border}`};

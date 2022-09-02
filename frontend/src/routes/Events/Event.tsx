@@ -3,10 +3,10 @@ import { Card } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { listEventDetails } from '../../actions/eventActions';
-import { LoadingImg } from '../../components/styles/Styles';
+import { LoadingImg } from '../../components/LoadingImg';
 import GoBackBtn from '../../utils/GoBackBtn';
 import toaster from 'toasted-notes';
-import { ToastAlert } from '..';
+import { ToastAlert } from '../../components/common/ToastAlert';
 
 const CardContainer = styled.div<{ event: any }>`
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
@@ -14,7 +14,7 @@ const CardContainer = styled.div<{ event: any }>`
   width: 100%;
   display: flex;
   justify-content: center;
-
+  min-height: calc(100vh - 526px);
   background-color: #e5e5f7;
   opacity: 0.8;
   background-image: ${({ event }) => `repeating-radial-gradient(
@@ -82,14 +82,8 @@ const Event = ({ match }: any) => {
     }
   }, [error]);
 
-  const start =
-    event !== undefined &&
-    event.startDate !== undefined &&
-    event.startDate.split('-');
-  const end =
-    event !== undefined &&
-    event.endDate !== undefined &&
-    event.endDate.split('-');
+  const start = event?.startDate?.split('-');
+  const end = event?.endDate?.split('-');
 
   const getOrdinal = (d: string) => {
     const day = parseInt(d);
@@ -160,13 +154,13 @@ const Event = ({ match }: any) => {
             <>
               <div className='d-flex w-100 justify-content-center align-items-center'>
                 <Month color={event?.color}>
-                  {getOrdinalDate(start).month}
-                  {getOrdinalDate(start).superscriptOrdinal}
+                  {start && getOrdinalDate(start).month}
+                  {start && getOrdinalDate(start).superscriptOrdinal}
                 </Month>
                 <Month color={event?.color}>-</Month>
                 <Month color={event?.color}>
-                  {getOrdinalDate(end).month}
-                  {getOrdinalDate(end).superscriptOrdinal}
+                  {end && getOrdinalDate(end).month}
+                  {end && getOrdinalDate(end).superscriptOrdinal}
                 </Month>
               </div>
               <Description color={event?.color}>

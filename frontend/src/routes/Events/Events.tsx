@@ -4,14 +4,20 @@ import { RouteComponentProps } from 'react-router-dom';
 import styled from 'styled-components';
 import { listEvents } from '../../actions/eventActions';
 import EventCard from '../../components/EventCard';
-import { LoadingImg, Text } from '../../components/styles/Styles';
+import { Text } from '../../components/styles/Styles';
 import { Month, timeLineData } from '../../components/raffle-winners/Timeline';
 import { formatDateTime } from '../../utils/formatDateTime';
+import toaster from 'toasted-notes';
+import { ToastAlert } from '../../components/common/ToastAlert';
+import { LoadingImg } from '../../components/LoadingImg';
 
 const Container = styled.div`
   margin-inline: auto;
   width: 100%;
-  background-image: radial-gradient(#e5e5e5 2px, transparent 2px);
+  background-image: radial-gradient(
+    ${({ theme }) => (theme.mode === 'day' ? '#e5e5e5' : theme.input.bg)} 2px,
+    transparent 2px
+  );
   background-size: 32px 32px;
 `;
 const Wrapper = styled.div`
@@ -36,6 +42,15 @@ const Events = ({ history }: RouteComponentProps) => {
     dispatch(listEvents());
   }, [dispatch]);
 
+  useEffect(() => {
+    if (error) {
+      toaster.notify(({ onClose }) => ToastAlert(error, onClose, 'error'), {
+        position: 'bottom',
+        duration: 20000,
+      });
+    }
+  }, [error]);
+
   return error ? (
     <></>
   ) : (
@@ -52,15 +67,16 @@ const Events = ({ history }: RouteComponentProps) => {
         <EventsContainer>
           {timeLineData().map((obj, i) => (
             <div key={i} className='my-1 w-100'>
-              <Month bg={obj?.bg} className='ml-0'>
+              <Month bg={obj?.bg} className='ml-0' donothover={true}>
                 {obj?.abbrv}
               </Month>
 
               {events?.map(
                 (event: any) =>
-                  formatDateTime(event?.startDate, { month: 'long' }).split(
-                    ' '
-                  )[0] === obj?.month && (
+                  event?.startDate &&
+                  formatDateTime(event?.startDate, {
+                    month: 'long',
+                  }).split(' ')[0] === obj?.month && (
                     <div key={event?._id} className='my-3'>
                       {loading ? (
                         <LoadingImg w='100%' h='10rem' borderRadius='0.5rem' />

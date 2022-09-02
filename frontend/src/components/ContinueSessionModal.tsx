@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Modal } from 'react-bootstrap';
+import { useSelector } from 'react-redux';
 import styled, { keyframes, css } from 'styled-components';
 import { logout } from '../actions/userActions';
 
@@ -114,12 +115,14 @@ const ContinueSessionModal = ({
   show,
   handleClose,
   dispatch,
-  user,
   setContinuedSession,
 }: any) => {
   let countdownID: any = useRef();
   let [countdown, setCountdown] = useState(60);
   const [shakeModal, setShakeModal] = useState(false);
+
+  const userLogin = useSelector((state: any) => state.userLogin);
+  const { userInfo } = userLogin;
 
   const continueSession = () => {
     handleClose();
@@ -130,7 +133,7 @@ const ContinueSessionModal = ({
 
   const logOff = async () => {
     handleClose();
-    await dispatch(logout(user));
+    await dispatch(logout(userInfo));
   };
 
   const shake = () => {

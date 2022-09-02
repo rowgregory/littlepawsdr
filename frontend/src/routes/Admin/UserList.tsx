@@ -2,25 +2,21 @@ import React, { useEffect, useState } from 'react';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Col, Table, Button, Form, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import Message from '../../components/Message';
 import { listUsers } from '../../actions/userActions';
 import { USER_DETAILS_RESET } from '../../constants/userConstants';
 import DeleteModal from '../../components/DeleteModal';
 import { OnlineCircle } from '../../components/svg/circle';
-import {
-  LoadingImg,
-  StyledEditBtn,
-  TableBody,
-  Text,
-} from '../../components/styles/Styles';
+import { Text } from '../../components/styles/Styles';
 import {
   SearchBar,
   TableHead,
   TableRow,
+  StyledEditBtn,
 } from '../../components/styles/admin/Styles';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import toaster from 'toasted-notes';
-import { ToastAlert } from '..';
+import { ToastAlert } from '../../components/common/ToastAlert';
+import { LoadingImg } from '../../components/LoadingImg';
 
 const UserList = ({ history }: any) => {
   const dispatch = useDispatch();

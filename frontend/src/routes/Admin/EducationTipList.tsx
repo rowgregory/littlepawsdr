@@ -7,11 +7,7 @@ import {
   listEducationTips,
 } from '../../actions/educationTipActions';
 import DeleteModal from '../../components/DeleteModal';
-import {
-  LoadingImg,
-  StyledEditBtn,
-  Text,
-} from '../../components/styles/Styles';
+import { Text } from '../../components/styles/Styles';
 import { EDUCATION_TIP_CREATE_RESET } from '../../constants/educationTipConstants';
 import { useHistory } from 'react-router-dom';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
@@ -21,9 +17,11 @@ import {
   TableHead,
   TableImg,
   TableRow,
+  StyledEditBtn,
 } from '../../components/styles/admin/Styles';
 import toaster from 'toasted-notes';
-import { ToastAlert } from '..';
+import { ToastAlert } from '../../components/common/ToastAlert';
+import { LoadingImg } from '../../components/LoadingImg';
 
 const RaffleWinnerList = () => {
   const history = useHistory();

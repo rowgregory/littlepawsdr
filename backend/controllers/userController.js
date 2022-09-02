@@ -221,11 +221,11 @@ const confirmOldPassword = asyncHandler(async (req, res) => {
     if (user && (await user.matchPassword(req.body.oldpassword))) {
       res.json(true);
     } else {
-      throw new Error('Password is incorrect');
+      res.send({ message: 'Password is incorrect' });
     }
   } catch (error) {
-    res.status(401);
-    throw new Error('Password is incorrect');
+    console.log('ERROR: ', error);
+    res.send({ message: error });
   }
 });
 

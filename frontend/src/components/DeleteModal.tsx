@@ -19,6 +19,7 @@ import {
   RightBtn,
   Title,
 } from './ContinueSessionModal';
+import { deleteManuallyAddedUser } from '../actions/manuallyAddUserActions';
 
 const DeleteModal = ({ actionFunc, show, handleClose, id, publicId }: any) => {
   const dispatch = useDispatch();
@@ -76,6 +77,13 @@ const DeleteModal = ({ actionFunc, show, handleClose, id, publicId }: any) => {
           await axios.post(`/api/remove-upload/${publicId}`);
         }
         dispatch(deleteEducationTip(id));
+        handleClose();
+        break;
+      case 'Manually Added User':
+        if (publicId) {
+          await axios.post(`/api/remove-upload/${publicId}`);
+        }
+        dispatch(deleteManuallyAddedUser(id));
         handleClose();
         break;
       default:

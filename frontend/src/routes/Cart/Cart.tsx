@@ -64,7 +64,7 @@ const CartContainer = styled.div`
 
 const RemoveBtn = styled(Button)`
   border-radius: 0;
-  background: #fff;
+  background: ${({ theme }) => theme.input.bg};
   color: ${({ theme }) => theme.text};
   border: 1px solid ${({ theme }) => theme.border};
   font-family: 'Libre Franklin', sans-serif;

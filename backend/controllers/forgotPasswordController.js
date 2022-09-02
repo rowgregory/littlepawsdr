@@ -2,6 +2,7 @@ import asyncHandler from 'express-async-handler';
 import User from '../models/userModel.js';
 import { generateToken } from '../utils/generateToken.js';
 import { send_mail } from '../server.js';
+import jwt from 'jsonwebtoken';
 
 // @desc    Reset Password
 // @route   POST /api/forgot-password
@@ -9,17 +10,15 @@ import { send_mail } from '../server.js';
 const resetPassword = asyncHandler(async (req, res) => {
   const { email } = req.body;
 
-  const user = await User.findOne({
-    email,
-  });
+  const user = await User.findOne({ email });
 
   if (!email) {
     res.status(400).send({
       message: 'Please enter a valid email',
     });
   } else if (!user)
-    res.status(403).send({
-      message: 'Email does not exist',
+    res.status(200).send({
+      message: 'An email has been sent if an account has been located.',
     });
 
   if (user) {
@@ -37,14 +36,23 @@ const resetPassword = asyncHandler(async (req, res) => {
 const verifyToken = asyncHandler(async (req, res) => {
   const { token } = req.body;
 
-  const user = await User.find({ resetPasswordToken: token });
+  try {
+    const user = await User.findOne({ resetPasswordToken: token });
 
-  if (user) {
+    const decoded = jwt.verify(user.resetPasswordToken, process.env.JWT_SECRET);
+
+    if (Date.now() < decoded.exp * 1000) {
+      res.status(200).json({ email: user.email, message: 'Access granted.' });
+    }
+  } catch (error) {
+    console.log('Error: ', error.message);
     res
-      .status(200)
-      .json({ email: user[0].email, message: 'password reset link a-ok' });
-  } else {
-    throw new Error('Password reset link is invalid or has expired');
+      .status(401)
+      .send(
+        error.message === 'jwt expired'
+          ? 'Link has expired. Please register again.'
+          : 'This page has expired'
+      );
   }
 });
 

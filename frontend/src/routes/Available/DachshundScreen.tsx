@@ -4,14 +4,11 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Carousel, Image } from 'react-bootstrap';
 import { getDachshundDetails } from '../../actions/dachshundsActions';
 import Message from '../../components/Message';
-import {
-  LoadingImg,
-  StyledCarousel,
-  Text,
-} from '../../components/styles/Styles';
+import { Text } from '../../components/styles/Styles';
 import styled from 'styled-components';
 import { locationsPromise } from '../../utils/attributePromises';
 import GoBackBtn from '../../utils/GoBackBtn';
+import { LoadingImg } from '../../components/LoadingImg';
 
 interface DachshundDetails {
   dachshundDetails: {
@@ -29,6 +26,18 @@ interface DachshundDetails {
     };
   };
 }
+
+const StyledCarousel = styled(Carousel)`
+  background: ${({ theme }) => theme.card.bg};
+  border: 1px solid ${({ theme }) => theme.input.border};
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 1/1;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    width: 425px;
+    height: 425px;
+  }
+`;
 
 const Container = styled.div`
   max-width: ${({ theme }) => theme.breakpoints[3]};

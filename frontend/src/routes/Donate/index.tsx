@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  JumboAndWaveContainer,
-  Jumbo,
-  Title,
-  IntroText,
-  Text,
-  TitleAndIntroTextContainer,
-} from '../../components/styles/Styles';
+import { Text } from '../../components/styles/Styles';
 import DonationForm from './DonationForm';
 import ECardForm from './ECardForm';
 import ShopToHelp from '../../components/donate/ShopToHelp';
@@ -26,29 +19,27 @@ const SideBarContainer = styled.div`
 `;
 
 const Navigation = () => (
-  <JumboAndWaveContainer>
-    <Jumbo>
-      <TitleAndIntroTextContainer>
-        <Title>Interested in supporting Little Paws Dachshund Rescue?</Title>
-        <IntroText className='mb-3'>
-          Right now, we are in need of monetary donations. Happy endings for our
-          dachshunds in need can only happen with your support. Please allow us
-          to continue to say “YES WE CAN” to those calls asking for assistance
-          with a dachshund left behind at an animal shelter, or a dog who has
-          been neglected and abused and deserves a warm bed and a kind hand to
-          rub his or her tummy.
-        </IntroText>
-        <IntroText className='mb-3'>
-          There are two easy ways to give monetary donations, electronically or
-          check*:
-        </IntroText>
-        <IntroText className='mb-3'>
-          *Little Paws Dachshund Rescue is federal tax exemption 501(c)(3)
-          public charity.
-        </IntroText>
-      </TitleAndIntroTextContainer>
-    </Jumbo>
-  </JumboAndWaveContainer>
+  <>
+    <Text fontSize='2rem' marginBottom='1rem'>
+      Interested in supporting Little Paws Dachshund Rescue?
+    </Text>
+    <Text className='mb-3'>
+      Right now, we are in need of monetary donations. Happy endings for our
+      dachshunds in need can only happen with your support. Please allow us to
+      continue to say “YES WE CAN” to those calls asking for assistance with a
+      dachshund left behind at an animal shelter, or a dog who has been
+      neglected and abused and deserves a warm bed and a kind hand to rub his or
+      her tummy.
+    </Text>
+    <Text className='mb-3'>
+      There are two easy ways to give monetary donations, electronically or
+      check*:
+    </Text>
+    <Text className='mb-3'>
+      *Little Paws Dachshund Rescue is federal tax exemption 501(c)(3) public
+      charity.
+    </Text>
+  </>
 );
 
 const SideBar = () => {

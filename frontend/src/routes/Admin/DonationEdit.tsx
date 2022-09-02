@@ -6,11 +6,12 @@ import { DONATE_UPDATE_RESET } from '../../constants/donationConstants';
 import GoBackBtn from '../../utils/GoBackBtn';
 import styled from 'styled-components';
 import { useRouteMatch, useHistory } from 'react-router-dom';
-import { LoadingImg, Text, UpdateBtn } from '../../components/styles/Styles';
+import { Text, UpdateBtn } from '../../components/styles/Styles';
 import FormContainer from '../../components/FormContainer';
 import { formatDateTime } from '../../utils/formatDateTime';
 import toaster from 'toasted-notes';
-import { ToastAlert } from '..';
+import { ToastAlert } from '../../components/common/ToastAlert';
+import { LoadingImg } from '../../components/LoadingImg';
 
 const ContactInfoContainer = styled.div`
   background: ${({ theme }) => theme.input.bg};

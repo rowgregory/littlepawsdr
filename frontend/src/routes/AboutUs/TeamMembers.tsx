@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Row, Image, Card, Col } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { listWhoWeAreUsers } from '../../actions/userActions';
 import Message from '../../components/Message';
-import { USER_UPDATE_PROFILE_RESET } from '../../constants/userConstants';
-import { LoadingImg, Text } from '../../components/styles/Styles';
+import { Text } from '../../components/styles/Styles';
 import { HorizontalLine } from '../../components/styles/product-details/Styles';
-
 import styled from 'styled-components';
+import { listManuallyAddedUsers } from '../../actions/manuallyAddUserActions';
+import { LoadingImg } from '../../components/LoadingImg';
 
 const ProfileCard = styled(Card)`
   background-color: ${({ theme }) => theme.card.bg};
@@ -36,29 +36,29 @@ const Position = styled(Card.Subtitle)`
 
 const TeamMembers = () => {
   const dispatch = useDispatch();
-  const [message, setMessage] = useState('');
 
   const userWhoWeAreList = useSelector((state: any) => state.userWhoWeAreList);
   const { loading, error, users } = userWhoWeAreList;
 
-  const userUpdateProfile = useSelector(
-    (state: any) => state.userUpdateProfile
+  const manuallyAddedUserList = useSelector(
+    (state: any) => state.manuallyAddedUserList
   );
-  const { success: successUPdateProfile } = userUpdateProfile;
+  const {
+    loading: loadingM,
+    error: errorM,
+    manuallyAddedUsers,
+  } = manuallyAddedUserList;
 
   useEffect(() => {
-    if (successUPdateProfile) {
-      setMessage('Profile Updated');
-      setTimeout(() => {
-        dispatch({ type: USER_UPDATE_PROFILE_RESET });
-      }, 2500);
-    }
     dispatch(listWhoWeAreUsers());
-  }, [dispatch, successUPdateProfile]);
+    dispatch(listManuallyAddedUsers());
+  }, [dispatch]);
 
   return (
     <>
-      {successUPdateProfile && <Message variant='success'>{message}</Message>}
+      <Text fontSize='2rem' marginBottom='1rem'>
+        Little Paws Crew
+      </Text>
       {error && <Message variant='danger'>{error}</Message>}
       <Row className='mx-auto d-flex flex-column px-0 mb-5'>
         <Text fontFamily={`Duru Sans`} marginBottom='1rem'>
@@ -129,52 +129,35 @@ const TeamMembers = () => {
             flexWrap: 'wrap',
           }}
         >
-          {loading
-            ? users?.map(
-                (user: any, i: number) =>
-                  user?.isVolunteer &&
-                  !user?.isAdmin && (
-                    <LoadingImg h='286.77px' w='300px' key={i} />
-                  )
-              )
-            : users?.map(
-                (user: any, i: number) =>
-                  user?.isVolunteer &&
-                  !user?.isAdmin && (
-                    <ProfileCard key={user._id} className='d-flex my-3'>
-                      <Card.Img
-                        src={
-                          user.profileCardTheme === ''
-                            ? 'https://res.cloudinary.com/doyd0ewgk/image/upload/v1612043441/field_tree2.jpg'
-                            : user.profileCardTheme
-                        }
-                        alt={`${user}=${i}`}
-                        style={{
-                          height: '200px',
-                          borderRadius: '12px 12px 0 0',
-                          objectFit: 'cover',
-                        }}
-                      />
+          {manuallyAddedUsers?.map((user: any, i: number) => (
+            <ProfileCard key={user._id} className='d-flex my-3'>
+              <Card.Img
+                src='https://res.cloudinary.com/doyd0ewgk/image/upload/v1612043441/field_tree2.jpg'
+                alt={`${user}=${i}`}
+                style={{
+                  height: '200px',
+                  borderRadius: '12px 12px 0 0',
+                  objectFit: 'cover',
+                }}
+              />
 
-                      <Card.Body className='d-flex flex-column mx-auto align-items-center'>
-                        <CardImg
-                          src={user.avatar}
-                          alt={`${user.name}-${i}`}
-                          width='170px'
-                          height='170px'
-                          roundedCircle
-                        />
-                        <Name className='pt-2'>
-                          <strong>{user.name}</strong>
-                        </Name>
-                        <Position className='pb-1'>
-                          {user.volunteerTitle}
-                        </Position>
-                        <Card.Text>{user.volunteerEmail}</Card.Text>
-                      </Card.Body>
-                    </ProfileCard>
-                  )
-              )}
+              <Card.Body className='d-flex flex-column mx-auto align-items-center'>
+                <CardImg
+                  src={user.image}
+                  alt={`${user.name}-${i}`}
+                  width='170px'
+                  height='170px'
+                  roundedCircle
+                />
+                <Name className='pt-2'>
+                  <strong>{user.name}</strong>
+                </Name>
+                <Position className='pb-4'>{user.affiliation}</Position>
+                <Position className='pb-1'>{user.message}</Position>
+                <Card.Text>{user.volunteerEmail}</Card.Text>
+              </Card.Body>
+            </ProfileCard>
+          ))}
         </Col>
       </Row>
     </>

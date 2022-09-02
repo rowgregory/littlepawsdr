@@ -15,6 +15,9 @@ const FosterApplication = () => {
   const isDay = theme.mode === 'day';
   return (
     <>
+      <Text fontSize='2rem' marginBottom='1rem'>
+        Foster Application
+      </Text>
       <Text marginBottom='1rem'>
         Fostering is our transitional step from a shelter/surrender to a forever
         home. During this time it’s important that we give each dachshund a safe

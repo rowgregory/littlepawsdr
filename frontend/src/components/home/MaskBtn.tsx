@@ -46,14 +46,13 @@ const Container = styled(Link)<{ linkkey: string }>`
   position: relative;
   width: fit-content;
   overflow: hidden;
-  font-family: Duru Sans;
   font-weight: 300;
   transition: 0.5s;
   letter-spacing: 1px;
   padding: 1rem 2rem;
   border: 1px solid
     ${({ theme, linkkey }) =>
-      linkkey === '/shop' ? theme.colors.quinary : theme.colors.primary};
+      linkkey === '/shop' ? theme.colors.quinary : theme.colors.secondary};
   box-sizing: border-box;
   :hover {
     text-decoration: none;
@@ -61,7 +60,7 @@ const Container = styled(Link)<{ linkkey: string }>`
 
   span {
     color: ${({ theme, linkkey }) =>
-      linkkey === '/shop' ? theme.colors.quinary : theme.colors.primary};
+      linkkey === '/shop' ? theme.colors.quinary : theme.colors.secondary};
     text-align: center;
     width: auto;
     font-family: 'Lato', sans-serif;
@@ -87,7 +86,7 @@ const Container = styled(Link)<{ linkkey: string }>`
     letter-spacing: 1px;
     font-weight: bold;
     background-color: ${({ theme, linkkey }) =>
-      linkkey === '/shop' ? theme.colors.quinary : theme.colors.primary};
+      linkkey === '/shop' ? theme.colors.quinary : theme.colors.secondary};
     -webkit-mask: url(${mixins.maskUrl});
     mask: url(${mixins.maskUrl});
     -webkit-mask-size: ${mixins.x1} ${mixins.y1};

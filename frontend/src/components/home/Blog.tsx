@@ -5,9 +5,10 @@ import { listBlogs } from '../../actions/blogActions';
 import { Image } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { LoadingImg, Text } from '../../components/styles/Styles';
+import { Text } from '../../components/styles/Styles';
 import toast from 'toasted-notes';
-import { ToastAlert } from '../../routes';
+import { ToastAlert } from '../../components/common/ToastAlert';
+import { LoadingImg } from '../../components/LoadingImg';
 
 const BlogsContainer = styled.div`
   display: grid;
@@ -43,7 +44,6 @@ const BlogTitle = styled.div`
   font-weight: 900;
   letter-spacing: -1px;
   font-size: 1.3rem;
-  font-family: Duru Sans;
   margin-bottom: 0.75rem;
   color: ${({ theme }) => theme.colors.primary};
 `;

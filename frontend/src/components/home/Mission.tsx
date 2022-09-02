@@ -33,7 +33,6 @@ const RescueTitle = styled.div`
   padding-right: 40px;
   width: 100%;
   margin-bottom: 2rem;
-  font-family: Duru Sans;
   font-size: 28px;
   color: ${({ theme }) => theme.text};
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
@@ -67,7 +66,6 @@ const StatementAndLinkContainer = styled.div`
 `;
 
 export const MissionStatement = styled.div`
-  font-family: 'Duru Sans';
   font-size: 1rem;
   color: ${({ theme }) => theme.text};
   font-weight: bold;

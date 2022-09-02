@@ -11,7 +11,7 @@ export const SectionContainer = styled.div`
 export const SectionTitle = styled(Link)`
   font-family: 'Ubuntu', sans-serif;
   font-size: 2.5rem;
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.secondary};
   display: flex;
   justify-content: center;
   margin-bottom: 1.5rem;
@@ -19,32 +19,8 @@ export const SectionTitle = styled(Link)`
   transition: 300ms;
   :hover {
     text-decoration: none;
-    color: ${({ theme }) => theme.colors.primary};
+    color: ${({ theme }) => theme.colors.secondary};
     letter-spacing: 0.5px;
-  }
-`;
-
-export const HomeLink = styled(Link)`
-  color: ${({ theme }) => theme.inverseText};
-  background: ${({ theme }) => theme.inverse};
-  border-radius: 30px;
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
-  font-family: 'Duru Sans';
-  cursor: pointer;
-  position: absolute;
-  bottom: 25px;
-  left: 20px;
-  transition: 300ms;
-  :hover {
-    transform: translateY(-3px);
-    text-decoration: none;
-    color: ${({ theme }) => theme.white};
-    background: ${({ theme }) => theme.colors.primary};
-    box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, 0.22);
-  }
-  :active {
-    transform: translateY(3px);
   }
 `;
 

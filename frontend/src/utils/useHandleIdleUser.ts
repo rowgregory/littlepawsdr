@@ -1,16 +1,18 @@
 import { useEffect, useRef } from 'react';
 import { useIdleTimer } from 'react-idle-timer';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../actions/userActions';
 
 export const useHandleIdleUser = (
   continuedSession: boolean,
   setContinuedSession: Function,
-  userInfo: any,
   handleShow: Function
 ) => {
   const dispatch = useDispatch();
   let logoutId: any = useRef();
+
+  const userLogin = useSelector((state: any) => state.userLogin);
+  const { userInfo } = userLogin;
 
   useEffect(() => {
     if (continuedSession) {
@@ -24,11 +26,7 @@ export const useHandleIdleUser = (
   }, [continuedSession, dispatch, logoutId, setContinuedSession, userInfo]);
 
   const handleOnIdle = () => {
-    const user: any = sessionStorage.getItem('userInfo')
-      ? JSON.parse(sessionStorage.getItem('userInfo') || '')
-      : null;
-
-    if (user) {
+    if (userInfo) {
       handleShow();
       setContinuedSession(true);
     }

@@ -28,12 +28,12 @@ const StyledLink = styled(Link)<{ active: string }>`
   border-top: ${({ theme }) => `1px solid ${theme.settings.sidebar.border}`};
   color: ${({ theme }) => theme.text};
   background: ${({ active, theme }) =>
-    active === 'true' ? theme.link.hoverBG : 'none'};
+    active === 'true' ? theme.input.bg : 'none'};
   box-shadow: ${({ active, theme }) =>
-    active === 'true' ? `inset 5px 0 0 0 ${theme.colors.primary}` : 'none'};
+    active === 'true' ? `inset 5px 0 0 0 ${theme.colors.secondary}` : 'none'};
   :hover {
     text-decoration: none;
-    background: ${({ theme }) => theme.link.hoverBG};
+    background: ${({ theme }) => theme.input.bg};
     color: ${({ theme }) => theme.text};
   }
 `;

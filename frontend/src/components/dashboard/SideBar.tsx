@@ -127,6 +127,11 @@ export const sidebarData = (): {
     icon: <UsersIcon />,
   },
   {
+    textKey: 'Volunteers',
+    linkKey: '/admin/manuallyAddedUserList',
+    icon: <UsersIcon />,
+  },
+  {
     textKey: 'Events',
     linkKey: '/admin/eventList',
     icon: <EventsIcon />,

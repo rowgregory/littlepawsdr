@@ -1,6 +1,5 @@
 import React, { FC, useEffect, useState } from 'react';
 import { GoogleMap, Marker, useLoadScript } from '@react-google-maps/api';
-import Message from './Message';
 import Geocode from 'react-geocode';
 import SpinningGlobe from './SpinningGlobe';
 
@@ -16,7 +15,10 @@ const DachshundMap: FC<MapProps> = ({ location }) => {
     width: '100%',
   };
 
-  const { isLoaded, loadError } = useLoadScript({
+  const {
+    isLoaded,
+    // loadError
+  } = useLoadScript({
     id: 'google-map-script',
     googleMapsApiKey: `${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`,
   });
@@ -46,9 +48,7 @@ const DachshundMap: FC<MapProps> = ({ location }) => {
       );
   }, [location]);
 
-  return loadError ? (
-    <Message variant='danger'>{loadError}</Message>
-  ) : isLoaded && Object.keys(latLng).length > 0 ? (
+  return isLoaded && Object.keys(latLng).length > 0 ? (
     <GoogleMap
       mapContainerStyle={containerStyle}
       zoom={7}

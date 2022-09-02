@@ -5,22 +5,20 @@ import { useDispatch, useSelector } from 'react-redux';
 import { listProducts, createProduct } from '../../actions/productActions';
 import DeleteModal from '../../components/DeleteModal';
 import { PRODUCT_CREATE_RESET } from '../../constants/productContstants';
-import {
-  LoadingImg,
-  StyledEditBtn,
-  Text,
-} from '../../components/styles/Styles';
+import { Text } from '../../components/styles/Styles';
 import { useHistory } from 'react-router-dom';
 import {
   CreateBtn,
   SearchBar,
   TableHead,
   TableRow,
+  StyledEditBtn,
 } from '../../components/styles/admin/Styles';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import styled from 'styled-components';
 import toaster from 'toasted-notes';
-import { ToastAlert } from '..';
+import { ToastAlert } from '../../components/common/ToastAlert';
+import { LoadingImg } from '../../components/LoadingImg';
 
 const ProductCountTD = styled.td<{ isProductLow?: boolean }>`
   color: ${({ theme, isProductLow }) =>

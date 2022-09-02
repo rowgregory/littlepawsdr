@@ -2,23 +2,60 @@ import React, { useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
 import { NAVBAR_DATA } from '../../utils/navbarData';
-import {
-  AvatarInitials,
-  StyledAvatar,
-  AvatarContainer,
-  LoginContainer,
-  Items,
-} from '../styles/NavbarStyles';
+import { AvatarInitials, FAIcons, SlyledToolTip } from '../styles/NavbarStyles';
 import { UserDropdown } from './UserDropdown';
 import { UserInfoProps } from '../common/PrivateRoute';
 import { useOutsideDetect } from '../../utils/useOutsideDetect';
 import styled from 'styled-components';
+import { Image, OverlayTrigger } from 'react-bootstrap';
+
+export const StyledAvatar = styled(Image)<{ isvisible?: string }>`
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  object-fit: cover;
+  filter: ${({ isvisible }) => (isvisible === 'true' ? 'brightness(1.3)' : '')};
+  transition: 300ms;
+  :hover {
+    filter: brightness(1.3);
+  }
+`;
+
+interface ItemsProps {
+  active?: boolean;
+  isMobile?: boolean;
+}
+
+export const Items = styled.span<ItemsProps>`
+  color: ${({ theme }) => theme.white};
+  font-size: 0.8rem;
+  position: absolute;
+  top: -5px;
+  left: 28px;
+  z-index: 9;
+  text-align: center;
+  cursor: pointer;
+  font-weight: bold;
+  background: red;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+
+  div {
+    position: absolute;
+    right: -14px;
+    top: 1px;
+    width: 50px;
+    font-size: 14px;
+  }
+`;
 
 export const DropDownContainer = styled.div<{ p: string }>`
   z-index: 500;
   position: absolute;
-  top: ${({ p }) => (p !== '/' ? '60px' : '90px')};
-  right: 60px;
+  top: 50px;
+  right: 1rem;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -30,48 +67,19 @@ export const DropDownContainer = styled.div<{ p: string }>`
   border-radius: 0.5rem;
 `;
 
-export const NavLink = styled(Link)<{ active?: string }>`
-  color: #fff;
-  text-decoration: none;
-  transition: 300ms;
-  font-size: 1rem;
-  padding: 0 0.5rem;
-  display: flex;
-  align-items: center;
-  background: ${({ theme, active }) =>
-    active === 'true' ? theme.header.link.bg : ''};
-  transition: 300ms;
-  box-shadow: ${({ theme, active }) =>
-    active === 'true'
-      ? `0 -10px 0 -5px ${theme.header.link.underline} inset`
-      : ''};
-  :hover {
-    color: #fff;
-    text-decoration: none;
-    background: ${({ theme }) => theme.header.link.hoverText};
-    box-shadow: ${({ theme }) =>
-      `0 -10px 0 -5px ${theme.header.link.underline} inset`};
-  }
-  :active {
-    filter: brightness(0.8);
-    box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, 0.22);
-  }
-`;
-
 export const Container = styled.nav`
   display: flex;
   align-items: center;
-  justify-content: space-evenly;
-  height: 100%;
-  padding: 0 1rem;
-  border-left: 1px solid rgb(255, 255, 255, 0.5);
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    padding: 0 3rem;
-    width: 250px;
-  }
 `;
 
-const RightSideNavbar = ({ addHeaderBg, isMobile }: any) => {
+const CaretUp = styled.i`
+  color: ${({ theme }) => theme.header.link.dropDown.bg};
+  position: absolute;
+  right: 27px;
+  top: 39px;
+`;
+
+const RightSideNavbar = () => {
   const { pathname: p } = useLocation();
   const dropDownRef = useRef(null) as any;
   const [isVisible, setIsVisible] = useState(false);
@@ -107,67 +115,73 @@ const RightSideNavbar = ({ addHeaderBg, isMobile }: any) => {
     switch (obj?.title) {
       case 'Avatar':
         return (
-          <AvatarContainer path={p}>
-            <StyledAvatar
-              isvisible={isVisible.toString()}
-              onClick={() => {
-                setMenuHeight(473.11);
-                setIsVisible(true);
-                setActiveMenu('main');
-              }}
-              path={p}
-              roundedCircle
-              src={userInfo?.avatar}
-              alt='user-avatar'
-            />
-          </AvatarContainer>
+          <StyledAvatar
+            isvisible={isVisible.toString()}
+            onClick={() => {
+              setMenuHeight(473.11);
+              setIsVisible(true);
+              setActiveMenu('main');
+            }}
+            src={userInfo?.avatar}
+            alt='user-avatar'
+          />
         );
       case 'Initials':
         return (
-          <AvatarContainer path={p}>
-            <AvatarInitials
-              onClick={() => setIsVisible(true)}
-              path={p}
-              w='2.8125rem'
-              h='2.8125rem'
-            >
-              {firstNameInitial}
-              {lastNameInitial}
-            </AvatarInitials>
-          </AvatarContainer>
+          <AvatarInitials
+            isvisible={isVisible.toString()}
+            onClick={() => setIsVisible(true)}
+            path={p}
+            w='40px'
+            h='40px'
+          >
+            {firstNameInitial}
+            {lastNameInitial}
+          </AvatarInitials>
+        );
+      case 'Donate':
+        return (
+          <OverlayTrigger
+            placement='bottom'
+            overlay={
+              <SlyledToolTip id={`tooltip-bottom`}>Donate</SlyledToolTip>
+            }
+          >
+            <FAIcons className='mr-2'>
+              <Link to='/donate'>
+                <i className='fas fa-dollar'></i>
+              </Link>
+            </FAIcons>
+          </OverlayTrigger>
         );
       case 'Cart':
         return (
-          <LoginContainer
-            active={(p.split('/')[1] === obj?.link?.split('/')[1]).toString()}
+          <OverlayTrigger
+            placement='bottom'
+            overlay={<SlyledToolTip id={`tooltip-bottom`}>Cart</SlyledToolTip>}
           >
-            <Link
-              to='/cart'
-              className='d-flex justify-content-center align-items-center'
-            >
-              <Items>{items}</Items>
-              <i
-                className={`fas fa-shopping-cart ${!isMobile && 'fa-2x'}`}
-                style={{ color: '#fff' }}
-              ></i>
-            </Link>
-          </LoginContainer>
+            <FAIcons className='mr-2'>
+              <Link to='/cart'>
+                <Items>{items}</Items>
+                <i className='fas fa-shopping-cart'></i>
+              </Link>
+            </FAIcons>
+          </OverlayTrigger>
         );
       case 'Sign In':
         return (
-          <LoginContainer
-            active={(p.split('/')[1] === obj?.link?.split('/')[1]).toString()}
+          <OverlayTrigger
+            placement='bottom'
+            overlay={
+              <SlyledToolTip id={`tooltip-bottom`}>Account</SlyledToolTip>
+            }
           >
-            <Link
-              to={obj.links[0]}
-              className='d-flex justify-content-center align-items-center'
-            >
-              <i
-                className={`fas fa-user ${!isMobile && 'fa-2x'}`}
-                style={{ color: '#fff' }}
-              ></i>
-            </Link>
-          </LoginContainer>
+            <FAIcons>
+              <Link to={obj.links[0]}>
+                <i className='fas fa-user'></i>
+              </Link>
+            </FAIcons>
+          </OverlayTrigger>
         );
       default:
         <></>;
@@ -183,15 +197,7 @@ const RightSideNavbar = ({ addHeaderBg, isMobile }: any) => {
       ))}
       {isVisible && (
         <>
-          <i
-            style={{
-              position: 'absolute',
-              right: '86px',
-              top: p !== '/' ? '49px' : '79px',
-              color: '#fff',
-            }}
-            className='fa-solid fa-sort-up fa-2x'
-          ></i>
+          <CaretUp className='fa-solid fa-sort-up fa-2x'></CaretUp>
           <DropDownContainer
             p={p}
             style={{

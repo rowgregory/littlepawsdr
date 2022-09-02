@@ -1,24 +1,48 @@
 import React from 'react';
-import {
-  AvatarHeaderLinks,
-  AvatarInitials,
-  LogoutBtn,
-  LogoutContainer,
-} from '../styles/NavbarStyles';
+import { AvatarInitials, LogoutContainer } from '../styles/NavbarStyles';
 import MyOrdersIcon from '../svg/MyOrdersIcon';
 import SettingsIcon from '../svg/SettingsIcon';
 import DashboardIcon from '../svg/DashboardIcon';
 import { Text } from '../styles/Styles';
 import { CSSTransition } from 'react-transition-group';
-import { NavDropdown, Image, Spinner } from 'react-bootstrap';
+import { NavDropdown, Image, Spinner, Button } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../../actions/userActions';
 import styled from 'styled-components';
 import OrdersIcon from '../svg/OrdersIcon';
 import EcardIcon from '../svg/EcardIcon';
+import { Link } from 'react-router-dom';
+
+const LogoutBtn = styled(Button)`
+  margin-top: 0.5rem;
+  background: transparent;
+  color: ${({ theme }) => theme.inverse};
+  border: 1px solid ${({ theme }) => theme.separator};
+  :hover {
+    background-color: ${({ theme }) => theme.colors.senary};
+  }
+`;
+
+const AvatarHeaderLinks = styled(Link)`
+  :hover {
+    background: ${({ theme }) => theme.secondaryBg};
+
+    text-decoration: none;
+    div {
+      color: ${({ theme }) => (theme.mode === 'day' ? theme.text : '#fff')} svg {
+        fill: #fff;
+        g {
+          path {
+            fill: #fff;
+          }
+        }
+      }
+    }
+  }
+`;
 
 const NavDropdownItem = styled(NavDropdown.Item)`
-  border-bottom: 0.25px solid ${({ theme }) => theme.separator};
+  border-bottom: 0.25px solid ${({ theme }) => theme.secondaryBg};
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -34,9 +58,9 @@ const UserImg = styled(Image)`
 const MyOrdersBtn = styled.div`
   cursor: pointer;
   :hover {
-    background: ${({ theme }) => theme.colors.secondary};
+    background: ${({ theme }) => theme.separator};
     div {
-      color: #fff !important;
+      color: ${({ theme }) => (theme.mode === 'day' ? theme.text : '#fff')};
       svg {
         fill: #fff;
         g {
@@ -107,7 +131,6 @@ const UserDropdown = ({
                 className='d-flex justify-content-between align-items-center px-4 py-3'
               >
                 <Text>Dashboard</Text>
-
                 <DashboardIcon />
               </AvatarHeaderLinks>
             )}
@@ -116,7 +139,6 @@ const UserDropdown = ({
               className='d-flex justify-content-between align-items-center px-4 py-3'
             >
               <Text>My Purchases</Text>
-
               <MyOrdersIcon />
             </MyOrdersBtn>
             <AvatarHeaderLinks

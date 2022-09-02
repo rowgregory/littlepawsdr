@@ -4,11 +4,12 @@ import { Row, Col, Image } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { getAvailableDachshunds } from '../../actions/dachshundsActions';
-import { LoadingImg, Text } from '../styles/Styles';
+import { Text } from '../styles/Styles';
 import { SectionContainer, SectionTitle } from './styles';
 import { keyframes } from 'styled-components';
 import toast from 'toasted-notes';
-import { ToastAlert } from '../../routes';
+import { ToastAlert } from '../../components/common/ToastAlert';
+import { LoadingImg } from '../LoadingImg';
 
 const DogContainer = styled(Row)`
   display: grid;
@@ -149,8 +150,9 @@ const GetReadText = styled.div`
 const OurLovablePals = () => {
   const dispatch = useDispatch();
   const dachshundsList = useSelector((state: any) => state.dachshunds);
-  let { loading, error, dachshunds } = dachshundsList;
-  loading = false;
+  const { loading, error, dachshunds } = dachshundsList;
+
+  localStorage.setItem('dachshunds', JSON.stringify(dachshunds));
 
   useEffect(() => {
     dispatch(getAvailableDachshunds());

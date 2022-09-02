@@ -5,14 +5,13 @@ import { Text } from '../../components/styles/Styles';
 const UnorderedList = styled.ul`
   padding-left: 20px;
   li {
-    color: ${({ theme }) => theme.card.text};
-    font-size: 1rem;
-    font-family: Duru Sans;
+    color: ${({ theme }) => theme.text};
   }
 `;
 
 export const AdoptionFeeTable = styled.table`
   margin: 4rem auto;
+  width: 100%;
   border: 1px solid rgba(200, 200, 200, 0.2);
   background: ${({ theme }) => theme.card.bg};
   tbody {
@@ -49,17 +48,12 @@ export const TableData = styled.td`
   }
 `;
 
-const Container = styled.div`
-  max-width: ${({ theme }) => theme.breakpoints[3]};
-  margin: 1rem;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    margin: 2rem 0 0;
-  }
-`;
-
 const AdoptionFees = ({ history }: any) => {
   return (
-    <Container>
+    <>
+      <Text fontSize='2rem' marginBottom='1rem'>
+        Adoption Fees
+      </Text>
       <Text marginBottom='1rem'>
         Please remember that regardless of whether you are adopting a purebred
         Dachshund or a Dachshund mix, the vetting costs are still the same.
@@ -146,7 +140,7 @@ const AdoptionFees = ({ history }: any) => {
       *Note: In accordance with the Department of Agriculture in MA, NH, ME and
       RI, All dogs adopted in these states are charged an additional $150 to
       cover regulatory requirements.
-    </Container>
+    </>
   );
 };
 

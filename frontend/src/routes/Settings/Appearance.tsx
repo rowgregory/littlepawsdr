@@ -1,15 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { updateUserProfile } from '../../actions/userActions';
 import Message from '../../components/Message';
-import {
-  Text,
-  SettingsPageHeader,
-  SettingsTitleContainer,
-} from '../../components/styles/Styles';
+import { Text, SettingsTitleContainer } from '../../components/styles/Styles';
 import Checkmark from '../../components/svg/Checkmark';
 import DarkPreview from '../../components/svg/DarkPreview';
 import LightPreview from '../../components/svg/LightPreview';
@@ -38,12 +33,22 @@ const SVGContainer = styled.div<{ active: boolean }>`
       : `2px solid ${theme.separator}`};
   cursor: pointer;
   border-radius: 0.5rem;
+  width: 228px;
 `;
 
 const ThemeName = styled(Text)`
   text-transform: capitalize;
   border-top: ${({ theme }) => `1px solid ${theme.separator}`};
   padding: 0.35rem 0 0.35rem 1.75rem;
+`;
+
+const ThemeWrapper = styled.div`
+  display: grid;
+  grid-template-columns: 1fr;
+  padding: 1rem;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
 `;
 
 const Appearance = () => {
@@ -70,51 +75,43 @@ const Appearance = () => {
       {errorUpdateProfile && (
         <Message variant='danger'>{errorUpdateProfile}</Message>
       )}
-      <Row>
-        <Col md={12}>
-          <SettingsTitleContainer className='d-flex justify-content-between align-items-center'>
-            <SettingsPageHeader>Theme preferences</SettingsPageHeader>
-            {checkmark && pathname === '/settings/appearance' && <Checkmark />}
-          </SettingsTitleContainer>
-        </Col>
-      </Row>
-      <Row>
-        <Col className='mt-4'>
-          <Text>
-            Choose how Little Paws looks to you. Select a single theme, or sync
-            with your system and automatically switch between day and night
-            themes.
-          </Text>
-        </Col>
-      </Row>
-      <Row>
-        <Col className='mt-4 d-flex justify-content-between'>
-          {themneData().map((obj, i) => (
-            <SVGContainer
-              className='d-flex flex-column'
-              active={obj.theme === userInfo?.theme}
-              onClick={() => {
-                dispatch(
-                  updateUserProfile({
-                    _id: userInfo._id,
-                    theme: obj?.theme,
-                  })
-                );
-                setCheckmark(false);
-              }}
-              key={i}
+
+      <SettingsTitleContainer className='d-flex justify-content-between align-items-center'>
+        <Text fontSize='1.5rem'>Theme preferences</Text>
+        {checkmark && pathname === '/settings/appearance' && <Checkmark />}
+      </SettingsTitleContainer>
+
+      <Text className='mb-3'>
+        Choose how Little Paws looks to you. Select a single theme, or sync with
+        your system and automatically switch between day and night themes.
+      </Text>
+
+      <ThemeWrapper>
+        {themneData().map((obj, i) => (
+          <SVGContainer
+            className='d-flex flex-column'
+            active={obj.theme === userInfo?.theme}
+            onClick={() => {
+              dispatch(
+                updateUserProfile({
+                  _id: userInfo._id,
+                  theme: obj?.theme,
+                })
+              );
+              setCheckmark(false);
+            }}
+            key={i}
+          >
+            <div
+              className='d-flex align-items-center'
+              style={{ height: '120px' }}
             >
-              <div
-                className='d-flex align-items-center'
-                style={{ height: '120px' }}
-              >
-                {obj?.icon}
-              </div>
-              <ThemeName>{obj?.theme}</ThemeName>
-            </SVGContainer>
-          ))}
-        </Col>
-      </Row>
+              {obj?.icon}
+            </div>
+            <ThemeName>{obj?.theme}</ThemeName>
+          </SVGContainer>
+        ))}
+      </ThemeWrapper>
     </>
   );
 };

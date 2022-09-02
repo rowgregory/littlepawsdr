@@ -3,7 +3,7 @@ import { Table, Button, Col, Form, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { listNewsletterEmail } from '../../actions/newsletterActions';
 import DeleteModal from '../../components/DeleteModal';
-import { LoadingImg, TableBody, Text } from '../../components/styles/Styles';
+import { Text } from '../../components/styles/Styles';
 import {
   SearchBar,
   TableHead,
@@ -12,7 +12,8 @@ import {
 import { useTheme } from 'styled-components';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import toaster from 'toasted-notes';
-import { ToastAlert } from '..';
+import { ToastAlert } from '../../components/common/ToastAlert';
+import { LoadingImg } from '../../components/LoadingImg';
 
 const NewsletterEmailList = () => {
   const dispatch = useDispatch();

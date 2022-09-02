@@ -1,20 +1,20 @@
 import React from 'react';
 import styled, { useTheme } from 'styled-components';
-import GenericPageLayout from '../components/GenericPageLayout';
 import {
   IntroText,
-  JumboAndWaveContainer,
-  Jumbo,
   TitleAndIntroTextContainer,
   Title,
 } from '../components/styles/Styles';
 
 const Container = styled.div`
   max-width: ${({ theme }) => theme.breakpoints[3]};
-  margin: 1rem;
   width: 100%;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    margin: 2rem 0 0;
+  margin-inline: auto;
+  margin-bottom: 5rem;
+  padding: 1rem;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[4]}) {
+    margin-top: 5rem;
+    padding: 0;
   }
 `;
 
@@ -23,9 +23,11 @@ const SurrenderApplicationIFrame = styled.iframe`
   height: 4600px;
 `;
 
-const Navigation = () => (
-  <JumboAndWaveContainer>
-    <Jumbo>
+const Surrender = () => {
+  const theme = useTheme() as any;
+  const isDay = theme.mode === 'day';
+  return (
+    <Container>
       <TitleAndIntroTextContainer>
         <Title>Surrender</Title>
         <IntroText>
@@ -82,33 +84,22 @@ const Navigation = () => (
           following Surrender Questionnaire:
         </IntroText>
       </TitleAndIntroTextContainer>
-    </Jumbo>
-  </JumboAndWaveContainer>
-);
-
-const Surrender = () => {
-  const theme = useTheme() as any;
-  const isDay = theme.mode === 'day';
-  return (
-    <GenericPageLayout jumbotron={<Navigation />}>
-      <Container>
-        {isDay ? (
-          <SurrenderApplicationIFrame
-            title='Surrender Application'
-            width='100%'
-            scrolling='no'
-            src='https://toolkit.rescuegroups.org/of/f?c=QCVXZJTH'
-          ></SurrenderApplicationIFrame>
-        ) : (
-          <SurrenderApplicationIFrame
-            title='Surrender Application'
-            width='100%'
-            scrolling='no'
-            src='https://toolkit.rescuegroups.org/of/f?c=RXYMKGSJ'
-          ></SurrenderApplicationIFrame>
-        )}
-      </Container>
-    </GenericPageLayout>
+      {isDay ? (
+        <SurrenderApplicationIFrame
+          title='Surrender Application'
+          width='100%'
+          scrolling='no'
+          src='https://toolkit.rescuegroups.org/of/f?c=QCVXZJTH'
+        ></SurrenderApplicationIFrame>
+      ) : (
+        <SurrenderApplicationIFrame
+          title='Surrender Application'
+          width='100%'
+          scrolling='no'
+          src='https://toolkit.rescuegroups.org/of/f?c=RXYMKGSJ'
+        ></SurrenderApplicationIFrame>
+      )}
+    </Container>
   );
 };
 

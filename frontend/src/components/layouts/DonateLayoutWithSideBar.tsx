@@ -37,19 +37,31 @@ const SideBar = styled.aside`
   }
 `;
 
+const Container = styled.div`
+  max-width: ${({ theme }) => theme.breakpoints[3]};
+  width: 100%;
+  margin-inline: auto;
+  margin-bottom: 5rem;
+  padding: 1rem;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[4]}) {
+    margin-top: 5rem;
+    padding: 0;
+  }
+`;
+
 const DonateLayoutWithSideBar: FC<DonateLayoutWithSideBarProps> = ({
   jumbotron,
   children,
   sideBar,
 }) => {
   return (
-    <>
+    <Container>
       <section>{jumbotron}</section>
       <Content>
         <Main>{children}</Main>
         <SideBar>{sideBar}</SideBar>
       </Content>
-    </>
+    </Container>
   );
 };
 

@@ -13,7 +13,7 @@ import styled, { keyframes } from 'styled-components';
 import { listMyOrders } from '../actions/orderActions';
 import NoItemsDefault from '../components/common/NoItemsDefault';
 import Message from '../components/Message';
-import { LoadingImg, StyledCard, Text } from '../components/styles/Styles';
+import { StyledCard, Text } from '../components/styles/Styles';
 import NoOrders from '../components/svg/NoOrders';
 import { localizeDate } from '../utils/localizeDate';
 import { SearchBar } from '../components/styles/admin/Styles';
@@ -26,6 +26,7 @@ import {
   LeftBtn,
   RightBtn,
 } from '../components/ContinueSessionModal';
+import { LoadingImg } from '../components/LoadingImg';
 
 const CardHeader = styled(Card.Header)`
   background: ${({ theme }) => theme.card.bg};

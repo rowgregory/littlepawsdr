@@ -9,7 +9,6 @@ import {
   UpdateBtn,
   Text,
   StyledUloadedImg,
-  LoadingImg,
 } from '../../components/styles/Styles';
 import GoBackBtn from '../../utils/GoBackBtn';
 import { EditBtn } from './RaffleWinnerEdit';
@@ -19,7 +18,8 @@ import uploadFileHandler from '../../utils/uploadFileHandler';
 import { eCardCategories } from '../../utils/eCardCategories';
 import { useRouteMatch, useHistory } from 'react-router-dom';
 import toaster from 'toasted-notes';
-import { ToastAlert } from '..';
+import { ToastAlert } from '../../components/common/ToastAlert';
+import { LoadingImg } from '../../components/LoadingImg';
 
 const ECardEdit = () => {
   const match = useRouteMatch<{ id: string }>();

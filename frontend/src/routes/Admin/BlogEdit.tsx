@@ -6,7 +6,6 @@ import FormContainer from '../../components/FormContainer';
 import Loader from '../../components/Loader';
 import { BLOG_UPDATE_RESET } from '../../constants/blogConstants';
 import {
-  LoadingImg,
   StyledUloadedImg,
   Text,
   UpdateBtn,
@@ -18,7 +17,8 @@ import { FormFile } from './EventEdit';
 import uploadFileHandler from '../../utils/uploadFileHandler';
 import { removePhoto } from '../../utils/removePhoto';
 import toaster from 'toasted-notes';
-import { ToastAlert } from '..';
+import { ToastAlert } from '../../components/common/ToastAlert';
+import { LoadingImg } from '../../components/LoadingImg';
 
 const BlogEdit = () => {
   const match = useRouteMatch<{ id: string }>();

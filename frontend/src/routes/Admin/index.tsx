@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { Switch, Route, useRouteMatch, Redirect } from 'react-router-dom';
 import PageNotFound from '../../components/common/PageNotFound';
-import { DashboardLayoutWithSideBar } from '../../components/dashboard/DashboardLayoutWithSideBar';
+import { DashboardLayoutWithSideBar } from '../../components/layouts/DashboardLayoutWithSideBar';
 import SideBar from '../../components/dashboard/SideBar';
 import Dashboard from './Dashboard';
 import DonationEdit from './DonationEdit';
@@ -24,6 +24,8 @@ import EducationTipList from './EducationTipList';
 import EducationTipEdit from './EducationTipEdit';
 import Private from '../../components/common/PrivateRoute';
 import { useSelector } from 'react-redux';
+import ManuallyAddedUserList from './ManuallyAddedUserList';
+import ManuallyAddedUserEdit from './ManuallyAddedUserEdit';
 
 const AdminRoutes: FC = () => {
   const { path } = useRouteMatch();
@@ -62,6 +64,14 @@ const AdminRoutes: FC = () => {
         <Private
           path={`${path}/education-tip/:id/edit`}
           component={EducationTipEdit}
+        />
+        <Private
+          path={`${path}/manuallyAddedUser/:id/edit`}
+          component={ManuallyAddedUserEdit}
+        />
+        <Private
+          path={`${path}/manuallyAddedUserList`}
+          component={ManuallyAddedUserList}
         />
         <Route path='/404' component={PageNotFound} />
         <Redirect to='/404' />

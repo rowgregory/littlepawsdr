@@ -154,7 +154,11 @@ export const getConfirmationOfOldPassword =
         config
       );
 
-      dispatch({ type: USER_OLD_PASSWORD_SUCCESS, payload: data });
+      if (data.message === 'Password is incorrect') {
+        dispatch({ type: USER_OLD_PASSWORD_FAIL, payload: data });
+      } else {
+        dispatch({ type: USER_OLD_PASSWORD_SUCCESS, payload: data });
+      }
     } catch (error: any) {
       dispatch({
         type: USER_OLD_PASSWORD_FAIL,

@@ -10,7 +10,7 @@ import { STATES } from '../../utils/states';
 import { createGuestOrder } from '../../actions/guestOrderActions';
 import { CART_CLEAR_ITEMS } from '../../constants/cartConstants';
 import { GUEST_USER_REGISTER_RESET } from '../../constants/guestUserConstants';
-import { LoadingImg, Text } from '../../components/styles/Styles';
+import { Text } from '../../components/styles/Styles';
 import {
   Container,
   LeftRail,
@@ -26,6 +26,7 @@ import PayPalButtonImgNight from '../../components/assets/payPalButtonsNight.png
 import { useTheme } from 'styled-components';
 import PasswordMeter from '../../components/PasswordMeter';
 import { register } from '../../actions/userActions';
+import { LoadingImg } from '../../components/LoadingImg';
 
 const GuestPlaceOrder = ({ history }: any) => {
   const dispatch = useDispatch();

@@ -9,9 +9,10 @@ import { listUsers, logout } from '../../actions/userActions';
 import LineChart from '../../components/dashboard/LineChart';
 import PieChart from '../../components/dashboard/PieChart';
 import Message from '../../components/Message';
-import { LoadingImg, TableBody, Text } from '../../components/styles/Styles';
+import { Text } from '../../components/styles/Styles';
 import { listECardOrders } from '../../actions/eCardOrderActions';
-import { TableHead } from '../../components/styles/admin/Styles';
+import { TableBody, TableHead } from '../../components/styles/admin/Styles';
+import { LoadingImg } from '../../components/LoadingImg';
 
 const DashboardContainer = styled.div`
   margin: 0 0.25rem;

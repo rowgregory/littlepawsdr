@@ -5,11 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { listEvents, createEvent } from '../../actions/eventActions';
 import { EVENT_CREATE_RESET } from '../../constants/eventConstants';
 import DeleteModal from '../../components/DeleteModal';
-import {
-  LoadingImg,
-  StyledEditBtn,
-  Text,
-} from '../../components/styles/Styles';
+import { Text } from '../../components/styles/Styles';
 import { useHistory } from 'react-router';
 import {
   CreateBtn,
@@ -17,11 +13,13 @@ import {
   TableHead,
   TableImg,
   TableRow,
+  StyledEditBtn,
 } from '../../components/styles/admin/Styles';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import toaster from 'toasted-notes';
-import { ToastAlert } from '..';
+import { ToastAlert } from '../../components/common/ToastAlert';
 import { formatDateTime } from '../../utils/formatDateTime';
+import { LoadingImg } from '../../components/LoadingImg';
 
 const EventList = () => {
   const history = useHistory();
@@ -148,8 +146,14 @@ const EventList = () => {
                   </td>
                   <td>
                     <Text>
-                      {formatDateTime(event?.startDate, { year: '2-digit' })} -
-                      {formatDateTime(event?.endDate, { year: '2-digit' })}
+                      {event?.startDate &&
+                        formatDateTime(event?.startDate, {
+                          month: 'short',
+                          day: 'numeric',
+                        })}{' '}
+                      -{' '}
+                      {event?.endDate &&
+                        formatDateTime(event?.endDate, { month: 'short' })}
                     </Text>
                   </td>
                   <td>

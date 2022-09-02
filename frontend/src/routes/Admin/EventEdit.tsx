@@ -8,7 +8,6 @@ import { EVENT_UPDATE_RESET } from '../../constants/eventConstants';
 import styled from 'styled-components';
 import GoBackBtn from '../../utils/GoBackBtn';
 import {
-  LoadingImg,
   StyledUloadedImg,
   Text,
   UpdateBtn,
@@ -18,7 +17,8 @@ import { removePhoto } from '../../utils/removePhoto';
 import uploadFileHandler from '../../utils/uploadFileHandler';
 import { useRouteMatch, useHistory } from 'react-router-dom';
 import toaster from 'toasted-notes';
-import { ToastAlert } from '..';
+import { ToastAlert } from '../../components/common/ToastAlert';
+import { LoadingImg } from '../../components/LoadingImg';
 
 const Gradient = styled(Form.Check)<{ selected?: boolean }>`
   border: ${({ selected }) =>

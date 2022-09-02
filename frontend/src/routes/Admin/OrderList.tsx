@@ -3,22 +3,20 @@ import { LinkContainer } from 'react-router-bootstrap';
 import { Table, Col, Form } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { listOrders } from '../../actions/orderActions';
-import {
-  LoadingImg,
-  StyledEditBtn,
-  TableBody,
-  Text,
-} from '../../components/styles/Styles';
+import { Text } from '../../components/styles/Styles';
 import { listGuestOrders } from '../../actions/guestOrderActions';
 import {
   SearchBar,
   TableHead,
   TableRow,
+  TableBody,
+  StyledEditBtn,
 } from '../../components/styles/admin/Styles';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import toaster from 'toasted-notes';
-import { ToastAlert } from '..';
+import { ToastAlert } from '../../components/common/ToastAlert';
 import { formatDateTime } from '../../utils/formatDateTime';
+import { LoadingImg } from '../../components/LoadingImg';
 
 const OrderList = () => {
   const dispatch = useDispatch();

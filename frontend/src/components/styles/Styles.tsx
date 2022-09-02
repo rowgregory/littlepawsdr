@@ -1,50 +1,5 @@
-import styled, { keyframes } from 'styled-components';
-import { Button, Card, Carousel, Image } from 'react-bootstrap';
-import { FC } from 'react';
-
-export const PageLayout = styled.div`
-  width: 100%;
-  overflow-x: hidden;
-`;
-
-export const LayoutWrapper = styled.div`
-  margin: 0 0.25rem;
-  @media (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    margin: 1rem;
-  }
-  @media (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    margin: 0 48px;
-  }
-`;
-
-export const AdminPageLayout = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  margin-top: 1.5rem;
-
-  @media (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    padding: 0;
-    flex-direction: column;
-  }
-`;
-
-export const ScrollTopBtn = styled(Button)`
-  position: fixed;
-  right: 20px;
-  bottom: 90px;
-  z-index: 2;
-`;
-
-export const PageHeader = styled.h4<{ fontSize?: string }>`
-  font-family: 'Ubuntu', sans-serif;
-  color: ${({ theme }) => theme.pageHeader};
-  font-size: ${({ fontSize }) => (fontSize ? fontSize : '24px')};
-  text-align: center;
-  @media (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    text-align: left;
-  }
-`;
+import styled from 'styled-components';
+import { Button, Card, Image } from 'react-bootstrap';
 
 export const StyledCard = styled(Card)`
   background: ${({ theme }) => theme.secondaryBg};
@@ -57,71 +12,13 @@ export const StyledCard = styled(Card)`
   }
 `;
 
-export const CardTitle = styled(Card.Title)`
-  font-size: 1.15rem;
+export const CardTitle = styled.div`
   margin: 0;
-  color: ${({ theme }) => theme.card.text};
-  font-weight: bold;
-`;
-
-export const StyledCarousel = styled(Carousel)`
-  background: ${({ theme }) => theme.card.bg};
-  border: 1px solid ${({ theme }) => theme.input.border};
-  width: 100%;
-  height: 100%;
-  aspect-ratio: 1/1;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    width: 425px;
-    height: 425px;
-  }
-`;
-
-export const TableBody = styled.tbody`
-  tr {
-    cursor: normal;
-    :nth-child(odd) {
-      background: ${({ theme }) => theme.table.odd};
-    }
-    :nth-child(even) {
-      background: ${({ theme }) => theme.table.even};
-    }
-
-    td {
-      border: none;
-      color: ${({ theme }) => theme.text};
-      font-size: 1rem;
-      vertical-align: inherit;
-      cursor: normal;
-      &.dashboard {
-        padding: 1.5rem 0.75rem;
-
-        @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-          padding: 1.5rem;
-        }
-      }
-    }
-  }
-`;
-
-export const StyledEditBtn = styled(Button)`
-  background: transparent;
-  border-radius: 50%;
-  border: none;
-  width: 3rem;
-  height: 3rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  i {
-    color: ${({ theme }) => theme.colors.primary};
-  }
-  :hover,
-  :active,
-  :focus {
-    background: ${({ theme }) => theme.separator} !important;
-    border: none !important;
-    box-shadow: none !important;
-  }
+  color: ${({ theme }) => theme.text};
+  font-weight: 700;
+  text-transform: uppercase;
+  font-family: Montseratt, sans-serif;
+  letter-spacing: 2.8px;
 `;
 
 export const Path = styled.path`
@@ -158,7 +55,9 @@ export const Text = styled.div<TextProps>`
   margin-left: ${({ marginLeft }) => (marginLeft ? marginLeft : '0')};
   margin-right: ${({ marginRight }) => (marginRight ? marginRight : '0')};
   font-weight: ${({ fontWeight }) => (fontWeight ? fontWeight : 300)};
-  font-family: ${({ fontFamily }) => (fontFamily ? fontFamily : `Duru Sans`)};
+  font-family: ${({ fontFamily }) => (fontFamily ? fontFamily : `Oswald`)};
+  /* font-family: ${({ fontFamily }) =>
+    fontFamily ? fontFamily : `Montserrat, sans-serif`}; */
   color: ${({ theme, color }) => (color ? color : theme.text)};
   text-align: ${({ textAlign }) => (textAlign ? textAlign : '')};
   padding: ${({ p }) => (p ? p : '')};
@@ -173,69 +72,22 @@ export const Text = styled.div<TextProps>`
   line-height: ${({ lineHeight }) => (lineHeight ? lineHeight : '')};
 `;
 
-export const SettingsPageHeader = styled.h4`
-  color: ${({ theme }) => theme.text};
-  font-weight: normal;
-  font-size: 1.5rem;
-  padding-bottom: 1rem;
-  margin-bottom: 0;
-  display: flex;
-  align-items: center;
-`;
-
-export const StyledUloadedImg = styled(Image)`
+export const StyledUloadedImg = styled(Image)<{ show?: any }>`
   width: 200px;
   height: 200px;
   object-fit: cover;
   border-radius: 50%;
   cursor: pointer;
+  transition: 300ms;
+  filter: ${({ show }) => (show === 'true' ? 'brightness(1.3)' : '')};
+  :hover {
+    filter: brightness(1.3);
+  }
 `;
 
 export const UpdateBtn = styled(Button)`
   background: ${({ theme }) => theme.colors.secondary};
 `;
-
-export const Shimmer = keyframes`
-  0% { background-position: 100% 100%; }
-  100% { background-position: 0% 0%; }
-`;
-
-const LoadingContainer = styled.div<{
-  h: string;
-  w: string;
-  mw: string;
-  borderRadius?: string;
-}>`
-  height: ${({ h }) => h};
-  width: ${({ w }) => w};
-  max-width: ${({ mw }) => (mw ? mw : '')};
-  border-radius: ${({ borderRadius }) => (borderRadius ? borderRadius : '')};
-  border: none;
-  position: relative;
-  animation: ${Shimmer} 1500ms infinite;
-  background-size: 400%;
-  background-image: ${({ theme }) => `linear-gradient(
-    90deg,
-    ${theme.loading.one} 0%,
-    ${theme.loading.one} 40%,
-    ${theme.loading.two} 50%,
-    ${theme.loading.two} 55%,
-    ${theme.loading.one} 65%,
-    ${theme.loading.one} 100%
-  );`};
-  aspect-ratio: 1/1;
-`;
-
-interface LoadingImmProps {
-  h?: any;
-  w?: any;
-  mw?: any;
-  borderRadius?: any;
-}
-
-export const LoadingImg: FC<LoadingImmProps> = ({ h, w, mw, borderRadius }) => {
-  return <LoadingContainer h={h} w={w} mw={mw} borderRadius={borderRadius} />;
-};
 
 export const JumboAndWaveContainer = styled.div`
   display: flex;
@@ -247,15 +99,15 @@ export const JumboAndWaveContainer = styled.div`
 export const Jumbo = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 1.5rem 1rem;
+  /* padding: 1.5rem 1rem; */
   border-radius: 0;
   width: 100%;
   max-width: ${({ theme }) => theme.breakpoints[3]};
-  background: ${({ theme }) => theme.colors.tertiary};
+  /* background: ${({ theme }) => theme.colors.tertiary}; */
   margin: 0rem;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
     border-radius: 1.25rem;
-    padding: 3rem 3.7rem;
+    /* padding: 3rem 3.7rem; */
     margin: 2rem;
     flex-direction: column;
   }
@@ -277,16 +129,13 @@ export const TitleAndIntroTextContainer = styled.div`
 `;
 
 export const IntroText = styled.div`
-  font-family: 'Duru Sans';
   font-size: 1rem;
-  color: #fff;
   flex: 1;
   margin-bottom: 1.5rem;
 `;
+
 export const Title = styled.div`
-  font-family: 'Duru Sans';
   font-size: 2rem;
-  color: #fff;
   margin-bottom: 1rem;
   text-align: center;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {

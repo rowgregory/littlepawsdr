@@ -4,31 +4,29 @@ import { CardTitle, Text } from '../../components/styles/Styles';
 import { faq } from '../../utils/faq';
 import styled from 'styled-components';
 
-const Container = styled.div`
-  max-width: ${({ theme }) => theme.breakpoints[3]};
-  margin: 1rem;
-  width: 100%;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    margin: 2rem 0 5rem 0;
-  }
-`;
-
 const StyledAccordion = styled(Accordion)`
   background: ${({ theme }) => theme.input.bg};
-  padding: 1rem;
-  margin-inline: 1rem;
-  border-radius: 0.875rem;
+  border: 1px solid ${({ theme }) => theme.text};
 `;
 
 const AdoptionFAQ = () => {
   const [idx, setIdx] = useState([]) as any;
   return (
-    <Container>
+    <>
+      <Text
+        fontFamily='EB Garamond'
+        fontSize='3.75rem'
+        marginBottom='3rem'
+        textAlign='center'
+      >
+        Frequently Asked Questions
+      </Text>
       {faq().map((obj, index) => (
         <StyledAccordion key={index} className='mb-3'>
           <Accordion.Toggle
             as={Button}
-            className='py-0 px-2 d-flex align-items-center justify-content-between w-100'
+            style={{ borderRadius: 'none !important' }}
+            className='py-0 d-flex align-items-center justify-content-between w-100 faq'
             variant='none'
             eventKey={`${index}`}
             onClick={() => {
@@ -37,10 +35,8 @@ const AdoptionFAQ = () => {
               else setIdx([...idx, index]);
             }}
           >
-            <CardTitle className='mr-3' style={{ textAlign: 'left' }}>
-              {obj.q}
-            </CardTitle>
-            <Text>
+            <CardTitle className='mr-3 mx-auto'>{obj.q}</CardTitle>
+            <Text className='p-3'>
               <i
                 className={`fas fa-chevron-${
                   !idx.includes(index) ? 'down' : 'up'
@@ -49,13 +45,24 @@ const AdoptionFAQ = () => {
             </Text>
           </Accordion.Toggle>
           <Accordion.Collapse eventKey={`${index}`}>
-            <Card.Body className='pt-2 px-2'>
-              <Text>{obj.a}</Text>
+            <Card.Body
+              className='w-100 pt-4 px-2 mx-auto'
+              style={{ maxWidth: '600px' }}
+            >
+              <Text
+                fontWeight={300}
+                style={{
+                  fontStyle: 'italic',
+                  fontFamily: 'Montseratt, sans-serif',
+                }}
+              >
+                {obj.a}
+              </Text>
             </Card.Body>
           </Accordion.Collapse>
         </StyledAccordion>
       ))}
-    </Container>
+    </>
   );
 };
 

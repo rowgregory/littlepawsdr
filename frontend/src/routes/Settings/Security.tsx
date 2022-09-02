@@ -2,29 +2,21 @@ import React, { useEffect, useState } from 'react';
 import { Button, Col, Form, Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import styled from 'styled-components';
+import toaster from 'toasted-notes';
 import {
   getConfirmationOfOldPassword,
   updateUserProfile,
 } from '../../actions/userActions';
+import { ToastAlert } from '../../components/common/ToastAlert';
 import HorizontalLoader from '../../components/HorizontalLoader';
-import Message from '../../components/Message';
 import PasswordMeter from '../../components/PasswordMeter';
-import {
-  SettingsPageHeader,
-  SettingsTitleContainer,
-  Text,
-} from '../../components/styles/Styles';
+import { SettingsTitleContainer, Text } from '../../components/styles/Styles';
 import Checkmark from '../../components/svg/Checkmark';
 import {
   USER_OLD_PASSWORD_RESET,
   USER_UPDATE_PROFILE_RESET,
 } from '../../constants/userConstants';
 import { isCapsLock } from '../../utils/capsLock';
-
-const ConfirmBtn = styled(Button)`
-  background: ${({ theme }) => theme.colors.secondary};
-`;
 
 const Settings = ({ history }: any) => {
   const dispatch = useDispatch();
@@ -34,7 +26,6 @@ const Settings = ({ history }: any) => {
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [checkmark, setCheckmark] = useState(false);
   const [message, setMessage] = useState('');
-  const [showMessage, setShowMessage] = useState(false);
   const [capsLockOn, setCapsLocksOn] = useState(false);
 
   const userLogin = useSelector((state: any) => state.userLogin);
@@ -76,12 +67,10 @@ const Settings = ({ history }: any) => {
           setNewPassword('');
           setConfirmNewPassword('');
         } else {
-          setShowMessage(true);
           setMessage('Password not strong enough');
         }
       } else {
-        setShowMessage(true);
-        setMessage('Your new passwords did not match');
+        setMessage('Passwords do not match');
       }
     } else {
       dispatch(getConfirmationOfOldPassword(userInfo._id, oldPassword));
@@ -96,34 +85,47 @@ const Settings = ({ history }: any) => {
       setOldPassword('');
       dispatch({ type: USER_UPDATE_PROFILE_RESET });
       dispatch({ type: USER_OLD_PASSWORD_RESET });
+      toaster.notify(
+        ({ onClose }) => ToastAlert('Password updated', onClose, 'success'),
+        {
+          position: 'bottom',
+          duration: 20000,
+        }
+      );
     } else {
       dispatch({ type: USER_OLD_PASSWORD_RESET });
 
-      document.addEventListener('keypress', e => {
+      document.addEventListener('keypress', (e) => {
         const result = isCapsLock(e);
         setCapsLocksOn(result);
       });
     }
   }, [dispatch, history, success, userInfo]);
 
+  useEffect(() => {
+    if (errorPasswordConfirmation || message) {
+      toaster.notify(
+        ({ onClose }) =>
+          ToastAlert(
+            errorPasswordConfirmation?.message || message,
+            onClose,
+            'error'
+          ),
+        {
+          position: 'bottom',
+          duration: 20000,
+          type: 'error',
+        }
+      );
+    }
+  }, [errorPasswordConfirmation, message]);
+
   return (
     <div className='w-100'>
-      {errorPasswordConfirmation && (
-        <Message variant='danger'>{errorPasswordConfirmation}</Message>
-      )}
-      {message !== '' && (
-        <Message
-          showMessage={showMessage}
-          setShowMessage={setShowMessage}
-          variant='danger'
-        >
-          {message}
-        </Message>
-      )}
       <Row>
         <Col md={12}>
           <SettingsTitleContainer className='d-flex justify-content-between align-items-center'>
-            <SettingsPageHeader>
+            <Text fontSize='1.5rem'>
               {capsLockOn ? (
                 <>
                   Change password
@@ -134,7 +136,7 @@ const Settings = ({ history }: any) => {
               ) : (
                 'Change password'
               )}
-            </SettingsPageHeader>
+            </Text>
             {checkmark && pathname === '/settings/security' && <Checkmark />}
           </SettingsTitleContainer>
         </Col>
@@ -147,8 +149,9 @@ const Settings = ({ history }: any) => {
           <Form onSubmit={submitHandler} className='pl-3 mt-4'>
             <div style={{ position: 'relative' }}>
               <Form.Group controlId='oldPassword'>
-                <Form.Label>Old password</Form.Label>
+                <Form.Label>Current Password</Form.Label>
                 <Form.Control
+                  placeholder='Current Password'
                   disabled={passwordConfirmation === true}
                   type='password'
                   value={oldPassword || ''}
@@ -187,19 +190,26 @@ const Settings = ({ history }: any) => {
                 </Form.Group>
               </>
             )}
-            <ConfirmBtn type='submit' disabled={oldPassword === ''}>
+            {passwordConfirmation === true && (
+              <Row>
+                <Col lg={8} md={12} className='pr-4 my-3'>
+                  <PasswordMeter
+                    validations={validations}
+                    strength={strength}
+                  />
+                </Col>
+              </Row>
+            )}
+            <Button
+              variant='success'
+              type='submit'
+              disabled={oldPassword === ''}
+            >
               {passwordConfirmation === true ? 'Update' : 'Confirm'}
-            </ConfirmBtn>
+            </Button>
           </Form>
         </Col>
       </Row>
-      {passwordConfirmation === true && (
-        <Row>
-          <Col lg={8} md={12} className='pr-4 my-3'>
-            <PasswordMeter validations={validations} strength={strength} />
-          </Col>
-        </Row>
-      )}
     </div>
   );
 };

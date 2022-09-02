@@ -1,22 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Form, Button, Col, Spinner, Image } from 'react-bootstrap';
+import { Form, Button, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../actions/userActions';
-import Message from '../components/Message';
 import { Text } from '../components/styles/Styles';
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 import { isCapsLock } from '../utils/capsLock';
-import NightLogo from '../components/assets/neon-purple-logo.png';
-import DayLogo from '../components/assets/transparent-logo.png';
 import toaster from 'toasted-notes';
-import { ToastAlert } from '.';
+import { ToastAlert } from '../components/common/ToastAlert';
 export interface ThemeProps {
   mode: string;
 }
 export const StyledLink = styled(Link)`
   :hover {
-    text-decoration: none;
+    filter: brightness(1.5);
   }
 `;
 
@@ -24,28 +21,33 @@ export const Container = styled.div`
   display: flex;
   justify-content: flex-start;
   flex-direction: column;
-  background: #fff;
+  background: ${({ theme }) => theme.input.bg};
   min-height: 100vh;
+  padding-top: 3rem;
 `;
 
-const CreateAccountContainer = styled(Col)`
+export const CreateAccountContainer = styled.div`
   color: ${({ theme }) => theme.text};
-  text-align: center;\
+  text-align: center;
   border: 1px solid ${({ theme }) => theme.input.border};
   border-radius: 0.4rem;
 `;
-const FormContainer = styled.div`
-  background: ${({ theme }) => theme.bg};
-  border: 1px solid ${({ theme }) => theme.input.border};
+
+export const FormContainer = styled.div`
+  margin-top: 1rem;
+  padding: 1rem;
+  background: ${({ theme }) =>
+    theme.mode === 'night' ? '#161b22' : '#f5f8fa'};
+  border: 0.8px solid
+    ${({ theme }) => (theme.mode === 'night' ? '#21262d' : '#ededed')};
+  border-radius: 0.4rem;
 `;
 
 const Login = ({ location, history }: any) => {
-  const theme = useTheme() as ThemeProps;
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [capsLockOn, setCapsLocksOn] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const isDay = theme.mode === 'day' ? true : false;
   const dispatch = useDispatch();
 
   const userLogin = useSelector((state: any) => state.userLogin);
@@ -86,37 +88,14 @@ const Login = ({ location, history }: any) => {
 
   return (
     <Container>
-      {error && <Message variant='danger'>{error}</Message>}
       <div
-        className='mx-auto px-3'
+        className='mx-auto px-3 pt-4'
         style={{ maxWidth: '340px', width: '100%' }}
       >
-        <Link to='/'>
-          <Image
-            src={isDay ? DayLogo : NightLogo}
-            alt='Little Paws Dachshund Rescue'
-            width='150px'
-            style={{
-              objectFit: 'cover',
-              cursor: 'pointer',
-              marginInline: 'auto',
-              display: 'flex',
-              aspectRatio: '1/1',
-            }}
-          />
-        </Link>
-        <Text
-          letterSpacing='-1px'
-          fontSize='1.5rem'
-          textAlign='center'
-          marginBottom='0.65rem'
-        >
+        <Text fontSize='1.5rem' textAlign='center' marginBottom='0.65rem'>
           Sign in to Little Paws
         </Text>
-        <FormContainer
-          className='p-3 mt-3'
-          style={{ background: '#f5f8fa', borderRadius: '0.4rem' }}
-        >
+        <FormContainer>
           <Form onSubmit={submitHandler}>
             <Form.Group controlId='email'>
               <Form.Label>Email Address</Form.Label>
@@ -142,7 +121,12 @@ const Login = ({ location, history }: any) => {
                   )}
                 </Form.Label>
                 <Form.Label>
-                  <StyledLink to='/forgot-password'>Forgot Password</StyledLink>
+                  <StyledLink
+                    style={{ fontSize: '12px' }}
+                    to='/forgot-password'
+                  >
+                    Forgot Password?
+                  </StyledLink>
                 </Form.Label>
               </div>
               <div
@@ -170,24 +154,19 @@ const Login = ({ location, history }: any) => {
             <Button
               disabled={loading}
               type='submit'
-              className='d-flex align-items-center border-0 w-100 bg-success'
+              className='d-flex align-items-center border-0 w-100 bg-success justify-content-center'
             >
-              {loading ? (
-                <div className='d-flex align-items-center mx-auto'>
-                  <Text color='#fff'>Signing In...</Text>
-                  <Spinner
-                    as='span'
-                    animation='border'
-                    size='sm'
-                    role='status'
-                    aria-hidden='true'
-                    className='mr-2'
-                  />
-                </div>
-              ) : (
-                <Text className='mx-auto' color='#fff' fontSize='0.875rem'>
-                  Sign In
-                </Text>
+              <Text color='#fff'>
+                Sign{loading && 'ing'} In{loading && '...'}&nbsp;&nbsp;
+              </Text>
+              {loading && (
+                <Spinner
+                  as='span'
+                  animation='border'
+                  size='sm'
+                  role='status'
+                  aria-hidden='true'
+                />
               )}
             </Button>
           </Form>

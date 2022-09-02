@@ -5,7 +5,8 @@ import { listRaffleWinners } from '../../actions/raffleWinnerActions';
 import Message from '../../components/Message';
 import RaffleWinnerModal from '../../components/raffle-winners/RaffleWinnerModal';
 import Timeline from '../../components/raffle-winners/Timeline';
-import { LoadingImg } from '../../components/styles/Styles';
+import { LoadingImg } from '../../components/LoadingImg';
+import { Text } from '../../components/styles/Styles';
 
 const RaffleWinners = () => {
   const dispatch = useDispatch();
@@ -24,6 +25,9 @@ const RaffleWinners = () => {
 
   return (
     <>
+      <Text fontSize='2rem' marginBottom='1rem'>
+        Raffle Winners
+      </Text>
       <RaffleWinnerModal
         show={show}
         handleClose={handleClose}

@@ -69,7 +69,7 @@ export const timeLineData = () => [
   },
 ];
 
-export const Month = styled.div<{ bg?: string }>`
+export const Month = styled.div<{ bg?: string; donothover?: boolean }>`
   background-color: ${({ bg }) => bg ?? bg};
   height: 3rem;
   width: 5rem;
@@ -81,9 +81,9 @@ export const Month = styled.div<{ bg?: string }>`
   color: #fff;
   font-size: 1.45rem;
   font-weight: bold;
-  cursor: pointer;
+  cursor: ${({ donothover }) => (donothover ? '' : 'pointer')};
   :hover {
-    filter: brightness(0.8);
+    filter: ${({ donothover }) => (donothover ? '' : 'brightness(0.8)')};
   }
 `;
 
