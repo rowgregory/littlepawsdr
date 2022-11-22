@@ -24,6 +24,7 @@
   "include": [
     "src", 
     "../backend/utils/crypto.js",
-    "audio.d.ts"
+    "audio.d.ts",
+    "react-google-recaptcha.d.ts"
   ],
 }
