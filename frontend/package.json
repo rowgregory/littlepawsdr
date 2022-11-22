@@ -15,6 +15,7 @@
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
     "@types/googlemaps": "^3.43.3",
+    "@types/react": "^17.0.52",
     "@types/react-bootstrap": "^0.32.31",
     "@types/react-dom": "^17.0.0",
     "@types/react-geocode": "^0.2.0",
