@@ -16,6 +16,7 @@ const API = {
       );
 
       const data = await response.json();
+      console.log('data: ', data);
       return data;
     } catch (err) {
       console.log('error => ', err);
@@ -59,9 +60,10 @@ const API = {
       );
 
       const data = await response.json();
+
       return data;
     } catch (err) {
-      console.log('error => ', err);
+      return { message: 'Rescue Groups Error' };
     }
   },
 };

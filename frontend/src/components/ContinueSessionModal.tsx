@@ -23,7 +23,7 @@ const shakeAnim = keyframes`
 `;
 export const Content = styled.div<{ shake?: any }>`
   background: ${({ theme }) => theme.bg};
-  padding: 1rem;
+  padding: 16px;
   transform: translate3d(0, 0, 0);
   perspective: 1000px;
   animation: ${({ shake }) =>
@@ -36,30 +36,31 @@ export const Content = styled.div<{ shake?: any }>`
 
 export const Header = styled(Modal.Header)`
   background: ${({ theme }) => theme.bg};
-  padding: 3rem 2rem 2rem 2rem;
+  padding: 48px 32px 32px 32px;
   border: 0;
   position: relative;
-  border-bottom: 0.5px solid ${({ theme }) => theme.colors.quaternary};
+  border-bottom: 0.5px solid ${({ theme }) => theme.colors.quinary};
 `;
 
 export const Title = styled(Modal.Title)`
-  color: ${({ theme }) => theme.text};
-  font-size: 1.25rem;
+  color: #3b3b3c;
+  font-size: 16px;
   span {
+    font-size: 16px;
     color: ${({ theme }) => theme.colors.red};
   }
 `;
 
 export const Body = styled(Modal.Body)`
-  color: ${({ theme }) => theme.text};
+  color: #3b3b3c;
   background: ${({ theme }) => theme.bg};
-  font-size: 1rem;
-  padding: 1rem 2rem;
+  font-size: 14px;
+  padding: 16px 32px;
 `;
 
 export const Footer = styled(Modal.Footer)`
-  color: ${({ theme }) => theme.text};
-  padding: 2rem;
+  color: #3b3b3c;
+  padding: 32px;
   background: ${({ theme }) => theme.bg};
   border: 0;
 `;
@@ -69,45 +70,43 @@ const Contdown = styled.div`
   content: '';
   top: 20px;
   right: 20px;
-  color: ${({ theme }) => theme.text};
-  font-size: 1.2rem;
+  color: #3b3b3c;
+  font-size: 24px;
   font-weight: bold;
   color: ${({ theme }) => theme.colors.primary};
 `;
 
 export const LeftBtn = styled.button`
-  padding: 0.5rem 1rem;
-  border: 1.5px solid ${({ theme }) => theme.colors.primary};
-  color: ${({ theme }) => theme.colors.primary};
-  font-family: 'Libre Franklin', sans-serif;
+  padding: 8px 16px;
+  border: 1.5px solid ${({ theme }) => theme.colors.quinary};
+  color: ${({ theme }) => theme.colors.quinary};
   cursor: pointer;
   transition: 300ms;
   border-radius: 0;
   background: transparent;
   :hover {
     transition: 300ms;
-    border: 1.5px solid ${({ theme }) => theme.colors.primary};
-    background: ${({ theme }) => theme.colors.primary};
+    border: 1.5px solid ${({ theme }) => theme.colors.quinary};
+    background: ${({ theme }) => theme.colors.quinary};
+    color: #fff !important;
     a {
       text-decoration: none;
-      color: #fff !important;
     }
   }
 `;
 
 export const RightBtn = styled.button`
-  padding: 0.5rem 1rem;
-  border: 1.5px solid ${({ theme }) => theme.colors.primary};
-  background: ${({ theme }) => theme.colors.primary};
-  font-family: 'Libre Franklin', sans-serif;
+  padding: 8px 16px;
+  border: 1.5px solid ${({ theme }) => theme.colors.quinary};
+  background: ${({ theme }) => theme.colors.quinary};
   color: #fff;
   cursor: pointer;
   transition: 300ms;
   border-radius: 0;
   :hover {
-    background: transparent;
-    border: 1.5px solid ${({ theme }) => theme.colors.primary};
-    color: ${({ theme }) => theme.colors.primary};
+    filter: brightness(0.9);
+    border: 1.5px solid ${({ theme }) => theme.colors.quinary};
+    color: #fff;
   }
 `;
 

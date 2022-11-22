@@ -4,7 +4,8 @@ import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { updateUserProfile } from '../../actions/userActions';
 import Message from '../../components/Message';
-import { Text, SettingsTitleContainer } from '../../components/styles/Styles';
+import { SettingsTitleContainer } from '../../components/styles/profile/Styles';
+import { Text } from '../../components/styles/Styles';
 import Checkmark from '../../components/svg/Checkmark';
 import DarkPreview from '../../components/svg/DarkPreview';
 import LightPreview from '../../components/svg/LightPreview';
@@ -55,6 +56,7 @@ const Appearance = () => {
   const [checkmark, setCheckmark] = useState(false);
   const { pathname } = useLocation();
   const dispatch = useDispatch();
+
   const userLogin = useSelector((state: any) => state.userLogin);
   const { userInfo } = userLogin;
 
@@ -72,46 +74,49 @@ const Appearance = () => {
   }, [dispatch, successUpdateProfile]);
   return (
     <>
-      {errorUpdateProfile && (
+      {errorUpdateProfile ? (
         <Message variant='danger'>{errorUpdateProfile}</Message>
+      ) : (
+        <>
+          <SettingsTitleContainer className='d-flex justify-content-between align-items-center'>
+            <Text fontSize='1.5rem'>Theme preferences</Text>
+            {checkmark && pathname === '/settings/appearance' && <Checkmark />}
+          </SettingsTitleContainer>
+
+          <Text className='mb-3'>
+            Choose how Little Paws looks to you. Select a single theme, or sync
+            with your system and automatically switch between day and night
+            themes.
+          </Text>
+
+          <ThemeWrapper>
+            {themneData().map((obj, i) => (
+              <SVGContainer
+                className='d-flex flex-column'
+                active={obj.theme === userInfo?.theme}
+                onClick={() => {
+                  dispatch(
+                    updateUserProfile({
+                      _id: userInfo._id,
+                      theme: obj?.theme,
+                    })
+                  );
+                  setCheckmark(false);
+                }}
+                key={i}
+              >
+                <div
+                  className='d-flex align-items-center'
+                  style={{ height: '120px' }}
+                >
+                  {obj?.icon}
+                </div>
+                <ThemeName>{obj?.theme}</ThemeName>
+              </SVGContainer>
+            ))}
+          </ThemeWrapper>
+        </>
       )}
-
-      <SettingsTitleContainer className='d-flex justify-content-between align-items-center'>
-        <Text fontSize='1.5rem'>Theme preferences</Text>
-        {checkmark && pathname === '/settings/appearance' && <Checkmark />}
-      </SettingsTitleContainer>
-
-      <Text className='mb-3'>
-        Choose how Little Paws looks to you. Select a single theme, or sync with
-        your system and automatically switch between day and night themes.
-      </Text>
-
-      <ThemeWrapper>
-        {themneData().map((obj, i) => (
-          <SVGContainer
-            className='d-flex flex-column'
-            active={obj.theme === userInfo?.theme}
-            onClick={() => {
-              dispatch(
-                updateUserProfile({
-                  _id: userInfo._id,
-                  theme: obj?.theme,
-                })
-              );
-              setCheckmark(false);
-            }}
-            key={i}
-          >
-            <div
-              className='d-flex align-items-center'
-              style={{ height: '120px' }}
-            >
-              {obj?.icon}
-            </div>
-            <ThemeName>{obj?.theme}</ThemeName>
-          </SVGContainer>
-        ))}
-      </ThemeWrapper>
     </>
   );
 };

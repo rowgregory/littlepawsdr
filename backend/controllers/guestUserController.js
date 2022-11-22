@@ -1,8 +1,9 @@
 import GuestUser from '../models/guestUserModel.js';
 import User from '../models/userModel.js';
 import asyncHandler from 'express-async-handler';
-import { generateToken } from '../utils/generateToken.js';
-import { v4 as uuidv4 } from 'uuid';
+
+const validateEmailRegex =
+  /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
 
 // @desc    Register a new guest user
 // @route   POST /api/guest
@@ -13,44 +14,30 @@ const registerGuestUser = asyncHandler(async (req, res) => {
 
     const userAlreadyCreatedAnAccount = await User.findOne({ email });
     if (userAlreadyCreatedAnAccount)
-      return res.status(400).send({
+      return res.status(400).json({
         message: 'Please sign in.',
       });
 
+    if (!validateEmailRegex.test(email))
+      return res.status(400).json({ message: 'Invalid email' });
+
     const guestUserExists = await GuestUser.findOne({ email });
+    if (guestUserExists)
+      return res.status(200).json({ guestUser: guestUserExists });
+    if (!guestUserExists) {
+      const guestUser = await GuestUser.create({
+        email,
+      });
 
-    const deleteExistingGuestUser = cb => {
-      if (guestUserExists) {
-        res.json(guestUserExists);
-      } else return cb();
-    };
+      if (guestUser) {
+        const createdGuestUser = await guestUser.save();
 
-    const createNewGuestUser = async () => {
-      if (['.', '@'].every(el => email.includes(el))) {
-        const guestUser = await GuestUser.create({
-          email,
-          token: generateToken(uuidv4()),
-        });
-
-        console.log(`New guest user created ${guestUser}`);
-
-        if (guestUser) {
-          const createdGuestUser = await guestUser.save();
-
-          res.json({
-            _id: createdGuestUser._id,
-            email: createdGuestUser.email,
-            token: createdGuestUser.token,
-          });
-        }
-      } else {
-        res.status(400).send({
-          message: 'Please enter a valid email',
+        res.json({
+          _id: createdGuestUser._id,
+          email: createdGuestUser.email,
         });
       }
-    };
-
-    deleteExistingGuestUser(createNewGuestUser);
+    }
   } catch (error) {
     res.status(400).send({
       message: 'Invalid user data',

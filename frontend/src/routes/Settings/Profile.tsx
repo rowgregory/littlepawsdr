@@ -1,84 +1,40 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Form,
-  Button,
-  Row,
-  Col,
-  Spinner,
-  Image,
-  Accordion,
-} from 'react-bootstrap';
+import { Form, Image } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import Loader from '../../components/Loader';
 import { getUserDetails, updateUserProfile } from '../../actions/userActions';
-import { USER_UPDATE_PROFILE_RESET } from '../../constants/userConstants';
-import styled from 'styled-components';
 import {
-  SettingsTitleContainer,
-  StyledUloadedImg,
-  Text,
-} from '../../components/styles/Styles';
+  USER_DETAILS_RESET,
+  USER_UPDATE_PROFILE_RESET,
+} from '../../constants/userConstants';
+import { Text, UpdateBtn } from '../../components/styles/Styles';
 import Checkmark from '../../components/svg/Checkmark';
-import { EditBtn } from '../Admin/RaffleWinnerEdit';
-import { FormFile } from '../Admin/EventEdit';
 import { removePhoto } from '../../utils/removePhoto';
-import HorizontalLoader from '../../components/HorizontalLoader';
 import uploadFileHandler from '../../utils/uploadFileHandler';
 import { themes } from '../../utils/profileCardThemes';
-import { ToastAlert } from '../../components/common/ToastAlert';
-import toaster from 'toasted-notes';
+import {
+  FormFile,
+  RemovePhoto,
+  UploadImageSquare,
+} from '../../components/styles/admin/Styles';
+import Message from '../../components/Message';
+import { defaultImages } from '../../utils/defaultImages';
+import PhotoUploadIcon from '../../components/svg/PhotoUploadIcon';
+import RemovePhotoIcon from '../../components/svg/RemovePhotoIcon';
+import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
+import { WelcomeText } from '../../components/styles/DashboardStyles';
+import { Accordion } from '../../components/styles/place-order/Styles';
+import {
+  CardTheme,
+  Container,
+  FirstCol,
+  Input,
+  Label,
+  ProfileCardImg,
+  ProfilePicCol,
+  SettingsTitleContainer,
+} from '../../components/styles/profile/Styles';
 
-const Container = styled.div`
-  padding: 0.25rem;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-    padding: 0;
-  }
-`;
-
-const CardTheme = styled(Form.Check)<{ selected?: boolean }>`
-  border: ${({ selected, theme }) =>
-    selected ? `3px solid ${theme.colors.secondary}` : '3px solid transparent'};
-  padding: 0.2rem;
-  margin-right: 0;
-  :hover {
-    border: 3px solid ${({ theme }) => theme.input.bg};
-  }
-`;
-
-const ProfilePicCol = styled(Col)`
-  justify-content: flex-start;
-  @media (min-width: 768px) {
-    justify-content: center;
-  }
-`;
-
-const UpdateBtn = styled(Button)`
-  display: flex;
-  align-items: center;
-`;
-
-const HorizontalLoaderContainer = styled.div`
-  position: relative;
-  width: 100%;
-  max-width: 800px;
-  overflow: hidden;
-`;
-
-const ProfileCardImg = styled(Image)`
-  width: 100px;
-  height: 100px;
-  object-fit: cover;
-  cursor: pointer;
-`;
-
-const FirstCol = styled(Col)`
-  padding-right: 0.25rem;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-    padding-right: 1.5rem;
-  }
-`;
-
-const Profile = ({ history }: any) => {
+const Profile = () => {
   const dispatch = useDispatch();
   const [name, setName] = useState('');
   const [avatar, setAvatar] = useState('') as any;
@@ -86,49 +42,39 @@ const Profile = ({ history }: any) => {
   const [volunteerTitle, setVolunteerTitle] = useState('');
   const [volunteerEmail, setVolunteerEmail] = useState('');
   const [profileCardTheme, setProfileCardTheme] = useState('');
-  const [see, setSee] = useState(false);
   const [checkmark, setCheckmark] = useState(false);
   const [publicId, setPublicId] = useState('') as any;
-  const [showImageOptions, setShowImageOptions] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const [submittedForm, setSubmittedForm] = useState(false);
+  const [file, setFile] = useState({}) as any;
+  const [imgUploadStatus, setImageUploadStatus] = useState('') as any;
+  const [cloudinaryData, setClouadinaryData] = useState({}) as any;
+  const [showCardThemes, setShowCardThemes] = useState(false);
 
-  const userDetails = useSelector((state: any) => state.userDetails);
-  const { loading, error, user } = userDetails;
-
-  const userLogin = useSelector((state: any) => state.userLogin);
-  const { userInfo } = userLogin;
-
-  const userUpdateProfile = useSelector(
-    (state: any) => state.userUpdateProfile
-  );
-  const { success: successUpdateProfile, loading: loadingUpdateProfile } =
-    userUpdateProfile;
-
-  const uploadDefaultImgUrl =
-    'https://res.cloudinary.com/doyd0ewgk/image/upload/v1611718776/profile_blank.png';
+  const {
+    userDetails: { loading, error, user },
+    userUpdateProfile: { success: successUpdate, loading: loadingUpdate },
+  } = useSelector((state: any) => state);
 
   useEffect(() => {
-    if (!userInfo) {
-      history.push('/login');
-    }
+    dispatch(getUserDetails('profile'));
+    dispatch({ type: USER_UPDATE_PROFILE_RESET });
+    dispatch({ type: USER_DETAILS_RESET });
+    successUpdate && setCheckmark(true);
+    setSubmittedForm(false);
+    setUploading(false);
+    setFile({});
+    setTimeout(() => setCheckmark(false), 5000);
+  }, [dispatch, successUpdate]);
 
-    if (successUpdateProfile) {
-      dispatch(getUserDetails('profile'));
-      dispatch({ type: USER_UPDATE_PROFILE_RESET });
-      setCheckmark(true);
-      setTimeout(() => {
-        setCheckmark(false);
-      }, 5000);
-    } else if (!user?.name) {
-      dispatch(getUserDetails('profile'));
-      dispatch({ type: USER_UPDATE_PROFILE_RESET });
-    } else {
-      setName(user.name);
-      setAvatar(user.avatar);
-      setVolunteerTitle(user.volunteerTitle);
-      setVolunteerEmail(user.volunteerEmail);
-      setProfileCardTheme(user.profileCardTheme);
-      setPublicId(user.publicId);
+  useEffect(() => {
+    if (user) {
+      setName(user?.name);
+      setAvatar(user?.avatar);
+      setVolunteerTitle(user?.volunteerTitle);
+      setVolunteerEmail(user?.volunteerEmail);
+      setProfileCardTheme(user?.profileCardTheme);
+      setPublicId(user?.publicId);
     }
 
     return () => {
@@ -139,283 +85,210 @@ const Profile = ({ history }: any) => {
       setProfileCardTheme('');
       setPublicId('');
     };
-  }, [dispatch, history, user, userInfo, successUpdateProfile]);
+  }, [user, successUpdate]);
 
   useEffect(() => {
-    if (errorMsg || error) {
-      toaster.notify(
-        ({ onClose }) =>
-          ToastAlert(errorMsg ? 'No photo to remove' : error, onClose, 'error'),
-        {
-          position: 'bottom',
-          duration: 20000,
-          type: 'error',
-        }
+    if (Object.keys(cloudinaryData).length > 0) {
+      dispatch(
+        updateUserProfile({
+          id: user?._id,
+          name,
+          volunteerTitle,
+          volunteerEmail,
+          profileCardTheme,
+          avatar: cloudinaryData?.secureUrl,
+          publicId: cloudinaryData?.publicId,
+        })
       );
+      setClouadinaryData({});
     }
-
-    return () => {
-      setErrorMsg('');
-    };
-  }, [error, errorMsg]);
-
-  const profileDataToUploadWithImg = {
+  }, [
+    cloudinaryData,
+    dispatch,
     name,
-    volunteerTitle,
-    volunteerEmail,
     profileCardTheme,
-  } as any;
+    user,
+    volunteerEmail,
+    volunteerTitle,
+  ]);
 
   const submitHandler = (e: any) => {
     e.preventDefault();
-    dispatch(
-      updateUserProfile({
-        id: user._id,
-        name,
-        avatar,
-        volunteerTitle,
-        volunteerEmail,
-        profileCardTheme,
+    setSubmittedForm(true);
+    if (file?.name) {
+      setUploading(true);
+      uploadFileHandler(
+        file,
+        setUploading,
         publicId,
-      })
+        setImageUploadStatus,
+        setClouadinaryData
+      );
+    } else {
+      dispatch(
+        updateUserProfile({
+          id: user._id,
+          name,
+          volunteerTitle,
+          volunteerEmail,
+          profileCardTheme,
+          avatar,
+          publicId,
+        })
+      );
+    }
+  };
+
+  const editPhotoHandler = (e: any) => setFile(e.target.files[0]);
+
+  const removePhotoHandler = (e: any) => {
+    e.preventDefault();
+    removePhoto(
+      user.publicId,
+      setPublicId,
+      dispatch,
+      updateUserProfile,
+      user._id,
+      setErrorMsg,
+      true
     );
   };
 
   return (
     <Container>
       <SettingsTitleContainer className='d-flex justify-content-between align-items-center'>
-        <Text fontSize='1.5rem'>Profile</Text>
+        <WelcomeText>Profile</WelcomeText>
         {checkmark && <Checkmark />}
       </SettingsTitleContainer>
-      {(loading || loadingUpdateProfile) && (
-        <HorizontalLoaderContainer>
-          <HorizontalLoader />
-        </HorizontalLoaderContainer>
+      {(loading || loadingUpdate || submittedForm) && <HexagonLoader />}
+      {(errorMsg || error) && (
+        <Message variant='danger'>{errorMsg || error}</Message>
       )}
-      {error ? (
-        <></>
-      ) : (
-        <Form onSubmit={submitHandler} className='mt-4'>
-          <div className='d-flex flex-wrap'>
-            <FirstCol lg={8} md={12} className='pl-0'>
-              <Form.Group controlId='name'>
-                <Form.Label>Name</Form.Label>
-                <Form.Control
-                  type='name'
-                  placeholder='Enter name'
-                  value={name}
-                  onChange={(e: any) => setName(e.target.value)}
-                ></Form.Control>
-              </Form.Group>
-              {(user.isVolunteer || user.isAdmin) && (
-                <>
-                  <Form.Group
-                    className='d-flex flex-column'
-                    controlId='profileCardTheme'
+      <Form className='mt-4'>
+        <div className='d-flex flex-wrap'>
+          <FirstCol xl={6} lg={8} className='pl-0'>
+            <Form.Group controlId='name'>
+              <Label>Name</Label>
+              <Input
+                type='name'
+                placeholder='Enter name'
+                value={name || ''}
+                onChange={(e: any) => setName(e.target.value)}
+              />
+            </Form.Group>
+            {user?.isAdmin && (
+              <>
+                <Form.Group
+                  className='d-flex flex-column'
+                  controlId='profileCardTheme'
+                >
+                  <Label>Profile card theme</Label>
+                  <Accordion
+                    toggle={showCardThemes}
+                    maxheight='1015px'
+                    style={{ minHeight: '225px' }}
                   >
-                    <Form.Label>Profile card theme</Form.Label>
-                    <div className='d-flex flex-wrap w-100'>
-                      {themes
-                        .map((theme: string, i: number) => (
-                          <CardTheme
-                            key={i}
-                            selected={theme === profileCardTheme}
-                            inline
-                            label={
-                              <ProfileCardImg
-                                src={theme}
-                                alt={`${theme}-${i}`}
-                              />
-                            }
-                            type='radio'
-                            id={`inline-radio-${i} bgColor`}
-                            isValid
-                            value={theme}
-                            checked={profileCardTheme === theme}
-                            onChange={(e: any) =>
-                              setProfileCardTheme(e.target.value)
-                            }
-                            name='profileCardTheme'
-                          />
-                        ))
-                        .filter((_: any, i: number) => i > 0 && i < 16)}
-                    </div>
-                    <Accordion
-                      defaultActiveKey='0'
-                      className='d-flex flex-column'
-                    >
-                      <Accordion.Collapse eventKey='1'>
-                        <div className='d-flex flex-wrap'>
-                          {themes
-                            .map((theme: string, i: number) => (
-                              <CardTheme
-                                key={i}
-                                selected={theme === profileCardTheme}
-                                inline
-                                label={
-                                  <ProfileCardImg
-                                    src={theme}
-                                    alt={`${theme}-${i}`}
-                                  />
-                                }
-                                type='radio'
-                                id={`inline-radio-${i} bgColor`}
-                                isValid
-                                value={theme}
-                                checked={profileCardTheme === theme}
-                                onChange={(e: any) =>
-                                  setProfileCardTheme(e.target.value)
-                                }
-                                name='profileCardTheme'
-                              />
-                            ))
-                            .filter((_: any, i: number) => i > 12)}
-                        </div>
-                      </Accordion.Collapse>
-                      <div className='d-flex flex-column'>
-                        <Accordion.Toggle
-                          className='d-flex border-0 bg-transparent'
-                          eventKey='1'
-                          onClick={() => {
-                            setSee(!see);
-                          }}
-                        >
-                          <Text fontSize='0.85rem'>
-                            {see ? 'see less...' : 'see more...'}
-                          </Text>
-                        </Accordion.Toggle>
-                      </div>
-                    </Accordion>
-                  </Form.Group>
-                  <Form.Group controlId='volunteerTitle'>
-                    <Form.Label>Position at Little Paws</Form.Label>
-                    <Form.Control
-                      type='text'
-                      placeholder='Enter Position'
-                      value={volunteerTitle}
-                      onChange={(e: any) => setVolunteerTitle(e.target.value)}
-                    ></Form.Control>
-                  </Form.Group>
-                  <Form.Group controlId='volunteerEmail'>
-                    <Form.Label>Little Paws Email</Form.Label>
-                    <Form.Control
-                      type='email'
-                      placeholder='Enter Email to display'
-                      value={volunteerEmail}
-                      onChange={(e: any) => setVolunteerEmail(e.target.value)}
-                    ></Form.Control>
-                  </Form.Group>
-                </>
-              )}
-            </FirstCol>
-            {(user?.isVolunteer || user?.isAdmin) && (
-              <ProfilePicCol className='d-flex pl-3 pr-0' lg={4} md={12}>
-                <Form.Group controlId='image' className='d-flex flex-column'>
-                  <Form.Label>Profile Picture</Form.Label>
-                  <div className='mx-auto'>
-                    <Form.Control
-                      className='img-link'
-                      type='text'
-                      value={avatar || ''}
-                      onChange={(e) => setAvatar(e.target.value)}
-                    ></Form.Control>
-                    <StyledUloadedImg
-                      show={showImageOptions.toString()}
-                      src={avatar || ''}
-                      alt='avatar'
-                      onClick={() => setShowImageOptions(!showImageOptions)}
-                    />
-                    <div style={{ position: 'relative' }}>
-                      <EditBtn
-                        onClick={() => setShowImageOptions(!showImageOptions)}
-                      >
-                        <i className='fas fa-edit mr-2'></i>Edit
-                      </EditBtn>
-                      {showImageOptions && (
-                        <EditBtn className='d-flex flex-column imgOptions'>
-                          <FormFile
-                            mb={(avatar !== uploadDefaultImgUrl).toString()}
-                            id='image-file'
-                            label='Upload a photo...'
-                            onChange={(e: any) =>
-                              uploadFileHandler(
-                                e,
-                                setUploading,
-                                setShowImageOptions,
-                                setErrorMsg,
-                                setPublicId,
-                                updateUserProfile,
-                                dispatch,
-                                publicId,
-                                user._id,
-                                profileDataToUploadWithImg,
-                                avatar,
-                                '',
-                                setAvatar,
-                                () => {},
-                                'profile'
-                              )
-                            }
-                          ></FormFile>
-                          {avatar !== uploadDefaultImgUrl && (
-                            <div
-                              className='remove-img'
-                              onClick={() =>
-                                removePhoto(
-                                  user.publicId,
-                                  setPublicId,
-                                  dispatch,
-                                  updateUserProfile,
-                                  user._id,
-                                  setErrorMsg,
-                                  true
-                                )
-                              }
-                            >
-                              Remove photo
-                            </div>
-                          )}
-                        </EditBtn>
-                      )}
-                    </div>
-                    {uploading && (
-                      <Loader
-                        w='200px'
-                        h='200px'
-                        p='absolute'
-                        z='1'
-                        top='29px'
-                        left='34px'
+                    {themes.map((theme: string, i: number) => (
+                      <CardTheme
+                        key={i}
+                        selected={theme === profileCardTheme}
+                        inline
+                        label={
+                          <ProfileCardImg src={theme} alt={`${theme}-${i}`} />
+                        }
+                        type='radio'
+                        id={`inline-radio-${i} bgColor`}
+                        value={theme || ''}
+                        checked={profileCardTheme === theme}
+                        onChange={(e: any) =>
+                          setProfileCardTheme(e.target.value)
+                        }
                       />
-                    )}
-                  </div>
+                    ))}
+                  </Accordion>
+                  <Text
+                    onClick={() => setShowCardThemes(!showCardThemes)}
+                    cursor='pointer'
+                    marginTop='8px'
+                  >
+                    {showCardThemes ? 'See Less...' : 'See More...'}
+                  </Text>
                 </Form.Group>
-              </ProfilePicCol>
+                <Form.Group controlId='volunteerTitle'>
+                  <Label>Position at Little Paws</Label>
+                  <Input
+                    type='text'
+                    placeholder='Enter position'
+                    value={volunteerTitle || ''}
+                    onChange={(e: any) => setVolunteerTitle(e.target.value)}
+                  />
+                </Form.Group>
+                <Form.Group controlId='volunteerEmail'>
+                  <Label>Little Paws Email</Label>
+                  <Input
+                    type='email'
+                    placeholder='Enter email'
+                    value={volunteerEmail || ''}
+                    onChange={(e: any) => setVolunteerEmail(e.target.value)}
+                  />
+                </Form.Group>
+              </>
             )}
-          </div>
-          <Row style={{ marginRight: '0px' }}>
-            <Col className='my-5'>
-              <UpdateBtn variant='success' type='submit'>
-                <Text className='text-white'>
-                  Updat{loadingUpdateProfile ? 'ing...' : 'e'}
-                </Text>
-                {loadingUpdateProfile && (
-                  <>
-                    &nbsp;&nbsp;
-                    <Spinner
-                      as='span'
-                      animation='border'
-                      size='sm'
-                      role='status'
-                      aria-hidden='true'
-                    />
-                  </>
-                )}
-              </UpdateBtn>
-            </Col>
-          </Row>
-        </Form>
-      )}
+          </FirstCol>
+          {user?.isAdmin && (
+            <ProfilePicCol className='d-flex pl-3 pr-0' xl={3} lg={12}>
+              <Form.Group controlId='image' className='d-flex flex-column'>
+                <Label>Profile picture</Label>
+                <Input
+                  className='img-link'
+                  type='text'
+                  value={avatar || ''}
+                  onChange={(e: any) => setAvatar(e.target.value)}
+                />
+                <div className='d-flex'>
+                  <FormFile
+                    id='image-file'
+                    label={
+                      user?.avatar === defaultImages.upload || file?.name ? (
+                        <UploadImageSquare className={uploading ? 'anim' : ''}>
+                          <PhotoUploadIcon
+                            ready={file}
+                            imgStatus={imgUploadStatus}
+                          />
+                        </UploadImageSquare>
+                      ) : (
+                        <Image
+                          src={user?.avatar}
+                          width='200px'
+                          height='200px'
+                          style={{ objectFit: 'cover' }}
+                        />
+                      )
+                    }
+                    onChange={(e: any) => editPhotoHandler(e)}
+                  ></FormFile>
+                  <RemovePhoto
+                    style={{ border: '1px solid #ededed' }}
+                    onClick={(e: any) =>
+                      avatar === defaultImages.profile
+                        ? {}
+                        : removePhotoHandler(e)
+                    }
+                  >
+                    <RemovePhotoIcon />
+                    <Text marginLeft='0.75rem' fontWeight='300' color='#c4c4c4'>
+                      Remove Photo
+                    </Text>
+                  </RemovePhoto>
+                </div>
+              </Form.Group>
+            </ProfilePicCol>
+          )}
+        </div>
+        <UpdateBtn onClick={(e: any) => submitHandler(e)}>
+          Updat{loadingUpdate ? 'ing...' : 'e'}
+        </UpdateBtn>
+      </Form>
     </Container>
   );
 };

@@ -76,6 +76,13 @@ export const getPublicProductDetails = (id: any) => async (dispatch: any) => {
 
     const { data } = await axios.get(`/api/products/client/${id}`);
 
+    if (typeof data === 'string') {
+      return dispatch({
+        type: PRODUCT_PUBLIC_DETAILS_FAIL,
+        payload: 'Axios Error',
+      });
+    }
+
     dispatch({ type: PRODUCT_PUBLIC_DETAILS_SUCCESS, payload: data });
   } catch (error: any) {
     dispatch({

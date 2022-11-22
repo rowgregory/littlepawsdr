@@ -1,6 +1,8 @@
 import asyncHandler from 'express-async-handler';
 import GuestOrder from '../models/guestOrderModel.js';
 import Product from '../models/productModel.js';
+import Error from '../models/errorModel.js';
+import { send_mail } from '../server.js';
 
 // @desc    Create new order
 // @route   POST /api/guest-orders
@@ -15,7 +17,7 @@ const addGuestOrderItems = asyncHandler(async (req, res) => {
     shippingPrice,
     totalPrice,
     email,
-    size,
+    orderId,
   } = req.body;
 
   try {
@@ -29,10 +31,14 @@ const addGuestOrderItems = asyncHandler(async (req, res) => {
       totalPrice,
       isPaid: true,
       email,
-      size,
+      orderId,
+      isShipped: false,
+      confirmationEmailHasBeenSent: false,
     });
 
     const createdGuestOrder = await guestOrder.save();
+
+    let hasEmailBeenSent = false;
 
     if (createdGuestOrder) {
       for (const item of createdGuestOrder.orderItems) {
@@ -56,12 +62,33 @@ const addGuestOrderItems = asyncHandler(async (req, res) => {
           await product.save();
         }
       }
-    }
 
-    res.status(201).json(createdGuestOrder);
+      const emailHasSent = await send_mail(
+        createdGuestOrder,
+        res,
+        'sendOrderConfirmationEmail',
+        '',
+        hasEmailBeenSent
+      );
+
+      createdGuestOrder.confirmationEmailHasBeenSent = emailHasSent;
+      await createdGuestOrder.save();
+
+      res.status(201).json(createdGuestOrder);
+    }
   } catch (error) {
-    res.status(400);
-    throw new Error(error);
+    const createdError = new Error({
+      functionName: 'CREATE_NEW_GUEST_ORDER',
+      detail: `${error.message}, order id: ${orderId}`,
+    });
+    await createdError.save();
+
+    res.status(500).send({
+      message: `Please call (***)***-**** to resolve issue, orderID: ${orderId}`,
+      data: req.body,
+      email,
+      isShipped: false,
+    });
   }
 });
 
@@ -92,18 +119,31 @@ const getGuestOrders = asyncHandler(async (req, res) => {
 // @route   PUT /api/guest-orders/:id/ship
 // @access  Private/Admin
 const updateGuestOrderToShipped = asyncHandler(async (req, res) => {
-  const guestOrder = await GuestOrder.findById(req.params.id);
+  try {
+    const guestOrder = await GuestOrder.findById(req.params.id);
 
-  if (guestOrder) {
     guestOrder.isShipped = req.body.isShipped;
     guestOrder.shippedOn = Date.now();
 
     const updatedGuestOrder = await guestOrder.save();
 
     res.json(updatedGuestOrder);
-  } else {
-    res.status(404);
-    throw new Error('Guest order not found!');
+  } catch (err) {
+    const createdError = new Error({
+      functionName: 'UPDATE_GUEST_ORDER_TO_SHIPPED',
+      detail: err.message,
+      user: {
+        id: req?.user?._id,
+        name: req?.user?.name,
+      },
+      state: 'GUEST_ORDER_IS_NULL',
+    });
+
+    await createdError.save();
+
+    res.status(404).json({
+      message: `There was an error setting the guest order to shipped: ${err}`,
+    });
   }
 });
 

@@ -16,10 +16,10 @@ const Container = styled.div`
   max-width: ${({ theme }) => theme.breakpoints[3]};
   width: 100%;
   margin-inline: auto;
-  margin-bottom: 5rem;
+  margin-bottom: 32px;
   padding: 1rem;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[4]}) {
-    margin-top: 5rem;
+    margin-top: 72px;
     padding: 0;
   }
 `;
@@ -53,6 +53,12 @@ const SideBar = styled.div`
     width: 300px;
   }
 `;
+const TopRow = styled.div`
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
 
 export const SettingsLayoutWithSideBar: FC<SettingsLayoutWithSideBarProps> = ({
   sideBar,
@@ -62,14 +68,15 @@ export const SettingsLayoutWithSideBar: FC<SettingsLayoutWithSideBarProps> = ({
   const { userInfo } = userLogin;
   return (
     <Container>
-      <div className='d-flex align-items-center justify-content-between mb-4'>
+      <TopRow>
         <div className='d-flex align-items-center'>
           {userInfo?.isAdmin ? (
             <Image
               className='mr-3'
-              height='48px'
-              width='48px'
-              style={{ borderRadius: '1.5rem', objectFit: 'cover' }}
+              height='40px'
+              width='40px'
+              roundedCircle
+              style={{ objectFit: 'cover' }}
               src={userInfo?.avatar}
               alt='user-avatar'
             />
@@ -78,12 +85,12 @@ export const SettingsLayoutWithSideBar: FC<SettingsLayoutWithSideBarProps> = ({
               {userInfo?.name[0]}
             </AvatarInitials>
           )}
-          <Text fontWeight='bold' fontSize='1.25rem'>
+          <Text fontWeight='400' fontSize='20px'>
             {capitalizeFirstLetter(userInfo?.name.split(' ')[0])}
           </Text>
         </div>
         <StyledLink to='/about/team-members'>Go to public profile</StyledLink>
-      </div>
+      </TopRow>
       <SideBarChildrenWrapper>
         <SideBar>{sideBar}</SideBar>
         <div className='w-100 px-3'>{children}</div>

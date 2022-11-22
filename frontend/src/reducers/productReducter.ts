@@ -12,12 +12,14 @@ import {
   PRODUCT_DELETE_SUCCESS,
   PRODUCT_DETAILS_FAIL,
   PRODUCT_DETAILS_REQUEST,
+  PRODUCT_DETAILS_RESET,
   PRODUCT_DETAILS_SUCCESS,
   PRODUCT_GUEST_UPDATE_FAIL,
   PRODUCT_GUEST_UPDATE_REQUEST,
   PRODUCT_GUEST_UPDATE_RESET,
   PRODUCT_GUEST_UPDATE_SUCCESS,
   PRODUCT_LIST_FAIL,
+  PRODUCT_LIST_RESET,
   PRODUCT_LIST_REQUEST,
   PRODUCT_LIST_SUCCESS,
   PRODUCT_PUBLIC_DETAILS_FAIL,
@@ -48,6 +50,11 @@ export const productListReducer = (
         loading: false,
         error: action.payload,
       };
+    case PRODUCT_LIST_RESET:
+      return {
+        loading: false,
+        products: [],
+      };
     default:
       return state;
   }
@@ -60,17 +67,24 @@ export const productDetailsReducer = (
   switch (action.type) {
     case PRODUCT_DETAILS_REQUEST:
       return {
+        ...state,
         loading: true,
       };
     case PRODUCT_DETAILS_SUCCESS:
       return {
+        ...state,
         loading: false,
         product: action.payload,
       };
     case PRODUCT_DETAILS_FAIL:
       return {
+        ...state,
         loading: false,
         error: action.payload,
+      };
+    case PRODUCT_DETAILS_RESET:
+      return {
+        product: {},
       };
     default:
       return state;
@@ -159,16 +173,19 @@ export const productUpdateReducer = (
   switch (action.type) {
     case PRODUCT_UPDATE_REQUEST:
       return {
+        ...state,
         loading: true,
       };
     case PRODUCT_UPDATE_SUCCESS:
       return {
+        ...state,
         loading: false,
         success: true,
         product: action.payload,
       };
     case PRODUCT_UPDATE_FAIL:
       return {
+        ...state,
         loading: false,
         error: action.payload,
       };

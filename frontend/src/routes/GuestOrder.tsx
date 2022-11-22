@@ -84,12 +84,6 @@ const GuestOrder = ({ match }: any) => {
     error,
   } = orderGuestDetails !== undefined && orderGuestDetails;
 
-  const orderEmailConfirmation = useSelector(
-    (state: any) => state.orderEmailConfirmation
-  );
-  let { loading: loadingEmailConfirmation, success: successEmailConfirmation } =
-    orderEmailConfirmation;
-
   const guestOrderShip = useSelector((state: any) => state.guestOrderShip);
   const { success: successShipped, loading: loadingGuestOrderShipped } =
     guestOrderShip;
@@ -113,6 +107,8 @@ const GuestOrder = ({ match }: any) => {
   useEffect(() => {
     dispatch({ type: GUEST_ORDER_CREATE_RESET });
 
+    localStorage.removeItem('__paypal_storage__');
+    localStorage.removeItem('__belter_experiment_storage__');
     if (!guestOrder || guestOrder._id !== guestOrderId || successShipped) {
       dispatch({ type: GUEST_ORDER_SHIP_RESET });
       dispatch(getGuestOrderDetails(guestOrderId));
@@ -160,19 +156,27 @@ const GuestOrder = ({ match }: any) => {
                 )}
               </strong>
             </OrderId>
+            <OrderId>
+              PayPal Order Id:
+              <strong>
+                &nbsp;
+                {loadingGuestOrderDetails ? (
+                  <Spinner animation='border' size='sm' />
+                ) : (
+                  guestOrder?.orderId
+                )}
+              </strong>
+            </OrderId>
             <Text fontSize='1rem' marginBottom='2rem'>
               An email confirmation has been sent to{' '}
               <strong className='mr-2'>{guestOrder?.email}</strong>
-              {loadingEmailConfirmation ? (
-                <Spinner animation='border' size='sm' />
-              ) : (
-                successEmailConfirmation && <GreenCheckmark width='1rem' />
+              {guestOrder?.confirmationEmailHasBeenSent && (
+                <GreenCheckmark width='1rem' />
               )}
             </Text>
-            {
-              // loadingGuestOrderDetails ? (
-              //   <Spinner animation='border' size='sm'></Spinner>
-              // ) : (
+            {loadingGuestOrderDetails ? (
+              <Spinner animation='border' size='sm'></Spinner>
+            ) : (
               guestOrder?.orderItems?.map((item: any, index: number) => (
                 <div key={index} className='d-flex mt-1 mb-3'>
                   <Image
@@ -191,10 +195,8 @@ const GuestOrder = ({ match }: any) => {
                   </div>
                 </div>
               ))
-            }
-
+            )}
             <HorizontalLine />
-
             <div>
               <CategoryTitles className='d-flex justify-content-between align-items-center'>
                 <Text fontWeight='bold' fontSize='1.125rem'>
@@ -217,15 +219,15 @@ const GuestOrder = ({ match }: any) => {
                 {loadingGuestOrderShipped ? (
                   <Spinner animation='border' size='sm' />
                 ) : guestOrder?.isShipped ? (
-                  <Message variant='success' showCloseButton={false}>
-                    <div>
+                  <Message variant='success'>
+                    <div style={{ color: '#fff' }}>
                       Your order has been shipped{' '}
                       <i className='fas fa-exclamation fa-sm'></i>
                     </div>
                   </Message>
                 ) : (
-                  <Message variant='warning' showCloseButton={false}>
-                    <div>
+                  <Message variant='warning'>
+                    <div style={{ color: '#fff' }}>
                       Order has not been shipped yet{' '}
                       <i className='fas fa-exclamation fa-sm'></i>
                     </div>

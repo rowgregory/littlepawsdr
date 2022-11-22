@@ -49,10 +49,10 @@ const Container = styled(Link)<{ linkkey: string }>`
   font-weight: 300;
   transition: 0.5s;
   letter-spacing: 1px;
-  padding: 1rem 2rem;
+  padding: 16px 32px;
   border: 1px solid
     ${({ theme, linkkey }) =>
-      linkkey === '/shop' ? theme.colors.quinary : theme.colors.secondary};
+      linkkey === '/shop' ? '#d89253' : theme.colors.quinary};
   box-sizing: border-box;
   :hover {
     text-decoration: none;
@@ -60,7 +60,7 @@ const Container = styled(Link)<{ linkkey: string }>`
 
   span {
     color: ${({ theme, linkkey }) =>
-      linkkey === '/shop' ? theme.colors.quinary : theme.colors.secondary};
+      linkkey === '/shop' ? '#d89253' : theme.colors.quinary};
     text-align: center;
     width: auto;
     font-family: 'Lato', sans-serif;
@@ -86,7 +86,7 @@ const Container = styled(Link)<{ linkkey: string }>`
     letter-spacing: 1px;
     font-weight: bold;
     background-color: ${({ theme, linkkey }) =>
-      linkkey === '/shop' ? theme.colors.quinary : theme.colors.secondary};
+      linkkey === '/shop' ? '#d89253' : theme.colors.quinary};
     -webkit-mask: url(${mixins.maskUrl});
     mask: url(${mixins.maskUrl});
     -webkit-mask-size: ${mixins.x1} ${mixins.y1};

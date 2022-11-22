@@ -26,6 +26,7 @@ import {
   USER_LOGIN_SUCCESS,
   USER_LOGOUT_FAIL,
   USER_LOGOUT_REQUEST,
+  USER_LOGOUT_RESET,
   USER_LOGOUT_SUCCESS,
   USER_OLD_PASSWORD_FAIL,
   USER_OLD_PASSWORD_REQUEST,
@@ -82,7 +83,7 @@ export const userLoginReducer = (state = {}, action) => {
   }
 };
 // @ts-ignore
-export const userRegisterReducer = (state = {}, action) => {
+export const userRegisterReducer = (state = { success: false }, action) => {
   switch (action.type) {
     case USER_REGISTER_REQUEST:
       return {
@@ -92,7 +93,7 @@ export const userRegisterReducer = (state = {}, action) => {
       return {
         loading: false,
         success: true,
-        userInfo: action.payload,
+        message: action.payload,
       };
     case USER_REGISTER_FAIL:
       return {
@@ -103,7 +104,6 @@ export const userRegisterReducer = (state = {}, action) => {
       return {
         loading: false,
         success: false,
-        userInfo: action.payload,
       };
     default:
       return state;
@@ -121,6 +121,7 @@ export const userDetailsReducer = (state = { user: {} }, action) => {
       return {
         loading: false,
         user: action.payload,
+        success: true,
       };
     case USER_DETAILS_FAIL:
       return {
@@ -134,7 +135,7 @@ export const userDetailsReducer = (state = { user: {} }, action) => {
   }
 };
 // @ts-ignore
-export const userPasswordReducer = (state = { user: {} }, action) => {
+export const userPasswordReducer = (state = { success: false }, action) => {
   switch (action.type) {
     case USER_OLD_PASSWORD_REQUEST:
       return {
@@ -144,7 +145,7 @@ export const userPasswordReducer = (state = { user: {} }, action) => {
     case USER_OLD_PASSWORD_SUCCESS:
       return {
         loading: false,
-        user: action.payload,
+        success: action.payload,
       };
     case USER_OLD_PASSWORD_FAIL:
       return {
@@ -154,14 +155,14 @@ export const userPasswordReducer = (state = { user: {} }, action) => {
     case USER_OLD_PASSWORD_RESET:
       return {
         loading: false,
-        user: {},
+        success: false,
       };
     default:
       return state;
   }
 };
 // @ts-ignore
-export const userUpdateProfileReducer = (state = {}, action) => {
+export const userUpdateProfileReducer = (state = { userInfo: {} }, action) => {
   switch (action.type) {
     case USER_UPDATE_PROFILE_REQUEST:
       return {
@@ -180,7 +181,7 @@ export const userUpdateProfileReducer = (state = {}, action) => {
       };
     case USER_UPDATE_PROFILE_RESET:
       return {
-        success: false,
+        userInfo: {},
       };
     default:
       return state;
@@ -308,6 +309,12 @@ export const userLogoutReducer = (state = { userInfo: null }, action) => {
         loading: false,
         error: action.payload,
         success: false,
+      };
+    case USER_LOGOUT_RESET:
+      return {
+        loading: false,
+        success: false,
+        userInfo: null,
       };
     default:
       return state;

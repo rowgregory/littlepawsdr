@@ -8,9 +8,13 @@ interface ShopLayoutWithBreadcrumbProps {
 
 const Main = styled.main`
   width: 100%;
-  max-width: ${({ theme }) => theme.breakpoints[5]};
+  /* max-width: ${({ theme }) => theme.breakpoints[5]}; */
   margin: 0 auto;
-  padding: 2.5rem 0 0 0;
+  /* background: #e9eded; */
+  /* min-height: calc(100vh - 559px); */
+  /* padding: 1rem; */
+  padding-top: 56px;
+  min-height: 100vh;
 `;
 
 export const ShopLayoutWithBreadcrumb: FC<ShopLayoutWithBreadcrumbProps> = ({
@@ -19,7 +23,7 @@ export const ShopLayoutWithBreadcrumb: FC<ShopLayoutWithBreadcrumbProps> = ({
 }) => {
   return (
     <>
-      <aside>{breadcrumb}</aside>
+      {/* <aside>{breadcrumb}</aside> */}
       <Main>{children}</Main>
     </>
   );

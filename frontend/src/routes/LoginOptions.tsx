@@ -1,37 +1,35 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Col, Form, Button, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router';
 import styled from 'styled-components';
 import { registerGuestUser } from '../actions/guestUserActions';
 import { login } from '../actions/userActions';
-import FormContainer from '../components/FormContainer';
 import Message from '../components/Message';
-import { Text } from '../components/styles/Styles';
+import {
+  CreateAccountContainer,
+  FormContainer,
+  Text,
+} from '../components/styles/Styles';
 import { CSSTransition } from 'react-transition-group';
 import { sendResetEmail } from '../actions/forgotPasswordActions';
 import { USER_LOGIN_RESET } from '../constants/userConstants';
 import '../index';
 import { RESET_EMAIL_SEND_RESET } from '../constants/resetPasswordContants';
+import { useWindowSize } from '../utils/useWindowSize';
 
 const Container = styled.div`
-  max-width: 1000px;
-  width: 100%;
-  margin: 7rem auto;
+  margin: 0 auto;
   padding: 2rem;
   display: flex;
   flex-direction: column;
-  background: ${({ theme }) => theme.secondaryBg};
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    padding: 2rem 3rem;
     display: flex;
     flex-direction: row;
   }
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-    padding: 4rem 6.5rem;
     display: flex;
     justify-content: space-between;
-    flex-direction: row;
+    margin-bottom: 5rem;
   }
 `;
 
@@ -42,26 +40,6 @@ const Titles = styled.div`
   margin-bottom: 0.625rem;
 `;
 
-const LoginBtn = styled(Button)`
-  border-radius: 0;
-  background-color: ${({ theme }) => theme.colors.blue04};
-  height: 3.125rem !important;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 1.25rem;
-  border: none;
-  transition: 300ms;
-  :hover,
-  :active,
-  :focus {
-    background-color: ${({ theme }) => theme.colors.blue04};
-    filter: brightness(1.3);
-    box-shadow: none;
-  }
-`;
-
 const VerticalSeparator = styled.div`
   border-right: 1px solid ${({ theme }) => theme.separator};
   height: auto;
@@ -70,44 +48,48 @@ const VerticalSeparator = styled.div`
 const ForgotPasswordLink = styled.div`
   font-size: 0.8rem;
   cursor: pointer;
+  color: ${({ theme }) => theme.colors.secondary};
   :hover {
+    color: ${({ theme }) => theme.colors.secondary};
     text-decoration: underline;
   }
 `;
 
-const LoginOptions = () => {
+const StyledButton = styled(Button)`
+  background: ${({ theme }) => theme.colors.secondary};
+  transition: 300ms;
+  :hover,
+  :active,
+  :disabled {
+    background: ${({ theme }) => theme.colors.secondary};
+    filter: brightness(0.9);
+  }
+`;
+
+const LoginOptions = ({ history }: any) => {
   const dispatch = useDispatch();
-  const history = useHistory();
-  const [activeMenu, setActiveMenu] = useState('dropdown-slide-1') as any;
-  const [menuHeight, setMenuHeight] = useState() as any;
-
-  const guestUserRegister = useSelector(
-    (state: any) => state.guestUserRegister
-  );
-  const {
-    loading: loadingGuestUserRegister,
-    error: errorGuestUserRegister,
-    guestUserInfo,
-  } = guestUserRegister;
-
   const [guestEmail, setGuestEmail] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [forgotPasswordEmail, setforgotPasswordEmail] = useState('');
+  const [activeMenu, setActiveMenu] = useState('dropdown-slide-1') as any;
+  const [menuHeight, setMenuHeight] = useState() as any;
+  const forgotPasswordRef = useRef() as any;
+  const signInRef = useRef() as any;
 
-  const userLogin = useSelector((state: any) => state.userLogin);
   const {
-    userInfo,
-    loading: loadingUserLogin,
-    error: errorUserLogin,
-  } = userLogin;
-
-  const sendEmail = useSelector((state: any) => state.sendEmail);
-  const {
-    loading: loadingSendEmail,
-    success: successSendEmail,
-    error: errorSendEmail,
-  } = sendEmail;
+    guestUserRegister: {
+      loading: loadingGuestUserRegister,
+      error: errorGuestUserRegister,
+      success: successGuestUserRegister,
+    },
+    userLogin: { loading: loadingUserLogin, userInfo, error: errorUserLogin },
+    sendEmail: {
+      loading: loadingSendEmail,
+      success: successSendEmail,
+      error: errorSendEmail,
+    },
+  } = useSelector((state: any) => state);
 
   const continueAsGuestHandler = (e: any) => {
     e.preventDefault();
@@ -121,70 +103,114 @@ const LoginOptions = () => {
   };
 
   useEffect(() => {
-    const thereIsNoOrderInLocalStorage =
-      (localStorage.getItem('newOrder')
-        ? JSON.parse(localStorage.getItem('newOrder') || '')
-        : []
-      ).length === 0;
-    if (thereIsNoOrderInLocalStorage) history.push('/');
+    if (userInfo) {
+      history.push('/cart/place-order');
+    } else if (successGuestUserRegister) {
+      history.push('/cart/place-order-guest');
+    } else if (successSendEmail) {
+      setforgotPasswordEmail('');
+    }
 
-    if (userInfo?._id) history.push('/cart/place-order');
-    if (guestUserInfo?._id) history.push('/cart/place-order-guest');
-  }, [history, userInfo, guestUserInfo]);
+    if (forgotPasswordRef?.current?.props?.in) {
+      if (errorSendEmail) {
+        setMenuHeight(345);
+      } else if (successSendEmail) {
+        setMenuHeight(345);
+      } else {
+        setMenuHeight(258);
+      }
+    }
 
-  const submitHandler = (e: any) => {
-    e.preventDefault();
-  };
+    if (signInRef?.current?.props?.in) {
+      if (errorUserLogin) {
+        setMenuHeight(399);
+      } else {
+        setMenuHeight(312);
+      }
+    }
+  }, [
+    errorGuestUserRegister,
+    errorSendEmail,
+    errorUserLogin,
+    history,
+    successGuestUserRegister,
+    successSendEmail,
+    userInfo,
+    activeMenu,
+    signInRef,
+    menuHeight,
+    dispatch,
+  ]);
+
+  const [width] = useWindowSize() as any;
 
   const calcHeight = (el: any) => setMenuHeight(el.offsetHeight);
 
   return (
     <>
-      <Container>
-        <Col md={6} className='d-flex mb-5'>
-          <FormContainer>
-            <Titles>Guest</Titles>
-            <Text fontSize='0.85rem' marginBottom='1.25rem'>
-              You can create an account when you check out.
-            </Text>
-            {errorGuestUserRegister && (
-              <Message variant='danger'>{errorGuestUserRegister}</Message>
-            )}
-            <Form onSubmit={submitHandler}>
-              <Form.Group controlId='guestEmail'>
-                <Form.Control
-                  type='email'
-                  placeholder='Enter email'
-                  value={guestEmail}
-                  onChange={(e: any) => setGuestEmail(e.target.value)}
-                  required={true}
-                ></Form.Control>
-              </Form.Group>
-              <LoginBtn onClick={(e: any) => continueAsGuestHandler(e)}>
-                {loadingGuestUserRegister ? (
-                  <Spinner
-                    as='span'
-                    animation='border'
-                    size='sm'
-                    role='status'
-                    aria-hidden='true'
-                  />
-                ) : (
+      <Container style={{ overflow: 'hidden' }}>
+        <Col>
+          <div style={{ width: '324px' }}>
+            <FormContainer>
+              <Titles>Guest</Titles>
+              <Text fontSize='0.85rem' marginBottom='1.25rem'>
+                You can create an account when you check out.
+              </Text>
+              {errorGuestUserRegister && (
+                <Message variant='danger'>{errorGuestUserRegister}</Message>
+              )}
+              <Form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                }}
+              >
+                <Form.Group controlId='guestEmail'>
+                  <Form.Control
+                    // autoComplete='off'
+                    type='email'
+                    placeholder='Enter email'
+                    value={guestEmail}
+                    onChange={(e: any) => setGuestEmail(e.target.value)}
+                    required={true}
+                  ></Form.Control>
+                </Form.Group>
+                <StyledButton
+                  disabled={
+                    loadingGuestUserRegister ||
+                    loadingUserLogin ||
+                    loadingSendEmail ||
+                    guestEmail === ''
+                  }
+                  className='d-flex align-items-center border-0 w-100 justify-content-center'
+                  onClick={(e: any) => {
+                    e.preventDefault();
+                    continueAsGuestHandler(e);
+                  }}
+                >
                   <Text fontSize='0.9375rem' color='#fff'>
                     Guest Checkout
                   </Text>
-                )}
-              </LoginBtn>
-            </Form>
-          </FormContainer>
+                  {loadingGuestUserRegister && (
+                    <Spinner
+                      as='span'
+                      animation='border'
+                      size='sm'
+                      role='status'
+                      aria-hidden='true'
+                    />
+                  )}
+                </StyledButton>
+              </Form>
+            </FormContainer>
+          </div>
         </Col>
         <VerticalSeparator />
-        <Col md={6} style={{ overflow: 'hidden' }}>
+        <Col style={{ overflow: width > 768 ? 'hidden' : '' }}>
           <div
             style={{
               height: `${menuHeight}px`,
               overflow: 'hidden',
-              transition: `height 500ms ease`,
+              transition: `height 300ms ease`,
             }}
           >
             <CSSTransition
@@ -193,17 +219,21 @@ const LoginOptions = () => {
               timeout={500}
               classNames='slide-1'
               onEnter={calcHeight}
+              ref={signInRef}
             >
-              <div className='w-100' style={{ paddingBottom: '7rem' }}>
+              <div style={{ width: '324px' }}>
                 <FormContainer>
                   <Titles>Sign In</Titles>
                   {errorUserLogin && (
                     <Message variant='danger'>{errorUserLogin}</Message>
                   )}
-                  <Form>
+                  <Form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                    }}
+                  >
                     <Form.Group controlId='email'>
                       <Form.Control
-                        autoComplete='off'
                         type='email'
                         placeholder='Enter email'
                         value={email}
@@ -213,7 +243,6 @@ const LoginOptions = () => {
                     </Form.Group>
                     <Form.Group controlId='password'>
                       <Form.Control
-                        autoComplete='off'
                         type='password'
                         placeholder='Enter password'
                         value={password}
@@ -223,42 +252,48 @@ const LoginOptions = () => {
                         required={true}
                       ></Form.Control>
                     </Form.Group>
-                    <ForgotPasswordLink
-                      onClick={() => {
-                        setforgotPasswordEmail('');
-                        dispatch({ type: RESET_EMAIL_SEND_RESET });
-                        setActiveMenu('dropdown-slide-2');
+                    <StyledButton
+                      disabled={
+                        loadingGuestUserRegister ||
+                        loadingUserLogin ||
+                        email === '' ||
+                        password === ''
+                      }
+                      onClick={(e: any) => {
+                        e.preventDefault();
+                        singInHandler(e);
                       }}
+                      className='d-flex align-items-center border-0 w-100  justify-content-center'
                     >
-                      Forgot password
-                    </ForgotPasswordLink>
-
-                    <LoginBtn
-                      onClick={(e: any) => singInHandler(e)}
-                      className='d-flex align-items-center border-0 font-weight-bold btn-lg mt-3'
-                    >
-                      {loadingUserLogin ? (
-                        <>
-                          <Spinner
-                            as='span'
-                            animation='border'
-                            size='sm'
-                            role='status'
-                            aria-hidden='true'
-                            className='mr-2'
-                          />
-                          <Text fontSize='0.9375rem' color='#fff'>
-                            Loading...
-                          </Text>
-                        </>
-                      ) : (
-                        <Text fontSize='0.9375rem' color='#fff'>
-                          Sign In
-                        </Text>
+                      <Text color='#fff'>
+                        Sign{loadingUserLogin && 'ing'} In
+                        {loadingUserLogin && '...'}&nbsp;&nbsp;
+                      </Text>
+                      {loadingUserLogin && (
+                        <Spinner
+                          as='span'
+                          animation='border'
+                          size='sm'
+                          role='status'
+                          aria-hidden='true'
+                        />
                       )}
-                    </LoginBtn>
+                    </StyledButton>
                   </Form>
                 </FormContainer>
+                <CreateAccountContainer className='py-3 mt-3 d-flex align-items-center justify-content-center'>
+                  Forgot your password?
+                  <ForgotPasswordLink
+                    className='ml-2'
+                    onClick={() => {
+                      dispatch({ type: RESET_EMAIL_SEND_RESET });
+                      setforgotPasswordEmail('');
+                      setActiveMenu('dropdown-slide-2');
+                    }}
+                  >
+                    Reset it here.
+                  </ForgotPasswordLink>
+                </CreateAccountContainer>
               </div>
             </CSSTransition>
             <CSSTransition
@@ -267,48 +302,30 @@ const LoginOptions = () => {
               timeout={500}
               classNames='slide-2'
               onEnter={calcHeight}
+              ref={forgotPasswordRef}
             >
-              <div className='w-100' style={{ paddingBottom: '5rem' }}>
+              <div style={{ width: '324px' }}>
                 <FormContainer>
                   <Titles>Forgot Password</Titles>
-                  <ForgotPasswordLink
-                    onClick={() => {
-                      dispatch({ type: USER_LOGIN_RESET });
-                      setActiveMenu('dropdown-slide-1');
+
+                  <div>
+                    {errorSendEmail && (
+                      <Message variant='danger'>{errorSendEmail}</Message>
+                    )}
+                    {successSendEmail && (
+                      <Message variant='success'>
+                        An email has been sent if an account exists.
+                      </Message>
+                    )}
+                  </div>
+                  <Form
+                    onSubmit={(e) => {
+                      e.preventDefault();
                     }}
                   >
-                    Sign In
-                  </ForgotPasswordLink>
-
-                  <CSSTransition
-                    in={
-                      (errorSendEmail !== null &&
-                        errorSendEmail !== undefined &&
-                        Object.keys(errorSendEmail).length > 0) ||
-                      successSendEmail
-                    }
-                    unmountOnExit
-                    classNames='fade'
-                    timeout={500}
-                    // appear
-                    onEntered={() => {}}
-                    onExit={() => {}}
-                  >
-                    <div>
-                      {errorSendEmail && (
-                        <Message variant='danger'>{errorSendEmail}</Message>
-                      )}
-                      {successSendEmail && (
-                        <Message variant='success'>
-                          An email has been sent to {forgotPasswordEmail}
-                        </Message>
-                      )}
-                    </div>
-                  </CSSTransition>
-
-                  <Form onSubmit={(e) => e.preventDefault()}>
                     <Form.Group controlId='forgotPasswordemail'>
                       <Form.Control
+                        // autoComplete='off'
                         type='email'
                         placeholder='Enter email'
                         value={forgotPasswordEmail}
@@ -318,13 +335,22 @@ const LoginOptions = () => {
                         required={true}
                       ></Form.Control>
                     </Form.Group>
-                    <LoginBtn
-                      onClick={() =>
-                        dispatch(sendResetEmail(forgotPasswordEmail))
+                    <StyledButton
+                      disabled={
+                        loadingGuestUserRegister ||
+                        loadingSendEmail ||
+                        forgotPasswordEmail === ''
                       }
-                      className='d-flex align-items-center border-0 font-weight-bold btn-lg mt-3'
+                      onClick={(e: any) => {
+                        e.preventDefault();
+                        dispatch(sendResetEmail(forgotPasswordEmail));
+                      }}
+                      className='d-flex align-items-center border-0 w-100  justify-content-center'
                     >
-                      {loadingSendEmail ? (
+                      <Text fontSize='0.9375rem' color='#fff'>
+                        Reset Password
+                      </Text>
+                      {loadingSendEmail && (
                         <Spinner
                           as='span'
                           animation='border'
@@ -333,14 +359,22 @@ const LoginOptions = () => {
                           aria-hidden='true'
                           className='mr-2'
                         />
-                      ) : (
-                        <Text fontSize='0.9375rem' color='#fff'>
-                          Reset Password
-                        </Text>
                       )}
-                    </LoginBtn>
+                    </StyledButton>
                   </Form>
                 </FormContainer>
+                <CreateAccountContainer className='py-3 mt-3 d-flex align-items-center justify-content-center'>
+                  Remember your password?
+                  <ForgotPasswordLink
+                    className='ml-2'
+                    onClick={() => {
+                      setActiveMenu('dropdown-slide-1');
+                      dispatch({ type: USER_LOGIN_RESET });
+                    }}
+                  >
+                    Sign In
+                  </ForgotPasswordLink>
+                </CreateAccountContainer>
               </div>
             </CSSTransition>
           </div>

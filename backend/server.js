@@ -24,12 +24,15 @@ import raffleWinnerRoutes from './routes/raffleWinnerRoutes.js';
 import blogRoutes from './routes/BlogRoutes.js';
 import educationTipRoutes from './routes/educationTipRoutes.js';
 import manuallyAddedUserRoutes from './routes/manuallyAddedUserRoutes.js';
+import recaptchaRoutes from './routes/recaptchaRoutes.js';
+import errorRoutes from './routes/errorRoutes.js';
 import cors from 'cors';
 import google from 'googleapis';
 import connectGmailOauth from './config/oauth.js';
 import nodemailer from 'nodemailer';
 import Email from 'email-templates';
 import fetch from 'node-fetch';
+import { encrypt } from './utils/crypto.js';
 
 const OAuth2 = google.google.auth.OAuth2;
 
@@ -47,11 +50,10 @@ google.google.options({
   auth: Oauth2_client,
 });
 
-export const send_mail = async (body, res, type, token) => {
+export const send_mail = async (body, res, type, token, hasEmailBeenSent) => {
   const __dirname = path.resolve();
   const root = path.join(__dirname, 'emails');
   let accessToken = await Oauth2_client.getAccessToken();
-  console.log('ACCESS TOKEN: ', accessToken.token);
 
   if (!accessToken.token) {
     console.log('GENERATING NEW ACCESS TOKEN');
@@ -114,7 +116,7 @@ export const send_mail = async (body, res, type, token) => {
           email: body.email,
           name: body.name,
           token: body.token,
-          id: body.id,
+          id: JSON.stringify(encrypt(body.password)),
         },
       })
       .then(() => res.status(200).json({ message: 'Confirmation email sent' }))
@@ -167,26 +169,29 @@ export const send_mail = async (body, res, type, token) => {
         template: 'orderconfirmation',
         message: {
           from: 'Little Paws Dachshund Rescue <no-reply@littlepawsdr.org',
-          to: body.order.email !== undefined ? body.order.email : body.email,
+          to: body?.order?.email ?? body?.email,
         },
         locals: {
-          _id: body.order._id,
-          orderItems: body.order.orderItems,
-          shippingAddress: body.order.shippingAddress,
-          email: body.order.email !== undefined ? body.order.email : body.email,
-          isPaid: body.order.isPaid,
-          createdAt: body.order.createdAt,
-          isGuest: body.order.email !== undefined ? true : false,
+          _id: body?.order?._id ?? body?._id,
+          orderItems: body?.order?.orderItems ?? body?.orderItems,
+          shippingAddress:
+            body?.order?.shippingAddress ?? body?.shippingAddress,
+          email: body?.order?.email ?? body?.email,
+          isPaid: body?.order?.isPaid ?? body?.isPaid,
+          createdAt: body?.order?.createdAt ?? body?.createdAt,
+          isGuest:
+            (body?.order?.email || body?.email) !== undefined ? true : false,
         },
       })
       .then(() => {
         console.log(
           `Order confirmation email has been sent to ${
-            body.email ?? body.order.email
+            body?.email ?? body?.order.email
           }`
         );
-        res.json({ success: true });
       });
+    hasEmailBeenSent = true;
+    return hasEmailBeenSent;
   } else if (type === 'userExists') {
     //TODO
   }
@@ -233,6 +238,8 @@ app.use('/api/ecard-order', eCardOrderRoutes);
 app.use('/api/raffle-winner', raffleWinnerRoutes);
 app.use('/api/blog', blogRoutes);
 app.use('/api/manually-add-user', manuallyAddedUserRoutes);
+app.use('/api/recaptcha', recaptchaRoutes);
+app.use('/api/error', errorRoutes);
 
 const PORT = process.env.PORT || 5000;
 

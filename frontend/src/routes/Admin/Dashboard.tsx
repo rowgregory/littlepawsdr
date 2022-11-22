@@ -1,165 +1,99 @@
-import React, { useEffect } from 'react';
-import { Col, Row } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import { Image, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import styled, { useTheme } from 'styled-components';
 import { listDonations } from '../../actions/donationActions';
 import { listOrders } from '../../actions/orderActions';
 import { listProducts } from '../../actions/productActions';
 import { listUsers, logout } from '../../actions/userActions';
 import LineChart from '../../components/dashboard/LineChart';
 import PieChart from '../../components/dashboard/PieChart';
-import Message from '../../components/Message';
 import { Text } from '../../components/styles/Styles';
 import { listECardOrders } from '../../actions/eCardOrderActions';
-import { TableBody, TableHead } from '../../components/styles/admin/Styles';
-import { LoadingImg } from '../../components/LoadingImg';
+import { TableHead } from '../../components/styles/admin/Styles';
+import {
+  ActionBtn,
+  BottomRow,
+  Circles,
+  DashboardContainer,
+  Middle,
+  MiddleRow,
+  RecentTransactions,
+  TableBody,
+  TopRow,
+  TopSellingProducts,
+  TopSellingProductsContainer,
+  TotalSalesContainer,
+  UserInfoContainer,
+  Wallet,
+  WelcomeText,
+} from '../../components/styles/DashboardStyles';
+import { Accordion } from '../../components/styles/place-order/Styles';
+import { useHistory, useLocation } from 'react-router-dom';
+import {
+  LinkContainer,
+  SideBarAccordionBtn,
+  SideBarLink,
+} from '../../components/dashboard/SideBar';
+import OrdersIcon from '../../components/svg/OrdersIcon';
+import ProductsIcon from '../../components/svg/ProductsIcon';
+import EcardIcon from '../../components/svg/EcardIcon';
+import SettingsIcon from '../../components/svg/SettingsIcon';
+import Logout from '../../components/svg/Logout';
+import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
+import ActionModal from '../../components/dashboard/ActionModal';
+import RecentTransactionItem from '../../components/dashboard/RecentTransactionItem';
+import DashboardTopRow from '../../components/dashboard/DashboardTopRow';
 
-const DashboardContainer = styled.div`
-  margin: 0 0.25rem;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-    margin: 0 1rem;
-  }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    margin: 0 1rem;
-  }
-`;
+const myLinks = [
+  {
+    textKey: 'Products',
+    linkKey: '/my-orders',
+    icon: <ProductsIcon />,
+  },
+  {
+    textKey: 'Ecards',
+    linkKey: '/my-orders/e-cards',
+    icon: <EcardIcon />,
+  },
+];
 
-const TopRow = styled(Row)`
-  margin-bottom: 0.25rem;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    margin-bottom: 1rem;
-  }
-`;
+const PurchasesAccordion = ({ revealPurchases }: any) => {
+  const { pathname } = useLocation();
 
-const DataSquareContainer = styled(Col)`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-gap: 0.25rem;
-  padding: 0;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    grid-gap: 1rem;
-    margin: 0 0 1rem 0;
-    padding: 0;
-  }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    grid-template-columns: 1fr 1fr;
-    grid-gap: 1rem;
-    margin: 0;
-    padding: 0 1rem 0 0;
-  }
-`;
-
-const DataSquare = styled.div<{ loading?: string }>`
-  padding: ${({ loading }) => (loading === 'true' ? '0' : '1.5rem')};
-  display: flex;
-  flex-direction: column;
-  background: ${({ theme }) => theme.input.bg};
-  border-radius: 0.5rem;
-  justify-content: space-between;
-  border: ${({ theme }) => `1px solid ${theme.separator}`};
-  height: 100%;
-`;
-
-const DataSquareTitle = styled.div`
-  font-size: 1rem;
-  margin-bottom: 0.25rem;
-  color: ${({ theme }) => theme.text};
-  font-family: 'Duru Sans';
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    font-size: 1.5rem;
-    margin-bottom: 0.75rem;
-  }
-`;
-
-const LineChartContainer = styled(Col)`
-  padding: 0;
-  margin: 0.25rem 0 0 0;
-
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-    margin: 0 0 1rem 0;
-  }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    margin: 0;
-  }
-`;
-
-const TopSellingProductsContainer = styled(Col)`
-  margin: 0.25rem 0 0 0;
-  padding: 0;
-  overflow-x: scroll;
-
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-    margin: 0 0 1rem 0;
-    overflow-x: hidden;
-  }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    padding: 0 1rem 0 0;
-    margin: 0;
-  }
-`;
-
-const TopSellingProducts = styled.div`
-  width: 100%;
-  border: ${({ theme }) => `1px solid ${theme.separator}`};
-  height: 100%;
-  background: ${({ theme }) => theme.input.bg};
-  font-family: 'Duru Sans';
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    width: 100%;
-    border-radius: 0.5rem;
-    height: 100%;
-    border: ${({ theme }) => `1px solid ${theme.separator}`};
-  }
-`;
-const TotalSalesContainer = styled(Col)`
-  width: 100%;
-  height: 100%;
-  border: ${({ theme }) => `1px solid ${theme.separator}`};
-  background: ${({ theme }) => theme.input.bg};
-  padding: 0;
-  margin: 0.25rem 0 0 0;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-    margin: 0;
-    padding: 1rem;
-    display: flex;
-    flex-direction: column;
-    border-radius: 0.5rem;
-    height: 100%;
-    border: ${({ theme }) => `1px solid ${theme.separator}`};
-  }
-`;
+  return (
+    <Accordion toggle={revealPurchases} maxheight='130px'>
+      {myLinks.map((obj: any, i: number) => (
+        <SideBarLink key={i} to={obj?.linkKey}>
+          <LinkContainer
+            active={(obj?.linkKey === pathname).toString()}
+            className='d-flex align-items-center px-3 py-3 mb-2'
+          >
+            <div className='ml-3'>{obj?.icon}</div>
+            <div className='ml-3'>{obj?.textKey}</div>
+          </LinkContainer>
+        </SideBarLink>
+      ))}
+    </Accordion>
+  );
+};
 
 const Dashboard = () => {
   const dispatch = useDispatch();
-  const theme = useTheme() as any;
+  const history = useHistory();
+  const [show, setShow] = useState(false);
+  const [revealMyLinks, setRevealMyLinks] = useState(false);
+  const [revealPurchases, setRevealPurchases] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
-  const userLogin = useSelector((state: any) => state.userLogin);
-  const { userInfo } = userLogin;
-
-  const donationList = useSelector((state: any) => state.donationList);
   const {
-    loading: loadingDonations,
-    error: errorDonations,
-    donations,
-  } = donationList;
-
-  const orderList = useSelector((state: any) => state.orderList);
-  const {
-    loading: loadingOrderList,
-    error: errorOrderList,
-    orders,
-  } = orderList;
-
-  const eCardOrdersList = useSelector((state: any) => state.eCardOrdersList);
-  const {
-    loading: loadingECardOrders,
-    error: errorECardOrders,
-    eCardOrders,
-  } = eCardOrdersList;
-
-  const userList = useSelector((state: any) => state.userList);
-  const { loading: loadingUsers, error: errorUsers, users } = userList;
+    userLogin: { userInfo },
+    donationList: { error: errorDonations, donations },
+    orderList: { error: errorOrderList, orders },
+    eCardOrdersList: { error: errorECardOrders, eCardOrders },
+    userList: { error: errorUsers },
+    userLogout: { loading: loadingUserLogout },
+  } = useSelector((state: any) => state);
 
   useEffect(() => {
     const timeToLogout = [
@@ -186,57 +120,20 @@ const Dashboard = () => {
     dispatch(listECardOrders());
   }, [dispatch]);
 
+  let orderItemsArr = [] as any;
+  let loadingTps = true;
+
   const orderItemsTotal = orders
     ?.reduce((acc: any, item: any) => acc + item?.totalPrice, 0)
     .toFixed(2);
-  const totalOrders = orders?.length;
 
   const donationsItemsTotal = donations
     ?.reduce((acc: any, item: any) => acc + item?.donationAmount, 0)
     .toFixed(2);
-  const totalDonations = donations?.length;
-
-  const adminUsers = users?.filter((obj: any) => obj.isAdmin).length;
-  const totalUsers = users?.length;
 
   const eCardOrdersItemsTotal = eCardOrders
     ?.reduce((acc: any, item: any) => acc + item?.totalPrice, 0)
     .toFixed(2);
-  const totalECards = eCardOrders?.length;
-
-  const dashboardSquareData = () => [
-    {
-      title: 'Total Orders',
-      itemAmount: totalOrders,
-      amountTotal: orderItemsTotal,
-      loading: loadingOrderList,
-      error: errorOrderList,
-    },
-    {
-      title: 'Total Donations',
-      itemAmount: totalDonations,
-      amountTotal: donationsItemsTotal,
-      loading: loadingDonations,
-      error: errorDonations,
-    },
-    {
-      title: 'Users',
-      itemAmount: totalUsers,
-      amountTotal: adminUsers,
-      loading: loadingUsers,
-      error: errorUsers,
-    },
-    {
-      title: 'Total E-Cards',
-      itemAmount: totalECards,
-      amountTotal: eCardOrdersItemsTotal,
-      loading: loadingECardOrders,
-      error: errorECardOrders,
-    },
-  ];
-
-  let orderItemsArr = [] as any;
-  let loadingTps = true;
 
   orders?.map((obj: any) => {
     return obj?.orderItems.forEach((order: any) => {
@@ -321,112 +218,212 @@ const Dashboard = () => {
     (d: any, i: any) => (revenueFromOrders[d] = revenue[i])
   );
 
+  const allRecentTransactions = donations
+    ?.concat(orders, eCardOrders)
+    ?.sort((a: any, b: any) => -a.createdAt.localeCompare(b.createdAt));
+
+  const viewTransaction = (item: any) => {
+    if (item?.donationType) {
+      history.push({
+        pathname: `/admin/donation/${item?._id}/edit`,
+        state: { directBackTo: 'dashboard' },
+      });
+    } else if (item?.orderId) {
+      history.push({
+        pathname: `/admin/order`,
+        state: item,
+      });
+    } else {
+      history.push({
+        pathname: `/admin/order/ecard`,
+        state: item,
+      });
+    }
+  };
+
   return (
     <DashboardContainer>
-      <TopRow className='mx-auto'>
-        <DataSquareContainer lg={12} xl={6}>
-          {dashboardSquareData().map((obj, i) => (
-            <div key={i}>
-              {obj?.error ? (
-                <DataSquare>
-                  <Message variant='danger'>{obj.error}</Message>
-                </DataSquare>
-              ) : (
-                <DataSquare loading={obj?.loading?.toString()}>
-                  {obj?.loading ? (
-                    <LoadingImg w='100%' h='175px' />
-                  ) : (
-                    <>
-                      <div className='d-flex flex-column'>
-                        <DataSquareTitle>{obj?.title}</DataSquareTitle>
-                        <Text
-                          fontWeight='bold'
-                          fontSize='1.75rem'
-                          marginBottom='1rem'
-                        >
-                          {obj.itemAmount}
-                        </Text>
-                      </div>
-                      <Text fontSize='0.9rem' color={theme.colors.quaternary}>
-                        {obj.title === 'Users'
-                          ? `${obj.amountTotal} admin users`
-                          : `$${obj.amountTotal}`}
-                      </Text>
-                    </>
-                  )}
-                </DataSquare>
-              )}
-            </div>
-          ))}
-        </DataSquareContainer>
-        {Object.keys(revenueFromOrders).length === 0 ? (
-          <LineChartContainer
-            lg={12}
-            xl={6}
-            className='d-flex justify-content-center align-items-center'
-          >
-            You have not received any orders yet
-          </LineChartContainer>
-        ) : (
-          <LineChartContainer lg={12} xl={6}>
-            <LineChart revenueFromOrders={revenueFromOrders} />
-          </LineChartContainer>
-        )}
-      </TopRow>
-      <Row className='mx-auto'>
-        <TopSellingProductsContainer xl={8} lg={12}>
-          {result.length === 0 ? (
-            <TopSellingProducts className='d-flex justify-content-center align-items-center'>
-              <Text>You have not sold any products yet</Text>
-            </TopSellingProducts>
-          ) : loadingTps ? (
-            <LoadingImg w='100%' h='100%' />
-          ) : (
-            <TopSellingProducts>
-              <Text
-                textAlign='center'
-                p='1rem'
-                fontSize='0.8rem'
-                fontWeight='900'
-              >
-                Top Selling Products
-              </Text>
-              <table className='w-100'>
-                <TableHead>
-                  <tr className='topSellingProducts'>
-                    <th>NAME</th>
-                    <th>PRICE</th>
-                    <th>QUANTITY</th>
-                    <th>AMOUNT</th>
-                  </tr>
-                </TableHead>
-                <TableBody>
-                  {sortedArr
-                    ?.map((product, i) => (
-                      <tr key={i} className='hover'>
-                        <td className='dashboard'>{product.name}</td>
-                        <td className='dashboard'>${product.price}</td>
-                        <td className='dashboard'>{product.count}</td>
-                        <td className='dashboard'>
-                          ${product.totalAmount.toFixed(2)}
-                        </td>
-                      </tr>
-                    ))
-                    .filter((_: any, i: number) => i < 5)}
-                </TableBody>
-              </table>
-            </TopSellingProducts>
-          )}
-        </TopSellingProductsContainer>
+      {loadingUserLogout && <HexagonLoader />}
+      <ActionModal show={show} close={handleClose} />
+      <Middle>
+        <div className='d-flex align-items-center justify-content-between mb-4'>
+          <div>
+            <WelcomeText>Hello {userInfo?.name.split(' ')[0]}</WelcomeText>
+            <Text color='#c8cbcd'>Here you can manage everything</Text>
+          </div>
+          <ActionBtn onClick={() => handleShow()}>Actions</ActionBtn>
+        </div>
 
-        <TotalSalesContainer xl={4} lg={6} md={6} sm={12}>
-          <PieChart
-            orders={orderItemsTotal}
-            donations={donationsItemsTotal}
-            eCards={eCardOrdersItemsTotal}
-          />
-        </TotalSalesContainer>
-      </Row>
+        <div style={{ width: '100%' }}>
+          <TopRow className='mx-auto'>
+            <DashboardTopRow
+              orderItemsTotal={orderItemsTotal}
+              donationsItemsTotal={donationsItemsTotal}
+              eCardOrdersItemsTotal={eCardOrdersItemsTotal}
+            />
+          </TopRow>
+          <MiddleRow>
+            <LineChart revenueFromOrders={revenueFromOrders} />
+          </MiddleRow>
+          <BottomRow>
+            <TopSellingProductsContainer>
+              {result.length === 0 ? (
+                <TopSellingProducts className='d-flex justify-content-center align-items-center'>
+                  <Text>You have not sold any products yet</Text>
+                </TopSellingProducts>
+              ) : loadingTps ? (
+                <div className='d-flex align-items-center justify-content-center h-100'>
+                  <Spinner animation='border' style={{ color: '#9761aa' }} />
+                </div>
+              ) : (
+                <TopSellingProducts>
+                  <Text
+                    fontWeight={500}
+                    marginBottom='24px'
+                    fontSize='15px'
+                    color='#373737'
+                  >
+                    Top Selling Products
+                  </Text>
+                  <table className='w-100'>
+                    <TableHead>
+                      <tr className='topSellingProducts'>
+                        <th>NAME</th>
+                        <th>PRICE</th>
+                        <th>QUANTITY</th>
+                        <th>AMOUNT</th>
+                      </tr>
+                    </TableHead>
+                    <TableBody>
+                      {sortedArr
+                        ?.map((product, i) => (
+                          <tr key={i} className='hover'>
+                            <td className='dashboard'>{product.name}</td>
+                            <td className='dashboard'>${product.price}</td>
+                            <td className='dashboard'>{product.count}</td>
+                            <td className='dashboard'>
+                              ${product.totalAmount.toFixed(2)}
+                            </td>
+                          </tr>
+                        ))
+                        .filter((_: any, i: number) => i < 5)}
+                    </TableBody>
+                  </table>
+                </TopSellingProducts>
+              )}
+            </TopSellingProductsContainer>
+            <TotalSalesContainer>
+              <PieChart
+                orders={orderItemsTotal}
+                donations={donationsItemsTotal}
+                eCards={eCardOrdersItemsTotal}
+              />
+            </TotalSalesContainer>
+          </BottomRow>
+        </div>
+      </Middle>
+      <RecentTransactions>
+        <UserInfoContainer>
+          <i className='fas fa-bell'></i>
+          <div
+            className='d-flex align-items-center'
+            style={{ cursor: 'pointer' }}
+          >
+            <Text fontWeight={500} marginRight='10px'>
+              {userInfo?.name}
+            </Text>
+            <Image
+              onClick={() => setRevealMyLinks(!revealMyLinks)}
+              src={userInfo?.avatar}
+              roundedCircle
+              width='40px'
+              height='40px'
+              style={{ objectFit: 'cover' }}
+            />
+          </div>
+        </UserInfoContainer>
+        <div className='mb-4 mt-2'>
+          <Accordion
+            toggle={revealMyLinks}
+            maxheight={revealPurchases ? '320px' : '190px'}
+          >
+            <SideBarAccordionBtn
+              onClick={() => {
+                setRevealPurchases(!revealPurchases);
+              }}
+            >
+              <LinkContainer
+                active={revealPurchases.toString()}
+                className='d-flex align-items-center'
+              >
+                <OrdersIcon />
+                <div className='ml-3'>Purchases</div>
+              </LinkContainer>
+            </SideBarAccordionBtn>
+            <PurchasesAccordion revealPurchases={revealPurchases} />
+            <SideBarLink to='/settings/profile'>
+              <LinkContainer className='d-flex align-items-center px-3 py-3'>
+                <SettingsIcon />
+                <div className='ml-3'>Settings</div>
+              </LinkContainer>
+            </SideBarLink>
+            <SideBarAccordionBtn
+              onClick={() => {
+                dispatch(logout(userInfo));
+              }}
+            >
+              <LinkContainer className='d-flex align-items-center px-3 py-3'>
+                <Logout />
+                <div className='ml-3'>Sign{loadingUserLogout && 'ing'} Out</div>
+              </LinkContainer>
+            </SideBarAccordionBtn>
+          </Accordion>
+        </div>
+        <Circles>
+          <div className='circle circle-1'></div>
+          <div className='circle circle-2'></div>
+        </Circles>
+        <Wallet>
+          <div className='ring'></div>
+          <Text color='#fff' marginBottom='0.5rem'>
+            Wallet
+          </Text>
+          <Text
+            color='#fff'
+            fontSize='32px'
+            fontWeight={400}
+            letterSpacing='2px'
+          >
+            ${' '}
+            {Number(
+              Number(orderItemsTotal) +
+                Number(donationsItemsTotal) +
+                Number(eCardOrdersItemsTotal)
+            ).toFixed(2) === 'NaN'
+              ? 0
+              : Number(
+                  Number(orderItemsTotal) +
+                    Number(donationsItemsTotal) +
+                    Number(eCardOrdersItemsTotal)
+                ).toFixed(2)}
+          </Text>
+        </Wallet>
+        <div className='d-flex align-items-baseline justify-content-between mb-4'>
+          <Text fontWeight={500} fontSize='17px' color='#373737'>
+            Recent Transactions
+          </Text>
+          <Text color='#b1b1b1'>See All</Text>
+        </div>
+        {allRecentTransactions
+          ?.map((item: any, i: number) => (
+            <RecentTransactionItem
+              viewTransaction={viewTransaction}
+              item={item}
+              key={i}
+            />
+          ))
+          .filter((_: any, i: number) => i < 6)}
+      </RecentTransactions>
     </DashboardContainer>
   );
 };

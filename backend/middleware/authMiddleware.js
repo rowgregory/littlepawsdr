@@ -18,14 +18,12 @@ const protect = asyncHandler(async (req, res, next) => {
 
       next();
     } catch (error) {
-      res.status(401);
-      throw new Error('TOKEN_FAILED');
+      res.status(401).json({ message: 'TOKEN_FAILED' });
     }
   }
 
   if (!token) {
-    res.status(401);
-    throw new Error('Not authorized, no token');
+    res.status(401).json({ message: 'NOT_AUTHORIZED_NO_TOKEN' });
   }
 });
 
@@ -33,8 +31,7 @@ const admin = (req, res, next) => {
   if (req.user && req.user.isAdmin) {
     next();
   } else {
-    res.status(401);
-    throw new Error('Not authorized as an admin');
+    res.status(401).json({ message: 'NOT_AUTHORIZED_AS_ADMIN' });
   }
 };
 

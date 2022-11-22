@@ -62,7 +62,10 @@ export const guestOrderListReducer = (
   }
 };
 
-export const guestOrderShipReducer = (state = {}, action: any) => {
+export const guestOrderShipReducer = (
+  state = { isShipped: false },
+  action: any
+) => {
   switch (action.type) {
     case GUEST_ORDER_SHIP_REQUEST:
       return {
@@ -79,7 +82,10 @@ export const guestOrderShipReducer = (state = {}, action: any) => {
         error: action.payload,
       };
     case GUEST_ORDER_SHIP_RESET:
-      return {};
+      return {
+        success: false,
+        isShipped: false,
+      };
     default:
       return state;
   }

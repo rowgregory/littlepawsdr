@@ -1,5 +1,5 @@
 import React, { useState, useEffect, createRef } from 'react';
-import { Form, Col } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
 import { STATES } from '../../utils/states';
 import { createDonation } from '../../actions/donationActions';
 import { useDispatch } from 'react-redux';
@@ -21,37 +21,37 @@ const Switch = styled(Form.Check)`
 
 const Container = styled.div`
   margin: 0 auto;
+  background: #f7f7f7;
   width: 100%;
-  padding: 1rem;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    padding: 0;
-  }
+  padding: 96px 16px;
 `;
 const AmountInput = styled.input`
-  width: 10rem;
+  width: 160px;
   text-align: center;
-  font-size: 1.5rem;
+  font-size: 24px;
   color: #fff !important;
   background: ${({ theme }) => theme.colors.secondary} !important;
-  border-radius: 2rem !important;
+  border: ${({ theme }) => theme.colors.secondary} 1px solid !important;
+  border-radius: 32px !important;
   :hover,
   :active,
   :focus {
     outline: none;
   }
+  text-indent: 0px !important;
 `;
 const MoneySign = styled.div`
-  font-size: 2rem;
+  font-size: 32px;
   color: ${({ theme }) => theme.colors.secondary};
-  margin-right: 0.5rem;
+  margin-right: 8px;
 `;
 
 export const FormInput = styled(Form.Control)`
   border: 2px solid ${({ theme }) => theme.colors.secondary} !important;
-  padding: 0.6rem 1.25rem !important;
+  padding: 9.6px 20px !important;
   height: auto !important;
-  font-size: 1.125rem !important;
-  font-family: Oswald !important;
+  font-size: 18px !important;
+
   color: #777 !important;
   outline-color: ${({ theme }) => theme.colors.secondary} !important;
   :hover,
@@ -61,15 +61,14 @@ export const FormInput = styled(Form.Control)`
     outline-color: ${({ theme }) => theme.colors.secondary} !important;
   }
   &::placeholder {
-    font-family: Oswald !important;
-    font-size: 1.125rem !important;
+    font-size: 18px !important;
     color: #777 !important;
   }
 `;
 
 export const DonateBtn = styled.button`
   font-family: Oswald;
-  font-size: 1.125rem;
+  font-size: 18px;
   background: ${({ theme }) => theme.colors.secondary};
   color: #fff;
   padding: 0.6rem 3rem;
@@ -79,8 +78,8 @@ export const DonateBtn = styled.button`
 `;
 export const FormLabel = styled(Form.Label)`
   color: ${({ theme }) => theme.colors.secondary} !important;
-  font-size: 1.125em !important;
-  font-family: Oswald !important;
+  font-size: 18px !important;
+
   margin-bottom: 0 !important;
   display: flex;
   align-items: center;
@@ -88,26 +87,31 @@ export const FormLabel = styled(Form.Label)`
 
 export const DonateTitle = styled.div`
   color: ${({ theme }) => theme.colors.secondary};
-  font-size: 2.25rem;
-  margin-bottom: 1rem;
+  font-size: 36px;
+  margin-bottom: 32px;
   font-family: Oswald;
 `;
 const PersonalInfo = styled.div`
   color: ${({ theme }) => theme.colors.secondary};
   border-bottom: 1px solid rgba(0, 0, 0, 0.085);
-  font-size: 1.5rem;
+  font-size: 24px;
   font-family: Oswald;
-  padding: 0 0 0.35rem 0;
-  margin-bottom: 1.2rem;
+  padding: 0 0 5.6px 0;
+  margin-bottom: 19.2px;
   font-weight: 700;
 `;
 
-export const ErrorText = styled.div`
+const ErrorText = styled.div`
   color: #f83131;
-  font-family: Oswald;
-  font-size: 0.85rem;
+  font-size: 13.6px;
   letter-spacing: 0.5px;
-  margin-left: 0.25rem;
+  margin-left: 4px;
+`;
+
+const StyledForm = styled(Form)`
+  max-width: 768px;
+  width: 100%;
+  margin-inline: auto;
 `;
 
 const DonationForm = () => {
@@ -162,135 +166,132 @@ const DonationForm = () => {
   return (
     <Container>
       <DonateTitle>DONATION FORM</DonateTitle>
-      <Form>
-        <Form.Row className='d-flex flex-column'>
-          <Form.Group
-            as={Col}
-            controlId='donationAmount'
-            className='d-flex align-items-center'
-          >
-            <MoneySign>$</MoneySign>
-            <AmountInput
-              required
-              name='donationAmount'
-              value={inputs.donationAmount}
-              type='number'
-              onChange={(e: any) =>
-                handleInputChange(e, setTwenty, setCustomAmount)
+      <StyledForm>
+        <Form.Group
+          controlId='donationAmount'
+          className='d-flex align-items-center'
+        >
+          <MoneySign>$</MoneySign>
+          <AmountInput
+            required
+            name='donationAmount'
+            value={inputs.donationAmount}
+            type='number'
+            onChange={(e: any) =>
+              handleInputChange(e, setTwenty, setCustomAmount)
+            }
+            ref={inputRef}
+          />
+        </Form.Group>
+        <Form.Group
+          controlId='twenty'
+          className='mb-0 d-flex align-items-center'
+        >
+          <Switch
+            name={!twenty ? 'twenty' : 'customAmount'}
+            type='switch'
+            checked={twenty}
+            onChange={handleInputChange}
+            onClick={() => {
+              setTwenty(!twenty);
+              setCustomAmount(!customAmount);
+              if (twenty) {
+                inputRef?.current.focus();
+                setTwenty(false);
+                setCustomAmount(true);
               }
-              ref={inputRef}
-            />
-          </Form.Group>
-          <Form.Group
-            controlId='twenty'
-            className='mb-0 d-flex align-items-center'
-          >
-            <Switch
-              name={!twenty ? 'twenty' : 'customAmount'}
-              type='switch'
-              checked={twenty}
-              onChange={handleInputChange}
-              onClick={() => {
-                setTwenty(!twenty);
+            }}
+          />
+          <FormLabel>$20</FormLabel>
+        </Form.Group>
+        <Form.Group
+          controlId='customAmount'
+          className='mb-0 d-flex align-items-center'
+        >
+          <Switch
+            className='my-1'
+            name={!twenty ? 'twenty' : 'customAmount'}
+            type='switch'
+            checked={customAmount}
+            onChange={handleInputChange}
+            onClick={() => {
+              if (customAmount) {
+                setTwenty(true);
+                setCustomAmount(false);
+              } else {
                 setCustomAmount(!customAmount);
-                if (twenty) {
-                  inputRef?.current.focus();
-                  setTwenty(false);
-                  setCustomAmount(true);
-                }
-              }}
-            />
-            <FormLabel>$20</FormLabel>
-          </Form.Group>
-          <Form.Group
-            controlId='customAmount'
-            className='mb-0 d-flex align-items-center'
-          >
-            <Switch
-              className='my-1'
-              name={!twenty ? 'twenty' : 'customAmount'}
-              type='switch'
-              checked={customAmount}
-              onChange={handleInputChange}
-              onClick={() => {
-                if (customAmount) {
-                  setTwenty(true);
-                  setCustomAmount(false);
-                } else {
-                  setCustomAmount(!customAmount);
-                  setTwenty(!twenty);
-                  inputRef?.current.focus();
-                }
-              }}
-            />
-            <FormLabel>Custom Amount</FormLabel>
-          </Form.Group>
-          <Form.Group
-            controlId='donationType'
-            className='mb-4 mt-3 d-flex align-items-center'
-          >
-            <Switch
-              name='donationType'
-              type='switch'
-              checked={makeMonthly}
-              onChange={() => {
-                setMakeMonthly(!makeMonthly);
-                setInputs((inputs) => ({
-                  ...inputs,
-                  donationType: !makeMonthly ? 'monthly' : 'one-time',
-                }));
-              }}
-            />
+                setTwenty(!twenty);
+                inputRef?.current.focus();
+              }
+            }}
+          />
+          <FormLabel>Custom Amount</FormLabel>
+        </Form.Group>
+        <Form.Group
+          controlId='donationType'
+          className='mb-4 mt-3 d-flex align-items-center'
+        >
+          <Switch
+            name='donationType'
+            type='switch'
+            checked={makeMonthly}
+            onChange={() => {
+              setMakeMonthly(!makeMonthly);
+              setInputs((inputs) => ({
+                ...inputs,
+                donationType: !makeMonthly ? 'monthly' : 'one-time',
+              }));
+            }}
+          />
 
-            <FormLabel>Make this donation every month</FormLabel>
-          </Form.Group>
-        </Form.Row>
+          <FormLabel>Make this donation every month</FormLabel>
+        </Form.Group>
+
         <PersonalInfo>PERSONAL INFO</PersonalInfo>
-        <Form.Row>
-          <Form.Group as={Col} controlId='firstName'>
-            <FormLabel>
-              First Name<ErrorText>*</ErrorText>
-            </FormLabel>
-            <FormInput
-              required
-              name='firstName'
-              value={inputs.firstName || ''}
-              type='text'
-              placeholder='First Name'
-              onChange={handleInputChange}
-            />
-            <ErrorText>{errors?.firstName}</ErrorText>
-          </Form.Group>
-          <Form.Group as={Col} controlId='lastName'>
-            <FormLabel>
-              Last Name<ErrorText>*</ErrorText>
-            </FormLabel>
-            <FormInput
-              required
-              name='lastName'
-              value={inputs.lastName || ''}
-              placeholder='Last Name'
-              onChange={handleInputChange}
-            />
-            <ErrorText>{errors?.lastName}</ErrorText>
-          </Form.Group>
-        </Form.Row>
-        <Form.Row>
-          <Form.Group as={Col} controlId='email'>
-            <FormLabel>
-              Email Address<ErrorText>*</ErrorText>
-            </FormLabel>
-            <FormInput
-              required
-              name='email'
-              value={inputs.email || ''}
-              type='email'
-              placeholder='Email Address'
-              onChange={handleInputChange}
-            />
-            <ErrorText>{errors?.email}</ErrorText>
-          </Form.Group>
-        </Form.Row>
+
+        <Form.Group controlId='firstName'>
+          <FormLabel>
+            First Name<ErrorText>*</ErrorText>
+          </FormLabel>
+          <FormInput
+            required
+            name='firstName'
+            value={inputs.firstName || ''}
+            type='text'
+            placeholder='First Name'
+            onChange={handleInputChange}
+          />
+          <ErrorText>{errors?.firstName}</ErrorText>
+        </Form.Group>
+        <Form.Group controlId='lastName'>
+          <FormLabel>
+            Last Name<ErrorText>*</ErrorText>
+          </FormLabel>
+          <FormInput
+            required
+            name='lastName'
+            value={inputs.lastName || ''}
+            placeholder='Last Name'
+            onChange={handleInputChange}
+          />
+          <ErrorText>{errors?.lastName}</ErrorText>
+        </Form.Group>
+
+        <Form.Group controlId='email'>
+          <FormLabel>
+            Email Address<ErrorText>*</ErrorText>
+          </FormLabel>
+          <FormInput
+            required
+            name='email'
+            value={inputs.email || ''}
+            type='email'
+            placeholder='Email Address'
+            onChange={handleInputChange}
+          />
+          <ErrorText>{errors?.email}</ErrorText>
+        </Form.Group>
+
         <Form.Group controlId='address'>
           <FormLabel>
             Address<ErrorText>*</ErrorText>
@@ -304,56 +305,56 @@ const DonationForm = () => {
           />
           <ErrorText>{errors?.address}</ErrorText>
         </Form.Group>
-        <Form.Row>
-          <Form.Group as={Col} controlId='city'>
-            <FormLabel>
-              City<ErrorText>*</ErrorText>
-            </FormLabel>
-            <FormInput
-              required
-              name='city'
-              value={inputs.city || ''}
-              placeholder='City'
-              onChange={handleInputChange}
-            />
-            <ErrorText>{errors?.city}</ErrorText>
-          </Form.Group>
-          <Form.Group as={Col} controlId='state'>
-            <FormLabel>
-              State<ErrorText>*</ErrorText>
-            </FormLabel>
-            <FormInput
-              className='d-flex w-100'
-              required
-              name='state'
-              value={inputs.state || ''}
-              placeholder='Enter state'
-              as='select'
-              onChange={handleInputChange}
-            >
-              {STATES.map((state: any, i: number) => (
-                <option style={{ color: '#777' }} key={i}>
-                  {state.text}
-                </option>
-              ))}
-            </FormInput>
-            <ErrorText>{errors?.state}</ErrorText>
-          </Form.Group>
 
-          <Form.Group as={Col} controlId='zipPostalCode'>
-            <FormLabel>
-              Zip / Postal Code<ErrorText>*</ErrorText>
-            </FormLabel>
-            <FormInput
-              required
-              name='zipPostalCode'
-              value={inputs.zipPostalCode || ''}
-              placeholder='Zip / Postal Code'
-              onChange={handleInputChange}
-            />
-            <ErrorText>{errors?.zipPostalCode}</ErrorText>
-          </Form.Group>
-        </Form.Row>
+        <Form.Group controlId='city'>
+          <FormLabel>
+            City<ErrorText>*</ErrorText>
+          </FormLabel>
+          <FormInput
+            required
+            name='city'
+            value={inputs.city || ''}
+            placeholder='City'
+            onChange={handleInputChange}
+          />
+          <ErrorText>{errors?.city}</ErrorText>
+        </Form.Group>
+        <Form.Group controlId='state'>
+          <FormLabel>
+            State<ErrorText>*</ErrorText>
+          </FormLabel>
+          <FormInput
+            className='d-flex w-100'
+            required
+            name='state'
+            value={inputs.state || ''}
+            placeholder='Enter state'
+            as='select'
+            onChange={handleInputChange}
+          >
+            {STATES.map((state: any, i: number) => (
+              <option style={{ color: '#777' }} key={i}>
+                {state.text}
+              </option>
+            ))}
+          </FormInput>
+          <ErrorText>{errors?.state}</ErrorText>
+        </Form.Group>
+
+        <Form.Group controlId='zipPostalCode'>
+          <FormLabel>
+            Zip / Postal Code<ErrorText>*</ErrorText>
+          </FormLabel>
+          <FormInput
+            required
+            name='zipPostalCode'
+            value={inputs.zipPostalCode || ''}
+            placeholder='Zip / Postal Code'
+            onChange={handleInputChange}
+          />
+          <ErrorText>{errors?.zipPostalCode}</ErrorText>
+        </Form.Group>
+
         <Form.Group
           controlId='inMemoryOf'
           className='d-flex align-items-center mb-0'
@@ -420,32 +421,36 @@ const DonationForm = () => {
             </Form.Group>
           </>
         )}
-      </Form>
-      <Text
-        fontFamily='Oswald'
-        fontSize='1.625rem'
-        marginBottom='1.625rem'
-        color='#22c2b7'
-      >
-        DONATION TOTAL: ${inputs.donationAmount} / {inputs.donationType}
-      </Text>
-      {formIsCompleted ? (
-        <form
-          className='d-flex flex-column align-items-start'
-          action='https://www.paypal.com/donate'
-          method='post'
-          target='_top'
+        <Text
+          fontFamily='Oswald'
+          fontSize='1.625rem'
+          marginBottom='1.625rem'
+          color='#22c2b7'
         >
-          <input type='hidden' name='hosted_button_id' value='C4SMAYNF4L948' />
-          <DonateBtn onClick={donateCreate}>DONATE NOW</DonateBtn>
-        </form>
-      ) : (
-        <DonateBtn
-          onClick={() => validate(setTimeToValidate, setErrors, inputs)}
-        >
-          DONATE NOW
-        </DonateBtn>
-      )}
+          DONATION TOTAL: ${inputs.donationAmount} / {inputs.donationType}
+        </Text>
+        {formIsCompleted ? (
+          <form
+            className='d-flex flex-column align-items-start'
+            action='https://www.paypal.com/donate'
+            method='post'
+            target='_top'
+          >
+            <input
+              type='hidden'
+              name='hosted_button_id'
+              value='C4SMAYNF4L948'
+            />
+            <DonateBtn onClick={donateCreate}>DONATE NOW</DonateBtn>
+          </form>
+        ) : (
+          <DonateBtn
+            onClick={() => validate(setTimeToValidate, setErrors, inputs)}
+          >
+            DONATE NOW
+          </DonateBtn>
+        )}
+      </StyledForm>
     </Container>
   );
 };

@@ -1,5 +1,6 @@
 import asyncHandler from 'express-async-handler';
 import Product from '../models/productModel.js';
+import Error from '../models/errorModel.js';
 import { cloudImages } from '../data/cloudImages.js';
 
 // @desc    Get all products
@@ -143,13 +144,19 @@ const updateProductGuest = asyncHandler(async (req, res) => {
 // @route   GET /api/products/client/:id
 // @access  Public
 const getPublicProductDetails = asyncHandler(async (req, res) => {
-  const product = await Product.findById(req.params.id);
+  try {
+    const product = await Product.findById(req.params.id);
+    if (!product) return res.status(404).json({ message: 'Product Not Found' });
 
-  if (product) {
-    res.json(product);
-  } else {
-    res.status(404);
-    throw new Error('Product not found');
+    return res.json(product);
+  } catch (err) {
+    res.status(500).json({ message: 'Server Error' });
+    const createdError = new Error({
+      functionName: 'GET_PUBLIC_PRODUCT_DETAILS',
+      detail: err.message,
+    });
+
+    await createdError.save();
   }
 });
 

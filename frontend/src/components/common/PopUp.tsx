@@ -7,9 +7,6 @@ import { Text } from '../../components/styles/Styles';
 import Checkmark from '../svg/Checkmark';
 import HorizontalLoader from '../HorizontalLoader';
 import { NEWSLETTER_EMAIL_CREATE_RESET } from '../../constants/newsletterConstants';
-import toaster from 'toasted-notes';
-import { ToastAlert } from './ToastAlert';
-
 const StyledModal = styled(Modal)`
   background: rgba(0, 0, 0, 0.7) !important;
   .modal-dialog {
@@ -35,8 +32,8 @@ const StyledModal = styled(Modal)`
 `;
 
 const Title = styled.div`
-  font-size: 3rem;
-  color: ${({ theme }) => theme.colors.primary};
+  font-size: 32px;
+  color: ${({ theme }) => theme.colors.quinary};
 `;
 
 const RightSideModal = styled.div`
@@ -48,31 +45,34 @@ const RightSideModal = styled.div`
   }
 `;
 
-const ContinueBtn = styled(Button)`
+const ContinueBtn = styled.button`
   border-radius: 25px;
-  background: ${({ theme }) => theme.colors.secondary};
-  border: 1px solid ${({ theme }) => theme.colors.secondary};
+  background: ${({ theme }) => theme.white};
+  color: ${({ theme }) => theme.colors.quinary};
+  border: 2px solid ${({ theme }) => theme.colors.quinary};
   transition: 300ms;
-  :focus {
-    background: ${({ theme }) => theme.colors.secondary};
+
+  :focus,
+  :active {
+    background: ${({ theme }) => theme.colors.quinary} !important;
   }
   :hover {
-    background: ${({ theme }) => theme.colors.secondary};
-    filter: brightness(0.9);
+    background: ${({ theme }) => theme.colors.quinary};
+    border: 2px solid ${({ theme }) => theme.colors.quinary};
+    color: #fff;
   }
 `;
 
 const SubscribeBtn = styled(Button)`
-  height: 40px;
+  height: 45px;
   border-radius: 0 25px 25px 0;
   border: 0;
   width: 25%;
   padding: 0;
-  background: ${({ theme }) => theme.colors.primary};
+  background: ${({ theme }) => theme.colors.quinary};
   transition: 300ms;
   :hover {
-    background: ${({ theme }) => theme.colors.primary};
-    filter: brightness(0.9);
+    background: ${({ theme }) => theme.colors.quinary};
   }
 `;
 
@@ -110,18 +110,9 @@ const PopUp = () => {
       dispatch({ type: NEWSLETTER_EMAIL_CREATE_RESET });
       setTimeout(() => {
         handleClose();
-      }, 2000);
+      }, 3000);
     }
   }, [dispatch, success]);
-
-  useEffect(() => {
-    if (error) {
-      toaster.notify(({ onClose }) => ToastAlert(error, onClose, 'error'), {
-        position: 'bottom',
-        duration: 20000,
-      });
-    }
-  }, [error]);
 
   const showPopup = ![continuedSession, hasSubmittedNewsletterEmail].includes(
     true
@@ -158,6 +149,7 @@ const PopUp = () => {
                     onChange={(e) => setNewsletterEmail(e.target.value)}
                     style={{
                       borderRadius: '25px 0 0 25px',
+                      border: '1px solid #d2d2d2',
                     }}
                   ></Form.Control>
                 </Form.Group>

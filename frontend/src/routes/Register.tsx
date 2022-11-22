@@ -1,258 +1,242 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Spinner, Col, Button } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
+import { register } from '../actions/userActions';
 import {
-  register,
-  sendRegisterConfirmationEmail,
-} from '../actions/userActions';
-import { Text } from '../components/styles/Styles';
-import { Container, FormContainer, StyledLink } from './Login';
-import HorizontalLoader from '../components/HorizontalLoader';
-import PasswordMeter from '../components/PasswordMeter';
+  Container,
+  CreateAccountContainer,
+  FormContainer,
+  FormWrapper,
+  StyledButton,
+  StyledLink,
+  Text,
+} from '../components/styles/Styles';
+import PasswordMeter, {
+  PasswordRequirements,
+} from '../components/PasswordMeter';
+import { USER_REGISTER_RESET } from '../constants/userConstants';
 import {
-  USER_REGISTER_RESET,
-  USER_VERIFY_EMAIL_RESET,
-} from '../constants/userConstants';
-import styled from 'styled-components';
-import toaster from 'toasted-notes';
-import { ToastAlert } from '../components/common/ToastAlert';
-import { validateEmailRegex } from '../utils/regex';
+  inputConfirmPassword,
+  inputEmail,
+  inputName,
+  inputPassword,
+  validateRegisterForm,
+} from '../utils/validateRegisterForm';
+import HexagonLoader from '../components/Loaders/HexagonLoader/HexagonLoader';
+import Message from '../components/Message';
+import JumpingInput from '../components/common/JumpingInput';
+import {
+  privacyPolicyLinkKey,
+  termsOfServiceLinkKey,
+} from '../utils/footerUtils';
+import LeftArrow from '../components/svg/LeftArrow';
+import ReCAPTCHA from 'react-google-recaptcha';
+import axios from 'axios';
 
-const LoginContainer = styled(Col)`
-  color: ${({ theme }) => theme.text};
-  text-align: center;\
-  border: 1px solid ${({ theme }) => theme.input.border};
-`;
+const useRegisterForm = (cb: any) => {
+  const values = {
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  };
+
+  const [inputs, setInputs] = useState(values) as any;
+
+  const handleInputChange = (e: any) => {
+    setInputs((inputs: any) => ({
+      ...inputs,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const onSubmit = (e: any) => {
+    e.preventDefault();
+    cb();
+  };
+
+  return { inputs, handleInputChange, onSubmit, setInputs };
+};
 
 const Register = () => {
   const dispatch = useDispatch();
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState({
+    password: false,
+    confirmPassword: false,
+  });
+  const [errors, setErrors] = useState({}) as any;
+  const [show, setShow] = useState(false);
+  const [submittedForm, setSubmittedForm] = useState(false);
+  const [recap, setRecap] = useState(false);
 
-  const userRegister = useSelector((state: any) => state.userRegister);
-  let {
-    loading: userRegisterLoading,
-    success: userRegisterSuccess,
-    error: userRegisterError,
-    userInfo: userRegisterInfo,
-  } = userRegister;
-  // userRegisterLoading = true;
-  const userVerifyEmail = useSelector((state: any) => state.userVerifyEmail);
-  let {
-    userInfo: userInfoVerifyEmail,
-    error: errorVerifyEmailSent,
-    success: succesVerifyEmailSent,
-    loading: loadingVerifyEmailSent,
-  } = userVerifyEmail;
-  // loadingVerifyEmailSent = true;
+  const {
+    userRegister: { loading, success, error, message },
+  } = useSelector((state: any) => state);
 
-  useEffect(() => {
-    if (userRegisterSuccess) {
-      dispatch(
-        sendRegisterConfirmationEmail(
-          userRegisterInfo.name,
-          userRegisterInfo.email,
-          userRegisterInfo.token,
-          JSON.stringify(userRegisterInfo.password)
-        )
-      );
-      setName('');
-      setEmail('');
-      setPassword('');
-      setConfirmPassword('');
-    }
+  let formIsValid = true;
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, userRegisterSuccess]);
+  const registerFormCallback = async () => {
+    setSubmittedForm(true);
+    const isValid = validateRegisterForm(setErrors, inputs, formIsValid);
+    if (!isValid) setSubmittedForm(false);
 
-  const submitHandler = (e: any) => {
-    e.preventDefault();
-    const isLegitEmail = validateEmailRegex.test(email);
-
-    if (!isLegitEmail) {
-      toaster.notify(
-        ({ onClose }) =>
-          ToastAlert('Email is incorrect format.', onClose, 'error'),
-        { position: 'bottom' }
-      );
-    }
-    if (password !== confirmPassword) {
-      toaster.notify(
-        ({ onClose }) => ToastAlert('Password do not match.', onClose, 'error'),
-        { position: 'bottom' }
-      );
-    } else {
-      if (strength === 4) {
-        dispatch(register(name, email, password));
-      } else {
-        toaster.notify(
-          ({ onClose }) =>
-            ToastAlert(
-              'You have not met the password requirements.',
-              onClose,
-              'error'
-            ),
-          { position: 'bottom' }
-        );
-      }
+    if (isValid && strength === 4) {
+      setRecap(true);
+      setSubmittedForm(false);
     }
   };
 
+  const { inputs, handleInputChange, onSubmit, setInputs } =
+    useRegisterForm(registerFormCallback);
+
+  useEffect(() => {
+    if (success) {
+      setInputs({});
+      setTimeout(() => {
+        dispatch({ type: USER_REGISTER_RESET });
+      }, 8000);
+    }
+  }, [dispatch, setInputs, success]);
+
   const validations = [
-    password.length >= 5 ? 1 : 0,
-    password.search(/[A-Z]/) > -1 ? 1 : 0,
-    password.search(/[0-9]/) > -1 ? 1 : 0,
-    password.search(/[!$&+,:;=?@#]/) > -1 ? 1 : 0,
+    inputs?.password?.length >= 9 ? 1 : 0,
+    inputs?.password?.search(/[A-Z]/) > -1 ? 1 : 0,
+    inputs?.password?.search(/[0-9]/) > -1 ? 1 : 0,
+    inputs?.password?.search(/[~`! @#$%^&*()_+={}|:;"',.?]/) > -1 ? 1 : 0,
   ];
 
   const strength = validations.reduce((acc, cur) => acc + cur, 0);
 
-  useEffect(() => {
-    (userRegisterError || errorVerifyEmailSent) &&
-      toaster.notify(
-        ({ onClose }) =>
-          ToastAlert(
-            userRegisterError || errorVerifyEmailSent,
-            onClose,
-            'error'
-          ),
-        { position: 'bottom' }
-      );
-  }, [errorVerifyEmailSent, userRegisterError]);
+  const handleRecaptcha = async (captchaToken: any) => {
+    setSubmittedForm(true);
+    const res = (await axios.post('/api/recaptcha', {
+      captchaToken,
+    })) as any;
 
-  useEffect(() => {
-    if (succesVerifyEmailSent) {
-      toaster.notify(
-        ({ onClose }) =>
-          ToastAlert(userInfoVerifyEmail?.message, onClose, 'success'),
-        { position: 'top' }
-      );
-
-      setTimeout(() => {
-        dispatch({ type: USER_REGISTER_RESET });
-        dispatch({ type: USER_VERIFY_EMAIL_RESET });
-      }, 3000);
+    if (res?.data?.success && res?.data?.message === 'verified') {
+      dispatch(register(inputs.name, inputs.email, inputs.password));
+      setRecap(false);
+      setSubmittedForm(false);
     }
-  }, [dispatch, succesVerifyEmailSent, userInfoVerifyEmail]);
+  };
 
   return (
     <Container>
-      <div
-        className='mx-auto px-3  pt-4'
-        style={{ maxWidth: '340px', width: '100%' }}
-      >
-        <Text fontSize='1.5rem' textAlign='center' marginBottom='0.65rem'>
-          Welcome to Little Paws
-        </Text>
-        <div
-          style={{
-            position: 'absolute',
-            top: '200px',
-            zIndex: 100,
-            width: '308px',
-          }}
-        >
-          {userRegisterLoading && <HorizontalLoader />}
+      {(loading || submittedForm) && <HexagonLoader />}
+      {recap ? (
+        <div className='d-flex align-items-center justify-content-center'>
+          <ReCAPTCHA
+            sitekey={`${process.env.REACT_APP_RECAPTCHA_KEY}`}
+            onChange={handleRecaptcha}
+          />
         </div>
-        <FormContainer>
-          <Form onSubmit={submitHandler}>
-            <Form.Group controlId='name'>
-              <Form.Label>Full Name</Form.Label>
-              <Form.Control
-                type='name'
-                placeholder='Full Name'
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-              ></Form.Control>
-            </Form.Group>
-            <Form.Group controlId='email'>
-              <Form.Label>Email Address</Form.Label>
-              <Form.Control
+      ) : (
+        <FormWrapper className='mx-auto px-3'>
+          <Text fontSize='1.5rem' textAlign='center' marginBottom='0.65rem'>
+            {loading ? 'One moment' : 'Welcome to Little Paws'}
+          </Text>
+          {error && <Message variant='danger'>{error}</Message>}
+          {success && <Message variant='success'>{message.message}</Message>}
+          <LeftArrow text='Back to sign in' url='/login' />
+          <FormContainer>
+            <Form onSubmit={onSubmit}>
+              <JumpingInput
+                name='name'
+                label='Full Name'
+                value={inputs.name || ''}
+                handleInputChange={handleInputChange}
+                type='text'
+                error={errors?.name}
+                blur={() => inputName(inputs, formIsValid, setErrors)}
+              />
+              <JumpingInput
+                name='email'
+                label='Email'
+                value={inputs.email || ''}
+                handleInputChange={handleInputChange}
                 type='email'
-                placeholder='Email Address'
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              ></Form.Control>
-            </Form.Group>
-            <Form.Group controlId='password'>
-              <Form.Label>Password</Form.Label>
-              <div
-                className='d-flex align-items-center'
-                style={{ position: 'relative' }}
-              >
-                <Form.Control
-                  type={showPassword ? 'text' : 'password'}
-                  placeholder='Password'
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                ></Form.Control>
-                <i
-                  onClick={() => setShowPassword(!showPassword)}
-                  className='fas fa-eye'
-                  aria-hidden='true'
-                  style={{ position: 'absolute', right: '10px' }}
-                ></i>
+                error={errors?.email}
+                blur={() => inputEmail(inputs, formIsValid, setErrors)}
+              />
+              <div style={{ marginBottom: '-16px' }}>
+                <JumpingInput
+                  name='password'
+                  label='Password'
+                  value={inputs.password || ''}
+                  handleInputChange={handleInputChange}
+                  type={showPassword.password ? 'text' : 'password'}
+                  error={errors?.password}
+                  blur={() => inputPassword(inputs, formIsValid, setErrors)}
+                  showPassword={showPassword.password}
+                  setShowPassword={setShowPassword}
+                />
               </div>
-            </Form.Group>
-            <Form.Group controlId='confirmpassword'>
-              <Form.Label>Confirm Password</Form.Label>
-              <div
-                className='d-flex align-items-center'
-                style={{ position: 'relative' }}
+              <PasswordMeter validations={validations} strength={strength} />
+              <Text
+                cursor='pointer'
+                fontSize='12px'
+                onClick={() => setShow(!show)}
+                className='d-flex align-items-center justify-content-between'
               >
-                <Form.Control
-                  type={showConfirmPassword ? 'text' : 'password'}
-                  placeholder='Confirm Password'
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  required
-                ></Form.Control>
+                {show ? 'Hide ' : 'Show '}password requirements
                 <i
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className='fas fa-eye'
-                  aria-hidden='true'
-                  style={{ position: 'absolute', right: '10px' }}
+                  className={`fas fa-chevron-${show ? 'up' : 'down'} fa-sm`}
                 ></i>
+              </Text>
+              <PasswordRequirements validations={validations} open={show} />
+              <div className='mt-2'>
+                <JumpingInput
+                  name='confirmPassword'
+                  label='Confirm Password'
+                  value={inputs.confirmPassword || ''}
+                  handleInputChange={handleInputChange}
+                  type={showPassword.confirmPassword ? 'text' : 'password'}
+                  error={errors?.confirmPassword}
+                  blur={() =>
+                    inputConfirmPassword(inputs, formIsValid, setErrors)
+                  }
+                  showPassword={showPassword.confirmPassword}
+                  setShowPassword={setShowPassword}
+                />
               </div>
-            </Form.Group>
-            <Button
-              type='submit'
-              className='d-flex align-items-center border-0 bg-success w-100'
-            >
-              {loadingVerifyEmailSent ? (
-                <div className='mx-auto d-flex align-items-center'>
-                  <Spinner
-                    as='span'
-                    animation='border'
-                    size='sm'
-                    role='status'
-                    aria-hidden='true'
-                    className='mr-2'
-                  />
-                  <Text color='#fff'>Creating Account...</Text>
-                </div>
-              ) : (
-                <Text className='mx-auto' color='#fff'>
-                  Register
+              <StyledButton
+                disabled={loading}
+                type='submit'
+                className='d-flex align-items-center border-0 w-100 justify-content-center mt-3'
+              >
+                <Text color='#fff'>
+                  Sign{loading && 'ing'} Up{loading && '...'}&nbsp;&nbsp;
                 </Text>
-              )}
-            </Button>
-          </Form>
-        </FormContainer>
-        <LoginContainer className='py-3 mt-3'>
-          <PasswordMeter validations={validations} strength={strength} />
-        </LoginContainer>
-        <LoginContainer className='py-3 mt-3'>
-          Already have an account? <StyledLink to='/login'>Sign In</StyledLink>
-        </LoginContainer>
-      </div>
+              </StyledButton>
+            </Form>
+            <Text
+              fontSize='0.75rem'
+              fontWeight='300'
+              marginTop='1.5rem'
+              p='0rem 0.5rem'
+            >
+              By clicking Sign Up, you agree to our{' '}
+              <span
+                style={{ color: '#82c2e4', cursor: 'pointer' }}
+                onClick={() => window.open(termsOfServiceLinkKey, '_blank')}
+              >
+                Terms of Service
+              </span>{' '}
+              and that you have read our{' '}
+              <span
+                style={{ color: '#82c2e4', cursor: 'pointer' }}
+                onClick={() => window.open(privacyPolicyLinkKey, '_blank')}
+              >
+                Privacy Policy
+              </span>
+            </Text>
+          </FormContainer>
+          <CreateAccountContainer className='py-3 mt-3'>
+            Already have an account?{' '}
+            <StyledLink to='/login'>Sign In</StyledLink>
+          </CreateAccountContainer>
+        </FormWrapper>
+      )}
     </Container>
   );
 };

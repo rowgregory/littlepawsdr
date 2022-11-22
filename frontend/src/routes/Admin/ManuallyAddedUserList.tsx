@@ -1,27 +1,35 @@
 import React, { useEffect, useState } from 'react';
-import { Col, Form, Table, Button, Spinner } from 'react-bootstrap';
+import { Table, Spinner, Pagination } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import DeleteModal from '../../components/DeleteModal';
 import { Text } from '../../components/styles/Styles';
-import {
-  CreateBtn,
-  SearchBar,
-  TableHead,
-  TableImg,
-  TableRow,
-  StyledEditBtn,
-} from '../../components/styles/admin/Styles';
-import { TransitionGroup, CSSTransition } from 'react-transition-group';
-import toaster from 'toasted-notes';
-import { ToastAlert } from '../../components/common/ToastAlert';
-import { LinkContainer } from 'react-router-bootstrap';
+import { MANUALLY_ADD_USER_CREATE_RESET } from '../../constants/manuallyAddUserConstants';
 import {
   listManuallyAddedUsers,
   manuallyAddUser,
 } from '../../actions/manuallyAddUserActions';
-import { MANUALLY_ADD_USER_CREATE_RESET } from '../../constants/manuallyAddUserConstants';
-import { LoadingImg } from '../../components/LoadingImg';
+import {
+  SearchBar,
+  TableHead,
+  TableRow,
+  StyledEditBtn,
+  TopRow,
+  PaginationContainer,
+  TableAndPaginationContainer,
+  Container,
+  SearchInput,
+  TableWrapper,
+  CreateBtnV2,
+  TableImg,
+} from '../../components/styles/admin/Styles';
+import Message from '../../components/Message';
+import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
+import { WelcomeText } from '../../components/styles/DashboardStyles';
+import BreadCrumb from '../../components/common/BreadCrumb';
+import { rangeV2 } from '../../components/common/Pagination';
+import { AddIcon } from '../../components/svg/AddIcon';
+import { LinkContainer } from 'react-router-bootstrap';
 
 const ManuallyAddedUserList = () => {
   const history = useHistory();
@@ -32,75 +40,72 @@ const ManuallyAddedUserList = () => {
   const [publicId, setPublicId] = useState('');
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  const [listOfManuallyAddedUsers, setListOfManuallyAddedUsers] = useState(
-    []
-  ) as any;
+  const [paginatedPage, setPaginatedPage] = useState(1);
+  const [paginatedItems, setPaginatedItems] = useState<{}[]>([]) as any;
 
-  const manuallyAddedUserList = useSelector(
-    (state: any) => state.manuallyAddedUserList
-  );
-  const { loading, error, manuallyAddedUsers } = manuallyAddedUserList;
-
-  const manuallyAddedUserCreate = useSelector(
-    (state: any) => state.manuallyAddedUserCreate
-  );
   const {
-    loading: loadingManuallyAddedUserCreate,
-    error: errorCreate,
-    success: successManuallyAddedUserCreate,
-    manuallyAddedUser,
-  } = manuallyAddedUserCreate;
-
-  const manuallyAddedUserDelete = useSelector(
-    (state: any) => state.manuallyAddedUserDelete
-  );
-  const {
-    loading: loadingManuallyAddedUserDelete,
-    error: errorDelete,
-    success: successManuallyAddedUserDelete,
-  } = manuallyAddedUserDelete;
-
-  useEffect(() => {
-    if (manuallyAddedUsers) {
-      setListOfManuallyAddedUsers(manuallyAddedUsers);
-    }
-  }, [manuallyAddedUsers]);
+    manuallyAddedUserList: { loading, error, manuallyAddedUsers },
+    manuallyAddedUserCreate: {
+      loading: loadingCreate,
+      error: errorCreate,
+      success: successCreate,
+      manuallyAddedUser,
+    },
+    manuallyAddedUserDelete: {
+      loading: loadingDelete,
+      error: errorDelete,
+      success: successDelete,
+    },
+  } = useSelector((state: any) => state);
 
   useEffect(() => {
     dispatch({ type: MANUALLY_ADD_USER_CREATE_RESET });
-    if (successManuallyAddedUserCreate) {
+    if (successCreate) {
       history.push(`/admin/manuallyAddedUser/${manuallyAddedUser?._id}/edit`);
     } else {
       dispatch(listManuallyAddedUsers());
     }
-  }, [
-    dispatch,
-    history,
-    manuallyAddedUser,
-    successManuallyAddedUserCreate,
-    successManuallyAddedUserDelete,
-  ]);
+  }, [dispatch, history, manuallyAddedUser, successCreate, successDelete]);
+
+  manuallyAddedUsers?.sort(
+    (a: any, b: any) => -a?.createdAt?.localeCompare(b?.createdAt)
+  );
 
   useEffect(() => {
-    if (error || errorCreate || errorDelete) {
-      toaster.notify(
-        ({ onClose }) =>
-          ToastAlert(error || errorCreate || errorDelete, onClose, 'error'),
-        {
-          position: 'bottom',
-          duration: 20000,
-        }
-      );
-    }
-  }, [error, errorCreate, errorDelete]);
+    const itemsPerPage = 10;
+    const indexOfLastItem = paginatedPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
-  const filteredManuallyAddedUsers = listOfManuallyAddedUsers?.filter(
-    (blog: any) => blog.name.toLowerCase().includes(text.toLowerCase())
-  );
-  return error ? (
-    <></>
-  ) : (
-    <>
+    setPaginatedItems(
+      manuallyAddedUsers?.slice(indexOfFirstItem, indexOfLastItem)
+    );
+  }, [manuallyAddedUsers, paginatedPage]);
+
+  const createManuallyAddedUserHandler = () => {
+    dispatch(manuallyAddUser());
+  };
+
+  const filteredManuallyAddedUsers =
+    text !== ''
+      ? manuallyAddedUsers?.filter((blog: any) =>
+          blog.name.toLowerCase().includes(text.toLowerCase())
+        )
+      : paginatedItems?.filter((blog: any) =>
+          blog.name.toLowerCase().includes(text.toLowerCase())
+        );
+
+  return (
+    <Container>
+      <WelcomeText className='mb-1'>Volunteers</WelcomeText>
+      <BreadCrumb
+        step1='Home'
+        step2='Dashboard'
+        step3=''
+        step4='Volunteers'
+        url1='/'
+        url2='/admin'
+        url3='/admin/manuallyAddedUserList'
+      />
       <DeleteModal
         actionFunc='Manually Added User'
         show={show}
@@ -108,53 +113,49 @@ const ManuallyAddedUserList = () => {
         id={id}
         publicId={publicId}
       />
-
-      {loading ? (
-        <Col className='mb-3 d-flex justify-content-between align-items-center'>
-          <LoadingImg w='20rem' h='2.5rem' />
-          <LoadingImg w='2.5rem' h='2.5rem' borderRadius='50%' />
-        </Col>
-      ) : (
-        <Col className='d-flex align-items-center justify-content-between'>
+      {(error || errorCreate || errorDelete) && (
+        <Message variant='danger'>
+          {error || errorCreate || errorDelete}
+        </Message>
+      )}
+      {(loading || loadingCreate || loadingDelete) && <HexagonLoader />}
+      <TableWrapper>
+        <TopRow className='d-flex align-items-center'>
           <SearchBar>
-            <Form.Control
+            <SearchInput
               as='input'
               type='text'
               placeholder='Search by ID'
               value={text || ''}
               onChange={(e: any) => setText(e.target.value)}
-            ></Form.Control>
+            />
           </SearchBar>
-          <CreateBtn onClick={() => dispatch(manuallyAddUser())}>
-            {loadingManuallyAddedUserCreate ? (
+          <CreateBtnV2 onClick={createManuallyAddedUserHandler}>
+            <AddIcon />
+            {loadingCreate ? (
               <Spinner animation='border' size='sm' />
             ) : (
-              <i className='fas fa-plus'></i>
+              'Create'
             )}
-          </CreateBtn>
-        </Col>
-      )}
-      <Col>
-        <Table hover responsive className='table-sm'>
-          <TableHead>
-            <tr>
-              <th>ID</th>
-              <th>NAME</th>
-              <th>IMAGE</th>
-              <th>AFFILIATION</th>
-              <th>MESSAGE</th>
-              <th>EDIT</th>
-              <th>DELETE</th>
-            </tr>
-          </TableHead>
-          <TransitionGroup component='tbody'>
-            {filteredManuallyAddedUsers?.map((manuallyAddedUser: any) => (
-              <CSSTransition
-                key={manuallyAddedUser?._id}
-                timeout={500}
-                classNames='item'
-              >
-                <TableRow>
+          </CreateBtnV2>
+        </TopRow>
+
+        <TableAndPaginationContainer>
+          <Table hover responsive>
+            <TableHead>
+              <tr>
+                <th>ID</th>
+                <th>NAME</th>
+                <th>IMAGE</th>
+                <th>AFFILIATION</th>
+                <th>MESSAGE</th>
+                <th>EDIT</th>
+                <th>DELETE</th>
+              </tr>
+            </TableHead>
+            <tbody>
+              {filteredManuallyAddedUsers?.map((manuallyAddedUser: any) => (
+                <TableRow key={manuallyAddedUser?._id}>
                   <td>
                     <Text>{manuallyAddedUser?._id}</Text>
                   </td>
@@ -178,13 +179,15 @@ const ManuallyAddedUserList = () => {
                       to={`/admin/manuallyAddedUser/${manuallyAddedUser?._id}/edit`}
                     >
                       <StyledEditBtn>
-                        <i className='fas fa-edit'></i>
+                        <i
+                          style={{ color: '#9761aa' }}
+                          className='fas fa-edit'
+                        ></i>
                       </StyledEditBtn>
                     </LinkContainer>
                   </td>
                   <td>
-                    <Button
-                      variant='danger'
+                    <StyledEditBtn
                       className='border-0'
                       onClick={() => {
                         setId(manuallyAddedUser?._id);
@@ -192,21 +195,28 @@ const ManuallyAddedUserList = () => {
                         handleShow();
                       }}
                     >
-                      {loadingManuallyAddedUserDelete &&
-                      id === manuallyAddedUser?._id ? (
+                      {loadingDelete && id === manuallyAddedUser?._id ? (
                         <Spinner size='sm' animation='border' />
                       ) : (
-                        <i className='fas fa-trash'></i>
+                        <i
+                          style={{ color: '#cc0000' }}
+                          className='fas fa-trash'
+                        ></i>
                       )}
-                    </Button>
+                    </StyledEditBtn>
                   </td>
                 </TableRow>
-              </CSSTransition>
-            ))}
-          </TransitionGroup>
-        </Table>
-      </Col>
-    </>
+              ))}
+            </tbody>
+          </Table>
+          <PaginationContainer>
+            <Pagination className='my-3'>
+              {rangeV2(manuallyAddedUsers, paginatedPage, setPaginatedPage)}
+            </Pagination>
+          </PaginationContainer>
+        </TableAndPaginationContainer>
+      </TableWrapper>
+    </Container>
   );
 };
 

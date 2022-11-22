@@ -1,6 +1,5 @@
 import React, { FC } from 'react';
-import { StyledLink } from '../../routes/Login';
-import { StyledCard, Text } from '../styles/Styles';
+import { StyledCard, StyledLink, Text } from '../styles/Styles';
 
 const PageNotFound: FC = (): JSX.Element => (
   <StyledCard className='p-5'>

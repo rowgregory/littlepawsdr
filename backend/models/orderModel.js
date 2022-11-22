@@ -70,6 +70,9 @@ const orderSchema = mongoose.Schema(
     shippedOn: {
       type: Date,
     },
+    orderId: { type: String },
+    email: { type: String },
+    confirmationEmailHasBeenSent: { type: Boolean },
   },
   {
     timestamps: true,

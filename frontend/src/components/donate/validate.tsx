@@ -22,7 +22,7 @@ export const validate = (
   } else {
     setErrors((errors: any) => ({ ...errors, lastName: '' }));
   }
-  if (validateEmailRegex.test(inputs['email'])) {
+  if (!validateEmailRegex.test(inputs['email'])) {
     setErrors((errors: any) => ({
       ...errors,
       email: 'Email Address is required',

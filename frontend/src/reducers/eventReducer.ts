@@ -17,6 +17,7 @@ import {
   EVENT_UPDATE_SUCCESS,
   EVENT_UPDATE_FAIL,
   EVENT_UPDATE_RESET,
+  EVENT_DETAILS_RESET,
 } from '../constants/eventConstants';
 
 // @ts-ignore
@@ -24,23 +25,27 @@ export const eventListReducer = (state = { events: [] }, action) => {
   switch (action.type) {
     case EVENT_LIST_REQUEST:
       return {
+        ...state,
         loading: true,
       };
     case EVENT_LIST_SUCCESS:
       return {
+        ...state,
         loading: false,
         events: action.payload,
         success: true,
       };
     case EVENT_LIST_FAIL:
       return {
+        ...state,
         loading: false,
         error: action.payload,
       };
     case EVENT_LIST_RESET:
       return {
+        ...state,
         loading: false,
-        events: action.payload,
+        events: [],
         success: false,
       };
     default:
@@ -69,7 +74,7 @@ export const eventDeleteReducer = (state = {}, action) => {
   }
 };
 // @ts-ignore
-export const eventCreateReducer = (state = {}, action) => {
+export const eventCreateReducer = (state = { event: {} }, action) => {
   switch (action.type) {
     case EVENT_CREATE_REQUEST:
       return {
@@ -102,14 +107,19 @@ export const eventDetailsReducer = (state = { event: {} }, action) => {
       };
     case EVENT_DETAILS_SUCCESS:
       return {
+        ...state,
         loading: false,
         event: action.payload,
+        success: true,
       };
     case EVENT_DETAILS_FAIL:
       return {
+        ...state,
         loading: false,
         error: action.payload,
       };
+    case EVENT_DETAILS_RESET:
+      return { event: {} };
     default:
       return state;
   }

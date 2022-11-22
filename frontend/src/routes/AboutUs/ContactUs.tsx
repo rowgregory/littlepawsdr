@@ -15,8 +15,21 @@ const ContactUs = () => {
   const theme = useTheme() as any;
   const isDay = theme.mode === 'day';
   return (
-    <>
-      <Text fontSize='2rem' marginBottom='1rem'>
+    <div
+      style={{
+        maxWidth: '980px',
+        width: '100%',
+        marginInline: 'auto',
+        marginBottom: '96px',
+        paddingInline: '16px',
+      }}
+    >
+      <Text
+        fontSize='32px'
+        fontWeight={400}
+        marginBottom='32px'
+        marginTop='56px'
+      >
         Contact Us
       </Text>
       <Row>
@@ -52,7 +65,7 @@ const ContactUs = () => {
           )}
         </Col>
       </Row>
-    </>
+    </div>
   );
 };
 

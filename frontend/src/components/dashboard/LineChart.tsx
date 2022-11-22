@@ -10,21 +10,16 @@ import {
   Legend,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
+import { Text } from '../styles/Styles';
+import { LineChartContainer } from '../styles/DashboardStyles';
 
 const Container = styled.div`
   background: ${({ theme }) => theme.input.bg};
-  border: ${({ theme }) => `1px solid ${theme.separator}`};
-  padding: 1.5rem;
-  border-radius: 0.5rem;
-  height: 400px;
-
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-    height: 500px;
-  }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    height: 100%;
-  }
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  border-radius: 8px;
 `;
 
 ChartJS.register(
@@ -38,12 +33,9 @@ ChartJS.register(
 );
 
 const LineChart = ({ revenueFromOrders }: any) => {
-  const theme = useTheme() as any;
-  const circles = theme.colors.primary;
-  const rods = theme.colors.secondary;
+  const circles = 'rgba(151,97,169, 0.05)';
+  const rods = '#9761aa';
   const year = new Date().getFullYear();
-  const isDay = theme.mode === 'day';
-
   const data = {
     labels: [
       'Jan',
@@ -61,7 +53,7 @@ const LineChart = ({ revenueFromOrders }: any) => {
     ],
     datasets: [
       {
-        label: 'Total sales by month',
+        label: 'Total product sales',
         data: [
           revenueFromOrders[`${year}-01`] ?? null,
           revenueFromOrders[`${year}-02`] ?? null,
@@ -76,7 +68,7 @@ const LineChart = ({ revenueFromOrders }: any) => {
           revenueFromOrders[`${year}-11`] ?? null,
           revenueFromOrders[`${year}-12`] ?? null,
         ],
-        fill: false,
+        fill: true,
         backgroundColor: circles,
         borderColor: rods,
       },
@@ -88,30 +80,43 @@ const LineChart = ({ revenueFromOrders }: any) => {
     responsive: true,
     scales: {
       y: {
-        beginAtZero: true,
         grid: {
-          color: isDay ? '#ededed' : '#171717',
+          drawBorder: false,
+          color: '#fff',
+        },
+        ticks: {
+          color: '#c4c4c4',
         },
       },
       x: {
         grid: {
-          color: isDay ? '#ededed' : '#171717',
+          drawBorder: false,
+          color: '#fff',
+        },
+        ticks: {
+          color: '#c4c4c4',
         },
       },
     },
     plugins: {
       legend: {
-        position: 'top' as const,
-      },
-      title: {
-        display: true,
-        text: 'Monthly Product Sales',
+        display: false,
       },
     },
   } as any;
   return (
     <Container>
-      <Line data={data} options={options} />
+      <Text
+        color='#373737'
+        fontWeight={500}
+        marginBottom='1.5rem'
+        fontSize='1.05rem'
+      >
+        Monthly Product Sales
+      </Text>
+      <LineChartContainer>
+        <Line data={data} options={options} />
+      </LineChartContainer>
     </Container>
   );
 };

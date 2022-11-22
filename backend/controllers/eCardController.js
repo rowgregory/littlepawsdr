@@ -11,6 +11,7 @@ const createECard = asyncHandler(async (req, res) => {
     price: '10',
     image: cloudImages().upload,
     publicId: '',
+    name: 'Ecard Title',
   });
 
   const createdECard = await eCard.save();
@@ -45,7 +46,7 @@ const getECardDetails = asyncHandler(async (req, res) => {
 //@route  PUT api/ecard/:id
 //@access Private/Admin
 const updateECard = asyncHandler(async (req, res) => {
-  const { category, price, image, publicId } = req.body;
+  const { category, price, image, publicId, name } = req.body;
 
   const eCard = await ECard.findById(req.params.id);
 
@@ -53,7 +54,8 @@ const updateECard = asyncHandler(async (req, res) => {
     eCard.category = category || eCard.category;
     eCard.price = price || eCard.price;
     eCard.image = image || eCard.image;
-    eCard.publicId = publicId || eCard.publicId;
+    eCard.publicId = publicId === '' ? publicId : publicId || eCard.publicId;
+    eCard.name = name || eCard.name;
 
     const updatedECard = await eCard.save();
 

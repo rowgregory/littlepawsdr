@@ -50,7 +50,16 @@ export const TableData = styled.td`
 
 const AdoptionFees = ({ history }: any) => {
   return (
-    <>
+    <div
+      style={{
+        marginTop: '56px',
+        maxWidth: '860px',
+        width: '100%',
+        marginInline: 'auto',
+        marginBottom: '96px',
+        paddingInline: '16px',
+      }}
+    >
       <Text fontSize='2rem' marginBottom='1rem'>
         Adoption Fees
       </Text>
@@ -140,7 +149,7 @@ const AdoptionFees = ({ history }: any) => {
       *Note: In accordance with the Department of Agriculture in MA, NH, ME and
       RI, All dogs adopted in these states are charged an additional $150 to
       cover regulatory requirements.
-    </>
+    </div>
   );
 };
 

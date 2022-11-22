@@ -7,10 +7,19 @@ import { useEffect } from 'react';
 import { listEducationTips } from '../../actions/educationTipActions';
 import NoItemsDefault from '../../components/common/NoItemsDefault';
 import styled from 'styled-components';
-import { LoadingImg } from '../../components/LoadingImg';
+import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
 
 const Path = styled.path`
   fill: ${({ theme }) => theme.text};
+`;
+
+const EduGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  @media screen and (min-width: 640px) {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
 `;
 
 const NoEducation = () => {
@@ -77,24 +86,31 @@ const Education = () => {
   }
 
   return (
-    <>
-      <Text fontSize='2rem' marginBottom='1rem'>
+    <div
+      style={{
+        maxWidth: '980px',
+        width: '100%',
+        marginInline: 'auto',
+        marginBottom: '96px',
+        paddingInline: '16px',
+      }}
+    >
+      <Text fontSize='32px' fontWeight={400} marginTop='56px'>
         Education
       </Text>
-      {errorEducationTips ? (
+      <Text marginBottom='32px'>
+        These are external links that will open new tabs.
+      </Text>
+      {errorEducationTips && (
         <Message variant='danger'>{errorEducationTips}</Message>
-      ) : loadingEducationTips ? (
-        [1, 2, 3, 4].map((i: number) => (
-          <div className='mr-3' key={i}>
-            <LoadingImg h='368.21px' w='300px' />
-          </div>
-        ))
-      ) : (
-        educationTips?.map((obj: any, i: number) => (
+      )}
+      {loadingEducationTips && <HexagonLoader />}
+      <EduGrid>
+        {educationTips?.map((obj: any, i: number) => (
           <StyledCard
             className='mr-3'
             key={i}
-            onClick={() => window.open(obj.externalLink)}
+            onClick={() => window.open(obj.externalLink, '_blank')}
             style={{ width: '300px' }}
           >
             <Card.Img
@@ -108,9 +124,9 @@ const Education = () => {
               <Text>Read</Text>
             </Card.Body>
           </StyledCard>
-        ))
-      )}
-    </>
+        ))}
+      </EduGrid>
+    </div>
   );
 };
 

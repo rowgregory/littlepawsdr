@@ -1,27 +1,32 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Spinner } from 'react-bootstrap';
+import { Form, Image } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import FormContainer from '../../components/FormContainer';
-import {
-  StyledUloadedImg,
-  Text,
-  UpdateBtn,
-} from '../../components/styles/Styles';
-import GoBackBtn from '../../utils/GoBackBtn';
-import { FormFile } from './EventEdit';
+import { Text, UpdateBtn } from '../../components/styles/Styles';
 import { removePhoto } from '../../utils/removePhoto';
 import uploadFileHandler from '../../utils/uploadFileHandler';
 import { useRouteMatch, useHistory } from 'react-router-dom';
-import { EditBtn } from './RaffleWinnerEdit';
-import toaster from 'toasted-notes';
-import { ToastAlert } from '../../components/common/ToastAlert';
-import Loader from '../../components/Loader';
 import {
   getManuallyAddedUserDetails,
   updateManuallyAddedUser,
 } from '../../actions/manuallyAddUserActions';
-import { MANUALLY_ADD_USER_UPDATE_RESET } from '../../constants/manuallyAddUserConstants';
-import { LoadingImg } from '../../components/LoadingImg';
+import {
+  MANUALLY_ADD_USER_DETAILS_RESET,
+  MANUALLY_ADD_USER_UPDATE_RESET,
+} from '../../constants/manuallyAddUserConstants';
+import Message from '../../components/Message';
+import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
+import {
+  Container,
+  EditForm,
+  FormFile,
+  RemovePhoto,
+  UploadImageSquare,
+} from '../../components/styles/admin/Styles';
+import { WelcomeText } from '../../components/styles/DashboardStyles';
+import PhotoUploadIcon from '../../components/svg/PhotoUploadIcon';
+import RemovePhotoIcon from '../../components/svg/RemovePhotoIcon';
+import { defaultImages } from '../../utils/defaultImages';
+import BreadCrumb from '../../components/common/BreadCrumb';
 
 const ManuallyAddedUserEdit = () => {
   const match = useRouteMatch<{ id: string }>();
@@ -34,248 +39,190 @@ const ManuallyAddedUserEdit = () => {
   const [message, setMessage] = useState('');
   const [uploading, setUploading] = useState(false);
   const [publicId, setPublicId] = useState('');
-  const [showImageOptions, setShowImageOptions] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [submittedForm, setSubmittedForm] = useState(false);
+  const [file, setFile] = useState({}) as any;
+  const [imgUploadStatus, setImageUploadStatus] = useState('') as any;
+  const [cloudinaryData, setClouadinaryData] = useState({}) as any;
 
-  const manuallyAddedUserDetails = useSelector(
-    (state: any) => state.manuallyAddedUserDetails
-  );
-  const { loading, error, manuallyAddedUser } = manuallyAddedUserDetails;
-
-  const uploadDefaultImgUrl =
-    'https://res.cloudinary.com/doyd0ewgk/image/upload/v1628374521/upload_2.png';
-
-  const manuallyAddedUserUpdate = useSelector(
-    (state: any) => state.manuallyAddedUserUpdate
-  );
   const {
-    loading: loadingManuallyAddedUserUpdate,
-    error: errorUpdate,
-    success: successManuallyAddedUserUpdate,
-  } = manuallyAddedUserUpdate;
+    manuallyAddedUserDetails: { loading, error, manuallyAddedUser },
+    manuallyAddedUserUpdate: {
+      loading: loadingUpdate,
+      error: errorUpdate,
+      success: successUpdate,
+    },
+  } = useSelector((state: any) => state);
 
   useEffect(() => {
+    dispatch({ type: MANUALLY_ADD_USER_DETAILS_RESET });
     dispatch(getManuallyAddedUserDetails(manuallyAddedUserId));
-  }, [dispatch, manuallyAddedUserId]);
+    dispatch({ type: MANUALLY_ADD_USER_UPDATE_RESET });
+  }, [dispatch, manuallyAddedUserId, successUpdate]);
 
   useEffect(() => {
-    if (successManuallyAddedUserUpdate) {
-      if (submittedForm) {
-        setSubmittedForm(false);
-        return history.push('/admin/manuallyAddedUserList');
-      }
-      dispatch(getManuallyAddedUserDetails(manuallyAddedUserId));
-      dispatch({ type: MANUALLY_ADD_USER_UPDATE_RESET });
-    } else {
-      setName(manuallyAddedUser?.name);
-      setImage(manuallyAddedUser?.image);
-      setAffiliation(manuallyAddedUser?.affiliation);
-      setMessage(manuallyAddedUser?.message);
-      setPublicId(manuallyAddedUser?.publicId);
+    setName(manuallyAddedUser?.name);
+    setImage(manuallyAddedUser?.image);
+    setAffiliation(manuallyAddedUser?.affiliation);
+    setMessage(manuallyAddedUser?.message);
+    setPublicId(manuallyAddedUser?.publicId);
+  }, [manuallyAddedUser]);
+
+  useEffect(() => {
+    if (Object.keys(cloudinaryData).length > 0) {
+      dispatch(
+        updateManuallyAddedUser({
+          _id: manuallyAddedUserId,
+          name,
+          affiliation,
+          message,
+          image: cloudinaryData.secureUrl,
+          publicId: cloudinaryData.publicId,
+        })
+      );
     }
   }, [
+    affiliation,
+    cloudinaryData,
     dispatch,
-    history,
-    submittedForm,
-    successManuallyAddedUserUpdate,
-    manuallyAddedUser,
     manuallyAddedUserId,
+    message,
+    name,
   ]);
 
   useEffect(() => {
-    if (error || errorUpdate || errorMsg) {
-      toaster.notify(
-        ({ onClose }) => ToastAlert(error || errorUpdate, onClose, 'error'),
-        {
-          position: 'bottom',
-          duration: 20000,
-        }
-      );
+    if (successUpdate && submittedForm) {
+      setSubmittedForm(false);
+      history.push('/admin/manuallyAddedUserList');
     }
-  }, [errorUpdate, error, errorMsg]);
-
-  const manuallyAddedUserDataToUploadWithImg = {
-    name,
-    message,
-    affiliation,
-  };
+  }, [history, submittedForm, successUpdate]);
 
   const submitHandler = (e: any) => {
     e.preventDefault();
-    dispatch(
-      updateManuallyAddedUser({
-        _id: manuallyAddedUserId,
-        name,
-        image,
-        affiliation,
-        message,
-      })
-    );
     setSubmittedForm(true);
+    if (file?.name) {
+      setUploading(true);
+      uploadFileHandler(
+        file,
+        setUploading,
+        publicId,
+        setImageUploadStatus,
+        setClouadinaryData
+      );
+    } else {
+      dispatch(
+        updateManuallyAddedUser({
+          _id: manuallyAddedUserId,
+          name,
+          affiliation,
+          message,
+          image,
+        })
+      );
+    }
   };
 
-  return error ? (
-    <></>
-  ) : (
-    <>
-      <GoBackBtn to='/admin/manuallyAddedUserList' />
+  const editPhotoHandler = (e: any) => setFile(e.target.files[0]);
 
-      <FormContainer>
-        <Form onSubmit={submitHandler}>
-          {loading ? (
-            <div className='mb-4 mt-4'>
-              <LoadingImg w='100%' h='2.5rem' />
-            </div>
-          ) : (
-            <Form.Group controlId='name'>
-              <Form.Label>Name</Form.Label>
-              <Form.Control
-                type='text'
-                value={name || ''}
-                onChange={(e) => setName(e.target.value)}
-              ></Form.Control>
-            </Form.Group>
-          )}
-          {loading ? (
-            <div className='mb-4 mt-4 d-flex align-items-center justify-content-center'>
-              <LoadingImg w='200px' h='200px' borderRadius='50%' />
-            </div>
-          ) : (
-            <Form.Group controlId='image' className='d-flex flex-column'>
-              <Form.Label>Volunteer Image</Form.Label>
-              <div className='mx-auto'>
-                <Form.Control
-                  className='img-link'
-                  type='text'
-                  value={image || ''}
-                  onChange={(e) => setImage(e.target.value)}
-                ></Form.Control>
-                <StyledUloadedImg
-                  src={image || ''}
-                  alt='avatar'
-                  onClick={() => setShowImageOptions(!showImageOptions)}
-                />
+  const removePhotoHandler = (e: any) => {
+    e.preventDefault();
+    removePhoto(
+      manuallyAddedUser?.publicId,
+      setPublicId,
+      dispatch,
+      updateManuallyAddedUser,
+      manuallyAddedUserId,
+      setErrorMsg
+    );
+  };
 
-                <div style={{ position: 'relative' }}>
-                  <EditBtn
-                    onClick={() => setShowImageOptions(!showImageOptions)}
-                  >
-                    <i className='fas fa-edit mr-2'></i>Edit
-                  </EditBtn>
-                  {showImageOptions && (
-                    <EditBtn className='d-flex flex-column imgOptions'>
-                      <FormFile
-                        mb={(image !== uploadDefaultImgUrl).toString()}
-                        id='image-file'
-                        label='Upload a photo...'
-                        onChange={(e: any) =>
-                          uploadFileHandler(
-                            e,
-                            setUploading,
-                            setShowImageOptions,
-                            setErrorMsg,
-                            setPublicId,
-                            updateManuallyAddedUser,
-                            dispatch,
-                            publicId,
-                            manuallyAddedUserId,
-                            manuallyAddedUserDataToUploadWithImg,
-                            '',
-                            image,
-                            () => {},
-                            setImage,
-                            'manually-added-user'
-                          )
-                        }
-                      ></FormFile>
-                      {image !== uploadDefaultImgUrl && (
-                        <div
-                          className='remove-img'
-                          onClick={() =>
-                            removePhoto(
-                              manuallyAddedUser?.publicId,
-                              setPublicId,
-                              dispatch,
-                              updateManuallyAddedUser,
-                              manuallyAddedUserId,
-                              setErrorMsg
-                            )
-                          }
-                        >
-                          Remove photo
-                        </div>
-                      )}
-                    </EditBtn>
-                  )}
-                  {uploading && (
-                    <Loader
-                      w='200px'
-                      h='200px'
-                      p='absolute'
-                      z='1'
-                      top='-200px'
-                      left='0px'
-                    />
-                  )}
-                </div>
-              </div>
-            </Form.Group>
-          )}
-          {loading ? (
-            <div className='mb-4 mt-4'>
-              <LoadingImg w='100%' h='2.5rem' />
-            </div>
-          ) : (
-            <Form.Group controlId='affiliation' className='mt-5'>
-              <Form.Label>Affiliation</Form.Label>
-              <Form.Control
-                type='text'
-                value={affiliation || ''}
-                onChange={(e) => setAffiliation(e.target.value)}
-              ></Form.Control>
-            </Form.Group>
-          )}
-          {loading ? (
-            <div className='mb-4 mt-4'>
-              <LoadingImg w='100%' h='2.5rem' />
-            </div>
-          ) : (
-            <Form.Group controlId='message' className='mt-5'>
-              <Form.Label>Message</Form.Label>
-              <Form.Control
-                type='textarea'
-                value={message || ''}
-                onChange={(e) => setMessage(e.target.value)}
-              ></Form.Control>
-            </Form.Group>
-          )}
-
-          {loading ? (
-            <div className='mb-4 mt-4'>
-              <LoadingImg w='8rem' h='2.5rem' borderRadius='0.5rem' />
-            </div>
-          ) : (
-            <UpdateBtn type='submit'>
-              {loadingManuallyAddedUserUpdate ? (
-                <div className='d-flex align-items-center'>
-                  <Spinner
-                    as='span'
-                    animation='border'
-                    size='sm'
-                    role='status'
-                    aria-hidden='true'
+  return (
+    <Container>
+      <WelcomeText className='mb-1'>Blog Edit</WelcomeText>
+      <BreadCrumb
+        step1='Home'
+        step2='Dashboard'
+        step3='Volunteers'
+        step4={manuallyAddedUser?.name}
+        step5='Edit'
+        url1='/'
+        url2='/admin'
+        url3='/admin/manuallyAddedUserList'
+      />
+      {(error || errorUpdate || errorMsg) && (
+        <Message variant='danger'>{error || errorUpdate || errorMsg}</Message>
+      )}
+      {(loading || loadingUpdate || submittedForm) && <HexagonLoader />}
+      <EditForm>
+        <Form.Group controlId='name'>
+          <Form.Label>Name</Form.Label>
+          <Form.Control
+            type='text'
+            value={name || ''}
+            onChange={(e) => setName(e.target.value)}
+          ></Form.Control>
+        </Form.Group>
+        <Form.Group controlId='image' className='d-flex flex-column'>
+          <Form.Label>Image</Form.Label>
+          <Form.Control
+            className='img-link'
+            type='text'
+            value={image || ''}
+            onChange={(e) => setImage(e.target.value)}
+          ></Form.Control>
+          <div className='d-flex'>
+            <FormFile
+              id='image-file'
+              label={
+                manuallyAddedUser?.image === defaultImages.upload ||
+                file?.name ? (
+                  <UploadImageSquare className={uploading ? 'anim' : ''}>
+                    <PhotoUploadIcon ready={file} imgStatus={imgUploadStatus} />
+                  </UploadImageSquare>
+                ) : (
+                  <Image
+                    src={manuallyAddedUser?.image}
+                    width='200px'
+                    height='200px'
+                    style={{ objectFit: 'cover' }}
                   />
-                  <Text className='text-white ml-2'>Updating...</Text>
-                </div>
-              ) : (
-                <Text className='text-white'>Update</Text>
-              )}
-            </UpdateBtn>
-          )}
-        </Form>
-      </FormContainer>
-    </>
+                )
+              }
+              onChange={(e: any) => editPhotoHandler(e)}
+            ></FormFile>
+            <RemovePhoto
+              onClick={(e: any) =>
+                image === defaultImages.blog ? {} : removePhotoHandler(e)
+              }
+            >
+              <RemovePhotoIcon />
+              <Text marginLeft='0.75rem' fontWeight='300' color='#c4c4c4'>
+                Remove Photo
+              </Text>
+            </RemovePhoto>
+          </div>
+        </Form.Group>
+        <Form.Group controlId='affiliation' className='mt-5'>
+          <Form.Label>Affiliation</Form.Label>
+          <Form.Control
+            type='text'
+            value={affiliation || ''}
+            onChange={(e) => setAffiliation(e.target.value)}
+          ></Form.Control>
+        </Form.Group>
+        <Form.Group controlId='message' className='mt-5'>
+          <Form.Label>Message</Form.Label>
+          <Form.Control
+            type='textarea'
+            value={message || ''}
+            onChange={(e) => setMessage(e.target.value)}
+          ></Form.Control>
+        </Form.Group>
+        <UpdateBtn onClick={(e: any) => submitHandler(e)}>
+          Updat{loadingUpdate ? 'ing...' : 'e'}
+        </UpdateBtn>
+      </EditForm>
+    </Container>
   );
 };
 

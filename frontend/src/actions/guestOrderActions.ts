@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { CART_CLEAR_ITEMS } from '../constants/cartConstants';
 import {
   GUEST_ORDER_CREATE_FAIL,
   GUEST_ORDER_CREATE_REQUEST,
@@ -10,6 +11,7 @@ import {
   GUEST_ORDER_SHIP_REQUEST,
   GUEST_ORDER_SHIP_SUCCESS,
 } from '../constants/guestOrderConstants';
+import { USER_REGISTER_RESET } from '../constants/userConstants';
 
 export const createGuestOrder = (order: any) => async (dispatch: any) => {
   try {
@@ -18,6 +20,13 @@ export const createGuestOrder = (order: any) => async (dispatch: any) => {
     const { data } = await axios.post(`/api/guest-orders`, order);
 
     dispatch({ type: GUEST_ORDER_CREATE_SUCCESS, payload: data });
+    dispatch({ type: CART_CLEAR_ITEMS });
+    dispatch({ type: USER_REGISTER_RESET });
+
+    localStorage.setItem(
+      'shippingAddress',
+      JSON.stringify(data.shippingAddress)
+    );
 
     localStorage.removeItem('cartItems');
     localStorage.removeItem('newOrder');
@@ -25,10 +34,12 @@ export const createGuestOrder = (order: any) => async (dispatch: any) => {
   } catch (error: any) {
     dispatch({
       type: GUEST_ORDER_CREATE_FAIL,
-      payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message,
+      payload: {
+        message: error.response.data.message,
+        data: error.response.data.data,
+        email: error.response.data.email,
+        isShipped: error.response.data.isShipped,
+      },
     });
   }
 };

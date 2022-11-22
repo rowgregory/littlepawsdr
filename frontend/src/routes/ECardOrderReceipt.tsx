@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useRouteMatch } from 'react-router-dom';
+import { useHistory, useRouteMatch } from 'react-router-dom';
 import { getECardOrderDetails } from '../actions/eCardOrderActions';
 import { Text } from '../components/styles/Styles';
 import {
@@ -15,8 +15,8 @@ import GreenCheckmark from '../components/svg/GreenCheckmark';
 import { HorizontalLine } from '../components/styles/product-details/Styles';
 import Message from '../components/Message';
 import { ECARD_ORDER_CREATE_RESET } from '../constants/eCardOrderContants';
-import toaster from 'toasted-notes';
-import { ToastAlert } from '../components/common/ToastAlert';
+import HexagonLoader from '../components/Loaders/HexagonLoader/HexagonLoader';
+import LeftArrow from '../components/svg/LeftArrow';
 
 const Container = styled.div`
   background: ${({ theme }) => theme.bg};
@@ -27,6 +27,7 @@ const ECardOrderReceipt = () => {
   const dispatch = useDispatch();
   const match = useRouteMatch<{ id: string }>();
   const eCardOrderId = match.params.id;
+  const history = useHistory() as any;
 
   const eCardOrderDetails = useSelector(
     (state: any) => state.eCardOrderDetails
@@ -38,18 +39,16 @@ const ECardOrderReceipt = () => {
     dispatch({ type: ECARD_ORDER_CREATE_RESET });
   }, [dispatch, eCardOrderId]);
 
-  useEffect(() => {
-    if (error) {
-      toaster.notify(({ onClose }) => ToastAlert(error, onClose, 'error'), {
-        position: 'bottom',
-        duration: 20000,
-      });
-    }
-  }, [error]);
-
   return (
     <Container>
+      {error && <Message variant='danger'>{error}</Message>}
+      {loading && <HexagonLoader />}
       <Wrapper>
+        {history?.location?.state?.directBackTo === 'dashboard' && (
+          <div className='mb-3'>
+            <LeftArrow text='Back to dashboard' url={`/admin`} />
+          </div>
+        )}
         {loading ? (
           <Spinner
             animation='border'
@@ -118,14 +117,14 @@ const ECardOrderReceipt = () => {
               </CategoryTitles>
               <div className='mb-1 pl-3'>
                 {eCardOrder?.isSent ? (
-                  <Message variant='success' showCloseButton={false}>
+                  <Message variant='success'>
                     <div>
                       Your e-card order has been sent{' '}
                       <i className='fas fa-exclamation fa-sm'></i>
                     </div>
                   </Message>
                 ) : (
-                  <Message variant='warning' showCloseButton={false}>
+                  <Message variant='warning'>
                     <div>
                       E-Card order has not been sent yet{' '}
                       <i className='fas fa-exclamation fa-sm'></i>

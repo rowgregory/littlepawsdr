@@ -15,7 +15,7 @@ import { Image } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
 const HomeContainer = styled.div`
-  margin: 84px auto 0;
+  margin: 96px auto 0;
   width: 100%;
 `;
 
@@ -29,21 +29,24 @@ const ParallaxWindow = styled.div`
   }
 `;
 const ParallaxSectionContent = styled.div`
-  transform: translate(-50%, -50%);
+  top: 25%;
+  marign-left: auto;
+  margin-right: auto;
   position: absolute;
-  top: 50%;
-  left: 50%;
-  padding: 0 80px;
+  padding: 0 20px;
   z-index: 25;
   color: #fff;
-  font-size: 2rem;
+  font-size: 28px;
   width: 100%;
   display: flex;
   justify-content: center;
   flex-direction: column;
   align-items: center;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-    font-size: 2.75rem;
+    font-size: 44px;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    top: 50%;
   }
 `;
 const ParallaxImg = styled.div`
@@ -119,8 +122,8 @@ const threeOptionData = (colors: any) => {
     {
       title: 'Blog',
       text: 'Our dedicated volunteers keep you up to date with the latest dachshund news.',
-      bgColor: colors.quinary,
-      linkKey: '/blog',
+      bgColor: colors.tertiary,
+      linkKey: '/about/blog',
     },
   ];
 };
@@ -184,7 +187,13 @@ const Home = () => {
         <OurLovablePals />
         <Mission />
         <MobileImageSection>
-          <Image src={HomeDog} alt='LPDR' width='100%' />
+          <Image
+            src={HomeDog}
+            alt='LPDR'
+            width='100%'
+            height='600px'
+            style={{ objectFit: 'cover' }}
+          />
           <ParallaxSectionContent>
             Changing lives four paws at a time
           </ParallaxSectionContent>

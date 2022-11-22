@@ -120,7 +120,10 @@ export const dachshundSanctuaryOrPassedAwayReducer = (state = [], action) => {
 };
 
 // @ts-ignore
-export const dachshundPicturesVideosStatusReducer = (state = [], action) => {
+export const dachshundPicturesVideosStatusReducer = (
+  state = { dachshunds: [] },
+  action: any
+) => {
   switch (action.type) {
     case DACHSHUND_PICS_VIDS_STASTUSES_REQUEST:
       return {

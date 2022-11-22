@@ -6,7 +6,7 @@ import { AiOutlineCaretRight } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
 
 const NoItemsContainer = styled.div`
-  min-height: calc(100vh - 526px);
+  min-height: calc(100vh);
   display: flex;
   justify-content: center;
   align-items: center;

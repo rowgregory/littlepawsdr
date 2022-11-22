@@ -37,9 +37,9 @@ const DeleteModal = ({ actionFunc, show, handleClose, id, publicId }: any) => {
         handleClose();
         break;
       case 'Product':
-        if (publicId) {
-          await axios.post(`/api/remove-upload/${publicId}`);
-        }
+        // if (publicId) {
+        //   await axios.post(`/api/remove-upload/${publicId}`);
+        // }
         dispatch(deleteProduct(id));
         handleClose();
         break;
@@ -48,9 +48,9 @@ const DeleteModal = ({ actionFunc, show, handleClose, id, publicId }: any) => {
         handleClose();
         break;
       case 'ECard':
-        if (publicId) {
-          await axios.post(`/api/remove-upload/${publicId}`);
-        }
+        // if (publicId) {
+        //   await axios.post(`/api/remove-upload/${publicId}`);
+        // }
         dispatch(deleteECard(id));
         handleClose();
         break;

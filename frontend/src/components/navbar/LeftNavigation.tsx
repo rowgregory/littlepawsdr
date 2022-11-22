@@ -1,15 +1,17 @@
-import React, { FC, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { FC, useEffect, useRef, useState } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { useOutsideDetect } from '../../utils/useOutsideDetect';
 import Logo from '../../components/assets/logo-background-transparent.png';
 import LogoDay from '../../components/assets/logo-background-transparent-purple4.png';
 import { Accordion, Button, Card, Image } from 'react-bootstrap';
 import { Link, useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { useWindowSize } from '../../utils/useWindowSize';
 
 const Container = styled.div<{ open: boolean }>`
   height: 100vh;
   position: fixed;
-  z-index: 60;
+  z-index: 6000;
   top: 0;
   background: ${({ theme }) => theme.overlay.bg};
   transition: 0.4s;
@@ -83,7 +85,7 @@ const sideLinkData = [
       },
       {
         linkKey: '/about/hold',
-        linkText: 'Dogs on Hold',
+        linkText: 'On Hold',
       },
       {
         linkKey: '/about/successful-adoptions',
@@ -103,7 +105,7 @@ const sideLinkData = [
         linkText: 'One-Time/Monthly',
       },
       {
-        linkKey: '/donate/e-card',
+        linkKey: '/e-cards',
         linkText: 'E-card',
       },
       {
@@ -312,30 +314,12 @@ interface LeftNavigationProps {
   setOpenMenu: (openMenu: boolean) => void;
 }
 
-const useWindowSize = () => {
-  const [size, setSize] = useState([0, 0]);
-  useLayoutEffect(() => {
-    function updateSize() {
-      setSize([window.innerWidth, window.innerHeight]);
-    }
-    window.addEventListener('resize', updateSize);
-    updateSize();
-    return () => window.removeEventListener('resize', updateSize);
-  }, []);
-
-  return size;
-};
-
 const LeftNavigation: FC<LeftNavigationProps> = ({ openMenu, setOpenMenu }) => {
   const overlayRef = useRef(null) as any;
   const closeMenu = () => setOpenMenu(false);
   const [index, setIndex] = useState(0);
   const { pathname } = useLocation();
   const theme = useTheme() as any;
-
-  const dachshunds = localStorage.getItem('dachshunds')
-    ? JSON.parse(localStorage.getItem('dachshunds') || '')
-    : [];
 
   const [width] = useWindowSize() as any;
 
@@ -363,11 +347,17 @@ const LeftNavigation: FC<LeftNavigationProps> = ({ openMenu, setOpenMenu }) => {
           >
             <XMarksTheSpot close={closeMenu} />
             <Divider />
-            <Image src={theme.mode === 'day' ? LogoDay : Logo} height='48px' />
+            <Link to='/'>
+              <Image
+                onClick={() => closeMenu()}
+                src={theme.mode === 'day' ? LogoDay : Logo}
+                height='48px'
+              />
+            </Link>
           </div>
           <AccordionWrapper className='mt-5'>
             <Accordion defaultActiveKey='0' className='mb-3'>
-              {sideLinkData.map((obj: any, i: number) => (
+              {sideLinkData?.map((obj: any, i: number) => (
                 <div key={i}>
                   <Accordion.Toggle
                     as={Button}
@@ -389,24 +379,27 @@ const LeftNavigation: FC<LeftNavigationProps> = ({ openMenu, setOpenMenu }) => {
                     style={{ marginLeft: '54px' }}
                   >
                     <Card.Body className='pt-2 px-2 d-flex flex-column'>
-                      {obj.links.map((link: any, l: number) =>
-                        link.linkText === 'Available' && width > 600 ? (
-                          <div
-                            className='d-flex mb-4'
-                            key={l}
-                            onClick={() => closeMenu()}
-                          >
-                            {dachshunds?.data?.map((d: any, p: any) => (
-                              <Link key={p} to={`/available/dogs/${d?.id}`}>
-                                <StyledImg
-                                  name={d.attributes.name}
-                                  src={d.attributes.photos[0]}
-                                />
-                              </Link>
-                            ))}
-                            <ViewAllBtn to='/available'>View All</ViewAllBtn>
-                          </div>
-                        ) : (
+                      {obj?.links.map(
+                        (link: any, l: number) => (
+                          // link.linkText === 'Available' && width > 600 ? (
+                          //   <div
+                          //     className='d-flex mb-4'
+                          //     key={l}
+                          //     onClick={() => closeMenu()}
+                          //   >
+                          //     {dachshunds?.data
+                          //       ?.map((d: any, p: any) => (
+                          //         <Link key={p} to={`/available/dogs/${d?.id}`}>
+                          //           <StyledImg
+                          //             name={d?.attributes?.name}
+                          //             src={d?.attributes?.photos[0]}
+                          //           />
+                          //         </Link>
+                          //       ))
+                          //       .filter((_: any, i: number) => i < 4)}
+                          //     <ViewAllBtn to='/available'>View All</ViewAllBtn>
+                          //   </div>
+                          // ) : (
                           <StyledLink
                             key={l}
                             className='py-2'
@@ -417,6 +410,7 @@ const LeftNavigation: FC<LeftNavigationProps> = ({ openMenu, setOpenMenu }) => {
                             {link.linkText}
                           </StyledLink>
                         )
+                        // )
                       )}
                     </Card.Body>
                   </Accordion.Collapse>

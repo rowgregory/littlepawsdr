@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card } from 'react-bootstrap';
 import styled from 'styled-components';
-import { formatDateTime } from '../utils/formatDateTime';
+import { formatDate } from '../utils/formatDate';
 import { Text } from './styles/Styles';
 
 const EventsCard = styled.div`
@@ -11,6 +11,7 @@ const EventsCard = styled.div`
   transition: all 500ms ease;
   border-radius: 12px;
   position: relative;
+  margin-right: 16px;
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
   cursor: pointer;
   :hover {
@@ -103,7 +104,7 @@ const EventCard = ({ event, history }: any) => {
     <EventsCard
       onClick={() => history.push(`/events/${event?._id}`)}
       key={event?._id}
-      className='mx-3 d-flex align-items-center'
+      className='d-flex align-items-center'
       style={{
         backgroundImage: event?.background,
       }}
@@ -128,11 +129,8 @@ const EventCard = ({ event, history }: any) => {
           {event?.title}
         </Text3D>
         <Text color={event?.color}>
-          {event?.startDate &&
-            formatDateTime(event?.startDate, { year: '2-digit' })}{' '}
-          -
-          {event?.endDate &&
-            formatDateTime(event?.endDate, { year: '2-digit' })}
+          {event?.startDate && formatDate(event?.startDate)}-
+          {event?.endDate && formatDate(event?.endDate)}
         </Text>
       </div>
     </EventsCard>

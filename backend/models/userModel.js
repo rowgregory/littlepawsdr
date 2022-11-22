@@ -67,6 +67,14 @@ const userSchema = mongoose.Schema(
     token: {
       type: String,
     },
+    shippingAddress: {
+      name: { type: String },
+      address: { type: String },
+      city: { type: String },
+      state: { type: String },
+      zipPostalCode: { type: String },
+      country: { type: String },
+    },
   },
   {
     timestamps: true,

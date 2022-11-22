@@ -1,310 +1,237 @@
-import React, { useEffect, useState } from 'react';
-import { Col, Image, Button } from 'react-bootstrap';
+import React from 'react';
+import { Image, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
 import { addToCart, removeFromCart } from '../../actions/cartActions';
 import Message from '../../components/Message';
-import { v4 as uuidv4 } from 'uuid';
 import { Text } from '../../components/styles/Styles';
-import styled from 'styled-components';
 import EmptyCart from '../../components/svg/EmptyCart';
-import {
-  HorizontalLine,
-  Quantity,
-  SelectInput,
-  SelectInputContainer,
-} from '../../components/styles/product-details/Styles';
 import NoItemsDefault from '../../components/common/NoItemsDefault';
-import GoBackBtn from '../../utils/GoBackBtn';
+import { subTotal, totalItems } from '../../utils/placeOrder';
+import {
+  CartBtn,
+  CartContainer,
+  CartItemContainer,
+  CheckoutBtn,
+  CheckoutBtnColumn,
+  Container,
+  Divider,
+  ProductName,
+  SecondSubTotal,
+} from '../../components/styles/cart/Styles';
+import { Link } from 'react-router-dom';
+import LogoDay from '../../components/assets/logo-background-transparent-purple4.png';
+import UIFx from 'uifx';
+import Add from '../../components/sounds/click02.wav';
+import Thump from '../../components/sounds/thump01.mp3';
+import LeftArrow from '../../components/svg/LeftArrow';
 
-const Container = styled.div<{ emptycart?: boolean }>`
-  padding-bottom: 5rem;
-  margin: ${({ emptycart }) => (emptycart ? 'auto' : '')};
-`;
-
-const ProductName = styled(Link)`
-  color: ${({ theme }) => theme.card.text};
-  font-family: 'Duru Sans';
-  font-size: 1rem;
-`;
-
-const CheckoutBtn = styled(Button)`
-  background: ${({ theme }) => theme.colors.green04};
-  color: ${({ theme }) => theme.white};
-  cursor: pointer;
-  height: 50px;
-  border-radius: 0;
-  font-size: 1rem;
-  transition: 300ms;
-  width: 100%;
-  :hover {
-    background: ${({ theme }) => theme.colors.green04};
-    color: ${({ theme }) => theme.white};
-    filter: brightness(1.1);
-    text-decoration: none;
-  }
-  :disabled {
-    background: ${({ theme }) => theme.colors.secondary};
-    color: ${({ theme }) => theme.white};
-    filter: brightness(0.8);
-    text-decoration: none;
-  }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-    width: 300px;
-  }
-`;
-
-const CartContainer = styled.div`
-  border: 0.5px solid ${({ theme }) => theme.separator};
-  padding: 2rem 1rem;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-    padding: 2rem 6rem;
-  }
-`;
-
-const RemoveBtn = styled(Button)`
-  border-radius: 0;
-  background: ${({ theme }) => theme.input.bg};
-  color: ${({ theme }) => theme.text};
-  border: 1px solid ${({ theme }) => theme.border};
-  font-family: 'Libre Franklin', sans-serif;
-  transition: 300ms;
-  height: 60px;
-  :hover,
-  :active,
-  :focus {
-    background-color: ${({ theme }) => theme.colors.red} !important;
-    border: 1px solid ${({ theme }) => theme.colors.red} !important;
-    color: #fff;
-    box-shadow: none;
-  }
-`;
-
-const ImgContainer = styled.div`
-  width: 100px;
-  height: 100px;
-  object-fit: cover;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-    width: 150px;
-    height: 150px;
-  }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-    width: 200px;
-    height: 200px;
-  }
-`;
-
-const CheckoutBtnColumn = styled(Col)`
-  margin: 0 auto;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-  }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    display: flex;
-    align-items: center;
-  }
-`;
-
-const SecondSubTotal = styled.div`
-  display: none;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    display: block;
-    width: 100%;
-  }
-`;
-
-const Cart = ({ history }: any) => {
+const Cart = () => {
   const dispatch = useDispatch();
-  const [newOrder, setNewOrder] = useState({}) as any;
-  const [placedOrderInLocalStorage, setPlacedOrderInLocalStorage] =
-    useState(false);
+  const productAmountChanged = new UIFx(Add);
+  const reachedProductLimit = new UIFx(Thump);
 
-  const cart = useSelector((state: any) => state.cart);
-  const { error, cartItems } = cart;
+  let {
+    cart: { cartItems, error, loading },
+  } = useSelector((state: any) => state);
 
-  useEffect(() => {
-    if (placedOrderInLocalStorage) {
-      history.push(`/cart/place-order`);
-    }
-  }, [dispatch, history, newOrder.id, placedOrderInLocalStorage]);
-
-  const removeFromCartHandler = (id: string, size: string) => {
-    dispatch(removeFromCart(id, size));
-  };
-
-  const checkoutHandler = () => {
-    const newOrder = {
-      id: uuidv4(),
-      isPaid: false,
-    };
-
-    setNewOrder(newOrder);
-
-    localStorage.setItem('newOrder', JSON.stringify(newOrder));
-
-    setPlacedOrderInLocalStorage(true);
-
-    history.push('/login-options?redirect=place-order');
-  };
-
-  if (cartItems.length === 0) {
+  if (cartItems.length === 0)
     return <NoItemsDefault items='cart' Icon={EmptyCart} />;
-  }
+
+  const addOneItem = (e: any, item: any) => {
+    const currentValue = +e.target.ariaValueNow;
+
+    const currentProductAmount = item?.sizes.filter(
+      (obj: any) => obj?.size === item?.size
+    )[0]?.amount;
+
+    if (
+      currentValue === item.countInStock ||
+      currentValue === currentProductAmount
+    ) {
+      reachedProductLimit.play();
+      return;
+    }
+
+    const productHasSizes =
+      currentProductAmount !== undefined && currentValue < currentProductAmount;
+
+    if (productHasSizes) {
+      productAmountChanged.play();
+      dispatch(
+        addToCart(item?.product, currentValue + 1, item.size, item?.sizes)
+      );
+    } else {
+      productAmountChanged.play();
+      dispatch(addToCart(item?.product, item?.qty + 1, item.size, item?.sizes));
+    }
+  };
+
+  const deleteOneItem = (e: any, item: any) => {
+    const currentValue = +e.target.ariaValueNow;
+    if (currentValue === 1) {
+      reachedProductLimit.play();
+      return;
+    }
+
+    const currentProductAmount = item?.sizes.filter(
+      (obj: any) => obj?.size === item?.size
+    )[0]?.amount;
+
+    const productHasSizes =
+      currentProductAmount !== undefined &&
+      currentValue <= currentProductAmount &&
+      currentValue > 1;
+
+    if (productHasSizes) {
+      productAmountChanged.play();
+      dispatch(
+        addToCart(item?.product, currentValue - 1, item?.size, item?.sizes)
+      );
+    } else {
+      productAmountChanged.play();
+      dispatch(addToCart(item?.product, item?.qty - 1, item.size, item?.sizes));
+    }
+  };
 
   return (
-    <Container>
-      {error ? (
-        <Message variant='danger'>{error}</Message>
-      ) : (
+    <CartContainer>
+      <Container>
         <div
-          style={{
-            width: '100%',
-            maxWidth: '1280px',
-            margin: '0 auto',
-            flexWrap: 'wrap',
-          }}
-          className='d-flex'
+          className='d-flex align-items-center'
+          style={{ marginBottom: '64px' }}
         >
-          <Col lg={8} md={12} className='align-items-center'>
-            <GoBackBtn to='/shop' />
-            <CartContainer>
-              <Text
-                fontFamily='Duru Sans'
-                fontSize='1.875rem'
-                marginBottom='0.5rem'
-              >
-                Shopping Cart
-              </Text>
-              <HorizontalLine margin='1rem 0 4rem' />
-
-              {cartItems?.map((item: any, i: number) => (
-                <div className='mb-5 px-0' key={i}>
-                  <div className='d-flex '>
-                    <ImgContainer>
+          <Image src={LogoDay} height='48px' />
+          <Divider />
+          <Text fontSize='28px' fontWeight={400} color='#464342'>
+            Shopping Cart
+          </Text>
+        </div>
+        {error ? (
+          <>
+            <Message variant='danger'>{error}</Message>
+            <Link to='/shop'>Go to Shop</Link>
+          </>
+        ) : (
+          <>
+            <CartItemContainer>
+              <tbody>
+                {cartItems?.map((item: any, i: number) => (
+                  <tr key={i}>
+                    <td style={{ padding: '10px 20px 10px', width: '150px' }}>
                       <Image
                         src={item?.image}
                         alt={item?.name}
-                        rounded
-                        width='100%'
-                        height='100%'
+                        roundedCircle
+                        width='85px'
+                        height='85px'
                         style={{ objectFit: 'cover' }}
                       />
-                    </ImgContainer>
+                    </td>
 
-                    <Col className='d-flex flex-column justify-content-between'>
-                      <div>
-                        <ProductName
-                          style={{ fontSize: '1rem' }}
-                          to={`/shop/product/${item?.product}`}
+                    <td>
+                      <ProductName to={`/shop/product/${item?.product}`}>
+                        {item.name}
+                      </ProductName>
+                      {item?.size && <Text fontSize='12px'>{item?.size}</Text>}
+                    </td>
+                    <td>
+                      <div className='d-flex align-items-center'>
+                        <Text
+                          marginRight='8px'
+                          fontWeight={400}
+                          color='#858382'
+                          width='15px'
                         >
-                          {item.name} ({item.qty})
-                        </ProductName>
-                        <Text fontSize='0.875rem'>{item?.size}</Text>
-                        <Text fontSize='0.875rem'>${item?.price}</Text>
-                      </div>
-                      <div className='d-flex mt-3'>
-                        <SelectInputContainer
-                          style={{
-                            width: '84px',
-                          }}
-                        >
-                          <Quantity>QTY</Quantity>
-                          <SelectInput
-                            as='select'
-                            value={item.qty}
-                            onChange={(e: any) =>
-                              dispatch(
-                                addToCart(
-                                  item?.product,
-                                  Number(e.target.value),
-                                  item.size,
-                                  item?.sizes
-                                )
-                              )
-                            }
+                          {item.qty}
+                        </Text>
+
+                        <div className='d-flex flex-column'>
+                          <CartBtn
+                            className='plus'
+                            onClick={(e: any) => addOneItem(e, item)}
+                            aria-valuenow={item.qty}
                           >
-                            {[
-                              ...Array(
-                                item?.sizes?.length > 0
-                                  ? item?.sizes?.filter(
-                                      (x: any) => x?.size === item?.size
-                                    )[0]?.amount
-                                  : item.countInStock
-                              ).keys(),
-                            ].map((x: any, i: number) => (
-                              <option key={x + 1} value={x + 1}>
-                                {i + 1}
-                              </option>
-                            ))}
-                          </SelectInput>
-                        </SelectInputContainer>
-                        <RemoveBtn
-                          onClick={() =>
-                            removeFromCartHandler(item.product, item.size)
-                          }
-                        >
-                          Remove
-                        </RemoveBtn>
+                            +
+                          </CartBtn>
+                          <CartBtn
+                            onClick={(e: any) => deleteOneItem(e, item)}
+                            aria-valuenow={item.qty}
+                          >
+                            -
+                          </CartBtn>
+                        </div>
                       </div>
-                    </Col>
-                  </div>
-                </div>
-              ))}
-            </CartContainer>
-
-            <Col className='d-flex justify-content-end align-items-center px-0 mt-2 mb-4'>
-              <Text className='mb-0'>
-                Subtotal (
-                {cartItems?.reduce(
-                  (acc: any, item: any) => acc + +item?.qty,
-                  0
-                )}
-                &nbsp;items):&nbsp;
-              </Text>
-
-              <Text marginBottom='0'>
-                $
-                {cartItems
-                  .reduce(
-                    (acc: any, item: any) => acc + item?.qty * item?.price,
-                    0
-                  )
-                  .toFixed(2)}
-              </Text>
-            </Col>
-          </Col>
-          {cartItems.length > 0 && (
-            <CheckoutBtnColumn md={4} sm={12} className='px-0'>
-              <div className='d-flex align-items-center flex-column py-3 mx-auto'>
-                <CheckoutBtn
-                  className='border-0'
-                  disabled={cartItems?.length === 0}
-                  onClick={checkoutHandler}
-                >
-                  Checkout
-                </CheckoutBtn>
-
-                <SecondSubTotal>
-                  <HorizontalLine></HorizontalLine>
-                  <div className='d-flex align-items-center justify-content-between w-100'>
-                    <Text fontWeight='bold'>Subtotal</Text>
-                    <Text fontWeight='bold'>
-                      $
-                      {cartItems
-                        .reduce(
-                          (acc: any, item: any) =>
-                            acc + item?.qty * item?.price,
-                          0
-                        )
-                        .toFixed(2)}
-                    </Text>
-                  </div>
-                </SecondSubTotal>
-              </div>
-            </CheckoutBtnColumn>
+                    </td>
+                    <td>
+                      <Text className='pr-2' fontWeight='bold'>
+                        ${item?.price.toFixed(2)}
+                      </Text>
+                    </td>
+                    <td className='remove-cart-item'>
+                      <i
+                        className='fas fa-times fa-sm ml-3'
+                        onClick={() =>
+                          dispatch(removeFromCart(item.product, item.size))
+                        }
+                      ></i>
+                    </td>
+                  </tr>
+                ))}
+                <tr style={{ background: '#ecf0f1' }}>
+                  <td>
+                    <LeftArrow text='Back to Shop' url='/shop' />
+                  </td>
+                  <td></td>
+                  <td>
+                    <Text className='mb-0'>Subtotal</Text>
+                  </td>
+                  <td>
+                    <Text fontWeight='bold'>${subTotal(cartItems)}</Text>
+                  </td>
+                </tr>
+              </tbody>
+            </CartItemContainer>
+          </>
+        )}
+      </Container>
+      <CheckoutBtnColumn>
+        <SecondSubTotal>
+          <Text
+            fontSize='28px'
+            fontWeight={400}
+            color='#9761aa'
+            marginBottom='48px'
+          >
+            Order Summary
+          </Text>
+          <div className='d-flex align-items-baseline justify-content-between w-100'>
+            <Text fontSize='14px' color='#fff'>
+              Subtotal ({totalItems(cartItems)}&nbsp;items):&nbsp;
+            </Text>
+            <Text
+              color='#fff'
+              fontWeight='bold'
+              fontSize='14px'
+              marginBottom='0'
+            >
+              ${subTotal(cartItems)}
+            </Text>
+          </div>
+        </SecondSubTotal>
+        <div className='d-flex flex-column'>
+          {loading && (
+            <Spinner
+              className='mx-auto mb-2'
+              animation='border'
+              size='sm'
+              style={{ color: '#fff' }}
+            />
           )}
+
+          <CheckoutBtn to='/login-options'>Checkout</CheckoutBtn>
         </div>
-      )}
-    </Container>
+      </CheckoutBtnColumn>
+    </CartContainer>
   );
 };
 

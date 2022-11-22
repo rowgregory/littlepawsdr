@@ -50,6 +50,13 @@ const eCardOrderSchema = mongoose.Schema(
     isSent: {
       type: Boolean,
     },
+    state: {
+      type: String,
+    },
+    name: {
+      type: String,
+    },
+    orderId: { type: String },
   },
   {
     timestamps: true,

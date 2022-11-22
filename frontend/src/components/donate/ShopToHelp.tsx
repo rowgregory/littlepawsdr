@@ -89,11 +89,25 @@ export const PetMedsIGiveHorizontalLine = styled(HorizontalLine)`
     display: none;
   }
 `;
+export const BottomRow = styled.div`
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  @media (min-width: 620) {
+    flex-direction: row;
+  }
+`;
 
 const ShopToHelp = () => {
   return (
-    <>
-      <Text textAlign='center' fontSize='1.5rem' marginBottom='1rem'>
+    <div className='mx-auto w-100' style={{ padding: '96px 16px' }}>
+      <Text
+        textAlign='center'
+        fontSize='32px'
+        marginBottom='32px'
+        fontWeight={400}
+      >
         You can also SHOP to HELP!
       </Text>
       <Text>
@@ -137,7 +151,7 @@ const ShopToHelp = () => {
           style={{
             maxWidth: '300px',
             width: '100%',
-            marginBottom: '5rem',
+            marginBottom: '80px',
             cursor: 'pointer',
           }}
         />
@@ -162,12 +176,12 @@ const ShopToHelp = () => {
           style={{
             maxWidth: '300px',
             width: '100%',
-            marginBottom: '5rem',
+            marginBottom: '80px',
             cursor: 'pointer',
           }}
         />
       </div>
-      <div className='d-flex justify-content-around align-items-center'>
+      <BottomRow>
         <div className='d-flex flex-column justify-content-center'>
           <Text>Shop Pet Meds and provide pet supplies for pets in need.</Text>
           <PetMeds
@@ -203,8 +217,8 @@ const ShopToHelp = () => {
             />
           </div>
         </div>
-      </div>
-    </>
+      </BottomRow>
+    </div>
   );
 };
 

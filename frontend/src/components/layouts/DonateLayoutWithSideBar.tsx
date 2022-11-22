@@ -8,45 +8,26 @@ interface DonateLayoutWithSideBarProps {
 }
 
 const Content = styled.div`
-  display: flex;
-  max-width: ${({ theme }) => theme.breakpoints[3]};
-  margin: 0 auto;
-  width: 100%;
-  flex-direction: column;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    flex-direction: row;
-  }
+  background: #f7f7f7;
 `;
 
 const Main = styled.main`
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  align-items: center;
-  padding: 1rem;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    padding: 2rem;
-    flex: 4;
-  }
+  width: 100%;
+  max-width: 768px;
+  margin-inline: auto;
 `;
 
 const SideBar = styled.aside`
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    flex: 1;
-    padding: 2rem;
-  }
+  padding: 96px 0;
+  display: flex;
+  justify-content: center;
 `;
 
 const Container = styled.div`
-  max-width: ${({ theme }) => theme.breakpoints[3]};
   width: 100%;
   margin-inline: auto;
-  margin-bottom: 5rem;
-  padding: 1rem;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[4]}) {
-    margin-top: 5rem;
-    padding: 0;
-  }
+  margin-bottom: 96px;
+  padding: 0;
 `;
 
 const DonateLayoutWithSideBar: FC<DonateLayoutWithSideBarProps> = ({
@@ -59,8 +40,8 @@ const DonateLayoutWithSideBar: FC<DonateLayoutWithSideBarProps> = ({
       <section>{jumbotron}</section>
       <Content>
         <Main>{children}</Main>
-        <SideBar>{sideBar}</SideBar>
       </Content>
+      <SideBar>{sideBar}</SideBar>
     </Container>
   );
 };

@@ -21,7 +21,7 @@ const LoadingContainer = styled.div<{
 }>`
   height: ${({ h }) => h};
   width: ${({ w }) => w};
-  max-width: ${({ mw }) => (mw ? mw : '')};
+  min-width: ${({ mw }) => (mw ? mw : '')};
   border-radius: ${({ borderRadius }) => (borderRadius ? borderRadius : '')};
   border: none;
   position: relative;

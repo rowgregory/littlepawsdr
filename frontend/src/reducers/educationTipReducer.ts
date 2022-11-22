@@ -8,9 +8,11 @@ import {
   EDUCATION_TIP_DELETE_SUCCESS,
   EDUCATION_TIP_DETAILS_FAIL,
   EDUCATION_TIP_DETAILS_REQUEST,
+  EDUCATION_TIP_DETAILS_RESET,
   EDUCATION_TIP_DETAILS_SUCCESS,
   EDUCATION_TIP_LIST_FAIL,
   EDUCATION_TIP_LIST_REQUEST,
+  EDUCATION_TIP_LIST_RESET,
   EDUCATION_TIP_LIST_SUCCESS,
   EDUCATION_TIP_UPDATE_FAIL,
   EDUCATION_TIP_UPDATE_REQUEST,
@@ -37,6 +39,10 @@ export const educationTipListReducer = (
       return {
         loading: false,
         error: action.payload,
+      };
+    case EDUCATION_TIP_LIST_RESET:
+      return {
+        educationTips: {},
       };
     default:
       return state;
@@ -76,17 +82,23 @@ export const educationTipDetailsReducer = (
   switch (action.type) {
     case EDUCATION_TIP_DETAILS_REQUEST:
       return {
+        ...state,
         loading: true,
       };
     case EDUCATION_TIP_DETAILS_SUCCESS:
       return {
         loading: false,
         educationTip: action.payload,
+        success: true,
       };
     case EDUCATION_TIP_DETAILS_FAIL:
       return {
         loading: false,
         error: action.payload,
+      };
+    case EDUCATION_TIP_DETAILS_RESET:
+      return {
+        educationTip: {},
       };
     default:
       return state;
@@ -98,15 +110,19 @@ export const educationTipUpdateReducer = (state = {}, action) => {
   switch (action.type) {
     case EDUCATION_TIP_UPDATE_REQUEST:
       return {
+        ...state,
         loading: true,
       };
     case EDUCATION_TIP_UPDATE_SUCCESS:
       return {
+        ...state,
         loading: false,
         success: true,
+        raffleWinner: action.payload,
       };
     case EDUCATION_TIP_UPDATE_FAIL:
       return {
+        ...state,
         loading: false,
         error: action.payload,
       };

@@ -8,6 +8,7 @@ const eCardSchema = mongoose.Schema(
     publicId: {
       type: String,
     },
+    name: { type: String, required: true },
   },
   {
     timestamps: true,

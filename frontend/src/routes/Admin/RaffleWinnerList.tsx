@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Col, Form, Table, Button, Spinner } from 'react-bootstrap';
+import { Table, Spinner, Pagination } from 'react-bootstrap';
+import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { LinkContainer } from 'react-router-bootstrap';
 import {
@@ -10,18 +11,25 @@ import DeleteModal from '../../components/DeleteModal';
 import { Text } from '../../components/styles/Styles';
 import { RAFFLE_WINNER_CREATE_RESET } from '../../constants/raffleWinnerContants';
 import {
-  CreateBtn,
   SearchBar,
   TableHead,
-  TableImg,
   TableRow,
   StyledEditBtn,
+  TopRow,
+  PaginationContainer,
+  TableAndPaginationContainer,
+  Container,
+  SearchInput,
+  TableWrapper,
+  CreateBtnV2,
+  TableImg,
 } from '../../components/styles/admin/Styles';
-import { TransitionGroup, CSSTransition } from 'react-transition-group';
-import { useHistory } from 'react-router-dom';
-import { ToastAlert } from '../../components/common/ToastAlert';
-import toaster from 'toasted-notes';
-import { LoadingImg } from '../../components/LoadingImg';
+import { WelcomeText } from '../../components/styles/DashboardStyles';
+import BreadCrumb from '../../components/common/BreadCrumb';
+import { rangeV2 } from '../../components/common/Pagination';
+import Message from '../../components/Message';
+import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
+import { AddIcon } from '../../components/svg/AddIcon';
 
 const RaffleWinnerList = () => {
   const history = useHistory();
@@ -32,35 +40,23 @@ const RaffleWinnerList = () => {
   const [publicId, setPublicId] = useState('');
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  const [listOfRaffleWinners, setListOfRafflwWinners] = useState([]) as any;
+  const [paginatedPage, setPaginatedPage] = useState(1);
+  const [paginatedItems, setPaginatedItems] = useState<{}[]>([]) as any;
 
-  const raffleWinnerList = useSelector((state: any) => state.raffleWinnerList);
-  const { loading, error, raffleWinners } = raffleWinnerList;
-
-  const raffleWinnerCreate = useSelector(
-    (state: any) => state.raffleWinnerCreate
-  );
   const {
-    loading: loadingRaffleWinnerCreate,
-    error: errorCreate,
-    success: successCreate,
-    raffleWinner: createdRaffleWinner,
-  } = raffleWinnerCreate;
-
-  const raffleWinnerDelete = useSelector(
-    (state: any) => state.raffleWinnerDelete
-  );
-  const {
-    loading: loadingRaffleWinnerDelete,
-    error: errorDelete,
-    success: successDelete,
-  } = raffleWinnerDelete;
-
-  useEffect(() => {
-    if (raffleWinners) {
-      setListOfRafflwWinners(raffleWinners);
-    }
-  }, [raffleWinners]);
+    raffleWinnerList: { loading, error, raffleWinners },
+    raffleWinnerCreate: {
+      loading: loadingRaffleWinnerCreate,
+      error: errorCreate,
+      success: successCreate,
+      raffleWinner: createdRaffleWinner,
+    },
+    raffleWinnerDelete: {
+      loading: loadingRaffleWinnerDelete,
+      error: errorDelete,
+      success: successDelete,
+    },
+  } = useSelector((state: any) => state);
 
   useEffect(() => {
     dispatch({ type: RAFFLE_WINNER_CREATE_RESET });
@@ -72,30 +68,38 @@ const RaffleWinnerList = () => {
   }, [dispatch, history, successCreate, createdRaffleWinner, successDelete]);
 
   useEffect(() => {
-    if (error || errorCreate || errorDelete) {
-      toaster.notify(
-        ({ onClose }) =>
-          ToastAlert(error || errorCreate || errorDelete, onClose, 'error'),
-        {
-          position: 'bottom',
-          duration: 20000,
-        }
-      );
-    }
-  }, [error, errorCreate, errorDelete]);
+    const itemsPerPage = 10;
+    const indexOfLastItem = paginatedPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+
+    setPaginatedItems(raffleWinners?.slice(indexOfFirstItem, indexOfLastItem));
+  }, [raffleWinners, paginatedPage]);
 
   const createRaffleWinnerHandler = () => {
     dispatch(createRaffleWinner());
   };
 
-  const filteredRaffleWinners = listOfRaffleWinners?.filter(
-    (raffleWinners: any) =>
-      raffleWinners.name.toLowerCase().includes(text.toLowerCase())
-  );
-  return error ? (
-    <></>
-  ) : (
-    <>
+  const filteredRaffleWinners =
+    text !== ''
+      ? raffleWinners?.filter((raffleWinners: any) =>
+          raffleWinners.name.toLowerCase().includes(text.toLowerCase())
+        )
+      : paginatedItems?.filter((raffleWinners: any) =>
+          raffleWinners.name.toLowerCase().includes(text.toLowerCase())
+        );
+
+  return (
+    <Container>
+      <WelcomeText className='mb-1'>Raffle Winners</WelcomeText>
+      <BreadCrumb
+        step1='Home'
+        step2='Dashboard'
+        step3=''
+        step4='Raffle Winners'
+        url1='/'
+        url2='/admin'
+        url3='/admin/raffleWinnerList'
+      />
       <DeleteModal
         actionFunc='Raffle Winner'
         show={show}
@@ -103,51 +107,50 @@ const RaffleWinnerList = () => {
         id={id}
         publicId={publicId}
       />
-      {loading ? (
-        <Col className='mb-3 d-flex justify-content-between align-items-center'>
-          <LoadingImg w='20rem' h='2.5rem' />
-          <LoadingImg w='2.5rem' h='2.5rem' borderRadius='50%' />
-        </Col>
-      ) : (
-        <Col className='d-flex align-items-center justify-content-between'>
+      {(error || errorCreate || errorDelete) && (
+        <Message variant='danger'>
+          {error || errorCreate || errorDelete}
+        </Message>
+      )}
+      {(loading || loadingRaffleWinnerCreate || loadingRaffleWinnerDelete) && (
+        <HexagonLoader />
+      )}
+      <TableWrapper>
+        <TopRow className='d-flex align-items-center'>
           <SearchBar>
-            <Form.Control
+            <SearchInput
               as='input'
               type='text'
               placeholder='Search by Name'
               value={text || ''}
               onChange={(e: any) => setText(e.target.value)}
-            ></Form.Control>
+            />
           </SearchBar>
-          <CreateBtn onClick={createRaffleWinnerHandler}>
+          <CreateBtnV2 onClick={createRaffleWinnerHandler}>
+            <AddIcon />
             {loadingRaffleWinnerCreate ? (
               <Spinner animation='border' size='sm' />
             ) : (
-              <i className='fas fa-plus'></i>
+              'Create'
             )}
-          </CreateBtn>
-        </Col>
-      )}
-      <Col>
-        <Table hover responsive className='table-sm'>
-          <TableHead>
-            <tr>
-              <th>NAME</th>
-              <th>IMAGE</th>
-              <th>MESSAGE</th>
-              <th>MONTH</th>
-              <th>EDIT</th>
-              <th>DELETE</th>
-            </tr>
-          </TableHead>
-          <TransitionGroup component='tbody'>
-            {filteredRaffleWinners?.map((raffleWinner: any) => (
-              <CSSTransition
-                key={raffleWinner?._id}
-                timeout={500}
-                classNames='item'
-              >
-                <TableRow>
+          </CreateBtnV2>
+        </TopRow>
+
+        <TableAndPaginationContainer>
+          <Table hover responsive>
+            <TableHead>
+              <tr>
+                <th>NAME</th>
+                <th>IMAGE</th>
+                <th>MESSAGE</th>
+                <th>MONTH</th>
+                <th>EDIT</th>
+                <th>DELETE</th>
+              </tr>
+            </TableHead>
+            <tbody>
+              {filteredRaffleWinners?.map((raffleWinner: any) => (
+                <TableRow key={raffleWinner?._id}>
                   <td>
                     <Text>{raffleWinner?.name}</Text>
                   </td>
@@ -168,13 +171,15 @@ const RaffleWinnerList = () => {
                       to={`/admin/raffleWinner/${raffleWinner?._id}/edit`}
                     >
                       <StyledEditBtn>
-                        <i className='fas fa-edit'></i>
+                        <i
+                          style={{ color: '#9761aa' }}
+                          className='fas fa-edit'
+                        ></i>
                       </StyledEditBtn>
                     </LinkContainer>
                   </td>
                   <td>
-                    <Button
-                      variant='danger'
+                    <StyledEditBtn
                       className='border-0'
                       onClick={() => {
                         setId(raffleWinner?._id);
@@ -185,17 +190,25 @@ const RaffleWinnerList = () => {
                       {loadingRaffleWinnerDelete && id === raffleWinner?._id ? (
                         <Spinner size='sm' animation='border' />
                       ) : (
-                        <i className='fas fa-trash'></i>
+                        <i
+                          style={{ color: '#cc0000' }}
+                          className='fas fa-trash'
+                        ></i>
                       )}
-                    </Button>
+                    </StyledEditBtn>
                   </td>
                 </TableRow>
-              </CSSTransition>
-            ))}
-          </TransitionGroup>
-        </Table>
-      </Col>
-    </>
+              ))}
+            </tbody>
+          </Table>
+          <PaginationContainer>
+            <Pagination className='my-3'>
+              {rangeV2(raffleWinners, paginatedPage, setPaginatedPage)}
+            </Pagination>
+          </PaginationContainer>
+        </TableAndPaginationContainer>
+      </TableWrapper>
+    </Container>
   );
 };
 

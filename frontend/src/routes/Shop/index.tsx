@@ -5,26 +5,23 @@ import { ShopLayoutWithBreadcrumb } from '../../components/shop/ShopLayoutWithBr
 import ProductDetails from './ProductDetails';
 import Shop from './Shop';
 
-const PageTitle = styled.div`
-  font-size: 1rem;
-  font-family: Trade Gothic, sans-serif;
+export const PageTitle = styled.div`
   padding: 0.5rem 48px;
   background: ${({ theme }) => theme.colors.secondary};
   color: ${({ theme }) => theme.text};
 `;
 
-const Breadcrumb = styled.div`
+export const Breadcrumb = styled.div`
   width: fit-content;
-  font-size: 0.875rem;
   a {
     cursor: pointer;
     color: #fff;
     padding: 0.5rem;
     border: 1px solid transparent;
+    text-decoration: none;
     :active {
       border: 1px dashed #fff;
     }
-    text-decoration: none;
   }
 `;
 
@@ -34,11 +31,11 @@ const ShopRoutes: FC = () => {
   return (
     <ShopLayoutWithBreadcrumb
       breadcrumb={
-        <PageTitle>
-          <Breadcrumb>
-            <Link to='/shop'>LPDR Shop</Link>
-          </Breadcrumb>
-        </PageTitle>
+        // <PageTitle>
+        <Breadcrumb>
+          <Link to='/shop'>LPDR Shop</Link>
+        </Breadcrumb>
+        // </PageTitle>
       }
     >
       <Switch>

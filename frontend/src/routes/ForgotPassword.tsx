@@ -1,96 +1,102 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Form, Spinner } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { Form } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import toaster from 'toasted-notes';
 import { sendResetEmail } from '../actions/forgotPasswordActions';
-import { ToastAlert } from '../components/common/ToastAlert';
-import { Text } from '../components/styles/Styles';
-import { RESET_EMAIL_SEND_RESET } from '../constants/resetPasswordContants';
+import JumpingInput from '../components/common/JumpingInput';
+import HexagonLoader from '../components/Loaders/HexagonLoader/HexagonLoader';
+import Message from '../components/Message';
 import {
+  Text,
   Container,
   CreateAccountContainer,
   FormContainer,
   StyledLink,
-} from './Login';
+  FormWrapper,
+  StyledButton,
+} from '../components/styles/Styles';
+import LeftArrow from '../components/svg/LeftArrow';
+import { RESET_EMAIL_SEND_RESET } from '../constants/resetPasswordContants';
 
-const ForgotPassword = () => {
-  const [email, setEmail] = useState('');
-  const dispatch = useDispatch();
-
-  const sendEmail = useSelector((state: any) => state.sendEmail);
-  const { loading, success, error, message } = sendEmail;
-
-  const submitHandler = (e: any) => {
-    e.preventDefault();
-    dispatch(sendResetEmail(email));
+const useForgotPasswordForm = (cb: any) => {
+  const values = {
+    forgotPasswordEmail: '',
   };
 
-  useEffect(() => {
-    if (error || message || success) {
-      toaster.notify(
-        ({ onClose }) =>
-          ToastAlert(
-            error || message.message || success,
-            onClose,
-            error ? 'error' : 'success'
-          ),
-        {
-          position: 'bottom',
-          duration: 20000,
-        }
-      );
-      if (success) {
-        setEmail('');
-        dispatch({ type: RESET_EMAIL_SEND_RESET });
-      }
-    }
-  }, [dispatch, error, message, success]);
+  const [inputs, setInputs] = useState(values) as any;
+
+  const handleInputChange = (e: any) => {
+    setInputs((inputs: any) => ({
+      ...inputs,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const onSubmit = (e: any) => {
+    e.preventDefault();
+    cb();
+  };
+
+  return { inputs, handleInputChange, onSubmit, setInputs };
+};
+
+const ForgotPassword = () => {
+  const dispatch = useDispatch();
+  const {
+    sendEmail: { loading, success, error, message },
+  } = useSelector((state: any) => state);
+
+  const forgotPasswordFormCallback = () => {
+    dispatch(sendResetEmail(inputs.forgotPasswordEmail));
+  };
+
+  const { inputs, handleInputChange, onSubmit } = useForgotPasswordForm(
+    forgotPasswordFormCallback
+  );
 
   return (
-    <Container>
-      <div
-        className='mx-auto px-3 pt-4'
-        style={{ maxWidth: '340px', width: '100%' }}
-      >
+    <Container className='align-items-center'>
+      {loading && <HexagonLoader />}
+      {(error || success) && (
+        <Message variant={error ? 'danger' : 'success'}>
+          {error || message?.message}
+        </Message>
+      )}
+      <FormWrapper className='mx-auto px-3'>
         <Text fontSize='1.5rem' textAlign='center' marginBottom='0.65rem'>
           Forgot Password
         </Text>
+        <LeftArrow text='Back to sign in' url='/login' />
         <FormContainer>
-          <Form onSubmit={submitHandler}>
-            <Form.Group controlId='email'>
-              <Form.Label>Email Address</Form.Label>
-              <Form.Control
-                type='email'
-                placeholder='Enter email'
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              ></Form.Control>
-            </Form.Group>
+          <Form onSubmit={onSubmit}>
+            <JumpingInput
+              name='forgotPasswordEmail'
+              label='Email*'
+              value={inputs.forgotPasswordEmail || ''}
+              handleInputChange={handleInputChange}
+              type='email'
+              error={''}
+            />
 
-            <Button
-              disabled={loading}
+            <StyledButton
+              disabled={loading || inputs.forgotPasswordEmail === ''}
               type='submit'
-              className='d-flex align-items-center border-0 w-100 bg-success justify-content-center'
+              className='d-flex align-items-center border-0 w-100 justify-content-center'
             >
               Send{loading && 'ing'} Email{loading && '...'}&nbsp;&nbsp;
-              {loading && (
-                <Spinner
-                  as='span'
-                  animation='border'
-                  size='sm'
-                  role='status'
-                  aria-hidden='true'
-                />
-              )}
-            </Button>
+            </StyledButton>
           </Form>
         </FormContainer>
         <CreateAccountContainer className='py-3 mt-3'>
-          Remembered your password? <StyledLink to='/login'>Sign In</StyledLink>
+          Remembered your password?{' '}
+          <StyledLink
+            onClick={() => dispatch({ type: RESET_EMAIL_SEND_RESET })}
+            to='/login'
+          >
+            Sign In
+          </StyledLink>
           .
         </CreateAccountContainer>
-      </div>
+      </FormWrapper>
     </Container>
   );
 };

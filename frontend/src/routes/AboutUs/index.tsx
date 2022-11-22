@@ -1,9 +1,9 @@
-import { FC, useEffect, useState } from 'react';
-import { Switch, Route, useRouteMatch, useLocation } from 'react-router-dom';
+import { FC } from 'react';
+import { Switch, Route, useRouteMatch } from 'react-router-dom';
 import ContactUs from './ContactUs';
 import Education from './Education';
 import WhoWeAre from './TeamMembers';
-import StatusDogDetails from './StatusDogDetails';
+import DachshundDetails from './DachshundDetails';
 import styled from 'styled-components';
 import {
   IntroText,
@@ -13,24 +13,15 @@ import {
   Title,
   TitleAndIntroTextContainer,
 } from '../../components/styles/Styles';
-import { PawPrint } from '../Available/DachshundScreen';
+import { PawPrint } from '../Available/AvailableDog';
 import RaffleWinners from './RaffleWinners';
-import StatusDogList from './StatusDogList';
 import Blog from './Blog';
 import BlogDetails from './BlogDetails';
 import PageNotFound from '../../components/common/PageNotFound';
-
-const Container = styled.div`
-  max-width: ${({ theme }) => theme.breakpoints[3]};
-  width: 100%;
-  margin-inline: auto;
-  margin-bottom: 5rem;
-  padding: 1rem;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[4]}) {
-    margin-top: 5rem;
-    padding: 0;
-  }
-`;
+import SponsorSanctuary from './SponsorSanctuary';
+import SuccessfulAdoptions from './SuccessfulAdoptions';
+import RainbowBridge from './RainbowBridge';
+import DogsOnHold from './DogsOnHold';
 
 const WhatWeBelieveContainer = styled.div`
   display: flex;
@@ -124,65 +115,28 @@ const WhatWeBelieve = () => {
 
 const AboutUsRoutes: FC = () => {
   const { path } = useRouteMatch();
-  const { pathname } = useLocation();
-  const currentRoute = pathname.split('/')[2];
-  const [tabCategory, setTabCategory] = useState('What we believe');
-
-  useEffect(() => {
-    setTabCategory(currentRoute);
-  }, [currentRoute, tabCategory]);
 
   return (
-    <Container>
-      <Switch>
-        <Route exact path={path} component={WhatWeBelieve} />
-        <Route path={`${path}/team-members`} component={WhoWeAre} />
-        <Route path={`${path}/contact-us`} component={ContactUs} />
-        <Route path={`${path}/education`} component={Education} />
-        <Route
-          exact
-          path={`${path}/successful-adoptions`}
-          render={() => <StatusDogList tab={tabCategory} />}
-        />
-        <Route
-          exact
-          path={`${path}/successful-adoptions/:id`}
-          component={StatusDogDetails}
-        />
-        <Route
-          exact
-          path={`${path}/hold`}
-          render={() => <StatusDogList tab={tabCategory} />}
-        />
-        <Route exact path={`${path}/hold/:id`} component={StatusDogDetails} />
-        <Route
-          exact
-          path={`${path}/sanctuary`}
-          render={() => <StatusDogList tab={tabCategory} />}
-        />
-        <Route
-          exact
-          path={`${path}/sanctuary/:id`}
-          component={StatusDogDetails}
-        />
-        <Route
-          exact
-          path={`${path}/rainbow-bridge`}
-          render={() => <StatusDogList tab={tabCategory} />}
-        />
-        <Route
-          exact
-          path={`${path}/rainbow-bridge/:id`}
-          component={StatusDogDetails}
-        />
-        <Route path={`${path}/raffle-winners`} component={RaffleWinners} />
-        <Route exact path={`${path}/blog`} component={Blog} />
-        <Route path={`${path}/blog/:id`} component={BlogDetails} />
-        <Route>
-          <PageNotFound />
-        </Route>
-      </Switch>
-    </Container>
+    <Switch>
+      <Route exact path={path} component={WhatWeBelieve} />
+      <Route path={`${path}/team-members`} component={WhoWeAre} />
+      <Route path={`${path}/contact-us`} component={ContactUs} />
+      <Route path={`${path}/education`} component={Education} />
+      <Route path={`${path}/hold`} component={DogsOnHold} />
+      <Route path={`${path}/sanctuary`} component={SponsorSanctuary} />
+      <Route path={`${path}/rainbow-bridge`} component={RainbowBridge} />
+      <Route
+        path={`${path}/successful-adoptions`}
+        component={SuccessfulAdoptions}
+      />
+      <Route path={`${path}/dachshund`} component={DachshundDetails} />
+      <Route path={`${path}/raffle-winners`} component={RaffleWinners} />
+      <Route exact path={`${path}/blog`} component={Blog} />
+      <Route path={`${path}/blog/:id`} component={BlogDetails} />
+      <Route>
+        <PageNotFound />
+      </Route>
+    </Switch>
   );
 };
 

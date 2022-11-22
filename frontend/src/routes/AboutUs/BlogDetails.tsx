@@ -5,8 +5,8 @@ import { useRouteMatch } from 'react-router-dom';
 import { getBlogDetails } from '../../actions/blogActions';
 import { Text } from '../../components/styles/Styles';
 import Message from '../../components/Message';
-import GoBackBtn from '../../utils/GoBackBtn';
 import { LoadingImg } from '../../components/LoadingImg';
+import LeftArrow from '../../components/svg/LeftArrow';
 
 const BlogDetails = () => {
   const match = useRouteMatch() as any;
@@ -20,10 +20,19 @@ const BlogDetails = () => {
   }, [blogId, dispatch]);
 
   return (
-    <>
+    <div
+      style={{
+        maxWidth: '980px',
+        width: '100%',
+        marginInline: 'auto',
+        marginBottom: '96px',
+        paddingInline: '16px',
+        marginTop: '56px',
+      }}
+    >
       {error && <Message variant='danger'>{error}</Message>}
-      <GoBackBtn to='/about/blog' />
-      <Row>
+      <LeftArrow text='Back to blogs' url='/about/blog' />
+      <Row className='mt-4'>
         <Col md={3}>
           {loading ? (
             <LoadingImg h='380px' w='100%' />
@@ -75,7 +84,7 @@ const BlogDetails = () => {
         </Col>
         <Col></Col>
       </Row>
-    </>
+    </div>
   );
 };
 

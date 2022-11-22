@@ -1,88 +1,73 @@
 import React from 'react';
 import styled from 'styled-components';
-import { missionStatementData_V2 } from '../../utils/homeData';
 import MaskBtn from './MaskBtn';
+import Logo from '../../components/assets/logo-background-transparent-purple.png';
+import { Image } from 'react-bootstrap';
+import { Text } from '../styles/Styles';
 
 export const MissionContainer = styled.div`
+  background: ${({ theme }) => theme.secondaryBg};
   display: flex;
   width: 100%;
   margin: 0 auto;
-  padding: 100px 1rem 150px;
+  padding: 128px 16px;
   flex-direction: column;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    max-width: 900px;
-    flex-direction: row;
-    width: 100%;
-    padding: 48px;
-  }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-    max-width: 1100px;
-  }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    max-width: 1300px;
-  }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[4]}) {
-    max-width: 1500px;
-  }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[5]}) {
-    max-width: 1700px;
-  }
-`;
-
-const RescueTitle = styled.div`
-  padding-right: 40px;
-  width: 100%;
-  margin-bottom: 2rem;
-  font-size: 28px;
-  color: ${({ theme }) => theme.text};
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    width: 40%;
-    display: flex;
-    justify-content: flex-end;
-  }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[4]}) {
-    padding-right: 80px;
-    width: 40%;
-  }
 `;
 
 const StatementAndLinkContainer = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 0;
+  max-width: 980px;
   width: 100%;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    display: flex;
-    justify-content: flex-end;
-    padding-left: 40px;
-    width: 60%;
-    border-left: 1px solid rgb(0, 0, 0, 0.1);
-  }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[4]}) {
-    padding-left: 80px;
-    display: flex;
-    justify-content: flex-end;
-  }
+  margin-inline: auto;
+  margin-bottom: 96px;
 `;
 
 export const MissionStatement = styled.div`
-  font-size: 1rem;
+  font-size: 16px;
   color: ${({ theme }) => theme.text};
-  font-weight: bold;
-  line-height: 2;
-  margin-bottom: 2rem;
+  margin-bottom: 32px;
 `;
 
 const Mission = () => {
   return (
     <MissionContainer>
-      <RescueTitle>Little Paws Dachshund Rescue</RescueTitle>
       <StatementAndLinkContainer>
-        <MissionStatement>{missionStatementData_V2()}</MissionStatement>
-        <MaskBtn
-          linkKey='/about/successful-adoptions'
-          textKey='VIEW SUCCESSFUL ADOPTIONS'
+        <Image
+          src={Logo}
+          width='100%'
+          style={{ maxWidth: '250px', objectFit: 'cover', margin: '0 auto' }}
         />
+        <Text
+          fontSize='32px'
+          marginTop='56px'
+          fontWeight={400}
+          textAlign='center'
+        >
+          LITTLE PAWS DACHSHUND RESCUE is an east coast based 501(c)3 exempt
+          nonprofit dedicated to the rescue and re-homing of our favorite short
+          legged breed
+        </Text>
+        <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='18px'>
+          We specialize in finding permanent homes for dachshund and dachshund
+          mixes. We strive to make the lives of all dogs better through action,
+          advocacy, awareness and education.
+        </Text>
+        <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='18px'>
+          It is LPDR’s goal to identify abandoned, mistreated, or homeless dogs
+          and oversee their treatment and wellbeing while working to find loving
+          owners for those in our care.
+        </Text>
+        <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='18px'>
+          If you are looking for a new family member take a look at our
+          available dachshund and dachshund mixes.
+        </Text>
+        <div style={{ marginInline: 'auto', marginTop: '64px' }}>
+          <MaskBtn
+            linkKey='/about/successful-adoptions'
+            textKey='VIEW SUCCESSFUL ADOPTIONS'
+          />
+        </div>
       </StatementAndLinkContainer>
     </MissionContainer>
   );

@@ -45,19 +45,24 @@ export const createOrder =
 
       const { data } = await axios.post(`/api/orders`, order, config);
 
+      localStorage.setItem(
+        'shippingAddress',
+        JSON.stringify(data.shippingAddress)
+      );
+
       dispatch({ type: ORDER_CREATE_SUCCESS, payload: data });
-      dispatch({
-        type: CART_CLEAR_ITEMS,
-        payload: data,
-      });
+      dispatch({ type: CART_CLEAR_ITEMS });
       localStorage.removeItem('cartItems');
+      localStorage.removeItem('newOrder');
     } catch (error: any) {
       dispatch({
         type: ORDER_CREATE_FAIL,
-        payload:
-          error.response && error.response.data.message
-            ? error.response.data.message
-            : error.message,
+        payload: {
+          message: error.response.data.message,
+          data: error.response.data.data,
+          email: error.response.data.email,
+          isShipped: error.response.data.isShipped,
+        },
       });
     }
   };

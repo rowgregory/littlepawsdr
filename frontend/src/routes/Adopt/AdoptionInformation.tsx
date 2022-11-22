@@ -57,7 +57,16 @@ export const Step = styled(Link)<{ link?: string }>`
 
 const AdoptionInformation = () => {
   return (
-    <>
+    <div
+      style={{
+        marginTop: '56px',
+        maxWidth: '860px',
+        width: '100%',
+        marginInline: 'auto',
+        marginBottom: '96px',
+        paddingInline: '16px',
+      }}
+    >
       <Text fontSize='2rem' marginBottom='1rem'>
         Adoption Information
       </Text>
@@ -152,7 +161,7 @@ const AdoptionInformation = () => {
           </div>
         ))}
       </SixStepSection>
-    </>
+    </div>
   );
 };
 

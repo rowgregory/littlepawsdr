@@ -2,14 +2,14 @@ import React, { useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
 import { NAVBAR_DATA } from '../../utils/navbarData';
-import { AvatarInitials, FAIcons, SlyledToolTip } from '../styles/NavbarStyles';
+import { AvatarInitials, FAIcons } from '../styles/NavbarStyles';
 import { UserDropdown } from './UserDropdown';
 import { UserInfoProps } from '../common/PrivateRoute';
 import { useOutsideDetect } from '../../utils/useOutsideDetect';
 import styled from 'styled-components';
-import { Image, OverlayTrigger } from 'react-bootstrap';
+import { Image } from 'react-bootstrap';
 
-export const StyledAvatar = styled(Image)<{ isvisible?: string }>`
+const StyledAvatar = styled(Image)<{ isvisible?: string }>`
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -27,12 +27,12 @@ interface ItemsProps {
   isMobile?: boolean;
 }
 
-export const Items = styled.span<ItemsProps>`
+const Items = styled.span<ItemsProps>`
   color: ${({ theme }) => theme.white};
-  font-size: 0.8rem;
+  font-size: 12.8px;
   position: absolute;
-  top: -5px;
-  left: 28px;
+  top: -4px;
+  left: 26px;
   z-index: 9;
   text-align: center;
   cursor: pointer;
@@ -51,11 +51,11 @@ export const Items = styled.span<ItemsProps>`
   }
 `;
 
-export const DropDownContainer = styled.div<{ p: string }>`
+const DropDownContainer = styled.div<{ p?: string }>`
   z-index: 500;
   position: absolute;
   top: 50px;
-  right: 1rem;
+  right: 16px;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -64,10 +64,10 @@ export const DropDownContainer = styled.div<{ p: string }>`
   transition: height 500ms ease;
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
   width: 300px;
-  border-radius: 0.5rem;
+  border-radius: 8px;
 `;
 
-export const Container = styled.nav`
+const Container = styled.nav`
   display: flex;
   align-items: center;
 `;
@@ -141,47 +141,28 @@ const RightSideNavbar = () => {
         );
       case 'Donate':
         return (
-          <OverlayTrigger
-            placement='bottom'
-            overlay={
-              <SlyledToolTip id={`tooltip-bottom`}>Donate</SlyledToolTip>
-            }
-          >
-            <FAIcons className='mr-2'>
-              <Link to='/donate'>
-                <i className='fas fa-dollar'></i>
-              </Link>
-            </FAIcons>
-          </OverlayTrigger>
+          <FAIcons className='mr-2'>
+            <Link to='/donate'>
+              <i className='fas fa-dollar'></i>
+            </Link>
+          </FAIcons>
         );
       case 'Cart':
         return (
-          <OverlayTrigger
-            placement='bottom'
-            overlay={<SlyledToolTip id={`tooltip-bottom`}>Cart</SlyledToolTip>}
-          >
-            <FAIcons className='mr-2'>
-              <Link to='/cart'>
-                <Items>{items}</Items>
-                <i className='fas fa-shopping-cart'></i>
-              </Link>
-            </FAIcons>
-          </OverlayTrigger>
+          <FAIcons className='mr-2'>
+            <Link to='/cart'>
+              <Items>{items}</Items>
+              <i className='fas fa-shopping-cart'></i>
+            </Link>
+          </FAIcons>
         );
       case 'Sign In':
         return (
-          <OverlayTrigger
-            placement='bottom'
-            overlay={
-              <SlyledToolTip id={`tooltip-bottom`}>Account</SlyledToolTip>
-            }
-          >
-            <FAIcons>
-              <Link to={obj.links[0]}>
-                <i className='fas fa-user'></i>
-              </Link>
-            </FAIcons>
-          </OverlayTrigger>
+          <FAIcons>
+            <Link to={obj.links[0]}>
+              <i className='fas fa-user'></i>
+            </Link>
+          </FAIcons>
         );
       default:
         <></>;

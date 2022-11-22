@@ -24,6 +24,29 @@ const GlobalStyles = createGlobalStyle<{
   
 }
 
+input[type='month'], input[type='date'] {
+  ::-webkit-calendar-picker-indicator {
+    position: absolute;
+    z-index: 5;
+    opacity: 1;
+    @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+      left: 200px;
+    }
+    @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
+      left: 450px;
+    }
+  }
+}
+
+
+
+.custom-control-input:checked~.custom-control-label::before {
+  color: #fff;
+  border-color: ${({ theme }) => theme.colors.quinary};
+  background-color: ${({ theme }) => theme.colors.quinary};
+  outline-color: ${({ theme }) => theme.colors.quinary} !important;
+}
+
 .accordion .faq:hover {
   background: ${({ theme }) => theme.colors.primary};
   transition: 300ms;
@@ -32,47 +55,20 @@ const GlobalStyles = createGlobalStyle<{
 .accordion .faq:hover div {
   color: #fff;
 }
-
-.table-responsive {
-  height:1000px;
-  overflow:scroll;
-} 
 thead tr:nth-child(1) th {
-  background: ${({ theme }) => theme.colors.primary};
   position: sticky;
   top: 0;
   z-index: 2;
 }
 
-tbody {
-    tr {
-      :nth-child(even) {
-        background-color: ${({ theme }) => theme.table.odd};
-      }
-    }
-  }
-
 div, span, p, h1, h2, h3, h4, h5, h6, input, select, ::placeholder, label, li {
-  font-family: Oswald;
+  font-family: 'Roboto';
   color: ${({ theme }) => theme.text};
-}
-
-.page-item.active .page-link {
-    background: ${({ theme }) => theme.smcontainer.bg} !important;
-    color: #fff !important;
-    &:hover {
-      background: ${({ theme }) => theme.smcontainer.bg} !important;
-      color: #fff !important;
-
-    }
+  font-size: 13px;
 }
 
 .carousel-control-prev, .carousel-control-next {
   background-color: ${({ theme }) => theme.smcontainer.bg};
-}
-
-.Toaster__alert_close {
-  display: none;
 }
 
   @keyframes rotate {
@@ -81,17 +77,17 @@ div, span, p, h1, h2, h3, h4, h5, h6, input, select, ::placeholder, label, li {
     }
   }
 
-  input, select {
+  input {
     background: ${({ theme }) => theme.input.bg} !important;
     transition: 300ms;
-    height: 40px !important;
-    font-family: 'Libre Franklin', sans-serif  !important;
+    height: 45px !important;
+    font-family: 'Roboto'  !important;
     border-radius: 0  !important;
     box-shadow: 0 !important;
     padding: 6px 0px !important;
     color: ${({ theme }) => theme.text} !important;
-    text-indent: 0.5rem;
-    border:${({ theme }) => `1px solid ${theme.separator}`} !important;
+    text-indent: 18px;
+    
     &.popup { border-right: none !important;}
   }
 
@@ -99,13 +95,26 @@ div, span, p, h1, h2, h3, h4, h5, h6, input, select, ::placeholder, label, li {
     background: ${({ theme }) => theme.input.bg} !important;
     transition: 300ms;
     margin: 0.25rem 0 1rem  !important;
-    font-family: 'Libre Franklin', sans-serif  !important;
-    border-radius: 6px  !important;
+    font-family: 'Roboto'  !important;
+    border-radius: 0px  !important;
     box-shadow: 0 !important;
     padding: 6px 0px !important;
     color: ${({ theme }) => theme.text} !important;
-    text-indent: 0.5rem;
+    text-indent: 18px;
     border:1px solid ${({ theme }) => theme.input.border} !important;
+  }
+
+  select {
+    transition: 300ms;
+    height: 45px !important;
+    font-family: 'Roboto'  !important;
+    border-radius: 0  !important;
+    box-shadow: 0 !important;
+    padding: 6px 0px !important;
+    color: ${({ theme }) => theme.text} !important;
+    text-indent: 18px;
+    
+    &.popup { border-right: none !important;}
   }
 
   select {
@@ -120,10 +129,6 @@ div, span, p, h1, h2, h3, h4, h5, h6, input, select, ::placeholder, label, li {
     background-position-y: 10px !important;
     z-index: 5 !important;
 
-  }
-
-  label {
-    margin-bottom:5px !important;
   }
 
   .form-control:focus {
@@ -170,34 +175,11 @@ div, span, p, h1, h2, h3, h4, h5, h6, input, select, ::placeholder, label, li {
     -webkit-text-fill-color: ${({ theme }) => theme.text};
   }
 
-  a.page-link {
-    color: ${({ theme }) => theme.text};
-    background: transparent;
-    border: none !important;
-  }
-  a.page-link:hover {
-    background-color: ${({ theme }) => theme.colors.secondary} !important
-  }
-  span.page-link {
-    background-color: ${({ theme }) => theme.colors.secondary} !important;
-    border: none !important;
-  }
-
-  label.form-label {
-    color: ${({ theme }) => theme.text};
-  }
-
-  .main-links {
-    height:2rem;
-    display: flex;
-    align-items:center;
-  }
-
   .modal-backdrop + .popup {
     background: rgba(0, 0, 0, 0.1);
   }
 
-  /* image for profile */
+
 .image-avatar > label {
   height: 200px;
   width: 200px;

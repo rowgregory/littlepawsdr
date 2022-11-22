@@ -8,7 +8,7 @@ const RaffleWinnerIcon = () => {
       x='0px'
       y='0px'
       viewBox='0 0 512 512'
-      width='24pt'
+      width='18pt'
     >
       <g>
         <g>

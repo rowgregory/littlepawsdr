@@ -1,16 +1,20 @@
-import { Col } from 'react-bootstrap';
+import { Col, Image, Row } from 'react-bootstrap';
 import styled from 'styled-components';
 
 export const Container = styled.div`
-  margin: 5rem auto 0;
+  margin-inline: auto;
   width: 100%;
+  max-width: ${({ theme }) => theme.breakpoints[3]};
   background: ${({ theme }) => theme.bg};
+  padding-top: 64px;
 `;
 
-export const SubContainer = styled.div`
+export const SubContainer = styled(Row)`
   display: flex;
   flex-direction: column;
   width: 100%;
+  margin: 0 auto;
+  justify-content: center;
   .left-rail {
     order: 2;
   }
@@ -21,8 +25,6 @@ export const SubContainer = styled.div`
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
     display: flex;
     flex-direction: row;
-    max-width: 1300px;
-    margin: 0 auto 10rem;
 
     .left-rail {
       order: 1;
@@ -33,19 +35,34 @@ export const SubContainer = styled.div`
   }
 `;
 
-export const LeftRail = styled(Col)`
-  background: ${({ theme }) => theme.secondaryBg};
-  padding: 1rem;
+export const Checkout = styled.div`
+  position: absolute;
+  top: 5px;
+  right: 0;
+  left: 0;
+  margin-left: auto;
+  margin-right: auto;
+  width: 291px;
+`;
 
-  margin-bottom: 10rem;
+export const LogoCheckout = styled(Image)`
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: 76px;
+`;
+
+export const LeftRail = styled(Col)`
+  background: ${({ theme }) => theme.bg};
+  padding: 1rem;
+  width: 100%;
+  border: 1px solid #ededed;
+  margin-bottom: 2rem;
+  margin-right: 0;
+
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    padding: 3rem;
-  }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-    padding: 4rem 5rem;
-  }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    padding: 4rem 9rem;
+    margin-right: 1.5rem;
+    border-radius: 0.5rem;
   }
 `;
 
@@ -53,33 +70,35 @@ export const LeftRailSectionTitle = styled.div`
   font-weight: bold;
   font-size: 1.35rem;
   margin-bottom: 1.5rem;
-  background: ${({ theme }) => theme.bg};
+  background: ${({ theme }) => theme.secondaryBg};
   padding: 0.875rem 1.125rem;
   color: ${({ theme }) => theme.text};
 `;
 
 export const LeftRailContainer = styled.div`
-  max-width: 510px;
   width: 100%;
-  margin: 0 auto 3rem;
-`;
-
-export const EnterAPaswordBtn = styled.div`
-  color: ${({ theme }) => theme.colors.blue04};
-  font-size: 0.8rem;
-  cursor: pointer;
-  margin-bottom: 1rem;
-  :hover {
-    filter: brightness(1.15);
-  }
+  margin: 0 auto;
 `;
 
 export const RightRail = styled(Col)`
-  margin: 0 auto;
+  padding: 1rem;
   width: 100%;
-  margin-bottom: 3rem;
-
+  border-radius: 0.5rem;
+  height: fit-content;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    max-width: 300px;
+    border: 1px solid #ededed;
   }
+`;
+
+export const Accordion = styled.div<{ toggle: boolean; maxheight?: string }>`
+  max-height: ${({ toggle, maxheight }) => (toggle ? maxheight : '0px')};
+  overflow: hidden;
+  transition: max-height 300ms ease-out;
+`;
+
+export const QuestionContainer = styled.div`
+  background: #ededed;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
 `;

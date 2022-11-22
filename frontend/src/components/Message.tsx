@@ -1,58 +1,104 @@
 import { FC, ReactNode, useState } from 'react';
-import { Alert, Button } from 'react-bootstrap';
+import { Alert } from 'react-bootstrap';
+import styled from 'styled-components';
+import { Text } from './styles/Styles';
+import ErrorIcon from './svg/ErrorIcon';
+import ExclamationPoint from './svg/ExclamationPoint';
+import InfoIcon from './svg/InfoIcon';
+import SuccessIcon from './svg/SuccessIcon';
+
+export const Container = styled(Alert)<{ color: string }>`
+  max-width: ${({ theme }) => theme.breakpoints[1]};
+  width: 100%;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  height: 65px;
+  border-right: 5px solid ${({ color }) => color};
+  border-top: 1px solid ${({ color }) => color};
+  border-bottom: 1px solid ${({ color }) => color};
+  margin: 1rem 0;
+  padding: 0;
+  button {
+    display: block;
+  }
+  div {
+    flex-direction: flex-column;
+  }
+`;
+
+const MsgType = styled.div<{ color: string }>`
+  color: ${({ color }) => (color ? color : '')};
+  font-size: 1.25rem;
+`;
+
+const IconType = styled.div<{ bg?: string }>`
+  width: 65px;
+  height: 65px;
+  background: ${({ bg }) => (bg ? bg : '')};
+  margin-right: 0.65rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 
 interface MessageProps {
-  variant?: string;
   children: ReactNode;
-  height?: string;
-  padding?: string;
-  showMessage?: boolean;
-  setShowMessage?: any;
-  showCloseButton?: boolean;
+  variant: string;
 }
 
-const Message: FC<MessageProps> = ({
-  variant,
-  children,
-  height,
-  padding,
-  showMessage,
-  setShowMessage,
-  showCloseButton,
-}) => {
+const Message: FC<MessageProps> = ({ variant, children }) => {
   const [show, setShow] = useState(true);
 
-  if (show || showMessage) {
+  const text = {
+    danger: {
+      color: '#cc0000',
+      textKey: 'Error',
+      type: 'danger',
+      icon: <ErrorIcon />,
+    },
+    info: {
+      color: '#9761aa',
+      textKey: 'Info',
+      type: 'info',
+      info: <InfoIcon />,
+    },
+    warning: {
+      color: '#ff8801',
+      textKey: 'Warning',
+      type: 'warning',
+      icon: <ExclamationPoint />,
+    },
+    success: {
+      color: '#77b300',
+      textKey: 'Success',
+      type: 'success',
+      icon: <SuccessIcon />,
+    },
+  } as any;
+
+  if (show) {
     return (
-      <Alert
+      <Container
+        show={show}
+        variant={text[variant].type}
+        dismissible
         onClose={() => setShow(false)}
-        className='d-flex align-items-center justify-content-between'
-        variant={variant}
-        height={height ? height : ''}
-        style={{
-          padding: padding ? padding : '',
-        }}
+        color={text[variant].color}
       >
-        {children}
-        {showCloseButton && (
-          <Button
-            className='bg-transparent border-0'
-            onClick={() => {
-              setShow(false);
-              showMessage && setShowMessage(false);
-            }}
-          >
-            <i className='fas fa-times'></i>
-          </Button>
-        )}
-      </Alert>
+        <IconType bg={text[variant].color}>{text[variant].icon}</IconType>
+        <div>
+          <MsgType color={text[variant].color}>{text[variant].textKey}</MsgType>
+          <Text fontSize='0.8rem'>{children}</Text>
+        </div>
+      </Container>
     );
   }
   return <></>;
 };
 
 Message.defaultProps = {
-  variant: 'info',
+  variant: 'danger',
 };
 
 export default Message;

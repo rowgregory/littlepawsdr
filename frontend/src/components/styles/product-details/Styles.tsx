@@ -19,63 +19,65 @@ export const ProductDetailsContainer = styled.div`
 
 export const ProductPrice = styled.div`
   font-family: 'Roboto';
-  font-size: 1rem;
+  font-size: 16px;
   color: ${({ theme }) => theme.cart.productDetails.price};
 `;
 
 export const SelectInputContainer = styled.div`
   position: relative;
-  border: 1px solid ${({ theme }) => theme.border};
-  margin-right: 1rem;
-  width: 8.9375rem;
+  /* border: 1px solid #dbdbdb; */
+  margin-right: 16px;
+  /* width: 145px; */
+
   display: flex;
   flex-direction: column;
 
   select {
     appearance: none;
-    background: transparent;
+    /* background: ${({ theme }) => theme.white} !important; */
     background-image: ${({ theme }) =>
       `url("data:image/svg+xml;utf8,<svg fill='${
         theme.mode === 'day' ? 'black' : 'white'
       }' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>")`} !important;
     background-repeat: no-repeat !important;
-    background-position-x: 83% !important;
+    background-position-x: 60px !important;
     background-position-y: 18px !important;
-    padding: 1.5rem 2rem 1rem 1rem !important;
+    padding: 24px 32px 16px 16px !important;
   }
   :hover {
-    border: 1px solid ${({ theme }) => theme.colors.pink};
-    color: ${({ theme }) => theme.colors.pink};
+    div {
+      color: ${({ theme }) => theme.colors.quinary} !important;
+    }
   }
 `;
 
 export const Quantity = styled.div`
-  font-size: 0.65rem;
+  font-size: 10.4px;
   position: absolute;
   top: 9px;
   left: 16px;
   z-index: 6;
+  color: #fff;
   :hover {
-    color: ${({ theme }) => theme.colors.pink};
+    color: ${({ theme }) => theme.colors.quinary} !important;
   }
 `;
 
-export const SelectInput = styled(Form.Control)`
-  width: 100%;
+export const SelectInput = styled(Form.Control)<{ bg?: any; color?: any }>`
+  width: 90px;
+  height: 65px !important;
   border: none;
-  background: none;
-  height: 3.75rem !important;
   cursor: pointer;
-  margin: 0 auto !important;
-  font-size: 1rem;
-  color: ${({ theme }) => theme.text};
+  background: ${({ bg }) => (bg ? bg : '')};
+  font-size: 16px;
+  color: ${({ theme, color }) => (color ? color : theme.text)} !important;
   :focus-visible {
     outline: none !important;
   }
-  border: 1px solid ${({ theme }) => theme.input.bg} !important;
   :hover {
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-    color: ${({ theme }) => theme.colors.pink} !important;
+    /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24); */
+    color: ${({ theme, color }) =>
+      color ? color : theme.colors.quinary} !important;
   }
 `;
 
@@ -158,26 +160,6 @@ export const PlusMinusBtn = styled.div<{ active: boolean }>`
   }
 `;
 
-export const WriteAReviewBtn = styled.div`
-  width: 100%;
-  margin: 0 auto 10rem;
-  max-width: 22.5rem;
-  height: 3.125rem;
-  color: ${({ theme }) => theme.text};
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  transition: 300ms;
-  border: 1px solid ${({ theme }) => theme.border};
-  :hover {
-    background: ${({ theme }) => theme.colors.blue04};
-    border: 1px solid ${({ theme }) => theme.colors.blue04};
-    filter: brightness(1.1);
-    color: #fff;
-  }
-`;
-
 export const SizeContainer = styled.div<{ show: boolean }>`
   display: ${({ show }) => (show ? 'flex' : 'none')};
   justify-content: space-between;
@@ -187,18 +169,18 @@ export const SizeContainer = styled.div<{ show: boolean }>`
 export const Size = styled.div<{ active?: boolean }>`
   height: 40px;
   width: 50px;
-  border: 1px solid ${({ theme }) => theme.colors.primary};
+  border: 1px solid ${({ theme }) => theme.colors.quinary};
   color: ${({ theme, active }) =>
-    active ? theme.white : theme.colors.primary};
+    active ? theme.white : theme.colors.quinary};
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  background: ${({ theme, active }) => (active ? theme.colors.primary : '')};
+  background: ${({ theme, active }) => (active ? theme.colors.quinary : '')};
   transition: 300ms;
   :hover {
     color: ${({ theme, active }) => theme.white};
-    background: ${({ theme, active }) => (active ? '' : theme.colors.primary)};
+    background: ${({ theme, active }) => (active ? '' : theme.colors.quinary)};
   }
 `;
 
@@ -207,7 +189,7 @@ export const ReviewsAndRatingsContainer = styled.div`
   background: ${({ theme }) => theme.bg};
 
   .column {
-    max-width: 100rem;
+    /* max-width: 100rem; */
     width: 100%;
     margin: 0 auto;
   }

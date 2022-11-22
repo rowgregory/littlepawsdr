@@ -27,6 +27,7 @@ import {
   ORDER_EMAIL_CONFIRMATION_FAIL,
   ORDER_EMAIL_CONFIRMATION_SUCCESS,
   ORDER_EMAIL_CONFIRMATION_REQUEST,
+  ORDER_DETAILS_RESET,
 } from '../constants/orderConstants';
 
 export const orderCreateReducer = (state = {}, action: any) => {
@@ -72,6 +73,10 @@ export const orderDetailsReducer = (
       return {
         loading: false,
         error: action.payload,
+      };
+    case ORDER_DETAILS_RESET:
+      return {
+        order: {},
       };
     default:
       return state;
@@ -170,24 +175,31 @@ export const orderListReducer = (state = { orders: [] }, action: any) => {
   }
 };
 
-export const orderShipReducer = (state = {}, action: any) => {
+export const orderShipReducer = (state = { isShipped: false }, action: any) => {
   switch (action.type) {
     case ORDER_SHIP_REQUEST:
       return {
+        ...state,
         loading: true,
       };
     case ORDER_SHIP_SUCCESS:
       return {
+        ...state,
         loading: false,
         success: true,
+        isShipped: action.payload,
       };
     case ORDER_SHIP_FAIL:
       return {
+        ...state,
         loading: false,
         error: action.payload,
       };
     case ORDER_SHIP_RESET:
-      return {};
+      return {
+        success: false,
+        isShipped: false,
+      };
     default:
       return state;
   }

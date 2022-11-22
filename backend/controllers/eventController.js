@@ -1,5 +1,6 @@
 import asyncHandler from 'express-async-handler';
 import Event from '../models/eventModel.js';
+import Error from '../models/errorModel.js';
 import { getEventStatus } from '../utils/getEventStatus.js';
 import { cloudImages } from '../data/cloudImages.js';
 
@@ -30,22 +31,41 @@ const createEvent = asyncHandler(async (req, res) => {
 // @route   GET /api/events
 // @access  Private/Admin
 const getEvents = asyncHandler(async (req, res) => {
-  const events = await Event.find({});
+  try {
+    const events = await Event.find();
+    if (!events) return res.status(404).json({ message: 'Events not found' });
 
-  res.json(events);
+    res.json(events);
+  } catch (err) {
+    const createdError = new Error({
+      functionName: 'GET_EVENT_LIST',
+      detail: err.message,
+    });
+
+    await createdError.save();
+
+    res.status(500).json({ message: err.message });
+  }
 });
 
 // @desc    Get event by id
 // @route   GET /api/event/:id
 // @access  Private/Admin
 const getEventById = asyncHandler(async (req, res) => {
-  const event = await Event.findById(req.params.id);
+  try {
+    const event = await Event.findById(req.params.id);
+    if (!event) return res.status(404).json({ message: 'Event not found' });
 
-  if (event) {
     res.json(event);
-  } else {
-    res.status(404);
-    throw new Error('Event not found');
+  } catch (err) {
+    const createdError = new Error({
+      functionName: 'GET_EVENT_DETAILS',
+      detail: err.message,
+    });
+
+    await createdError.save();
+
+    res.status(500).json({ message: err.message });
   }
 });
 

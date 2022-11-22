@@ -18,6 +18,8 @@ const createECardOrder = asyncHandler(async (req, res) => {
     taxPrice,
     totalPrice,
     image,
+    state,
+    name,
   } = req.body;
 
   try {
@@ -34,6 +36,8 @@ const createECardOrder = asyncHandler(async (req, res) => {
       totalPrice,
       image,
       isSent: false,
+      state,
+      name,
     });
 
     const createdECard = await eCard.save();
@@ -42,7 +46,6 @@ const createECardOrder = asyncHandler(async (req, res) => {
 
     res.status(201).json(createdECard);
   } catch (err) {
-    console.log(err);
     res.status(400).json({ msg: 'ECard not created' });
   }
 });

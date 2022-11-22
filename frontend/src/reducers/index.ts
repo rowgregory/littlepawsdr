@@ -114,6 +114,7 @@ import {
   manuallyAddUserListReducer,
   manuallyAddUserUpdateReducer,
 } from './manuallyAddUserReducer';
+import { deferPayPayButtonReducer } from './paypalReducer';
 
 const allReducers = combineReducers({
   dachshunds: dachshundListReducer,
@@ -201,6 +202,7 @@ const allReducers = combineReducers({
   manuallyAddedUserUpdate: manuallyAddUserUpdateReducer,
   manuallyAddedUserDelete: manuallyAddUserDeleteReducer,
   manuallyAddedUserDetails: manuallyAddUserDetailsReducer,
+  deferPayPalButton: deferPayPayButtonReducer,
 });
 
 export default allReducers;

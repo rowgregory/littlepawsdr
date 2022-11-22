@@ -12,7 +12,16 @@ const StyledAccordion = styled(Accordion)`
 const AdoptionFAQ = () => {
   const [idx, setIdx] = useState([]) as any;
   return (
-    <>
+    <div
+      style={{
+        marginTop: '56px',
+        maxWidth: '860px',
+        width: '100%',
+        marginInline: 'auto',
+        marginBottom: '96px',
+        paddingInline: '16px',
+      }}
+    >
       <Text
         fontFamily='EB Garamond'
         fontSize='3.75rem'
@@ -62,7 +71,7 @@ const AdoptionFAQ = () => {
           </Accordion.Collapse>
         </StyledAccordion>
       ))}
-    </>
+    </div>
   );
 };
 

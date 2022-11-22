@@ -1,4 +1,4 @@
-export const eCardCategories = () => [
+export const eCardCategories = [
   'Holiday',
   'Get Well Soon',
   'Best Wishes',
@@ -15,4 +15,4 @@ export const eCardCategories = () => [
   'Wedding',
   'Sympathy',
   'Thinking Of You',
-]
+];

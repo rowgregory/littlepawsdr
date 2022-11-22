@@ -8,9 +8,11 @@ import {
   MANUALLY_ADD_USER_DELETE_SUCCESS,
   MANUALLY_ADD_USER_DETAILS_FAIL,
   MANUALLY_ADD_USER_DETAILS_REQUEST,
+  MANUALLY_ADD_USER_DETAILS_RESET,
   MANUALLY_ADD_USER_DETAILS_SUCCESS,
   MANUALLY_ADD_USER_LIST_FAIL,
   MANUALLY_ADD_USER_LIST_REQUEST,
+  MANUALLY_ADD_USER_LIST_RESET,
   MANUALLY_ADD_USER_LIST_SUCCESS,
   MANUALLY_ADD_USER_UPDATE_FAIL,
   MANUALLY_ADD_USER_UPDATE_REQUEST,
@@ -36,6 +38,10 @@ export const manuallyAddUserListReducer = (
       return {
         loading: false,
         error: action.payload,
+      };
+    case MANUALLY_ADD_USER_LIST_RESET:
+      return {
+        manuallyAddedUsers: [],
       };
     default:
       return state;
@@ -67,7 +73,6 @@ export const manuallyAddUserCreateReducer = (state = {}, action) => {
   }
 };
 
-// @ts-ignore
 export const manuallyAddUserDetailsReducer = (
   state = { manuallyAddedUser: {} },
   action: any
@@ -76,36 +81,48 @@ export const manuallyAddUserDetailsReducer = (
     case MANUALLY_ADD_USER_DETAILS_REQUEST:
       return {
         loading: true,
+        ...state,
       };
     case MANUALLY_ADD_USER_DETAILS_SUCCESS:
       return {
         loading: false,
         manuallyAddedUser: action.payload,
+        success: true,
       };
     case MANUALLY_ADD_USER_DETAILS_FAIL:
       return {
         loading: false,
         error: action.payload,
       };
+    case MANUALLY_ADD_USER_DETAILS_RESET:
+      return {
+        manuallyAddedUser: {},
+      };
     default:
       return state;
   }
 };
 
-// @ts-ignore
-export const manuallyAddUserUpdateReducer = (state = {}, action) => {
+export const manuallyAddUserUpdateReducer = (
+  state = { manuallyAddedUser: {} },
+  action: any
+) => {
   switch (action.type) {
     case MANUALLY_ADD_USER_UPDATE_REQUEST:
       return {
+        ...state,
         loading: true,
       };
     case MANUALLY_ADD_USER_UPDATE_SUCCESS:
       return {
+        ...state,
         loading: false,
         success: true,
+        manuallyAddedUser: action.payload,
       };
     case MANUALLY_ADD_USER_UPDATE_FAIL:
       return {
+        ...state,
         loading: false,
         error: action.payload,
       };

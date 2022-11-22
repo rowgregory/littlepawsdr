@@ -23,16 +23,17 @@ import BlogEdit from './BlogEdit';
 import EducationTipList from './EducationTipList';
 import EducationTipEdit from './EducationTipEdit';
 import Private from '../../components/common/PrivateRoute';
-import { useSelector } from 'react-redux';
 import ManuallyAddedUserList from './ManuallyAddedUserList';
 import ManuallyAddedUserEdit from './ManuallyAddedUserEdit';
+import EcardOrderList from './EcardOrderList';
+import OrderEdit from './OrderEdit';
+import EcardOrderView from './EcardOrderView';
 
 const AdminRoutes: FC = () => {
   const { path } = useRouteMatch();
-  const userLogin = useSelector((state: any) => state.userLogin);
-  const { userInfo } = userLogin;
+
   return (
-    <DashboardLayoutWithSideBar sideBar={<SideBar />} userInfo={userInfo}>
+    <DashboardLayoutWithSideBar sideBar={<SideBar />}>
       <Switch>
         <Private exact={true} path={path} component={Dashboard} />
         <Private path={`${path}/userList`} component={UserList} />
@@ -44,6 +45,9 @@ const AdminRoutes: FC = () => {
         <Private path={`${path}/productList`} component={ProductList} />
         <Private path={`${path}/product/:id/edit`} component={ProductEdit} />
         <Private path={`${path}/orderList`} component={OrderList} />
+        <Private exact path={`${path}/order`} component={OrderEdit} />
+        <Private path={`${path}/order/ecard`} component={EcardOrderView} />
+        <Private path={`${path}/eCardOrderList`} component={EcardOrderList} />
         <Private
           path={`${path}/newsletterEmailList`}
           component={NewsletterEmailList}

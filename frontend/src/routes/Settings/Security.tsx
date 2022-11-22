@@ -1,71 +1,70 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Button, Col, Form, Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
-import toaster from 'toasted-notes';
 import {
   getConfirmationOfOldPassword,
   updateUserProfile,
 } from '../../actions/userActions';
-import { ToastAlert } from '../../components/common/ToastAlert';
-import HorizontalLoader from '../../components/HorizontalLoader';
+import JumpingInput from '../../components/common/JumpingInput';
+import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
+import Message from '../../components/Message';
 import PasswordMeter from '../../components/PasswordMeter';
-import { SettingsTitleContainer, Text } from '../../components/styles/Styles';
+import { SettingsTitleContainer } from '../../components/styles/profile/Styles';
+import { Text } from '../../components/styles/Styles';
 import Checkmark from '../../components/svg/Checkmark';
 import {
   USER_OLD_PASSWORD_RESET,
   USER_UPDATE_PROFILE_RESET,
 } from '../../constants/userConstants';
-import { isCapsLock } from '../../utils/capsLock';
 
-const Settings = ({ history }: any) => {
+const useSecurityForm = (cb: any, values: any) => {
+  const [inputs, setInputs] = useState(values);
+
+  const handleInput = (e: any) => {
+    setInputs((inputs: any) => ({
+      ...inputs,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const onSubmit = (e: any) => {
+    e.preventDefault();
+    cb();
+  };
+
+  return { inputs, handleInput, onSubmit, setInputs };
+};
+
+const Settings = () => {
   const dispatch = useDispatch();
-  const { pathname } = useLocation();
-  const [oldPassword, setOldPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmNewPassword, setConfirmNewPassword] = useState('');
+  const [showPassword, setShowPassword] = useState({
+    oldPassword: false,
+    newPassword: false,
+    confirmNewPassword: false,
+  }) as any;
   const [checkmark, setCheckmark] = useState(false);
   const [message, setMessage] = useState('');
-  const [capsLockOn, setCapsLocksOn] = useState(false);
 
-  const userLogin = useSelector((state: any) => state.userLogin);
-  const { userInfo } = userLogin;
-
-  const userPassword = useSelector((state: any) => state.userPassword);
   const {
-    loading: loadingPasswordConfirmation,
-    error: errorPasswordConfirmation,
-    user: passwordConfirmation,
-  } = userPassword;
+    userLogin: { userInfo },
+    userPassword: {
+      loading: loadingPasswordConfirmation,
+      error: errorPasswordConfirmation,
+      success: passwordConfirmation,
+    },
+    userUpdateProfile: { loading: loadingUpdateProfile, success },
+  } = useSelector((state: any) => state);
 
-  const userUpdateProfile = useSelector(
-    (state: any) => state.userUpdateProfile
-  );
-  const { loading: loadingUpdateProfile, success } = userUpdateProfile;
-
-  const validations = [
-    newPassword.length >= 5 ? 1 : 0,
-    newPassword.search(/[A-Z]/) > -1 ? 1 : 0,
-    newPassword.search(/[0-9]/) > -1 ? 1 : 0,
-    newPassword.search(/[$&+,:;=?@#]/) > -1 ? 1 : 0,
-  ];
-
-  const strength = validations.reduce((acc, cur) => acc + cur, 0);
-
-  const submitHandler = (e: any) => {
-    e.preventDefault();
-
-    if (passwordConfirmation === true) {
-      if (newPassword === confirmNewPassword) {
+  const securityFormCallback = () => {
+    if (passwordConfirmation) {
+      if (inputs?.newPassword === inputs?.confirmNewPassword) {
         if (strength === 4) {
           dispatch(
             updateUserProfile({
               id: userInfo._id,
-              newPassword,
+              newPassword: inputs?.newPassword,
             })
           );
-          setNewPassword('');
-          setConfirmNewPassword('');
         } else {
           setMessage('Password not strong enough');
         }
@@ -73,139 +72,134 @@ const Settings = ({ history }: any) => {
         setMessage('Passwords do not match');
       }
     } else {
-      dispatch(getConfirmationOfOldPassword(userInfo._id, oldPassword));
+      dispatch(getConfirmationOfOldPassword(userInfo._id, inputs?.oldPassword));
     }
   };
 
+  const values = useMemo(
+    () => ({
+      oldPassword: '',
+      newPassword: '',
+      confirmNewPassword: '',
+    }),
+    []
+  );
+
+  const { inputs, handleInput, onSubmit, setInputs } = useSecurityForm(
+    securityFormCallback,
+    values
+  );
+
+  const validations = [
+    inputs?.newPassword?.length >= 9 ? 1 : 0,
+    inputs?.newPassword?.search(/[A-Z]/) > -1 ? 1 : 0,
+    inputs?.newPassword?.search(/[0-9]/) > -1 ? 1 : 0,
+    inputs?.newPassword?.search(/[~`! @#$%^&*()_+={}|:;"',.?]/) > -1 ? 1 : 0,
+  ];
+
+  const strength = validations.reduce((acc, cur) => acc + cur, 0);
+
   useEffect(() => {
-    if (!userInfo) {
-      history.push('/');
-    } else if (success) {
+    if (success) {
       setCheckmark(true);
-      setOldPassword('');
+      setInputs(values);
+      setMessage('');
       dispatch({ type: USER_UPDATE_PROFILE_RESET });
       dispatch({ type: USER_OLD_PASSWORD_RESET });
-      toaster.notify(
-        ({ onClose }) => ToastAlert('Password updated', onClose, 'success'),
-        {
-          position: 'bottom',
-          duration: 20000,
-        }
-      );
-    } else {
-      dispatch({ type: USER_OLD_PASSWORD_RESET });
-
-      document.addEventListener('keypress', (e) => {
-        const result = isCapsLock(e);
-        setCapsLocksOn(result);
-      });
+    } else if (passwordConfirmation) {
+      setShowPassword((sp: any) => ({ ...sp, oldPassword: false }));
     }
-  }, [dispatch, history, success, userInfo]);
+  }, [dispatch, passwordConfirmation, setInputs, success, values]);
 
   useEffect(() => {
-    if (errorPasswordConfirmation || message) {
-      toaster.notify(
-        ({ onClose }) =>
-          ToastAlert(
-            errorPasswordConfirmation?.message || message,
-            onClose,
-            'error'
-          ),
-        {
-          position: 'bottom',
-          duration: 20000,
-          type: 'error',
-        }
-      );
-    }
-  }, [errorPasswordConfirmation, message]);
+    dispatch({ type: USER_OLD_PASSWORD_RESET });
+  }, [dispatch]);
 
   return (
     <div className='w-100'>
+      {(loadingPasswordConfirmation || loadingUpdateProfile) && (
+        <HexagonLoader />
+      )}
       <Row>
-        <Col md={12}>
+        <Col md={12} className='pr-0'>
           <SettingsTitleContainer className='d-flex justify-content-between align-items-center'>
-            <Text fontSize='1.5rem'>
-              {capsLockOn ? (
-                <>
-                  Change password
-                  <Text fontSize='14px' color='red' className='ml-2'>
-                    (Caps Lock is on)
-                  </Text>
-                </>
-              ) : (
-                'Change password'
-              )}
-            </Text>
-            {checkmark && pathname === '/settings/security' && <Checkmark />}
+            <Text fontSize='1.5rem'>Change password</Text>
           </SettingsTitleContainer>
         </Col>
       </Row>
-      {(loadingPasswordConfirmation || loadingUpdateProfile) && (
-        <HorizontalLoader />
-      )}
       <Row>
         <Col lg={8} md={12} className='pr-4 pl-0'>
-          <Form onSubmit={submitHandler} className='pl-3 mt-4'>
+          <Form onSubmit={onSubmit} className='pl-3 mt-4'>
+            {(errorPasswordConfirmation || message) && (
+              <Message variant='danger'>
+                {errorPasswordConfirmation?.message || message}
+              </Message>
+            )}
+            {checkmark && <Message variant='success'>Password updated</Message>}
             <div style={{ position: 'relative' }}>
-              <Form.Group controlId='oldPassword'>
-                <Form.Label>Current Password</Form.Label>
-                <Form.Control
-                  placeholder='Current Password'
-                  disabled={passwordConfirmation === true}
-                  type='password'
-                  value={oldPassword || ''}
-                  onChange={(e: any) => setOldPassword(e.target.value)}
-                ></Form.Control>
-              </Form.Group>
-              {passwordConfirmation === true && (
-                <i
-                  className='fas fa-check'
-                  style={{
-                    color: 'green',
-                    position: 'absolute',
-                    top: '39px',
-                    right: '8px',
-                  }}
-                ></i>
+              <JumpingInput
+                name='oldPassword'
+                label='Current password'
+                value={inputs.oldPassword || ''}
+                handleInputChange={handleInput}
+                type={showPassword.oldPassword ? 'text' : 'password'}
+                isSelect={false}
+                error={''}
+                blur={() => {}}
+                showPassword={showPassword.oldPassword}
+                setShowPassword={setShowPassword}
+                disabled={passwordConfirmation}
+              />
+              {passwordConfirmation && (
+                <div
+                  style={{ position: 'absolute', top: '30px', right: '8px' }}
+                >
+                  <Checkmark />
+                </div>
               )}
             </div>
-            {passwordConfirmation === true && (
+            {passwordConfirmation && (
               <>
-                <Form.Group controlId='newPassword'>
-                  <Form.Label>New password</Form.Label>
-                  <Form.Control
-                    type='password'
-                    value={newPassword}
-                    onChange={(e: any) => setNewPassword(e.target.value)}
-                  ></Form.Control>
-                </Form.Group>
-                <Form.Group controlId='confirmNewPassword'>
-                  <Form.Label>Confirm Password</Form.Label>
-                  <Form.Control
-                    type='password'
-                    value={confirmNewPassword}
-                    onChange={(e: any) => setConfirmNewPassword(e.target.value)}
-                  ></Form.Control>
-                </Form.Group>
+                <JumpingInput
+                  name='newPassword'
+                  label='New password'
+                  value={inputs.newPassword || ''}
+                  handleInputChange={handleInput}
+                  type={showPassword.newPassword ? 'text' : 'password'}
+                  isSelect={false}
+                  error={''}
+                  blur={() => {}}
+                  showPassword={showPassword.newPassword}
+                  setShowPassword={setShowPassword}
+                />
+                <PasswordMeter validations={validations} strength={strength} />
+
+                <JumpingInput
+                  name='confirmNewPassword'
+                  label='Confirm new password'
+                  value={inputs.confirmNewPassword || ''}
+                  handleInputChange={handleInput}
+                  type={showPassword.confirmNewPassword ? 'text' : 'password'}
+                  isSelect={false}
+                  error={''}
+                  blur={() => {}}
+                  showPassword={showPassword.confirmNewPassword}
+                  setShowPassword={setShowPassword}
+                />
               </>
-            )}
-            {passwordConfirmation === true && (
-              <Row>
-                <Col lg={8} md={12} className='pr-4 my-3'>
-                  <PasswordMeter
-                    validations={validations}
-                    strength={strength}
-                  />
-                </Col>
-              </Row>
             )}
             <Button
               variant='success'
               type='submit'
-              disabled={oldPassword === ''}
+              disabled={inputs?.oldPassword === ''}
             >
-              {passwordConfirmation === true ? 'Update' : 'Confirm'}
+              {passwordConfirmation
+                ? 'Update'
+                : loadingPasswordConfirmation
+                ? 'Confirming...'
+                : loadingUpdateProfile
+                ? 'Updating...'
+                : 'Confirm'}
             </Button>
           </Form>
         </Col>

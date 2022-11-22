@@ -5,15 +5,12 @@ import FosterApplication from './FosterApplication';
 import VolunteerApplication from './VolunteerApplication';
 
 const Container = styled.div`
-  max-width: ${({ theme }) => theme.breakpoints[3]};
+  /* max-width: ${({ theme }) => theme.breakpoints[3]}; */
+  margin-top: 56px;
   width: 100%;
   margin-inline: auto;
-  margin-bottom: 5rem;
-  padding: 1rem;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[4]}) {
-    margin-top: 5rem;
-    padding: 0;
-  }
+  /* margin-bottom: 5rem; */
+  /* padding: 1rem; */
 `;
 
 const VolunteerRoutes: FC = () => {

@@ -23,6 +23,13 @@ export const listEvents = () => async (dispatch: any) => {
 
     const { data } = await axios.get(`/api/events`);
 
+    if (typeof data === 'string') {
+      return dispatch({
+        type: EVENT_LIST_FAIL,
+        payload: 'Axios Error',
+      });
+    }
+
     dispatch({ type: EVENT_LIST_SUCCESS, payload: data });
   } catch (error: any) {
     dispatch({

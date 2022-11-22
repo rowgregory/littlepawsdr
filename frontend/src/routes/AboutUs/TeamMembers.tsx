@@ -7,7 +7,7 @@ import { Text } from '../../components/styles/Styles';
 import { HorizontalLine } from '../../components/styles/product-details/Styles';
 import styled from 'styled-components';
 import { listManuallyAddedUsers } from '../../actions/manuallyAddUserActions';
-import { LoadingImg } from '../../components/LoadingImg';
+import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
 
 const ProfileCard = styled(Card)`
   background-color: ${({ theme }) => theme.card.bg};
@@ -55,65 +55,69 @@ const TeamMembers = () => {
   }, [dispatch]);
 
   return (
-    <>
-      <Text fontSize='2rem' marginBottom='1rem'>
+    <div
+      style={{
+        maxWidth: '980px',
+        width: '100%',
+        marginInline: 'auto',
+        marginBottom: '96px',
+        paddingInline: '16px',
+      }}
+    >
+      <Text
+        fontSize='32px'
+        fontWeight={400}
+        marginTop='56px'
+        marginBottom='32px'
+      >
         Little Paws Crew
       </Text>
-      {error && <Message variant='danger'>{error}</Message>}
+      {(loading || loadingM) && <HexagonLoader />}
+      {(error || errorM) && (
+        <Message variant='danger'>{error || errorM}</Message>
+      )}
       <Row className='mx-auto d-flex flex-column px-0 mb-5'>
         <Text fontFamily={`Duru Sans`} marginBottom='1rem'>
           BOARD MEMBERS
         </Text>
         <Col
-          className='px-0'
+          className='px-0 d-flex'
           style={{
-            display: 'flex',
             gap: '1rem',
             flexWrap: 'wrap',
           }}
         >
-          {loading
-            ? users?.map(
-                (user: any, i: number) =>
-                  user?.isAdmin && <LoadingImg h='286.77px' w='300px' key={i} />
-              )
-            : users?.map(
-                (user: any, i: number) =>
-                  user?.isAdmin && (
-                    <ProfileCard key={user._id} className='d-flex my-3'>
-                      <Card.Img
-                        src={
-                          user.profileCardTheme === ''
-                            ? 'https://res.cloudinary.com/doyd0ewgk/image/upload/v1612043441/field_tree2.jpg'
-                            : user.profileCardTheme
-                        }
-                        alt={`${user}=${i}`}
-                        style={{
-                          height: '200px',
-                          borderRadius: '12px 12px 0 0',
-                          objectFit: 'cover',
-                        }}
-                      />
+          {users?.map(
+            (user: any, i: number) =>
+              user?.isAdmin && (
+                <ProfileCard key={user._id} className='d-flex my-3'>
+                  <Card.Img
+                    src={user.profileCardTheme}
+                    alt={`${user}-${i}`}
+                    style={{
+                      height: '200px',
+                      borderRadius: '12px 12px 0 0',
+                      objectFit: 'cover',
+                    }}
+                  />
 
-                      <Card.Body className='d-flex flex-column mx-auto align-items-center'>
-                        <CardImg
-                          src={user.avatar}
-                          alt={`${user.name}-${i}`}
-                          width='170px'
-                          height='170px'
-                          roundedCircle
-                        />
-                        <Name className='pt-2'>
-                          <strong>{user.name}</strong>
-                        </Name>
-                        <Position className='pb-1'>
-                          {user.volunteerTitle}
-                        </Position>
-                        <Card.Text>{user.volunteerEmail}</Card.Text>
-                      </Card.Body>
-                    </ProfileCard>
-                  )
-              )}
+                  <Card.Body className='d-flex flex-column mx-auto align-items-center'>
+                    <CardImg
+                      src={user?.avatar}
+                      alt={`${user?.name}-${i}`}
+                      width='170px'
+                      height='170px'
+                      roundedCircle
+                    />
+                    <Name className='pt-2'>
+                      <strong>{user?.name}</strong>
+                    </Name>
+                    <Position className='pb-1'>{user?.volunteerTitle}</Position>
+                    <Card.Text>{user?.volunteerEmail}</Card.Text>
+                  </Card.Body>
+                </ProfileCard>
+              )
+          )}
         </Col>
       </Row>
       <HorizontalLine />
@@ -130,7 +134,7 @@ const TeamMembers = () => {
           }}
         >
           {manuallyAddedUsers?.map((user: any, i: number) => (
-            <ProfileCard key={user._id} className='d-flex my-3'>
+            <ProfileCard key={user?._id} className='d-flex my-3'>
               <Card.Img
                 src='https://res.cloudinary.com/doyd0ewgk/image/upload/v1612043441/field_tree2.jpg'
                 alt={`${user}=${i}`}
@@ -143,24 +147,24 @@ const TeamMembers = () => {
 
               <Card.Body className='d-flex flex-column mx-auto align-items-center'>
                 <CardImg
-                  src={user.image}
-                  alt={`${user.name}-${i}`}
+                  src={user?.image}
+                  alt={`${user?.name}-${i}`}
                   width='170px'
                   height='170px'
                   roundedCircle
                 />
                 <Name className='pt-2'>
-                  <strong>{user.name}</strong>
+                  <strong>{user?.name}</strong>
                 </Name>
-                <Position className='pb-4'>{user.affiliation}</Position>
-                <Position className='pb-1'>{user.message}</Position>
-                <Card.Text>{user.volunteerEmail}</Card.Text>
+                <Position className='pb-4'>{user?.affiliation}</Position>
+                <Position className='pb-1'>{user?.message}</Position>
+                <Card.Text>{user?.volunteerEmail}</Card.Text>
               </Card.Body>
             </ProfileCard>
           ))}
         </Col>
       </Row>
-    </>
+    </div>
   );
 };
 

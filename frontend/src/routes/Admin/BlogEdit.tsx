@@ -1,24 +1,29 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { Form, Spinner } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import { Form, Image } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { getBlogDetails, updateBlog } from '../../actions/blogActions';
-import FormContainer from '../../components/FormContainer';
-import Loader from '../../components/Loader';
-import { BLOG_UPDATE_RESET } from '../../constants/blogConstants';
 import {
-  StyledUloadedImg,
-  Text,
-  UpdateBtn,
-} from '../../components/styles/Styles';
-import GoBackBtn from '../../utils/GoBackBtn';
+  BLOG_DETAILS_RESET,
+  BLOG_UPDATE_RESET,
+} from '../../constants/blogConstants';
+import { Text, UpdateBtn } from '../../components/styles/Styles';
 import { useRouteMatch, useHistory } from 'react-router-dom';
-import { EditBtn } from './RaffleWinnerEdit';
-import { FormFile } from './EventEdit';
 import uploadFileHandler from '../../utils/uploadFileHandler';
 import { removePhoto } from '../../utils/removePhoto';
-import toaster from 'toasted-notes';
-import { ToastAlert } from '../../components/common/ToastAlert';
-import { LoadingImg } from '../../components/LoadingImg';
+import Message from '../../components/Message';
+import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
+import {
+  Container,
+  EditForm,
+  FormFile,
+  RemovePhoto,
+  UploadImageSquare,
+} from '../../components/styles/admin/Styles';
+import { WelcomeText } from '../../components/styles/DashboardStyles';
+import PhotoUploadIcon from '../../components/svg/PhotoUploadIcon';
+import RemovePhotoIcon from '../../components/svg/RemovePhotoIcon';
+import { defaultImages } from '../../utils/defaultImages';
+import BreadCrumb from '../../components/common/BreadCrumb';
 
 const BlogEdit = () => {
   const match = useRouteMatch<{ id: string }>();
@@ -27,234 +32,179 @@ const BlogEdit = () => {
   const blogId = match.params.id;
   const [title, setTitle] = useState('');
   const [article, setArticle] = useState('');
-  const [blogImg, setBlogImg] = useState('');
+  const [image, setImage] = useState('');
   const [submittedForm, setSubmittedForm] = useState(false);
-  const [showImageOptions, setShowImageOptions] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [publicId, setPublicId] = useState('');
+  const [file, setFile] = useState({}) as any;
+  const [imgUploadStatus, setImageUploadStatus] = useState('') as any;
+  const [cloudinaryData, setClouadinaryData] = useState({}) as any;
 
-  const blogDetails = useSelector((state: any) => state.blogDetails);
-  const { loading, error, blog } = blogDetails;
-
-  const blogUpdate = useSelector((state: any) => state.blogUpdate);
   const {
-    loading: loadingBlogUpdate,
-    error: errorUpdate,
-    success: successBlogUpdate,
-  } = blogUpdate;
+    blogDetails: { loading, error, blog },
+    blogUpdate: {
+      loading: loadingUpdate,
+      error: errorUpdate,
+      success: successUpdate,
+    },
+  } = useSelector((state: any) => state);
 
-  useMemo(() => {
+  useEffect(() => {
+    dispatch({ type: BLOG_DETAILS_RESET });
     dispatch(getBlogDetails(blogId));
-  }, [blogId, dispatch]);
+    dispatch({ type: BLOG_UPDATE_RESET });
+  }, [dispatch, blogId, successUpdate]);
 
   useEffect(() => {
-    if (successBlogUpdate) {
-      if (submittedForm) {
-        setSubmittedForm(false);
-        return history.push('/admin/blogs');
-      }
-      dispatch(getBlogDetails(blogId));
-      dispatch({ type: BLOG_UPDATE_RESET });
-    } else {
-      setTitle(blog?.title);
-      setArticle(blog?.article);
-      setBlogImg(blog?.image);
-      setPublicId(blog?.publicId);
-    }
-  }, [dispatch, history, blog, blogId, submittedForm, successBlogUpdate]);
-
-  useEffect(() => {
-    if (error || errorUpdate || errorMsg) {
-      toaster.notify(
-        ({ onClose }) =>
-          ToastAlert(error || errorUpdate || errorMsg, onClose, 'error'),
-        {
-          position: 'bottom',
-          duration: 20000,
-        }
+    if (Object.keys(cloudinaryData).length > 0) {
+      dispatch(
+        updateBlog({
+          _id: blogId,
+          title,
+          article,
+          image: cloudinaryData.secureUrl,
+          publicId: cloudinaryData.publicId,
+        })
       );
     }
-  }, [errorUpdate, error, errorMsg]);
+  }, [article, blogId, cloudinaryData, dispatch, title]);
+
+  useEffect(() => {
+    setTitle(blog?.title);
+    setArticle(blog?.article);
+    setImage(blog?.image);
+    setPublicId(blog?.publicId);
+  }, [blog]);
+
+  useEffect(() => {
+    if (successUpdate && submittedForm) {
+      setSubmittedForm(false);
+      history.push('/admin/blogs');
+    }
+  }, [successUpdate, submittedForm, history]);
 
   const submitHandler = (e: any) => {
     e.preventDefault();
-    dispatch(
-      updateBlog({
-        _id: blogId,
-        title,
-        article,
-        image: blogImg,
-        publicId,
-      })
-    );
     setSubmittedForm(true);
+    if (file?.name) {
+      setUploading(true);
+      uploadFileHandler(
+        file,
+        setUploading,
+        publicId,
+        setImageUploadStatus,
+        setClouadinaryData
+      );
+    } else {
+      dispatch(
+        updateBlog({
+          _id: blogId,
+          title,
+          article,
+          image,
+          publicId,
+        })
+      );
+    }
   };
 
-  const uploadBlogImgUrl =
-    'https://res.cloudinary.com/doyd0ewgk/image/upload/v1641507406/img-placeholder.png';
+  const editPhotoHandler = (e: any) => setFile(e.target.files[0]);
 
-  const blogDataToUploadWithImg = {
-    title,
-    article,
+  const removePhotoHandler = (e: any) => {
+    e.preventDefault();
+    removePhoto(
+      blog.publicId,
+      setPublicId,
+      dispatch,
+      updateBlog,
+      blogId,
+      setErrorMsg,
+      false,
+      'blog'
+    );
   };
 
-  return error ? (
-    <></>
-  ) : (
-    <>
-      <GoBackBtn to='/admin/blogs' />
-      <FormContainer>
-        <Form onSubmit={submitHandler}>
-          {loading ? (
-            <div className='mb-4 mt-4'>
-              <LoadingImg w='100%' h='2.5rem' />
-            </div>
-          ) : (
-            <Form.Group controlId='name'>
-              <Form.Label>Title</Form.Label>
-              <Form.Control
-                type='text'
-                value={title || ''}
-                onChange={(e) => setTitle(e.target.value)}
-              ></Form.Control>
-            </Form.Group>
-          )}
-          {loading ? (
-            <div className='mb-4 mt-4 d-flex justify-content-center align-items-center'>
-              <LoadingImg w='200px' h='200px' borderRadius='50%' />
-            </div>
-          ) : (
-            <Form.Group controlId='image' className='d-flex flex-column'>
-              <Form.Label>Blog image</Form.Label>
-              <div className='mx-auto'>
-                <Form.Control
-                  className='img-link'
-                  type='text'
-                  value={blogImg || ''}
-                  onChange={(e) => setBlogImg(e.target.value)}
-                ></Form.Control>
-                <StyledUloadedImg
-                  src={blogImg || ''}
-                  alt='avatar'
-                  onClick={() => setShowImageOptions(!showImageOptions)}
-                />
-                <div style={{ position: 'relative' }}>
-                  {uploading && (
-                    <Loader
-                      w='200px'
-                      h='200px'
-                      p='absolute'
-                      z='1'
-                      top='-200px'
-                      left='0px'
-                    />
-                  )}
-                  <EditBtn
-                    top='-45px'
-                    left='0px'
-                    onClick={() => {
-                      setShowImageOptions(!showImageOptions);
-                    }}
-                  >
-                    <i className='fas fa-edit mr-2'></i>Edit
-                  </EditBtn>
-                  {showImageOptions && (
-                    <EditBtn
-                      top='-17px'
-                      left='0px'
-                      className='d-flex flex-column imgOptions'
-                    >
-                      <FormFile
-                        mb={(blogImg !== uploadBlogImgUrl).toString()}
-                        id='image-file'
-                        label='Upload a photo...'
-                        onChange={(e: any) =>
-                          uploadFileHandler(
-                            e,
-                            setUploading,
-                            setShowImageOptions,
-                            setErrorMsg,
-                            setPublicId,
-                            updateBlog,
-                            dispatch,
-                            publicId,
-                            blogId,
-                            blogDataToUploadWithImg,
-                            '',
-                            blogImg,
-                            () => {},
-                            setBlogImg,
-                            'blog'
-                          )
-                        }
-                      ></FormFile>
-                      {blogImg !== uploadBlogImgUrl && (
-                        <div
-                          className='remove-img'
-                          onClick={() =>
-                            removePhoto(
-                              blog.publicId,
-                              setPublicId,
-                              dispatch,
-                              updateBlog,
-                              blogId,
-                              setErrorMsg,
-                              false,
-                              'blog'
-                            )
-                          }
-                        >
-                          Remove photo
-                        </div>
-                      )}
-                    </EditBtn>
-                  )}
-                </div>
-              </div>
-            </Form.Group>
-          )}
-          {loading ? (
-            <div className='mb-4 mt-4'>
-              <LoadingImg w='100%' h='10rem' />
-            </div>
-          ) : (
-            <Form.Group controlId='message' className='mt-5'>
-              <Form.Label>Article</Form.Label>
-              <Form.Control
-                rows={5}
-                as='textarea'
-                value={article || ''}
-                onChange={(e) => setArticle(e.target.value)}
-              ></Form.Control>
-            </Form.Group>
-          )}
+  return (
+    <Container>
+      <WelcomeText className='mb-1'>Blog Edit</WelcomeText>
+      <BreadCrumb
+        step1='Home'
+        step2='Dashboard'
+        step3='Blogs'
+        step4={blog?.title}
+        step5='Edit'
+        url1='/'
+        url2='/admin'
+        url3='/admin/blogs'
+      />
+      {(error || errorUpdate || errorMsg) && (
+        <Message variant='danger'>{error || errorUpdate || errorMsg}</Message>
+      )}
+      {(loading || loadingUpdate || submittedForm) && <HexagonLoader />}
+      <EditForm>
+        <Form.Group controlId='name'>
+          <Form.Label>Title</Form.Label>
+          <Form.Control
+            type='text'
+            value={title || ''}
+            onChange={(e) => setTitle(e.target.value)}
+          ></Form.Control>
+        </Form.Group>
 
-          {loading ? (
-            <div className='mb-4 mt-4'>
-              <LoadingImg w='8rem' h='2.5rem' borderRadius='0.5rem' />
-            </div>
-          ) : (
-            <UpdateBtn type='submit'>
-              {loadingBlogUpdate ? (
-                <div className='d-flex align-items-center'>
-                  <Spinner
-                    as='span'
-                    animation='border'
-                    size='sm'
-                    role='status'
-                    aria-hidden='true'
+        <Form.Group controlId='image' className='d-flex flex-column'>
+          <Form.Label>Image</Form.Label>
+          <Form.Control
+            className='img-link'
+            type='text'
+            value={image || ''}
+            onChange={(e) => setImage(e.target.value)}
+          ></Form.Control>
+          <div className='d-flex'>
+            <FormFile
+              id='image-file'
+              label={
+                blog?.image === defaultImages.blog || file?.name ? (
+                  <UploadImageSquare className={uploading ? 'anim' : ''}>
+                    <PhotoUploadIcon ready={file} imgStatus={imgUploadStatus} />
+                  </UploadImageSquare>
+                ) : (
+                  <Image
+                    src={blog?.image}
+                    width='200px'
+                    height='200px'
+                    style={{ objectFit: 'cover' }}
                   />
-                  <Text className='text-white ml-2'>Updating...</Text>
-                </div>
-              ) : (
-                <Text className='text-white'>Update</Text>
-              )}
-            </UpdateBtn>
-          )}
-        </Form>
-      </FormContainer>
-    </>
+                )
+              }
+              onChange={(e: any) => editPhotoHandler(e)}
+            ></FormFile>
+            <RemovePhoto
+              onClick={(e: any) =>
+                image === defaultImages.blog ? {} : removePhotoHandler(e)
+              }
+            >
+              <RemovePhotoIcon />
+              <Text marginLeft='0.75rem' fontWeight='300' color='#c4c4c4'>
+                Remove Photo
+              </Text>
+            </RemovePhoto>
+          </div>
+        </Form.Group>
+        <Form.Group controlId='message' className='mt-5'>
+          <Form.Label>Article</Form.Label>
+          <Form.Control
+            rows={5}
+            as='textarea'
+            value={article || ''}
+            onChange={(e) => setArticle(e.target.value)}
+          ></Form.Control>
+        </Form.Group>
+        <UpdateBtn onClick={(e: any) => submitHandler(e)}>
+          Updat{loadingUpdate ? 'ing...' : 'e'}
+        </UpdateBtn>
+      </EditForm>
+    </Container>
   );
 };
 

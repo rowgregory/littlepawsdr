@@ -5,8 +5,8 @@ const NewsletterEmailIcon = () => {
   return (
     <svg
       xmlns='http://www.w3.org/2000/svg'
-      width='20pt'
-      height='20pt'
+      width='18pt'
+      height='18pt'
       viewBox='0 0 512 512'
     >
       <g>

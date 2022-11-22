@@ -58,7 +58,7 @@ export const colors = {
       secondary: '#22c2b7',
       tertiary: '#2c2a3b',
       quaternary: '#8BBF9F',
-      quinary: '#9d6ab0',
+      quinary: '#9761aa',
       // quinary: '#d89253',
       senary: '#9a82b1',
       // primary: '#9a82b1',
@@ -109,8 +109,7 @@ export const themes = {
     bg: '#fff',
     // bg: '#f6f6f6',
     border: '#d8dee3',
-    secondaryBg: '#f6f8fa',
-    tertiary: '#e4dbee',
+    secondaryBg: '#f7f7f7',
     input: {
       bg: '#fff',
       // bg: '#eaedf2',
@@ -124,7 +123,10 @@ export const themes = {
     black: '#000',
     separator: '#ededed',
     header: {
+      // bg: '#f6f9fe',
       // bg: '#3f505d',
+      // bg: '#24292f',
+      // bg: '#0e1117',
       bg: '#211e2f',
       // bg: '#3a2949',
       // bg: '#004f69',
@@ -254,7 +256,6 @@ export const themes = {
     bg: '#0e1117',
     border: '#5f6e7e',
     secondaryBg: '#161b23',
-    terciary: '',
     input: {
       bg: '#080a11',
       border: '#2b3138',

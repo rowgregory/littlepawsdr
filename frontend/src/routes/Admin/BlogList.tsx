@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Col, Form, Table, Button, Spinner } from 'react-bootstrap';
+import { Table, Spinner, Pagination } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { LinkContainer } from 'react-router-bootstrap';
 import { useHistory } from 'react-router-dom';
@@ -8,17 +8,25 @@ import DeleteModal from '../../components/DeleteModal';
 import { Text } from '../../components/styles/Styles';
 import { BLOG_CREATE_RESET } from '../../constants/blogConstants';
 import {
-  CreateBtn,
   SearchBar,
   TableHead,
-  TableImg,
   TableRow,
   StyledEditBtn,
+  TopRow,
+  PaginationContainer,
+  TableAndPaginationContainer,
+  Container,
+  SearchInput,
+  TableWrapper,
+  CreateBtnV2,
+  TableImg,
 } from '../../components/styles/admin/Styles';
-import { TransitionGroup, CSSTransition } from 'react-transition-group';
-import toaster from 'toasted-notes';
-import { ToastAlert } from '../../components/common/ToastAlert';
-import { LoadingImg } from '../../components/LoadingImg';
+import Message from '../../components/Message';
+import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
+import { WelcomeText } from '../../components/styles/DashboardStyles';
+import BreadCrumb from '../../components/common/BreadCrumb';
+import { rangeV2 } from '../../components/common/Pagination';
+import { AddIcon } from '../../components/svg/AddIcon';
 
 const BlogList = () => {
   const history = useHistory();
@@ -29,61 +37,75 @@ const BlogList = () => {
   const [publicId, setPublicId] = useState('');
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  const [listOfBlogs, setListOfBlogs] = useState([]) as any;
+  const [paginatedPage, setPaginatedPage] = useState(1);
+  const [paginatedItems, setPaginatedItems] = useState<{}[]>([]) as any;
 
-  const blogList = useSelector((state: any) => state.blogList);
-  const { loading, error, blogs } = blogList;
-
-  const blogCreate = useSelector((state: any) => state.blogCreate);
   const {
-    loading: loadingBlogCreate,
-    error: errorCreate,
-    success: successBlogCreate,
-    blog,
-  } = blogCreate;
-
-  const blogDelete = useSelector((state: any) => state.blogDelete);
-  const {
-    loading: loadingBlogDelete,
-    error: errorDelete,
-    success: successBlogDelete,
-  } = blogDelete;
-
-  useEffect(() => {
-    if (blogs) {
-      setListOfBlogs(blogs);
-    }
-  }, [blogs]);
+    blogList: { loading, error, blogs },
+    blogCreate: {
+      loading: loadingCreate,
+      error: errorCreate,
+      success: successCreate,
+      blog,
+    },
+    blogDelete: {
+      loading: loadingDelete,
+      error: errorDelete,
+      success: successDelete,
+    },
+  } = useSelector((state: any) => state);
 
   useEffect(() => {
     dispatch({ type: BLOG_CREATE_RESET });
-    if (successBlogCreate) {
+    if (successCreate) {
       history.push(`/admin/blog/${blog?._id}/edit`);
     } else {
       dispatch(listBlogs());
     }
-  }, [dispatch, history, successBlogCreate, successBlogDelete, blog]);
+  }, [blog?._id, dispatch, history, successCreate, successDelete]);
+
+  blogs?.sort((a: any, b: any) => -a?.createdAt?.localeCompare(b?.createdAt));
 
   useEffect(() => {
-    if (error || errorCreate || errorDelete) {
-      toaster.notify(
-        ({ onClose }) =>
-          ToastAlert(error || errorCreate || errorDelete, onClose, 'error'),
-        {
-          position: 'bottom',
-          duration: 20000,
-        }
-      );
-    }
-  }, [error, errorCreate, errorDelete]);
+    const itemsPerPage = 10;
+    const indexOfLastItem = paginatedPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
-  const filteredBlogs = listOfBlogs?.filter((blog: any) =>
-    blog._id.toLowerCase().includes(text.toLowerCase())
-  );
-  return error ? (
-    <></>
-  ) : (
-    <>
+    setPaginatedItems(blogs?.slice(indexOfFirstItem, indexOfLastItem));
+  }, [blogs, paginatedPage]);
+
+  const createBlogHandler = () => {
+    dispatch(createBlog());
+  };
+
+  const filteredBlogs =
+    text !== ''
+      ? blogs?.filter((blog: any) =>
+          blog._id.toLowerCase().includes(text.toLowerCase())
+        )
+      : paginatedItems?.filter((blog: any) =>
+          blog._id.toLowerCase().includes(text.toLowerCase())
+        );
+
+  return (
+    <Container>
+      <WelcomeText className='mb-1'>Blogs</WelcomeText>
+      <BreadCrumb
+        step1='Home'
+        step2='Dashboard'
+        step3=''
+        step4='Blogs'
+        url1='/'
+        url2='/admin'
+        url3='/admin/blogList'
+      />
+      {(error || errorCreate || errorDelete) && (
+        <Message variant='danger'>
+          {error || errorCreate || errorDelete}
+        </Message>
+      )}
+
+      {(loading || loadingCreate || loadingDelete) && <HexagonLoader />}
       <DeleteModal
         actionFunc='Blog'
         show={show}
@@ -91,48 +113,42 @@ const BlogList = () => {
         id={id}
         publicId={publicId}
       />
-
-      {loading ? (
-        <Col className='mb-3 d-flex justify-content-between align-items-center'>
-          <LoadingImg w='20rem' h='2.5rem' />
-          <LoadingImg w='2.5rem' h='2.5rem' borderRadius='50%' />
-        </Col>
-      ) : (
-        <Col className='d-flex align-items-center justify-content-between'>
+      <TableWrapper>
+        <TopRow className='d-flex align-items-center'>
           <SearchBar>
-            <Form.Control
+            <SearchInput
               as='input'
               type='text'
-              placeholder='Search by ID'
+              placeholder='Search by Category'
               value={text || ''}
               onChange={(e: any) => setText(e.target.value)}
-            ></Form.Control>
+            />
           </SearchBar>
-          <CreateBtn onClick={() => dispatch(createBlog())}>
-            {loadingBlogCreate ? (
+          <CreateBtnV2 onClick={createBlogHandler}>
+            <AddIcon />
+            {loadingCreate ? (
               <Spinner animation='border' size='sm' />
             ) : (
-              <i className='fas fa-plus'></i>
+              'Create'
             )}
-          </CreateBtn>
-        </Col>
-      )}
-      <Col>
-        <Table hover responsive className='table-sm'>
-          <TableHead>
-            <tr>
-              <th>ID</th>
-              <th>TITLE</th>
-              <th>IMAGE</th>
-              <th>ARTICLE</th>
-              <th>EDIT</th>
-              <th>DELETE</th>
-            </tr>
-          </TableHead>
-          <TransitionGroup component='tbody'>
-            {filteredBlogs?.map((blog: any) => (
-              <CSSTransition key={blog?._id} timeout={500} classNames='item'>
-                <TableRow>
+          </CreateBtnV2>
+        </TopRow>
+
+        <TableAndPaginationContainer>
+          <Table hover responsive>
+            <TableHead>
+              <tr>
+                <th>ID</th>
+                <th>TITLE</th>
+                <th>IMAGE</th>
+                <th>ARTICLE</th>
+                <th>EDIT</th>
+                <th>DELETE</th>
+              </tr>
+            </TableHead>
+            <tbody>
+              {filteredBlogs?.map((blog: any) => (
+                <TableRow key={blog?._id}>
                   <td>
                     <Text>{blog?._id}</Text>
                   </td>
@@ -148,13 +164,15 @@ const BlogList = () => {
                   <td>
                     <LinkContainer to={`/admin/blog/${blog?._id}/edit`}>
                       <StyledEditBtn>
-                        <i className='fas fa-edit'></i>
+                        <i
+                          style={{ color: '#9761aa' }}
+                          className='fas fa-edit'
+                        ></i>
                       </StyledEditBtn>
                     </LinkContainer>
                   </td>
                   <td>
-                    <Button
-                      variant='danger'
+                    <StyledEditBtn
                       className='border-0'
                       onClick={() => {
                         setId(blog?._id);
@@ -162,20 +180,28 @@ const BlogList = () => {
                         handleShow();
                       }}
                     >
-                      {loadingBlogDelete && id === blog?._id ? (
+                      {loadingDelete && id === blog?._id ? (
                         <Spinner size='sm' animation='border' />
                       ) : (
-                        <i className='fas fa-trash'></i>
+                        <i
+                          style={{ color: '#cc0000' }}
+                          className='fas fa-trash'
+                        ></i>
                       )}
-                    </Button>
+                    </StyledEditBtn>
                   </td>
                 </TableRow>
-              </CSSTransition>
-            ))}
-          </TransitionGroup>
-        </Table>
-      </Col>
-    </>
+              ))}
+            </tbody>
+          </Table>
+          <PaginationContainer>
+            <Pagination className='my-3'>
+              {rangeV2(blogs, paginatedPage, setPaginatedPage)}
+            </Pagination>
+          </PaginationContainer>
+        </TableAndPaginationContainer>
+      </TableWrapper>
+    </Container>
   );
 };
 

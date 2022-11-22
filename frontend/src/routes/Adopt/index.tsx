@@ -8,15 +8,9 @@ import AdoptionFAQ from './AdoptionFAQ';
 import styled from 'styled-components';
 
 const Container = styled.div`
-  max-width: ${({ theme }) => theme.breakpoints[3]};
+  margin-top: 56px;
   width: 100%;
   margin-inline: auto;
-  margin-bottom: 5rem;
-  padding: 1rem;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[4]}) {
-    margin-top: 5rem;
-    padding: 0;
-  }
 `;
 
 const AdoptRoutes: FC = () => {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Col, Form, Button, Spinner, Table } from 'react-bootstrap';
+import { Table, Spinner, Pagination } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { LinkContainer } from 'react-router-bootstrap';
 import {
@@ -10,18 +10,26 @@ import DeleteModal from '../../components/DeleteModal';
 import { Text } from '../../components/styles/Styles';
 import { EDUCATION_TIP_CREATE_RESET } from '../../constants/educationTipConstants';
 import { useHistory } from 'react-router-dom';
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import {
-  CreateBtn,
   SearchBar,
   TableHead,
-  TableImg,
   TableRow,
   StyledEditBtn,
+  TopRow,
+  PaginationContainer,
+  TableAndPaginationContainer,
+  Container,
+  SearchInput,
+  TableWrapper,
+  CreateBtnV2,
+  TableImg,
 } from '../../components/styles/admin/Styles';
-import toaster from 'toasted-notes';
-import { ToastAlert } from '../../components/common/ToastAlert';
-import { LoadingImg } from '../../components/LoadingImg';
+import Message from '../../components/Message';
+import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
+import { WelcomeText } from '../../components/styles/DashboardStyles';
+import BreadCrumb from '../../components/common/BreadCrumb';
+import { rangeV2 } from '../../components/common/Pagination';
+import { AddIcon } from '../../components/svg/AddIcon';
 
 const RaffleWinnerList = () => {
   const history = useHistory();
@@ -32,77 +40,71 @@ const RaffleWinnerList = () => {
   const [publicId, setPublicId] = useState('');
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  const [tips, setTips] = useState([]) as any;
+  const [paginatedPage, setPaginatedPage] = useState(1);
+  const [paginatedItems, setPaginatedItems] = useState<{}[]>([]) as any;
 
-  const educationTipList = useSelector((state: any) => state.educationTipList);
-  const { loading, error, educationTips } = educationTipList;
-
-  const educationTipCreate = useSelector(
-    (state: any) => state.educationTipCreate
-  );
   const {
-    loading: loadingEducationTipCreate,
-    error: errorCreate,
-    success: successEducationTipCreate,
-    educationTip: createdEducationTip,
-  } = educationTipCreate;
-
-  const educationTipDelete = useSelector(
-    (state: any) => state.educationTipDelete
-  );
-  const {
-    loading: loadingEducationTipDelete,
-    error: errorDelete,
-    success: successEducationTipDelete,
-  } = educationTipDelete;
-
-  useEffect(() => {
-    if (educationTips) {
-      setTips(educationTips);
-    }
-  }, [educationTips]);
+    educationTipList: { loading, error, educationTips },
+    educationTipCreate: {
+      loading: loadingCreate,
+      error: errorCreate,
+      success: successCreate,
+      educationTip,
+    },
+    educationTipDelete: {
+      loading: loadingDelete,
+      error: errorDelete,
+      success: successDelete,
+    },
+  } = useSelector((state: any) => state);
 
   useEffect(() => {
     dispatch({ type: EDUCATION_TIP_CREATE_RESET });
 
-    if (successEducationTipCreate) {
-      history.push(`/admin/education-tip/${createdEducationTip?._id}/edit`);
+    if (successCreate) {
+      history.push(`/admin/education-tip/${educationTip?._id}/edit`);
     } else {
       dispatch(listEducationTips());
     }
-  }, [
-    dispatch,
-    history,
-    successEducationTipCreate,
-    createdEducationTip,
-    successEducationTipDelete,
-  ]);
+  }, [dispatch, history, successCreate, educationTip, successDelete]);
+
+  educationTips?.sort(
+    (a: any, b: any) => -a?.createdAt?.localeCompare(b?.createdAt)
+  );
 
   useEffect(() => {
-    if (error || errorCreate || errorDelete) {
-      toaster.notify(
-        ({ onClose }) =>
-          ToastAlert(error || errorCreate || errorDelete, onClose, 'error'),
-        {
-          position: 'bottom',
-          duration: 20000,
-        }
-      );
-    }
-  }, [error, errorCreate, errorDelete]);
+    const itemsPerPage = 10;
+    const indexOfLastItem = paginatedPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
-  const createRaffleWinnerHandler = () => {
+    setPaginatedItems(educationTips?.slice(indexOfFirstItem, indexOfLastItem));
+  }, [educationTips, paginatedPage]);
+
+  const createEducationTipHandler = () => {
     dispatch(createEducationTip());
   };
 
-  const filteredEducationTips = tips?.filter((tip: any) =>
-    tip?.title.toLowerCase().includes(text.toLowerCase())
-  );
+  const filteredEducationTips =
+    text !== ''
+      ? educationTips?.filter((tip: any) =>
+          tip?.title.toLowerCase().includes(text.toLowerCase())
+        )
+      : paginatedItems?.filter((tip: any) =>
+          tip?.title.toLowerCase().includes(text.toLowerCase())
+        );
 
-  return error ? (
-    <></>
-  ) : (
-    <>
+  return (
+    <Container>
+      <WelcomeText className='mb-1'>Eduaction Tips</WelcomeText>
+      <BreadCrumb
+        step1='Home'
+        step2='Dashboard'
+        step3=''
+        step4='Education Tips'
+        url1='/'
+        url2='/admin'
+        url3=''
+      />
       <DeleteModal
         actionFunc='Education Tip'
         show={show}
@@ -110,46 +112,46 @@ const RaffleWinnerList = () => {
         id={id}
         publicId={publicId}
       />
-      {loading ? (
-        <Col className='mb-3 d-flex justify-content-between align-items-center'>
-          <LoadingImg w='20rem' h='2.5rem' />
-          <LoadingImg w='2.5rem' h='2.5rem' borderRadius='50%' />
-        </Col>
-      ) : (
-        <Col className='d-flex align-items-center justify-content-between'>
+      {(error || errorCreate || errorDelete) && (
+        <Message variant='danger'>
+          {error || errorCreate || errorDelete}
+        </Message>
+      )}
+      {(loading || loadingCreate || loadingDelete) && <HexagonLoader />}
+      <TableWrapper>
+        <TopRow className='d-flex align-items-center'>
           <SearchBar>
-            <Form.Control
+            <SearchInput
               as='input'
               type='text'
               placeholder='Search by Title'
               value={text || ''}
               onChange={(e: any) => setText(e.target.value)}
-            ></Form.Control>
+            />
           </SearchBar>
-          <CreateBtn className='border-0' onClick={createRaffleWinnerHandler}>
-            {loadingEducationTipCreate ? (
+          <CreateBtnV2 onClick={createEducationTipHandler}>
+            <AddIcon />
+            {loadingCreate ? (
               <Spinner animation='border' size='sm' />
             ) : (
-              <i className='fas fa-plus'></i>
+              'Create'
             )}
-          </CreateBtn>
-        </Col>
-      )}
-      <Col>
-        <Table hover responsive className='table-sm'>
-          <TableHead>
-            <tr>
-              <th>TITLE</th>
-              <th>IMAGE</th>
-              <th>LINK</th>
-              <th>EDIT</th>
-              <th>DELETE</th>
-            </tr>
-          </TableHead>
-          <TransitionGroup component='tbody'>
-            {filteredEducationTips?.map((tip: any) => (
-              <CSSTransition key={tip._id} timeout={500} classNames='item'>
-                <TableRow>
+          </CreateBtnV2>
+        </TopRow>
+        <TableAndPaginationContainer>
+          <Table hover responsive>
+            <TableHead>
+              <tr>
+                <th>TITLE</th>
+                <th>IMAGE</th>
+                <th>LINK</th>
+                <th>EDIT</th>
+                <th>DELETE</th>
+              </tr>
+            </TableHead>
+            <tbody>
+              {filteredEducationTips?.map((tip: any) => (
+                <TableRow key={tip._id}>
                   <td>
                     <Text>{tip?.title}</Text>
                   </td>
@@ -161,19 +163,21 @@ const RaffleWinnerList = () => {
                       style={{ cursor: 'pointer' }}
                       onClick={() => window.open(tip?.externalLink, '_target')}
                     >
-                      {tip?.title}
+                      {tip?.externalLink}
                     </Text>
                   </td>
                   <td>
                     <LinkContainer to={`/admin/education-tip/${tip?._id}/edit`}>
                       <StyledEditBtn>
-                        <i className='fas fa-edit'></i>
+                        <i
+                          style={{ color: '#9761aa' }}
+                          className='fas fa-edit'
+                        ></i>
                       </StyledEditBtn>
                     </LinkContainer>
                   </td>
                   <td>
-                    <Button
-                      variant='danger'
+                    <StyledEditBtn
                       className='border-0'
                       onClick={() => {
                         setId(tip?._id);
@@ -181,20 +185,28 @@ const RaffleWinnerList = () => {
                         handleShow();
                       }}
                     >
-                      {loadingEducationTipDelete && id === tip._id ? (
+                      {loadingDelete && id === tip._id ? (
                         <Spinner size='sm' animation='border' />
                       ) : (
-                        <i className='fas fa-trash'></i>
+                        <i
+                          style={{ color: '#cc0000' }}
+                          className='fas fa-trash'
+                        ></i>
                       )}
-                    </Button>
+                    </StyledEditBtn>
                   </td>
                 </TableRow>
-              </CSSTransition>
-            ))}
-          </TransitionGroup>
-        </Table>
-      </Col>
-    </>
+              ))}
+            </tbody>
+          </Table>
+          <PaginationContainer>
+            <Pagination className='my-3'>
+              {rangeV2(educationTips, paginatedPage, setPaginatedPage)}
+            </Pagination>
+          </PaginationContainer>
+        </TableAndPaginationContainer>
+      </TableWrapper>
+    </Container>
   );
 };
 

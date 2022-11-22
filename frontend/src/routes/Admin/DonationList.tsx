@@ -1,211 +1,214 @@
 import React, { useEffect, useState } from 'react';
-import { Col, Table, Button, Form, Spinner } from 'react-bootstrap';
+import { Table, Spinner, Pagination } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { LinkContainer } from 'react-router-bootstrap';
 import { listDonations } from '../../actions/donationActions';
 import DeleteModal from '../../components/DeleteModal';
 import { Text } from '../../components/styles/Styles';
 import { formatDate } from '../../utils/formatDate';
-import { AiFillDelete } from 'react-icons/ai';
 import {
   SearchBar,
   TableHead,
   TableRow,
   StyledEditBtn,
+  TopRow,
+  PaginationContainer,
+  TableAndPaginationContainer,
+  Container,
+  SearchInput,
+  TableWrapper,
 } from '../../components/styles/admin/Styles';
-import { TransitionGroup, CSSTransition } from 'react-transition-group';
-import toaster from 'toasted-notes';
-import { LoadingImg } from '../../components/LoadingImg';
-import { ToastAlert } from '../../components/common/ToastAlert';
+import Message from '../../components/Message';
+import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
+import { WelcomeText } from '../../components/styles/DashboardStyles';
+import BreadCrumb from '../../components/common/BreadCrumb';
+import { rangeV2 } from '../../components/common/Pagination';
+import { Accordion } from '../../components/styles/place-order/Styles';
 
 const DonationList = () => {
   const dispatch = useDispatch();
   const [text, setText] = useState('');
   const [show, setShow] = useState(false);
   const [id, setId] = useState('');
+  const [paginatedPage, setPaginatedPage] = useState(1);
+  const [paginatedItems, setPaginatedItems] = useState<{}[]>([]) as any;
+  const [pleaseRead, setPleaseRead] = useState(false);
+
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  const [donationSet, setDonation] = useState([]) as any;
 
-  const donationList = useSelector((state: any) => state.donationList);
-  const { loading, error, donations } = donationList;
-
-  const donationDelete = useSelector((state: any) => state.donationDelete);
   const {
-    loading: loadingDelete,
-    error: errorDelete,
-    success: successDelete,
-  } = donationDelete;
-
-  useEffect(() => {
-    if (donations) {
-      setDonation(donations);
-    }
-  }, [donations]);
+    donationList: { loading, error, donations },
+    donationDelete: {
+      loading: loadingDelete,
+      error: errorDelete,
+      success: successDelete,
+    },
+  } = useSelector((state: any) => state);
 
   useEffect(() => {
     dispatch(listDonations());
   }, [dispatch, successDelete]);
 
   useEffect(() => {
-    if (error || errorDelete) {
-      toaster.notify(
-        ({ onClose }) => ToastAlert(error || errorDelete, onClose, 'error'),
-        {
-          position: 'bottom',
-          duration: 20000,
-        }
-      );
-    }
-  }, [error, errorDelete]);
+    const itemsPerPage = 10;
+    const indexOfLastItem = paginatedPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
-  const filteredDonations = donationSet?.filter((donations: any) =>
-    donations.email.toLowerCase().includes(text.toLowerCase())
+    setPaginatedItems(donations?.slice(indexOfFirstItem, indexOfLastItem));
+  }, [donations, paginatedPage]);
+
+  donations?.sort(
+    (a: any, b: any) => -a?.createdAt?.localeCompare(b?.createdAt)
   );
 
-  return error ? (
-    <></>
-  ) : (
-    <>
+  const filteredDonations =
+    text !== ''
+      ? donations?.filter((donation: any) =>
+          donation?.email?.toLowerCase().includes(text.toLowerCase())
+        )
+      : paginatedItems?.filter((donation: any) =>
+          donation?.email?.toLowerCase().includes(text.toLowerCase())
+        );
+
+  return (
+    <Container>
+      <WelcomeText className='mb-1'>Donations</WelcomeText>
+      <BreadCrumb
+        step1='Home'
+        step2='Dashboard'
+        step3=''
+        step4='Donations'
+        url1='/'
+        url2='/admin'
+        url3='/admin/donationList'
+      />
+      {(loading || loadingDelete) && <HexagonLoader />}
       <DeleteModal
         actionFunc='Donation'
         show={show}
         handleClose={handleClose}
         id={id}
       />
-      {loading ? (
-        <Col className='mb-3 '>
-          <LoadingImg w='20rem' h='2.5rem' />
-        </Col>
-      ) : (
-        <Col className='d-flex align-items-center justify-content-between'>
+      {(error || errorDelete) && (
+        <Message variant='danger'>{error || errorDelete}</Message>
+      )}
+
+      <Text
+        width='100%'
+        maxWidth='500px'
+        fontSize='16px'
+        onClick={() => setPleaseRead(!pleaseRead)}
+        cursor='pointer'
+      >
+        Please Read
+      </Text>
+      <Accordion toggle={pleaseRead} maxheight='60px'>
+        This integration is slightly different from the products and ecards in
+        that we don't get a response from PayPal once they've completed the
+        donation. The only way to know if the user has donated is to continue
+        what you're currently doing. Please verify each transaction corresponds
+        with a transaction on PayPal. This table was created to collect data for
+        the acknowledgement letters. If you notice a transaction in this table
+        does not match with anything in PayPal, please delete the donation. The
+        user had intentions of donating, but did not go all the way through with
+        the donation for whatever reason. You can always keep the data and send
+        a follow up email. Just a suggestion 😃
+      </Accordion>
+      <TableWrapper>
+        <TopRow className='d-flex align-items-center'>
           <SearchBar>
-            <Form.Control
+            <SearchInput
               as='input'
               type='text'
-              placeholder='Search by email'
+              placeholder='Search by Email'
               value={text || ''}
               onChange={(e: any) => setText(e.target.value)}
-            ></Form.Control>
+            />
           </SearchBar>
-        </Col>
-      )}
-      <Col>
-        <Table hover responsive className='table-sm'>
-          <TableHead>
-            <tr>
-              <th>FIRST NAME</th>
-              <th>LAST NAME</th>
-              <th>ADDRESS</th>
-              <th>ZIP CODE</th>
-              <th>CITY</th>
-              <th>STATE</th>
-              <th>EMAIL</th>
-              <th>DONATION AMOUNT</th>
-              <th>IN MEMORY OF</th>
-              <th>MEMORY ADDRESS</th>
-              <th>IN HONOR OF</th>
-              <th>HONOR ADDRESS</th>
-              <th>CREATED ON</th>
-              <th>LETTER HAS BEEN SENT</th>
-              <th>EDIT</th>
-              <th>DELETE</th>
-            </tr>
-          </TableHead>
-          <TransitionGroup component='tbody'>
-            {filteredDonations
-              ?.map((donation: any) => (
-                <CSSTransition
-                  key={donation?._id}
-                  timeout={500}
-                  classNames='item'
-                >
-                  <TableRow>
-                    <td>
-                      <Text>{donation?.firstName}</Text>
-                    </td>
-                    <td>
-                      <Text>{donation?.lastName}</Text>
-                    </td>
-                    <td>
-                      <Text>{donation?.address}</Text>
-                    </td>
-                    <td>
-                      <Text>{donation?.zipPostalCode}</Text>
-                    </td>
-                    <td>
-                      <Text>{donation?.city}</Text>
-                    </td>
-                    <td>
-                      <Text>{donation?.state}</Text>
-                    </td>
-                    <td>
-                      <Text>{donation?.email}</Text>
-                    </td>
-                    <td>
-                      <Text>{donation?.donationAmount}</Text>
-                    </td>
-                    <td>
-                      <Text>{donation?.inMemoryOfWho}</Text>
-                    </td>
-                    <td>
-                      <Text>{donation?.addressForAcknowledgementMemory}</Text>
-                    </td>
-                    <td>
-                      <Text>{donation?.inHonorOfWho}</Text>
-                    </td>
-                    <td>
-                      <Text>{donation?.addressForAcknowledgementHonor}</Text>
-                    </td>
-                    <td>
-                      <Text>{formatDate(donation?.createdAt)}</Text>
-                    </td>
-                    <td>
-                      {donation?.hasLetterBeenSent ? (
+        </TopRow>
+        <TableAndPaginationContainer>
+          <Table hover responsive>
+            <TableHead>
+              <tr>
+                <th>FIRST NAME</th>
+                <th>LAST NAME</th>
+                <th>EMAIL</th>
+                <th>DONATION AMOUNT</th>
+                <th>CREATED ON</th>
+                <th>LETTER HAS BEEN SENT</th>
+                <th>EDIT</th>
+                <th>DELETE</th>
+              </tr>
+            </TableHead>
+            <tbody>
+              {filteredDonations?.map((donation: any) => (
+                <TableRow key={donation?._id}>
+                  <td>
+                    <Text>{donation?.firstName}</Text>
+                  </td>
+                  <td>
+                    <Text>{donation?.lastName}</Text>
+                  </td>
+                  <td>
+                    <Text>{donation?.email}</Text>
+                  </td>
+                  <td>
+                    <Text>{donation?.donationAmount}</Text>
+                  </td>
+                  <td>
+                    <Text>{formatDate(donation?.createdAt)}</Text>
+                  </td>
+                  <td>
+                    {donation?.hasLetterBeenSent ? (
+                      <i
+                        className='fas fa-check'
+                        style={{ color: 'green' }}
+                      ></i>
+                    ) : (
+                      <i className='fas fa-times' style={{ color: 'red' }}></i>
+                    )}
+                  </td>
+                  <td>
+                    <LinkContainer to={`/admin/donation/${donation?._id}/edit`}>
+                      <StyledEditBtn>
                         <i
-                          className='fas fa-check'
-                          style={{ color: 'green' }}
+                          style={{ color: '#9761aa' }}
+                          className='fas fa-edit'
                         ></i>
+                      </StyledEditBtn>
+                    </LinkContainer>
+                  </td>
+                  <td>
+                    <StyledEditBtn
+                      className='border-0'
+                      onClick={() => {
+                        setId(donation?._id);
+                        handleShow();
+                      }}
+                    >
+                      {loadingDelete && id === donation?._id ? (
+                        <Spinner size='sm' animation='border' />
                       ) : (
                         <i
-                          className='fas fa-times'
-                          style={{ color: 'red' }}
+                          style={{ color: '#cc0000' }}
+                          className='fas fa-trash'
                         ></i>
                       )}
-                    </td>
-                    <td>
-                      <LinkContainer
-                        to={`/admin/donation/${donation?._id}/edit`}
-                      >
-                        <StyledEditBtn>
-                          <i className='fas fa-edit'></i>
-                        </StyledEditBtn>
-                      </LinkContainer>
-                    </td>
-                    <td>
-                      <Button
-                        variant='danger'
-                        className='border-0'
-                        onClick={() => {
-                          setId(donation?._id);
-                          handleShow();
-                        }}
-                      >
-                        {loadingDelete ? (
-                          <Spinner animation='border' />
-                        ) : (
-                          <AiFillDelete />
-                        )}
-                      </Button>
-                    </td>
-                  </TableRow>
-                </CSSTransition>
-              ))
-              .reverse()}
-          </TransitionGroup>
-        </Table>
-      </Col>
-    </>
+                    </StyledEditBtn>
+                  </td>
+                </TableRow>
+              ))}
+            </tbody>
+          </Table>
+          <PaginationContainer>
+            <Pagination className='my-3'>
+              {rangeV2(donations, paginatedPage, setPaginatedPage)}
+            </Pagination>
+          </PaginationContainer>
+        </TableAndPaginationContainer>
+      </TableWrapper>
+    </Container>
   );
 };
 

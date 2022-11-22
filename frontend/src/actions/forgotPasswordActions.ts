@@ -37,8 +37,6 @@ export const verifyToken = (token: any) => async (dispatch: any) => {
       token,
     });
 
-    console.log(data);
-
     if (
       data === 'Link has expired. Please register again.' ||
       typeof data === 'string'

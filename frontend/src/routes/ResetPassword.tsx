@@ -1,77 +1,83 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Form, Spinner } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { verifyToken, resetPassword } from '../actions/forgotPasswordActions';
 import {
   Container,
   CreateAccountContainer,
   FormContainer,
+  StyledButton,
   StyledLink,
-} from './Login';
-import { Text } from '../components/styles/Styles';
-import toaster from 'toasted-notes';
-import { ToastAlert } from '../components/common/ToastAlert';
-import PasswordMeter from '../components/PasswordMeter';
+  Text,
+} from '../components/styles/Styles';
+import PasswordMeter, {
+  PasswordRequirements,
+} from '../components/PasswordMeter';
 import { CSSTransition } from 'react-transition-group';
+import Message from '../components/Message';
+import HexagonLoader from '../components/Loaders/HexagonLoader/HexagonLoader';
+import { Link } from 'react-router-dom';
+import JumpingInput from '../components/common/JumpingInput';
 
 const ResetPassword = ({ match }: any) => {
   const tokenId = match.params.id;
   const dispatch = useDispatch();
   const [password, setPassword] = useState('');
   const [activeMenu, setActiveMenu] = useState('reset-password') as any;
-  const [menuHeight, setMenuHeight] = useState() as any;
+  const [showPassword, setShowPassword] = useState({ password: false });
+  const [errorMsg, setMessage] = useState('');
+  const [show, setShow] = useState(true);
 
-  const verifyTokenDetails = useSelector((state: any) => state.verifyToken);
-  const { loading, result, error } = verifyTokenDetails;
-
-  const resetPasswordDetails = useSelector((state: any) => state.resetPassword);
-  const { loading: loadingResetPassword, message } = resetPasswordDetails;
+  let {
+    verifyToken: {
+      loading: loadingVerifyToken,
+      result: successVerifyToken,
+      error: errorVerifyToken,
+    },
+    resetPassword: { loading: loadingResetPassword, message },
+  } = useSelector((state: any) => state);
 
   useEffect(() => {
     dispatch(verifyToken(tokenId));
   }, [dispatch, tokenId]);
 
   useEffect(() => {
-    (error || message || result?.message) &&
-      toaster.notify(
-        ({ onClose }) =>
-          ToastAlert(
-            error || message || result?.message,
-            onClose,
-            message || result?.message ? 'success' : 'error'
-          ),
-        { position: 'bottom' }
-      );
     if (message === 'Password Updated!') {
       setActiveMenu('password-updated');
     }
-  }, [error, message, result]);
+  }, [message]);
 
   const submitHandler = (e: any) => {
     e.preventDefault();
-    if (strength === 4 && result?.email) {
-      dispatch(resetPassword(result?.email, password));
+    if (strength === 4 && successVerifyToken?.email) {
+      dispatch(resetPassword(successVerifyToken?.email, password));
+    } else {
+      setMessage('Password does not meet requirements');
     }
   };
 
   const validations = [
-    password.length >= 5 ? 1 : 0,
+    password.length >= 9 ? 1 : 0,
     password.search(/[A-Z]/) > -1 ? 1 : 0,
     password.search(/[0-9]/) > -1 ? 1 : 0,
-    password.search(/[!$&+,:;=?@#]/) > -1 ? 1 : 0,
+    password.search(/[~`! @#$%^&*()_+={}|:;"',.?]/) > -1 ? 1 : 0,
   ];
-
-  console.log(error);
-  console.log(result);
 
   const strength = validations.reduce((acc, cur) => acc + cur, 0);
 
-  // const calcHeight = (el: any) => setMenuHeight(el.offsetHeight);
-
-  return loading ? (
-    <Text>Validating credentials...</Text>
+  return errorVerifyToken ? (
+    <div className='m-3'>
+      <Message variant='danger'>{errorVerifyToken}</Message>
+      <Link to='/forgot-password'>Forgot Password</Link>
+    </div>
   ) : (
-    <Container>
+    <Container className='align-items-center'>
+      {(loadingVerifyToken || loadingResetPassword) && <HexagonLoader />}
+      {(message || errorMsg) && (
+        <Message variant={errorMsg ? 'danger' : 'success'}>
+          {message || errorMsg}
+        </Message>
+      )}
       <div
         className='mx-auto px-3 pt-4'
         style={{
@@ -92,32 +98,34 @@ const ResetPassword = ({ match }: any) => {
             </Text>
             <FormContainer>
               <Form onSubmit={submitHandler}>
-                <Form.Group controlId='email'>
-                  <Form.Label>New Password</Form.Label>
-                  <Form.Control
-                    type='password'
-                    placeholder='New Password'
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  ></Form.Control>
-                </Form.Group>
+                <JumpingInput
+                  name='password'
+                  label='Password'
+                  value={password || ''}
+                  handleInputChange={(e: any) => setPassword(e.target.value)}
+                  type={showPassword.password ? 'text' : 'password'}
+                  error={''}
+                  blur={() => ({})}
+                  showPassword={showPassword.password}
+                  setShowPassword={setShowPassword}
+                />
                 <PasswordMeter validations={validations} strength={strength} />
-                <Button
-                  disabled={loadingResetPassword || error}
+                <Text
+                  onClick={() => setShow(!show)}
+                  fontWeight={400}
+                  className='d-flex align-items-center justify-content-between mb-2'
+                >
+                  {show ? 'Hide ' : 'Show '}password requirements
+                  {<i className={`fas fa-chevron-${show ? 'up' : 'down'}`}></i>}
+                </Text>
+                <PasswordRequirements validations={validations} open={show} />
+                <StyledButton
+                  disabled={loadingResetPassword || password === ''}
                   type='submit'
-                  className='d-flex align-items-center border-0 w-100 bg-success justify-content-center mt-4'
+                  className='d-flex align-items-center border-0 w-100 justify-content-center mt-3'
                 >
                   Updat{loadingResetPassword ? 'ing' : 'e'}&nbsp;&nbsp;
-                  {loadingResetPassword && (
-                    <Spinner
-                      as='span'
-                      animation='border'
-                      size='sm'
-                      role='status'
-                      aria-hidden='true'
-                    />
-                  )}
-                </Button>
+                </StyledButton>
               </Form>
             </FormContainer>
           </div>
@@ -129,9 +137,6 @@ const ResetPassword = ({ match }: any) => {
           classNames='menu-secondary'
         >
           <div style={{ width: '340px' }}>
-            <Text fontSize='1.5rem' textAlign='center' marginBottom='0.65rem'>
-              Password Updated
-            </Text>
             <CreateAccountContainer className='py-3 mt-3'>
               <StyledLink to='/login'>Sign In</StyledLink>
             </CreateAccountContainer>

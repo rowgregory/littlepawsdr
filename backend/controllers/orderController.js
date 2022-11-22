@@ -3,6 +3,8 @@ import Order from '../models/orderModel.js';
 import Product from '../models/productModel.js';
 import GuestOrder from '../models/guestOrderModel.js';
 import { send_mail } from '../server.js';
+import Error from '../models/errorModel.js';
+import User from '../models/userModel.js';
 
 // @desc    Create new order
 // @route   POST /api/orders
@@ -16,6 +18,7 @@ const addOrderItems = asyncHandler(async (req, res) => {
     taxPrice,
     shippingPrice,
     totalPrice,
+    orderId,
   } = req.body;
 
   try {
@@ -29,9 +32,15 @@ const addOrderItems = asyncHandler(async (req, res) => {
       shippingPrice,
       totalPrice,
       isPaid: true,
+      orderId,
+      email: req.user.email,
+      isShipped: false,
+      confirmationEmailHasBeenSent: false,
     });
 
     const createdOrder = await order.save();
+
+    let hasEmailBeenSent = false;
 
     if (createdOrder) {
       for (const item of createdOrder.orderItems) {
@@ -55,12 +64,46 @@ const addOrderItems = asyncHandler(async (req, res) => {
           await product.save();
         }
       }
-    }
 
-    res.status(201).json(createdOrder);
+      const emailHasSent = await send_mail(
+        createdOrder,
+        res,
+        'sendOrderConfirmationEmail',
+        '',
+        hasEmailBeenSent
+      );
+
+      createdOrder.confirmationEmailHasBeenSent = emailHasSent;
+      await createdOrder.save();
+
+      const user = await User.findById({ _id: req.user._id });
+
+      if (!user) {
+        const createdError = new Error({
+          functionName: 'CREATE_NEW_ORDER',
+          detail: `Could not find user with the id of ${req.user._id} to attach shipping address to`,
+        });
+        await createdError.save();
+      }
+
+      user.shippingAddress = shippingAddress;
+      await user.save();
+
+      res.status(201).json(createdOrder);
+    }
   } catch (error) {
-    res.status(400);
-    throw new Error('An Error occured', error);
+    const createdError = new Error({
+      functionName: 'CREATE_NEW_ORDER',
+      detail: `${error.message}, order id: ${orderId}`,
+    });
+    await createdError.save();
+
+    res.status(500).send({
+      message: `Please call (***)***-**** to resolve issue, orderID: ${orderId}`,
+      data: req.body,
+      email: req.user.email,
+      isShipped: false,
+    });
   }
 });
 
@@ -104,19 +147,31 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
 // @route   PUT /api/orders/:id/shipped
 // @access  Private/Admin
 const updateOrderToShipped = asyncHandler(async (req, res) => {
-  const order = await Order.findById(req.params.id);
+  try {
+    const order = await Order.findById(req.params.id);
 
-  if (order) {
     order.isShipped = req.body.isShipped;
     order.shippedOn = Date.now();
 
     const updatedOrder = await order.save();
 
     res.json(updatedOrder);
-  } else {
-    res
-      .status(404)
-      .send({ message: 'There was an error setting the order to shipped.' });
+  } catch (err) {
+    const createdError = new Error({
+      functionName: 'UPDATE_ORDER_TO_SHIPPED',
+      detail: err.message,
+      user: {
+        id: req?.user?._id,
+        name: req?.user?.name,
+      },
+      state: 'ORDER_IS_NULL',
+    });
+
+    await createdError.save();
+
+    res.status(404).json({
+      message: `There was an error setting the order to shipped: ${err}`,
+    });
   }
 });
 

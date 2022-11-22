@@ -6,39 +6,37 @@ import { Text } from '../../components/styles/Styles';
 
 const ProductName = styled(Link)`
   color: ${({ theme }) => theme.text};
-  font-size: 1rem;
+  font-size: 15px;
+  font-weight: 400;
   height: 42px;
-  font-family: 'Duru', sans-serif;
   :hover {
     text-decoration: none;
-    color: ${({ theme }) => theme.pageHeader};
+    color: ${({ theme }) => theme.text};
   }
 `;
 
 const ProductImg = styled(Card.Img)`
   object-fit: cover;
   width: 100%;
-  aspect-ratio: 1/1;
+  aspect-ratio: 1.75/2;
+  width: 100%;
+  border-radius: 0;
+  /* max-width: 300px; */
 `;
 
 const Product = ({ product }: any) => {
   return (
     <div className='d-flex flex-column'>
       <Link to={`/shop/product/${product._id}`}>
-        <div
-          className='h-100 w-100 d-flex justify-content-center py-3'
-          style={{ aspectRatio: '1 / 1' }}
-        >
-          <ProductImg src={product.image} variant='top' />
-        </div>
+        <ProductImg src={product.image} variant='top' />
       </Link>
       <Card.Body className='pl-0 pt-2'>
         <ProductName to={`/shop/product/${product._id}`}>
-          <Text fontSize='1.09rem'>{product?.name}</Text>
+          {product?.name}
         </ProductName>
-        <Text fontSize='1rem'>
+        <Text>
           ${product?.price?.toString().split('.')[0]}
-          <sup style={{ marginLeft: '1px', fontSize: '0.75rem' }}>
+          <sup style={{ marginLeft: '1px', fontSize: '10px' }}>
             {product?.price?.toString().split('.')[1]}
           </sup>
         </Text>

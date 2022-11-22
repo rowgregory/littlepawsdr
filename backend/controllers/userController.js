@@ -1,13 +1,11 @@
 import asyncHandler from 'express-async-handler';
 import User from '../models/userModel.js';
-import {
-  generateToken,
-  generateVerificationToken,
-} from '../utils/generateToken.js';
+import Error from '../models/errorModel.js';
+import { generateToken } from '../utils/generateToken.js';
 import { v4 as uuidv4 } from 'uuid';
-import { encrypt } from '../utils/crypto.js';
 import { decrypt } from '../utils/crypto.js';
 import { send_mail } from '../server.js';
+import GuestUser from '../models/guestUserModel.js';
 
 // @desc    Auth user & get token
 // @route   POST /api/users/login
@@ -19,7 +17,7 @@ const authUser = asyncHandler(async (req, res) => {
 
   if (user && (await user.matchPassword(password))) {
     user.online = true;
-    user.token = generateToken(user._id);
+    user.token = generateToken(user._id, '24h');
 
     const updatedUser = await user.save();
 
@@ -39,6 +37,7 @@ const authUser = asyncHandler(async (req, res) => {
         token: updatedUser.token,
         confirmed: updatedUser.confirmed,
         publicId: updatedUser.publicId,
+        shippingAddress: updatedUser.shippingAddress,
       });
     } else {
       res.status(401);
@@ -57,33 +56,29 @@ const authUser = asyncHandler(async (req, res) => {
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
 
-  const userExists = await User.findOne({ email });
+  try {
+    const userExists = await User.findOne({ email });
 
-  if (userExists) {
-    send_mail(req.body, res, 'userExists');
-    res
-      .status(400)
-      .send({ message: 'Error: Account with this email already exists' });
-    throw new Error('Error: Account with this email already exists');
-  }
+    if (userExists) {
+      // TODO
+      // send_mail(req.body, res, 'userExists');
+      return res
+        .status(400)
+        .json({ message: 'An account with this email already exists' });
+    }
 
-  const user = {
-    name,
-    email,
-    password,
-    token: generateVerificationToken(uuidv4()),
-  };
+    const user = {
+      name,
+      email,
+      password,
+      token: generateToken(uuidv4(), '6h'),
+    };
 
-  if (user) {
-    res.json({
-      name: user.name,
-      email: user.email,
-      token: user.token,
-      password: encrypt(user.password),
-    });
-  } else {
-    res.status(400);
-    throw new Error('Invalid user data');
+    if (user) {
+      send_mail(user, res, 'sendRegisterConfirmationEmail');
+    }
+  } catch (err) {
+    res.status(400).json({ message: err.message });
   }
 });
 
@@ -91,9 +86,10 @@ const registerUser = asyncHandler(async (req, res) => {
 // @route   GET /api/users/profile
 // @access  Private
 const getUserProfile = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user._id);
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) return res.status(404).json({ message: 'User not found' });
 
-  if (user) {
     res.json({
       _id: user._id,
       name: user.name,
@@ -107,9 +103,15 @@ const getUserProfile = asyncHandler(async (req, res) => {
       theme: user.theme,
       publicId: user.publicId,
     });
-  } else {
-    res.status(404);
-    throw new Error('User not found');
+  } catch (err) {
+    const createdError = new Error({
+      functionName: 'GET_USER_PROFILE',
+      detail: err.message,
+    });
+
+    await createdError.save();
+
+    res.status(500).json({ message: err.message });
   }
 });
 
@@ -117,9 +119,10 @@ const getUserProfile = asyncHandler(async (req, res) => {
 // @route   PUT /api/users/profile
 // @access  Private
 const updateUserProfile = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user._id);
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) return res.status(404).json({ message: 'User not found' });
 
-  if (user) {
     user.name = req.body.name || user.name;
     user.email = req.body.email || user.email;
     user.avatar = req.body.avatar || user.avatar;
@@ -130,6 +133,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     user.profileCardTheme = req.body.profileCardTheme || user.profileCardTheme;
     user.theme = req.body.theme || user.theme;
     user.publicId = req.body.publicId || user.publicId;
+    user.token = user.token;
 
     if (req.body.password) {
       user.password = req.body.password;
@@ -151,12 +155,18 @@ const updateUserProfile = asyncHandler(async (req, res) => {
       volunteerEmail: updateUser.volunteerEmail,
       profileCardTheme: updatedUser.profileCardTheme,
       theme: updatedUser.theme,
-      token: generateToken(updatedUser._id),
       publicId: updatedUser.publicId,
+      token: updatedUser.token,
     });
-  } else {
-    res.status(404);
-    throw new Error('User not found');
+  } catch (err) {
+    const createdError = new Error({
+      functionName: 'UPDATE_USER_PROFILE',
+      detail: err.message,
+    });
+
+    await createdError.save();
+
+    res.status(500).json({ message: err.message });
   }
 });
 
@@ -224,7 +234,6 @@ const confirmOldPassword = asyncHandler(async (req, res) => {
       res.send({ message: 'Password is incorrect' });
     }
   } catch (error) {
-    console.log('ERROR: ', error);
     res.send({ message: error });
   }
 });
@@ -293,13 +302,16 @@ const userIsConfirmed = asyncHandler(async (req, res) => {
 
   try {
     const userExists = await User.findOne({ email });
-    if (userExists) res.status(201).json(userExists);
+    if (userExists) return res.status(201).json(userExists);
+
+    const guestUserExists = await GuestUser.findOne({ email });
+    if (guestUserExists) guestUserExists.deleteOne();
 
     if (userExists === null) {
-      const parsedEmail = JSON.parse(id);
-      const decryptedPw = decrypt(parsedEmail);
+      const parsedPw = JSON.parse(id);
+      const decryptedPw = decrypt(parsedPw);
 
-      const user = await User.create({
+      const user = new User({
         name,
         email,
         password: decryptedPw,
@@ -335,7 +347,7 @@ const userIsConfirmed = asyncHandler(async (req, res) => {
         profileCardTheme: user.profileCardTheme,
         online: user.online,
         theme: user.theme,
-        token: generateToken(user._id),
+        token: generateToken(user._id, '24h'),
         publicId: user.publicId,
       });
     }
@@ -356,7 +368,7 @@ const generateTokenForSession = asyncHandler(async (req, res) => {
       throw new Error('User does not exist');
 
     if (user) {
-      user.token = generateToken(req.user._id);
+      user.token = generateToken(req.user._id, '24hr');
 
       const updatedUser = await user.save();
 

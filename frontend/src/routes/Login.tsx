@@ -1,186 +1,175 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Form, Button, Spinner } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../actions/userActions';
-import { Text } from '../components/styles/Styles';
-import styled from 'styled-components';
-import { isCapsLock } from '../utils/capsLock';
-import toaster from 'toasted-notes';
-import { ToastAlert } from '../components/common/ToastAlert';
-export interface ThemeProps {
-  mode: string;
-}
-export const StyledLink = styled(Link)`
-  :hover {
-    filter: brightness(1.5);
-  }
-`;
+import {
+  Container,
+  CreateAccountContainer,
+  FormContainer,
+  FormWrapper,
+  StyledButton,
+  StyledLink,
+  Text,
+} from '../components/styles/Styles';
+import validateLoginForm, {
+  inputEmail,
+  inputPassword,
+} from '../utils/validateLoginForm';
+import Message from '../components/Message';
+import { USER_LOGIN_RESET } from '../constants/userConstants';
+import JumpingInput from '../components/common/JumpingInput';
+import { validateEmailRegex } from '../utils/regex';
+import HexagonLoader from '../components/Loaders/HexagonLoader/HexagonLoader';
+import loginEffect from '../components/sounds/login.mp3';
+import failedLoginAttempt from '../components/sounds/thump02.wav';
+import LogoDay from '../components/assets/logo-background-transparent-purple4.png';
+import UIfx from 'uifx';
+import LeftArrow from '../components/svg/LeftArrow';
+import { Link } from 'react-router-dom';
+import { LogoCheckout } from '../components/styles/place-order/Styles';
 
-export const Container = styled.div`
-  display: flex;
-  justify-content: flex-start;
-  flex-direction: column;
-  background: ${({ theme }) => theme.input.bg};
-  min-height: 100vh;
-  padding-top: 3rem;
-`;
-
-export const CreateAccountContainer = styled.div`
-  color: ${({ theme }) => theme.text};
-  text-align: center;
-  border: 1px solid ${({ theme }) => theme.input.border};
-  border-radius: 0.4rem;
-`;
-
-export const FormContainer = styled.div`
-  margin-top: 1rem;
-  padding: 1rem;
-  background: ${({ theme }) =>
-    theme.mode === 'night' ? '#161b22' : '#f5f8fa'};
-  border: 0.8px solid
-    ${({ theme }) => (theme.mode === 'night' ? '#21262d' : '#ededed')};
-  border-radius: 0.4rem;
-`;
-
-const Login = ({ location, history }: any) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [capsLockOn, setCapsLocksOn] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const dispatch = useDispatch();
-
-  const userLogin = useSelector((state: any) => state.userLogin);
-  const { loading, error, userInfo } = userLogin;
-
-  const redirect = location.search ? location.search.split('=')[1] : '/';
-
-  useEffect(() => {
-    if (userInfo?.isAdmin) {
-      history.push('/admin');
-    } else if (userInfo) {
-      history.push('/');
-    }
-
-    const listener = (e: any) => {
-      const result = isCapsLock(e);
-      setCapsLocksOn(result);
-    };
-    document.addEventListener('keypress', listener);
-
-    return () => document.removeEventListener('keypress', listener);
-  }, [history, redirect, userInfo]);
-
-  const submitHandler = (e: any) => {
-    e.preventDefault();
-    dispatch(login(email, password));
+const useLoginForm = (cb: any, setErrors: any) => {
+  const values = {
+    email: '',
+    password: '',
   };
 
-  useEffect(() => {
-    if (error) {
-      toaster.notify(
-        ({ onClose }) =>
-          ToastAlert('Incorrect email address or password', onClose, 'error'),
-        { position: 'bottom' }
-      );
+  const [inputs, setInputs] = useState(values) as any;
+
+  const handleInputChange = (e: any) => {
+    if (validateEmailRegex.test(inputs?.email)) {
+      setErrors((errors: any) => ({ ...errors, email: '' }));
     }
-  }, [error]);
+
+    setInputs((inputs: any) => ({
+      ...inputs,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const onSubmit = (e: any) => {
+    e.preventDefault();
+    cb();
+  };
+
+  return { inputs, handleInputChange, onSubmit, setInputs };
+};
+
+const Login = ({ location, history }: any) => {
+  const [capsLockOn, setCapsLocksOn] = useState(false);
+  const [showPassword, setShowPassword] = useState({ password: false });
+  const [errors, setErrors] = useState({}) as any;
+  const dispatch = useDispatch();
+
+  const {
+    userLogin: { loading, error, userInfo },
+  } = useSelector((state: any) => state);
+
+  let formIsValid = true;
+
+  const loginFormCallback = () => {
+    const failedLoginAttemptFx = new UIfx(failedLoginAttempt);
+    const isValid = validateLoginForm(setErrors, inputs, formIsValid);
+    if (!isValid) failedLoginAttemptFx.play();
+    if (isValid) {
+      dispatch(login(inputs.email.toLowerCase(), inputs.password));
+    }
+  };
+
+  const { inputs, handleInputChange, onSubmit } = useLoginForm(
+    loginFormCallback,
+    setErrors
+  );
+
+  useEffect(() => {
+    const loginFx = new UIfx(loginEffect);
+    const failedLoginAttemptFx = new UIfx(failedLoginAttempt);
+    if (userInfo?.isAdmin) {
+      history.push('/admin');
+      loginFx.play();
+    } else if (userInfo) {
+      history.push('/');
+    } else if (error) {
+      failedLoginAttemptFx.play();
+    }
+
+    let listener = (e: any) => {
+      const result = e.getModifierState && e.getModifierState('CapsLock');
+      setCapsLocksOn(result);
+    };
+
+    document.addEventListener('keyup', listener);
+
+    return () => document.removeEventListener('keyup', listener);
+  }, [error, history, userInfo]);
 
   return (
     <Container>
-      <div
-        className='mx-auto px-3 pt-4'
-        style={{ maxWidth: '340px', width: '100%' }}
-      >
+      <Link to='/'>
+        <LogoCheckout src={LogoDay} />
+      </Link>
+      {loading && <HexagonLoader />}
+      <FormWrapper className='mx-auto px-3'>
         <Text fontSize='1.5rem' textAlign='center' marginBottom='0.65rem'>
           Sign in to Little Paws
         </Text>
+        <LeftArrow text='Back to home' url='/' />
         <FormContainer>
-          <Form onSubmit={submitHandler}>
-            <Form.Group controlId='email'>
-              <Form.Label>Email Address</Form.Label>
-              <Form.Control
-                autoComplete='off'
-                type='email'
-                placeholder='Enter email'
-                value={email}
-                onChange={(e: any) => setEmail(e.target.value)}
-                required
-              ></Form.Control>
-            </Form.Group>
-            <Form.Group controlId='password'>
-              <div className='d-flex justify-content-between'>
-                <Form.Label className='d-flex'>
-                  <Text fontSize='14px' className='d-flex align-items-center'>
-                    Password
-                  </Text>
-                  {capsLockOn && (
-                    <Text fontSize='14px' color='red' className='ml-2'>
-                      (Caps Lock is on)
-                    </Text>
-                  )}
-                </Form.Label>
-                <Form.Label>
-                  <StyledLink
-                    style={{ fontSize: '12px' }}
-                    to='/forgot-password'
-                  >
-                    Forgot Password?
-                  </StyledLink>
-                </Form.Label>
-              </div>
-              <div
-                className='d-flex align-items-center'
-                style={{ position: 'relative' }}
+          {error && <Message variant='danger'>{error}</Message>}
+          {capsLockOn && <Message variant='warning'>(Caps Lock is on)</Message>}
+          <Form onSubmit={onSubmit}>
+            <JumpingInput
+              name='email'
+              label='Email*'
+              value={inputs.email || ''}
+              handleInputChange={handleInputChange}
+              type='email'
+              error={errors?.email}
+              blur={() => inputEmail(inputs, formIsValid, setErrors)}
+            />
+            <JumpingInput
+              name='password'
+              label='Password*'
+              value={inputs.password || ''}
+              handleInputChange={handleInputChange}
+              type={showPassword.password ? 'text' : 'password'}
+              error={errors?.password}
+              blur={() => inputPassword(inputs, formIsValid, setErrors)}
+              showPassword={showPassword.password}
+              setShowPassword={setShowPassword}
+            />
+            <div className='mt-3'>
+              <StyledLink
+                to='/forgot-password'
+                onClick={() => {
+                  dispatch({ type: USER_LOGIN_RESET });
+                }}
               >
-                <Form.Control
-                  autoComplete='off'
-                  type={showPassword ? 'text' : 'password'}
-                  placeholder='Enter password'
-                  value={password}
-                  onChange={(e: any) => {
-                    setPassword(e.target.value);
-                  }}
-                  required
-                ></Form.Control>
-                <i
-                  onClick={() => setShowPassword(!showPassword)}
-                  className='fas fa-eye'
-                  aria-hidden='true'
-                  style={{ position: 'absolute', right: '10px' }}
-                ></i>
-              </div>
-            </Form.Group>
-            <Button
+                Forgot Password?
+              </StyledLink>
+            </div>
+            <StyledButton
               disabled={loading}
               type='submit'
-              className='d-flex align-items-center border-0 w-100 bg-success justify-content-center'
+              className='d-flex align-items-center border-0 w-100 justify-content-center mt-3'
             >
               <Text color='#fff'>
                 Sign{loading && 'ing'} In{loading && '...'}&nbsp;&nbsp;
               </Text>
-              {loading && (
-                <Spinner
-                  as='span'
-                  animation='border'
-                  size='sm'
-                  role='status'
-                  aria-hidden='true'
-                />
-              )}
-            </Button>
+            </StyledButton>
           </Form>
         </FormContainer>
         <CreateAccountContainer className='py-3 mt-3'>
           New to Little Paws?{' '}
           <StyledLink
-            to={redirect ? `/register?redirect=${redirect}` : '/register'}
+            to='/register'
+            onClick={() => dispatch({ type: USER_LOGIN_RESET })}
           >
             Create an account
           </StyledLink>
           .
         </CreateAccountContainer>
-      </div>
+      </FormWrapper>
     </Container>
   );
 };

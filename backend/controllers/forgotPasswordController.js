@@ -4,11 +4,17 @@ import { generateToken } from '../utils/generateToken.js';
 import { send_mail } from '../server.js';
 import jwt from 'jsonwebtoken';
 
+const validateEmailRegex =
+  /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
+
 // @desc    Reset Password
-// @route   POST /api/forgot-password
+// @route   POST /api/forgotpassword
 // @access  Private
 const resetPassword = asyncHandler(async (req, res) => {
   const { email } = req.body;
+
+  if (!validateEmailRegex.test(email))
+    return res.status(404).json({ message: 'Invalid email' });
 
   const user = await User.findOne({ email });
 
@@ -22,7 +28,7 @@ const resetPassword = asyncHandler(async (req, res) => {
     });
 
   if (user) {
-    const token = generateToken(user._id);
+    const token = generateToken(user._id, '30m');
 
     user.resetPasswordToken = token;
     user.resetPasswordExpires = Date.now() + 360000;
@@ -39,20 +45,22 @@ const verifyToken = asyncHandler(async (req, res) => {
   try {
     const user = await User.findOne({ resetPasswordToken: token });
 
-    const decoded = jwt.verify(user.resetPasswordToken, process.env.JWT_SECRET);
+    const decoded = jwt.verify(
+      user?.resetPasswordToken,
+      process.env.JWT_SECRET
+    );
 
     if (Date.now() < decoded.exp * 1000) {
       res.status(200).json({ email: user.email, message: 'Access granted.' });
     }
   } catch (error) {
-    console.log('Error: ', error.message);
-    res
-      .status(401)
-      .send(
+    res.status(401).send({
+      message:
+        error.message === 'jwt must be provided' ||
         error.message === 'jwt expired'
-          ? 'Link has expired. Please register again.'
-          : 'This page has expired'
-      );
+          ? 'Session expired. Please try again.'
+          : 'Server error',
+    });
   }
 });
 

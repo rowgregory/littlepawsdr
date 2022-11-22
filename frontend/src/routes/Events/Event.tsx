@@ -3,17 +3,17 @@ import { Card } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { listEventDetails } from '../../actions/eventActions';
-import { LoadingImg } from '../../components/LoadingImg';
-import GoBackBtn from '../../utils/GoBackBtn';
-import toaster from 'toasted-notes';
-import { ToastAlert } from '../../components/common/ToastAlert';
+import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
+import Message from '../../components/Message';
+import LeftArrow from '../../components/svg/LeftArrow';
 
 const CardContainer = styled.div<{ event: any }>`
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-  padding: 5rem 0;
+  padding: 80px 16px;
   width: 100%;
   display: flex;
   justify-content: center;
+  flex-direction: column;
   min-height: calc(100vh - 526px);
   background-color: #e5e5f7;
   opacity: 0.8;
@@ -28,8 +28,7 @@ const CardContainer = styled.div<{ event: any }>`
 `;
 
 const CardTitle = styled(Card.Title)<{ color?: string }>`
-  font-size: 5rem;
-  line-height: 6rem;
+  font-size: 56px;
   text-transform: uppercase;
   text-align: center;
   font-family: 'Maven Pro', sans-serif;
@@ -61,26 +60,19 @@ const CardImg = styled(Card.Img)`
   border-radius: 50%;
   max-width: 600px;
   width: 100%;
+  padding: 24px;
 `;
 
 const Event = ({ match }: any) => {
   const eventId = match.params.id;
   const dispatch = useDispatch();
+
   const eventDetails = useSelector((state: any) => state.eventDetails);
   const { loading, error, event } = eventDetails;
 
   useEffect(() => {
     dispatch(listEventDetails(eventId));
   }, [dispatch, eventId]);
-
-  useEffect(() => {
-    if (error) {
-      toaster.notify(({ onClose }) => ToastAlert(error, onClose, 'error'), {
-        position: 'bottom',
-        duration: 20000,
-      });
-    }
-  }, [error]);
 
   const start = event?.startDate?.split('-');
   const end = event?.endDate?.split('-');
@@ -112,62 +104,32 @@ const Event = ({ match }: any) => {
     return { superscriptOrdinal, month };
   };
 
-  return error ? (
-    <></>
-  ) : (
+  return (
     <>
+      {error && <Message variant='danger'>{error}</Message>}
+      {loading && <HexagonLoader />}
       <CardContainer event={event}>
-        <div
-          style={{
-            height: '50px',
-            width: '50px',
-            borderRadius: '50%',
-            background: 'rgba(0, 0, 0, 0.2)',
-          }}
-        >
-          <GoBackBtn to='/events' color='#fff' />
-        </div>
+        <LeftArrow text='Back to events' url='/events' />
         <div
           style={{ maxWidth: '1100px', width: '100%' }}
           className='d-flex justify-content-center flex-column align-items-center'
         >
-          {loading ? (
-            <div style={{ maxWidth: '600px', width: '100%' }}>
-              <LoadingImg w='100%' h='100%' borderRadius='50%' />
-            </div>
-          ) : (
-            <CardImg src={event?.image} alt={`${event?.title}-${event?._id}`} />
-          )}
-          {loading ? (
-            <LoadingImg w='100%' h='15rem' />
-          ) : (
-            <CardTitle color={event?.color} className='mb-0'>
-              {event?.title}
-            </CardTitle>
-          )}
-
-          {loading ? (
-            <div className='mt-5'>
-              <LoadingImg w='20rem' h='5rem' />
-            </div>
-          ) : (
-            <>
-              <div className='d-flex w-100 justify-content-center align-items-center'>
-                <Month color={event?.color}>
-                  {start && getOrdinalDate(start).month}
-                  {start && getOrdinalDate(start).superscriptOrdinal}
-                </Month>
-                <Month color={event?.color}>-</Month>
-                <Month color={event?.color}>
-                  {end && getOrdinalDate(end).month}
-                  {end && getOrdinalDate(end).superscriptOrdinal}
-                </Month>
-              </div>
-              <Description color={event?.color}>
-                {event?.description}
-              </Description>
-            </>
-          )}
+          <CardImg src={event?.image} alt={`${event?.title}-${event?._id}`} />
+          <CardTitle color={event?.color} className='mb-0'>
+            {event?.title}
+          </CardTitle>
+          <div className='d-flex w-100 justify-content-center align-items-center'>
+            <Month color={event?.color}>
+              {start && getOrdinalDate(start).month}
+              {start && getOrdinalDate(start).superscriptOrdinal}
+            </Month>
+            <Month color={event?.color}>-</Month>
+            <Month color={event?.color}>
+              {end && getOrdinalDate(end).month}
+              {end && getOrdinalDate(end).superscriptOrdinal}
+            </Month>
+          </div>
+          <Description color={event?.color}>{event?.description}</Description>
         </div>
       </CardContainer>
     </>

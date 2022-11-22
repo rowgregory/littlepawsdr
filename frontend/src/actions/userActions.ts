@@ -13,17 +13,14 @@ import {
   USER_DETAILS_RESET,
   USER_DETAILS_SUCCESS,
   USER_GENERATE_NEW_TOKEN_FAIL,
-  USER_GENERATE_NEW_TOKEN_RESET,
   USER_LIST_FAIL,
   USER_LIST_REQUEST,
-  USER_LIST_RESET,
   USER_LIST_SUCCESS,
   USER_LOGIN_FAIL,
   USER_LOGIN_REQUEST,
   USER_LOGIN_SUCCESS,
   USER_LOGOUT_FAIL,
   USER_LOGOUT_REQUEST,
-  USER_LOGOUT_SUCCESS,
   USER_OLD_PASSWORD_FAIL,
   USER_OLD_PASSWORD_REQUEST,
   USER_OLD_PASSWORD_SUCCESS,
@@ -190,6 +187,7 @@ export const updateUserProfile =
 
       dispatch({ type: USER_UPDATE_PROFILE_SUCCESS, payload: data });
       dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
+      dispatch({ type: USER_DETAILS_SUCCESS, payload: data });
 
       sessionStorage.setItem('userInfo', JSON.stringify(data));
     } catch (error: any) {
@@ -328,7 +326,6 @@ export const logout = (user: any) => async (dispatch: any, getState: any) => {
     };
 
     const { data } = await axios.put('/api/users/logout', user, config);
-
     if (data === 'LOGOUT_SUCCESS') {
       document.location.href = '/login';
 
@@ -349,12 +346,6 @@ export const logout = (user: any) => async (dispatch: any, getState: any) => {
         JSON.stringify(continuedToSite)
       );
       localStorage.setItem('newsletterEmail', JSON.stringify(newsletterEmail));
-
-      dispatch({ type: USER_LOGOUT_SUCCESS });
-      dispatch({ type: USER_DETAILS_RESET });
-      dispatch({ type: USER_LIST_RESET });
-      dispatch({ type: USER_GENERATE_NEW_TOKEN_RESET });
-      dispatch({ type: GUEST_USER_REGISTER_RESET });
     }
   } catch (error: any) {
     dispatch({
