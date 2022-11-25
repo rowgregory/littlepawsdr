@@ -20,7 +20,7 @@ import forgotPasswordRoutes from './routes/forgotPasswordRoutes.js';
 import newsletterRoutes from './routes/newsletterRoutes.js';
 import eCardRoutes from './routes/eCardRoutes.js';
 import eCardOrderRoutes from './routes/eCardOrderRoutes.js';
-import logoClickRoutes from './routes/logoClickRoutes.js';
+// import logoClickRoutes from './routes/logoClickRoutes.js';
 import raffleWinnerRoutes from './routes/raffleWinnerRoutes.js';
 import blogRoutes from './routes/BlogRoutes.js';
 import educationTipRoutes from './routes/educationTipRoutes.js';
@@ -240,7 +240,7 @@ app.use('/api/raffle-winner', raffleWinnerRoutes);
 app.use('/api/blog', blogRoutes);
 app.use('/api/manually-add-user', manuallyAddedUserRoutes);
 app.use('/api/recaptcha', recaptchaRoutes);
-app.use('/api/logo-clicks', logoClickRoutes);
+// app.use('/api/logo-clicks', logoClickRoutes);
 app.use('/api/error', errorRoutes);
 
 const PORT = process.env.PORT || 5000;
