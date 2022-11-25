@@ -4,7 +4,6 @@ import { useLocation } from 'react-router-dom';
 import GoBackToCartModal from '../components/GoBackToCartModal';
 import HexagonLoader from '../components/Loaders/HexagonLoader/HexagonLoader';
 import { PayPalButtons, usePayPalScriptReducer } from '@paypal/react-paypal-js';
-import axios from 'axios';
 import { createECardOrder } from '../actions/eCardOrderActions';
 import {
   Container,
@@ -132,10 +131,9 @@ const EcardPlaceOrder = ({ history }: any) => {
 
   useEffect(() => {
     const addPayPalScript = async () => {
-      const { data: clientId } = await axios.get('/api/config/paypal');
       const script = document.createElement('script');
       script.type = 'text/javascript';
-      script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}`;
+      script.src = `https://www.paypal.com/sdk/js?client-id=${process.env.REACT_APP_PAYPAL_CLIENT_ID}`;
       script.async = true;
       script.onload = () => setSdkReady(true);
       document.body.appendChild(script);

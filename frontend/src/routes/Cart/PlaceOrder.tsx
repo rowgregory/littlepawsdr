@@ -1,6 +1,5 @@
 /* eslint-disable array-callback-return */
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { Col, Image } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { PayPalButtons, usePayPalScriptReducer } from '@paypal/react-paypal-js';
@@ -67,10 +66,9 @@ const PlaceOrder = ({ history }: any) => {
 
   useEffect(() => {
     const addPayPalScript = async () => {
-      const { data: clientId } = await axios.get('/api/config/paypal');
       const script = document.createElement('script');
       script.type = 'text/javascript';
-      script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}`;
+      script.src = `https://www.paypal.com/sdk/js?client-id=${process.env.REACT_APP_PAYPAL_CLIENT_ID}`;
       script.async = true;
       script.onload = () => setSdkReady(true);
       document.body.appendChild(script);

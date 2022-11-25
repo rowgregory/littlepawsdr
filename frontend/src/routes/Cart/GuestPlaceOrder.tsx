@@ -126,11 +126,10 @@ const GuestPlaceOrder = ({ history }: any) => {
   const strength = validations.reduce((acc, cur) => acc + cur, 0);
 
   useEffect(() => {
-    const clientId = process.env.REACT_APP_PAYPAL_CLIENT_ID as any;
     const addPayPalScript = async () => {
       const script = document.createElement('script');
       script.type = 'text/javascript';
-      script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}`;
+      script.src = `https://www.paypal.com/sdk/js?client-id=${process.env.REACT_APP_PAYPAL_CLIENT_ID}`;
       script.async = true;
       script.onload = () => setSdkReady(true);
       document.body.appendChild(script);

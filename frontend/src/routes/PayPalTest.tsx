@@ -7,7 +7,11 @@ const PayPalTest = () => {
   const [sdkReady, setSdkReady] = useState(false);
 
   useEffect(() => {
-    const addPayPalScript = () => {
+    const addPayPalScript = async () => {
+      console.log(
+        'REACT_APP_PAYPAL_CLIENT_ID: ',
+        process.env.REACT_APP_PAYPAL_CLIENT_ID
+      );
       const script = document.createElement('script');
       script.type = 'text/javascript';
       script.src = `https://www.paypal.com/sdk/js?client-id=${process.env.REACT_APP_PAYPAL_CLIENT_ID}`;
