@@ -1,19 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { Text } from '../components/styles/Styles';
 import { PayPalButtons } from '@paypal/react-paypal-js';
-import axios from 'axios';
-import { useDispatch } from 'react-redux';
 import HexagonLoader from '../components/Loaders/HexagonLoader/HexagonLoader';
 
 const PayPalTest = () => {
   const [sdkReady, setSdkReady] = useState(false);
-  const dispatch = useDispatch();
+
   useEffect(() => {
-    const addPayPalScript = async () => {
-      const { data: clientId } = await axios.get('/api/config/paypal');
+    const addPayPalScript = () => {
       const script = document.createElement('script');
       script.type = 'text/javascript';
-      script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}`;
+      script.src = `https://www.paypal.com/sdk/js?client-id=${process.env.REACT_APP_PAYPAL_CLIENT_ID}`;
       script.async = true;
       script.onload = () => setSdkReady(true);
       document.body.appendChild(script);
@@ -22,7 +19,7 @@ const PayPalTest = () => {
     if (!sdkReady) {
       addPayPalScript();
     }
-  }, [dispatch, sdkReady]);
+  }, [sdkReady]);
   const payPalComponents = {
     style: { layout: 'vertical' },
     createOrder: () => {},
