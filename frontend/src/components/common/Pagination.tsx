@@ -22,6 +22,7 @@ export const rangeV2 = (
           onClick={(e) => {
             if (+paginatedPage !== i) {
               setPaginatedPage(i);
+              window.scrollTo(0, 500);
             }
           }}
         >

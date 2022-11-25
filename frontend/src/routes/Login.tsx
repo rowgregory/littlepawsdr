@@ -113,7 +113,7 @@ const Login = ({ location, history }: any) => {
         <Text fontSize='1.5rem' textAlign='center' marginBottom='0.65rem'>
           Sign in to Little Paws
         </Text>
-        <LeftArrow text='Back to home' url='/' />
+        <LeftArrow text='To Home' url='/' />
         <FormContainer>
           {error && <Message variant='danger'>{error}</Message>}
           {capsLockOn && <Message variant='warning'>(Caps Lock is on)</Message>}

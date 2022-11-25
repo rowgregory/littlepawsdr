@@ -48,9 +48,9 @@ input[type='month'], input[type='date'] {
 }
 
 .accordion .faq:hover {
-  background: ${({ theme }) => theme.colors.primary};
+  background: ${({ theme }) => theme.colors.quinary};
   transition: 300ms;
-  border-radius: 0;
+  border-radius: 0 !important;
 }
 .accordion .faq:hover div {
   color: #fff;

@@ -1,38 +1,19 @@
-import React from "react";
-import styled from "styled-components";
+import React from 'react';
 
-const DropDownArrow = styled.svg`
-  fill: ${({ theme }) => theme.colors.primary};
-  position: absolute;
-  transform: scale(1.5);
-`;
-
-const UpArrow = ({
-  top,
-  right,
-  left,
-}: {
-  top?: string;
-  right?: string;
-  left?: string;
-}) => {
+const UpArrow = () => {
   return (
-    <DropDownArrow
-      version="1.1"
-      id="Capa_1"
-      xmlns="http://www.w3.org/2000/svg"
-      x="0px"
-      y="0px"
-      viewBox="0 0 490 490"
-      width="12px"
-      style={{
-        top,
-        right,
-        left,
-      }}
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      x='0px'
+      y='0px'
+      viewBox='0 0 476.213 476.213'
+      width='18pt'
     >
-      <path d="M490,474.459H0L245.009,15.541L490,474.459z" />
-    </DropDownArrow>
+      <polygon
+        fill='#fff'
+        points='314.32,76.213 238.109,0 161.893,76.213 223.107,76.213 223.107,476.213 253.107,476.213 253.107,76.213 '
+      />
+    </svg>
   );
 };
 

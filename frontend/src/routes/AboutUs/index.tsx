@@ -34,46 +34,6 @@ const WhatWeBelieveContainer = styled.div`
 const WhatWeBelieve = () => {
   return (
     <WhatWeBelieveContainer>
-      <JumboAndWaveContainer>
-        <Jumbo>
-          <TitleAndIntroTextContainer>
-            <Title>About Us</Title>
-            <IntroText className='mb-3'>
-              We believe that dogs truly are man’s (and woman’s) best friend and
-              that our beloved companions deserve the right to a soft bed,
-              generous treats and unconditional love.
-            </IntroText>
-            <IntroText className='mb-3'>
-              We believe in rescue. We believe in the power of cooperation and
-              teamwork to make this happen. We believe in volunteers who can
-              work together to help make a difference in the life of three puppy
-              mill dogs who have spent their lives in cramped cages and now have
-              a chance at a bright future thanks to the teamwork of Little Paws
-              Dachshund Rescue and Carolina Loving Hound Rescue.
-            </IntroText>
-            <IntroText>
-              We believe that two sweet puppies left behind at a veterinarian’s
-              office deserve a life full of toys and fun and snuggles. We
-              believe Little Paws Dachshund Rescue can help change the lives of
-              these dogs, and many, many more in the future.
-            </IntroText>
-            <IntroText>
-              Do you believe? Are you ready to help us achieve our mission? In
-              the coming weeks we will be putting out calls for volunteers for
-              many roles within our rescue. So many of you have reached out and
-              asked how you can help! We are touched by everyone’s generosity.
-            </IntroText>
-            <IntroText>
-              Right now, we are in need of monetary donations. Happy endings for
-              our dachshunds in need can only happen with your support. Please
-              allow us to continue to say “YES WE CAN” to those calls asking for
-              assistance with a dachshund left behind at an animal shelter, or a
-              dog who has been neglected and abused and deserves a warm bed and
-              a kind hand to rub his or her tummy.
-            </IntroText>
-          </TitleAndIntroTextContainer>
-        </Jumbo>
-      </JumboAndWaveContainer>
       <div style={{ flex: 1 }} className='p-3'>
         <h5 className='mb-4'>Where we Rescue</h5>
         {[

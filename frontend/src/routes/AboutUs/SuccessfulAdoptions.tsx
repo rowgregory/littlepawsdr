@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 import { Text } from '../../components/styles/Styles';
 import { formatDate } from '../../utils/formatDate';
 import { LoadingImg } from '../../components/LoadingImg';
-import AdoptedDog from '../../components/assets/adopted_dog01.jpg';
+import Successful from '../../components/assets/successful03.jpeg';
 import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
 import { PaginationContainer } from '../../components/styles/admin/Styles';
 import { rangeV2 } from '../../components/common/Pagination';
@@ -69,7 +69,7 @@ const SuccessfulAdoptions = () => {
   let { error, dachshunds, loading } = dachshund;
 
   useEffect(() => {
-    const itemsPerPage = 12;
+    const itemsPerPage = 24;
     const indexOfLastItem = paginatedPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
@@ -85,7 +85,7 @@ const SuccessfulAdoptions = () => {
       {loading && <HexagonLoader />}
       <div style={{ position: 'relative', marginTop: '56px' }}>
         <Image
-          src={AdoptedDog}
+          src={Successful}
           width='100%'
           style={{ height: '500px', objectFit: 'cover' }}
         />
@@ -102,13 +102,38 @@ const SuccessfulAdoptions = () => {
         >
           Successful Adoptions
         </Text>
+        <Text
+          onClick={() =>
+            window.open(
+              'https://unsplash.com/@nivia?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText',
+              '_blank'
+            )
+          }
+          fontWeight={500}
+          fontSize='10px'
+          color='#fff'
+          cursor='pointer'
+          style={{
+            mixBlendMode: 'difference',
+            position: 'absolute',
+            bottom: '10px',
+            right: '10px',
+            zIndex: 2,
+          }}
+        >
+          Photo by Nivia Espinoza
+        </Text>
       </div>
       {error && <Message variant='danger'>{error}</Message>}
-
       <Container>
         <div className='w-100 d-flex justify-content-between mt-3'>
-          <LeftArrow text='To home' url='/' text2='Hold' url2='/about/hold' />
-          <RightArrow text='To rainbow bridge' url='/about/rainbow-bridge' />
+          <LeftArrow
+            text='To Home'
+            url='/'
+            text2='On Hold'
+            url2='/about/hold'
+          />
+          <RightArrow text='Rainbow Bridge' url='/about/rainbow-bridge' />
         </div>
         {loading && (
           <DogContainer>
@@ -165,7 +190,7 @@ const SuccessfulAdoptions = () => {
         </DogContainer>
         <PaginationContainer>
           <Pagination className='my-3'>
-            {rangeV2(dachshunds, paginatedPage, setPaginatedPage, 12)}
+            {rangeV2(dachshunds, paginatedPage, setPaginatedPage, 24)}
           </Pagination>
         </PaginationContainer>
       </Container>

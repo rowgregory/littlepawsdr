@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import SubscribeBtn from '../../components/assets/subscribe_btn_3.png';
 import styled from 'styled-components';
 import { Text } from '../../components/styles/Styles';
-import SponsorDog from '../../components/assets/sponsor_dog.webp';
+import SponsorDog from '../../components/assets/sanctuary01.jpeg';
 import { Image } from 'react-bootstrap';
 import SponsorGift from '../../components/svg/SponsorGift';
 import { useDispatch, useSelector } from 'react-redux';
@@ -120,6 +120,27 @@ const SponsorSanctuary = () => {
         >
           Sponsor an animal
         </Text>
+        <Text
+          onClick={() =>
+            window.open(
+              'https://www.pexels.com/photo/adorable-puppy-of-dachshund-in-park-4193995/',
+              '_blank'
+            )
+          }
+          fontWeight={500}
+          fontSize='10px'
+          color='#fff'
+          cursor='pointer'
+          style={{
+            mixBlendMode: 'difference',
+            position: 'absolute',
+            bottom: '10px',
+            right: '10px',
+            zIndex: 2,
+          }}
+        >
+          Photo by Dominika Roseclay
+        </Text>
       </div>
       <div
         style={{
@@ -133,12 +154,12 @@ const SponsorSanctuary = () => {
         {error && <Message variant='danger'>{error}</Message>}
         <div className='w-100 d-flex justify-content-between mt-3'>
           <LeftArrow
-            text='To home'
+            text='To Home'
             url='/'
             text2='Available Dachshunds'
             url2='/available'
           />
-          <RightArrow text='To surrender' url='/surrender' />
+          <RightArrow text='Surrender' url='/surrender' />
         </div>
         <Text fontSize='32px' marginTop='56px' fontWeight={400}>
           In addition to our adoptable dogs, we have sanctuary foster dogs.

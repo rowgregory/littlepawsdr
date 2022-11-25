@@ -6,6 +6,7 @@ import RightSideNavbar from './navbar/RightSideNavbar';
 import LeftNavigation from './navbar/LeftNavigation';
 import Logo from '../components/assets/logo-background-transparent.png';
 import { FAIcons } from './styles/NavbarStyles';
+import axios from 'axios';
 
 const Container = styled.div<{ show: boolean; p: string }>`
   position: fixed;
@@ -42,6 +43,10 @@ const Navbar = () => {
     };
   }, []);
 
+  const createClick = async () => {
+    await axios.post('/api/logo-clicks', 'click');
+  };
+
   return ![
     'admin',
     'login',
@@ -63,6 +68,7 @@ const Navbar = () => {
           </FAIcons>
           <Link to='/'>
             <Image
+              onClick={() => createClick()}
               className='py-1'
               style={{ maxHeight: '56px', minHeight: '100%' }}
               src={Logo}

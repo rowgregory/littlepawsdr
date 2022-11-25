@@ -82,6 +82,8 @@ const ProductDetails = ({ match, history }: any) => {
               style={{
                 aspectRatio: '1/1',
                 objectFit: 'cover',
+                maxWidth: '600px',
+                marginBottom: '24px',
               }}
             />
           )}

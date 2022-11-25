@@ -27,7 +27,7 @@ import { Link } from 'react-router-dom';
 export const LargeGrid = ({ isLargeGrid, large }: any) => {
   return (
     <LargeGridSquareContainer active={isLargeGrid} onClick={() => large(true)}>
-      {[...Array(9).keys()].map((_: any, i: number) => (
+      {[...Array(16).keys()].map((_: any, i: number) => (
         <div key={i}></div>
       ))}
     </LargeGridSquareContainer>
@@ -36,7 +36,7 @@ export const LargeGrid = ({ isLargeGrid, large }: any) => {
 export const SmallGrid = ({ isLargeGrid, small }: any) => {
   return (
     <SmallGridSquareContainer active={isLargeGrid} onClick={() => small(false)}>
-      {[...Array(4).keys()].map((_: any, i: number) => (
+      {[...Array(9).keys()].map((_: any, i: number) => (
         <div key={i}></div>
       ))}
     </SmallGridSquareContainer>
@@ -68,7 +68,7 @@ const Shop = () => {
     return (
       <div
         style={{
-          height: 'calc(100vh - 611.5px)',
+          height: 'calc(100vh - 475.5px)',
           width: '100%',
           padding: '56px 16px',
           marginInline: 'auto',

@@ -10,7 +10,7 @@ import NoImgDog from '../../components/assets/no_image_dog.jpg';
 import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
 import { PaginationContainer } from '../../components/styles/admin/Styles';
 import { rangeV2 } from '../../components/common/Pagination';
-import OnHoldDog from '../../components/assets/surrender_dog04.jpg';
+import OnHoldDog from '../../components/assets/hold01.jpeg';
 import LeftArrow from '../../components/svg/LeftArrow';
 import RightArrow from '../../components/svg/RightArrow';
 import { LoadingImg } from '../../components/LoadingImg';
@@ -100,17 +100,38 @@ const DogsOnHold = () => {
         >
           On Hold
         </Text>
+        <Text
+          onClick={() =>
+            window.open(
+              'https://unsplash.com/@jummmm?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText',
+              '_blank'
+            )
+          }
+          fontWeight={500}
+          fontSize='10px'
+          color='#fff'
+          cursor='pointer'
+          style={{
+            mixBlendMode: 'difference',
+            position: 'absolute',
+            bottom: '10px',
+            right: '10px',
+            zIndex: 2,
+          }}
+        >
+          Photo by jum.jpeg
+        </Text>
       </div>
       <Container>
         <div className='w-100 d-flex justify-content-between mt-3'>
           <LeftArrow
-            text='To home'
+            text='To Home'
             url='/'
             text2='Surrender'
             url2='/surrender'
           />
           <RightArrow
-            text='To successful adoptions'
+            text='Successful Adoptions'
             url='/about/successful-adoptions'
           />
         </div>

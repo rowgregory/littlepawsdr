@@ -33,6 +33,7 @@ const Footer = () => {
     'forgot-password',
     '/e-card/place-order',
     'cart',
+    'paypal/test',
   ].some((a: string) => pathname.includes(a)) ? (
     <StyledFooter>
       <TopFooter>

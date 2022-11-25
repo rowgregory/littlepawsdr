@@ -3,17 +3,19 @@ import styled from 'styled-components';
 
 export const ProductDetailsContainer = styled.div`
   display: grid;
-  grid-template-columns: 100%;
-  padding: 0 2rem;
-  margin-bottom: 5rem;
+  grid-template-columns: 1fr;
+  padding: 128px 16px;
+  max-width: ${({ theme }) => theme.breakpoints[3]};
+  width: 100%;
+  margin-inline: auto;
+
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-    grid-template-columns: 40% 30% 300px;
+    grid-template-columns: 40% 30% 20%;
     justify-content: center;
   }
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    grid-template-columns: 50% 30% 300px;
+    grid-template-columns: 50% 30% 20%;
     justify-content: center;
-    padding-top: 2.5rem;
   }
 `;
 
@@ -25,16 +27,12 @@ export const ProductPrice = styled.div`
 
 export const SelectInputContainer = styled.div`
   position: relative;
-  /* border: 1px solid #dbdbdb; */
   margin-right: 16px;
-  /* width: 145px; */
-
   display: flex;
   flex-direction: column;
 
   select {
     appearance: none;
-    /* background: ${({ theme }) => theme.white} !important; */
     background-image: ${({ theme }) =>
       `url("data:image/svg+xml;utf8,<svg fill='${
         theme.mode === 'day' ? 'black' : 'white'
@@ -57,7 +55,7 @@ export const Quantity = styled.div`
   top: 9px;
   left: 16px;
   z-index: 6;
-  color: #fff;
+  color: ${({ theme }) => theme.text};
   :hover {
     color: ${({ theme }) => theme.colors.quinary} !important;
   }
@@ -75,7 +73,6 @@ export const SelectInput = styled(Form.Control)<{ bg?: any; color?: any }>`
     outline: none !important;
   }
   :hover {
-    /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24); */
     color: ${({ theme, color }) =>
       color ? color : theme.colors.quinary} !important;
   }
@@ -189,7 +186,6 @@ export const ReviewsAndRatingsContainer = styled.div`
   background: ${({ theme }) => theme.bg};
 
   .column {
-    /* max-width: 100rem; */
     width: 100%;
     margin: 0 auto;
   }

@@ -2,8 +2,10 @@ import React from 'react';
 import styled, { useTheme } from 'styled-components';
 import { Text } from '../../components/styles/Styles';
 
-import AdoptionAppDog from '../../components/assets/adoption_app01.jpg';
+import AdoptionAppDog from '../../components/assets/adopt_app_dog01.jpeg';
 import { Image } from 'react-bootstrap';
+import LeftArrow from '../../components/svg/LeftArrow';
+import RightArrow from '../../components/svg/RightArrow';
 
 const AdoptionApplicationIFrame = styled.iframe<{ pageKey?: string }>`
   border: none;
@@ -38,6 +40,27 @@ const AdoptionApplication = () => {
         >
           Adoption Application
         </Text>
+        <Text
+          onClick={() =>
+            window.open(
+              'https://unsplash.com/@erdaest?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText',
+              '_blank'
+            )
+          }
+          fontWeight={500}
+          fontSize='10px'
+          color='#fff'
+          cursor='pointer'
+          style={{
+            mixBlendMode: 'difference',
+            position: 'absolute',
+            bottom: '10px',
+            right: '10px',
+            zIndex: 2,
+          }}
+        >
+          Photo by Erda Estremera
+        </Text>
       </div>
       <div
         style={{
@@ -48,15 +71,19 @@ const AdoptionApplication = () => {
           paddingInline: '16px',
         }}
       >
+        <div className='w-100 d-flex justify-content-between mt-3'>
+          <LeftArrow text='To Home' url='/' text2='Donate' url2='/donate' />
+          <RightArrow text='Adopt a senior' url='/available/senior' />
+        </div>
         <Text fontSize='32px' fontWeight={400} marginTop='56px'>
           Thank you for considering adopting a rescued dachshund. Submission of
           this application does not guarantee that you will receive a dog. We do
           not adopt to anyone under the age of 21.
         </Text>
-        <Text className='mb-3 mt-4' fontWeight={400}>
+        <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='18px'>
           This application can take 15 - 30 minutes to complete.
         </Text>
-        <Text>
+        <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='18px'>
           Once your application is received and your vet and personal references
           are approved, you will be notified that a LPDR volunteer will conduct
           a homevisit. A homevisit is scheduled at a time that is convenient for
@@ -65,10 +92,10 @@ const AdoptionApplication = () => {
           volunteer will inspect the locations where the dachshund will eat,
           sleep and play.
         </Text>
-        <Text className='my-3' fontSize='14px'>
+        <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='18px'>
           <u>TRANSPORTATION HELP!</u>
         </Text>
-        <Text>
+        <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='18px'>
           If you see a furbaby that would be a match for your family, please
           don’t let distance stand in the way of your adoption. LPDR can work
           with you to have a volunteer transport to assist with transportation
@@ -76,15 +103,15 @@ const AdoptionApplication = () => {
           inSectioniduals on the East Coast but will consider other locations
           also!
         </Text>
-        <Text className='my-3' fontSize='14px'>
+        <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='18px'>
           <u>OFF-LEASH AND INVISIBLE FENCE POLICY</u>
         </Text>
-        <Text>
+        <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='18px'>
           We understand that some of the very best adopters don't have fenced
           yards. Unlike some other rescues, we do not impose the rule that all
           adopters must have fenced yards in order to adopt.
         </Text>
-        <Text className='my-3'>
+        <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='18px'>
           Dachshunds are, by breed definition, scent hounds. They wi ll often go
           into hunting mode, zoning out their humans. For their own protection,
           the majority of LPDR dogs will need to be adopted into home
@@ -93,7 +120,7 @@ const AdoptionApplication = () => {
           that there is a subset of dogs that do not do well on leashes and will
           only be adoptable to applicants with fenced homes.
         </Text>
-        <Text>
+        <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='18px'>
           It is LPDR's position that invisible fences are not suitable for
           dachshunds for a number of reasons. Dachshunds are known for
           protecting their humans and others they view as part of their pack.
@@ -107,29 +134,35 @@ const AdoptionApplication = () => {
           been the downfall of many small dogs. For those reasons, it will be
           uncommon that we adopt to people who utilize invisible fences.
         </Text>
-        <Text className='my-3'>Again, thank you for wanting to adopt.</Text>
-        <Text>Sincerely,</Text>
-        <Text className='mb-3'>
+        <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='18px'>
+          Again, thank you for wanting to adopt.
+        </Text>
+        <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='18px'>
+          Sincerely,
+        </Text>
+        <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='18px'>
           Little Paws Dachshund Rescue Board of Directors
         </Text>
-        {isDay ? (
-          <AdoptionApplicationIFrame
-            title='Adoption Application'
-            width='100%'
-            height='7250px'
-            scrolling='no'
-            src='https://toolkit.rescuegroups.org/of/f?c=WHMQCBRV'
-          ></AdoptionApplicationIFrame>
-        ) : (
-          <AdoptionApplicationIFrame
-            aria-autocomplete='none'
-            scrolling='no'
-            title='Adoption Application'
-            width='100%'
-            height='7250px'
-            src='https://toolkit.rescuegroups.org/of/f?c=ZKCVRYSQ'
-          ></AdoptionApplicationIFrame>
-        )}
+        <Text maxWidth='722px' className='mb-3 mt-4 mx-auto'>
+          {isDay ? (
+            <AdoptionApplicationIFrame
+              title='Adoption Application'
+              width='100%'
+              height='7250px'
+              scrolling='no'
+              src='https://toolkit.rescuegroups.org/of/f?c=WHMQCBRV'
+            ></AdoptionApplicationIFrame>
+          ) : (
+            <AdoptionApplicationIFrame
+              aria-autocomplete='none'
+              scrolling='no'
+              title='Adoption Application'
+              width='100%'
+              height='7250px'
+              src='https://toolkit.rescuegroups.org/of/f?c=ZKCVRYSQ'
+            ></AdoptionApplicationIFrame>
+          )}
+        </Text>
       </div>
     </>
   );

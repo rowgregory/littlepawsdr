@@ -7,7 +7,7 @@ import Message from '../../components/Message';
 import { Link } from 'react-router-dom';
 import { Text } from '../../components/styles/Styles';
 import { LoadingImg } from '../../components/LoadingImg';
-import RanbowBridgeDog from '../../components/assets/rainbow_bridge01.jpg';
+import RanbowBridgeDog from '../../components/assets/rainbow-bridge_dog01.jpeg';
 import NoImgDog from '../../components/assets/no_image_dog.jpg';
 import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
 import { PaginationContainer } from '../../components/styles/admin/Styles';
@@ -101,16 +101,37 @@ const RainbowBridge = () => {
         >
           Rainbow Bridge
         </Text>
+        <Text
+          onClick={() =>
+            window.open(
+              'https://unsplash.com/@hannesnetzell?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText',
+              '_blank'
+            )
+          }
+          fontWeight={500}
+          fontSize='10px'
+          color='#fff'
+          cursor='pointer'
+          style={{
+            mixBlendMode: 'difference',
+            position: 'absolute',
+            bottom: '10px',
+            right: '10px',
+            zIndex: 2,
+          }}
+        >
+          Photo by Hannes Netzell
+        </Text>
       </div>
       <Container>
         <div className='w-100 d-flex justify-content-between mt-3'>
           <LeftArrow
-            text='To home'
+            text='To Home'
             url='/'
             text2='Successful Adoptions'
             url2='/about/successful-adoptions'
           />
-          <RightArrow text='To donate' url='/donate' />
+          <RightArrow text='Donate' url='/donate' />
         </div>
         {loading && (
           <DogContainer>

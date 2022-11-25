@@ -7,10 +7,11 @@ import FeedAFoster from '../../components/donate/FeedAFoster';
 import PageNotFound from '../../components/common/PageNotFound';
 import DonateLayoutWithSideBar from '../../components/layouts/DonateLayoutWithSideBar';
 import styled from 'styled-components';
-import DonateDog from '../../components/assets/donate_dog01.jpg';
+import DonateDog from '../../components/assets/donate_dog02.jpeg';
 import { Image } from 'react-bootstrap';
 import SponsorGift from '../../components/svg/SponsorGift';
 import LeftArrow from '../../components/svg/LeftArrow';
+import RightArrow from '../../components/svg/RightArrow';
 
 const DonateLink = styled(Link)`
   font-size: 16px;
@@ -108,6 +109,27 @@ const DonateRoutes = () => {
             >
               Donate
             </Text>
+            <Text
+              onClick={() =>
+                window.open(
+                  'https://unsplash.com/@alonsoreyes?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText',
+                  '_blank'
+                )
+              }
+              fontWeight={500}
+              fontSize='10px'
+              color='#fff'
+              cursor='pointer'
+              style={{
+                mixBlendMode: 'difference',
+                position: 'absolute',
+                bottom: '10px',
+                right: '10px',
+                zIndex: 2,
+              }}
+            >
+              Photo by Alonso Reyes
+            </Text>
           </div>
           <div
             style={{
@@ -120,11 +142,12 @@ const DonateRoutes = () => {
           >
             <div className='w-100 d-flex justify-content-between mt-3'>
               <LeftArrow
-                text='To home'
+                text='To Home'
                 url='/'
                 text2='Rainbow Bridge'
                 url2='/about/rainbow-bridge'
               />
+              <RightArrow text='Adoption Application' url='/adopt' />
             </div>
             <Text
               fontSize='32px'

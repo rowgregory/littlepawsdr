@@ -139,7 +139,7 @@ const ThreeOptions = styled.div`
   box-sizing: border-box;
 
   gap: 0.5rem;
-  width: 100%;
+  width: 75%;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
@@ -154,6 +154,7 @@ const DifferenceCard = styled(Link)<{
     aspect-ratio: 1/1;
     position: relative;
     width: 100%;
+    border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -163,6 +164,9 @@ const DifferenceCard = styled(Link)<{
     background: ${({ bgcolor }) => bgcolor};
     div {
       color: #fff;
+    }
+    :hover {
+      text-decoration: none;
     }
   }
 `;
@@ -183,6 +187,18 @@ const Home = () => {
   return (
     <>
       <Banner />
+      <Text
+        className='d-flex justify-content-end'
+        marginRight='4px'
+        marginTop='4px'
+        cursor='pointer'
+        fontSize='9px'
+        onClick={() =>
+          window.open('https://mixkit.co/@rubenvelasco/', '_blank')
+        }
+      >
+        Video by Ruben Velasco{' '}
+      </Text>
       <HomeContainer>
         <OurLovablePals />
         <Mission />

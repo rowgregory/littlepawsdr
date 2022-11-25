@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Button, Card, Image } from 'react-bootstrap';
+import { Button, Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
 export const StyledCard = styled(Card)`
@@ -14,12 +14,11 @@ export const StyledCard = styled(Card)`
 `;
 
 export const CardTitle = styled.div`
-  margin: 0;
-  color: ${({ theme }) => theme.text};
-  font-weight: 700;
+  font-weight: 600;
   text-transform: uppercase;
-  font-family: Montseratt, sans-serif;
   letter-spacing: 2.8px;
+  max-width: 680px;
+  margin-inline: auto;
 `;
 
 export const Path = styled.path`
@@ -58,10 +57,6 @@ export const Text = styled.div<TextProps>`
   margin-top: ${({ marginTop }) => (marginTop ? marginTop : '0')};
   font-weight: ${({ fontWeight }) => (fontWeight ? fontWeight : 300)};
   font-family: ${({ fontFamily }) => (fontFamily ? fontFamily : `Roboto`)};
-  /* font-family: ${({ fontFamily }) =>
-    fontFamily ? fontFamily : `Oswald`}; */
-  /* font-family: ${({ fontFamily }) =>
-    fontFamily ? fontFamily : `Montserrat, sans-serif`}; */
   color: ${({ theme, color }) => (color ? color : theme.text)};
   text-align: ${({ textAlign }) => (textAlign ? textAlign : '')};
   padding: ${({ p }) => (p ? p : '')};
@@ -77,20 +72,6 @@ export const Text = styled.div<TextProps>`
   height: ${({ height }) => (height ? height : '')};
   cursor: ${({ cursor }) => (cursor ? cursor : '')};
   max-width: ${({ maxWidth }) => (maxWidth ? maxWidth : '')};
-`;
-
-export const StyledUloadedImg = styled(Image)<{ show?: any }>`
-  width: 200px;
-  height: 200px;
-  object-fit: cover;
-  /* border-radius: 50%; */
-  cursor: pointer;
-  transition: 300ms;
-  filter: ${({ show }) => (show === 'true' ? 'brightness(1.3)' : '')};
-  margin-right: 32px;
-  :hover {
-    filter: brightness(0.95);
-  }
 `;
 
 export const UpdateBtn = styled(Button)`

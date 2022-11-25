@@ -29,6 +29,7 @@ import GuestOrderPayPal from './GuestOrderPayPal';
 import ECards from './ECards';
 import ECardDetails from './ECardDetails';
 import EcardPlaceOrder from './EcardPlaceOrder';
+import PayPalTest from './PayPalTest';
 
 type LazyModulePromise<T = {}> = Promise<{ default: ComponentType<T> }>;
 
@@ -115,6 +116,7 @@ export const Routes: FC = () => {
           />
           <Route path='/paypal/order' component={OrderPayPal} />
           <Route path='/paypal/guest-order' component={GuestOrderPayPal} />
+          <Route exact path='/paypal/test' component={PayPalTest} />
           <Route exact path='/' component={Home} />
           <Route path='/404' component={PageNotFound} />
           <Redirect to='/404' />

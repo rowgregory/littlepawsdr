@@ -122,6 +122,7 @@ const JumpingInput = ({
   setShowPassword,
   disabled,
   isTextArea,
+  autocomplete,
 }: any) => {
   const todaysDate = new Date().toISOString().split('T')[0];
   return (
@@ -156,6 +157,7 @@ const JumpingInput = ({
       ) : (
         <>
           <Input
+            autoComplete={autocomplete ? 'off' : 'on'}
             t={type}
             min={type === 'date' ? todaysDate : ''}
             placeholder=' '

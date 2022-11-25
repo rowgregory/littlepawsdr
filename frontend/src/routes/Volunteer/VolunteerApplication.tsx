@@ -2,7 +2,7 @@ import { Image } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import styled, { useTheme } from 'styled-components';
 import { Text } from '../../components/styles/Styles';
-import VolunteerDog from '../../components/assets/volunteer_dog01.jpg';
+import VolunteerDog from '../../components/assets/volunteer_app_dog02.jpeg';
 import RightArrow from '../../components/svg/RightArrow';
 import LeftArrow from '../../components/svg/LeftArrow';
 
@@ -23,11 +23,6 @@ const VolunteerApplicationIFrame = styled.iframe`
   @media only screen and (max-width: 480px) {
     height: 3900px;
   }
-`;
-
-const Container = styled.div`
-  max-width: ${({ theme }) => theme.breakpoints[3]};
-  width: 100%;
 `;
 
 const VolunteerApplication = () => {
@@ -54,6 +49,26 @@ const VolunteerApplication = () => {
         >
           Volunteer Application
         </Text>
+        <Text
+          onClick={() =>
+            window.open(
+              'https://unsplash.com/@just_another_photographa?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText',
+              '_blank'
+            )
+          }
+          fontWeight={500}
+          fontSize='10px'
+          color='#fff'
+          cursor='pointer'
+          style={{
+            position: 'absolute',
+            bottom: '10px',
+            right: '10px',
+            zIndex: 2,
+          }}
+        >
+          Photo by James Watson
+        </Text>
       </div>
       <div
         style={{
@@ -65,9 +80,14 @@ const VolunteerApplication = () => {
         }}
       >
         <div className='w-100 d-flex justify-content-between mt-3'>
-          <LeftArrow text='To home' url='/' />
+          <LeftArrow
+            text='To Home'
+            url='/'
+            text2='Adoption FAQ'
+            url2='/adopt/faq'
+          />
           <RightArrow
-            text='To foster application'
+            text='To Foster Application'
             url='/volunteer/foster-application'
           />
         </div>

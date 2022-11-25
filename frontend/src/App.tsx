@@ -4,12 +4,13 @@ import { Routes } from './routes';
 import GlobalStyles from './GlobalStyles';
 import { ThemeProvider } from 'styled-components';
 import { themes } from './utils/theme';
-import { useSelector } from 'react-redux';
+// import { useSelector } from 'react-redux';
 import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 import useTheme from './utils/hooks/useTheme';
+import ScrollToTop from './utils/ScrollToTop';
 
 const App = () => {
-  const { defer } = useSelector((state: any) => state.deferPayPalButton);
+  // const { defer } = useSelector((state: any) => state.deferPayPalButton);
   const theme = useTheme();
 
   const PayPalOptions = {
@@ -21,9 +22,10 @@ const App = () => {
   };
 
   return (
-    <PayPalScriptProvider deferLoading={defer} options={PayPalOptions}>
+    <PayPalScriptProvider options={PayPalOptions}>
       <Router>
         <ThemeProvider theme={themes[theme]}>
+          <ScrollToTop />
           <GlobalStyles />
           <Suspense fallback={<></>}>
             <Routes />

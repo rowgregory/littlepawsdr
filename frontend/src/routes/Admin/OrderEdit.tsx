@@ -110,7 +110,7 @@ const OrderEdit = () => {
             label={
               isShipped
                 ? 'Product has been shipped'
-                : 'Product has not beed shipped'
+                : 'Product has not been shipped'
             }
             checked={isShipped || false}
             onChange={(e: any) => {

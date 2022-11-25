@@ -1,9 +1,10 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
-  padding-top: 32px;
+  padding-top: 128px;
   margin-bottom: 20rem;
   max-width: 1575px;
+  width: 100%;
   margin-inline: auto;
 `;
 
@@ -15,6 +16,7 @@ export const ShopTitle = styled.div`
 
 export const CategoryContainer = styled.div`
   /* margin: 64px 0 0 0; */
+  background: ${({ theme }) => theme.secondaryBg};
 `;
 
 export const Category = styled.div<{ active: boolean }>`
@@ -39,11 +41,11 @@ export const ProductContainer = styled.div<{ islargegrid: boolean }>`
   /* width: 100%; */
   transition: 300ms;
   grid-template-columns: ${({ islargegrid }) =>
-    islargegrid ? '1fr 1fr' : '1fr'};
+    islargegrid ? '1fr 1fr 1fr' : '1fr 1fr'};
 
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
     grid-template-columns: ${({ islargegrid }) =>
-      islargegrid ? '1fr 1fr 1fr' : '1fr 1fr'};
+      islargegrid ? '1fr 1fr 1fr 1fr' : '1fr 1fr 1fr'};
   }
 `;
 
@@ -93,7 +95,7 @@ export const FilterIcon = styled.i`
 
 export const LargeGridSquareContainer = styled.div<{ active: any }>`
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
   grid-gap: 1px;
   div {
     width: 5px;
@@ -103,7 +105,7 @@ export const LargeGridSquareContainer = styled.div<{ active: any }>`
 `;
 export const SmallGridSquareContainer = styled.div<{ active: any }>`
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   grid-gap: 1px;
   div {
     width: 5px;

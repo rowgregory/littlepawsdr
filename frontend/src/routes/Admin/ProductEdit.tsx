@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form, Image } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { getProductDetails, updateProduct } from '../../actions/productActions';
@@ -89,6 +89,8 @@ const ProductEdit = () => {
     },
   } = useSelector((state: any) => state);
 
+  console.log(state);
+
   useEffect(() => {
     dispatch({ type: PRODUCT_DETAILS_RESET });
     dispatch(getProductDetails(productId));
@@ -106,7 +108,17 @@ const ProductEdit = () => {
     setProductSizes(state?.sizes);
     setBrand(state?.brand);
     setDescription(state?.description);
+    setDoesProductHaveSizes(state?.sizes?.length > 0 ? true : false);
   }, [state]);
+
+  let weights = {
+    XS: 1,
+    S: 2,
+    M: 3,
+    L: 4,
+    XL: 5,
+    XXL: 6,
+  } as any;
 
   useEffect(() => {
     if (successUpdate && submittedForm) {
@@ -129,7 +141,7 @@ const ProductEdit = () => {
           brand,
           category,
           description,
-          countInStock: doesProductHaveSizes ? 0 : countInStock,
+          countInStock,
           image: cloudinaryData.secureUrl,
           publicId: cloudinaryData.publicId,
           isLimitedProduct,
@@ -152,33 +164,6 @@ const ProductEdit = () => {
     sortedSizes,
   ]);
 
-  let weights = {
-    XS: 1,
-    S: 2,
-    M: 3,
-    L: 4,
-    XL: 5,
-    XXL: 6,
-  } as any;
-
-  useEffect(() => {
-    state?.sizes?.length >= 1 && setDoesProductHaveSizes(true);
-    state?.sizes?.length === 0 && setDoesProductHaveSizes(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state]);
-
-  let sizeIsGone = useRef(null) as any;
-
-  useEffect(() => {
-    if (state) {
-      sizeIsGone.current = state?.sizes?.every((obj: any) => obj.amount === 0);
-      if (sizeIsGone.current) {
-        setDoesProductHaveSizes(false);
-        setProductSizes([]);
-      }
-    }
-  }, [state]);
-
   const submitHandler = (e: any) => {
     e.preventDefault();
     setSubmittedForm(true);
@@ -200,7 +185,7 @@ const ProductEdit = () => {
           brand,
           category,
           description,
-          countInStock: productSizes?.length > 0 ? 0 : countInStock,
+          countInStock,
           sizes: productSizes,
         })
       );
@@ -303,6 +288,11 @@ const ProductEdit = () => {
             checked={doesProductHaveSizes || false}
             onChange={(e: any) => {
               setDoesProductHaveSizes(e.target.checked);
+              if (doesProductHaveSizes) {
+                setProductSizes([]);
+              } else {
+                setCountInStock(0);
+              }
             }}
           ></Form.Check>
           <Form.Label className='mb-0'>

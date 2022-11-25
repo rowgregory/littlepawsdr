@@ -114,7 +114,6 @@ const ListAvailableDogs = () => {
         >
           Adoptable Dachshunds
         </Text>
-
         <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='16px'>
           We are excited that you are interested in adding a dachshund or
           dachshund-mix to your family! Here you can find a list of all dogs
@@ -133,13 +132,8 @@ const ListAvailableDogs = () => {
             `Has been Heartworm tested and treated if necessary`,
             `Has been microchipped`,
           ].map((text, i) => (
-            <Text
-              textIndent='24px'
-              key={i}
-              maxWidth='680px'
-              className='mb-3 mt-4 mx-auto'
-            >
-              <li style={{ fontSize: '16px' }}>{text}</li>
+            <Text key={i} maxWidth='680px' className='mb-3 mt-4 mx-auto'>
+              <li style={{ fontSize: '15px' }}>{text}</li>
             </Text>
           ))}
         </div>
@@ -162,8 +156,8 @@ const ListAvailableDogs = () => {
         className='w-100 mx-auto d-flex justify-content-between mt-3 px-3'
         style={{ maxWidth: '75rem' }}
       >
-        <LeftArrow text='To home' url='/' />
-        <RightArrow text='To sanctuary' url='/about/sanctuary' />
+        <LeftArrow text='To Home' url='/' />
+        <RightArrow text='Sponsor a Sanctuary' url='/about/sanctuary' />
       </div>
       {error && (
         <div className='mx-auto w-50'>

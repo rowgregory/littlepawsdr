@@ -2,7 +2,7 @@ import React from 'react';
 import { Image } from 'react-bootstrap';
 import styled, { useTheme } from 'styled-components';
 import { Text } from '../../components/styles/Styles';
-import FosterDog from '../../components/assets/foster_dog01.jpg';
+import FosterDog from '../../components/assets/foster_app_dog03.jpeg';
 import LeftArrow from '../../components/svg/LeftArrow';
 import RightArrow from '../../components/svg/RightArrow';
 
@@ -38,6 +38,27 @@ const FosterApplication = () => {
         >
           Foster Application
         </Text>
+        <Text
+          onClick={() =>
+            window.open(
+              'https://unsplash.com/@chelsea777?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText',
+              '_blank'
+            )
+          }
+          fontWeight={500}
+          fontSize='10px'
+          color='#fff'
+          cursor='pointer'
+          style={{
+            mixBlendMode: 'difference',
+            position: 'absolute',
+            bottom: '10px',
+            right: '10px',
+            zIndex: 2,
+          }}
+        >
+          Photo by Kojirou Sasaki
+        </Text>
       </div>
       <div
         style={{
@@ -49,11 +70,13 @@ const FosterApplication = () => {
         }}
       >
         <div className='w-100 d-flex justify-content-between mt-3'>
-          <LeftArrow text='To home' url='/' />
-          <RightArrow
-            text='To volunteer application'
-            url='/volunteer/volunteer-application'
+          <LeftArrow
+            text='To Home'
+            url='/'
+            text2='Volunteer Application'
+            url2='/volunteer/volunteer-application'
           />
+          <RightArrow text='Shop' url='/shop' />
         </div>
         <Text
           fontSize='32px'
@@ -65,7 +88,7 @@ const FosterApplication = () => {
           Fostering is our transitional step from a shelter/surrender to a
           forever home.
         </Text>
-        <Text marginBottom='28px' fontSize='16px'>
+        <Text maxWidth='680px' fontSize='18px' className='mb-4 mx-auto'>
           During this time it’s important that we give each dachshund a safe
           environment where it can learn to trust again, to heal and to learn
           how to become a loving family member. Many of the dachshunds that we
@@ -76,48 +99,50 @@ const FosterApplication = () => {
           fontSize='24px'
           marginTop='56px'
           fontWeight={400}
-          textAlign='center'
           marginBottom='24px'
+          maxWidth='680px'
+          className='mx-auto'
         >
           It is the responsibility of the foster parent to provide the
           dachshund(s) with food, monthly flea/tick medication, training and
           love.{' '}
         </Text>
-        <Text marginBottom='28px' fontSize='16px'>
+        <Text maxWidth='680px' fontSize='18px' className='mb-4 mx-auto'>
           The rescue will provide a handbook on all policy and procedures, pay
           for all vetting care (as outlined in the handbook), monthly heartworm
           preventative, education and support.
         </Text>
-        <Text marginBottom='28px' fontSize='16px'>
+        <Text maxWidth='680px' fontSize='18px' className='mb-4 mx-auto'>
           Thank you for wanting to foster for Little Paws Dachshund Rescue
           (LPDR).
         </Text>
-        <Text marginBottom='28px' fontSize='16px'>
+        <Text maxWidth='680px' fontSize='18px' className='mb-4 mx-auto'>
           This application can take 15 - 30 minutes to complete.
         </Text>
         <Text
           fontSize='24px'
           marginTop='56px'
           fontWeight={400}
-          textAlign='center'
           marginBottom='24px'
+          maxWidth='680px'
+          className='mx-auto'
         >
           Once we receive your application, we will contact your vet and
           personal references.
         </Text>
-        <Text marginBottom='28px' fontSize='16px'>
+        <Text maxWidth='680px' fontSize='18px' className='mb-4 mx-auto'>
           After you have passed those criteria's we will ask a volunteer to set
           up a time for a homevisit. A homevisit volunteer will come to your
           home and look at the places that a foster dog will eat, play and
           sleep. We require that everyone in your home be present at the time of
           the homevisit.
         </Text>
-        <Text marginBottom='28px' fontSize='16px'>
+        <Text maxWidth='680px' fontSize='18px' className='mb-4 mx-auto'>
           LPDR is responsible for all vetting for foster dogs. We will also
           provide you with a handbook to answer many of your questions about our
           foster policies and procedures.
         </Text>
-        <Text marginBottom='28px' fontSize='16px'>
+        <Text maxWidth='680px' fontSize='18px' className='mb-4 mx-auto'>
           Fostering is a rewarding experience but is a commitment for any
           person. You will be asked to bring home a dog that may have just been
           pulled out of the shelter into your home or one that was surrendered
@@ -126,28 +151,34 @@ const FosterApplication = () => {
           will need your attention. But the reward when they go to their forever
           home is something you will never forget.
         </Text>
-        <Text marginBottom='28px' fontSize='16px'>
+        <Text maxWidth='680px' fontSize='18px' className='mb-4 mx-auto'>
           We look forward to having you on the LPDR Foster Team!
         </Text>
-        <Text marginBottom='28px' fontSize='16px' color='#9761aa'>
+        <Text
+          maxWidth='680px'
+          fontSize='18px'
+          className='mb-4 mx-auto'
+          color='#9761aa'
+        >
           Little Paws Dachshund Rescue Board of Directors
         </Text>
-
-        {isDay ? (
-          <FosterApplicationIFrame
-            scrolling='no'
-            title='Foster-Application'
-            width='100%'
-            src='https://toolkit.rescuegroups.org/of/f?c=DGKQZWCQ'
-          ></FosterApplicationIFrame>
-        ) : (
-          <FosterApplicationIFrame
-            scrolling='no'
-            title='Foster-Application'
-            width='100%'
-            src='https://toolkit.rescuegroups.org/of/f?c=NXGDQBDV'
-          ></FosterApplicationIFrame>
-        )}
+        <Text maxWidth='680px' className='mx-auto'>
+          {isDay ? (
+            <FosterApplicationIFrame
+              scrolling='no'
+              title='Foster-Application'
+              width='100%'
+              src='https://toolkit.rescuegroups.org/of/f?c=DGKQZWCQ'
+            ></FosterApplicationIFrame>
+          ) : (
+            <FosterApplicationIFrame
+              scrolling='no'
+              title='Foster-Application'
+              width='100%'
+              src='https://toolkit.rescuegroups.org/of/f?c=NXGDQBDV'
+            ></FosterApplicationIFrame>
+          )}
+        </Text>
       </div>
     </>
   );

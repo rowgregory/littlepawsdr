@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
-import { Col, Image, Spinner, Form } from 'react-bootstrap';
+import { Col, Image, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { getOrderDetails, shipOrder } from '../actions/orderActions';
+import { getOrderDetails } from '../actions/orderActions';
 import Message from '../components/Message';
 import {
   ORDER_CREATE_RESET,
@@ -34,26 +34,16 @@ const OrderReceipt = ({ match }: any) => {
   const orderDetails = useSelector((state: any) => state.orderDetails);
   const { order, loading, error } = orderDetails;
 
-  const orderShip = useSelector((state: any) => state.orderShip);
-  const {
-    success: successOrderShipped,
-    loading: loadingOrderShipped,
-    error: errorOrderShipped,
-  } = orderShip !== undefined && orderShip;
-
-  const userLogin = useSelector((state: any) => state.userLogin);
-  const { userInfo } = userLogin;
-
   useEffect(() => {
     dispatch({ type: ORDER_CREATE_RESET });
 
     localStorage.removeItem('__paypal_storage__');
     localStorage.removeItem('__belter_experiment_storage__');
-    if (!order || order._id !== orderId || successOrderShipped) {
+    if (!order || order._id !== orderId) {
       dispatch({ type: ORDER_SHIP_RESET });
       dispatch(getOrderDetails(orderId));
     }
-  }, [dispatch, orderId, successOrderShipped, order]);
+  }, [dispatch, orderId, order]);
 
   return error ? (
     <Message variant='danger'>{error}</Message>
@@ -188,25 +178,9 @@ const OrderReceipt = ({ match }: any) => {
                 <Text fontWeight='bold' fontSize='1.125rem'>
                   Status<i className='fas fa-info-circle fa-sm ml-2'></i>
                 </Text>
-                {userInfo?.isAdmin && (
-                  <Form.Group controlId='isShipped' className='mb-0'>
-                    <Form.Check
-                      type='switch'
-                      label='Is Shipped'
-                      checked={order?.isShipped || false}
-                      onChange={(e: any) => {
-                        dispatch(shipOrder(order, e.target.checked));
-                      }}
-                    ></Form.Check>
-                  </Form.Group>
-                )}
               </CategoryTitles>
               <div className='mb-1 pl-3'>
-                {loadingOrderShipped ? (
-                  <Spinner animation='border' size='sm' />
-                ) : errorOrderShipped ? (
-                  <Message variant='danger'>{errorOrderShipped}</Message>
-                ) : order?.isShipped ? (
+                {order?.isShipped ? (
                   <Message variant='success'>
                     <div>
                       Your order has been shipped{' '}

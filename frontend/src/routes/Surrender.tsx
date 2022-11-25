@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { useTheme } from 'styled-components';
 import { Text } from '../components/styles/Styles';
-import SurrenderDog from '../components/assets/surrender_dog03.jpg';
+import SurrenderDog from '../components/assets/surrender02.jpeg';
 import { Image } from 'react-bootstrap';
 import LeftArrow from '../components/svg/LeftArrow';
 import RightArrow from '../components/svg/RightArrow';
@@ -35,6 +35,27 @@ const Surrender = () => {
         >
           Surrender an animal
         </Text>
+        <Text
+          onClick={() =>
+            window.open(
+              ' https://www.pexels.com/photo/photo-of-dog-inside-mailbox-906065/',
+              '_blank'
+            )
+          }
+          fontWeight={500}
+          fontSize='10px'
+          color='#fff'
+          cursor='pointer'
+          style={{
+            mixBlendMode: 'difference',
+            position: 'absolute',
+            bottom: '10px',
+            right: '10px',
+            zIndex: 2,
+          }}
+        >
+          Photo by Noelle Otto
+        </Text>
       </div>
 
       <div
@@ -48,15 +69,15 @@ const Surrender = () => {
       >
         <div className='w-100 d-flex justify-content-between mt-3'>
           <LeftArrow
-            text='To home'
+            text='To Home'
             url='/'
             text2='Sanctuary'
             url2='/about/sanctuary'
           />
-          <RightArrow text='To dogs on hold' url='/about/hold' />
+          <RightArrow text='On Hold' url='/about/hold' />
         </div>
         <Text
-          fontSize='32px'
+          fontSize='31px'
           marginTop='56px'
           fontWeight={400}
           textAlign='center'
@@ -64,7 +85,7 @@ const Surrender = () => {
         >
           Ideally, all dogs live in one loving home from puppyhood until death.
         </Text>
-        <Text fontSize='16px' marginBottom='16px'>
+        <Text maxWidth='680px' fontSize='18px' className='mb-4 mx-auto'>
           However, LPDR understands this is not always possible. People become
           ill, die, divorce, move overseas, develop allergies, lose their jobs,
           lose their homes, etc. Any of these situations, among others, can be a
@@ -74,8 +95,8 @@ const Surrender = () => {
           North Carolina, Pennsylvania, Rhode Island, South Carolina, Tennessee,
           Vermont, Virginia, West Virginia
         </Text>
-        <Text fontSize='16px' marginBottom='16px'>
-          <li style={{ fontSize: '16px' }}>
+        <Text maxWidth='680px' fontSize='18px' className='mb-4 mx-auto'>
+          <li style={{ fontSize: '18px' }}>
             If you are considering re-homing your dachshund because of behavior
             problems, there may be other options you can consider first. Talk to
             your vet about the issue to ensure the behavior is not a result of a
@@ -85,8 +106,8 @@ const Surrender = () => {
             your dog).
           </li>
         </Text>
-        <Text fontSize='16px' marginBottom='16px'>
-          <li style={{ fontSize: '16px' }}>
+        <Text maxWidth='680px' fontSize='18px' className='mb-4 mx-auto'>
+          <li style={{ fontSize: '18px' }}>
             If you are considering re-homing your dachshund because of financial
             issues or high vet costs/bills, know that there are foundations and
             other organizations that may be able to offer financial assistance.
@@ -95,14 +116,14 @@ const Surrender = () => {
             veterinary services.
           </li>
         </Text>
-        <Text fontSize='16px' marginBottom='16px'>
-          <li style={{ fontSize: '16px' }}>
+        <Text maxWidth='680px' fontSize='18px' className='mb-4 mx-auto'>
+          <li style={{ fontSize: '18px' }}>
             Consider exploring your own personal networks of trusted friends,
             family, and co-workers who may be able to provide a good home for
             your dog.
           </li>
         </Text>
-        <Text fontSize='16px' marginBottom='16px'>
+        <Text maxWidth='680px' fontSize='18px' className='mb-4 mx-auto'>
           When all options have been considered and you believe that
           surrendering your dog is the best option for you and your dachshund,
           Little Paws Dachshund Rescue may be able to help. All of the
@@ -112,25 +133,27 @@ const Surrender = () => {
           the needs and personality of the dog. All potential adopters go
           through a rigorous application process and are carefully screened.
         </Text>
-        <Text fontSize='16px' marginBottom='48px'>
+        <Text maxWidth='680px' fontSize='18px' className='mb-5 mx-auto'>
           To be considered for surrender, please complete and submit the
           following Surrender Questionnaire:
         </Text>
-        {isDay ? (
-          <SurrenderApplicationIFrame
-            title='Surrender Application'
-            width='100%'
-            scrolling='no'
-            src='https://toolkit.rescuegroups.org/of/f?c=QCVXZJTH'
-          ></SurrenderApplicationIFrame>
-        ) : (
-          <SurrenderApplicationIFrame
-            title='Surrender Application'
-            width='100%'
-            scrolling='no'
-            src='https://toolkit.rescuegroups.org/of/f?c=RXYMKGSJ'
-          ></SurrenderApplicationIFrame>
-        )}
+        <Text maxWidth='722px' className='mx-auto'>
+          {isDay ? (
+            <SurrenderApplicationIFrame
+              title='Surrender Application'
+              width='100%'
+              scrolling='no'
+              src='https://toolkit.rescuegroups.org/of/f?c=QCVXZJTH'
+            ></SurrenderApplicationIFrame>
+          ) : (
+            <SurrenderApplicationIFrame
+              title='Surrender Application'
+              width='100%'
+              scrolling='no'
+              src='https://toolkit.rescuegroups.org/of/f?c=RXYMKGSJ'
+            ></SurrenderApplicationIFrame>
+          )}
+        </Text>
       </div>
     </>
   );
