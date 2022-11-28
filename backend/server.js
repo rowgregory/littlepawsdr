@@ -15,7 +15,6 @@ import removeUploadRoutes from './routes/removeUploadRoutes.js';
 import donationRoutes from './routes/donationRoutes.js';
 import productRoutes from './routes/productRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
-import guestOrderRoutes from './routes/guestOrderRoutes.js';
 import forgotPasswordRoutes from './routes/forgotPasswordRoutes.js';
 import newsletterRoutes from './routes/newsletterRoutes.js';
 import eCardRoutes from './routes/eCardRoutes.js';
@@ -34,6 +33,7 @@ import nodemailer from 'nodemailer';
 import Email from 'email-templates';
 import fetch from 'node-fetch';
 import { encrypt } from './utils/crypto.js';
+import { formatDate } from './utils/formatDate.js';
 
 const OAuth2 = google.google.auth.OAuth2;
 
@@ -170,24 +170,44 @@ export const send_mail = async (body, res, type, token, hasEmailBeenSent) => {
         template: 'orderconfirmation',
         message: {
           from: 'Little Paws Dachshund Rescue <no-reply@littlepawsdr.org',
-          to: body?.order?.email ?? body?.email,
+          to: body?.user?.email ?? body?.guestEmail,
         },
         locals: {
-          _id: body?.order?._id ?? body?._id,
-          orderItems: body?.order?.orderItems ?? body?.orderItems,
-          shippingAddress:
-            body?.order?.shippingAddress ?? body?.shippingAddress,
-          email: body?.order?.email ?? body?.email,
-          isPaid: body?.order?.isPaid ?? body?.isPaid,
-          createdAt: body?.order?.createdAt ?? body?.createdAt,
-          isGuest:
-            (body?.order?.email || body?.email) !== undefined ? true : false,
+          id: body?._id,
+          orderItems: body?.orderItems,
+          shippingAddress: JSON.stringify(body?.shippingAddress),
+          orderForEmail: {
+            orderDate: formatDate(body?.createdAt),
+            subTotal: body?.itemsPrice,
+            shippingPrice: body?.shippingPrice,
+            taxPrice: body?.taxPrice,
+            totalPrice: body?.totalPrice,
+            name: body?.user?.name,
+          },
+          shippingAddressForEmail: body?.shippingAddress,
+          order: JSON.stringify({
+            orderDate: body?.createdAt?.toString(),
+            subTotal: body?.itemsPrice,
+            shippingPrice: body?.shippingPrice,
+            taxPrice: body?.taxPrice,
+            totalPrice: body?.totalPrice,
+            name: body?.user?.name,
+          }),
+          email: body?.user?.email ?? body?.guestEmail,
+          items: JSON.stringify(
+            body?.orderItems.map(obj => ({
+              name: obj.name,
+              image: encodeURIComponent(obj?.image),
+              price: obj.price,
+              qty: obj.qty,
+            }))
+          ),
         },
       })
       .then(() => {
         console.log(
           `Order confirmation email has been sent to ${
-            body?.email ?? body?.order.email
+            body?.user?.email ?? body?.guestEmail
           }`
         );
       });
@@ -229,7 +249,7 @@ app.use('/api/events', eventRoutes);
 app.use('/api/donations', donationRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
-app.use('/api/guest-orders', guestOrderRoutes);
+// app.use('/api/guest-orders', guestOrderRoutes);
 app.use('/api/remove-upload', removeUploadRoutes);
 app.use('/upload', uploadRoutes);
 app.use('/api/forgotpassword', forgotPasswordRoutes);

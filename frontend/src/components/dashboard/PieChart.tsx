@@ -1,6 +1,6 @@
 import React from 'react';
 import { Doughnut } from 'react-chartjs-2';
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -28,29 +28,18 @@ const Container = styled.div`
   background: ${({ theme }) => theme.input.bg};
   display: flex;
   flex-direction: column;
-  padding: 1.5rem;
-  border-radius: 0.5rem;
-
-  /* height: 100%; */
-  /* display: flex;
-  flex-direction: column; */
-  /* @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-    height: 500px;
-  }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    height: 100%;
-  } */
+  padding: 24px;
+  border-radius: 8px;
 `;
 
 const PieChart = ({ orders, donations, eCards }: any) => {
-  const theme = useTheme() as any;
   const data = {
     labels: ['Orders', 'Donations', 'Ecards'],
     datasets: [
       {
         data: [orders, donations, eCards],
-        backgroundColor: ['#ad88bb', '#ccafd6', theme.colors.quinary],
-        borderColor: ['#ad88bb', '#ccafd6', theme.colors.quinary],
+        backgroundColor: ['#9761aa', '#ab80bb', '#c0a0cc'],
+        borderColor: ['#9761aa', '#ab80bb', '#c0a0cc'],
         borderWidth: 1,
       },
     ],
@@ -72,7 +61,7 @@ const PieChart = ({ orders, donations, eCards }: any) => {
   } as any;
   return (
     <Container>
-      <Text fontWeight={500} fontSize='1.05rem' color='#373737'>
+      <Text fontWeight={500} fontSize='17px' color='#373737'>
         Sales By Type
       </Text>
       <LineChartContainer>

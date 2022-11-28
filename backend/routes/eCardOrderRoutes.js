@@ -6,9 +6,10 @@ import {
   createECardOrder,
   getECardOrderById,
   getECardOrders,
+  getMyEcardOrders,
 } from '../controllers/eCardOrderController.js';
 
-router.route('/').post(createECardOrder);
+router.route('/').post(createECardOrder).get(protect, getMyEcardOrders);
 router.route('/list').get(protect, admin, getECardOrders);
 router.route('/:id').get(getECardOrderById);
 

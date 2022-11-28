@@ -429,28 +429,24 @@ const DonationForm = () => {
         >
           DONATION TOTAL: ${inputs.donationAmount} / {inputs.donationType}
         </Text>
-        {formIsCompleted ? (
-          <form
-            className='d-flex flex-column align-items-start'
-            action='https://www.paypal.com/donate'
-            method='post'
-            target='_top'
-          >
-            <input
-              type='hidden'
-              name='hosted_button_id'
-              value='C4SMAYNF4L948'
-            />
-            <DonateBtn onClick={donateCreate}>DONATE NOW</DonateBtn>
-          </form>
-        ) : (
-          <DonateBtn
-            onClick={() => validate(setTimeToValidate, setErrors, inputs)}
-          >
-            DONATE NOW
-          </DonateBtn>
-        )}
       </StyledForm>
+      {formIsCompleted ? (
+        <form
+          className='d-flex flex-column align-items-start'
+          action='https://www.paypal.com/donate'
+          method='post'
+          target='_top'
+        >
+          <input type='hidden' name='hosted_button_id' value='C4SMAYNF4L948' />
+          <DonateBtn onClick={donateCreate}>DONATE NOW</DonateBtn>
+        </form>
+      ) : (
+        <DonateBtn
+          onClick={() => validate(setTimeToValidate, setErrors, inputs)}
+        >
+          DONATE NOW
+        </DonateBtn>
+      )}
     </Container>
   );
 };

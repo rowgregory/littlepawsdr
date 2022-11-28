@@ -34,6 +34,7 @@ const Footer = () => {
     '/e-card/place-order',
     'cart',
     'paypal/test',
+    '/order',
   ].some((a: string) => pathname.includes(a)) ? (
     <StyledFooter>
       <TopFooter>

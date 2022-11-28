@@ -5,14 +5,7 @@ import Education from './Education';
 import WhoWeAre from './TeamMembers';
 import DachshundDetails from './DachshundDetails';
 import styled from 'styled-components';
-import {
-  IntroText,
-  Jumbo,
-  JumboAndWaveContainer,
-  Text,
-  Title,
-  TitleAndIntroTextContainer,
-} from '../../components/styles/Styles';
+import { Text } from '../../components/styles/Styles';
 import { PawPrint } from '../Available/AvailableDog';
 import RaffleWinners from './RaffleWinners';
 import Blog from './Blog';

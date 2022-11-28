@@ -9,6 +9,10 @@ import {
   ECARD_ORDER_DETAILS_FAIL,
   ECARD_ORDER_DETAILS_REQUEST,
   ECARD_ORDER_DETAILS_SUCCESS,
+  ECARD_ORDER_LIST_MY_REQUEST,
+  ECARD_ORDER_LIST_MY_SUCCESS,
+  ECARD_ORDER_LIST_MY_FAIL,
+  ECARD_ORDER_LIST_MY_RESET,
 } from '../constants/eCardOrderContants';
 
 // @ts-ignore
@@ -78,6 +82,32 @@ export const eCardOrdersListReducer = (state = { eCardOrders: [] }, action) => {
         loading: false,
         error: action.payload,
       };
+    default:
+      return state;
+  }
+};
+
+export const ecardOrdersListMyReducer = (
+  state = { ecardOrders: [] },
+  action: any
+) => {
+  switch (action.type) {
+    case ECARD_ORDER_LIST_MY_REQUEST:
+      return {
+        loading: true,
+      };
+    case ECARD_ORDER_LIST_MY_SUCCESS:
+      return {
+        loading: false,
+        ecardOrders: action.payload,
+      };
+    case ECARD_ORDER_LIST_MY_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      };
+    case ECARD_ORDER_LIST_MY_RESET:
+      return { ecardOrders: [] };
     default:
       return state;
   }

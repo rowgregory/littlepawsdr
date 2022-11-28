@@ -81,7 +81,7 @@ const ShippingForm = ({
         label='Zip Postal Code'
         value={inputs.zipPostalCode || ''}
         handleInputChange={handleInputChange}
-        type='number'
+        type='tel'
         error={errors?.zipPostalCode}
         blur={() => inputZipPostalCode(inputs, formIsValid, setErrors)}
       />

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Table, Pagination } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { listOrders } from '../../actions/orderActions';
-import { listGuestOrders } from '../../actions/guestOrderActions';
 import { Text } from '../../components/styles/Styles';
 import {
   SearchBar,
@@ -35,23 +34,15 @@ const OrderList = () => {
   const orderList = useSelector((state: any) => state.orderList);
   const { loading, error, orders } = orderList;
 
-  const guestOrderList = useSelector((state: any) => state.guestOrderList);
-  const {
-    loading: loadingGuestOrders,
-    error: errorGuestOrders,
-    guestOrders,
-  } = guestOrderList;
-
   useEffect(() => {
     dispatch(listOrders());
-    dispatch(listGuestOrders());
   }, [dispatch]);
 
   useEffect(() => {
-    if (guestOrders && orders) {
-      setOrder(guestOrders?.concat(orders));
+    if (orders) {
+      setOrder(orders);
     }
-  }, [guestOrders, orders]);
+  }, [orders]);
 
   useEffect(() => {
     const itemsPerPage = 10;
@@ -82,10 +73,8 @@ const OrderList = () => {
         url2='/admin'
         url3='/admin/orderList'
       />
-      {(error || errorGuestOrders) && (
-        <Message variant='danger'>{error || errorGuestOrders}</Message>
-      )}
-      {(loading || loadingGuestOrders) && <HexagonLoader />}
+      {error && <Message variant='danger'>{error}</Message>}
+      {loading && <HexagonLoader />}
       <TableWrapper>
         <TopRow className='d-flex align-items-center'>
           <SearchBar>
@@ -119,7 +108,7 @@ const OrderList = () => {
                     </td>
                     <td>
                       <Text>
-                        {order?.user?.name ?? `${order?.email} - guest`}
+                        {order?.user?.name ?? `${order?.guestEmail} - guest`}
                       </Text>
                     </td>
                     <td>

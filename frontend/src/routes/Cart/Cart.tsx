@@ -117,7 +117,7 @@ const Cart = () => {
               <tbody>
                 {cartItems?.map((item: any, i: number) => (
                   <tr key={i}>
-                    <td style={{ padding: '10px 20px 10px', width: '150px' }}>
+                    <td style={{ padding: '10px 20px 10px', width: '125px' }}>
                       <Image
                         src={item?.image}
                         alt={item?.name}
@@ -128,7 +128,7 @@ const Cart = () => {
                       />
                     </td>
 
-                    <td>
+                    <td style={{ maxWidth: '80px' }}>
                       <ProductName to={`/shop/product/${item?.product}`}>
                         {item.name}
                       </ProductName>

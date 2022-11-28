@@ -4,10 +4,9 @@ import styled from 'styled-components';
 export const ProductDetailsContainer = styled.div`
   display: grid;
   grid-template-columns: 1fr;
-  padding: 128px 16px;
-  max-width: ${({ theme }) => theme.breakpoints[3]};
   width: 100%;
   margin-inline: auto;
+  margin-top: 18px;
 
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
     grid-template-columns: 40% 30% 20%;
@@ -67,6 +66,7 @@ export const SelectInput = styled(Form.Control)<{ bg?: any; color?: any }>`
   border: none;
   cursor: pointer;
   background: ${({ bg }) => (bg ? bg : '')};
+  border: 1px solid #ededed;
   font-size: 16px;
   color: ${({ theme, color }) => (color ? color : theme.text)} !important;
   :focus-visible {

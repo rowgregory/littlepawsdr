@@ -3,8 +3,12 @@ import mongoose from 'mongoose';
 const orderSchema = mongoose.Schema(
   {
     user: {
+      id: mongoose.Schema.Types.ObjectId,
+      email: { type: String },
+      name: { type: String },
+    },
+    customer: {
       type: mongoose.Schema.Types.ObjectId,
-      required: true,
       ref: 'User',
     },
     orderItems: [
@@ -71,8 +75,10 @@ const orderSchema = mongoose.Schema(
       type: Date,
     },
     orderId: { type: String },
-    email: { type: String },
+    guestEmail: { type: String },
     confirmationEmailHasBeenSent: { type: Boolean },
+    isGuestOrder: { type: Boolean },
+    itemsPrice: { type: Number },
   },
   {
     timestamps: true,

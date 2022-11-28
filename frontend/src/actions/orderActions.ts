@@ -32,25 +32,32 @@ export const createOrder =
     try {
       dispatch({ type: ORDER_CREATE_REQUEST });
 
-      const {
-        userLogin: { userInfo },
-      } = getState();
+      let result;
 
-      const config = {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${userInfo.token}`,
-        },
-      };
+      if (order.isGuestOrder) {
+        const { data } = await axios.post(`/api/orders/unauthenticated`, order);
+        result = data;
+      } else {
+        const {
+          userLogin: { userInfo },
+        } = getState();
 
-      const { data } = await axios.post(`/api/orders`, order, config);
+        const config = {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${userInfo.token}`,
+          },
+        };
+        const { data } = await axios.post(`/api/orders`, order, config);
+        result = data;
+      }
 
       localStorage.setItem(
         'shippingAddress',
-        JSON.stringify(data.shippingAddress)
+        JSON.stringify(result.shippingAddress)
       );
 
-      dispatch({ type: ORDER_CREATE_SUCCESS, payload: data });
+      dispatch({ type: ORDER_CREATE_SUCCESS, payload: result });
       dispatch({ type: CART_CLEAR_ITEMS });
       localStorage.removeItem('cartItems');
       localStorage.removeItem('newOrder');
@@ -67,34 +74,23 @@ export const createOrder =
     }
   };
 
-export const getOrderDetails =
-  (orderId: any) => async (dispatch: any, getState: any) => {
-    try {
-      dispatch({ type: ORDER_DETAILS_REQUEST });
+export const getOrderDetails = (orderId: any) => async (dispatch: any) => {
+  try {
+    dispatch({ type: ORDER_DETAILS_REQUEST });
 
-      const {
-        userLogin: { userInfo },
-      } = getState();
+    const { data } = await axios.get(`/api/orders/${orderId}`);
 
-      const config = {
-        headers: {
-          Authorization: `Bearer ${userInfo.token}`,
-        },
-      };
-
-      const { data } = await axios.get(`/api/orders/${orderId}`, config);
-
-      dispatch({ type: ORDER_DETAILS_SUCCESS, payload: data });
-    } catch (error: any) {
-      dispatch({
-        type: ORDER_DETAILS_FAIL,
-        payload:
-          error.response && error.response.data.message
-            ? error.response.data.message
-            : error.message,
-      });
-    }
-  };
+    dispatch({ type: ORDER_DETAILS_SUCCESS, payload: data });
+  } catch (error: any) {
+    dispatch({
+      type: ORDER_DETAILS_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
 
 export const getGuestOrderDetails =
   (guestOrderId: any) => async (dispatch: any) => {

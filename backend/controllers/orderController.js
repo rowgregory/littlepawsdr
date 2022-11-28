@@ -1,14 +1,13 @@
 import asyncHandler from 'express-async-handler';
 import Order from '../models/orderModel.js';
 import Product from '../models/productModel.js';
-import GuestOrder from '../models/guestOrderModel.js';
 import { send_mail } from '../server.js';
 import Error from '../models/errorModel.js';
 import User from '../models/userModel.js';
 
 // @desc    Create new order
 // @route   POST /api/orders
-// @access  Private
+// @access  Public
 const addOrderItems = asyncHandler(async (req, res) => {
   const {
     orderItems,
@@ -19,11 +18,19 @@ const addOrderItems = asyncHandler(async (req, res) => {
     shippingPrice,
     totalPrice,
     orderId,
+    guestEmail,
+    isGuestOrder,
+    user,
   } = req.body;
 
   try {
     const order = new Order({
-      user: req.user._id,
+      user: {
+        id: user?.id,
+        email: user?.email,
+        name: user?.name,
+      },
+      customer: req?.user?._id,
       orderItems,
       shippingAddress,
       paymentMethod,
@@ -33,9 +40,10 @@ const addOrderItems = asyncHandler(async (req, res) => {
       totalPrice,
       isPaid: true,
       orderId,
-      email: req.user.email,
       isShipped: false,
       confirmationEmailHasBeenSent: false,
+      isGuestOrder,
+      guestEmail,
     });
 
     const createdOrder = await order.save();
@@ -50,14 +58,22 @@ const addOrderItems = asyncHandler(async (req, res) => {
         );
 
         if (product?.sizes?.length > 0) {
-          await Product.updateOne(
-            { 'sizes.size': item.size },
-            {
-              $set: {
-                'sizes.$.amount': product.sizes[objIndex].amount - item.qty,
+          const bulk = Product.collection.initializeOrderedBulkOp();
+          bulk.find({ 'sizes.size': item.size, _id: product?._id }).updateOne({
+            $set: {
+              'sizes.$.amount': product.sizes[objIndex].amount - item.qty,
+            },
+          });
+
+          bulk.find({ 'sizes.size': item.size, _id: product?._id }).updateOne({
+            $pull: {
+              sizes: {
+                amount: 0,
               },
-            }
-          );
+            },
+          });
+
+          bulk.execute();
         } else {
           product.countInStock = product.countInStock - item.qty;
 
@@ -76,18 +92,12 @@ const addOrderItems = asyncHandler(async (req, res) => {
       createdOrder.confirmationEmailHasBeenSent = emailHasSent;
       await createdOrder.save();
 
-      const user = await User.findById({ _id: req.user._id });
+      if (!isGuestOrder) {
+        const userExists = await User.findById({ _id: createdOrder?.user?.id });
 
-      if (!user) {
-        const createdError = new Error({
-          functionName: 'CREATE_NEW_ORDER',
-          detail: `Could not find user with the id of ${req.user._id} to attach shipping address to`,
-        });
-        await createdError.save();
+        userExists.shippingAddress = shippingAddress;
+        await userExists.save();
       }
-
-      user.shippingAddress = shippingAddress;
-      await user.save();
 
       res.status(201).json(createdOrder);
     }
@@ -101,7 +111,7 @@ const addOrderItems = asyncHandler(async (req, res) => {
     res.status(500).send({
       message: `Please call (***)***-**** to resolve issue, orderID: ${orderId}`,
       data: req.body,
-      email: req.user.email,
+      email: user?.email || guestEmail,
       isShipped: false,
     });
   }
@@ -109,7 +119,7 @@ const addOrderItems = asyncHandler(async (req, res) => {
 
 // @desc    Get order by ID
 // @route   GET /api/orders/:id
-// @access  Private
+// @access  Public
 const getOrderById = asyncHandler(async (req, res) => {
   const order = await Order.findById(req.params.id).populate(
     'user',
@@ -179,10 +189,15 @@ const updateOrderToShipped = asyncHandler(async (req, res) => {
 // @route   GET /api/orders/my-orders
 // @access  Private
 const getMyOrders = asyncHandler(async (req, res) => {
-  const orders = await Order.find({ user: req.user._id });
-  const guestOrders = await GuestOrder.find({ email: req.user.email });
+  const orders = await Order.find();
+  const guestOrders = orders.filter(
+    order => order?.guestEmail === req?.user?.email
+  );
+  const customerOrders = orders.filter(
+    order => order?.user?.email === req?.user?.email
+  );
 
-  res.json(orders.concat(guestOrders));
+  res.json(guestOrders?.concat(customerOrders));
 });
 
 // @desc    Get all logged in user orders

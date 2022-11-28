@@ -21,20 +21,19 @@ const registerGuestUser = asyncHandler(async (req, res) => {
     if (!validateEmailRegex.test(email))
       return res.status(400).json({ message: 'Invalid email' });
 
-    const guestUserExists = await GuestUser.findOne({ email });
-    if (guestUserExists)
-      return res.status(200).json({ guestUser: guestUserExists });
-    if (!guestUserExists) {
-      const guestUser = await GuestUser.create({
+    const guestUser = await GuestUser.findOne({ email });
+    if (guestUser) return res.status(200).json(guestUser);
+    if (!guestUser) {
+      const createdGuestUser = await GuestUser.create({
         email,
       });
 
-      if (guestUser) {
-        const createdGuestUser = await guestUser.save();
+      if (createdGuestUser) {
+        const savedGuestUser = await createdGuestUser.save();
 
         res.json({
-          _id: createdGuestUser._id,
-          email: createdGuestUser.email,
+          _id: savedGuestUser._id,
+          email: savedGuestUser.email,
         });
       }
     }

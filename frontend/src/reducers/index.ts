@@ -71,6 +71,7 @@ import {
 import {
   eCardOrderCreateReducer,
   eCardOrderDetailsReducer,
+  ecardOrdersListMyReducer,
   eCardOrdersListReducer,
 } from './eCardOrderReducer';
 import {
@@ -102,11 +103,6 @@ import {
   educationTipUpdateReducer,
 } from './educationTipReducer';
 import { guestUserRegisterReducer } from './guestUserReducer';
-import {
-  guestOrderCreateReducer,
-  guestOrderListReducer,
-  guestOrderShipReducer,
-} from './guestOrderReducer';
 import {
   manuallyAddUserCreateReducer,
   manuallyAddUserDeleteReducer,
@@ -173,6 +169,7 @@ const allReducers = combineReducers({
   eCardOrderCreate: eCardOrderCreateReducer,
   eCardOrderDetails: eCardOrderDetailsReducer,
   eCardOrdersList: eCardOrdersListReducer,
+  ecardOrdersListMy: ecardOrdersListMyReducer,
   eCardList: eCardListReducer,
   eCardCreate: eCardCreateReducer,
   eCardDetails: eCardDetailsReducer,
@@ -194,9 +191,6 @@ const allReducers = combineReducers({
   educationTipUpdate: educationTipUpdateReducer,
   educationTipDelete: educationTipDeleteReducer,
   guestUserRegister: guestUserRegisterReducer,
-  guestOrderCreate: guestOrderCreateReducer,
-  guestOrderList: guestOrderListReducer,
-  guestOrderShip: guestOrderShipReducer,
   manuallyAddedUserList: manuallyAddUserListReducer,
   manuallyAddedUserCreate: manuallyAddUserCreateReducer,
   manuallyAddedUserUpdate: manuallyAddUserUpdateReducer,

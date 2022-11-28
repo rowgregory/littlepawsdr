@@ -1,6 +1,6 @@
 /* eslint-disable array-callback-return */
 import React, { useEffect, useState } from 'react';
-import { Col, Image } from 'react-bootstrap';
+import { Image, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { PayPalButtons, usePayPalScriptReducer } from '@paypal/react-paypal-js';
 import { createOrder } from '../../actions/orderActions';
@@ -17,23 +17,28 @@ import {
   LogoCheckout,
 } from '../../components/styles/place-order/Styles';
 import GoBackToCartModal from '../../components/GoBackToCartModal';
-import { usePlaceOrderShippingForm } from '../../utils/formHooks';
 import {
-  addDecimals,
+  useCreateAccountCheckoutForm,
+  usePlaceOrderShippingForm,
+} from '../../utils/formHooks';
+import {
   itemsPrice,
   shippingPrice,
   taxPrice,
   totalItems,
   totalPrice,
 } from '../../utils/placeOrder';
-import { validateShippingForm } from '../../utils/validateShippingForm';
+import {
+  validateAccountCreateCheckoutForm,
+  validateShippingForm,
+} from '../../utils/validateShippingForm';
 import ShippingForm from '../../components/forms/ShippingForm';
 import LogoDay from '../../components/assets/logo-background-transparent-purple4.png';
-import { DEFER_PAYPAL_BUTTON_SUCCESS } from '../../reducers/paypalReducer';
-import { DEFER_PAYPAL_BUTTON_REQUEST } from '../../reducers/paypalReducer';
 import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
+import CreateAccountCheckoutForm from '../../components/forms/CreateAccountCheckoutForm';
+import { register } from '../../actions/userActions';
 
-const PlaceOrder = ({ history }: any) => {
+const PlaceOrder = ({ history, location }: any) => {
   const dispatch = useDispatch();
   const [sdkReady, setSdkReady] = useState(false);
   const [orderLoader, setOrderLoader] = useState(false);
@@ -42,27 +47,68 @@ const PlaceOrder = ({ history }: any) => {
   const [revealShippingAddress, setRevealShippingAddress] = useState(true);
   const [errors, setErrors] = useState({}) as any;
   const closeModal = () => setShowModal(false) as any;
+  const [revealItems, setRevealItems] = useState(true);
+  const [revealContactInfo, setRevealContactInfo] = useState(false);
 
   const [{ isPending }] = usePayPalScriptReducer();
 
-  const {
+  let {
     cart: { cartItems },
     orderCreate: { order, success, error, loading },
-    deferPayPalButton: { defer },
+    guestUserRegister: { guestUserInfo },
+    userRegister: {
+      loading: loadingUserRegister,
+      success: successUserRegister,
+    },
+    userLogin: { userInfo },
   } = useSelector((state: any) => state);
 
   let formIsValid: boolean = false;
 
+  const closeShippingForm = () => {
+    setRevealShippingAddress(false);
+
+    setTimeout(
+      () =>
+        location?.state?.isGuestUser && !successUserRegister
+          ? setRevealContactInfo(true)
+          : setRevealPayment(true),
+      300
+    );
+  };
+
   const cb = () => {
     const isValid = validateShippingForm(setErrors, inputs, formIsValid);
     if (isValid) {
-      setRevealShippingAddress(false);
-      setTimeout(() => setRevealPayment(true), 500);
-      dispatch({ type: DEFER_PAYPAL_BUTTON_SUCCESS });
+      localStorage.setItem('shippingAddress', JSON.stringify(inputs));
+      closeShippingForm();
+    }
+  };
+
+  const acCb = () => {
+    const isValid = validateAccountCreateCheckoutForm(
+      setErrors,
+      fields,
+      formIsValid
+    );
+    if (isValid) {
+      dispatch(
+        register(fields.fullName, guestUserInfo?.email, fields.password)
+      );
     }
   };
 
   const { handleInputChange, inputs, onSubmit } = usePlaceOrderShippingForm(cb);
+  const { handleInput, fields, onCreate } = useCreateAccountCheckoutForm(acCb);
+
+  const validations = [
+    fields.password.length >= 9 ? 1 : 0,
+    fields.password.search(/[A-Z]/) > -1 ? 1 : 0,
+    fields.password.search(/[0-9]/) > -1 ? 1 : 0,
+    fields.password.search(/[~`! @#$%^&*()_+={}|:;"',.?]/) > -1 ? 1 : 0,
+  ];
+
+  const strength = validations.reduce((acc, cur) => acc + cur, 0);
 
   useEffect(() => {
     const addPayPalScript = async () => {
@@ -80,8 +126,11 @@ const PlaceOrder = ({ history }: any) => {
 
   useEffect(() => {
     if (success) {
-      history.push(`/order/${order?._id}`);
+      history.push({ pathname: `/order/${order?._id}`, state: { order } });
       setOrderLoader(false);
+    } else if (successUserRegister) {
+      setRevealContactInfo(false);
+      setRevealPayment(true);
     } else if (error) {
       setOrderLoader(false);
       history.push({
@@ -89,7 +138,9 @@ const PlaceOrder = ({ history }: any) => {
         state: error,
       });
     }
-  }, [order, success, error, history]);
+  }, [order, success, error, history, successUserRegister]);
+
+  const itemsTotal = totalItems(cartItems);
 
   const successPaymentHandler = (details: any) => {
     if (details.status === 'COMPLETED' && details.id) {
@@ -110,6 +161,13 @@ const PlaceOrder = ({ history }: any) => {
           taxPrice: taxPrice(inputs.state, cartItems),
           totalPrice: totalPrice(inputs.state, cartItems),
           orderId: details.id,
+          isGuestOrder: location?.state?.isGuestUser,
+          guestEmail: location?.state?.guestUserEmail,
+          user: {
+            id: userInfo?._id,
+            email: userInfo?.email,
+            name: userInfo?.name,
+          },
         })
       );
     }
@@ -117,12 +175,7 @@ const PlaceOrder = ({ history }: any) => {
 
   const payPalComponents = {
     style: { layout: 'vertical' },
-    forceRerender: [
-      totalPrice(inputs.state, cartItems),
-      'USD',
-      defer,
-      revealPayment,
-    ],
+    forceRerender: [totalPrice(inputs.state, cartItems), 'USD', revealPayment],
     createOrder: (data: any, actions: any) => {
       return actions.order.create({
         purchase_units: [
@@ -151,9 +204,7 @@ const PlaceOrder = ({ history }: any) => {
       {(orderLoader || loading || isPending) && <HexagonLoader />}
       <LogoCheckout src={LogoDay} onClick={() => setShowModal(true)} />
       <Checkout>
-        <Text fontSize='28px' letterSpacing='0'>
-          Checkout ({totalItems(cartItems)} items)
-        </Text>
+        Checkout ({itemsTotal} item{itemsTotal !== 1 && 's'})
       </Checkout>
       <Container>
         <SubContainer>
@@ -161,29 +212,25 @@ const PlaceOrder = ({ history }: any) => {
             <LeftRailContainer>
               <LeftRailSectionTitle>
                 <div className='d-flex align-items-center justify-content-between'>
-                  <Text fontSize='21.6px'>Shipping address</Text>
-                  {!revealShippingAddress ? (
+                  <div className='d-flex align-items-center'>
+                    <Text fontSize='22px' fontWeight={400}>
+                      Shipping Address
+                    </Text>
+                    <i className='fas fa-truck-loading fa-sm ml-2'></i>
+                  </div>
+                  {!revealShippingAddress && (
                     <Text
                       onClick={() => {
                         setRevealPayment(false);
                         setTimeout(() => setRevealShippingAddress(true), 500);
-                        dispatch({ type: DEFER_PAYPAL_BUTTON_REQUEST });
                       }}
                       cursor='pointer'
                     >
                       Edit
                     </Text>
-                  ) : (
-                    <i
-                      onClick={() => {
-                        setRevealShippingAddress(false);
-                        setTimeout(() => setRevealPayment(true), 500);
-                      }}
-                      className='fas fa-times'
-                    ></i>
                   )}
                 </div>
-                {revealPayment && (
+                {!revealShippingAddress && (
                   <Text fontSize='12px' fontWeight='100' marginTop='4px'>
                     {inputs.name}
                     <br />
@@ -202,9 +249,81 @@ const PlaceOrder = ({ history }: any) => {
                 />
               </Accordion>
             </LeftRailContainer>
+            {location?.state?.isGuestUser && (
+              <LeftRailContainer>
+                <LeftRailSectionTitle>
+                  <div className='d-flex align-items-center justify-content-between'>
+                    <div className='d-flex align-items-center'>
+                      <Text fontSize='22px' fontWeight={400}>
+                        Create Account
+                      </Text>{' '}
+                      <i className='fas fa-user ml-1 fa-sm'></i>{' '}
+                      {loadingUserRegister ? (
+                        <Spinner
+                          animation='border'
+                          size='sm'
+                          className='ml-1'
+                        />
+                      ) : (
+                        successUserRegister && (
+                          <i
+                            className='fas fa-check ml-1'
+                            style={{ color: 'green' }}
+                          ></i>
+                        )
+                      )}
+                    </div>
+                    {!successUserRegister && revealPayment && (
+                      <Text
+                        onClick={() => {
+                          setRevealPayment(false);
+                          setRevealShippingAddress(false);
+                          setTimeout(() => setRevealContactInfo(true), 300);
+                        }}
+                        cursor='pointer'
+                      >
+                        Edit
+                      </Text>
+                    )}
+                  </div>
+                  <Text fontSize='12px' fontWeight={100}>
+                    {successUserRegister
+                      ? `Please verify your email to create an account. Creating an account is not required for this transaction`
+                      : `Save your information so you can check out faster and track
+                  orders easily.`}
+                  </Text>
+                </LeftRailSectionTitle>
+                <Accordion toggle={revealContactInfo} maxheight='1000px'>
+                  <CreateAccountCheckoutForm
+                    fields={fields}
+                    handleInput={handleInput}
+                    errors={errors}
+                    formIsValid={formIsValid}
+                    setErrors={setErrors}
+                    validations={validations}
+                    strength={strength}
+                    onCreate={onCreate}
+                    loadingUserRegister={loadingUserRegister}
+                    setRevealContactInfo={setRevealContactInfo}
+                    setRevealPayment={setRevealPayment}
+                    guestUserInfo={guestUserInfo}
+                  />
+                </Accordion>
+              </LeftRailContainer>
+            )}
             <LeftRailContainer>
               <LeftRailSectionTitle>
-                Secure Payment <i className='fas fa-lock ml-1 fa-sm'></i>
+                <div className='d-flex justify-content-between align-items-center w-100'>
+                  <div className='d-flex align-items-center'>
+                    <Text fontSize='22px' fontWeight={400}>
+                      Secure Payment
+                    </Text>
+                    <i className='fas fa-lock ml-1 fa-sm'></i>
+                  </div>
+                  <Text>
+                    Order total: ${totalPrice(inputs.state, cartItems)}
+                  </Text>
+                </div>
               </LeftRailSectionTitle>
               <Accordion toggle={revealPayment} maxheight='1000px'>
                 <PayPalButtons
@@ -216,63 +335,81 @@ const PlaceOrder = ({ history }: any) => {
               </Accordion>
             </LeftRailContainer>
           </LeftRail>
-          <RightRail lg={3} md={4} sm={12} className='right-rail'>
-            <Col className='px-0'>
-              <Text
-                fontWeight='bold'
-                fontSize='18px'
-                marginBottom='18px'
-                marginTop='2rem'
-              >
-                Your items
-              </Text>
-              <div>
-                {cartItems?.map((item: any, index: number) => (
-                  <div className='d-flex my-2' key={index}>
+          <RightRail lg={3} md={4} sm={12} className='right-rail pb-0'>
+            <LeftRailSectionTitle onClick={() => setRevealItems(!revealItems)}>
+              <div className='d-flex justify-content-between align-items-center w-100'>
+                <Text fontSize='22px' fontWeight={400}>
+                  Your Items
+                </Text>{' '}
+                <i
+                  style={{
+                    transition: '300ms',
+                    transform: revealItems ? 'rotate(-180deg)' : '',
+                  }}
+                  className='fas fa-chevron-down fa-sm'
+                ></i>
+              </div>
+            </LeftRailSectionTitle>
+            <Accordion
+              toggle={revealItems}
+              maxheight={`${cartItems?.length * 80 + 165}px`}
+            >
+              {cartItems?.map((item: any, index: number) => (
+                <div
+                  className='d-flex justify-content-between mb-4'
+                  key={index}
+                >
+                  <div className='d-flex'>
                     <Image
-                      src={item.image}
-                      alt={item.name}
-                      fluid
-                      style={{
-                        width: '100px',
-                        height: '100px',
-                        aspectRatio: '1/1',
-                        marginRight: '16px',
-                      }}
+                      src={item?.image}
+                      alt={item?.name}
+                      width='50px'
+                      height='50px'
+                      className='mr-3'
+                      style={{ objectFit: 'cover' }}
                     />
 
-                    <div className='d-flex flex-column pr-0'>
-                      <Text fontWeight={400}>{item.name}</Text>
-                      <Text>{item.size}</Text>
-                      <Text>${addDecimals(item.qty * item.price)}</Text>
+                    <div className='d-flex flex-column'>
+                      <Text fontWeight={400}>{item?.name}</Text>
+                      <Text fontSize='11px'>Quantity: {item?.qty}</Text>
+                      <Text fontSize='11px'>{item?.size}</Text>
                     </div>
                   </div>
-                ))}
+                  <Text fontWeight={600}>${item?.qty * item?.price}</Text>
+                </div>
+              ))}
+              <hr className='my-3' />
+              <div className='d-flex justify-content-between'>
+                <Text className='d-flex align-items-baseline'>
+                  Subtotal
+                  <Text fontSize='10px' marginLeft='4px'>
+                    ({itemsTotal} item
+                    {itemsTotal === 1 ? '' : 's'})
+                  </Text>
+                </Text>
+                <Text>${itemsPrice(cartItems)}</Text>
               </div>
-            </Col>
-            <hr className='mb-3 mt-5' />
-            <div className='d-flex justify-content-between'>
-              <Text>
-                Subtotal ({totalItems(cartItems)} item
-                {totalItems(cartItems) === 1 ? '' : 's'})
-              </Text>
-              <Text>${itemsPrice(cartItems)}</Text>
-            </div>
-            <div className='d-flex justify-content-between my-1'>
-              <Text>Shipping</Text>
-              <Text>${shippingPrice}</Text>
-            </div>
-            <div className='d-flex justify-content-between'>
-              <Text>Tax</Text>
-              <Text>${taxPrice(inputs.state, cartItems)}</Text>
-            </div>
-            <hr className='my-3' />
-            <div className='d-flex justify-content-between font-weight-bold mb-4'>
-              <Text>Order total</Text>
-              <Text fontWeight={400}>
-                ${totalPrice(inputs.state, cartItems)}
-              </Text>
-            </div>
+              <div className='d-flex justify-content-between my-1'>
+                <Text>Shipping</Text>
+                <Text>${shippingPrice}</Text>
+              </div>
+              <div className='d-flex justify-content-between'>
+                <Text className='d-flex align-items-baseline'>
+                  Tax{' '}
+                  <Text fontSize='10px' marginLeft='4px'>
+                    (Calculated during shipping)
+                  </Text>
+                </Text>
+                <Text>${taxPrice(inputs.state, cartItems)}</Text>
+              </div>
+              <hr className='my-3' />
+              <div className='d-flex justify-content-between font-weight-bold mb-4'>
+                <Text>Order total</Text>
+                <Text fontWeight={600} className='pb-4'>
+                  ${totalPrice(inputs.state, cartItems)}
+                </Text>
+              </div>
+            </Accordion>
           </RightRail>
         </SubContainer>
       </Container>

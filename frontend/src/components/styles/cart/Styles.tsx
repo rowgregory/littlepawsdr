@@ -15,8 +15,7 @@ export const Container = styled.div<{ emptycart?: boolean }>`
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding: 48px 64px 18px 48px;
-  min-height: calc(100vh - 320px);
+  padding: 16px 16px 18px 16px;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
     padding: 48px 28px 0 28px;
     min-height: 100vh;
@@ -65,9 +64,11 @@ export const CheckoutBtnColumn = styled.div`
   width: 100%;
   background: #2e2e2e;
   justify-content: space-between;
-  height: 100vh;
-  min-height: 666px;
   box-shadow: -15px -15px 40px 3px rgba(0, 0, 0, 0.35);
+  position: fixed:
+  bottom: 0px;
+  left: 0;
+  right:0;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
     height: 100vh;
     width: 275px;
@@ -92,7 +93,7 @@ export const CheckoutBtn = styled(Link)`
   justify-content: center;
   font-weight: 400;
   transition: 300ms;
-
+  bottom: 0;
   :hover {
     background: ${({ theme }) => theme.colors.quinary};
     text-decoration: none;
@@ -103,7 +104,7 @@ export const CheckoutBtn = styled(Link)`
 
 export const SecondSubTotal = styled.div`
   width: 100%;
-  padding: 28px 64px;
+  padding: 32px 16px;
 
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
     padding: 100px 40px;

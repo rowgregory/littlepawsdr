@@ -158,68 +158,16 @@ const Dashboard = () => {
     loadingTps = false;
     return {
       ...obj,
-      totalAmount: obj.count * obj.price,
+      totalAmount: obj?.count * obj?.price,
     };
   });
 
-  let sortedArr = topSellingProducts.sort((a: any, b: any) => {
+  let sortedArr = topSellingProducts?.sort((a: any, b: any) => {
     return a.count > b.count ? -1 : 1;
   });
 
-  // Code for Linechart ======================
-  const sortedByDate = orders?.sort((a: any, b: any) => {
-    const c = new Date(a.createdAt) as any;
-    const d = new Date(b.createdAt) as any;
-    return c - d;
-  });
-
-  let dateArr = [] as any;
-  const summedUpDates = [] as any;
-  const revenue = [] as any;
-  // Data gets pushed into this object
-  // used in Linechart
-  const revenueFromOrders = {} as any;
-
-  sortedByDate?.map((obj: any) => {
-    return obj?.orderItems.forEach((order: any) => {
-      dateArr.push({
-        ...order,
-        createdAt: obj.createdAt.split('T')[0],
-      });
-      return dateArr;
-    });
-  });
-
-  const isDateSumedUp = (date: any) => {
-    return (
-      summedUpDates !== undefined &&
-      summedUpDates?.indexOf(date.substring(0, 7)) !== -1
-    );
-  };
-
-  const sumUpDate = (date: any) => {
-    let sum = 0;
-    dateArr.forEach((t: any) => {
-      if (t.createdAt.substring(0, 7) === date.substring(0, 7)) {
-        sum += t.price * t.qty;
-      }
-    });
-    summedUpDates.push(date.substring(0, 7));
-    revenue.push(sum);
-  };
-
-  dateArr.forEach((t: any) => {
-    if (!isDateSumedUp(t.createdAt)) {
-      sumUpDate(t.createdAt);
-    }
-  });
-
-  summedUpDates.forEach(
-    (d: any, i: any) => (revenueFromOrders[d] = revenue[i])
-  );
-
-  const allRecentTransactions = donations
-    ?.concat(orders, eCardOrders)
+  let allRecentTransactions = orders
+    ?.concat(eCardOrders, donations)
     ?.sort((a: any, b: any) => -a.createdAt.localeCompare(b.createdAt));
 
   const viewTransaction = (item: any) => {
@@ -248,7 +196,7 @@ const Dashboard = () => {
       <Middle>
         <div className='d-flex align-items-center justify-content-between mb-4'>
           <div>
-            <WelcomeText>Hello {userInfo?.name.split(' ')[0]}</WelcomeText>
+            <WelcomeText>Hello {userInfo?.name?.split(' ')[0]}</WelcomeText>
             <Text color='#c8cbcd'>Here you can manage everything</Text>
           </div>
           <ActionBtn onClick={() => handleShow()}>Actions</ActionBtn>
@@ -256,19 +204,15 @@ const Dashboard = () => {
 
         <div style={{ width: '100%' }}>
           <TopRow className='mx-auto'>
-            <DashboardTopRow
-              orderItemsTotal={orderItemsTotal}
-              donationsItemsTotal={donationsItemsTotal}
-              eCardOrdersItemsTotal={eCardOrdersItemsTotal}
-            />
+            <DashboardTopRow />
           </TopRow>
           <MiddleRow>
-            <LineChart revenueFromOrders={revenueFromOrders} />
+            <LineChart orders={orders} />
           </MiddleRow>
           <BottomRow>
             <TopSellingProductsContainer>
               {result.length === 0 ? (
-                <TopSellingProducts className='d-flex justify-content-center align-items-center'>
+                <TopSellingProducts className='d-flex justify-content-center align-items-center h-100'>
                   <Text>You have not sold any products yet</Text>
                 </TopSellingProducts>
               ) : loadingTps ? (

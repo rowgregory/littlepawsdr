@@ -36,13 +36,18 @@ export const SubContainer = styled(Row)`
 `;
 
 export const Checkout = styled.div`
-  position: absolute;
-  top: 5px;
-  right: 0;
-  left: 0;
-  margin-left: auto;
-  margin-right: auto;
-  width: 291px;
+  display: none;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    display: block;
+    position: absolute;
+    top: 5px;
+    right: 0;
+    left: 0;
+    margin-left: auto;
+    margin-right: auto;
+    width: 291px;
+    font-size: 28px;
+  }
 `;
 
 export const LogoCheckout = styled(Image)`
@@ -54,24 +59,24 @@ export const LogoCheckout = styled(Image)`
 
 export const LeftRail = styled(Col)`
   background: ${({ theme }) => theme.bg};
-  padding: 1rem;
   width: 100%;
-  border: 1px solid #ededed;
   margin-bottom: 2rem;
   margin-right: 0;
+  padding: 0 16px 16px;
 
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    padding: 1rem;
+    border: 1px solid #ededed;
     margin-right: 1.5rem;
     border-radius: 0.5rem;
   }
 `;
 
 export const LeftRailSectionTitle = styled.div`
-  font-weight: bold;
-  font-size: 1.35rem;
-  margin-bottom: 1.5rem;
+  font-size: 22px;
+  margin-bottom: 24px;
   background: ${({ theme }) => theme.secondaryBg};
-  padding: 0.875rem 1.125rem;
+  padding: 14px 18px;
   color: ${({ theme }) => theme.text};
 `;
 

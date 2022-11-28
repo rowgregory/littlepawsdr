@@ -1,181 +1,182 @@
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useRouteMatch } from 'react-router-dom';
-import { getECardOrderDetails } from '../actions/eCardOrderActions';
+import { Image } from 'react-bootstrap';
 import { Text } from '../components/styles/Styles';
-import {
-  CategoryTitles,
-  EmailAndShippingDetailsContainer,
-  OrderId,
-  Wrapper,
-} from './GuestOrder';
 import styled from 'styled-components';
-import { Col, Spinner, Image } from 'react-bootstrap';
-import GreenCheckmark from '../components/svg/GreenCheckmark';
-import { HorizontalLine } from '../components/styles/product-details/Styles';
-import Message from '../components/Message';
-import { ECARD_ORDER_CREATE_RESET } from '../constants/eCardOrderContants';
-import HexagonLoader from '../components/Loaders/HexagonLoader/HexagonLoader';
+import { Link, useLocation } from 'react-router-dom';
+import Logo from '../components/assets/logo-background-transparent-purple4.png';
+import { useDispatch } from 'react-redux';
+import { formatDate } from '../utils/formatDate';
 import LeftArrow from '../components/svg/LeftArrow';
+import { ECARD_ORDER_CREATE_RESET } from '../constants/eCardOrderContants';
+import { Wrapper } from './OrderReceipt';
 
 const Container = styled.div`
-  background: ${({ theme }) => theme.bg};
-  margin-bottom: 5rem;
+  background: ${({ theme }) => theme.secondaryBg};
+  min-height: 100vh;
+  min-width: 768px;
 `;
 
 const ECardOrderReceipt = () => {
+  const {
+    state: { eCardOrder: state, goBackTo },
+  } = useLocation() as any;
   const dispatch = useDispatch();
-  const match = useRouteMatch<{ id: string }>();
-  const eCardOrderId = match.params.id;
-  const history = useHistory() as any;
-
-  const eCardOrderDetails = useSelector(
-    (state: any) => state.eCardOrderDetails
-  );
-  const { eCardOrder, loading, error } = eCardOrderDetails;
 
   useEffect(() => {
-    dispatch(getECardOrderDetails(eCardOrderId));
     dispatch({ type: ECARD_ORDER_CREATE_RESET });
-  }, [dispatch, eCardOrderId]);
+  }, [dispatch]);
 
   return (
     <Container>
-      {error && <Message variant='danger'>{error}</Message>}
-      {loading && <HexagonLoader />}
       <Wrapper>
-        {history?.location?.state?.directBackTo === 'dashboard' && (
-          <div className='mb-3'>
-            <LeftArrow text='Back to dashboard' url={`/admin`} />
-          </div>
-        )}
-        {loading ? (
-          <Spinner
-            animation='border'
-            size='sm'
-            style={{ margin: '0 0 1rem 0' }}
-          />
-        ) : (
-          <div className='d-flex mb-3'>
-            {eCardOrder?.isSent ? (
-              <i className='text-success fas fa-shipping-fast fa-2x d-flex align-items-center'></i>
-            ) : (
-              <GreenCheckmark />
-            )}
-            <h4
-              className='text-success font-weight-bold mb-0 ml-2'
-              style={{ letterSpacing: '-1px' }}
-            >
-              {eCardOrder?.isSent
-                ? `Your e-card has been sent!`
-                : `Thank you, your e-card order has been placed.`}
-            </h4>
-          </div>
-        )}
-        <EmailAndShippingDetailsContainer>
-          <Col>
-            <OrderId>
-              Order Id:
-              <strong>
-                &nbsp;
-                {loading ? (
-                  <Spinner animation='border' size='sm' />
-                ) : (
-                  eCardOrder?._id
-                )}
-              </strong>
-            </OrderId>
-            <Text fontSize='1rem' marginBottom='2rem'>
-              An email confirmation has been sent to{' '}
-              <strong className='mr-2'>{eCardOrder?.email}</strong>
-              <GreenCheckmark width='1rem' />
-            </Text>
-            <div className='d-flex mt-1 mb-3'>
-              <div style={{ maxWidth: '600px' }}>
-                <Image
-                  src={eCardOrder?.image}
-                  alt='product-img'
-                  width='100%'
-                  className='pr-3'
-                  style={{ objectFit: 'cover' }}
-                />
-              </div>
+        <div style={{ background: '#fcfbfe', padding: '20px 32px' }}>
+          <Link to='/' style={{ marginBottom: '64px' }}>
+            <Image
+              style={{
+                width: '80px',
+              }}
+              src={Logo}
+              alt={`Little Paws Dachshund Reschue ${new Date().getFullYear()}`}
+            />
+          </Link>
+        </div>
+        <div style={{ padding: '32px' }}>
+          {goBackTo === 'MY_ECARD_ORDERS' && (
+            <LeftArrow text='Back To Ecard Orders' url='/my-orders/e-cards' />
+          )}
+          <Text
+            fontSize='24px'
+            fontWeight={600}
+            color='#404450'
+            marginBottom='24px'
+            marginTop='12px'
+          >
+            Your ecard order is confirmed!
+          </Text>
+          <Text
+            color='#4e515b'
+            fontSize='17px'
+            marginBottom='10px'
+            fontWeight={600}
+          >
+            Hello {state?.firstName},
+          </Text>
+          <Text
+            color='#a5a7ab'
+            fontSize='14.5px'
+            p='0 0 32px 0'
+            borderBottom='1px solid #f2f2f2'
+            marginBottom='22px'
+          >
+            Your ecard order has been confirmed and your item will be sent on{' '}
+            {formatDate(state?.dateToSend)}
+          </Text>
+          <table style={{ borderBottom: '1px solid #f2f2f2', width: '100%' }}>
+            <thead>
+              <tr>
+                <td>
+                  <Text fontWeight={200}>Order Date</Text>
+                </td>
+                <td>
+                  <Text fontWeight={200}>Order No</Text>
+                </td>
+                <td>
+                  <Text fontWeight={200}>Payment</Text>
+                </td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <Text fontWeight={400} p='10px 0 32px'>
+                    {formatDate(state?.createdAt)}
+                  </Text>
+                </td>
+                <td>
+                  <Text fontWeight={400} p='10px 0 32px'>
+                    {state?._id}
+                  </Text>
+                </td>
+                <td>
+                  <Text fontWeight={400} p='10px 0 32px'>
+                    PayPal
+                  </Text>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div
+            className='d-flex justify-content-between py-4 w-100 mb-4'
+            style={{ borderBottom: '1px solid #f2f2f2' }}
+          >
+            <div className='d-flex'>
+              <Image
+                src={state?.image}
+                alt='product-img'
+                width='100px'
+                className='pr-3'
+                style={{ objectFit: 'cover', aspectRatio: '1/1' }}
+              />
               <div className='d-flex flex-column'>
-                <Text fontSize='0.8rem'>{eCardOrder?.message}</Text>
-                <Text fontSize='0.8rem'>
-                  E-Card sent to: {eCardOrder?.recipientsEmail}
-                </Text>
-                <Text fontSize='0.8rem'>${eCardOrder?.totalPrice}</Text>
-              </div>
-            </div>
-            <HorizontalLine />
-            <div>
-              <CategoryTitles className='d-flex justify-content-between align-items-center'>
-                <Text fontWeight='bold' fontSize='1.125rem'>
-                  Status<i className='fas fa-info-circle fa-sm ml-2'></i>
-                </Text>
-              </CategoryTitles>
-              <div className='mb-1 pl-3'>
-                {eCardOrder?.isSent ? (
-                  <Message variant='success'>
-                    <div>
-                      Your e-card order has been sent{' '}
-                      <i className='fas fa-exclamation fa-sm'></i>
-                    </div>
-                  </Message>
-                ) : (
-                  <Message variant='warning'>
-                    <div>
-                      E-Card order has not been sent yet{' '}
-                      <i className='fas fa-exclamation fa-sm'></i>
-                    </div>
-                  </Message>
-                )}
-              </div>
-            </div>
-            <HorizontalLine margin='1.875rem 0 1rem' />
-            <CategoryTitles>
-              <Text fontWeight='bold' fontSize='1.125rem'>
-                Arrival Date <i className='fas fa-truck-loading fa-sm ml-2'></i>
-              </Text>
-            </CategoryTitles>
-            <div className='mb-1 pl-3'>
-              <Text fontSize='0.85rem' fontWeight='bold' marginBottom='0.3rem'>
-                {loading ? (
-                  <Spinner animation='border' size='sm' />
-                ) : (
-                  eCardOrder?.dateToSend?.split('T')[0]
-                )}
-              </Text>
-            </div>
-            <HorizontalLine margin='1rem 0' />
-            <div className='d-flex flex-column pl-3'>
-              <div className='d-flex justify-content-between'>
-                <Text fontSize='0.85rem'>Tax</Text>
-                <Text fontSize='0.85rem'>
-                  {loading ? (
-                    <Spinner animation='border' size='sm' />
-                  ) : (
-                    `$${eCardOrder?.taxPrice?.toFixed(2)}`
-                  )}
+                <Text fontWeight='400' fontSize='14px' marginBottom='10px'>
+                  {state?.name}
                 </Text>
               </div>
             </div>
-            <HorizontalLine margin='1rem 0' />
-            <div className='d-flex justify-content-between pl-3'>
-              <Text fontSize='0.85rem' fontWeight='bold'>
+            <Text fontWeight='600' fontSize='18px'>
+              ${state?.subTotal}
+            </Text>
+          </div>
+
+          <div className='d-flex flex-column align-items-end mb-4'>
+            <div className='d-flex justify-content-between w-25 mb-1'>
+              <Text>Subtotal</Text>
+              <Text fontWeight={400}>${state?.subTotal}</Text>
+            </div>
+            <div
+              className='d-flex justify-content-between w-25 mb-1'
+              style={{ borderBottom: '1px solid #f2f2f2' }}
+            >
+              <Text>Tax Fee</Text>
+              <Text fontWeight={400}>${state?.taxPrice.toFixed(2)}</Text>
+            </div>
+            <div
+              className='d-flex mt-2 pb-2 justify-content-between w-25'
+              style={{ borderBottom: '1px solid #f2f2f2' }}
+            >
+              <Text fontSize='14px' fontWeight={600}>
                 Total
               </Text>
-              <Text fontSize='0.85rem' fontWeight='bold'>
-                {loading ? (
-                  <Spinner animation='border' size='sm' />
-                ) : (
-                  `$${eCardOrder?.totalPrice}`
-                )}
+              <Text fontSize='14px' fontWeight={600}>
+                ${state?.totalPrice.toFixed(2)}
               </Text>
             </div>
-          </Col>
-        </EmailAndShippingDetailsContainer>
+          </div>
+
+          <Text fontSize='14px' marginBottom='24px'>
+            An email confirmation has been sent to{' '}
+            <strong className='mr-2'>{state?.email}</strong>
+            <i className='fas fa-check' style={{ color: 'green' }}></i>
+          </Text>
+
+          <Text color='#494c59' fontSize='17px' fontWeight={600}>
+            Thank you for shopping with us!
+          </Text>
+          <Text fontWeight={400} marginBottom='32px'>
+            Little Paws Dachshund Rescue
+          </Text>
+        </div>
+        <div
+          className='d-flex justify-content-between align-items-center'
+          style={{ background: '#fcfbfe', padding: '24px 32px', margin: 0 }}
+        >
+          <Text>
+            Need Help? Visit our <Link to='/about/contact-us'>Contact </Link>
+            page.
+          </Text>
+          <Text>Little Paws Dachshund Rescue {new Date().getFullYear()}</Text>
+        </div>
       </Wrapper>
     </Container>
   );

@@ -1,14 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Form, Spinner } from 'react-bootstrap';
-import { useDispatch } from 'react-redux';
-import { DEFER_PAYPAL_BUTTON_SUCCESS } from '../../reducers/paypalReducer';
 import {
   privacyPolicyLinkKey,
   termsOfServiceLinkKey,
 } from '../../utils/footerUtils';
 import { inputFullName, inputPassword } from '../../utils/validateShippingForm';
 import JumpingInput from '../common/JumpingInput';
-import PasswordMeter from '../PasswordMeter';
+import PasswordMeter, { PasswordRequirements } from '../PasswordMeter';
 import { Text } from '../styles/Styles';
 
 const CreateAccountCheckoutForm = ({
@@ -24,23 +22,19 @@ const CreateAccountCheckoutForm = ({
   setRevealContactInfo,
   setRevealPayment,
   guestUserInfo,
-  setSkipped,
 }: any) => {
-  const dispatch = useDispatch();
   useEffect(() => {
     if (strength === 4) {
       setErrors((errors: any) => ({ ...errors, password: '' }));
     }
   }, [setErrors, strength]);
+  const [showPassword, setShowPassword] = useState({ password: false });
+  const [show, setShow] = useState(false);
   return (
     <Form>
-      <Text
-        fontFamily='Arial'
-        fontSize='12px'
-        className='d-flex align-items-center mt-2'
-      >
+      <Text className='d-flex align-items-center mb-3'>
         <i className='fas fa-check'></i>&nbsp;
-        {guestUserInfo?.guestUser?.email}
+        <Text fontSize='12px'>{guestUserInfo?.email}</Text>
       </Text>
       <JumpingInput
         name='fullName'
@@ -57,27 +51,38 @@ const CreateAccountCheckoutForm = ({
         label='Password'
         value={fields.password || ''}
         handleInputChange={handleInput}
-        type='password'
+        type={showPassword.password ? 'text' : 'password'}
         error={errors?.password}
         minLength={9}
         blur={() => inputPassword(fields, formIsValid, setErrors)}
+        showPassword={showPassword.password}
+        setShowPassword={setShowPassword}
       />
       <PasswordMeter validations={validations} strength={strength} />
-
+      <Text
+        cursor='pointer'
+        fontSize='12px'
+        onClick={() => setShow(!show)}
+        className='d-flex align-items-center justify-content-between'
+      >
+        {show ? 'Hide ' : 'Show '}password requirements
+        <i className={`fas fa-chevron-${show ? 'up' : 'down'} fa-sm`}></i>
+      </Text>
+      <PasswordRequirements validations={validations} open={show} />
       <div className='d-flex align-items-center mt-3 mb-1'>
         <Button className='mr-3' onClick={onCreate}>
           Sign{loadingUserRegister && 'ing'} Up
           {loadingUserRegister && '...'}
-          {loadingUserRegister && <Spinner animation='border' size='sm' />}
+          {loadingUserRegister && (
+            <Spinner animation='border' size='sm' style={{ color: '#fff' }} />
+          )}
         </Button>
         <Button
           variant='secondary'
           disabled={loadingUserRegister}
           onClick={() => {
             setRevealContactInfo(false);
-            setSkipped(true);
             setTimeout(() => setRevealPayment(true), 300);
-            dispatch({ type: DEFER_PAYPAL_BUTTON_SUCCESS });
           }}
         >
           Skip

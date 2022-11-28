@@ -5,16 +5,8 @@ import styled from 'styled-components';
 import { registerGuestUser } from '../actions/guestUserActions';
 import { login } from '../actions/userActions';
 import Message from '../components/Message';
-import {
-  CreateAccountContainer,
-  FormContainer,
-  Text,
-} from '../components/styles/Styles';
+import { FormContainer, Text } from '../components/styles/Styles';
 import { CSSTransition } from 'react-transition-group';
-import { sendResetEmail } from '../actions/forgotPasswordActions';
-import { USER_LOGIN_RESET } from '../constants/userConstants';
-import '../index';
-import { RESET_EMAIL_SEND_RESET } from '../constants/resetPasswordContants';
 import { useWindowSize } from '../utils/useWindowSize';
 
 const Container = styled.div`
@@ -45,16 +37,6 @@ const VerticalSeparator = styled.div`
   height: auto;
 `;
 
-const ForgotPasswordLink = styled.div`
-  font-size: 0.8rem;
-  cursor: pointer;
-  color: ${({ theme }) => theme.colors.secondary};
-  :hover {
-    color: ${({ theme }) => theme.colors.secondary};
-    text-decoration: underline;
-  }
-`;
-
 const StyledButton = styled(Button)`
   background: ${({ theme }) => theme.colors.secondary};
   transition: 300ms;
@@ -71,10 +53,7 @@ const LoginOptions = ({ history }: any) => {
   const [guestEmail, setGuestEmail] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [forgotPasswordEmail, setforgotPasswordEmail] = useState('');
-  const [activeMenu, setActiveMenu] = useState('dropdown-slide-1') as any;
   const [menuHeight, setMenuHeight] = useState() as any;
-  const forgotPasswordRef = useRef() as any;
   const signInRef = useRef() as any;
 
   const {
@@ -82,13 +61,9 @@ const LoginOptions = ({ history }: any) => {
       loading: loadingGuestUserRegister,
       error: errorGuestUserRegister,
       success: successGuestUserRegister,
+      guestUserInfo,
     },
     userLogin: { loading: loadingUserLogin, userInfo, error: errorUserLogin },
-    sendEmail: {
-      loading: loadingSendEmail,
-      success: successSendEmail,
-      error: errorSendEmail,
-    },
   } = useSelector((state: any) => state);
 
   const continueAsGuestHandler = (e: any) => {
@@ -104,43 +79,17 @@ const LoginOptions = ({ history }: any) => {
 
   useEffect(() => {
     if (userInfo) {
-      history.push('/cart/place-order');
+      history.push({
+        pathname: '/cart/place-order',
+        state: { isGuestUser: false },
+      });
     } else if (successGuestUserRegister) {
-      history.push('/cart/place-order-guest');
-    } else if (successSendEmail) {
-      setforgotPasswordEmail('');
+      history.push({
+        pathname: '/cart/place-order',
+        state: { isGuestUser: true, guestUserEmail: guestUserInfo?.email },
+      });
     }
-
-    if (forgotPasswordRef?.current?.props?.in) {
-      if (errorSendEmail) {
-        setMenuHeight(345);
-      } else if (successSendEmail) {
-        setMenuHeight(345);
-      } else {
-        setMenuHeight(258);
-      }
-    }
-
-    if (signInRef?.current?.props?.in) {
-      if (errorUserLogin) {
-        setMenuHeight(399);
-      } else {
-        setMenuHeight(312);
-      }
-    }
-  }, [
-    errorGuestUserRegister,
-    errorSendEmail,
-    errorUserLogin,
-    history,
-    successGuestUserRegister,
-    successSendEmail,
-    userInfo,
-    activeMenu,
-    signInRef,
-    menuHeight,
-    dispatch,
-  ]);
+  }, [email, guestUserInfo, history, successGuestUserRegister, userInfo]);
 
   const [width] = useWindowSize() as any;
 
@@ -159,14 +108,9 @@ const LoginOptions = ({ history }: any) => {
               {errorGuestUserRegister && (
                 <Message variant='danger'>{errorGuestUserRegister}</Message>
               )}
-              <Form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                }}
-              >
+              <Form onSubmit={(e) => e.preventDefault()}>
                 <Form.Group controlId='guestEmail'>
                   <Form.Control
-                    // autoComplete='off'
                     type='email'
                     placeholder='Enter email'
                     value={guestEmail}
@@ -178,7 +122,6 @@ const LoginOptions = ({ history }: any) => {
                   disabled={
                     loadingGuestUserRegister ||
                     loadingUserLogin ||
-                    loadingSendEmail ||
                     guestEmail === ''
                   }
                   className='d-flex align-items-center border-0 w-100 justify-content-center'
@@ -214,7 +157,7 @@ const LoginOptions = ({ history }: any) => {
             }}
           >
             <CSSTransition
-              in={activeMenu === 'dropdown-slide-1'}
+              in={true}
               unmountOnExit
               timeout={500}
               classNames='slide-1'
@@ -281,100 +224,6 @@ const LoginOptions = ({ history }: any) => {
                     </StyledButton>
                   </Form>
                 </FormContainer>
-                <CreateAccountContainer className='py-3 mt-3 d-flex align-items-center justify-content-center'>
-                  Forgot your password?
-                  <ForgotPasswordLink
-                    className='ml-2'
-                    onClick={() => {
-                      dispatch({ type: RESET_EMAIL_SEND_RESET });
-                      setforgotPasswordEmail('');
-                      setActiveMenu('dropdown-slide-2');
-                    }}
-                  >
-                    Reset it here.
-                  </ForgotPasswordLink>
-                </CreateAccountContainer>
-              </div>
-            </CSSTransition>
-            <CSSTransition
-              in={activeMenu === 'dropdown-slide-2'}
-              unmountOnExit
-              timeout={500}
-              classNames='slide-2'
-              onEnter={calcHeight}
-              ref={forgotPasswordRef}
-            >
-              <div style={{ width: '324px' }}>
-                <FormContainer>
-                  <Titles>Forgot Password</Titles>
-
-                  <div>
-                    {errorSendEmail && (
-                      <Message variant='danger'>{errorSendEmail}</Message>
-                    )}
-                    {successSendEmail && (
-                      <Message variant='success'>
-                        An email has been sent if an account exists.
-                      </Message>
-                    )}
-                  </div>
-                  <Form
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                    }}
-                  >
-                    <Form.Group controlId='forgotPasswordemail'>
-                      <Form.Control
-                        // autoComplete='off'
-                        type='email'
-                        placeholder='Enter email'
-                        value={forgotPasswordEmail}
-                        onChange={(e: any) =>
-                          setforgotPasswordEmail(e.target.value)
-                        }
-                        required={true}
-                      ></Form.Control>
-                    </Form.Group>
-                    <StyledButton
-                      disabled={
-                        loadingGuestUserRegister ||
-                        loadingSendEmail ||
-                        forgotPasswordEmail === ''
-                      }
-                      onClick={(e: any) => {
-                        e.preventDefault();
-                        dispatch(sendResetEmail(forgotPasswordEmail));
-                      }}
-                      className='d-flex align-items-center border-0 w-100  justify-content-center'
-                    >
-                      <Text fontSize='0.9375rem' color='#fff'>
-                        Reset Password
-                      </Text>
-                      {loadingSendEmail && (
-                        <Spinner
-                          as='span'
-                          animation='border'
-                          size='sm'
-                          role='status'
-                          aria-hidden='true'
-                          className='mr-2'
-                        />
-                      )}
-                    </StyledButton>
-                  </Form>
-                </FormContainer>
-                <CreateAccountContainer className='py-3 mt-3 d-flex align-items-center justify-content-center'>
-                  Remember your password?
-                  <ForgotPasswordLink
-                    className='ml-2'
-                    onClick={() => {
-                      setActiveMenu('dropdown-slide-1');
-                      dispatch({ type: USER_LOGIN_RESET });
-                    }}
-                  >
-                    Sign In
-                  </ForgotPasswordLink>
-                </CreateAccountContainer>
               </div>
             </CSSTransition>
           </div>

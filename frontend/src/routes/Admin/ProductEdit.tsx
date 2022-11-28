@@ -89,8 +89,6 @@ const ProductEdit = () => {
     },
   } = useSelector((state: any) => state);
 
-  console.log(state);
-
   useEffect(() => {
     dispatch({ type: PRODUCT_DETAILS_RESET });
     dispatch(getProductDetails(productId));

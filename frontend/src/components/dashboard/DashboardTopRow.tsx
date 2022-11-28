@@ -12,11 +12,7 @@ import SolidDonationIcon from '../../components/svg/SolidDonationIcon';
 import EcardSolidIcon from '../../components/svg/EcardSolidIcon';
 import { useSelector } from 'react-redux';
 
-const DashboardTopRow = ({
-  orderItemsTotal,
-  donationsItemsTotal,
-  eCardOrdersItemsTotal,
-}: any) => {
+const DashboardTopRow = () => {
   const {
     donationList: {
       loading: loadingDonations,
@@ -44,7 +40,6 @@ const DashboardTopRow = ({
     {
       title: 'Orders',
       itemAmount: totalOrders,
-      amountTotal: orderItemsTotal,
       loading: loadingOrderList,
       error: errorOrderList,
       icon: <SolidOrdersIcon />,
@@ -52,7 +47,6 @@ const DashboardTopRow = ({
     {
       title: 'Donations',
       itemAmount: totalDonations,
-      amountTotal: donationsItemsTotal,
       loading: loadingDonations,
       error: errorDonations,
       icon: <SolidDonationIcon />,
@@ -68,7 +62,6 @@ const DashboardTopRow = ({
     {
       title: 'Ecards',
       itemAmount: totalECards,
-      amountTotal: eCardOrdersItemsTotal,
       loading: loadingECardOrders,
       error: errorECardOrders,
       icon: <EcardSolidIcon />,
@@ -89,7 +82,7 @@ const DashboardTopRow = ({
                 {obj.loading ? (
                   <Spinner animation='border' size='sm' />
                 ) : (
-                  obj.amountTotal
+                  obj?.itemAmount
                 )}
               </Text>
             </div>

@@ -17,19 +17,16 @@ import PopUp from '../components/common/PopUp';
 import GlobalStyles from '../GlobalStyles';
 import ContinueSessionModal from '../components/ContinueSessionModal';
 import LoginOptions from './LoginOptions';
-import GuestOrder from './GuestOrder';
 import { useHandleIdleUser } from '../utils/useHandleIdleUser';
 import ECardOrderReceipt from './ECardOrderReceipt';
 import Footer from '../components/Footer';
-import MyECards from './ECardOrders';
+import MyEcardOrders from './MyEcardOrders';
 import Navbar from '../components/Navbar';
 import EmailConfirmation from './EmailConfirmation';
 import OrderPayPal from './OrderPayPal';
-import GuestOrderPayPal from './GuestOrderPayPal';
 import ECards from './ECards';
 import ECardDetails from './ECardDetails';
 import EcardPlaceOrder from './EcardPlaceOrder';
-import PayPalTest from './PayPalTest';
 
 type LazyModulePromise<T = {}> = Promise<{ default: ComponentType<T> }>;
 
@@ -104,19 +101,19 @@ export const Routes: FC = () => {
           <Route path='/profile' component={Profile} />
           <Route path='/shop' component={Shop} />
           <Route path='/cart' component={Cart} />
-          <Route path='/order/:id' component={OrderReceipt} />
-          <Route path='/guest-order/:id' component={GuestOrder} />
+          <Route
+            path='/order/:id/:order?/:shippingAddress?/:email?/:items?'
+            component={OrderReceipt}
+          />
           <Route path='/reset/:id' component={ResetPassword} />
           <Route path='/settings' component={Settings} />
           <Route exact path='/my-orders' component={MyOrders} />
-          <Route path='/my-orders/e-cards' component={MyECards} />
+          <Route path='/my-orders/e-cards' component={MyEcardOrders} />
           <Route
             path='/email-confirmation/:to?/:em?/:na?/:id?'
             component={EmailConfirmation}
           />
           <Route path='/paypal/order' component={OrderPayPal} />
-          <Route path='/paypal/guest-order' component={GuestOrderPayPal} />
-          <Route exact path='/paypal/test' component={PayPalTest} />
           <Route exact path='/' component={Home} />
           <Route path='/404' component={PageNotFound} />
           <Redirect to='/404' />

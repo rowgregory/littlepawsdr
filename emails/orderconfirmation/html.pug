@@ -1,292 +1,269 @@
 doctype transitional
 html(xmlns='http://www.w3.org/1999/xhtml')
   head
-    meta(name='viewport', content='width=device-width')
-    meta(http-equiv='Content-Type', content='text/html; charset=UTF-8')
-    title registerconfirmation
+    meta(name='viewport' content='width=device-width')
+    meta(http-equiv='Content-Type' content='text/html; charset=UTF-8')
+    title order-confirmation
     style(type='text/css').
       * {
-      margin: 0;
-      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-      box-sizing: border-box;
-      font-size: 14px;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
       }
       body {
-      -webkit-font-smoothing: antialiased;
-      -webkit-text-size-adjust: none;
-      width: 100% !important;
-      height: 100%;
-      line-height: 1.6em;
-      /* 1.6em * 14px = 22.4px, use px to get airier line-height also in Thunderbird, and Yahoo!, Outlook.com, AOL webmail clients */
-      /*line-height: 22px;*/
+        -webkit-font-smoothing: antialiased;
+        -webkit-text-size-adjust: none;
+        align-items: center;
+        height: 100%;
+        background-color: #f6f6f6;
+        width: 100%;
+        padding: 24px;
       }
-      /* Let's make sure all tables have defaults */
-      table td {
-      vertical-align: top;
-      }
-      /* -------------------------------------
-      BODY & CONTAINER
-      ------------------------------------- */
-      body {
-      background-color: #f6f6f6;
-      }
-      .body-wrap {
-      background-color: #f6f6f6;
-      width: 100%;
-      }
+
       .container {
-      display: block !important;
-      max-width: 600px !important;
-      margin: 0 auto !important;
-      /* makes it centered */
-      clear: both !important;
+        display: block !important;
+        max-width: 800px !important;
+        margin: 0 auto !important;
+        /* makes it centered */
+        clear: both !important;
+        background-color: #fff;
       }
+
       .content {
-      max-width: 600px;
-      margin: 0 auto;
-      display: block;
-      padding: 20px;
+        max-width: 800px;
+        margin: 0 auto;
+        display: block;
+        padding: 36px;
       }
-      /* -------------------------------------
-      HEADER, FOOTER, MAIN
-      ------------------------------------- */
-      .main {
-      background-color: #fff;
-      border: 1px solid #e9e9e9;
-      border-radius: 3px;
+
+      .header-section {
+        margin-bottom: 24px;
       }
-      .content-wrap {
-      padding: 20px;
-      }
-      .content-block {
-      padding: 0 0 20px;
-      }
-      .header {
-      width: 100%;
-      margin-bottom: 20px;
-      }
-      .footer {
-      width: 100%;
-      clear: both;
-      color: #999;
-      padding: 20px;
-      }
-      .footer p, .footer a, .footer td {
-      color: #999;
-      font-size: 12px;
-      }
-      /* -------------------------------------
-      TYPOGRAPHY
-      ------------------------------------- */
-      h1, h2, h3 {
-      font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-      color: #000;
-      margin: 40px 0 0;
-      line-height: 1.2em;
-      font-weight: 400;
-      }
-      h1 {
-      font-size: 32px;
-      font-weight: 500;
-      /* 1.2em * 32px = 38.4px, use px to get airier line-height also in Thunderbird, and Yahoo!, Outlook.com, AOL webmail clients */
-      /*line-height: 38px;*/
-      }
-      h2 {
-      font-size: 24px;
-      /* 1.2em * 24px = 28.8px, use px to get airier line-height also in Thunderbird, and Yahoo!, Outlook.com, AOL webmail clients */
-      /*line-height: 29px;*/
-      }
+
       h3 {
-      font-size: 18px;
-      /* 1.2em * 18px = 21.6px, use px to get airier line-height also in Thunderbird, and Yahoo!, Outlook.com, AOL webmail clients */
-      /*line-height: 22px;*/
+        margin-top: 0;
+        margin-bottom: 8px;
       }
-      h4 {
-      font-size: 14px;
-      font-weight: 600;
+
+      .secondary-font {
+        color: #cfd0d2;
+        margin-bottom: 32px;
       }
-      p, ul, ol {
-      margin-bottom: 10px;
-      font-weight: normal;
+
+      .horizontal-line {
+        border-bottom: 1px solid #f2f2f2;
+
       }
-      p li, ul li, ol li {
-      margin-left: 5px;
-      list-style-position: inside;
+
+      table {
+        padding: 24px 0;
       }
-      /* -------------------------------------
-      LINKS & BUTTONS
-      ------------------------------------- */
-      .btn-primary {
-      text-decoration: none;
-      color: #FFF;
-      background-color: #348eda;
-      border: solid #348eda;
-      border-width: 10px 20px;
-      line-height: 2em;
-      /* 2em * 14px = 28px, use px to get airier line-height also in Thunderbird, and Yahoo!, Outlook.com, AOL webmail clients */
-      /*line-height: 28px;*/
-      font-weight: bold;
-      text-align: center;
-      cursor: pointer;
-      display: inline-block;
-      border-radius: 5px;
-      text-transform: capitalize;
+
+      .table-header {
+        margin-bottom: 8px;
       }
-      /* -------------------------------------
-      OTHER STYLES THAT MIGHT BE USEFUL
-      ------------------------------------- */
-      .last {
-      margin-bottom: 0;
+
+      .order-item {
+        padding: 18px 0;
+        display: flex;
+        width: 100%;
       }
-      .first {
-      margin-top: 0;
+
+      .picture-name-qty {
+        display: flex;
+        width: 91%;
       }
-      .aligncenter {
-      text-align: center;
+
+      .qty-size {
+        display: block;
+        margin-left: 10px;
       }
-      .alignright {
-      text-align: right;
+
+      .total-container {
+        width: 100%;
+        display: block;
+        margin-bottom: 32px;
       }
-      .alignleft {
-      text-align: left;
+
+      .total-block {
+        float: right;
+        max-width: 250px;
+        width: 100%;
+        margin: 32px 0;
       }
+
+      .flex {
+        display: flex;
+      }
+
+      .total {
+        display: flex;
+        font-weight: 400;
+        font-size: 16px;
+        padding: 8px 0;
+      }
+
       .clear {
-      clear: both;
+        clear: both;
+        margin-bottom: 48px;
       }
-      /* -------------------------------------
-      ALERTS
-      Change the class depending on warning email, good email or bad email
-      ------------------------------------- */
-      .alert {
-      font-size: 16px;
-      color: #fff;
-      font-weight: 500;
-      padding: 20px;
-      text-align: center;
-      border-radius: 3px 3px 0 0;
+
+      .thank-you {
+        color: #6c6f79;
+        font-size: 18px;
+        font-weight: 400;
       }
-      .alert a {
-      color: #fff;
-      text-decoration: none;
-      font-weight: 500;
-      font-size: 16px;
+
+      .lpdr {
+        font-weight: 400;
       }
-      .alert.alert-warning {
-      background-color: #FF9F00;
+
+      .aligncenter {
+        text-align: center;
       }
-      .alert.alert-bad {
-      background-color: #D0021B;
+
+      .manage-order-btn {
+        background: #9761aa;
+        color: #fff;
+        border-radius: 6px;
+        text-decoration: none;
+        text-align: center;
+        padding: 14px 22px;
+        width: fit-content;
+        font-size: 13px;
       }
-      .alert.alert-good {
-      background-color: #68B90F;
+
+      .float-right {
+        font-weight: 400;
+        float: right;
+        width: fit-content;
       }
-      /* -------------------------------------
+
+      .float-left {
+        float: left;
+        width: 75%;
+      }
+
+      .total-price {
+        float: right;
+        width: fit-content;
+      }
+
+      .footer {
+        background: #fcfbfe;
+        padding: 20px 36px;
+        max-width: 800px;
+        height: 20px;
+      }
+
+      .help {
+        float: left;
+      }
+
+      .rescue {
+        float: right;
+      }
+      span {
+        color: #9761aa;
+      }
+
+      .logo {
+        width:85px;
+        height:auto;
+        object-fit: cover;
+        margin-bottom: 24px;
+      }
+
+      div {
+        font-size: 11px;
+      }
+
+      .product-name {
+        font-size: 14px;
+      }
+
+      .price {
+        font-size: 16px;
+        width: fit-content;
+      }
+
+        /* -------------------------------------
       RESPONSIVE AND MOBILE FRIENDLY STYLES
       ------------------------------------- */
       @media only screen and (max-width: 640px) {
-      body {
-      padding: 0 !important;
+        body {
+          padding: 0 !important;
+        }
+        h3 {
+          font-size: 16px !important;
+        }
+        .container {
+          padding: 0 !important;
+          width: 100% !important;
+        }
+        .content {
+          padding: 0 !important;
+        }
+        .footer {
+          margin-top: 32px !important;
+          padding: 20px 0 !important;
+          background: #fff !important;
+        }
       }
-      h1, h2, h3, h4 {
-      font-weight: 800 !important;
-      margin: 20px 0 5px !important;
-      }
-      h1 {
-      font-size: 22px !important;
-      }
-      h2 {
-      font-size: 18px !important;
-      }
-      h3 {
-      font-size: 16px !important;
-      }
-      .container {
-      padding: 0 !important;
-      width: 100% !important;
-      }
-      .content {
-      padding: 0 !important;
-      }
-      .content-wrap {
-      padding: 10px !important;
-      }
-      }
-      .img {
-        width:160px;
-        height:200px ;
-        object-fit: cover;
-      }
-      .footer-text {
-        text-decoration:none;
-        cursor: pointer;
-        color: #121212;
-      }
-      .footer-text:hover {
-        text-decoration:none;
-        cursor: pointer;
-        color: #343456;
-      }
-      .item-container {
-        display: flex;
-        align-items: center;
-        margin-bottom: 1rem;
-      }
-      .item-details {
-        margin-left: 1rem;
-      }
-      .btn-container {
-        padding: 3rem 0;
-      }
-      .manage-order-btn {
-        background: #3a4c59;
-        color: #fff;
-        border-radius: 0;
-        height: 50px;
-        text-decoration: none;
-        text-align: center;
-        padding: 1rem 2rem;
-        width: fit-content;
-      }
-      /*# sourceMappingURL=styles.css.map */
-  body(itemscope='', itemtype='http://schema.org/EmailMessage')
-    table.body-wrap
-      tbody
-        tr
-          td
-          td.container(width='600')
-            .content
-              table.main(width='100%', cellpadding='0', cellspacing='0', itemprop='action', itemscope='', itemtype='http://schema.org/ConfirmAction')
-                tbody
-                  tr
-                    td.content-wrap
-                      meta(itemprop='name', content='')
-                      table(width='100%', cellpadding='0', cellspacing='0')
-                        tbody
-                          tr
-                            td.content-block
-                              h1 Order Confirmation                          
-                              h4 Order Id: <strong>#{_id}</strong>
-                          tr
-                            td.content-block
-                              p Thank you for shopping with us. 
-                              ul
-                                each val in orderItems
-                                  div.item-container
-                                    img.img(src=val.image, alt=val.name)
-                                    div
-                                      h3.item-details  Size: #{val.size}
-                                      h3.item-details Quantity: #{val.qty}    
-                          tr
-                            td.aligncenter.content-block
-                              if isGuest 
-                                a.aligncenter.manage-order-btn(href=`https://littlepawsdr.herokuapp.com/guest-order/${_id}`) Manage Order
-                              else 
-                                a.aligncenter.manage-order-btn(href=`https://littlepawsdr.herokuapp.com/order/${_id}`) Manage Order
-                                                            
-                            
-              .footer
-                table(width='100%')
-                  tbody
-                    tr
-                      td.aligncenter.content-block.footer-text
-                        | https://littlepawsdr.org
+
+
+  body(itemscope='' itemtype='http://schema.org/EmailMessage')
+    .container(width='800')
+      .content 
+        .header-section
+          img.logo(src='https://res.cloudinary.com/little-paws-dachshund-rescue/image/upload/v1669583363/logo-background-transparent-purple_pgjvnj.png' alt='little paws dachshund rescue')
+          h3 Order Confirmation                          
+          div Order Id: <strong>#{id}</strong>
+        div.secondary-font You order has been confirmed and your items will be shipped within two days
+        .horizontal-line
+        table(width='100%' cellpadding='0' cellspacing='0')
+          tbody
+            tr
+              td
+                div.table-header Order Date                          
+                strong #{orderForEmail.orderDate}
+              td
+                div.table-header Payment                        
+                strong PayPal
+              td
+                div.table-header Shipping Address                       
+                strong #{shippingAddressForEmail.address} #{shippingAddressForEmail.city} #{shippingAddressForEmail.state}
+        .horizontal-line
+        each val in orderItems
+          .order-item 
+            .picture-name-qty
+              img.img(src=val.image, alt=val.name style='width:60px; height:60px')
+              .qty-size
+                strong.product-name #{val.name}
+                div Quantity: #{val.qty}
+                if val.size
+                  div Size: #{val.size}
+            strong.price $#{val.price}
+        .horizontal-line
+        .total-container 
+          .total-block 
+            .flex 
+              .float-left Subtotal 
+              .float-right  $#{orderForEmail.subTotal.toFixed(2)}
+            .flex 
+              .float-left Shipping Fee 
+              .float-right  $#{orderForEmail.shippingPrice.toFixed(2)}
+            .flex 
+              .float-left Tax Fee 
+              .float-right  $#{orderForEmail.taxPrice.toFixed(2)}
+            .horizontal-line 
+            .total 
+              strong.float-left Total 
+              strong.total-price  $#{orderForEmail.totalPrice.toFixed(2)}
+            .horizontal-line
+        .clear 
+          div.thank-you Thank you for shopping with us!
+          div.lpdr Little Paws Dachsund Rescue
+        a.aligncenter.manage-order-btn(href=`https://littlepawsdr.herokuapp.com/order/${id}/${order}/${shippingAddress}/${email}/${items}`) Manage Order
+      .footer
+        -var contactLink = `<a href='https://littlepawsdr.herokuapp.com/about/contact-us')>Contact</a>`;
+        .help Need Help? Visit our <span>!{contactLink}</span> page.
+        .rescue Little Paws Dachshund Rescue #{new Date().getFullYear()}

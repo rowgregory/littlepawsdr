@@ -18,10 +18,6 @@ import {
 } from '../components/styles/place-order/Styles';
 import LogoDay from '../components/assets/logo-background-transparent-purple4.png';
 import { Text } from '../components/styles/Styles';
-import {
-  DEFER_PAYPAL_BUTTON_REQUEST,
-  DEFER_PAYPAL_BUTTON_SUCCESS,
-} from '../reducers/paypalReducer';
 import { Col, Image } from 'react-bootstrap';
 import JumpingInput from '../components/common/JumpingInput';
 import { ProceedBtn } from '../components/forms/ShippingForm';
@@ -93,7 +89,6 @@ const EcardPlaceOrder = ({ history }: any) => {
       loading: loadingCreate,
       error: errorCreate,
     },
-    deferPayPalButton: { defer },
   } = useSelector((state: any) => state);
 
   let formIsValid: boolean = false;
@@ -120,7 +115,6 @@ const EcardPlaceOrder = ({ history }: any) => {
       setPassedStepTwo(true);
       setRevealMyInfo(false);
       setRevealPayment(true);
-      dispatch({ type: DEFER_PAYPAL_BUTTON_SUCCESS });
     }
   };
 
@@ -146,7 +140,10 @@ const EcardPlaceOrder = ({ history }: any) => {
 
   useEffect(() => {
     if (success) {
-      history.push(`/e-card/order/${eCardOrder._id}`);
+      history.push({
+        pathname: `/e-card/order/${eCardOrder._id}`,
+        state: { eCardOrder },
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [success, eCardOrder]);
@@ -178,6 +175,7 @@ const EcardPlaceOrder = ({ history }: any) => {
           state: inputs.state,
           name: inputs.eCardToPurchase.name,
           orderId: details.id,
+          subTotal: inputs?.eCardToPurchase?.price,
         })
       );
     }
@@ -185,7 +183,7 @@ const EcardPlaceOrder = ({ history }: any) => {
 
   const payPalComponents = {
     style: { layout: 'vertical' },
-    forceRerender: [totalPrice, 'USD', defer],
+    forceRerender: [totalPrice, 'USD'],
     createOrder: (data: any, actions: any) => {
       return actions.order.create({
         purchase_units: [
@@ -235,7 +233,6 @@ const EcardPlaceOrder = ({ history }: any) => {
                         setRevealMyInfo(false);
                         setPassedStepOne(false);
                         setTimeout(() => setRevealPersonalize(true), 500);
-                        dispatch({ type: DEFER_PAYPAL_BUTTON_REQUEST });
                       }}
                     >
                       Edit
@@ -318,7 +315,6 @@ const EcardPlaceOrder = ({ history }: any) => {
                         setRevealPayment(false);
                         setRevealPersonalize(false);
                         setTimeout(() => setRevealMyInfo(true), 500);
-                        dispatch({ type: DEFER_PAYPAL_BUTTON_REQUEST });
                       }}
                     >
                       Edit
@@ -355,6 +351,9 @@ const EcardPlaceOrder = ({ history }: any) => {
                   error={errors?.lastName}
                   blur={() => {}}
                 />
+                <Text>
+                  If you have an account with us, enter that email here
+                </Text>
                 <JumpingInput
                   name='email'
                   label='Enter Email'

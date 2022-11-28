@@ -27,7 +27,8 @@ const uploadFileHandler = async (
       if (
         file.type === 'image/jpg' ||
         file.type === 'image/png' ||
-        file.type === 'image/jpeg'
+        file.type === 'image/jpeg' ||
+        file.type === 'image/webp'
       ) {
         compressAndUpload(file, setImageUploadStatus, setClouadinaryData);
       }

@@ -105,11 +105,11 @@ const ProductList = () => {
       <BreadCrumb
         step1='Home'
         step2='Dashboard'
-        step3=''
-        step4='Products'
+        step3='Products'
+        step4=''
         url1='/'
         url2='/admin'
-        url3='/admin/productList'
+        url3=''
       />
       {(loading || loadingCreate || loadingDelete) && <HexagonLoader />}
       <DeleteModal

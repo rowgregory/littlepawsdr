@@ -1,277 +1,280 @@
 import React, { useEffect } from 'react';
-import { Col, Image, Spinner } from 'react-bootstrap';
-import { useDispatch, useSelector } from 'react-redux';
-import { getOrderDetails } from '../actions/orderActions';
-import Message from '../components/Message';
-import {
-  ORDER_CREATE_RESET,
-  ORDER_SHIP_RESET,
-} from '../constants/orderConstants';
-import GreenCheckmark from '../components/svg/GreenCheckmark';
-import {
-  CategoryTitles,
-  EmailAndShippingDetailsContainer,
-  estimatedDelivery,
-  OrderId,
-  Wrapper,
-} from './GuestOrder';
+import { Image } from 'react-bootstrap';
 import { Text } from '../components/styles/Styles';
 import styled from 'styled-components';
-import { HorizontalLine } from '../components/styles/product-details/Styles';
-import { useHistory } from 'react-router-dom';
+import { localizeDate } from '../utils/localizeDate';
+import { Link, useLocation } from 'react-router-dom';
+import Logo from '../components/assets/logo-background-transparent-purple4.png';
+import { ORDER_CREATE_RESET } from '../constants/orderConstants';
+import { useDispatch } from 'react-redux';
+import { formatDate } from '../utils/formatDate';
 import LeftArrow from '../components/svg/LeftArrow';
 
 const Container = styled.div`
-  background: ${({ theme }) => theme.bg};
-  margin-bottom: 5rem;
+  background: ${({ theme }) => theme.secondaryBg};
+  min-height: 100vh;
+  min-width: 768px;
 `;
 
-const OrderReceipt = ({ match }: any) => {
-  const orderId = match.params.id;
-  const dispatch = useDispatch();
-  const history = useHistory() as any;
+export const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  background: ${({ theme }) => theme.bg};
+  margin: 0 auto;
+  max-width: ${({ theme }) => theme.breakpoints[2]};
+  width: 100%;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+    display: flex;
+    flex-direction: column;
+  }
+`;
 
-  const orderDetails = useSelector((state: any) => state.orderDetails);
-  const { order, loading, error } = orderDetails;
+export const OrderId = styled.div`
+  margin-bottom: 1rem;
+  color: ${({ theme }) => theme.text};
+`;
+
+export const EmailAndShippingDetailsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+export const CategoryTitles = styled.div`
+  margin-bottom: 2rem;
+  background: ${({ theme }) => theme.bg};
+  padding: 0.875rem 1.125rem;
+`;
+
+export const estimatedDelivery = (createdAt: any) => {
+  const firstEstimatedDate =
+    createdAt &&
+    localizeDate(
+      new Date(new Date(createdAt).getTime() + 7 * 24 * 60 * 60 * 1000),
+      'order'
+    );
+  const secondEstimatedDate =
+    createdAt &&
+    localizeDate(
+      new Date(new Date(createdAt).getTime() + 12 * 24 * 60 * 60 * 1000),
+      'order'
+    );
+
+  return `${firstEstimatedDate} - ${secondEstimatedDate}`;
+};
+
+const OrderReceipt = ({ match }: any) => {
+  const {
+    state: { order: state, goBackTo },
+  } = useLocation() as any;
+  const dispatch = useDispatch();
+  const { params } = match;
+
+  const id = params?.id;
+  const order = params?.order && JSON.parse(params?.order);
+  const shippingAddress =
+    params?.shippingAddress && JSON.parse(params?.shippingAddress);
+  const email = params?.email && params?.email;
+
+  const items =
+    params?.items &&
+    JSON.parse(params?.items)?.map((obj: any) => ({
+      image: decodeURIComponent(obj?.image),
+      name: obj.name,
+      price: obj.price,
+      qty: obj.qty,
+    }));
 
   useEffect(() => {
     dispatch({ type: ORDER_CREATE_RESET });
+  }, [dispatch]);
 
-    localStorage.removeItem('__paypal_storage__');
-    localStorage.removeItem('__belter_experiment_storage__');
-    if (!order || order._id !== orderId) {
-      dispatch({ type: ORDER_SHIP_RESET });
-      dispatch(getOrderDetails(orderId));
-    }
-  }, [dispatch, orderId, order]);
-
-  return error ? (
-    <Message variant='danger'>{error}</Message>
-  ) : (
+  return (
     <Container>
       <Wrapper>
-        {history?.location?.state?.directBackTo === 'orderList' ? (
-          <div className='mb-3'>
-            <LeftArrow text='Back to order list' url={`/admin/orderList`} />
-          </div>
-        ) : (
-          history?.location?.state?.directBackTo === 'dashboard' && (
-            <div className='mb-3'>
-              <LeftArrow text='Back to dashboard' url={`/admin`} />
-            </div>
-          )
-        )}
-        {loading ? (
-          <Spinner
-            animation='border'
-            size='sm'
-            style={{ margin: '0 0 1rem 0' }}
-          />
-        ) : (
-          <div className='d-flex mb-3'>
-            {order?.isShipped ? (
-              <i className='text-success fas fa-shipping-fast fa-2x d-flex align-items-center'></i>
-            ) : (
-              <GreenCheckmark />
-            )}
-            <h4
-              className='text-success font-weight-bold mb-0 ml-2'
-              style={{ letterSpacing: '-1px' }}
+        <div style={{ background: '#fcfbfe', padding: '20px 32px' }}>
+          <Link to='/' style={{ marginBottom: '64px' }}>
+            <Image
+              style={{
+                width: '80px',
+              }}
+              src={Logo}
+              alt={`Little Paws Dachshund Reschue ${new Date().getFullYear()}`}
+            />
+          </Link>
+        </div>
+        <div style={{ padding: '32px' }}>
+          {goBackTo === 'MY_ORDERS' && (
+            <LeftArrow text='Back To Orders' url='/my-orders' />
+          )}
+          <Text
+            fontSize='24px'
+            fontWeight={600}
+            color='#404450'
+            marginBottom='24px'
+            marginTop='12px'
+          >
+            Your order is confirmed!
+          </Text>
+          <Text
+            color='#4e515b'
+            fontSize='17px'
+            marginBottom='10px'
+            fontWeight={600}
+          >
+            Hello{' '}
+            {order?.name ?? email ?? state?.user?.name ?? state?.guestEmail},
+          </Text>
+          <Text
+            color='#a5a7ab'
+            fontSize='14.5px'
+            p='0 0 32px 0'
+            borderBottom='1px solid #f2f2f2'
+            marginBottom='22px'
+          >
+            Your order has been confirmed and your item(s) will be shipped
+            within two days.
+          </Text>
+          <table style={{ borderBottom: '1px solid #f2f2f2', width: '100%' }}>
+            <thead>
+              <tr>
+                <td>
+                  <Text fontWeight={200}>Order Date</Text>
+                </td>
+                <td>
+                  <Text fontWeight={200}>Order No</Text>
+                </td>
+                <td>
+                  <Text fontWeight={200}>Payment</Text>
+                </td>
+                <td>
+                  <Text fontWeight={200}>Shipping Address</Text>
+                </td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <Text fontWeight={400} p='10px 0 32px'>
+                    {formatDate(order?.orderDate ?? state?.createdAt)}
+                  </Text>
+                </td>
+                <td>
+                  <Text fontWeight={400} p='10px 0 32px'>
+                    {id ?? state?._id}
+                  </Text>
+                </td>
+                <td>
+                  <Text fontWeight={400} p='10px 0 32px'>
+                    PayPal
+                  </Text>
+                </td>
+                <td>
+                  <Text fontWeight={400} p='10px 0 32px'>{`${
+                    state?.shippingAddress?.address ?? shippingAddress?.address
+                  }, ${state?.shippingAddress?.city ?? shippingAddress?.city} ${
+                    state?.shippingAddress?.state ?? shippingAddress.state
+                  }`}</Text>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          {(state?.orderItems ?? items)?.map((item: any, index: number) => (
+            <div
+              key={index}
+              className='d-flex justify-content-between py-4 w-100 mb-4'
+              style={{ borderBottom: '1px solid #f2f2f2' }}
             >
-              {order?.isShipped
-                ? `Your order is on the way!`
-                : `Thank you, your order has been placed.`}
-            </h4>
-          </div>
-        )}
-        <EmailAndShippingDetailsContainer>
-          <Col>
-            <OrderId>
-              Order Id:
-              <strong>
-                &nbsp;
-                {loading ? (
-                  <Spinner animation='border' size='sm' />
-                ) : (
-                  order?._id
-                )}
-              </strong>
-            </OrderId>
-            <OrderId>
-              PayPal Order Id:
-              <strong>
-                &nbsp;
-                {loading ? (
-                  <Spinner animation='border' size='sm' />
-                ) : (
-                  order?.orderId
-                )}
-              </strong>
-            </OrderId>
-            <Text fontSize='1rem' marginBottom='2rem'>
-              An email confirmation has been sent to{' '}
-              <strong className='mr-2'>{order?.email}</strong>
-              {order?.confirmationEmailHasBeenSent && (
-                <GreenCheckmark width='1rem' />
-              )}
-            </Text>
-            {loading ? (
-              <Spinner animation='border' size='sm' />
-            ) : (
-              order?.orderItems?.map((item: any, index: number) => (
-                <div key={index} className='d-flex mt-1 mb-3'>
-                  <Image
-                    src={item?.image}
-                    alt='product-img'
-                    width='160px'
-                    height='200px'
-                    className='pr-3'
-                    style={{ objectFit: 'cover' }}
-                  />
-                  <div className='d-flex flex-column'>
-                    <Text fontSize='0.8rem'>{item?.name}</Text>
-                    <Text fontSize='0.8rem'>Size: {item?.size}</Text>
-                    <Text fontSize='0.8rem'>Qty: {item?.qty}</Text>
-                    <Text fontSize='0.8rem'>${item?.price}</Text>
-                  </div>
+              <div className='d-flex'>
+                <Image
+                  src={item?.image}
+                  alt='product-img'
+                  width='100px'
+                  className='pr-3'
+                  style={{ objectFit: 'cover', aspectRatio: '1/1' }}
+                />
+                <div className='d-flex flex-column'>
+                  <Text fontWeight='400' fontSize='14px' marginBottom='10px'>
+                    {item?.name}
+                  </Text>
+                  {item?.size && (
+                    <Text fontWeight='200'>Size: {item?.size}</Text>
+                  )}
+                  <Text fontWeight='200'>Quantity: {item?.qty}</Text>
                 </div>
-              ))
-            )}
-            <HorizontalLine margin='1.875rem 0 1rem' />
-            <div>
-              <CategoryTitles>
-                <Text fontWeight='bold' fontSize='1.125rem'>
-                  Shipping Summary <i className='fas fa-truck fa-sm ml-2'></i>
-                </Text>
-              </CategoryTitles>
-              <div className='mb-1 pl-3'>
-                <Text
-                  fontSize='0.85rem'
-                  fontWeight='bold'
-                  marginBottom='0.3rem'
-                >
-                  Shipping Address
-                </Text>
-                {loading ? (
-                  <Spinner animation='border' size='sm' />
-                ) : (
-                  <>
-                    {' '}
-                    <Text fontSize='0.85rem'>
-                      {order?.shippingAddress?.name}
-                    </Text>
-                    <Text fontSize='0.85rem'>
-                      {order?.shippingAddress?.address}
-                    </Text>
-                    <Text fontSize='0.85rem'>
-                      {order?.shippingAddress?.city},{' '}
-                      {order?.shippingAddress?.state}{' '}
-                      {order?.shippingAddress?.zipPostalCode}
-                    </Text>
-                  </>
-                )}
               </div>
+              <Text fontWeight='600' fontSize='18px'>
+                ${item?.price}
+              </Text>
             </div>
-            <HorizontalLine />
-            <div>
-              <CategoryTitles className='d-flex justify-content-between align-items-center'>
-                <Text fontWeight='bold' fontSize='1.125rem'>
-                  Status<i className='fas fa-info-circle fa-sm ml-2'></i>
-                </Text>
-              </CategoryTitles>
-              <div className='mb-1 pl-3'>
-                {order?.isShipped ? (
-                  <Message variant='success'>
-                    <div>
-                      Your order has been shipped{' '}
-                      <i className='fas fa-exclamation fa-sm'></i>
-                    </div>
-                  </Message>
-                ) : (
-                  <Message variant='warning'>
-                    <div>
-                      Order has not been shipped yet{' '}
-                      <i className='fas fa-exclamation fa-sm'></i>
-                    </div>
-                  </Message>
-                )}
-              </div>
+          ))}
+          <div className='d-flex flex-column align-items-end mb-4'>
+            <div className='d-flex justify-content-between w-25 mb-1'>
+              <Text>Subtotal</Text>
+              <Text fontWeight={400}>
+                $
+                {state?.orderItems
+                  .reduce(
+                    (acc: any, item: any) => acc + item?.qty * item?.price,
+                    0
+                  )
+                  .toFixed(2) ?? order?.subTotal}
+              </Text>
             </div>
-            <HorizontalLine margin='1rem 0' />
-            <div>
-              <CategoryTitles>
-                <Text fontWeight='bold' fontSize='1.125rem'>
-                  Estimated Delivery Date{' '}
-                  <i className='fas fa-truck-loading fa-sm ml-2'></i>
-                </Text>
-              </CategoryTitles>
-              <div className='mb-1 pl-3'>
-                <Text
-                  fontSize='0.85rem'
-                  fontWeight='bold'
-                  marginBottom='0.3rem'
-                >
-                  {loading ? (
-                    <Spinner animation='border' size='sm' />
-                  ) : (
-                    estimatedDelivery(order?.createdAt)
-                  )}
-                </Text>
-              </div>
+            <div className='d-flex justify-content-between w-25 mb-1'>
+              <Text>Shipping Fee</Text>
+              <Text fontWeight={400}>
+                ${state?.shippingPrice.toFixed(2) ?? order?.shippingPrice}
+              </Text>
             </div>
-            <HorizontalLine margin='1rem 0' />
-            <div className='d-flex flex-column pl-3'>
-              <div className='d-flex justify-content-between'>
-                <Text fontSize='0.85rem'>Subtotal</Text>
-                <Text fontSize='0.85rem'>
-                  {loading ? (
-                    <Spinner animation='border' size='sm' />
-                  ) : (
-                    `$${order?.orderItems
-                      .reduce(
-                        (acc: any, item: any) => acc + item.qty * item.price,
-                        0
-                      )
-                      .toFixed(2)}`
-                  )}
-                </Text>
-              </div>
-              <div className='d-flex justify-content-between'>
-                <Text fontSize='0.85rem'>Shipping</Text>
-                <Text fontSize='0.85rem'>
-                  {loading ? (
-                    <Spinner animation='border' size='sm' />
-                  ) : (
-                    `${order?.shippingPrice.toFixed(2)}`
-                  )}
-                </Text>
-              </div>
-              <div className='d-flex justify-content-between'>
-                <Text fontSize='0.85rem'>Tax</Text>
-                <Text fontSize='0.85rem'>
-                  {loading ? (
-                    <Spinner animation='border' size='sm' />
-                  ) : (
-                    `$${order?.taxPrice.toFixed(2)}`
-                  )}
-                </Text>
-              </div>
+            <div
+              className='d-flex justify-content-between w-25 mb-1'
+              style={{ borderBottom: '1px solid #f2f2f2' }}
+            >
+              <Text>Tax Fee</Text>
+              <Text fontWeight={400}>
+                ${state?.taxPrice.toFixed(2) ?? order?.taxPrice}
+              </Text>
             </div>
-            <HorizontalLine margin='1rem 0' />
-            <div className='d-flex justify-content-between pl-3'>
-              <Text fontSize='0.85rem' fontWeight='bold'>
+            <div
+              className='d-flex mt-2 pb-2 justify-content-between w-25'
+              style={{ borderBottom: '1px solid #f2f2f2' }}
+            >
+              <Text fontSize='14px' fontWeight={600}>
                 Total
               </Text>
-              <Text fontSize='0.85rem' fontWeight='bold'>
-                {loading ? (
-                  <Spinner animation='border' size='sm' />
-                ) : (
-                  `$${order?.totalPrice}`
-                )}
+              <Text fontSize='14px' fontWeight={600}>
+                ${order?.totalPrice?.toFixed(2) ?? state?.totalPrice.toFixed(2)}
               </Text>
             </div>
-          </Col>
-        </EmailAndShippingDetailsContainer>
+          </div>
+          {!email && (
+            <Text fontSize='14px' marginBottom='24px'>
+              An email confirmation has been sent to{' '}
+              <strong className='mr-2'>
+                {email ?? state?.user?.email ?? state?.guestEmail}
+              </strong>
+              {state?.confirmationEmailHasBeenSent && (
+                <i className='fas fa-check' style={{ color: 'green' }}></i>
+              )}
+            </Text>
+          )}
+          <Text color='#494c59' fontSize='17px' fontWeight={600}>
+            Thank you for shopping with us!
+          </Text>
+          <Text fontWeight={400} marginBottom='32px'>
+            Little Paws Dachshund Rescue
+          </Text>
+        </div>
+        <div
+          className='d-flex justify-content-between align-items-center'
+          style={{ background: '#fcfbfe', padding: '24px 32px', margin: 0 }}
+        >
+          <Text>
+            Need Help? Visit our <Link to='/about/contact-us'>Contact </Link>
+            page.
+          </Text>
+          <Text>Little Paws Dachshund Rescue {new Date().getFullYear()}</Text>
+        </div>
       </Wrapper>
     </Container>
   );

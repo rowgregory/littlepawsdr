@@ -75,7 +75,7 @@ const TeamMembers = () => {
             text2='Education Tips'
             url2='/about/education'
           />
-          <RightArrow text='Contact' url='/about/contact' />
+          <RightArrow text='Contact' url='/about/contact-us' />
         </div>
         <Text
           fontSize='31px'

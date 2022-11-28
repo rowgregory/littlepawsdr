@@ -10,7 +10,6 @@ const createECardOrder = asyncHandler(async (req, res) => {
     recipientsFirstName,
     recipientsEmail,
     dateToSend,
-    sendYourselfACopy,
     firstName,
     lastName,
     email,
@@ -20,6 +19,8 @@ const createECardOrder = asyncHandler(async (req, res) => {
     image,
     state,
     name,
+    orderId,
+    subTotal,
   } = req.body;
 
   try {
@@ -27,7 +28,6 @@ const createECardOrder = asyncHandler(async (req, res) => {
       recipientsFirstName,
       recipientsEmail,
       dateToSend,
-      sendYourselfACopy,
       firstName,
       lastName,
       email,
@@ -38,6 +38,8 @@ const createECardOrder = asyncHandler(async (req, res) => {
       isSent: false,
       state,
       name,
+      orderId,
+      subTotal,
     });
 
     const createdECard = await eCard.save();
@@ -79,4 +81,18 @@ const getECardOrders = asyncHandler(async (req, res) => {
   }
 });
 
-export { createECardOrder, getECardOrderById, getECardOrders };
+// @desc    Get logged in user orders
+// @route   GET /api/orders/my-ecard-orders
+// @access  Private
+const getMyEcardOrders = asyncHandler(async (req, res) => {
+  const ecardOrders = await ECardOrder.find({ email: req.user.email });
+
+  res.json(ecardOrders);
+});
+
+export {
+  createECardOrder,
+  getECardOrderById,
+  getECardOrders,
+  getMyEcardOrders,
+};

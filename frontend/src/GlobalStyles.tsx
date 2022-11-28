@@ -105,6 +105,7 @@ div, span, p, h1, h2, h3, h4, h5, h6, input, select, ::placeholder, label, li {
   }
 
   select {
+    background: ${({ theme }) => theme.input.bg} !important;
     transition: 300ms;
     height: 45px !important;
     font-family: 'Roboto'  !important;

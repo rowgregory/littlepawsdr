@@ -56,6 +56,7 @@ const Navbar = () => {
     'place-order-guest',
     'cart',
     '/e-card/place-order',
+    '/order',
   ].some((a: string) => pathname.includes(a)) ? (
     <>
       <LeftNavigation openMenu={openMenu} setOpenMenu={setOpenMenu} />

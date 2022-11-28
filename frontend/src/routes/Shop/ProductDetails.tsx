@@ -15,6 +15,7 @@ import {
 } from '../../components/styles/product-details/Styles';
 import { Text } from '../../components/styles/Styles';
 import { LoadingImg } from '../../components/LoadingImg';
+import LeftArrow from '../../components/svg/LeftArrow';
 
 const ProductDetails = ({ match, history }: any) => {
   const productId = match.params.id;
@@ -24,17 +25,14 @@ const ProductDetails = ({ match, history }: any) => {
   const [size, setSize] = useState('');
   const [outOfStock, setOutOfStock] = useState(false);
 
-  const cart = useSelector((state: any) => state.cart);
-  const { loading: loadingCart } = cart;
-
-  const productPublicDetails = useSelector(
-    (state: any) => state.productPublicDetails
-  );
-  let {
-    loading: loadingProductPublicDetails,
-    error: errorProductPublicDetails,
-    product,
-  } = productPublicDetails;
+  const {
+    cart: { loading: loadingCart },
+    productPublicDetails: {
+      loading: loadingProductPublicDetails,
+      error: errorProductPublicDetails,
+      product,
+    },
+  } = useSelector((state: any) => state);
 
   useEffect(() => {
     dispatch(getPublicProductDetails(productId));
@@ -68,96 +66,94 @@ const ProductDetails = ({ match, history }: any) => {
     return <Message variant='danger'>{errorProductPublicDetails}</Message>;
 
   return (
-    <>
+    <div
+      style={{
+        padding: '128px 16px',
+        maxWidth: '1200px',
+        marginInline: 'auto',
+        width: '100%',
+      }}
+    >
+      <LeftArrow text='Back To Shop' url='/shop' />
       <ProductDetailsContainer>
-        <Col className='d-flex justify-content-center'>
-          {loadingProductPublicDetails ? (
-            <LoadingImg w='100%' h='100%' />
-          ) : (
-            <Image
-              src={product?.image}
-              alt={product?.name}
-              fluid
-              width='100%'
-              style={{
-                aspectRatio: '1/1',
-                objectFit: 'cover',
-                maxWidth: '600px',
-                marginBottom: '24px',
-              }}
-            />
-          )}
-        </Col>
+        {!loadingProductPublicDetails && (
+          <Image
+            src={product?.image}
+            alt={product?.name}
+            width='100%'
+            style={{
+              aspectRatio: '1/1',
+              objectFit: 'cover',
+              maxWidth: '600px',
+              marginBottom: '24px',
+            }}
+          />
+        )}
+
         <Col>
-          {loadingProductPublicDetails ? (
-            <LoadingImg />
-          ) : (
-            <>
-              <Text fontSize='1.75rem'>{product?.name}</Text>
-              <HorizontalLine margin='0 0 1rem 0' />
-              <div className='d-flex'>
-                <div style={{ position: 'relative' }}>
-                  <Text style={{ position: 'absolute', top: '6px' }}>$</Text>
-                </div>
-                <Text
-                  marginLeft='0.7rem'
-                  fontWeight='bold'
-                  fontSize='2rem'
-                  style={{ position: 'relative' }}
-                  marginBottom='0.8rem'
-                >
-                  {product?.price?.toString()?.split('.')[0]}
-                  <sup
-                    style={{
-                      fontWeight: '500',
-                      fontSize: '0.8rem',
-                      top: '-15px',
-                    }}
-                  >
-                    {product?.price?.toString()?.split('.')[1]}
-                  </sup>
-                </Text>
-              </div>
-              {message && (
-                <Message variant='success'>
-                  {message} <span onClick={() => setMessage('')}>X</span>
-                </Message>
-              )}
-              {product?.sizes?.length !== 0 && (
-                <SelectInputContainer
-                  style={{
-                    width: '84px',
-                    border: 0,
-                    marginBottom: '1rem',
-                  }}
-                >
-                  <Quantity>Size</Quantity>
-                  <SelectInput
-                    value={size}
-                    as='select'
-                    onChange={(e: any) => setSize(e.target.value)}
-                  >
-                    {product?.sizes?.map((x: any, i: number) => (
-                      <option key={i} value={x?.size}>
-                        {x.size}
-                      </option>
-                    ))}
-                  </SelectInput>
-                </SelectInputContainer>
-              )}
-              <HorizontalLine margin='0 0 1rem 0' />
-              <Text fontWeight='bold'>About this item</Text>
-              <ul className='pl-4'>
-                {product?.description
-                  ?.split('|')
-                  .map((item: any, i: number) => (
-                    <Text key={i}>
-                      <li>{item}</li>
-                    </Text>
-                  ))}
-              </ul>
-            </>
+          <Text fontSize='28px' fontWeight={400}>
+            {product?.name}
+          </Text>
+          <HorizontalLine margin='0 0 1rem 0' />
+          <div className='d-flex'>
+            <div style={{ position: 'relative' }}>
+              <Text style={{ position: 'absolute', top: '6px' }}>$</Text>
+            </div>
+            <Text
+              marginLeft='0.7rem'
+              fontWeight='bold'
+              fontSize='2rem'
+              style={{ position: 'relative' }}
+              marginBottom='0.8rem'
+            >
+              {product?.price?.toString()?.split('.')[0]}
+              <sup
+                style={{
+                  fontWeight: '500',
+                  fontSize: '0.8rem',
+                  top: '-15px',
+                }}
+              >
+                {product?.price?.toString()?.split('.')[1]}
+              </sup>
+            </Text>
+          </div>
+          {message && (
+            <Message variant='success'>
+              {message} <span onClick={() => setMessage('')}>X</span>
+            </Message>
           )}
+          {product?.sizes?.length !== 0 && (
+            <SelectInputContainer
+              style={{
+                width: '84px',
+                border: 0,
+                marginBottom: '1rem',
+              }}
+            >
+              <Quantity>Size</Quantity>
+              <SelectInput
+                value={size}
+                as='select'
+                onChange={(e: any) => setSize(e.target.value)}
+              >
+                {product?.sizes?.map((x: any, i: number) => (
+                  <option key={i} value={x?.size}>
+                    {x.size}
+                  </option>
+                ))}
+              </SelectInput>
+            </SelectInputContainer>
+          )}
+          <HorizontalLine margin='0 0 1rem 0' />
+          <Text fontWeight='bold'>About this item</Text>
+          <ul className='pl-4'>
+            {product?.description?.split('|').map((item: any, i: number) => (
+              <Text key={i}>
+                <li>{item}</li>
+              </Text>
+            ))}
+          </ul>
         </Col>
         <Col>
           {loadingProductPublicDetails ? (
@@ -223,7 +219,11 @@ const ProductDetails = ({ match, history }: any) => {
                           product?.sizes?.length >= 1
                             ? product?.sizes?.filter(
                                 (item: any) => item?.size === size
-                              )[0]?.amount
+                              )[0]?.amount === -1
+                              ? 0
+                              : product?.sizes?.filter(
+                                  (item: any) => item?.size === size
+                                )[0]?.amount
                             : product?.countInStock
                         ).keys(),
                       ].map((x: any, i: number) => (
@@ -255,7 +255,7 @@ const ProductDetails = ({ match, history }: any) => {
           )}
         </Col>
       </ProductDetailsContainer>
-    </>
+    </div>
   );
 };
 

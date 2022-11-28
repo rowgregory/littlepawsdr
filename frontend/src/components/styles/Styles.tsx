@@ -1,15 +1,12 @@
 import styled from 'styled-components';
-import { Button, Card } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
-export const StyledCard = styled(Card)`
-  background: ${({ theme }) => theme.secondaryBg};
+export const StyledCard = styled.div`
   border-radius: 0;
-  border: ${({ theme }) => `1px solid ${theme.separator}`};
   margin: 0 0.25rem;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
     margin: 0;
-    padding: 16px;
   }
 `;
 
@@ -87,66 +84,6 @@ export const UpdateBtn = styled(Button)`
   }
 `;
 
-export const JumboAndWaveContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-`;
-
-export const Jumbo = styled.div`
-  display: flex;
-  flex-direction: column;
-  /* padding: 1.5rem 16px; */
-  border-radius: 0;
-  width: 100%;
-  max-width: ${({ theme }) => theme.breakpoints[3]};
-  /* background: ${({ theme }) => theme.colors.tertiary}; */
-  margin: 0rem;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    border-radius: 1.25rem;
-    /* padding: 3rem 3.7rem; */
-    margin: 32px;
-    flex-direction: column;
-  }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-    flex-direction: column;
-  }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    flex-direction: row;
-  }
-`;
-
-export const TitleAndIntroTextContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    margin-right: 3rem;
-  }
-`;
-
-export const IntroText = styled.div`
-  font-size: 16px;
-  flex: 1;
-  margin-bottom: 1.5rem;
-`;
-
-export const Title = styled.div`
-  font-size: 32px;
-  margin-bottom: 16px;
-  text-align: center;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    text-align: start;
-  }
-`;
-
-// export const ErrorText = styled(Text)`
-//   font-size: 0.875rem;
-//   color: #d42825;
-//   font-weight: bold;
-// `;
-
 export const StyledButton = styled(Button)`
   background: ${({ theme }) => theme.colors.secondary};
   transition: 300ms;
@@ -179,7 +116,6 @@ export const Container = styled.div`
   padding-top: 3rem;
   padding-top: 70px;
   height: 100vh;
-  /* height: calc(100vh - 56px); */
 `;
 
 export const CreateAccountContainer = styled.div`

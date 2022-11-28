@@ -57,6 +57,7 @@ const eCardOrderSchema = mongoose.Schema(
       type: String,
     },
     orderId: { type: String },
+    subTotal: { type: String },
   },
   {
     timestamps: true,

@@ -172,10 +172,10 @@ export const TableAndPaginationContainer = styled.div`
   justify-content: space-between;
   flex-direction: column;
   border-radius: 1rem;
-  height: calc(100vh - 250px);
+  height: calc(100vh - 236px);
   padding: 1.5rem;
   background: #fff;
-  min-height: 500px;
+  min-height: 600px;
 `;
 
 export const EditForm = styled(Form)`

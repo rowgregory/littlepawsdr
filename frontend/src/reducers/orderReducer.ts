@@ -30,7 +30,7 @@ import {
   ORDER_DETAILS_RESET,
 } from '../constants/orderConstants';
 
-export const orderCreateReducer = (state = {}, action: any) => {
+export const orderCreateReducer = (state = { order: {} }, action: any) => {
   switch (action.type) {
     case ORDER_CREATE_REQUEST:
       return {
@@ -48,7 +48,10 @@ export const orderCreateReducer = (state = {}, action: any) => {
         error: action.payload,
       };
     case ORDER_CREATE_RESET:
-      return {};
+      return {
+        success: false,
+        order: {},
+      };
     default:
       return state;
   }
