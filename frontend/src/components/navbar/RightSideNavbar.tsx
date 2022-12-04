@@ -70,6 +70,8 @@ const DropDownContainer = styled.div<{ p?: string }>`
 const Container = styled.nav`
   display: flex;
   align-items: center;
+  padding-inline: 16px;
+  height: 56px;
 `;
 
 const CaretUp = styled.i`

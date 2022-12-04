@@ -3,7 +3,7 @@ import { Image } from 'react-bootstrap';
 import { Text } from '../components/styles/Styles';
 import styled from 'styled-components';
 import { Link, useLocation } from 'react-router-dom';
-import Logo from '../components/assets/logo-background-transparent-purple4.png';
+import Logo from '../components/assets/logo-transparent.png';
 import { useDispatch } from 'react-redux';
 import { formatDate } from '../utils/formatDate';
 import LeftArrow from '../components/svg/LeftArrow';

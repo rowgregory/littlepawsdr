@@ -2,13 +2,11 @@ import mongoose from 'mongoose';
 
 const eCardSchema = mongoose.Schema(
   {
-    category: { type: String, required: true },
-    price: { type: Number, required: true },
-    image: { type: String, required: true },
-    publicId: {
-      type: String,
-    },
-    name: { type: String, required: true },
+    category: { type: String },
+    price: { type: Number },
+    image: { type: String },
+    publicId: { type: String },
+    name: { type: String },
   },
   {
     timestamps: true,

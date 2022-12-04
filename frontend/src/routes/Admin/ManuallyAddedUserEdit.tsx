@@ -138,7 +138,7 @@ const ManuallyAddedUserEdit = () => {
 
   return (
     <Container>
-      <WelcomeText className='mb-1'>Blog Edit</WelcomeText>
+      <WelcomeText className='mb-1'>Volunteer Edit</WelcomeText>
       <BreadCrumb
         step1='Home'
         step2='Dashboard'

@@ -4,26 +4,42 @@ import styled from 'styled-components';
 import { Link, useLocation } from 'react-router-dom';
 import RightSideNavbar from './navbar/RightSideNavbar';
 import LeftNavigation from './navbar/LeftNavigation';
-import Logo from '../components/assets/logo-background-transparent.png';
+import Logo from '../components/assets/logo-white2.png';
 import { FAIcons } from './styles/NavbarStyles';
-// import axios from 'axios';
 
-const Container = styled.div<{ show: boolean; p: string }>`
+const Container = styled.div<{ show: any; p: string }>`
   position: fixed;
   z-index: 5000;
   width: 100%;
   background: ${({ show, theme, p }) =>
-    show || p !== '/' ? theme.header.bg : ''};
+    show === 'true' || p !== '/' ? theme.header.bg : ''};
   transition: 300ms;
   border-bottom: ${({ show, theme, p }) =>
-    show || p !== '/' ? '' : '1px solid rgb(255, 255, 255, 0.5)'};
-  height: 56px;
+    show === 'true' || p !== '/' ? '' : '1px solid rgb(255, 255, 255, 0.5)'};
+  height: 75px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 1rem;
   box-shadow: ${({ show }) =>
-    show ? '0 20px 25px 3px rgba(0, 0, 0, 0.5)' : ''};
+    show === 'true' ? '0 20px 25px 3px rgba(0, 0, 0, 0.5)' : ''};
+`;
+
+const StyledImage = styled(Image)<{ show: any; p: string }>`
+  height: 77px;
+  object-fit: cover;
+  margin-top: -9px;
+  object-fit: cover;
+`;
+
+const BurgerMenuBottomBorder = styled.div<{ show: any; p: string }>`
+  padding: 0 0 0 16px;
+  height: 56px;
+  display: flex;
+`;
+
+const LogoLeftBorder = styled.div<{ show: any; p: string }>`
+  height: 30px;
+  width: 1px;
 `;
 
 const Navbar = () => {
@@ -43,10 +59,6 @@ const Navbar = () => {
     };
   }, []);
 
-  // const createClick = async () => {
-  //   await axios.post('/api/logo-clicks', 'click');
-  // };
-
   return ![
     'admin',
     'login',
@@ -57,23 +69,27 @@ const Navbar = () => {
     'cart',
     '/e-card/place-order',
     '/order',
+    '/reset',
   ].some((a: string) => pathname.includes(a)) ? (
     <>
       <LeftNavigation openMenu={openMenu} setOpenMenu={setOpenMenu} />
-      <Container show={show} p={pathname}>
+      <Container show={show.toString()} p={pathname}>
         <div className='d-flex justify-content-center align-items-center'>
-          <FAIcons onClick={() => setOpenMenu(true)}>
-            <div className='mr-2'>
-              <i className='fas fa-bars'></i>
-            </div>
-          </FAIcons>
+          <BurgerMenuBottomBorder show={show.toString()} p={pathname}>
+            <FAIcons onClick={() => setOpenMenu(true)} style={{}}>
+              <div className='mr-2'>
+                <i className='fas fa-bars'></i>
+              </div>
+            </FAIcons>
+          </BurgerMenuBottomBorder>
+          <LogoLeftBorder show={show.toString()} p={pathname}></LogoLeftBorder>
           <Link to='/'>
-            <Image
-              // onClick={() => createClick()}
-              className='py-1'
-              style={{ maxHeight: '56px', minHeight: '100%' }}
+            <StyledImage
+              show={show.toString()}
+              p={pathname}
+              style={{}}
               src={Logo}
-              alt={`Little Paws Dachshund Reschue ${new Date().getFullYear()}`}
+              alt={`Little Paws Dachshund Reschue ${new Date().getFullYear()}. Thanks for being here!`}
             />
           </Link>
         </div>

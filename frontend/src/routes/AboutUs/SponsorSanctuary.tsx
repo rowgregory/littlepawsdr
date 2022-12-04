@@ -63,32 +63,34 @@ const DogContainer = styled(Link)`
 const DogGrid = styled.div`
   display: grid;
   grid-column-gap: 16px;
-  grid-row-gap: 100px;
   padding-bottom: 48px;
   grid-template-columns: 1fr 1fr;
+  grid-column-gap: 32px;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    grid-row-gap: 100px;
     grid-template-columns: 1fr 1fr 1fr;
-    grid-column-gap: 32px;
   }
 `;
 
 const TextContainer = styled.div`
-  position: absolute;
-  left: 0;
-  right: 0;
-  background: #fff;
-  margin-left: auto;
-  margin-right: auto;
-  width: fit-content;
   padding: 16px;
-  margin-top: -42px;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    position: absolute;
+    left: 0;
+    right: 0;
+    background: #fff;
+    margin-left: auto;
+    margin-right: auto;
+    width: fit-content;
+    margin-top: -42px;
+  }
 `;
 
 const SponsorSanctuary = () => {
   const dispatch = useDispatch();
   const [seeMore, setSeeMore] = useState(false);
 
-  const size = useWindowSize();
+  const [width] = useWindowSize();
 
   const {
     dachshundPicturesVideosStatuses: { error, dachshunds, loading },
@@ -101,7 +103,7 @@ const SponsorSanctuary = () => {
   return (
     <>
       {loading && <HexagonLoader />}
-      <div style={{ position: 'relative', marginTop: '56px' }}>
+      <div style={{ position: 'relative', marginTop: '75px' }}>
         <Image
           src={SponsorDog}
           width='100%'
@@ -164,17 +166,17 @@ const SponsorSanctuary = () => {
         <Text fontSize='32px' marginTop='56px' fontWeight={400}>
           In addition to our adoptable dogs, we have sanctuary foster dogs.
         </Text>
-        <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='18px'>
+        <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='16px'>
           These special dogs are not able to be adopted due to medical or
           behavioral circumstances, and will remain in LPDR’s care for the
           remainder of their lives.
         </Text>
-        <Text maxWidth='680px' className='my-3 mx-auto' fontSize='18px'>
+        <Text maxWidth='680px' className='my-3 mx-auto' fontSize='16px'>
           Many of our sanctuary fosters are in their senior years and require a
           little extra care. Some require monthly medication, while others need
           monthly supplies of diapers or more frequent visits to the vet.
         </Text>
-        <Text maxWidth='680px' className='my-3 mx-auto' fontSize='18px'>
+        <Text maxWidth='680px' className='my-3 mx-auto' fontSize='16px'>
           Please consider sponsoring one of our dear sanctuary dogs below.
         </Text>
       </div>
@@ -256,14 +258,19 @@ const SponsorSanctuary = () => {
         </PayPalCard>
       </SponsorshipContainer>
       <MeetSomeSacntuaryContainer>
-        <Text fontSize='32px' fontWeight={600} marginBottom='16px'>
+        <Text
+          fontSize='32px'
+          fontWeight={600}
+          marginBottom={width < 500 ? '72px' : '16px'}
+          textAlign='center'
+        >
           Meet some lovely pets who need a sponsor today!
         </Text>
         <Text
           fontSize='26px'
           fontWeight={600}
           color='#7a7a7a'
-          marginBottom='48px'
+          marginBottom={width < 500 ? '90px' : '48px'}
           maxWidth='700px'
           textAlign='center'
         >
@@ -284,7 +291,7 @@ const SponsorSanctuary = () => {
           maxheight={`${(
             387 * Math.ceil(dachshunds?.length / 3)
           ).toString()}px`}
-          style={{ minHeight: size[0] < 545 ? '300px' : '335px' }}
+          style={{ minHeight: width < 545 ? '460px' : '335px' }}
         >
           <DogGrid>
             {dachshunds?.map((dog: any, i: number) => (

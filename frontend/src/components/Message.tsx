@@ -17,7 +17,6 @@ export const Container = styled(Alert)<{ color: string }>`
   border-right: 5px solid ${({ color }) => color};
   border-top: 1px solid ${({ color }) => color};
   border-bottom: 1px solid ${({ color }) => color};
-  margin: 1rem 0;
   padding: 0;
   button {
     display: block;
@@ -48,7 +47,7 @@ interface MessageProps {
 }
 
 const Message: FC<MessageProps> = ({ variant, children }) => {
-  const [show, setShow] = useState(true);
+  const [show] = useState(true);
 
   const text = {
     danger: {
@@ -82,8 +81,8 @@ const Message: FC<MessageProps> = ({ variant, children }) => {
       <Container
         show={show}
         variant={text[variant].type}
-        dismissible
-        onClose={() => setShow(false)}
+        // dismissible
+        // onClose={() => setShow(false)}
         color={text[variant].color}
       >
         <IconType bg={text[variant].color}>{text[variant].icon}</IconType>

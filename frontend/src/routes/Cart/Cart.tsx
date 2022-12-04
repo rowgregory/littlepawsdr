@@ -4,8 +4,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addToCart, removeFromCart } from '../../actions/cartActions';
 import Message from '../../components/Message';
 import { Text } from '../../components/styles/Styles';
-import EmptyCart from '../../components/svg/EmptyCart';
-import NoItemsDefault from '../../components/common/NoItemsDefault';
 import { subTotal, totalItems } from '../../utils/placeOrder';
 import {
   CartBtn,
@@ -18,8 +16,8 @@ import {
   ProductName,
   SecondSubTotal,
 } from '../../components/styles/cart/Styles';
-import { Link } from 'react-router-dom';
-import LogoDay from '../../components/assets/logo-background-transparent-purple4.png';
+import { Link, useHistory } from 'react-router-dom';
+import LogoDay from '../../components/assets/logo-transparent.png';
 import UIFx from 'uifx';
 import Add from '../../components/sounds/click02.wav';
 import Thump from '../../components/sounds/thump01.mp3';
@@ -27,6 +25,7 @@ import LeftArrow from '../../components/svg/LeftArrow';
 
 const Cart = () => {
   const dispatch = useDispatch();
+  const history = useHistory();
   const productAmountChanged = new UIFx(Add);
   const reachedProductLimit = new UIFx(Thump);
 
@@ -34,36 +33,20 @@ const Cart = () => {
     cart: { cartItems, error, loading },
   } = useSelector((state: any) => state);
 
-  if (cartItems.length === 0)
-    return <NoItemsDefault items='cart' Icon={EmptyCart} />;
-
   const addOneItem = (e: any, item: any) => {
     const currentValue = +e.target.ariaValueNow;
-
-    const currentProductAmount = item?.sizes.filter(
+    const productAmount = item?.sizes.filter(
       (obj: any) => obj?.size === item?.size
     )[0]?.amount;
-
-    if (
-      currentValue === item.countInStock ||
-      currentValue === currentProductAmount
-    ) {
+    if (currentValue === item.countInStock || currentValue === productAmount) {
       reachedProductLimit.play();
       return;
     }
 
-    const productHasSizes =
-      currentProductAmount !== undefined && currentValue < currentProductAmount;
-
-    if (productHasSizes) {
-      productAmountChanged.play();
-      dispatch(
-        addToCart(item?.product, currentValue + 1, item.size, item?.sizes)
-      );
-    } else {
-      productAmountChanged.play();
-      dispatch(addToCart(item?.product, item?.qty + 1, item.size, item?.sizes));
-    }
+    productAmountChanged.play();
+    dispatch(
+      addToCart(item?.product, currentValue + 1, item.size, item?.sizes)
+    );
   };
 
   const deleteOneItem = (e: any, item: any) => {
@@ -73,24 +56,10 @@ const Cart = () => {
       return;
     }
 
-    const currentProductAmount = item?.sizes.filter(
-      (obj: any) => obj?.size === item?.size
-    )[0]?.amount;
-
-    const productHasSizes =
-      currentProductAmount !== undefined &&
-      currentValue <= currentProductAmount &&
-      currentValue > 1;
-
-    if (productHasSizes) {
-      productAmountChanged.play();
-      dispatch(
-        addToCart(item?.product, currentValue - 1, item?.size, item?.sizes)
-      );
-    } else {
-      productAmountChanged.play();
-      dispatch(addToCart(item?.product, item?.qty - 1, item.size, item?.sizes));
-    }
+    productAmountChanged.play();
+    dispatch(
+      addToCart(item?.product, currentValue - 1, item?.size, item?.sizes)
+    );
   };
 
   return (
@@ -103,7 +72,7 @@ const Cart = () => {
           <Image src={LogoDay} height='48px' />
           <Divider />
           <Text fontSize='28px' fontWeight={400} color='#464342'>
-            Shopping Cart
+            {cartItems?.length === 0 ? 'Empty Shopping Cart' : 'Shopping Cart'}
           </Text>
         </div>
         {error ? (
@@ -124,7 +93,7 @@ const Cart = () => {
                         roundedCircle
                         width='85px'
                         height='85px'
-                        style={{ objectFit: 'cover' }}
+                        style={{ objectFit: 'contain', background: '#fff' }}
                       />
                     </td>
 
@@ -228,7 +197,12 @@ const Cart = () => {
             />
           )}
 
-          <CheckoutBtn to='/login-options'>Checkout</CheckoutBtn>
+          <CheckoutBtn
+            disabled={cartItems?.length <= 0}
+            onClick={() => history.push({ pathname: '/login-options' })}
+          >
+            Checkout
+          </CheckoutBtn>
         </div>
       </CheckoutBtnColumn>
     </CartContainer>

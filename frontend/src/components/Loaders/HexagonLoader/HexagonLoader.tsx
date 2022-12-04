@@ -12,7 +12,6 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
   z-index: 5000;
-  background: rgb(0 0 0/0.25);
 `;
 
 const HexagonLoader = () => {

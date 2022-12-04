@@ -8,11 +8,10 @@ import EventsIcon from '../svg/EventsIcon';
 import NewsletterEmailIcon from '../svg/NewsletterEmailIcon';
 import OrdersIcon from '../svg/OrdersIcon';
 import ProductsIcon from '../svg/ProductsIcon';
-import RaffleWinnerIcon from '../svg/RaffleWinner';
 import UsersIcon from '../svg/UsersIcon';
 import NewsArticleIcon from '../svg/NewsArticleIcon';
 import EducationTipIcon from '../svg/EducationTipIcon';
-import LogoDay from '../assets/logo-background-transparent-purple4.png';
+import LogoDay from '../assets/dashboard-logo.png';
 import { Image } from 'react-bootstrap';
 import { Accordion } from '../styles/place-order/Styles';
 import SellingIcon from '../svg/SellingIcon';
@@ -101,12 +100,6 @@ const miscellaneousLinks = [
     linkKey: '/admin/eventList',
     icon: <EventsIcon />,
     pathMatch: 'event',
-  },
-  {
-    textKey: 'Raffle Winners',
-    linkKey: '/admin/raffleWinnerList',
-    icon: <RaffleWinnerIcon />,
-    pathMatch: 'raffleWinner',
   },
   {
     textKey: 'Blog',
@@ -291,7 +284,11 @@ const SideBar = () => {
     <>
       <Container className='d-flex flex-column'>
         <Link to='/' style={{ marginInline: 'auto', marginBottom: '2rem' }}>
-          <Image src={LogoDay} alt='LPDR' width='75px' />
+          <Image
+            src={LogoDay}
+            alt='LPDR'
+            style={{ width: '130px', objectFit: 'cover' }}
+          />
         </Link>
         <SideBarLink
           to='/admin'

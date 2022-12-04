@@ -5,12 +5,13 @@ import Error from '../models/errorModel.js';
 // @route   POST /api/error
 // @access  Public
 const createError = asyncHandler(async (req, res) => {
-  const { functionName, detail } = req.body;
+  const { functionName, detail, user, state, status } = req.body;
   const error = new Error({
     functionName,
     detail,
     user,
     state,
+    status,
   });
 
   await error.save();

@@ -13,15 +13,12 @@ interface SettingsLayoutWithSideBarProps {
 }
 
 const Container = styled.div`
+  margin-top: 75px;
   max-width: ${({ theme }) => theme.breakpoints[3]};
   width: 100%;
   margin-inline: auto;
   margin-bottom: 32px;
-  padding: 1rem;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[4]}) {
-    margin-top: 72px;
-    padding: 0;
-  }
+  padding: 56px 16px;
 `;
 
 const StyledLink = styled(Link)`
@@ -86,7 +83,7 @@ export const SettingsLayoutWithSideBar: FC<SettingsLayoutWithSideBarProps> = ({
             </AvatarInitials>
           )}
           <Text fontWeight='400' fontSize='20px'>
-            {capitalizeFirstLetter(userInfo?.name.split(' ')[0])}
+            {capitalizeFirstLetter(userInfo?.name?.split(' ')[0])}
           </Text>
         </div>
         <StyledLink to='/about/team-members'>Go to public profile</StyledLink>

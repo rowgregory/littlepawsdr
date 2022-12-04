@@ -64,7 +64,7 @@ const AdoptionFAQ = () => {
           maxWidth: '980px',
           width: '100%',
           marginInline: 'auto',
-          marginBottom: '96px',
+          marginBottom: '128px',
           paddingInline: '16px',
         }}
       >
@@ -78,14 +78,6 @@ const AdoptionFAQ = () => {
             url='/volunteer/volunteer-application'
           />
         </div>
-        {/* <Text
-          fontFamily='EB Garamond'
-          fontSize='3.75rem'
-          marginBottom='3rem'
-          textAlign='center'
-        >
-          Frequently Asked Questions
-        </Text> */}
         {faq().map((obj, index) => (
           <StyledAccordion key={index} className='mb-3'>
             <Accordion.Toggle

@@ -10,11 +10,9 @@ const eventSchema = mongoose.Schema({
   },
   title: {
     type: String,
-    required: true,
   },
   description: {
     type: String,
-    required: true,
   },
   image: {
     type: String,
@@ -42,6 +40,7 @@ const eventSchema = mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  externalLink: { type: String },
 });
 
 const Event = mongoose.model('Event', eventSchema);

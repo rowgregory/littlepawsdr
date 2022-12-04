@@ -6,7 +6,7 @@ import { Text } from '../components/styles/Styles';
 import { createOrder } from '../actions/orderActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { Wrapper } from './OrderReceipt';
-import Logo from '../components/assets/logo-background-transparent-purple4.png';
+import Logo from '../components/assets/logo-transparent.png';
 import { formatDate } from '../utils/formatDate';
 import HexagonLoader from '../components/Loaders/HexagonLoader/HexagonLoader';
 

@@ -35,7 +35,7 @@ const BreadCrumb = ({
       <StyledLink to={url2} className='mr-1'>
         {step2}
       </StyledLink>
-      <i className='fas fa-chevron-right fa-sm mr-1'></i>
+      {step3 && <i className='fas fa-chevron-right fa-sm mr-1'></i>}
       {url3 ? (
         <StyledLink to={url3} className='mr-1'>
           {step3}

@@ -11,12 +11,9 @@ import { Text } from '../components/styles/Styles';
 import LeftArrow from '../components/svg/LeftArrow';
 
 const ECardDetails = () => {
-  const { state } = useLocation<{
-    image: string;
-    name: string;
-    price: string;
-    category: string;
-  }>();
+  const {
+    state: { product: state },
+  } = useLocation() as any;
   return (
     <div
       style={{

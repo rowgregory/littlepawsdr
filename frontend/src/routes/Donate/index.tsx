@@ -84,13 +84,13 @@ const Check = () => (
   </Text>
 );
 
-const DonateRoutes = () => {
+const DonateRoutes = ({ location }: any) => {
   const { path } = useRouteMatch();
   return (
     <DonateLayoutWithSideBar
       jumbotron={
         <>
-          <div style={{ position: 'relative', marginTop: '56px' }}>
+          <div style={{ position: 'relative', marginTop: '75px' }}>
             <Image
               src={DonateDog}
               width='100%'
@@ -144,10 +144,45 @@ const DonateRoutes = () => {
               <LeftArrow
                 text='To Home'
                 url='/'
-                text2='Rainbow Bridge'
-                url2='/about/rainbow-bridge'
+                text2={
+                  location?.pathname === '/donate/shop-to-help'
+                    ? 'Ecards'
+                    : location?.pathname === '/donate/venmo'
+                    ? 'Shop To Help'
+                    : location?.pathname === '/donate/check'
+                    ? 'Venmo'
+                    : 'Rainbow Bridge'
+                }
+                url2={
+                  location?.pathname === '/donate/shop-to-help'
+                    ? '/e-cards'
+                    : location?.pathname === '/donate/venmo'
+                    ? '/donate/shop-to-help'
+                    : location?.pathname === '/donate/check'
+                    ? '/donate/venmo'
+                    : '/about/rainbow-bridge'
+                }
               />
-              <RightArrow text='Adoption Application' url='/adopt' />
+              <RightArrow
+                text={
+                  location?.pathname === '/donate/shop-to-help'
+                    ? 'Venmo'
+                    : location?.pathname === '/donate/venmo'
+                    ? 'Check'
+                    : location?.pathname === '/donate/check'
+                    ? 'Adoption Application'
+                    : 'Ecards'
+                }
+                url={
+                  location?.pathname === '/donate/shop-to-help'
+                    ? '/donate/venmo'
+                    : location?.pathname === '/donate/venmo'
+                    ? '/donate/check'
+                    : location?.pathname === '/donate/check'
+                    ? '/adopt/application'
+                    : '/e-cards'
+                }
+              />
             </div>
             <Text
               fontSize='32px'

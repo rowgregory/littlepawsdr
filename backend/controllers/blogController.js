@@ -1,29 +1,51 @@
 import asyncHandler from 'express-async-handler';
 import Blog from '../models/blogModel.js';
+import Error from '../models/errorModel.js';
 
 // @desc    Get all blogs
 // @route   GET /api/blog
 // @access  Public
 const getBlogs = asyncHandler(async (req, res) => {
-  const blogs = await Blog.find({}).populate('user', '_id name avatar');
+  try {
+    const blogs = await Blog.find({}).populate('user', '_id name avatar');
 
-  res.json(blogs);
+    res.json(blogs);
+  } catch (err) {
+    const createdError = new Error({
+      functionName: 'GET_BLOG_LIST_PUBLIC',
+      detail: err.message,
+      status: 500,
+    });
+
+    await createdError.save();
+    res.status(500).send({
+      message: '500 - Server Error',
+    });
+  }
 });
 
 // @desc    Get blog details
 // @route   GET /api/blog/:id
 // @access  Public
 const getBlogDetails = asyncHandler(async (req, res) => {
-  const blog = await Blog.findById(req.params.id).populate(
-    'user',
-    '_id name avatar'
-  );
+  try {
+    const blog = await Blog.findById(req.params.id).populate(
+      'user',
+      '_id name avatar'
+    );
 
-  if (blog) {
     res.json(blog);
-  } else {
-    res.status(404);
-    throw new Error('Blog not found');
+  } catch (err) {
+    const createdError = new Error({
+      functionName: 'GET_BLOG_BY_ID_PUBLIC',
+      detail: err.message,
+      status: 500,
+    });
+
+    await createdError.save();
+    res.status(500).send({
+      message: '500 - Server Error',
+    });
   }
 });
 
@@ -31,42 +53,72 @@ const getBlogDetails = asyncHandler(async (req, res) => {
 // @route   POST /api/blog
 // @access  Private/Admin
 const createBlog = asyncHandler(async (req, res) => {
-  const blog = new Blog({
-    user: req.user._id,
-    title: 'Sample title',
-    article: 'Sample article',
-    image:
-      'https://res.cloudinary.com/doyd0ewgk/image/upload/v1641507406/img-placeholder.png',
-    publicId: '',
-    author: req.user.name,
-    authorImg: req.user.avatar,
-  });
+  try {
+    const blog = new Blog({
+      user: req.user._id,
+      title: 'Sample title',
+      article: 'Sample article',
+      image:
+        'https://res.cloudinary.com/doyd0ewgk/image/upload/v1641507406/img-placeholder.png',
+      publicId: '',
+      author: req.user.name,
+      authorImg: req.user.avatar,
+    });
 
-  const createdBlog = await blog.save();
+    const createdBlog = await blog.save();
 
-  res.status(201).json(createdBlog);
+    res.status(201).json(createdBlog);
+  } catch (err) {
+    const createdError = new Error({
+      functionName: 'CREATE_BLOG_ADMIN',
+      user: {
+        id: req?.user?._id,
+        name: req?.user?.name,
+        email: req?.user?.email,
+      },
+      detail: err.message,
+      status: 500,
+    });
+
+    await createdError.save();
+    res.status(500).send({
+      message: '500 - Server Error',
+    });
+  }
 });
 
 // @desc    Update a blog
 // @route   PUT /api/blog/:id
 // @access  Private/Admin
 const updateBlog = asyncHandler(async (req, res) => {
-  const { title, article, image, publicId } = req.body;
+  try {
+    const { title, article, image, publicId } = req.body;
+    const blog = await Blog.findById(req.params.id);
 
-  const blog = await Blog.findById(req.params.id);
-
-  if (blog) {
-    blog.title = title || blog.title;
-    blog.article = article || blog.article;
+    blog.title = title === '' ? title : title || blog.title;
+    blog.article = article === '' ? article : article || blog.article;
     blog.image = image || blog.image;
     blog.publicId = publicId || blog.publicId;
 
     const updatedBlog = await blog.save();
 
     res.json(updatedBlog);
-  } else {
-    res.status(404);
-    throw new Error('Blog not found');
+  } catch (err) {
+    const createdError = new Error({
+      functionName: 'UPDATE_BLOG_ADMIN',
+      user: {
+        id: req?.user?._id,
+        name: req?.user?.name,
+        email: req?.user?.email,
+      },
+      detail: err.message,
+      status: 500,
+    });
+
+    await createdError.save();
+    res.status(500).send({
+      message: '500 - Server Error',
+    });
   }
 });
 
@@ -74,14 +126,27 @@ const updateBlog = asyncHandler(async (req, res) => {
 // @route   DELETE /api/blog/:id
 // @access  Private/Admin
 const deleteBlog = asyncHandler(async (req, res) => {
-  const blog = await Blog.findById(req.params.id);
-
-  if (blog) {
+  try {
+    const blog = await Blog.findById(req.params.id);
     await blog.remove();
+
     res.json({ message: 'Blog removed' });
-  } else {
-    res.status(404);
-    throw new Error('Blog not found');
+  } catch (err) {
+    const createdError = new Error({
+      functionName: 'DELETE_BLOG_ADMIN',
+      user: {
+        id: req?.user?._id,
+        name: req?.user?.name,
+        email: req?.user?.email,
+      },
+      detail: err.message,
+      status: 500,
+    });
+
+    await createdError.save();
+    res.status(500).send({
+      message: '500 - Server Error',
+    });
   }
 });
 

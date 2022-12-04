@@ -59,7 +59,10 @@ const EventList = () => {
   useEffect(() => {
     dispatch({ type: EVENT_CREATE_RESET });
     if (successCreate) {
-      history.push(`/admin/event/${createdEvent._id}/edit`);
+      history.push({
+        pathname: `/admin/event/${createdEvent._id}/edit`,
+        state: { createdEvent },
+      });
     } else {
       dispatch(listEvents());
     }
@@ -163,7 +166,12 @@ const EventList = () => {
                     <Text>{event?.status}</Text>
                   </td>
                   <td>
-                    <LinkContainer to={`/admin/event/${event?._id}/edit`}>
+                    <LinkContainer
+                      to={{
+                        pathname: `/admin/event/${event?._id}/edit`,
+                        state: { event },
+                      }}
+                    >
                       <StyledEditBtn>
                         <i
                           style={{ color: '#9761aa' }}

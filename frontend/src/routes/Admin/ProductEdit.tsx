@@ -258,9 +258,9 @@ const ProductEdit = () => {
           <Form.Control
             type='number'
             step='any'
-            min='1'
+            min='0'
             placeholder='Enter price'
-            value={price || ''}
+            value={price || 0}
             onChange={(e) => setPrice(parseFloat(e.target.value))}
           ></Form.Control>
         </Form.Group>

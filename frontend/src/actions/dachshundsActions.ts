@@ -82,7 +82,6 @@ export const getDogsByStatusPicturesAndVideours =
         payload: response.data,
       });
     } catch (error: any) {
-      console.log(error.message);
       dispatch({
         type: DACHSHUND_PICS_VIDS_STASTUSES_FAIL,
         payload:

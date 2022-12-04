@@ -430,6 +430,7 @@ const DonationForm = () => {
           DONATION TOTAL: ${inputs.donationAmount} / {inputs.donationType}
         </Text>
       </StyledForm>
+      <Text>This button directs you to PayPal.</Text>
       {formIsCompleted ? (
         <form
           className='d-flex flex-column align-items-start'

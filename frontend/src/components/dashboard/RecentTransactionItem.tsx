@@ -27,7 +27,10 @@ const RecentTransactionItem = ({ viewTransaction, item }: any) => {
             style={{ objectFit: 'cover' }}
           />
         )}
-        <div className='d-flex flex-column'>
+        <div
+          className='d-flex flex-column align-items-baseline'
+          style={{ maxWidth: '140px' }}
+        >
           <ItemName>
             {item?.orderItems
               ? item?.orderItems[0].name
@@ -35,7 +38,11 @@ const RecentTransactionItem = ({ viewTransaction, item }: any) => {
               ? 'Donation'
               : item?.name}
           </ItemName>
-          <Text fontWeight={300} color='#c1c1c1'>
+          <Text
+            fontWeight={300}
+            color='#c1c1c1'
+            className='d-flex justify-content-end'
+          >
             {formatDate(new Date(item?.createdAt))}
           </Text>
         </div>

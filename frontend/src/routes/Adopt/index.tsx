@@ -8,7 +8,7 @@ import AdoptionFAQ from './AdoptionFAQ';
 import styled from 'styled-components';
 
 const Container = styled.div`
-  margin-top: 56px;
+  margin-top: 75px;
   width: 100%;
   margin-inline: auto;
 `;

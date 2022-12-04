@@ -1,3 +1,4 @@
+import { Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -5,6 +6,8 @@ export const CartContainer = styled.div`
   background: #ecf0f1;
   display: flex;
   flex-direction: column;
+  height: 100vh;
+  justify-content: space-between;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
     flex-direction: row;
   }
@@ -65,10 +68,6 @@ export const CheckoutBtnColumn = styled.div`
   background: #2e2e2e;
   justify-content: space-between;
   box-shadow: -15px -15px 40px 3px rgba(0, 0, 0, 0.35);
-  position: fixed:
-  bottom: 0px;
-  left: 0;
-  right:0;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
     height: 100vh;
     width: 275px;
@@ -83,7 +82,7 @@ export const CheckoutBtnColumn = styled.div`
   }
 `;
 
-export const CheckoutBtn = styled(Link)`
+export const CheckoutBtn = styled(Button)`
   background: ${({ theme }) => theme.colors.quinary};
   color: #fff;
   min-height: 100px;
@@ -92,8 +91,14 @@ export const CheckoutBtn = styled(Link)`
   align-items: center;
   justify-content: center;
   font-weight: 400;
+  bos-shadow: none;
+  border: 0;
   transition: 300ms;
   bottom: 0;
+  :disabled {
+    pointer-events: none;
+    background: ${({ theme }) => theme.colors.quinary};
+  }
   :hover {
     background: ${({ theme }) => theme.colors.quinary};
     text-decoration: none;

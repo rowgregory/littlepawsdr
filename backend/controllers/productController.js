@@ -7,22 +7,46 @@ import { cloudImages } from '../data/cloudImages.js';
 // @route   GET /api/products
 // @access  Public
 const getProducts = asyncHandler(async (req, res) => {
-  const products = await Product.find({});
+  try {
+    const products = await Product.find({});
 
-  res.json(products);
+    res.json(products);
+  } catch (err) {
+    const createdError = new Error({
+      functionName: 'GET_PRODUCT_LIST_PUBLIC',
+      detail: err.message,
+      status: 500,
+    });
+    await createdError.save();
+    res.status(500).send({
+      message: '500 - Server Error',
+    });
+  }
 });
 
 // @desc    Fetch single product
 // @route   GET /api/products/:id
 // @access  Private/Admin
 const getProductDetails = asyncHandler(async (req, res) => {
-  const product = await Product.findById(req.params.id);
+  try {
+    const product = await Product.findById(req.params.id);
 
-  if (product) {
     res.json(product);
-  } else {
-    res.status(404);
-    throw new Error('Product not found');
+  } catch (err) {
+    const createdError = new Error({
+      functionName: 'GET_PRODUCT_BY_ID_ADMIN',
+      detail: err.message,
+      user: {
+        id: req?.user?._id,
+        name: req?.user?.name,
+        email: req?.user?.email,
+      },
+      status: 500,
+    });
+    await createdError.save();
+    res.status(500).send({
+      message: '500 - Server Error',
+    });
   }
 });
 
@@ -30,14 +54,26 @@ const getProductDetails = asyncHandler(async (req, res) => {
 // @route   DELETE /api/products/:id
 // @access  Private/Admin
 const deleteProduct = asyncHandler(async (req, res) => {
-  const product = await Product.findById(req.params.id);
+  try {
+    const product = await Product.findById(req.params.id);
 
-  if (product) {
     await product.remove();
     res.json({ message: 'Product removed' });
-  } else {
-    res.status(404);
-    throw new Error('Product not found');
+  } catch (err) {
+    const createdError = new Error({
+      functionName: 'DELETE_PRODUCT_ADMIN',
+      detail: err.message,
+      user: {
+        id: req?.user?._id,
+        name: req?.user?.name,
+        email: req?.user?.email,
+      },
+      status: 500,
+    });
+    await createdError.save();
+    res.status(500).send({
+      message: '500 - Server Error',
+    });
   }
 });
 
@@ -45,49 +81,66 @@ const deleteProduct = asyncHandler(async (req, res) => {
 // @route   POST /api/products
 // @access  Private/Admin
 const createProduct = asyncHandler(async (req, res) => {
-  const product = new Product({
-    name: 'Sample Name',
-    price: 0,
-    user: req.user._id,
-    image: cloudImages().upload,
-    brand: 'Little Paws',
-    category: 'Totes',
-    countInStock: 0,
-    description: 'Sample description',
-    publicId: '',
-    size: '',
-    isLimitedProduct: true,
-    sizes: [],
-  });
+  try {
+    const product = new Product({
+      name: 'Sample Name',
+      price: 0,
+      user: req.user._id,
+      image: cloudImages().upload,
+      brand: 'Little Paws',
+      category: 'Clothing',
+      countInStock: 0,
+      description: 'Sample description',
+      publicId: '',
+      size: '',
+      isLimitedProduct: true,
+      sizes: [],
+    });
 
-  const createdProduct = await product.save();
+    const createdProduct = await product.save();
 
-  res.status(201).json(createdProduct);
+    res.status(201).json(createdProduct);
+  } catch (err) {
+    const createdError = new Error({
+      functionName: 'CREATE_PRODUCT_ADMIN',
+      detail: err.message,
+      user: {
+        id: req?.user?._id,
+        name: req?.user?.name,
+        email: req?.user?.email,
+      },
+      status: 500,
+    });
+    await createdError.save();
+    res.status(500).send({
+      message: '500 - Server Error',
+    });
+  }
 });
 
 // @desc    Update a product
 // @route   PUT /api/products/:id
 // @access  Private/Admin
 const updateProduct = asyncHandler(async (req, res) => {
-  const {
-    name,
-    price,
-    image,
-    brand,
-    category,
-    description,
-    publicId,
-    size,
-    countInStock,
-  } = req.body;
+  try {
+    const {
+      name,
+      price,
+      image,
+      brand,
+      category,
+      description,
+      publicId,
+      size,
+      countInStock,
+    } = req.body;
 
-  const product = await Product.findById(req.params.id);
+    const product = await Product.findById(req.params.id);
 
-  if (product) {
-    product.name = name || product.name;
-    product.price = price || product.price;
+    product.name = name === '' ? name : name || product.name;
+    product.price = price === null ? price : price || product.price;
     product.image = image || product.image;
-    product.brand = brand || product.brand;
+    product.brand = brand === '' ? brand : brand || product.brand;
     product.category = category || product.category;
     product.countInStock =
       countInStock === 0
@@ -95,7 +148,8 @@ const updateProduct = asyncHandler(async (req, res) => {
         : countInStock > 0
         ? countInStock
         : product.countInStock;
-    product.description = description || product.description;
+    product.description =
+      description === '' ? description : description || product.description;
     product.publicId = publicId || product.publicId;
     product.size = size || product.size;
     product.isLimitedProduct = req.body.isLimitedProduct;
@@ -103,14 +157,26 @@ const updateProduct = asyncHandler(async (req, res) => {
 
     const updatedProduct = await product.save();
     res.json(updatedProduct);
-  } else {
-    res.status(404);
-    throw new Error('Product not found');
+  } catch (err) {
+    const createdError = new Error({
+      functionName: 'UPDATE_PRODUCT_ADMIN',
+      detail: err.message,
+      user: {
+        id: req?.user?._id,
+        name: req?.user?.name,
+        email: req?.user?.email,
+      },
+      status: 500,
+    });
+    await createdError.save();
+    res.status(500).send({
+      message: '500 - Server Error',
+    });
   }
 });
 
 // @desc    Update a product by gyest
-// @route   PUT /api/products/:id/guest
+// @route   PUT /api/products/:id/guest ❌
 // @access  Public
 const updateProductGuest = asyncHandler(async (req, res) => {
   const { name, price, image, brand, category, description, publicId, size } =
@@ -152,8 +218,9 @@ const getPublicProductDetails = asyncHandler(async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: 'Server Error' });
     const createdError = new Error({
-      functionName: 'GET_PUBLIC_PRODUCT_DETAILS',
+      functionName: 'GET_PRODUCT_BY_ID_PUBLIC',
       detail: err.message,
+      status: 500,
     });
 
     await createdError.save();

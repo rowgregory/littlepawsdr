@@ -26,7 +26,6 @@ const OnlineAppContainer = styled.div`
   width: 100%;
   background: #f7f7f7;
   padding: 128px 0;
-  margin-bottom: 96px;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
     display: flex;
     flex-direction: row;
@@ -154,9 +153,14 @@ const ListAvailableDogs = () => {
       </OnlineAppContainer>
       <div
         className='w-100 mx-auto d-flex justify-content-between mt-3 px-3'
-        style={{ maxWidth: '75rem' }}
+        style={{ maxWidth: '75rem', marginBottom: '56px' }}
       >
-        <LeftArrow text='To Home' url='/' />
+        <LeftArrow
+          text='To Home'
+          url='/'
+          text2='Contact Us'
+          url2='about/contact-us'
+        />
         <RightArrow text='Sponsor a Sanctuary' url='/about/sanctuary' />
       </div>
       {error && (

@@ -54,6 +54,7 @@ const EventEdit = () => {
   const [file, setFile] = useState({}) as any;
   const [imgUploadStatus, setImageUploadStatus] = useState('') as any;
   const [cloudinaryData, setClouadinaryData] = useState({}) as any;
+  const [externalLink, setExternalLink] = useState('');
 
   const {
     eventDetails: { loading, error, event },
@@ -80,6 +81,7 @@ const EventEdit = () => {
     setColor(event?.color);
     setPublicId(event?.publicId);
     setStatus(event?.status);
+    setExternalLink(event?.externalLink);
   }, [event]);
 
   useEffect(() => {
@@ -96,6 +98,7 @@ const EventEdit = () => {
           color,
           status,
           publicId: cloudinaryData.publicId,
+          externalLink,
         })
       );
     }
@@ -110,6 +113,7 @@ const EventEdit = () => {
     startDate,
     status,
     title,
+    externalLink,
   ]);
 
   useEffect(() => {
@@ -144,6 +148,7 @@ const EventEdit = () => {
           color,
           status,
           publicId,
+          externalLink,
         })
       );
     }
@@ -186,10 +191,19 @@ const EventEdit = () => {
         <Form.Group controlId='title'>
           <Form.Label>Title</Form.Label>
           <Form.Control
-            type='title'
+            type='text'
             placeholder='Enter title'
             value={title || ''}
             onChange={(e) => setTitle(e.target.value)}
+          ></Form.Control>
+        </Form.Group>
+        <Form.Group controlId='externalLink'>
+          <Form.Label>External Link</Form.Label>
+          <Form.Control
+            type='tedxt'
+            placeholder='Enter external link'
+            value={externalLink || ''}
+            onChange={(e) => setExternalLink(e.target.value)}
           ></Form.Control>
         </Form.Group>
         <Form.Group controlId='description'>

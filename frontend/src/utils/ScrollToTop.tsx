@@ -5,7 +5,7 @@ import UpArrow from '../components/svg/UpArrow';
 const Container = styled.div<{ show?: boolean }>`
   display: ${({ show }) => (show ? 'flex' : 'none')} !important;
   position: fixed;
-  bottom: 30px;
+  bottom: 50px;
   right: 30px;
   display: flex;
   flex-direction: column;

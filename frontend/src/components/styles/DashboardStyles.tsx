@@ -1,5 +1,5 @@
 import { Row } from 'react-bootstrap';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
 export const DashboardContainer = styled.div`
   background: #f6f9fe;
@@ -54,12 +54,13 @@ export const ActionBtn = styled.div`
 `;
 
 export const Middle = styled.div`
-  padding: 32px;
   width: 100%;
+  padding: 16px;
   @media screen and (min-width: 875px) {
     width: calc(100vw - 365px);
   }
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
+    padding: 32px;
     width: calc(100vw - 670px) !important;
   }
 `;
@@ -79,10 +80,13 @@ export const BottomRow = styled.div`
 
 export const DataSquareContainer = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr;
   grid-gap: 1rem;
   padding: 0;
   width: 100%;
+  grid-template-columns: 1fr;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    grid-template-columns: 1fr 1fr;
+  }
   @media screen and (min-width: 1650px) {
     grid-template-columns: 1fr 1fr 1fr 1fr;
   }
@@ -145,11 +149,6 @@ export const RecentTransactions = styled.div`
   right: 0;
   padding: 32px 32px 24px;
   min-width: 350px !important;
-  /* display: none; */
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-    /* min-width: 384px !important; */
-    /* display: block; */
-  }
 `;
 
 export const UserInfoContainer = styled.div`
@@ -184,6 +183,21 @@ export const Wallet = styled.div`
   }
 `;
 
+const float = keyframes`
+	0% {
+		box-shadow: 0 5px 15px 0px rgba(0,0,0,0.6);
+		transform: translatey(0px);
+	}
+	50% {
+		box-shadow: 0 25px 15px 0px rgba(0,0,0,0.2);
+		transform: translatey(-15px);
+	}
+	100% {
+		box-shadow: 0 5px 15px 0px rgba(0,0,0,0.6);
+		transform: translatey(0px);
+	}
+`;
+
 export const Circles = styled.div`
   position: absolute;
 
@@ -191,6 +205,7 @@ export const Circles = styled.div`
     position: absolute;
     border-radius: 50%;
     background: radial-gradient(#9761aa, #a57fb3);
+    box-shadow: 0 5px 15px 0px rgba(0, 0, 0, 0.6);
   }
 
   .circle-1 {
@@ -198,12 +213,15 @@ export const Circles = styled.div`
     width: 190px;
     top: -20px;
     left: -20px;
+    animation: ${float} 6s ease-in-out infinite;
   }
   .circle-2 {
     height: 150px;
     width: 150px;
     top: 31px;
     left: 160px;
+    animation: ${float} 6s ease-in-out infinite;
+    animation-delay: 2000ms;
   }
 `;
 
@@ -211,7 +229,6 @@ export const RecentTransactionItemContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  /* margin-bottom: 24px; */
   padding: 15px;
   :hover {
     background: #f6f9fe;

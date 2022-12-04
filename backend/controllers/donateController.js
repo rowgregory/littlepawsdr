@@ -1,58 +1,85 @@
 import asyncHandler from 'express-async-handler';
 import Donation from '../models/donationModel.js';
+import Error from '../models/errorModel.js';
 
 //@desc   Create a donation
 //@route  POST api/donate
 //@access Public
 const createDonation = asyncHandler(async (req, res) => {
-  const {
-    firstName,
-    lastName,
-    address,
-    zipPostalCode,
-    city,
-    state,
-    email,
-    donationAmount,
-    inMemoryOfWho,
-    inHonorOfWho,
-    addressForAcknowledgementMemory,
-    addressForAcknowledgementHonor,
-    donationType,
-  } = req.body;
+  try {
+    const {
+      firstName,
+      lastName,
+      address,
+      zipPostalCode,
+      city,
+      state,
+      email,
+      donationAmount,
+      inMemoryOfWho,
+      inHonorOfWho,
+      addressForAcknowledgementMemory,
+      addressForAcknowledgementHonor,
+      donationType,
+    } = req.body;
 
-  const donation = new Donation({
-    firstName,
-    lastName,
-    address,
-    zipPostalCode,
-    city,
-    state,
-    email,
-    donationAmount,
-    inMemoryOfWho,
-    inHonorOfWho,
-    addressForAcknowledgementMemory,
-    addressForAcknowledgementHonor,
-    donationType,
-  });
+    const donation = new Donation({
+      firstName,
+      lastName,
+      address,
+      zipPostalCode,
+      city,
+      state,
+      email,
+      donationAmount,
+      inMemoryOfWho,
+      inHonorOfWho,
+      addressForAcknowledgementMemory,
+      addressForAcknowledgementHonor,
+      donationType,
+    });
 
-  const createdDonation = await donation.save();
+    const createdDonation = await donation.save();
 
-  res.status(201).json(createdDonation);
+    res.status(201).json(createdDonation);
+  } catch (err) {
+    const createdError = new Error({
+      functionName: 'CREATE_DONATION_PUBLIC',
+      detail: err.message,
+      status: 500,
+    });
+
+    await createdError.save();
+    res.status(500).send({
+      message: '500 - Server Error',
+    });
+  }
 });
 
 // @desc    Get order by ID
 // @route   GET /api/donations/:id
 // @access  Private/Admin
 const getDonationById = asyncHandler(async (req, res) => {
-  const donation = await Donation.findById(req.params.id);
+  try {
+    const donation = await Donation.findById(req.params.id);
 
-  if (donation) {
     res.json(donation);
-  } else {
-    res.status(404);
-    throw new Error('Donation not found');
+  } catch (err) {
+    const createdError = new Error({
+      functionName: 'GET_DONATION_BY_ID_ADMIN',
+      detail: err.message,
+      user: {
+        id: req?.user?._id,
+        name: req?.user?.name,
+        email: req?.user?.email,
+      },
+      status: 500,
+    });
+
+    await createdError.save();
+    res.status(500).send({
+      message: '500 - Server Error',
+    });
   }
 });
 
@@ -60,18 +87,35 @@ const getDonationById = asyncHandler(async (req, res) => {
 // @route   GET /api/donations
 // @access  Private/Admin
 const getDonations = asyncHandler(async (req, res) => {
-  const donations = await Donation.find({});
+  try {
+    const donations = await Donation.find({});
 
-  res.json(donations);
+    res.json(donations);
+  } catch (err) {
+    const createdError = new Error({
+      functionName: 'GET_DONATION_LIST_ADMIN',
+      detail: err.message,
+      user: {
+        id: req?.user?._id,
+        name: req?.user?.name,
+        email: req?.user?.email,
+      },
+      status: 500,
+    });
+
+    await createdError.save();
+    res.status(500).send({
+      message: '500 - Server Error',
+    });
+  }
 });
 
-//@desc   Update an event
+//@desc   Update donation
 //@route  PUT api/donations/:id
 //@access Private/Admin
 const updateDonation = asyncHandler(async (req, res) => {
-  const donation = await Donation.findById(req.params.id);
-
-  if (donation) {
+  try {
+    const donation = await Donation.findById(req.params.id);
     donation.hasLetterBeenSent = req.body.hasLetterBeenSent;
 
     const updatedDonation = await donation.save();
@@ -79,9 +123,22 @@ const updateDonation = asyncHandler(async (req, res) => {
     res.json({
       hasLetterBeenSent: updatedDonation.hasLetterBeenSent,
     });
-  } else {
-    res.status(404);
-    throw new Error('Donation- not found');
+  } catch (err) {
+    const createdError = new Error({
+      functionName: 'UPDATE_DONATION_ADMIN',
+      detail: err.message,
+      user: {
+        id: req?.user?._id,
+        name: req?.user?.name,
+        email: req?.user?.email,
+      },
+      status: 500,
+    });
+
+    await createdError.save();
+    res.status(500).send({
+      message: '500 - Server Error',
+    });
   }
 });
 
@@ -89,14 +146,26 @@ const updateDonation = asyncHandler(async (req, res) => {
 // @route   DELETE /api/donations/:id
 // @access  Private/Admin
 const deleteDonation = asyncHandler(async (req, res) => {
-  const donation = await Donation.findById(req.params.id);
-
-  if (donation) {
+  try {
+    const donation = await Donation.findById(req.params.id);
     await donation.deleteOne();
     res.json({ message: 'Donation removed' });
-  } else {
-    res.status(404);
-    throw new Error('Donation not found');
+  } catch (err) {
+    const createdError = new Error({
+      functionName: 'DELETE_DONATION_ADMIN',
+      detail: err.message,
+      user: {
+        id: req?.user?._id,
+        name: req?.user?.name,
+        email: req?.user?.email,
+      },
+      status: 500,
+    });
+
+    await createdError.save();
+    res.status(500).send({
+      message: '500 - Server Error',
+    });
   }
 });
 

@@ -16,7 +16,7 @@ import {
   Checkout,
   LogoCheckout,
 } from '../components/styles/place-order/Styles';
-import LogoDay from '../components/assets/logo-background-transparent-purple4.png';
+import LogoDay from '../components/assets/logo-transparent.png';
 import { Text } from '../components/styles/Styles';
 import { Col, Image } from 'react-bootstrap';
 import JumpingInput from '../components/common/JumpingInput';
@@ -127,7 +127,7 @@ const EcardPlaceOrder = ({ history }: any) => {
     const addPayPalScript = async () => {
       const script = document.createElement('script');
       script.type = 'text/javascript';
-      script.src = `https://www.paypal.com/sdk/js?client-id=${process.env.REACT_APP_PAYPAL_CLIENT_ID}`;
+      script.src = `https://www.paypal.com/sdk/js?client-id=${process.env.REACT_APP_PAYPAL_CLIENT_ID_PROD}`;
       script.async = true;
       script.onload = () => setSdkReady(true);
       document.body.appendChild(script);

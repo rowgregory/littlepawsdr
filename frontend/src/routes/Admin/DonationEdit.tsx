@@ -83,85 +83,93 @@ const DonationEdit = () => {
         url3='/admin/donationList'
       />
       {(loading || loadingUpdate) && <HexagonLoader />}
-      {(error || errorUpdate) && (
-        <Message variant='danger'>{error || errorUpdate}</Message>
-      )}
-      <TableAndPaginationContainer>
-        <div>
-          <Text>
-            Donation Id: <span>{donation?._id}</span>
-          </Text>
-          <Text>
-            Date: <span>{formatDate(donation?.createdAt)}</span>
-          </Text>
-          <Text className='mt-3 mb-1'>
-            Donation amount:{' '}
-            <span
-              style={{ fontSize: '1.25rem', fontWeight: 400, color: '#9761aa' }}
-            >
-              ${donation?.donationAmount?.toFixed(2)}
-            </span>
-          </Text>
-
-          <ContactInfoContainer>
-            <div className='mb-5'>
-              <Text fontWeight='400' className='mb-1'>
-                Contact Information
-              </Text>
-              <Text>
-                {donation?.firstName} {donation?.lastName}
-                <br />
-                {donation?.address}
-                <br />
-                {donation?.city}
-                <br />
-                {donation?.state}
-                <br />
-                {donation?.zipPostalCode}
-              </Text>
-            </div>
-
-            <div className='mb-5'>
-              <Text fontWeight='400' className='mb-1'>
-                Email
-              </Text>
-              <Text>{donation?.email}</Text>
-            </div>
-
-            <div className='mb-5'>
-              <Text fontWeight='400' className='mb-1'>
-                In Honor/Memory
-              </Text>
-              <Text>
-                In Memory Of: {donation?.inMemoryOfWho}
-                <br />
-                Memory Address: {donation?.addressForAcknowledgementMemory}
-                <br />
-                In Honor Of: {donation?.inHonorOfWho}
-                <br />
-                Honor Address: {donation?.addressForAcknowledgementHonor}
-              </Text>
-            </div>
-          </ContactInfoContainer>
+      {errorUpdate && <Message variant='danger'>{errorUpdate}</Message>}
+      {error ? (
+        <div className='d-flex flex-column align-items-center'>
+          <Message variant='danger'>{error}</Message>
         </div>
-        <Form>
-          <Form.Group
-            controlId='hasLetterBeenSent'
-            className='my-4 d-flex align-items-center'
-          >
-            <Form.Check
-              type='switch'
-              checked={hasLetterBeenSent ? hasLetterBeenSent : false}
-              onChange={(e) => setHasLetterBeenSent(e.target.checked)}
-            ></Form.Check>
-            <Form.Label className='mb-0'>Letter has been sent</Form.Label>
-          </Form.Group>
+      ) : (
+        <TableAndPaginationContainer>
+          <div>
+            <Text>
+              Donation Id: <span>{donation?._id}</span>
+            </Text>
+            <Text>
+              Date: <span>{formatDate(donation?.createdAt)}</span>
+            </Text>
+            <Text className='mt-3 mb-1'>
+              Donation amount:{' '}
+              <span
+                style={{
+                  fontSize: '1.25rem',
+                  fontWeight: 400,
+                  color: '#9761aa',
+                }}
+              >
+                ${donation?.donationAmount?.toFixed(2)}
+              </span>
+            </Text>
 
-          <UpdateBtn onClick={(e: any) => submitHandler(e)}>
-            Updat{loadingUpdate ? 'ing...' : 'e'}
-          </UpdateBtn>
-        </Form>
-      </TableAndPaginationContainer>
+            <ContactInfoContainer>
+              <div className='mb-5'>
+                <Text fontWeight='400' className='mb-1'>
+                  Contact Information
+                </Text>
+                <Text>
+                  {donation?.firstName} {donation?.lastName}
+                  <br />
+                  {donation?.address}
+                  <br />
+                  {donation?.city}
+                  <br />
+                  {donation?.state}
+                  <br />
+                  {donation?.zipPostalCode}
+                </Text>
+              </div>
+
+              <div className='mb-5'>
+                <Text fontWeight='400' className='mb-1'>
+                  Email
+                </Text>
+                <Text>{donation?.email}</Text>
+              </div>
+
+              <div className='mb-5'>
+                <Text fontWeight='400' className='mb-1'>
+                  In Honor/Memory
+                </Text>
+                <Text>
+                  In Memory Of: {donation?.inMemoryOfWho}
+                  <br />
+                  Memory Address: {donation?.addressForAcknowledgementMemory}
+                  <br />
+                  In Honor Of: {donation?.inHonorOfWho}
+                  <br />
+                  Honor Address: {donation?.addressForAcknowledgementHonor}
+                </Text>
+              </div>
+            </ContactInfoContainer>
+          </div>
+          <Form>
+            <Form.Group
+              controlId='hasLetterBeenSent'
+              className='my-4 d-flex align-items-center'
+            >
+              <Form.Check
+                type='switch'
+                checked={hasLetterBeenSent ? hasLetterBeenSent : false}
+                onChange={(e) => setHasLetterBeenSent(e.target.checked)}
+              ></Form.Check>
+              <Form.Label className='mb-0'>Letter has been sent</Form.Label>
+            </Form.Group>
+
+            <UpdateBtn onClick={(e: any) => submitHandler(e)}>
+              Updat{loadingUpdate ? 'ing...' : 'e'}
+            </UpdateBtn>
+          </Form>
+        </TableAndPaginationContainer>
+      )}
     </Container>
   );
 };

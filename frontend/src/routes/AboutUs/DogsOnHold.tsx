@@ -22,7 +22,7 @@ const DogContainer = styled(Col)`
   padding: 1rem;
   grid-row-gap: 120px;
   margin-bottom: 96px;
-  margin-top: 56px;
+  margin-top: 75px;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
     grid-template-columns: 1fr 1fr;
   }
@@ -81,7 +81,7 @@ const DogsOnHold = () => {
   return (
     <>
       {loading && <HexagonLoader />}
-      <div style={{ position: 'relative', marginTop: '56px' }}>
+      <div style={{ position: 'relative', marginTop: '75px' }}>
         <Image
           src={OnHoldDog}
           width='100%'

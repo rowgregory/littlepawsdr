@@ -30,18 +30,28 @@ import {
   termsOfServiceLinkKey,
 } from '../utils/footerUtils';
 import LeftArrow from '../components/svg/LeftArrow';
+import { Accordion } from '../components/styles/place-order/Styles';
 // import ReCAPTCHA from 'react-google-recaptcha';
 // import axios from 'axios';
 
-const useRegisterForm = (cb: any) => {
+const useRegisterForm = (cb: any, state: any) => {
   const values = {
     name: '',
     email: '',
     password: '',
     confirmPassword: '',
   };
-
   const [inputs, setInputs] = useState(values) as any;
+
+  useEffect(() => {
+    if (state) {
+      setInputs((inputs: any) => ({
+        ...inputs,
+        name: state?.userInfo?.name,
+        email: state?.userInfo?.email,
+      }));
+    }
+  }, [state]);
 
   const handleInputChange = (e: any) => {
     setInputs((inputs: any) => ({
@@ -58,8 +68,9 @@ const useRegisterForm = (cb: any) => {
   return { inputs, handleInputChange, onSubmit, setInputs };
 };
 
-const Register = () => {
+const Register = ({ location }: any) => {
   const dispatch = useDispatch();
+  const { state } = location;
   const [showPassword, setShowPassword] = useState({
     password: false,
     confirmPassword: false,
@@ -87,17 +98,17 @@ const Register = () => {
     }
   };
 
-  const { inputs, handleInputChange, onSubmit, setInputs } =
-    useRegisterForm(registerFormCallback);
+  const { inputs, handleInputChange, onSubmit, setInputs } = useRegisterForm(
+    registerFormCallback,
+    state
+  );
 
   useEffect(() => {
-    if (success) {
+    if (success || error) {
       setInputs({});
-      setTimeout(() => {
-        dispatch({ type: USER_REGISTER_RESET });
-      }, 8000);
+      setTimeout(() => dispatch({ type: USER_REGISTER_RESET }), 5000);
     }
-  }, [dispatch, setInputs, success]);
+  }, [dispatch, error, setInputs, success]);
 
   const validations = [
     inputs?.password?.length >= 9 ? 1 : 0,
@@ -136,8 +147,6 @@ const Register = () => {
         <Text fontSize='1.5rem' textAlign='center' marginBottom='0.65rem'>
           {loading ? 'One moment' : 'Welcome to Little Paws'}
         </Text>
-        {error && <Message variant='danger'>{error}</Message>}
-        {success && <Message variant='success'>{message.message}</Message>}
         <LeftArrow text='Back to sign in' url='/login' />
         <FormContainer>
           <Form onSubmit={onSubmit}>
@@ -239,6 +248,42 @@ const Register = () => {
         </CreateAccountContainer>
       </FormWrapper>
       {/* )} */}
+      <div
+        style={{
+          position: 'fixed',
+          bottom: 20,
+          left: 0,
+          right: 0,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          width: '100%',
+          maxWidth: '500px',
+          marginInline: 'auto',
+        }}
+      >
+        <Accordion toggle={success} maxheight='65px' className='w-100'>
+          <Message variant='success'>{message?.message}</Message>
+        </Accordion>
+      </div>
+      <div
+        style={{
+          position: 'fixed',
+          bottom: 20,
+          left: 0,
+          right: 0,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          width: '100%',
+          maxWidth: '500px',
+          marginInline: 'auto',
+        }}
+      >
+        <Accordion toggle={error} maxheight='65px' className='w-100'>
+          <Message variant='danger'>{error}</Message>
+        </Accordion>
+      </div>
     </Container>
   );
 };

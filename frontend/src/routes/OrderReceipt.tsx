@@ -4,7 +4,7 @@ import { Text } from '../components/styles/Styles';
 import styled from 'styled-components';
 import { localizeDate } from '../utils/localizeDate';
 import { Link, useLocation } from 'react-router-dom';
-import Logo from '../components/assets/logo-background-transparent-purple4.png';
+import Logo from '../components/assets/logo-transparent.png';
 import { ORDER_CREATE_RESET } from '../constants/orderConstants';
 import { useDispatch } from 'react-redux';
 import { formatDate } from '../utils/formatDate';
@@ -63,9 +63,7 @@ export const estimatedDelivery = (createdAt: any) => {
 };
 
 const OrderReceipt = ({ match }: any) => {
-  const {
-    state: { order: state, goBackTo },
-  } = useLocation() as any;
+  const { state } = useLocation() as any;
   const dispatch = useDispatch();
   const { params } = match;
 
@@ -95,7 +93,8 @@ const OrderReceipt = ({ match }: any) => {
           <Link to='/' style={{ marginBottom: '64px' }}>
             <Image
               style={{
-                width: '80px',
+                width: '130px',
+                marginLeft: '-16px',
               }}
               src={Logo}
               alt={`Little Paws Dachshund Reschue ${new Date().getFullYear()}`}
@@ -103,7 +102,7 @@ const OrderReceipt = ({ match }: any) => {
           </Link>
         </div>
         <div style={{ padding: '32px' }}>
-          {goBackTo === 'MY_ORDERS' && (
+          {state?.goBackTo === 'MY_ORDERS' && (
             <LeftArrow text='Back To Orders' url='/my-orders' />
           )}
           <Text
@@ -122,7 +121,11 @@ const OrderReceipt = ({ match }: any) => {
             fontWeight={600}
           >
             Hello{' '}
-            {order?.name ?? email ?? state?.user?.name ?? state?.guestEmail},
+            {order?.name ??
+              email ??
+              state?.order?.user?.name ??
+              state?.order?.guestEmail}
+            ,
           </Text>
           <Text
             color='#a5a7ab'
@@ -155,12 +158,12 @@ const OrderReceipt = ({ match }: any) => {
               <tr>
                 <td>
                   <Text fontWeight={400} p='10px 0 32px'>
-                    {formatDate(order?.orderDate ?? state?.createdAt)}
+                    {formatDate(order?.orderDate ?? state?.order?.createdAt)}
                   </Text>
                 </td>
                 <td>
                   <Text fontWeight={400} p='10px 0 32px'>
-                    {id ?? state?._id}
+                    {id ?? state?.order?._id}
                   </Text>
                 </td>
                 <td>
@@ -170,49 +173,55 @@ const OrderReceipt = ({ match }: any) => {
                 </td>
                 <td>
                   <Text fontWeight={400} p='10px 0 32px'>{`${
-                    state?.shippingAddress?.address ?? shippingAddress?.address
-                  }, ${state?.shippingAddress?.city ?? shippingAddress?.city} ${
-                    state?.shippingAddress?.state ?? shippingAddress.state
+                    state?.order?.shippingAddress?.address ??
+                    shippingAddress?.address
+                  }, ${
+                    state?.order?.shippingAddress?.city ?? shippingAddress?.city
+                  } ${
+                    state?.order?.shippingAddress?.state ??
+                    shippingAddress.state
                   }`}</Text>
                 </td>
               </tr>
             </tbody>
           </table>
-          {(state?.orderItems ?? items)?.map((item: any, index: number) => (
-            <div
-              key={index}
-              className='d-flex justify-content-between py-4 w-100 mb-4'
-              style={{ borderBottom: '1px solid #f2f2f2' }}
-            >
-              <div className='d-flex'>
-                <Image
-                  src={item?.image}
-                  alt='product-img'
-                  width='100px'
-                  className='pr-3'
-                  style={{ objectFit: 'cover', aspectRatio: '1/1' }}
-                />
-                <div className='d-flex flex-column'>
-                  <Text fontWeight='400' fontSize='14px' marginBottom='10px'>
-                    {item?.name}
-                  </Text>
-                  {item?.size && (
-                    <Text fontWeight='200'>Size: {item?.size}</Text>
-                  )}
-                  <Text fontWeight='200'>Quantity: {item?.qty}</Text>
+          {(state?.order?.orderItems ?? items)?.map(
+            (item: any, index: number) => (
+              <div
+                key={index}
+                className='d-flex justify-content-between py-4 w-100 mb-4'
+                style={{ borderBottom: '1px solid #f2f2f2' }}
+              >
+                <div className='d-flex'>
+                  <Image
+                    src={item?.image}
+                    alt='product-img'
+                    width='100px'
+                    className='pr-3'
+                    style={{ objectFit: 'cover', aspectRatio: '1/1' }}
+                  />
+                  <div className='d-flex flex-column'>
+                    <Text fontWeight='400' fontSize='14px' marginBottom='10px'>
+                      {item?.name}
+                    </Text>
+                    {item?.size && (
+                      <Text fontWeight='200'>Size: {item?.size}</Text>
+                    )}
+                    <Text fontWeight='200'>Quantity: {item?.qty}</Text>
+                  </div>
                 </div>
+                <Text fontWeight='600' fontSize='18px'>
+                  ${item?.price}
+                </Text>
               </div>
-              <Text fontWeight='600' fontSize='18px'>
-                ${item?.price}
-              </Text>
-            </div>
-          ))}
+            )
+          )}
           <div className='d-flex flex-column align-items-end mb-4'>
             <div className='d-flex justify-content-between w-25 mb-1'>
               <Text>Subtotal</Text>
               <Text fontWeight={400}>
                 $
-                {state?.orderItems
+                {state?.order?.orderItems
                   .reduce(
                     (acc: any, item: any) => acc + item?.qty * item?.price,
                     0
@@ -223,7 +232,8 @@ const OrderReceipt = ({ match }: any) => {
             <div className='d-flex justify-content-between w-25 mb-1'>
               <Text>Shipping Fee</Text>
               <Text fontWeight={400}>
-                ${state?.shippingPrice.toFixed(2) ?? order?.shippingPrice}
+                $
+                {state?.order?.shippingPrice.toFixed(2) ?? order?.shippingPrice}
               </Text>
             </div>
             <div
@@ -232,7 +242,7 @@ const OrderReceipt = ({ match }: any) => {
             >
               <Text>Tax Fee</Text>
               <Text fontWeight={400}>
-                ${state?.taxPrice.toFixed(2) ?? order?.taxPrice}
+                ${state?.order?.taxPrice.toFixed(2) ?? order?.taxPrice}
               </Text>
             </div>
             <div
@@ -243,7 +253,9 @@ const OrderReceipt = ({ match }: any) => {
                 Total
               </Text>
               <Text fontSize='14px' fontWeight={600}>
-                ${order?.totalPrice?.toFixed(2) ?? state?.totalPrice.toFixed(2)}
+                $
+                {order?.totalPrice?.toFixed(2) ??
+                  state?.order?.totalPrice.toFixed(2)}
               </Text>
             </div>
           </div>
@@ -251,9 +263,9 @@ const OrderReceipt = ({ match }: any) => {
             <Text fontSize='14px' marginBottom='24px'>
               An email confirmation has been sent to{' '}
               <strong className='mr-2'>
-                {email ?? state?.user?.email ?? state?.guestEmail}
+                {email ?? state?.order?.user?.email ?? state?.order?.guestEmail}
               </strong>
-              {state?.confirmationEmailHasBeenSent && (
+              {state?.order?.confirmationEmailHasBeenSent && (
                 <i className='fas fa-check' style={{ color: 'green' }}></i>
               )}
             </Text>

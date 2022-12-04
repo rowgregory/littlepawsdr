@@ -1,12 +1,9 @@
 export const categories = () => [
-  'Totes',
-  'Shirts',
-  'Sweatshirts',
-  'Socks',
-  'Tumblers',
-  'Mugs',
-  'Car magnets',
-  'Stickers',
-  'Purse',
+  'Clothing',
+  'Pet Supplies',
+  'Outdoors',
+  'Automotive',
+  'Accessories',
+  'Books',
   'Other',
 ];

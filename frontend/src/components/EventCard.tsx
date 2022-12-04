@@ -1,7 +1,6 @@
 import React from 'react';
 import { Card } from 'react-bootstrap';
 import styled from 'styled-components';
-import { formatDate } from '../utils/formatDate';
 import { Text } from './styles/Styles';
 
 const EventsCard = styled.div`
@@ -102,7 +101,9 @@ export const Ribbon = styled.div<{ status?: string }>`
 const EventCard = ({ event, history }: any) => {
   return (
     <EventsCard
-      onClick={() => history.push(`/events/${event?._id}`)}
+      onClick={() =>
+        history.push({ pathname: `/events/${event?._id}`, state: { event } })
+      }
       key={event?._id}
       className='d-flex align-items-center'
       style={{
@@ -129,8 +130,19 @@ const EventCard = ({ event, history }: any) => {
           {event?.title}
         </Text3D>
         <Text color={event?.color}>
-          {event?.startDate && formatDate(event?.startDate)}-
-          {event?.endDate && formatDate(event?.endDate)}
+          {new Date(event?.startDate)?.toLocaleDateString('en-US', {
+            timeZone: 'UTC',
+            day: 'numeric',
+            month: 'short',
+            year: '2-digit',
+          })}{' '}
+          -{' '}
+          {new Date(event?.endDate)?.toLocaleDateString('en-US', {
+            timeZone: 'UTC',
+            day: 'numeric',
+            month: 'short',
+            year: '2-digit',
+          })}
         </Text>
       </div>
     </EventsCard>

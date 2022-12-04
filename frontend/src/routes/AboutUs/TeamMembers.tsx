@@ -6,10 +6,10 @@ import Message from '../../components/Message';
 import { Text } from '../../components/styles/Styles';
 import { HorizontalLine } from '../../components/styles/product-details/Styles';
 import styled from 'styled-components';
-import { listManuallyAddedUsers } from '../../actions/manuallyAddUserActions';
 import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
 import LeftArrow from '../../components/svg/LeftArrow';
 import RightArrow from '../../components/svg/RightArrow';
+import AboutUs from '../../components/assets/about_us01.jpg';
 
 const ProfileCard = styled(Card)`
   background-color: ${({ theme }) => theme.card.bg};
@@ -42,22 +42,53 @@ const TeamMembers = () => {
   const userWhoWeAreList = useSelector((state: any) => state.userWhoWeAreList);
   const { loading, error, users } = userWhoWeAreList;
 
-  const manuallyAddedUserList = useSelector(
-    (state: any) => state.manuallyAddedUserList
-  );
-  const {
-    loading: loadingM,
-    error: errorM,
-    manuallyAddedUsers,
-  } = manuallyAddedUserList;
-
   useEffect(() => {
     dispatch(listWhoWeAreUsers());
-    dispatch(listManuallyAddedUsers());
   }, [dispatch]);
 
   return (
     <>
+      <div style={{ position: 'relative', marginTop: '75px' }}>
+        <Image
+          src={AboutUs}
+          width='100%'
+          style={{ height: '500px', objectFit: 'cover' }}
+        />
+        <Text
+          fontWeight={500}
+          fontSize='48px'
+          color='#fff'
+          style={{
+            position: 'absolute',
+            top: '200px',
+            left: '50px',
+            zIndex: 2,
+          }}
+        >
+          About Us
+        </Text>
+        <Text
+          onClick={() =>
+            window.open(
+              'https://pixabay.com/users/gabio-1600654/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=1191290',
+              '_blank'
+            )
+          }
+          fontWeight={500}
+          fontSize='10px'
+          color='#fff'
+          cursor='pointer'
+          style={{
+            mixBlendMode: 'difference',
+            position: 'absolute',
+            bottom: '10px',
+            right: '10px',
+            zIndex: 2,
+          }}
+        >
+          Photo by Gabriele Ottich
+        </Text>
+      </div>
       <div
         style={{
           maxWidth: '980px',
@@ -65,7 +96,6 @@ const TeamMembers = () => {
           marginInline: 'auto',
           marginBottom: '96px',
           paddingInline: '16px',
-          marginTop: '56px',
         }}
       >
         <div className='w-100 d-flex justify-content-between mt-3'>
@@ -77,21 +107,12 @@ const TeamMembers = () => {
           />
           <RightArrow text='Contact' url='/about/contact-us' />
         </div>
-        <Text
-          fontSize='31px'
-          marginTop='12px'
-          fontWeight={400}
-          textAlign='center'
-          marginBottom='24px'
-        >
-          About Us
-        </Text>
-        <Text maxWidth='680px' fontSize='18px' className='mb-4 mx-auto'>
+        <Text fontSize='32px' marginTop='56px' fontWeight={400}>
           We believe that dogs truly are man’s (and woman’s) best friend and
           that our beloved companions deserve the right to a soft bed, generous
           treats and unconditional love.
         </Text>
-        <Text maxWidth='680px' fontSize='18px' className='mb-4 mx-auto'>
+        <Text maxWidth='680px' fontSize='16px' className='my-4 mx-auto'>
           We believe in rescue. We believe in the power of cooperation and
           teamwork to make this happen. We believe in volunteers who can work
           together to help make a difference in the life of three puppy mill
@@ -99,19 +120,19 @@ const TeamMembers = () => {
           at a bright future thanks to the teamwork of Little Paws Dachshund
           Rescue and Carolina Loving Hound Rescue.
         </Text>
-        <Text maxWidth='680px' fontSize='18px' className='mb-4 mx-auto'>
+        <Text maxWidth='680px' fontSize='16px' className='mb-4 mx-auto'>
           We believe that two sweet puppies left behind at a veterinarian’s
           office deserve a life full of toys and fun and snuggles. We believe
           Little Paws Dachshund Rescue can help change the lives of these dogs,
           and many, many more in the future.
         </Text>
-        <Text maxWidth='680px' fontSize='18px' className='mb-4 mx-auto'>
+        <Text maxWidth='680px' fontSize='16px' className='mb-4 mx-auto'>
           Do you believe? Are you ready to help us achieve our mission? In the
           coming weeks we will be putting out calls for volunteers for many
           roles within our rescue. So many of you have reached out and asked how
           you can help! We are touched by everyone’s generosity.
         </Text>
-        <Text maxWidth='680px' fontSize='18px' className='mb-4 mx-auto'>
+        <Text maxWidth='680px' fontSize='16px' className='mb-4 mx-auto'>
           Right now, we are in need of monetary donations. Happy endings for our
           dachshunds in need can only happen with your support. Please allow us
           to continue to say “YES WE CAN” to those calls asking for assistance
@@ -129,14 +150,9 @@ const TeamMembers = () => {
         >
           Little Paws Crew
         </Text>
-        {(loading || loadingM) && <HexagonLoader />}
-        {(error || errorM) && (
-          <Message variant='danger'>{error || errorM}</Message>
-        )}
+        {loading && <HexagonLoader />}
+
         <Row className='mx-auto d-flex flex-column px-0 mb-5'>
-          <Text marginBottom='16px' fontWeight={400}>
-            BOARD MEMBERS
-          </Text>
           <Col
             className='px-0 d-flex'
             style={{
@@ -144,38 +160,45 @@ const TeamMembers = () => {
               flexWrap: 'wrap',
             }}
           >
-            {users?.map(
-              (user: any, i: number) =>
-                user?.isAdmin && (
-                  <ProfileCard key={user._id} className='d-flex my-3'>
-                    <Card.Img
-                      src={user.profileCardTheme}
-                      alt={`${user}-${i}`}
-                      style={{
-                        height: '200px',
-                        borderRadius: '12px 12px 0 0',
-                        objectFit: 'cover',
-                      }}
-                    />
-
-                    <Card.Body className='d-flex flex-column mx-auto align-items-center'>
-                      <CardImg
-                        src={user?.avatar}
-                        alt={`${user?.name}-${i}`}
-                        width='170px'
-                        height='170px'
-                        roundedCircle
+            {error ? (
+              <div className='d-flex flex-column align-items-center w-100'>
+                <Message variant='danger'>{error}</Message>
+              </div>
+            ) : (
+              users?.users?.map(
+                (user: any, i: number) =>
+                  user?.isAdmin &&
+                  user?.email !== 'it.little.paws@gmail.com' && (
+                    <ProfileCard key={user._id} className='d-flex my-3'>
+                      <Card.Img
+                        src={user.profileCardTheme}
+                        alt={`${user}-${i}`}
+                        style={{
+                          height: '200px',
+                          borderRadius: '12px 12px 0 0',
+                          objectFit: 'cover',
+                        }}
                       />
-                      <Name className='pt-2'>
-                        <strong>{user?.name}</strong>
-                      </Name>
-                      <Position className='pb-1'>
-                        {user?.volunteerTitle}
-                      </Position>
-                      <Card.Text>{user?.volunteerEmail}</Card.Text>
-                    </Card.Body>
-                  </ProfileCard>
-                )
+
+                      <Card.Body className='d-flex flex-column mx-auto align-items-center'>
+                        <CardImg
+                          src={user?.avatar}
+                          alt={`${user?.name}-${i}`}
+                          width='170px'
+                          height='170px'
+                          roundedCircle
+                        />
+                        <Name className='pt-2'>
+                          <strong>{user?.name}</strong>
+                        </Name>
+                        <Position className='pb-1'>
+                          {user?.volunteerTitle}
+                        </Position>
+                        <Card.Text>{user?.volunteerEmail}</Card.Text>
+                      </Card.Body>
+                    </ProfileCard>
+                  )
+              )
             )}
           </Col>
         </Row>
@@ -192,35 +215,41 @@ const TeamMembers = () => {
               flexWrap: 'wrap',
             }}
           >
-            {manuallyAddedUsers?.map((user: any, i: number) => (
-              <ProfileCard key={user?._id} className='d-flex my-3'>
-                <Card.Img
-                  src='https://res.cloudinary.com/doyd0ewgk/image/upload/v1612043441/field_tree2.jpg'
-                  alt={`${user}=${i}`}
-                  style={{
-                    height: '200px',
-                    borderRadius: '12px 12px 0 0',
-                    objectFit: 'cover',
-                  }}
-                />
-
-                <Card.Body className='d-flex flex-column mx-auto align-items-center'>
-                  <CardImg
-                    src={user?.image}
-                    alt={`${user?.name}-${i}`}
-                    width='170px'
-                    height='170px'
-                    roundedCircle
+            {error ? (
+              <div className='d-flex flex-column align-items-center w-100'>
+                <Message variant='danger'>{error}</Message>
+              </div>
+            ) : (
+              users?.manuallyAddedUsers?.map((user: any, i: number) => (
+                <ProfileCard key={user?._id} className='d-flex my-3'>
+                  <Card.Img
+                    src='https://res.cloudinary.com/doyd0ewgk/image/upload/v1612043441/field_tree2.jpg'
+                    alt={`${user}=${i}`}
+                    style={{
+                      height: '200px',
+                      borderRadius: '12px 12px 0 0',
+                      objectFit: 'cover',
+                    }}
                   />
-                  <Name className='pt-2'>
-                    <strong>{user?.name}</strong>
-                  </Name>
-                  <Position className='pb-4'>{user?.affiliation}</Position>
-                  <Position className='pb-1'>{user?.message}</Position>
-                  <Card.Text>{user?.volunteerEmail}</Card.Text>
-                </Card.Body>
-              </ProfileCard>
-            ))}
+
+                  <Card.Body className='d-flex flex-column mx-auto align-items-center'>
+                    <CardImg
+                      src={user?.image}
+                      alt={`${user?.name}-${i}`}
+                      width='170px'
+                      height='170px'
+                      roundedCircle
+                    />
+                    <Name className='pt-2'>
+                      <strong>{user?.name}</strong>
+                    </Name>
+                    <Position className='pb-4'>{user?.affiliation}</Position>
+                    <Position className='pb-1'>{user?.message}</Position>
+                    <Card.Text>{user?.volunteerEmail}</Card.Text>
+                  </Card.Body>
+                </ProfileCard>
+              ))
+            )}
           </Col>
         </Row>
       </div>

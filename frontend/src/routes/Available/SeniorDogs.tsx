@@ -4,9 +4,9 @@ import styled from 'styled-components';
 import { Text } from '../../components/styles/Styles';
 import { reasonsToAdoptASeniorData } from '../../utils/reasonsToAdopt';
 import SeniorDog from '../../components/assets/senior_01.jpeg';
-import { Image } from 'react-bootstrap';
 import LeftArrow from '../../components/svg/LeftArrow';
 import RightArrow from '../../components/svg/RightArrow';
+import { Image } from 'react-bootstrap';
 
 const ViewFees = styled(Link)`
   text-decoration: underline;

@@ -101,10 +101,16 @@ const addOrderItems = asyncHandler(async (req, res) => {
 
       res.status(201).json(createdOrder);
     }
-  } catch (error) {
+  } catch (err) {
     const createdError = new Error({
-      functionName: 'CREATE_NEW_ORDER',
-      detail: `${error.message}, order id: ${orderId}`,
+      functionName: 'CREATE_NEW_ORDER_PUBLIC',
+      detail: `${err.message}, order id: ${orderId}`,
+      user: {
+        id: user?._id,
+        name: user?.name,
+        email: user?.email ?? guestEmail,
+      },
+      status: 500,
     });
     await createdError.save();
 
@@ -121,20 +127,33 @@ const addOrderItems = asyncHandler(async (req, res) => {
 // @route   GET /api/orders/:id
 // @access  Public
 const getOrderById = asyncHandler(async (req, res) => {
-  const order = await Order.findById(req.params.id).populate(
-    'user',
-    'name email'
-  );
+  try {
+    const order = await Order.findById(req.params.id).populate(
+      'user',
+      'name email'
+    );
 
-  if (order) {
     res.json(order);
-  } else {
-    res.status(404);
-    throw new Error('Order not found!');
+  } catch (err) {
+    const createdError = new Error({
+      functionName: 'GET_ORDER_BY_ID_ADMIN',
+      detail: err.message,
+      user: {
+        id: req?.user?._id,
+        name: req?.user?.name,
+      },
+      STATUS: 500,
+    });
+
+    await createdError.save();
+
+    res.status(404).json({
+      message: `500 - Server Error`,
+    });
   }
 });
 
-// @desc    Update order to paid
+// @desc    Update order to paid ❌
 // @route   PUT /api/orders/:id/pay
 // @access  Private
 const updateOrderToPaid = asyncHandler(async (req, res) => {
@@ -168,7 +187,7 @@ const updateOrderToShipped = asyncHandler(async (req, res) => {
     res.json(updatedOrder);
   } catch (err) {
     const createdError = new Error({
-      functionName: 'UPDATE_ORDER_TO_SHIPPED',
+      functionName: 'UPDATE_ORDER_TO_SHIPPED_ADMIN',
       detail: err.message,
       user: {
         id: req?.user?._id,
@@ -189,31 +208,80 @@ const updateOrderToShipped = asyncHandler(async (req, res) => {
 // @route   GET /api/orders/my-orders
 // @access  Private
 const getMyOrders = asyncHandler(async (req, res) => {
-  const orders = await Order.find();
-  const guestOrders = orders.filter(
-    order => order?.guestEmail === req?.user?.email
-  );
-  const customerOrders = orders.filter(
-    order => order?.user?.email === req?.user?.email
-  );
+  try {
+    const orders = await Order.find();
+    const guestOrders = orders.filter(
+      order => order?.guestEmail === req?.user?.email
+    );
+    const customerOrders = orders.filter(
+      order => order?.user?.email === req?.user?.email
+    );
 
-  res.json(guestOrders?.concat(customerOrders));
+    res.json(guestOrders?.concat(customerOrders));
+  } catch (err) {
+    const createdError = new Error({
+      functionName: 'GET_MY_ORDERS_PRIVATE',
+      detail: err.message,
+      user: {
+        id: req?.user?._id,
+        name: req?.user?.name,
+      },
+      state: 'ORDER_IS_NULL',
+    });
+
+    await createdError.save();
+
+    res.status(404).json({
+      message: `500 - Server Error`,
+    });
+  }
 });
 
-// @desc    Get all logged in user orders
+// @desc    Get all orders
 // @route   GET /api/orders
 // @access  Private/Admin
 const getOrders = asyncHandler(async (req, res) => {
-  const orders = await Order.find({}).populate('user', '_id name');
+  try {
+    const orders = await Order.find({}).populate('user', '_id name');
 
-  res.json(orders);
+    res.json(orders);
+  } catch (err) {
+    const createdError = new Error({
+      functionName: 'GET_ALL_ORDERS_ADMIN',
+      detail: err.message,
+      user: {
+        id: req?.user?._id,
+        name: req?.user?.name,
+      },
+      status: 500,
+    });
+
+    await createdError.save();
+
+    res.status(404).json({
+      message: `500 - Server Error`,
+    });
+  }
 });
 
 // @desc    Send order confirmation email
 // @route   POST /api/orders/send-order-confirmation-email
 // @access  Public
 const sendOrderConfirmationEmail = asyncHandler(async (req, res) => {
-  send_mail(req.body, res, 'sendOrderConfirmationEmail');
+  try {
+    send_mail(req.body, res, 'sendOrderConfirmationEmail');
+  } catch (err) {
+    const createdError = new Error({
+      functionName: 'SEND_ORDER_CONFIRMATION_EMAIL',
+      detail: err.message,
+    });
+
+    await createdError.save();
+
+    res.status(404).json({
+      message: `500 - Server Error`,
+    });
+  }
 });
 
 export {

@@ -76,6 +76,7 @@ const AdoptionFees = ({ history }: any) => {
             top: '200px',
             left: '50px',
             zIndex: 2,
+            mixBlendMode: 'difference',
           }}
         >
           Adoption Fees
@@ -96,6 +97,7 @@ const AdoptionFees = ({ history }: any) => {
             bottom: '10px',
             right: '10px',
             zIndex: 2,
+            mixBlendMode: 'difference',
           }}
         >
           Photo by Erda Estremera

@@ -96,51 +96,51 @@ export const ComingSoonText = styled.div`
 
   background: -webkit-linear-gradient(
     left,
-    #009603,
-    #00888b,
-    #060f92,
-    #500094,
-    #6a007e,
-    #500094,
-    #060f92,
-    #00888b,
-    #009603
+    #2e3192,
+    #2d459d,
+    #268fc4,
+    #1ed4e8,
+    #1bffff,
+    #1ed4e8,
+    #268fc4,
+    #2d459d,
+    #2e3192
   ); /* For Safari 5.1 to 6.0 */
   background: -o-linear-gradient(
     right,
-    #009603,
-    #00888b,
-    #060f92,
-    #500094,
-    #6a007e,
-    #500094,
-    #060f92,
-    #00888b,
-    #009603
+    #2e3192,
+    #2d459d,
+    #23c2e1,
+    #1feef8,
+    #1bffff,
+    #1feef8,
+    #23c2e1,
+    #2d459d,
+    #2e3192
   ); /* For Opera 11.1 to 12.0 */
   background: -moz-linear-gradient(
     right,
-    #009603,
-    #00888b,
-    #060f92,
-    #500094,
-    #6a007e,
-    #500094,
-    #060f92,
-    #00888b,
-    #009603
+    #2e3192,
+    #295ba9,
+    #23c2e1,
+    #1feef8,
+    #1bffff,
+    #1feef8,
+    #23c2e1,
+    #295ba9,
+    #2e3192
   ); /* For Firefox 3.6 to 15 */
   background: linear-gradient(
     to right,
-    #009603,
-    #00888b,
-    #060f92,
-    #500094,
-    #6a007e,
-    #500094,
-    #060f92,
-    #00888b,
-    #009603
+    #2e3192,
+    #295ba9,
+    #23c2e1,
+    #1feef8,
+    #1bffff,
+    #1feef8,
+    #23c2e1,
+    #295ba9,
+    #2e3192
   ); /* Standard syntax (must be last) */
   -webkit-background-clip: text;
   background-clip: text;

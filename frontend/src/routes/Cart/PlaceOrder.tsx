@@ -15,6 +15,7 @@ import {
   Accordion,
   Checkout,
   LogoCheckout,
+  Name,
 } from '../../components/styles/place-order/Styles';
 import GoBackToCartModal from '../../components/GoBackToCartModal';
 import {
@@ -33,7 +34,7 @@ import {
   validateShippingForm,
 } from '../../utils/validateShippingForm';
 import ShippingForm from '../../components/forms/ShippingForm';
-import LogoDay from '../../components/assets/logo-background-transparent-purple4.png';
+import LogoDay from '../../components/assets/logo-transparent.png';
 import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
 import CreateAccountCheckoutForm from '../../components/forms/CreateAccountCheckoutForm';
 import { register } from '../../actions/userActions';
@@ -49,6 +50,7 @@ const PlaceOrder = ({ history, location }: any) => {
   const closeModal = () => setShowModal(false) as any;
   const [revealItems, setRevealItems] = useState(true);
   const [revealContactInfo, setRevealContactInfo] = useState(false);
+  const [payPalReject, setPayPalReject] = useState(false);
 
   const [{ isPending }] = usePayPalScriptReducer();
 
@@ -114,7 +116,7 @@ const PlaceOrder = ({ history, location }: any) => {
     const addPayPalScript = async () => {
       const script = document.createElement('script');
       script.type = 'text/javascript';
-      script.src = `https://www.paypal.com/sdk/js?client-id=${process.env.REACT_APP_PAYPAL_CLIENT_ID}`;
+      script.src = `https://www.paypal.com/sdk/js?client-id=${process.env.REACT_APP_PAYPAL_CLIENT_ID_PROD}`;
       script.async = true;
       script.onload = () => setSdkReady(true);
       document.body.appendChild(script);
@@ -181,7 +183,8 @@ const PlaceOrder = ({ history, location }: any) => {
         purchase_units: [
           {
             amount: {
-              value: totalPrice(inputs.state, cartItems),
+              value: '0.01',
+              // value: totalPrice(inputs.state, cartItems),
             },
           },
         ],
@@ -313,7 +316,7 @@ const PlaceOrder = ({ history, location }: any) => {
             )}
             <LeftRailContainer>
               <LeftRailSectionTitle>
-                <div className='d-flex justify-content-between align-items-center w-100'>
+                <div className='d-flex justify-content-between w-100'>
                   <div className='d-flex align-items-center'>
                     <Text fontSize='22px' fontWeight={400}>
                       Secure Payment
@@ -324,6 +327,50 @@ const PlaceOrder = ({ history, location }: any) => {
                     Order total: ${totalPrice(inputs.state, cartItems)}
                   </Text>
                 </div>
+                <Text
+                  fontSize='12px'
+                  onClick={() => setPayPalReject(!payPalReject)}
+                  marginBottom='9px'
+                  cursor='pointer'
+                >
+                  Please read if PayPal has rejected your card
+                </Text>
+                <Accordion toggle={payPalReject} maxheight='169px'>
+                  <Text marginBottom='6px'>
+                    If your credit/debit card is being rejected by PayPal with
+                    the message "This card is not accepted. Please use a
+                    different card." it might be due to one of the following
+                    reasons:
+                  </Text>
+                  <ol style={{ paddingLeft: '15px' }}>
+                    <li style={{ fontSize: '10.5px' }}>
+                      Your card was associated with a PayPal account that has
+                      since been closed.
+                    </li>
+
+                    <li style={{ fontSize: '10.5px' }}>
+                      You've linked the card to a PayPal account, but have not
+                      yet confirmed it.
+                    </li>
+
+                    <li style={{ fontSize: '10.5px' }}>
+                      You've exceeded your card limit with the PayPal system.
+                    </li>
+
+                    <li style={{ fontSize: '10.5px' }}>
+                      Your email address is raising a red flag in PayPal's
+                      system.
+                    </li>
+                    <li style={{ fontSize: '10.5px' }}>
+                      Your card is associated with a specific PayPal account,
+                      and you're not logging in with that particular account.
+                    </li>
+                    <li style={{ fontSize: '10.5px' }}>
+                      Your browser is not accepting cookies. You should clear
+                      any existing cookies and try again.
+                    </li>
+                  </ol>
+                </Accordion>
               </LeftRailSectionTitle>
               <Accordion toggle={revealPayment} maxheight='1000px'>
                 <PayPalButtons
@@ -366,16 +413,18 @@ const PlaceOrder = ({ history, location }: any) => {
                       width='50px'
                       height='50px'
                       className='mr-3'
-                      style={{ objectFit: 'cover' }}
+                      style={{ objectFit: 'contain' }}
                     />
 
                     <div className='d-flex flex-column'>
-                      <Text fontWeight={400}>{item?.name}</Text>
+                      <Name>{item?.name}</Name>
                       <Text fontSize='11px'>Quantity: {item?.qty}</Text>
                       <Text fontSize='11px'>{item?.size}</Text>
                     </div>
                   </div>
-                  <Text fontWeight={600}>${item?.qty * item?.price}</Text>
+                  <Text fontWeight={600}>
+                    ${item?.qty * item?.price?.toFixed(2)}
+                  </Text>
                 </div>
               ))}
               <hr className='my-3' />

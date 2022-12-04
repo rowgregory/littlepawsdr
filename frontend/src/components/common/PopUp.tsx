@@ -7,6 +7,7 @@ import { Text } from '../../components/styles/Styles';
 import Checkmark from '../svg/Checkmark';
 import HorizontalLoader from '../HorizontalLoader';
 import { NEWSLETTER_EMAIL_CREATE_RESET } from '../../constants/newsletterConstants';
+import Message from '../Message';
 const StyledModal = styled(Modal)`
   background: rgba(0, 0, 0, 0.7) !important;
   .modal-dialog {
@@ -63,7 +64,7 @@ const ContinueBtn = styled.button`
   }
 `;
 
-const SubscribeBtn = styled(Button)`
+export const SubscribeBtn = styled(Button)`
   height: 45px;
   border-radius: 0 25px 25px 0;
   border: 0;
@@ -76,7 +77,7 @@ const SubscribeBtn = styled(Button)`
   }
 `;
 
-const CheckmarkContainer = styled.div`
+export const CheckmarkContainer = styled.div`
   background: ${({ theme }) => theme.input.bg};
   border-radius: 0px 25px 25px 0;
   border-top: 1px solid ${({ theme }) => theme.separator};
@@ -89,8 +90,9 @@ const PopUp = () => {
   const handleClose = () => setShow(false);
   const [email, setNewsletterEmail] = useState('');
   const dispatch = useDispatch();
-  const newsletterCreate = useSelector((state: any) => state.newsletterCreate);
-  const { loading, error, success } = newsletterCreate;
+  const {
+    newsletterCreate: { loading, error, success },
+  } = useSelector((state: any) => state);
 
   const continuedSession = sessionStorage.getItem('continuedToSite')
     ? JSON.parse(sessionStorage.getItem('continuedToSite') || '')
@@ -108,9 +110,7 @@ const PopUp = () => {
   useEffect(() => {
     if (success) {
       dispatch({ type: NEWSLETTER_EMAIL_CREATE_RESET });
-      setTimeout(() => {
-        handleClose();
-      }, 3000);
+      setTimeout(() => handleClose(), 3000);
     }
   }, [dispatch, success]);
 
@@ -134,6 +134,7 @@ const PopUp = () => {
                 fundraisers and events!
               </Text>
               {loading && <HorizontalLoader />}
+              {error && <Message variant='danger'>{error}</Message>}
               <Form
                 onSubmit={submitHandler}
                 className='d-flex w-100 justify-content-center'

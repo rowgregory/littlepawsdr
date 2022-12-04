@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { decrypt } from '../utils/crypto.js';
 import { send_mail } from '../server.js';
 import GuestUser from '../models/guestUserModel.js';
+import ManuallyAddedUser from '../models/manuallyAddedUserModel.js';
 
 // @desc    Auth user & get token
 // @route   POST /api/users/login
@@ -13,39 +14,53 @@ import GuestUser from '../models/guestUserModel.js';
 const authUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
-  const user = await User.findOne({ email });
+  try {
+    const user = await User.findOne({ email });
 
-  if (user && (await user.matchPassword(password))) {
-    user.online = true;
-    user.token = generateToken(user._id, '24h');
+    if (user && (await user.matchPassword(password))) {
+      user.online = true;
+      user.token = generateToken(user._id, '24h');
 
-    const updatedUser = await user.save();
+      const updatedUser = await user.save();
 
-    if (updatedUser.confirmed) {
-      res.json({
-        _id: updatedUser._id,
-        name: updatedUser.name,
-        email: updatedUser.email,
-        isAdmin: updatedUser.isAdmin,
-        isVolunteer: updatedUser.isVolunteer,
-        avatar: updatedUser.avatar,
-        volunteerTitle: updatedUser.volunteerTitle,
-        volunteerEmail: updatedUser.volunteerEmail,
-        profileCardTheme: updatedUser.profileCardTheme,
-        online: updatedUser.online,
-        theme: updatedUser.theme,
-        token: updatedUser.token,
-        confirmed: updatedUser.confirmed,
-        publicId: updatedUser.publicId,
-        shippingAddress: updatedUser.shippingAddress,
-      });
+      if (updatedUser.confirmed) {
+        res.json({
+          _id: updatedUser._id,
+          name: updatedUser.name,
+          email: updatedUser.email,
+          isAdmin: updatedUser.isAdmin,
+          isVolunteer: updatedUser.isVolunteer,
+          avatar: updatedUser.avatar,
+          volunteerTitle: updatedUser.volunteerTitle,
+          volunteerEmail: updatedUser.volunteerEmail,
+          profileCardTheme: updatedUser.profileCardTheme,
+          online: updatedUser.online,
+          theme: updatedUser.theme,
+          token: updatedUser.token,
+          confirmed: updatedUser.confirmed,
+          publicId: updatedUser.publicId,
+          shippingAddress: updatedUser.shippingAddress,
+        });
+      } else {
+        res.status(401);
+        throw new Error('Please verify your account!');
+      }
     } else {
-      res.status(401);
-      throw new Error('Please verify your account!');
+      res.status(401).send({
+        message: 'Invalid email or password',
+      });
     }
-  } else {
-    res.status(401).send({
-      message: 'Invalid email or password',
+  } catch (error) {
+    const createdError = new Error({
+      functionName: 'USER_LOGIN_PUBLIC',
+      detail: err.message,
+      status: 500,
+    });
+
+    await createdError.save();
+
+    res.status(404).json({
+      message: `500 - Server Error`,
     });
   }
 });
@@ -78,7 +93,17 @@ const registerUser = asyncHandler(async (req, res) => {
       send_mail(user, res, 'sendRegisterConfirmationEmail');
     }
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    const createdError = new Error({
+      functionName: 'USER_REGISTER_PUBLIC',
+      detail: err.message,
+      status: 500,
+    });
+
+    await createdError.save();
+
+    res.status(404).json({
+      message: `500 - Server Error`,
+    });
   }
 });
 
@@ -105,7 +130,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
     });
   } catch (err) {
     const createdError = new Error({
-      functionName: 'GET_USER_PROFILE',
+      functionName: 'GET_USER_PROFILE_PRIVATE',
       detail: err.message,
     });
 
@@ -160,8 +185,12 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     });
   } catch (err) {
     const createdError = new Error({
-      functionName: 'UPDATE_USER_PROFILE',
+      functionName: 'UPDATE_USER_PROFILE_PRIVATE',
       detail: err.message,
+      user: {
+        id: req?.user?._id,
+        name: req?.user?.name,
+      },
     });
 
     await createdError.save();
@@ -178,8 +207,20 @@ const getUsers = asyncHandler(async (req, res) => {
     const users = await User.find({});
     res.json(users);
   } catch (error) {
-    res.status(404);
-    throw new Error('Error loading users', error);
+    const createdError = new Error({
+      functionName: 'GET_ALL_USERS_ADMIN',
+      detail: err.message,
+      user: {
+        id: req?.user?._id,
+        name: req?.user?.name,
+      },
+      status: 500,
+    });
+
+    await createdError.save();
+    res.status(404).json({
+      message: `500 - Server Error`,
+    });
   }
 });
 
@@ -187,23 +228,48 @@ const getUsers = asyncHandler(async (req, res) => {
 // @route   GET /api/users/who-we-are
 // @access  Public
 const getWhoWeAreUsers = asyncHandler(async (req, res) => {
-  const users = await User.find({});
+  try {
+    const users = await User.find({ isAdmin: true });
+    const manuallyAddedUsers = await ManuallyAddedUser.find({});
 
-  res.json(users);
+    res.json({ users, manuallyAddedUsers });
+  } catch (err) {
+    const createdError = new Error({
+      functionName: 'GET_TEAM_MEMBER_LIST',
+      detail: err.message,
+      status: 500,
+    });
+
+    await createdError.save();
+    res.status(500).send({
+      message: '500 - Server Error',
+    });
+  }
 });
 
 // @desc    Delete user
 // @route   DELETE /api/users/:id
 // @access  Private/Admin
 const deleteUser = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id);
+  try {
+    const user = await User.findById(req.params.id);
 
-  if (user) {
     await user.deleteOne();
     res.json({ message: 'User removed' });
-  } else {
-    res.status(404);
-    throw new Error('User not found');
+  } catch (err) {
+    const createdError = new Error({
+      functionName: 'DELETE_USER_ADMIN',
+      detail: err.message,
+      user: {
+        id: req?.user?._id,
+        name: req?.user?.name,
+      },
+    });
+
+    await createdError.save();
+    res.status(404).json({
+      message: `500 - Server Error`,
+    });
   }
 });
 
@@ -216,8 +282,20 @@ const getUserById = asyncHandler(async (req, res) => {
   if (user) {
     res.json(user);
   } else {
-    res.status(404);
-    throw new Error('User not found');
+    const createdError = new Error({
+      functionName: 'GET_USER_BY_ID_ADMIN',
+      detail: err.message,
+      user: {
+        id: req?.user?._id,
+        name: req?.user?.name,
+      },
+    });
+
+    await createdError.save();
+
+    res.status(404).json({
+      message: `500 - Server Error`,
+    });
   }
 });
 
@@ -234,7 +312,21 @@ const confirmOldPassword = asyncHandler(async (req, res) => {
       res.send({ message: 'Password is incorrect' });
     }
   } catch (error) {
-    res.send({ message: error });
+    const createdError = new Error({
+      functionName: 'CONFIRM_OLD_PASSWORD_PRIVATE',
+      detail: err.message,
+      user: {
+        id: req?.user?._id,
+        name: req?.user?.name,
+      },
+      status: 500,
+    });
+
+    await createdError.save();
+
+    res.status(404).json({
+      message: `500 - Server Error`,
+    });
   }
 });
 
@@ -245,25 +337,27 @@ const updateUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.id);
 
   if (user) {
-    user.name = req.body.name || user.name;
-    user.email = req.body.email || user.email;
     user.isAdmin = req.body.isAdmin;
-    user.isVolunteer = req.body.isVolunteer;
-    user.avatar = req.body.avatar;
 
     const updatedUser = await user.save();
 
-    res.json({
-      _id: updatedUser._id,
-      name: updatedUser.name,
-      email: updatedUser.email,
-      isAdmin: updatedUser.isAdmin,
-      isVolunteer: updateUser.isVolunteer,
-      avatar: updatedUser.avatar,
-    });
+    res.json(updatedUser);
   } else {
-    res.status(404);
-    throw new Error('User not found');
+    const createdError = new Error({
+      functionName: 'UPDATE_USER_ADMIN',
+      detail: err.message,
+      user: {
+        id: req?.user?._id,
+        name: req?.user?.name,
+      },
+      status: 500,
+    });
+
+    await createdError.save();
+
+    res.status(404).json({
+      message: `500 - Server Error`,
+    });
   }
 });
 
@@ -271,19 +365,32 @@ const updateUser = asyncHandler(async (req, res) => {
 // @route   PUT /api/users/logout
 // @access  Private
 const userLogout = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.body._id);
+  try {
+    const user = await User.findById(req.body._id);
 
-  if (user) {
     user.online = false;
     user.token = null;
-    user.resetPasswordToken = '';
+    user.resetPasswordToken = null;
 
     await user.save();
 
     res.status(200).json('LOGOUT_SUCCESS');
-  } else {
-    res.status(404);
-    throw new Error('Error updating user');
+  } catch (err) {
+    const createdError = new Error({
+      functionName: 'USER_LOGOUT_PRIVATE',
+      detail: err.message,
+      user: {
+        id: req?.user?._id,
+        name: req?.user?.name,
+      },
+      status: 500,
+    });
+
+    await createdError.save();
+
+    res.status(404).json({
+      message: `500 - Server Error`,
+    });
   }
 });
 
@@ -352,13 +459,22 @@ const userIsConfirmed = asyncHandler(async (req, res) => {
       });
     }
   } catch (error) {
-    res.status(404);
-    throw new Error(error);
+    const createdError = new Error({
+      functionName: 'UPDATE_USER_TO_CONFIRMED_PRIVATE',
+      detail: err.message,
+      status: 500,
+    });
+
+    await createdError.save();
+
+    res.status(404).json({
+      message: `500 - Server Error`,
+    });
   }
 });
 
 // @desc    Generate new token for session
-// @route   PUT /api/users/generate-new-token
+// @route   PUT /api/users/generate-new-token ❌
 // @access  Private
 const generateTokenForSession = asyncHandler(async (req, res) => {
   try {

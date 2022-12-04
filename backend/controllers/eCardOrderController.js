@@ -1,6 +1,7 @@
 import asyncHandler from 'express-async-handler';
 import ECardOrder from '../models/eCardOrderModel.js';
 import { send_mail } from '../server.js';
+import Error from '../models/errorModel.js';
 
 //@desc   Create an eCard order
 //@route  POST api/ecard-order
@@ -48,7 +49,22 @@ const createECardOrder = asyncHandler(async (req, res) => {
 
     res.status(201).json(createdECard);
   } catch (err) {
-    res.status(400).json({ msg: 'ECard not created' });
+    const createdError = new Error({
+      functionName: 'CREATE_ECARD_ORDER_PUBLIC',
+      detail: err.message,
+      user: {
+        id: '',
+        name: `${firstName} ${lastName}`,
+        email: email,
+      },
+      state: `PayPal orderId: ${orderId}`,
+      status: 500,
+    });
+
+    await createdError.save();
+    res.status(500).send({
+      message: '500 - Server Error',
+    });
   }
 });
 
@@ -56,13 +72,21 @@ const createECardOrder = asyncHandler(async (req, res) => {
 // @route   GET /api/ecard-order/:id
 // @access  Public
 const getECardOrderById = asyncHandler(async (req, res) => {
-  const eCard = await ECardOrder.findById(req.params.id);
+  try {
+    const eCard = await ECardOrder.findById(req.params.id);
 
-  if (eCard) {
     res.json(eCard);
-  } else {
-    res.status(404);
-    throw new Error('ECard not found');
+  } catch (err) {
+    const createdError = new Error({
+      functionName: 'GET_ECARD_ORDER_BY_ID_PUBLIC',
+      detail: err.message,
+      status: 500,
+    });
+
+    await createdError.save();
+    res.status(500).send({
+      message: '500 - Server Error',
+    });
   }
 });
 // @desc    Get ecard orders
@@ -72,12 +96,23 @@ const getECardOrders = asyncHandler(async (req, res) => {
   try {
     const eCards = await ECardOrder.find({});
 
-    if (eCards) {
-      res.status(200).json(eCards);
-    }
+    res.status(200).json(eCards);
   } catch (error) {
-    res.status(404);
-    throw new Error('ECards not found');
+    const createdError = new Error({
+      functionName: 'GET_ECARD_ORDER_LIST_ADMIN',
+      detail: err.message,
+      user: {
+        id: req?.user?._id,
+        name: req?.user?.name,
+        email: req?.user?.email,
+      },
+      status: 500,
+    });
+
+    await createdError.save();
+    res.status(500).send({
+      message: '500 - Server Error',
+    });
   }
 });
 
@@ -85,9 +120,27 @@ const getECardOrders = asyncHandler(async (req, res) => {
 // @route   GET /api/orders/my-ecard-orders
 // @access  Private
 const getMyEcardOrders = asyncHandler(async (req, res) => {
-  const ecardOrders = await ECardOrder.find({ email: req.user.email });
+  try {
+    const ecardOrders = await ECardOrder.find({ email: req.user.email });
 
-  res.json(ecardOrders);
+    res.json(ecardOrders);
+  } catch (err) {
+    const createdError = new Error({
+      functionName: 'GET_MY_ECARD_ORDERS_PRIVATE',
+      user: {
+        id: req?.user?._id,
+        name: req?.user?.name,
+        email: req?.user?.email,
+      },
+      detail: err.message,
+      status: 500,
+    });
+
+    await createdError.save();
+    res.status(500).send({
+      message: '500 - Server Error',
+    });
+  }
 });
 
 export {

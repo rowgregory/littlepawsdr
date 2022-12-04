@@ -36,6 +36,7 @@ const AdoptionApplication = () => {
             top: '200px',
             left: '50px',
             zIndex: 2,
+            mixBlendMode: 'difference',
           }}
         >
           Adoption Application
@@ -72,8 +73,13 @@ const AdoptionApplication = () => {
         }}
       >
         <div className='w-100 d-flex justify-content-between mt-3'>
-          <LeftArrow text='To Home' url='/' text2='Donate' url2='/donate' />
-          <RightArrow text='Adopt a senior' url='/available/senior' />
+          <LeftArrow
+            text='To Home'
+            url='/'
+            text2='Check'
+            url2='/donate/check'
+          />
+          <RightArrow text='Adopt a Senior' url='/available/senior' />
         </div>
         <Text fontSize='32px' fontWeight={400} marginTop='56px'>
           Thank you for considering adopting a rescued dachshund. Submission of

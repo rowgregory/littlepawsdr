@@ -1,27 +1,42 @@
 import asyncHandler from 'express-async-handler';
 import Newsletter from '../models/newsLetterModel.js';
+import Error from '../models/errorModel.js';
+
+const validateEmailRegex =
+  /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
 
 // @desc    Create newsletter email
 // @route   POST /api/newsletter
 // @access  Public
 const addNewsletterEmail = asyncHandler(async (req, res) => {
-  const { email } = req.body;
-
   try {
+    const { email } = req.body;
     const emailExists = await Newsletter.findOne({ newsletterEmail: email });
 
     if (emailExists) {
       res.status(400).send({ message: 'Email already exists' });
     } else {
-      const newsletterEmail = new Newsletter({ newsletterEmail: email });
+      if (validateEmailRegex.test(email)) {
+        const newsletterEmail = new Newsletter({ newsletterEmail: email });
 
-      const createdNewsletterEmail = await newsletterEmail.save();
+        const createdNewsletterEmail = await newsletterEmail.save();
 
-      res.status(201).json(createdNewsletterEmail);
+        res.status(201).json(createdNewsletterEmail);
+      } else {
+        res.status(404).json({ message: 'Enter valid email' });
+      }
     }
-  } catch (error) {
-    res.status(404);
-    throw new Error('Newsletter email not created');
+  } catch (err) {
+    const createdError = new Error({
+      functionName: 'CREATE_NEWSLETTER_EMAIL_PUBLIC',
+      detail: err.message,
+      status: 500,
+    });
+
+    await createdError.save();
+    res.status(500).send({
+      message: '500 - Server Error',
+    });
   }
 });
 
@@ -33,8 +48,17 @@ const getNewsletterEmails = asyncHandler(async (req, res) => {
     const newsletterEmails = await Newsletter.find({});
 
     res.json(newsletterEmails);
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    const createdError = new Error({
+      functionName: 'GET_ALL_NEWSLETTER_EMAILS_ADMIN',
+      detail: err.message,
+      status: 500,
+    });
+
+    await createdError.save();
+    res.status(500).send({
+      message: '500 - Server Error',
+    });
   }
 });
 
@@ -51,9 +75,17 @@ const deleteNewsletterEmail = asyncHandler(async (req, res) => {
       await newsletterEmail.remove();
       res.json({ msg: 'Newsletter email removed' });
     }
-  } catch (error) {
-    res.status(404);
-    throw new Error('Newsletter email not found');
+  } catch (err) {
+    const createdError = new Error({
+      functionName: 'DELETE_A_NEWSLETTER_EMAIL_ADMIN',
+      detail: err.message,
+      status: 500,
+    });
+
+    await createdError.save();
+    res.status(500).send({
+      message: '500 - Server Error',
+    });
   }
 });
 

@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { sendResetEmail } from '../actions/forgotPasswordActions';
 import JumpingInput from '../components/common/JumpingInput';
 import HexagonLoader from '../components/Loaders/HexagonLoader/HexagonLoader';
 import Message from '../components/Message';
+import { Accordion } from '../components/styles/place-order/Styles';
 import {
   Text,
   Container,
@@ -53,14 +54,15 @@ const ForgotPassword = () => {
     forgotPasswordFormCallback
   );
 
+  useEffect(() => {
+    if (error || success) {
+      setTimeout(() => dispatch({ type: RESET_EMAIL_SEND_RESET }), 5000);
+    }
+  }, [dispatch, error, success]);
+
   return (
     <Container className='align-items-center'>
       {loading && <HexagonLoader />}
-      {(error || success) && (
-        <Message variant={error ? 'danger' : 'success'}>
-          {error || message?.message}
-        </Message>
-      )}
       <FormWrapper className='mx-auto px-3'>
         <Text fontSize='1.5rem' textAlign='center' marginBottom='0.65rem'>
           Forgot Password
@@ -97,6 +99,26 @@ const ForgotPassword = () => {
           .
         </CreateAccountContainer>
       </FormWrapper>
+      <div
+        style={{
+          position: 'fixed',
+          bottom: 20,
+          left: 0,
+          right: 0,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          width: '100%',
+          maxWidth: '500px',
+          marginInline: 'auto',
+        }}
+      >
+        <Accordion toggle={error || success} maxheight='65px' className='w-100'>
+          <Message variant={error ? 'danger' : 'success'}>
+            {error || message?.message}
+          </Message>
+        </Accordion>
+      </div>
     </Container>
   );
 };

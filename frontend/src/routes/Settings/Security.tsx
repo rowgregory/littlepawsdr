@@ -152,7 +152,7 @@ const Settings = () => {
               />
               {passwordConfirmation && (
                 <div
-                  style={{ position: 'absolute', top: '30px', right: '8px' }}
+                  style={{ position: 'absolute', top: '10px', right: '0px' }}
                 >
                   <Checkmark />
                 </div>

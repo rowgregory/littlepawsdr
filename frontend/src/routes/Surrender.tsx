@@ -16,7 +16,7 @@ const Surrender = () => {
   const isDay = theme.mode === 'day';
   return (
     <>
-      <div style={{ position: 'relative', marginTop: '56px' }}>
+      <div style={{ position: 'relative', marginTop: '75px' }}>
         <Image
           src={SurrenderDog}
           width='100%'
@@ -85,7 +85,7 @@ const Surrender = () => {
         >
           Ideally, all dogs live in one loving home from puppyhood until death.
         </Text>
-        <Text maxWidth='680px' fontSize='18px' className='mb-4 mx-auto'>
+        <Text maxWidth='680px' fontSize='16px' className='mb-4 mx-auto'>
           However, LPDR understands this is not always possible. People become
           ill, die, divorce, move overseas, develop allergies, lose their jobs,
           lose their homes, etc. Any of these situations, among others, can be a
@@ -95,8 +95,8 @@ const Surrender = () => {
           North Carolina, Pennsylvania, Rhode Island, South Carolina, Tennessee,
           Vermont, Virginia, West Virginia
         </Text>
-        <Text maxWidth='680px' fontSize='18px' className='mb-4 mx-auto'>
-          <li style={{ fontSize: '18px' }}>
+        <Text maxWidth='680px' fontSize='16px' className='mb-4 mx-auto'>
+          <li style={{ fontSize: '16px' }}>
             If you are considering re-homing your dachshund because of behavior
             problems, there may be other options you can consider first. Talk to
             your vet about the issue to ensure the behavior is not a result of a
@@ -106,8 +106,8 @@ const Surrender = () => {
             your dog).
           </li>
         </Text>
-        <Text maxWidth='680px' fontSize='18px' className='mb-4 mx-auto'>
-          <li style={{ fontSize: '18px' }}>
+        <Text maxWidth='680px' fontSize='16px' className='mb-4 mx-auto'>
+          <li style={{ fontSize: '16px' }}>
             If you are considering re-homing your dachshund because of financial
             issues or high vet costs/bills, know that there are foundations and
             other organizations that may be able to offer financial assistance.
@@ -116,14 +116,14 @@ const Surrender = () => {
             veterinary services.
           </li>
         </Text>
-        <Text maxWidth='680px' fontSize='18px' className='mb-4 mx-auto'>
-          <li style={{ fontSize: '18px' }}>
+        <Text maxWidth='680px' fontSize='16px' className='mb-4 mx-auto'>
+          <li style={{ fontSize: '16px' }}>
             Consider exploring your own personal networks of trusted friends,
             family, and co-workers who may be able to provide a good home for
             your dog.
           </li>
         </Text>
-        <Text maxWidth='680px' fontSize='18px' className='mb-4 mx-auto'>
+        <Text maxWidth='680px' fontSize='16px' className='mb-4 mx-auto'>
           When all options have been considered and you believe that
           surrendering your dog is the best option for you and your dachshund,
           Little Paws Dachshund Rescue may be able to help. All of the
@@ -133,7 +133,7 @@ const Surrender = () => {
           the needs and personality of the dog. All potential adopters go
           through a rigorous application process and are carefully screened.
         </Text>
-        <Text maxWidth='680px' fontSize='18px' className='mb-5 mx-auto'>
+        <Text maxWidth='680px' fontSize='16px' className='mb-5 mx-auto'>
           To be considered for surrender, please complete and submit the
           following Surrender Questionnaire:
         </Text>

@@ -1,27 +1,47 @@
 import asyncHandler from 'express-async-handler';
 import EducationTip from '../models/educationTipModel.js';
 import { cloudImages } from '../data/cloudImages.js';
+import Error from '../models/errorModel.js';
 
 // @desc    Get all education tips
 // @route   GET /api/education-tips
 // @access  Public
 const getEducationTips = asyncHandler(async (req, res) => {
-  const educationTips = await EducationTip.find({});
+  try {
+    const educationTips = await EducationTip.find({});
 
-  res.json(educationTips);
+    res.json(educationTips);
+  } catch (err) {
+    const createdError = new Error({
+      functionName: 'GET_EDUCATION_TIP_LIST_PUBLIC',
+      detail: err.message,
+      status: 500,
+    });
+    await createdError.save();
+    res.status(500).send({
+      message: '500 - Server Error',
+    });
+  }
 });
 
 // @desc    Get education tip details
 // @route   GET /api/education-tips/:id
 // @access  Public
 const getEducationTipDetails = asyncHandler(async (req, res) => {
-  const educationTip = await EducationTip.findById(req.params.id);
+  try {
+    const educationTip = await EducationTip.findById(req.params.id);
 
-  if (educationTip) {
     res.json(educationTip);
-  } else {
-    res.status(404);
-    throw new Error('Education tip not found');
+  } catch (err) {
+    const createdError = new Error({
+      functionName: 'GET_EDUCATION_TIP_DETAILS_PUBLIC',
+      detail: err.message,
+      status: 500,
+    });
+    await createdError.save();
+    res.status(500).send({
+      message: '500 - Server Error',
+    });
   }
 });
 
@@ -29,38 +49,70 @@ const getEducationTipDetails = asyncHandler(async (req, res) => {
 // @route   POST /api/education-tips
 // @access  Private/Admin
 const createEducationTip = asyncHandler(async (req, res) => {
-  const educationTip = new EducationTip({
-    title: 'Sample title',
-    externalLink: '',
-    image: cloudImages().upload,
-    publicId: '',
-  });
+  try {
+    const educationTip = new EducationTip({
+      title: 'Sample title',
+      externalLink: '',
+      image: cloudImages().upload,
+      publicId: '',
+    });
 
-  const createdEducationTip = await educationTip.save();
+    const createdEducationTip = await educationTip.save();
 
-  res.status(201).json(createdEducationTip);
+    res.status(201).json(createdEducationTip);
+  } catch (err) {
+    const createdError = new Error({
+      functionName: 'CREATE_EDUCATION_TIP_ADMIN',
+      detail: err.message,
+      user: {
+        id: req?.user?._id,
+        name: req?.user?.name,
+        email: req?.user?.email,
+      },
+      status: 500,
+    });
+    await createdError.save();
+    res.status(500).send({
+      message: '500 - Server Error',
+    });
+  }
 });
 
 // @desc    Update an education tip
 // @route   PUT /api/education-tips/:id
 // @access  Private/Admin
 const updateEducationTip = asyncHandler(async (req, res) => {
-  const { title, externalLink, image, publicId } = req.body;
+  try {
+    const { title, externalLink, image, publicId } = req.body;
 
-  const educationTip = await EducationTip.findById(req.params.id);
+    const educationTip = await EducationTip.findById(req.params.id);
 
-  if (educationTip) {
-    educationTip.title = title || educationTip.title;
-    educationTip.externalLink = externalLink || educationTip.externalLink;
+    educationTip.title = title === '' ? title : title || educationTip.title;
+    educationTip.externalLink =
+      externalLink === ''
+        ? externalLink
+        : externalLink || educationTip.externalLink;
     educationTip.image = image || educationTip.image;
     educationTip.publicId = publicId || educationTip.publicId;
 
     const updatedEducationTip = await educationTip.save();
 
     res.json(updatedEducationTip);
-  } else {
-    res.status(404);
-    throw new Error('Education tip not found');
+  } catch (err) {
+    const createdError = new Error({
+      functionName: 'UPDATE_EDUCATION_TIP_ADMIN',
+      detail: err.message,
+      user: {
+        id: req?.user?._id,
+        name: req?.user?.name,
+        email: req?.user?.email,
+      },
+      status: 500,
+    });
+    await createdError.save();
+    res.status(500).send({
+      message: '500 - Server Error',
+    });
   }
 });
 
@@ -68,14 +120,26 @@ const updateEducationTip = asyncHandler(async (req, res) => {
 // @route   DELETE /api/education-tips/:id
 // @access  Private/Admin
 const deleteEducationTip = asyncHandler(async (req, res) => {
-  const educationTip = await EducationTip.findById(req.params.id);
-
-  if (educationTip) {
+  try {
+    const educationTip = await EducationTip.findById(req.params.id);
     await educationTip.remove();
+
     res.json({ message: 'Education tip removed' });
-  } else {
-    res.status(404);
-    throw new Error('Education tip not found');
+  } catch (error) {
+    const createdError = new Error({
+      functionName: 'DELETE_EDUCATION_TIP_ADMIN',
+      detail: err.message,
+      user: {
+        id: req?.user?._id,
+        name: req?.user?.name,
+        email: req?.user?.email,
+      },
+      status: 500,
+    });
+    await createdError.save();
+    res.status(500).send({
+      message: '500 - Server Error',
+    });
   }
 });
 

@@ -7,13 +7,11 @@ import HorizontalLoader from '../components/HorizontalLoader';
 import Message from '../components/Message';
 import { USER_REGISTER_RESET } from '../constants/userConstants';
 import { Text } from '../components/styles/Styles';
-
-const Container = styled.div`
-  max-width: ${({ theme }) => theme.breakpoints[2]};
-  width: 100%;
-  padding: 3rem 0 0 0;
-  margin: 0 auto;
-`;
+import { Image } from 'react-bootstrap';
+import SuccessDog from '../components/assets/raffle-winner01.jpg';
+import ErrorDog from '../components/assets/email-conf01.jpg';
+import LeftArrow from '../components/svg/LeftArrow';
+import RightArrow from '../components/svg/RightArrow';
 
 const StyledLink = styled(Link)`
   :hover {
@@ -27,16 +25,22 @@ const StyledLink = styled(Link)`
   }
 `;
 const Box = styled.div<{ bg: string }>`
-  width: 13rem;
-  height: 13rem;
+  height: 150px;
+  border-radius: 50%;
+  aspect-ratio: 1/1;
   background: ${({ bg, theme }) => theme.colors[bg]};
   display: flex;
   justify-content: center;
   align-items: center;
   font-family: Duru Sans;
   color: #fff;
+  transition: 300ms;
+  box-shadow: 0 5px 15px 0px rgba(0, 0, 0, 0.6);
   :hover {
     filter: brightness(1.1);
+    box-shadow: 0 25px 15px 0px rgba(0, 0, 0, 0.2);
+    transform: translatey(-15px);
+    text-
   }
 `;
 
@@ -54,7 +58,7 @@ const EmailConfirmation = ({ history }: any) => {
   const { userInfo: userLoginInfo } = userLogin;
 
   const userConfirmed = useSelector((state: any) => state.userConfirmed);
-  const { loading: loadingUserConfirmed, error: errorUserConfirmed } =
+  let { loading: loadingUserConfirmed, error: errorUserConfirmed } =
     userConfirmed;
 
   const jwtHasNotExpiredYet = useCallback(() => {
@@ -71,7 +75,9 @@ const EmailConfirmation = ({ history }: any) => {
   }, [userToken]);
 
   useEffect(() => {
-    if (userLoginInfo?.confirmed) {
+    if (userLoginInfo?.confirmed && !jwtHasNotExpiredYet()) {
+      history.push('/');
+    } else if (userLoginInfo?.confirmed) {
       dispatch({ type: USER_REGISTER_RESET });
     } else if (jwtHasNotExpiredYet()) {
       dispatch(updatedUserToConfirmed(userEmail, userToken, userName, userId));
@@ -91,46 +97,151 @@ const EmailConfirmation = ({ history }: any) => {
   ]);
 
   return (
-    <Container>
-      {loadingUserConfirmed && <HorizontalLoader />}
-      {errorUserConfirmed || message ? (
-        <>
-          <Message variant='danger'>{errorUserConfirmed || message}</Message>
-          <Link to='/register'>Register</Link>
-        </>
-      ) : (
-        userLoginInfo?.confirmed && (
-          <>
-            <Message variant='success'>Account created!</Message>
-            <Text textAlign='center' marginBottom='1.5rem'>
-              Thank you for confirming your email {userLoginInfo.name}. You now
-              can enjoy order history for all purchases made throughout the
-              application. What would you like to do first?
-            </Text>
-            <div className='d-flex justify-content-center'>
-              {[
-                {
-                  textKey: 'Available Dachshunds',
-                  linkKey: '/available',
-                  bg: 'primary',
+    <>
+      <div style={{ position: 'relative', marginTop: '75px' }}>
+        <Image
+          src={
+            userLoginInfo?.confirmed && !errorUserConfirmed
+              ? SuccessDog
+              : ErrorDog
+          }
+          width='100%'
+          style={{ height: '500px', objectFit: 'cover' }}
+        />
+        <Text
+          fontWeight={500}
+          fontSize='48px'
+          color='#fff'
+          style={{
+            position: 'absolute',
+            top: '200px',
+            left: '50px',
+            zIndex: 2,
+          }}
+        >
+          {userLoginInfo?.confirmed && !errorUserConfirmed
+            ? 'Account created!'
+            : 'Oops, something went wrong :('}
+        </Text>
+        <Text
+          onClick={() =>
+            window.open(
+              userLoginInfo?.confirmed
+                ? 'https://pixabay.com/users/marlyneart-15261801/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=4977599'
+                : 'https://www.pexels.com/photo/cute-contemplative-dog-on-fallen-tree-trunk-in-sunlight-4318210/',
+              '_blank'
+            )
+          }
+          fontWeight={500}
+          fontSize='10px'
+          color='#fff'
+          cursor='pointer'
+          style={{
+            mixBlendMode: 'difference',
+            position: 'absolute',
+            bottom: '10px',
+            right: '10px',
+            zIndex: 2,
+          }}
+        >
+          Photo by{' '}
+          {userLoginInfo?.confirmed ? 'Dominika Roseclay' : 'Rebecca Chandler'}
+        </Text>
+      </div>
+      <>
+        {loadingUserConfirmed && <HorizontalLoader />}
+        {errorUserConfirmed || message ? (
+          <div
+            style={{
+              maxWidth: '689px',
+              width: '100%',
+              marginInline: 'auto',
+              marginTop: '56px',
+              marginBottom: '128px',
+            }}
+          >
+            <Message variant='danger'>{errorUserConfirmed || message}</Message>
+            <Link
+              to={{
+                pathname: '/register',
+                state: {
+                  userInfo: { email: userEmail, name: userName },
+                  cameFrom: 'EMAIL_CONFIRMATION',
                 },
-                { textKey: 'Shop', linkKey: '/shop', bg: 'secondary' },
-                {
-                  textKey: 'Send an E-Card',
-                  linkKey: '/donate/e-card',
-                  bg: 'tertiary',
-                },
-                { textKey: 'Donate', linkKey: '/donate', bg: 'quaternary' },
-              ].map((obj: any, i: number) => (
-                <StyledLink to={obj.linkKey} key={i}>
-                  <Box bg={obj.bg}>{obj.textKey}</Box>
-                </StyledLink>
-              ))}
+              }}
+            >
+              Head back to the register page.
+            </Link>
+          </div>
+        ) : (
+          userLoginInfo?.confirmed && (
+            <div
+              style={{
+                maxWidth: '980px',
+                width: '100%',
+                marginInline: 'auto',
+                marginBottom: '96px',
+                paddingInline: '16px',
+              }}
+            >
+              <div className='w-100 d-flex justify-content-between mt-3 mb-5'>
+                <LeftArrow
+                  text='To Home'
+                  url='/'
+                  text2='Available Dachshunds'
+                  url2='/available'
+                />
+                <RightArrow text='Sponsor a Sanctuary' url='/about/sanctuary' />
+              </div>
+              <Text
+                textAlign='center'
+                fontSize='24px'
+                marginTop='56px'
+                fontWeight={400}
+                className='mx-auto'
+              >
+                Thank you for confirming your email {userLoginInfo?.name}.
+              </Text>
+              <Text
+                textAlign='center'
+                className='mb-2 mt-4 mx-auto'
+                fontSize='16px'
+              >
+                You now can enjoy order history for all purchases made
+                throughout the application.
+              </Text>
+              <Text
+                fontWeight={400}
+                fontSize='17px'
+                textAlign='center'
+                marginBottom='32px'
+              >
+                What would you like to do first?
+              </Text>
+              <Text
+                className='d-flex justify-content-center mx-auto'
+                textAlign='center'
+                width='100%'
+              >
+                {[
+                  { textKey: 'Shop', linkKey: '/shop', bg: 'secondary' },
+                  {
+                    textKey: 'Send Ecard',
+                    linkKey: '/e-cards',
+                    bg: 'tertiary',
+                  },
+                  { textKey: 'Donate', linkKey: '/donate', bg: 'quaternary' },
+                ].map((obj: any, i: number) => (
+                  <StyledLink to={obj.linkKey} key={i}>
+                    <Box bg={obj.bg}>{obj.textKey}</Box>
+                  </StyledLink>
+                ))}
+              </Text>
             </div>
-          </>
-        )
-      )}
-    </Container>
+          )
+        )}
+      </>
+    </>
   );
 };
 

@@ -22,7 +22,7 @@ const DogContainer = styled(Col)`
   padding: 1rem;
   grid-row-gap: 120px;
   margin-bottom: 96px;
-  margin-top: 56px;
+  margin-top: 75px;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
     grid-template-columns: 1fr 1fr;
   }
@@ -82,7 +82,7 @@ const RainbowBridge = () => {
     <>
       {error && <Message variant='danger'>{error}</Message>}
       {loading && <HexagonLoader />}
-      <div style={{ position: 'relative', marginTop: '56px' }}>
+      <div style={{ position: 'relative', marginTop: '75px' }}>
         <Image
           src={RanbowBridgeDog}
           width='100%'
@@ -131,7 +131,7 @@ const RainbowBridge = () => {
             text2='Successful Adoptions'
             url2='/about/successful-adoptions'
           />
-          <RightArrow text='Donate' url='/donate' />
+          <RightArrow text='Donation Form' url='/donate' />
         </div>
         {loading && (
           <DogContainer>

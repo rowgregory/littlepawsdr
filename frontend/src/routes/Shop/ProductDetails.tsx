@@ -69,7 +69,7 @@ const ProductDetails = ({ match, history }: any) => {
     <div
       style={{
         padding: '128px 16px',
-        maxWidth: '1200px',
+        maxWidth: '1400px',
         marginInline: 'auto',
         width: '100%',
       }}
@@ -83,7 +83,7 @@ const ProductDetails = ({ match, history }: any) => {
             width='100%'
             style={{
               aspectRatio: '1/1',
-              objectFit: 'cover',
+              objectFit: 'contain',
               maxWidth: '600px',
               marginBottom: '24px',
             }}

@@ -61,7 +61,7 @@ export const getDonationById = (id: any) => async (dispatch, getState) => {
     const message =
       error.response && error.response.data.message
         ? error.response.data.message
-        : error.message;
+        : '404 - Not Found';
     dispatch({
       type: DONATE_DETAILS_FAIL,
       payload: message,
@@ -92,7 +92,7 @@ export const listDonations = () => async (dispatch, getState) => {
       payload:
         error.response && error.response.data.message
           ? error.response.data.message
-          : error.message,
+          : '404 - Not Found',
     });
   }
 };
@@ -126,7 +126,7 @@ export const updateDonation =
         payload:
           error.response && error.response.data.message
             ? error.response.data.message
-            : error.message,
+            : 'Not Found',
       });
     }
   };
@@ -155,7 +155,7 @@ export const deleteDonation =
         payload:
           error.response && error.response.data.message
             ? error.response.data.message
-            : error.message,
+            : '404 - Not Found',
       });
     }
   };

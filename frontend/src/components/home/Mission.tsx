@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import MaskBtn from './MaskBtn';
-import Logo from '../../components/assets/logo-background-transparent-purple.png';
+import Logo from '../../components/assets/logoF7.jpg';
 import { Image } from 'react-bootstrap';
 import { Text } from '../styles/Styles';
 
@@ -36,7 +36,7 @@ const Mission = () => {
         <Image
           src={Logo}
           width='100%'
-          style={{ maxWidth: '250px', objectFit: 'cover', margin: '0 auto' }}
+          style={{ maxWidth: '400px', objectFit: 'cover', margin: '0 auto' }}
         />
         <Text
           fontSize='32px'

@@ -266,20 +266,6 @@ const Home = () => {
         <ParallaxWindow>
           <ParallaxSectionContent>
             You can make an impact
-            <ThreeOptions>
-              {threeOptionData(theme.colors).map((obj: any, i: number) => (
-                <DifferenceCard
-                  to={obj.linkKey}
-                  key={i}
-                  bgcolor={hex2rgba(obj.bgColor, 0.7)}
-                >
-                  <Text fontSize='2rem' fontWeight='500' marginBottom='1.25rem'>
-                    {obj.title}
-                  </Text>
-                  <Text fontSize='1.125rem'>{obj.text}</Text>
-                </DifferenceCard>
-              ))}
-            </ThreeOptions>
           </ParallaxSectionContent>
           <ParallaxImg2 />
         </ParallaxWindow>

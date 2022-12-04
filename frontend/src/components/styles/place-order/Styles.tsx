@@ -6,7 +6,10 @@ export const Container = styled.div`
   width: 100%;
   max-width: ${({ theme }) => theme.breakpoints[3]};
   background: ${({ theme }) => theme.bg};
-  padding-top: 64px;
+  padding-top: 28px;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    padding-top: 120px;
+  }
 `;
 
 export const SubContainer = styled(Row)`
@@ -51,10 +54,14 @@ export const Checkout = styled.div`
 `;
 
 export const LogoCheckout = styled(Image)`
-  position: absolute;
-  top: 5px;
-  left: 5px;
-  width: 76px;
+  width: 130px;
+  padding-top: 16px;
+  margin-inline: auto;
+  position: relative;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    position: absolute;
+    left: 0px;
+  }
 `;
 
 export const LeftRail = styled(Col)`
@@ -99,6 +106,19 @@ export const Accordion = styled.div<{ toggle: boolean; maxheight?: string }>`
   max-height: ${({ toggle, maxheight }) => (toggle ? maxheight : '0px')};
   overflow: hidden;
   transition: max-height 300ms ease-out;
+`;
+
+export const AccordionX = styled.div<{ toggle: boolean; maxwidth?: string }>`
+  max-width: ${({ toggle, maxwidth }) => (toggle ? maxwidth : '0px')};
+  overflow: hidden;
+  transition: max-width 300ms ease-out;
+`;
+
+export const Name = styled.div`
+  text-overflow: ellipsis;
+  overflow: hidden;
+  width: 100px;
+  white-space: nowrap;
 `;
 
 export const QuestionContainer = styled.div`

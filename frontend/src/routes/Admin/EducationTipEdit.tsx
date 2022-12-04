@@ -76,7 +76,7 @@ const EducationTipEdit = () => {
   useEffect(() => {
     setTitle(educationTip?.title);
     setImage(educationTip?.image);
-    setExternalLink(educationTip?.message);
+    setExternalLink(educationTip?.externalLink);
     setPublicId(educationTip?.publicId);
   }, [educationTip]);
 

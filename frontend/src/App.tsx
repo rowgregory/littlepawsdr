@@ -4,17 +4,15 @@ import { Routes } from './routes';
 import GlobalStyles from './GlobalStyles';
 import { ThemeProvider } from 'styled-components';
 import { themes } from './utils/theme';
-// import { useSelector } from 'react-redux';
 import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 import useTheme from './utils/hooks/useTheme';
 import ScrollToTop from './utils/ScrollToTop';
 
 const App = () => {
-  // const { defer } = useSelector((state: any) => state.deferPayPalButton);
   const theme = useTheme();
 
   const PayPalOptions = {
-    'client-id': process.env.REACT_APP_PAYPAL_CLIENT_ID as any,
+    'client-id': process.env.REACT_APP_PAYPAL_CLIENT_ID_PROD as any,
     currency: 'USD',
     intent: 'capture',
     components: 'buttons,funding-eligibility',

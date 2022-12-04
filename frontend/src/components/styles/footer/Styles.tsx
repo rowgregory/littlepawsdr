@@ -28,10 +28,11 @@ export const TopFooter = styled.div`
   }
 `;
 export const LogoImage = styled(Image)`
-  max-width: 180px;
+  margin-left: -25px;
+  max-width: 270px;
   width: 100%;
   margin-right: 64px;
-  aspect-ratio: 16/9;
+  object-fit: cover;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
     margin-right: 64px;
   }
@@ -84,6 +85,17 @@ export const StyledExternalLink = styled.div`
   }
   line-height: 1.9230769231;
 `;
+export const StyledInternalLink = styled(Link)`
+  color: ${({ theme }) => theme.footer.text};
+  transition: 300ms;
+  cursor: pointer;
+  :hover {
+    filter: brightness(0.8);
+    text-decoration: none;
+    color: ${({ theme }) => theme.white};
+  }
+  line-height: 1.9230769231;
+`;
 
 export const StyledText = styled.div`
   color: ${({ theme }) => theme.footer.text};
@@ -118,7 +130,4 @@ export const Signature = styled.div`
 export const LegalWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[4]}) {
-    flex-direction: row;
-  }
 `;

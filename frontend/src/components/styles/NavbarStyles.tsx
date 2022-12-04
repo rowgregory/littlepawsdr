@@ -31,7 +31,10 @@ export const AvatarInitials = styled.div<AvatarInitialsProps>`
   }
 `;
 
-export const FAIcons = styled.div<{ active?: string; open?: boolean }>`
+export const FAIcons = styled.div<{
+  active?: string;
+  open?: boolean;
+}>`
   cursor: pointer;
   display: flex;
   justify-content: center;

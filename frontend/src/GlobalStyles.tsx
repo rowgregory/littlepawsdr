@@ -98,9 +98,8 @@ div, span, p, h1, h2, h3, h4, h5, h6, input, select, ::placeholder, label, li {
     font-family: 'Roboto'  !important;
     border-radius: 0px  !important;
     box-shadow: 0 !important;
-    padding: 6px 0px !important;
+    padding: 18px;
     color: ${({ theme }) => theme.text} !important;
-    text-indent: 18px;
     border:1px solid ${({ theme }) => theme.input.border} !important;
   }
 

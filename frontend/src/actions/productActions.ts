@@ -36,7 +36,7 @@ export const listProducts = () => async (dispatch: any) => {
       payload:
         error.response && error.response.data.message
           ? error.response.data.message
-          : error.message,
+          : '404 - Not Found',
     });
   }
 };

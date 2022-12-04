@@ -1,13 +1,13 @@
 import React from 'react';
 
-const EcardSolidIcon = () => {
+const EcardSolidIcon = ({ w }: any) => {
   return (
     <svg
       xmlns='http://www.w3.org/2000/svg'
       x='0px'
       y='0px'
       viewBox='0 0 510.67 510.67'
-      width='18pt'
+      width={w ? w : '18pt'}
     >
       <g>
         <g>

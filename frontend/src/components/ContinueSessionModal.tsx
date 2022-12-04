@@ -55,12 +55,12 @@ export const Body = styled(Modal.Body)`
   color: #3b3b3c;
   background: ${({ theme }) => theme.bg};
   font-size: 14px;
-  padding: 16px 32px;
+  padding: 16px 32px 0;
 `;
 
 export const Footer = styled(Modal.Footer)`
   color: #3b3b3c;
-  padding: 32px;
+  padding: 16px;
   background: ${({ theme }) => theme.bg};
   border: 0;
 `;

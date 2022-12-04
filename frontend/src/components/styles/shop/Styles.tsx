@@ -1,11 +1,10 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
-  padding-top: 128px;
-  margin-bottom: 20rem;
-  max-width: 1575px;
+  max-width: 980px;
   width: 100%;
   margin-inline: auto;
+  padding-inline: 16px;
 `;
 
 export const ShopTitle = styled.div`
@@ -15,13 +14,11 @@ export const ShopTitle = styled.div`
 `;
 
 export const CategoryContainer = styled.div`
-  /* margin: 64px 0 0 0; */
-  background: ${({ theme }) => theme.secondaryBg};
+  padding-left: 16px;
 `;
 
 export const Category = styled.div<{ active: boolean }>`
   padding: 8px 16px;
-  font-size: 13px;
   cursor: pointer;
   background: ${({ active, theme }) => (active ? theme.table.even : '')};
   :hover {
@@ -30,15 +27,14 @@ export const Category = styled.div<{ active: boolean }>`
 `;
 
 export const PageContent = styled.div`
-  /* max-width: ${({ theme }) => theme.breakpoints[5]}; */
   width: 100%;
   margin-inline: auto;
+  min-height: 700px;
 `;
 
 export const ProductContainer = styled.div<{ islargegrid: boolean }>`
   display: grid;
   grid-gap: 10px;
-  /* width: 100%; */
   transition: 300ms;
   grid-template-columns: ${({ islargegrid }) =>
     islargegrid ? '1fr 1fr 1fr' : '1fr 1fr'};
@@ -50,7 +46,7 @@ export const ProductContainer = styled.div<{ islargegrid: boolean }>`
 `;
 
 export const ClearFilter = styled.div`
-  padding: 8px 16px;
+  padding: 8px 32px;
   cursor: pointer;
   color: ${({ theme }) => theme.text};
   border: 1px solid transparent;
@@ -60,20 +56,12 @@ export const ClearFilter = styled.div`
 `;
 
 export const GridIconContainer = styled.div`
-  width: 112px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  i {
-    transition: 300ms;
-    cursor: pointer;
-    :hover {
-      color: ${({ theme }) => theme.colors.quaternary};
-    }
-  }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-    width: 5rem;
-  }
+  padding: 0 0 24px 0;
+  font-weight: 600;
+  border-bottom: 1px solid #ededed;
 `;
 
 export const FilterColumn = styled.div`
@@ -83,6 +71,7 @@ export const FilterColumn = styled.div`
     max-width: 250px;
     width: 100%;
     display: block;
+    margin-right: 24px;
   }
 `;
 

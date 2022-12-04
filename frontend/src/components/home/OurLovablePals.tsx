@@ -78,7 +78,7 @@ const OurLovablePals = () => {
                 ))
                 .filter((_: any, i: number) => i < 4)}
             </DogContainer>
-            <RightArrow text='See all dachshunds' url='/available' />
+            <RightArrow text='See All Available Dachshunds' url='/available' />
           </>
         )}
       </SectionContainer>

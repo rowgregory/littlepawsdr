@@ -1,6 +1,7 @@
 import GuestUser from '../models/guestUserModel.js';
 import User from '../models/userModel.js';
 import asyncHandler from 'express-async-handler';
+import Error from '../models/errorModel.js';
 
 const validateEmailRegex =
   /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
@@ -38,8 +39,16 @@ const registerGuestUser = asyncHandler(async (req, res) => {
       }
     }
   } catch (error) {
-    res.status(400).send({
-      message: 'Invalid user data',
+    const createdError = new Error({
+      functionName: 'REGISTER_GUEST_USER_PUBLIC',
+      detail: err.message,
+      state: req?.body?.email,
+      status: 500,
+    });
+
+    await createdError.save();
+    res.status(500).send({
+      message: '500 - Server Error',
     });
   }
 });

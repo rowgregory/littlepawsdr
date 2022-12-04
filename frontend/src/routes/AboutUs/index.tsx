@@ -7,7 +7,6 @@ import DachshundDetails from './DachshundDetails';
 import styled from 'styled-components';
 import { Text } from '../../components/styles/Styles';
 import { PawPrint } from '../Available/AvailableDog';
-import RaffleWinners from './RaffleWinners';
 import Blog from './Blog';
 import BlogDetails from './BlogDetails';
 import PageNotFound from '../../components/common/PageNotFound';
@@ -83,7 +82,6 @@ const AboutUsRoutes: FC = () => {
         component={SuccessfulAdoptions}
       />
       <Route path={`${path}/dachshund`} component={DachshundDetails} />
-      <Route path={`${path}/raffle-winners`} component={RaffleWinners} />
       <Route exact path={`${path}/blog`} component={Blog} />
       <Route path={`${path}/blog/:id`} component={BlogDetails} />
       <Route>

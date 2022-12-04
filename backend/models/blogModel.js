@@ -9,11 +9,9 @@ const blogSchema = mongoose.Schema(
     },
     title: {
       type: String,
-      required: true,
     },
     article: {
       type: String,
-      required: true,
     },
     image: {
       type: String,

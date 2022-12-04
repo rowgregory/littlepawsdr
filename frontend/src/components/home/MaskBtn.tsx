@@ -63,7 +63,6 @@ const Container = styled(Link)<{ linkkey: string }>`
       linkkey === '/shop' ? '#d89253' : theme.colors.quinary};
     text-align: center;
     width: auto;
-    font-family: 'Lato', sans-serif;
     font-weight: 300;
     font-size: 11px;
     overflow: hidden;
@@ -80,7 +79,6 @@ const Container = styled(Link)<{ linkkey: string }>`
     height: 100%;
     padding: 0;
     margin: 0;
-    font-family: 'Lato', sans-serif;
     font-weight: 300;
     font-size: 11px;
     letter-spacing: 1px;

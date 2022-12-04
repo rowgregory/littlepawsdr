@@ -1,14 +1,22 @@
-import React, { FC } from 'react';
-import { StyledCard, StyledLink, Text } from '../styles/Styles';
+import React from 'react';
+import { Image } from 'react-bootstrap';
+import styled from 'styled-components';
+import Dog404 from '../../components/assets/404_dog01.png';
 
-const PageNotFound: FC = (): JSX.Element => (
-  <StyledCard className='p-5'>
-    <Text fontSize='2rem' className='mb-4'>
-      Oh snap! This page could not be found
-    </Text>
-    <Text>The requested URL does not exist or is temporarily unavailable.</Text>
-    <StyledLink to='/'>Go to home page</StyledLink>
-  </StyledCard>
+const Container = styled.div`
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const PageNotFound = () => (
+  <Container>
+    <Image src={Dog404} style={{ maxWidth: '500px', width: '100%' }} />
+  </Container>
 );
 
 export default PageNotFound;

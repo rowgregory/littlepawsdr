@@ -1,11 +1,10 @@
 import React, { FC, useEffect, useRef, useState } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { useOutsideDetect } from '../../utils/useOutsideDetect';
-import Logo from '../../components/assets/logo-background-transparent.png';
-import LogoDay from '../../components/assets/logo-background-transparent-purple4.png';
-import { Accordion, Button, Card, Image } from 'react-bootstrap';
+import Logo from '../../components/assets/logo-transparent.png';
+import LogoDay from '../../components/assets/dashboard-logo.png';
+import { Accordion, Button, Image } from 'react-bootstrap';
 import { Link, useLocation } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import { useWindowSize } from '../../utils/useWindowSize';
 
 const Container = styled.div<{ open: boolean }>`
@@ -106,7 +105,7 @@ const sideLinkData = [
       },
       {
         linkKey: '/e-cards',
-        linkText: 'E-card',
+        linkText: 'Ecards',
       },
       {
         linkKey: '/donate/shop-to-help',
@@ -176,12 +175,8 @@ const singleLinkData = [
     linkText: 'Blog',
   },
   {
-    linkKey: '/about/raffle-winners',
-    linkText: 'Raffle Winners',
-  },
-  {
     linkKey: '/about/education',
-    linkText: 'Education',
+    linkText: 'Education Tips',
   },
   {
     linkKey: '/about/team-members',
@@ -204,7 +199,7 @@ const StyledArrow = styled.svg<{ rotate: any }>`
   }
 `;
 
-const Arrow = ({ rotate }: any) => (
+const Arrow = ({ rotate, hide }: any) => (
   <StyledArrow
     xmlns='http://www.w3.org/2000/svg'
     x='0px'
@@ -213,6 +208,7 @@ const Arrow = ({ rotate }: any) => (
     width='28px'
     height='28px'
     rotate={rotate}
+    style={{ display: hide === 'true' ? 'none' : 'block' }}
   >
     <path
       id='XMLID_104_'
@@ -236,6 +232,9 @@ const StyledLink = styled(Link)<{ highlight: any }>`
     text-decoration: none;
     color: ${({ theme }) => theme.colors.quinary};
   }
+
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+  }
 `;
 const StyledTitle = styled.div<{ textcolor?: any }>`
   transition: 300ms;
@@ -247,66 +246,36 @@ const StyledTitle = styled.div<{ textcolor?: any }>`
     text-decoration: none;
     color: ${({ theme }) => theme.colors.quinary};
   }
-
-  font-size: 75px;
-
+  font-size: 4rem;
+  margin-left: 0;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
     font-size: 85px;
-  }
-`;
-
-const ViewAllBtn = styled(Link)`
-  border: 1px solid ${({ theme }) => theme.text};
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: ${({ theme }) => theme.text};
-  transition: 200ms;
-  cursor: pointer;
-  :hover {
-    text-decoration: none;
-    border-color: ${({ theme }) => theme.colors.quinary};
-    color: ${({ theme }) => theme.colors.quinary};
-  }
-  width: 60px;
-  height: 60px;
-  font-size: 0.625rem;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    width: 100px;
-    height: 100px;
-  }
-`;
-const StyledImg = styled(Image)<{ name: any }>`
-  object-fit: cover;
-  transition: 300ms;
-  cursor: pointer;
-  width: 60px;
-  height: 60px;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    width: 100px;
-    height: 100px;
-  }
-  :hover {
-    transform: scale(1.1);
-
-    &::before {
-      content: ${({ name }) => `${name}`};
-      position: absolute;
-      bottom: 0;
-      top: 0;
-      right: 0;
-      left: 0;
-      color: #fff;
-      z-index: 300;
-    }
+    margin-left: 24px;
   }
 `;
 
 const AccordionWrapper = styled.div`
   padding: 1rem;
+  margin-top: 0;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
     padding: 40px 60px;
+    margin-top: 48px;
   }
+`;
+const AccordionCollapse = styled(Accordion.Collapse)`
+  margin-left: 16px;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+    margin-left: 54px;
+  }
+`;
+
+const Circle = styled.div<{ highlight?: any }>`
+  background: ${({ theme, highlight }) =>
+    highlight === 'true' ? '#9761aa' : '#fff'};
+  height: 4px;
+  width: 4px;
+  border-radius: 50%;
+  margin-right: 16px;
 `;
 
 interface LeftNavigationProps {
@@ -325,13 +294,11 @@ const LeftNavigation: FC<LeftNavigationProps> = ({ openMenu, setOpenMenu }) => {
 
   useEffect(() => {
     if (overlayRef.current && openMenu) {
-      overlayRef.current.style.width = width < 900 ? '100%' : '75%';
+      overlayRef.current.style.width =
+        width < 900 ? `${window.innerWidth}px` : '80vw';
       overlayRef.current.style.left = '0px';
-      overlayRef.current.style.transform = 'translateX(0)';
     } else {
-      overlayRef.current.style.width = '0px';
-      overlayRef.current.style.left = '-75%';
-      overlayRef.current.style.transform = `translateX(-70%)`;
+      overlayRef.current.style.left = `-${window.innerWidth}px`;
     }
   }, [openMenu, width]);
 
@@ -355,7 +322,7 @@ const LeftNavigation: FC<LeftNavigationProps> = ({ openMenu, setOpenMenu }) => {
               />
             </Link>
           </div>
-          <AccordionWrapper className='mt-5'>
+          <AccordionWrapper>
             <Accordion defaultActiveKey='0' className='mb-3'>
               {sideLinkData?.map((obj: any, i: number) => (
                 <div key={i}>
@@ -366,42 +333,22 @@ const LeftNavigation: FC<LeftNavigationProps> = ({ openMenu, setOpenMenu }) => {
                     eventKey={`${i}`}
                     onClick={() => setIndex(i === index ? -1 : i)}
                   >
-                    <Arrow rotate={(i === index).toString()} />
-                    <StyledTitle
-                      textcolor={(i === index).toString()}
-                      className='ml-4'
-                    >
+                    <Arrow
+                      rotate={(i === index).toString()}
+                      hide={(width < 500).toString()}
+                    />
+                    <StyledTitle textcolor={(i === index).toString()}>
                       {obj.title}
                     </StyledTitle>
                   </Accordion.Toggle>
-                  <Accordion.Collapse
-                    eventKey={`${i}`}
-                    style={{ marginLeft: '54px' }}
-                  >
-                    <Card.Body className='pt-2 px-2 d-flex flex-column'>
-                      {obj?.links.map(
-                        (link: any, l: number) => (
-                          // link.linkText === 'Available' && width > 600 ? (
-                          //   <div
-                          //     className='d-flex mb-4'
-                          //     key={l}
-                          //     onClick={() => closeMenu()}
-                          //   >
-                          //     {dachshunds?.data
-                          //       ?.map((d: any, p: any) => (
-                          //         <Link key={p} to={`/available/dogs/${d?.id}`}>
-                          //           <StyledImg
-                          //             name={d?.attributes?.name}
-                          //             src={d?.attributes?.photos[0]}
-                          //           />
-                          //         </Link>
-                          //       ))
-                          //       .filter((_: any, i: number) => i < 4)}
-                          //     <ViewAllBtn to='/available'>View All</ViewAllBtn>
-                          //   </div>
-                          // ) : (
+                  <AccordionCollapse eventKey={`${i}`}>
+                    <div className='d-flex flex-column'>
+                      {obj?.links.map((link: any, l: number) => (
+                        <div className='d-flex align-items-center mb-2' key={l}>
+                          <Circle
+                            highlight={(pathname === link.linkKey).toString()}
+                          />
                           <StyledLink
-                            key={l}
                             className='py-2'
                             to={link.linkKey}
                             onClick={() => closeMenu()}
@@ -409,11 +356,10 @@ const LeftNavigation: FC<LeftNavigationProps> = ({ openMenu, setOpenMenu }) => {
                           >
                             {link.linkText}
                           </StyledLink>
-                        )
-                        // )
-                      )}
-                    </Card.Body>
-                  </Accordion.Collapse>
+                        </div>
+                      ))}
+                    </div>
+                  </AccordionCollapse>
                 </div>
               ))}
             </Accordion>
@@ -423,7 +369,7 @@ const LeftNavigation: FC<LeftNavigationProps> = ({ openMenu, setOpenMenu }) => {
                   key={i}
                   className='py-2'
                   to={link.linkKey}
-                  style={{ marginLeft: '61px' }}
+                  style={{ marginLeft: '26px' }}
                   onClick={() => closeMenu()}
                   highlight={(pathname === link.linkKey).toString()}
                 >

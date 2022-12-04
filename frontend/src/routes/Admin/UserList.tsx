@@ -76,7 +76,7 @@ const UserList = () => {
         step4='Users'
         url1='/'
         url2='/admin'
-        url3='/admin/userList'
+        url3=''
       />
       <DeleteModal
         actionFunc='User'
@@ -138,14 +138,16 @@ const UserList = () => {
                     )}{' '}
                   </td>
                   <td>
-                    <LinkContainer to={`/admin/user/${user?._id}/edit`}>
-                      <StyledEditBtn disabled={user?.email === userInfo?.email}>
-                        <i
-                          style={{ color: '#9761aa' }}
-                          className='fas fa-edit'
-                        ></i>
-                      </StyledEditBtn>
-                    </LinkContainer>
+                    {user?.email !== userInfo?.email && (
+                      <LinkContainer to={`/admin/user/${user?._id}/edit`}>
+                        <StyledEditBtn>
+                          <i
+                            style={{ color: '#9761aa' }}
+                            className='fas fa-edit'
+                          ></i>
+                        </StyledEditBtn>
+                      </LinkContainer>
+                    )}
                   </td>
                   <td>
                     {user?.email !== userInfo?.email && (

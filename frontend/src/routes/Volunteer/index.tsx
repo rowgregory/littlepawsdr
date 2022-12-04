@@ -5,12 +5,9 @@ import FosterApplication from './FosterApplication';
 import VolunteerApplication from './VolunteerApplication';
 
 const Container = styled.div`
-  /* max-width: ${({ theme }) => theme.breakpoints[3]}; */
-  margin-top: 56px;
+  margin-top: 75px;
   width: 100%;
   margin-inline: auto;
-  /* margin-bottom: 5rem; */
-  /* padding: 1rem; */
 `;
 
 const VolunteerRoutes: FC = () => {

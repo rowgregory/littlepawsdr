@@ -87,7 +87,7 @@ const VolunteerApplication = () => {
             url2='/adopt/faq'
           />
           <RightArrow
-            text='To Foster Application'
+            text='Foster Application'
             url='/volunteer/foster-application'
           />
         </div>
@@ -100,11 +100,11 @@ const VolunteerApplication = () => {
         >
           Get Involved!
         </Text>
-        <Text marginBottom='18px' fontSize='16px'>
+        <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='18px'>
           Would you like to donate to Little Paws?{' '}
           <Link to='/donate'>Go to our donation page!</Link>
         </Text>
-        <Text marginBottom='28px' fontSize='16px'>
+        <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='18px'>
           Or would you rather give to Little Paws as you do your daily online
           shopping? Visit our{' '}
           <Link to={{ pathname: '/donate/shop-to-help' }}>Shop to Help </Link>
@@ -119,7 +119,7 @@ const VolunteerApplication = () => {
         >
           Join the Little Paws Family!
         </Text>
-        <Text marginBottom='18px' fontSize='16px'>
+        <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='18px'>
           We are always seeking new volunteers or fosters! Visit our{' '}
           <Link to='/volunteer/foster-application'>Foster Application</Link> or
           our{' '}
@@ -137,40 +137,42 @@ const VolunteerApplication = () => {
         >
           Are you crafty?
         </Text>
-        <Text marginBottom='18px' fontSize='16px'>
+        <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='18px'>
           We need your help! We are also looking for artists and crafters both
           for our <Link to='/events'>upcoming auctions and events</Link> along
           with our <Link to='/donate'>ETSY store</Link>.
         </Text>
-        <Text marginBottom='18px' fontSize='16px'>
+        <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='18px'>
           Thank you for applying to volunteer with Little Paws Dachshund Rescue
           (LPDR)!
         </Text>
-        <Text marginBottom='18px' fontSize='16px'>
+        <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='18px'>
           This application will take 15 - 30 minutes to complete.
         </Text>
-        <Text marginBottom='18px' fontSize='16px'>
+        <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='18px'>
           We look forward to having you join our team. We rely on our volunteers
           to accomplish our mission of helping unwanted and abandoned animals
           find new homes, and we sincerely thank you for helping us to achieve
           that goal.
+        </Text>{' '}
+        <Text maxWidth='680px' className='mx-auto'>
+          {isDay ? (
+            <VolunteerApplicationIFrame
+              title='Volunteer-Application'
+              width='100%'
+              scrolling='no'
+              src='https://toolkit.rescuegroups.org/of/f?c=FPGYBJHM'
+            ></VolunteerApplicationIFrame>
+          ) : (
+            <VolunteerApplicationIFrame
+              title='Volunteer-Application'
+              width='100%'
+              height='7000px'
+              scrolling='no'
+              src='https://toolkit.rescuegroups.org/of/f?c=WCVGSBQJ'
+            ></VolunteerApplicationIFrame>
+          )}
         </Text>
-        {isDay ? (
-          <VolunteerApplicationIFrame
-            title='Volunteer-Application'
-            width='100%'
-            scrolling='no'
-            src='https://toolkit.rescuegroups.org/of/f?c=FPGYBJHM'
-          ></VolunteerApplicationIFrame>
-        ) : (
-          <VolunteerApplicationIFrame
-            title='Volunteer-Application'
-            width='100%'
-            height='7000px'
-            scrolling='no'
-            src='https://toolkit.rescuegroups.org/of/f?c=WCVGSBQJ'
-          ></VolunteerApplicationIFrame>
-        )}
       </div>
     </>
   );

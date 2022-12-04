@@ -7,7 +7,7 @@ const NoShop = () => {
       x='0px'
       y='0px'
       viewBox='0 0 219 219'
-      width='48pt'
+      width='40pt'
     >
       <path
         fill='#9761aa'

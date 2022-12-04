@@ -11,48 +11,21 @@ import {
   Container,
   FilterColumn,
   GridIconContainer,
-  LargeGridSquareContainer,
   PageContent,
-  ProductContainer,
-  ShopTitle,
-  SmallGridSquareContainer,
 } from '../../components/styles/shop/Styles';
-import ShopFilterModal from '../../components/shop/ShopFilterModal';
 import { categories } from '../../utils/shopCategories';
-import FilterIcon from '../../components/svg/FilterIcon';
 import NoShop from '../../components/svg/NoShop';
 import { Text } from '../../components/styles/Styles';
-import { Link } from 'react-router-dom';
-
-export const LargeGrid = ({ isLargeGrid, large }: any) => {
-  return (
-    <LargeGridSquareContainer active={isLargeGrid} onClick={() => large(true)}>
-      {[...Array(16).keys()].map((_: any, i: number) => (
-        <div key={i}></div>
-      ))}
-    </LargeGridSquareContainer>
-  );
-};
-export const SmallGrid = ({ isLargeGrid, small }: any) => {
-  return (
-    <SmallGridSquareContainer active={isLargeGrid} onClick={() => small(false)}>
-      {[...Array(9).keys()].map((_: any, i: number) => (
-        <div key={i}></div>
-      ))}
-    </SmallGridSquareContainer>
-  );
-};
+import { Image } from 'react-bootstrap';
+import ShopDog from '../../components/assets/shop01.jpg';
+import LeftArrow from '../../components/svg/LeftArrow';
+import RightArrow from '../../components/svg/RightArrow';
 
 const Shop = () => {
   const dispatch = useDispatch();
-  const [isLargeGrid, setIsLargeGrid] = useState(true);
-  const [show, setShow] = useState(false);
   const [currentCategory, setCurrentCategory] = useState('');
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-
-  const {
+  let {
     productList: { loading, error, products },
   } = useSelector((state: any) => state);
 
@@ -64,92 +37,143 @@ const Shop = () => {
     product?.category.includes(currentCategory)
   );
 
-  if (products?.length === 0) {
-    return (
-      <div
-        style={{
-          height: 'calc(100vh - 475.5px)',
-          width: '100%',
-          padding: '56px 16px',
-          marginInline: 'auto',
-          display: 'flex',
-          justifyContent: 'center',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
-      >
-        <NoShop />
-        <Text fontSize='16px'>No products at this time. Check back soon!</Text>
-        <Text fontSize='16px'>
-          Head on over and take a look at our{' '}
-          <span style={{ fontSize: '16px' }}>
-            <Link to='/available'>available dachshunds</Link>
-          </span>{' '}
-          or check out our{' '}
-          <span style={{ fontSize: '16px' }}>
-            <Link to='/about/blog'>blogs</Link>
-          </span>
-          .
+  return (
+    <>
+      <div style={{ position: 'relative', marginTop: '75px' }}>
+        <Image
+          src={ShopDog}
+          width='100%'
+          style={{ height: '500px', objectFit: 'cover' }}
+        />
+        <Text
+          fontWeight={500}
+          fontSize='48px'
+          color='#fff'
+          style={{
+            position: 'absolute',
+            top: '200px',
+            left: '50px',
+            zIndex: 2,
+          }}
+        >
+          Little Paws Clothing & Accessories
+        </Text>
+        <Text
+          onClick={() =>
+            window.open(
+              'https://pixabay.com/users/lorisw-18960023/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=6256951',
+              '_blank'
+            )
+          }
+          fontWeight={500}
+          fontSize='10px'
+          color='#fff'
+          cursor='pointer'
+          style={{
+            mixBlendMode: 'difference',
+            position: 'absolute',
+            bottom: '10px',
+            right: '10px',
+            zIndex: 2,
+          }}
+        >
+          Photo by Lori Webre
         </Text>
       </div>
-    );
-  }
-
-  return (
-    <Container>
-      {loading && <HexagonLoader />}
-      {error && <Message variant='danger'>{error}</Message>}
-      <ShopFilterModal
-        show={show}
-        close={handleClose}
-        setCurrentCategory={setCurrentCategory}
-      />
-      <PageContent>
-        <div className='d-flex'>
-          <FilterColumn>
-            <CategoryContainer className='d-flex flex-column'>
-              {categories().map((category: string, i: number) => (
-                <Category
-                  active={category === currentCategory}
-                  key={i}
-                  onClick={() => setCurrentCategory(category)}
-                >
-                  {category}
-                </Category>
-              ))}
-            </CategoryContainer>
-            <ClearFilter onClick={() => setCurrentCategory('')}>
-              Clear filter
-            </ClearFilter>
-          </FilterColumn>
-          <div style={{ width: '100%' }} className='p-3'>
-            <div>
-              <div className='d-flex align-items-center justify-content-between mb-5'>
-                <ShopTitle>Little Paws Clothing & Accessories</ShopTitle>
-                <GridIconContainer>
-                  <FilterIcon
-                    isFilter={show}
-                    handleShow={handleShow}
-                  ></FilterIcon>
-                  <LargeGrid isLargeGrid={isLargeGrid} large={setIsLargeGrid} />
-                  <SmallGrid isLargeGrid={isLargeGrid} small={setIsLargeGrid} />
-                </GridIconContainer>
-              </div>
-
-              <ProductContainer islargegrid={isLargeGrid}>
-                {filterProducts?.length === 0 ? (
-                  <div>Sorry, more {currentCategory} soon to come!</div>
-                ) : (
-                  filterProducts?.map((product: any) => (
-                    <Product product={product} key={product._id} />
-                  ))
-                )}
-              </ProductContainer>
-            </div>
-          </div>
+      <Container>
+        <div className='w-100 d-flex justify-content-between mt-3'>
+          <LeftArrow
+            text='To Home'
+            url='/'
+            text2='Foster Application'
+            url2='/volunteer/foster-application'
+          />
+          <RightArrow text='Events' url='/events' />
         </div>
-      </PageContent>
-    </Container>
+        {loading && <HexagonLoader />}
+        <Text
+          marginBottom='48px'
+          marginTop='56px'
+          fontSize='32px'
+          fontWeight={400}
+          textAlign='center'
+        >
+          All gifts to Little Paws goes directly to help abandoned or
+          surrendered dachshunds.
+        </Text>
+      </Container>
+      <div
+        style={{
+          maxWidth: '1450px',
+          width: '100%',
+          marginInline: 'auto',
+        }}
+      >
+        {error ? (
+          <div className='d-flex flex-column align-items-center'>
+            <Message variant='danger'>{error}</Message>
+          </div>
+        ) : products?.length === 0 ? (
+          <div className='d-flex flex-column align-items-center'>
+            <div className='mb-3'>
+              <NoShop />
+            </div>
+            <Text>
+              Sorry, no products available at the moment. Check back soon!
+            </Text>
+          </div>
+        ) : (
+          <>
+            <PageContent>
+              <div className='d-flex'>
+                <FilterColumn>
+                  <CategoryContainer className='d-flex flex-column'>
+                    <Text fontWeight={600} marginBottom='10px' marginLeft='8px'>
+                      Category
+                    </Text>
+                    {categories().map((category: string, i: number) => (
+                      <Category
+                        active={category === currentCategory}
+                        key={i}
+                        onClick={() => setCurrentCategory(category)}
+                      >
+                        {category}
+                      </Category>
+                    ))}
+                  </CategoryContainer>
+                  <ClearFilter onClick={() => setCurrentCategory('')}>
+                    Clear filter
+                  </ClearFilter>
+                </FilterColumn>
+                <div
+                  style={{
+                    width: '100%',
+                    marginBottom: '128px',
+                    paddingInline: '16px',
+                  }}
+                >
+                  <GridIconContainer>
+                    {filterProducts?.length} item
+                    {filterProducts?.length === 1 ? '' : 's'}
+                  </GridIconContainer>
+                  <div className='d-flex flex-column'>
+                    {filterProducts?.length === 0 ? (
+                      <Text marginTop='16px'>No products available</Text>
+                    ) : (
+                      filterProducts
+                        ?.map((product: any) => (
+                          <Product product={product} key={product._id} />
+                        ))
+                        .reverse()
+                    )}
+                  </div>
+                </div>
+              </div>
+            </PageContent>
+          </>
+        )}
+      </div>
+    </>
   );
 };
 

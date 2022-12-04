@@ -66,7 +66,7 @@ const ResetPassword = ({ match }: any) => {
   const strength = validations.reduce((acc, cur) => acc + cur, 0);
 
   return errorVerifyToken ? (
-    <div className='m-3'>
+    <div className='m-3' style={{ marginTop: '75px' }}>
       <Message variant='danger'>{errorVerifyToken}</Message>
       <Link to='/forgot-password'>Forgot Password</Link>
     </div>

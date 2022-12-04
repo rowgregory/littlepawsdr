@@ -11,8 +11,10 @@ const errorSchema = mongoose.Schema(
     user: {
       id: { type: String },
       name: { type: String },
+      email: { type: String },
     },
     state: { type: String },
+    status: { type: Number },
   },
   {
     timestamps: true,

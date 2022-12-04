@@ -27,6 +27,7 @@ import OrderPayPal from './OrderPayPal';
 import ECards from './ECards';
 import ECardDetails from './ECardDetails';
 import EcardPlaceOrder from './EcardPlaceOrder';
+import ReturnPolicy from './ReturnPolicy';
 
 type LazyModulePromise<T = {}> = Promise<{ default: ComponentType<T> }>;
 
@@ -43,14 +44,11 @@ const Donate = lazy((): LazyModulePromise => import('./Donate'));
 
 const Page = styled(Container)<{ url: string }>`
   width: 100%;
-  /* height: auto; */
-  /* min-height: ${({ url }) =>
-    url.split('/')[1] === 'admin' ? '100%' : 'calc(100vh - 466px)'}; */
+  min-height: ${({ url }) =>
+    url.split('/')[1] === 'admin' ? '100%' : 'calc(100vh - 475.5px)'};
   display: flex;
   flex-direction: column;
   padding: 0;
-  /* padding: ${({ url }) => (url === '/' ? 0 : '56px 0 0')}; */
-  /* background: ${({ theme }) => theme.bg}; */
   margin: 0;
 `;
 
@@ -82,6 +80,7 @@ export const Routes: FC = () => {
       <Navbar />
       <Page url={pathname} fluid>
         <Switch>
+          <Route path='/return-policy' component={ReturnPolicy} />
           <Route path='/e-card/order/:id' component={ECardOrderReceipt} />
           <Route path='/e-cards' component={ECards} />
           <Route path='/e-card-details' component={ECardDetails} />

@@ -100,7 +100,6 @@ export const StyledButton = styled(Button)`
 
 export const StyledLink = styled(Link)`
   color: ${({ theme }) => theme.colors.secondary};
-  font-size: 12px;
   :hover {
     color: ${({ theme }) => theme.colors.secondary};
     filter: brightness(0.9);

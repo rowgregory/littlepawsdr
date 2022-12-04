@@ -1,13 +1,15 @@
 import React from 'react';
-import { Card } from 'react-bootstrap';
+import { Card, Image } from 'react-bootstrap';
 import { Text, CardTitle, StyledCard } from '../../components/styles/Styles';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../../components/Message';
 import { useEffect } from 'react';
 import { listEducationTips } from '../../actions/educationTipActions';
-import NoItemsDefault from '../../components/common/NoItemsDefault';
+import EducationDog from '../../components/assets/education01.jpg';
 import styled from 'styled-components';
 import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
+import LeftArrow from '../../components/svg/LeftArrow';
+import RightArrow from '../../components/svg/RightArrow';
 
 const Path = styled.path`
   fill: ${({ theme }) => theme.text};
@@ -29,8 +31,7 @@ const NoEducation = () => {
       x='0px'
       y='0px'
       viewBox='0 0 512 512'
-      width='200px'
-      height='200px'
+      width='48pt'
     >
       <g>
         <g>
@@ -69,64 +70,122 @@ const NoEducation = () => {
 };
 
 const Education = () => {
-  const educationTipList = useSelector((state: any) => state.educationTipList);
-  const {
-    loading: loadingEducationTips,
-    error: errorEducationTips,
-    educationTips,
-  } = educationTipList;
-
   const dispatch = useDispatch();
+  const {
+    educationTipList: { loading, error, educationTips },
+  } = useSelector((state: any) => state);
+
   useEffect(() => {
     dispatch(listEducationTips());
   }, [dispatch]);
 
-  if (educationTips?.length === 0) {
-    return <NoItemsDefault items='education tips' Icon={NoEducation} />;
-  }
-
   return (
-    <div
-      style={{
-        maxWidth: '980px',
-        width: '100%',
-        marginInline: 'auto',
-        marginBottom: '96px',
-        paddingInline: '16px',
-      }}
-    >
-      <Text fontSize='32px' fontWeight={400} marginTop='56px'>
-        Education
-      </Text>
-      <Text marginBottom='32px'>
-        These are external links that will open new tabs.
-      </Text>
-      {errorEducationTips && (
-        <Message variant='danger'>{errorEducationTips}</Message>
-      )}
-      {loadingEducationTips && <HexagonLoader />}
-      <EduGrid>
-        {educationTips?.map((obj: any, i: number) => (
-          <StyledCard
-            className='mr-3'
-            key={i}
-            onClick={() => window.open(obj.externalLink, '_blank')}
-            style={{ width: '300px' }}
-          >
-            <Card.Img
-              src={obj.image}
-              alt='bg'
-              height='250px'
-              style={{ objectFit: 'cover' }}
-            />
-            <Card.Body>
-              <CardTitle>{obj.title}</CardTitle>
-              <Text>Read</Text>
-            </Card.Body>
-          </StyledCard>
-        ))}
-      </EduGrid>
-    </div>
+    <>
+      <div style={{ position: 'relative', marginTop: '75px' }}>
+        <Image
+          src={EducationDog}
+          width='100%'
+          style={{ height: '500px', objectFit: 'cover' }}
+        />
+        <Text
+          fontWeight={500}
+          fontSize='48px'
+          color='#fff'
+          style={{
+            position: 'absolute',
+            top: '200px',
+            left: '50px',
+            zIndex: 2,
+          }}
+        >
+          Education Tips
+        </Text>
+        <Text
+          onClick={() =>
+            window.open(
+              'https://pixabay.com/users/venomdesign-5201978/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=3870567',
+              '_blank'
+            )
+          }
+          fontWeight={500}
+          fontSize='10px'
+          color='#fff'
+          cursor='pointer'
+          style={{
+            mixBlendMode: 'difference',
+            position: 'absolute',
+            bottom: '10px',
+            right: '10px',
+            zIndex: 2,
+          }}
+        >
+          Photo by Markus Wittmann
+        </Text>
+      </div>
+      <div
+        style={{
+          maxWidth: '980px',
+          width: '100%',
+          marginInline: 'auto',
+          marginBottom: '96px',
+          paddingInline: '16px',
+        }}
+      >
+        <div
+          className='w-100 d-flex justify-content-between mt-3'
+          style={{ marginBottom: '56px' }}
+        >
+          <LeftArrow text='To Home' url='/' text2='Blog' url2='/about/blog' />
+          <RightArrow text='About Us' url='/about/team-members' />
+        </div>
+        <Text
+          marginBottom='48px'
+          marginTop='56px'
+          fontSize='32px'
+          fontWeight={400}
+          textAlign='center'
+        >
+          Dachshund information of all kinds
+        </Text>
+        {loading && <HexagonLoader />}
+        {error ? (
+          <div className='d-flex flex-column align-items-center'>
+            <Message variant='danger'>{error}</Message>
+          </div>
+        ) : educationTips?.length === 0 ? (
+          <div className='d-flex flex-column align-items-center'>
+            <div className='mb-4'>
+              <NoEducation />
+            </div>
+            <Text>
+              Sorry, no education tips available at the moment. Check back soon!
+            </Text>
+          </div>
+        ) : (
+          <EduGrid>
+            {educationTips?.map((obj: any, i: number) => (
+              <StyledCard
+                className='mr-3'
+                key={i}
+                onClick={() => window.open(obj.externalLink, '_blank')}
+                style={{ width: '300px' }}
+              >
+                <Card.Img
+                  src={obj.image}
+                  alt='bg'
+                  height='250px'
+                  style={{ objectFit: 'cover' }}
+                />
+                <Card.Body>
+                  <CardTitle>{obj.title}</CardTitle>
+                  <Text>Read</Text>
+                </Card.Body>
+              </StyledCard>
+            ))}
+          </EduGrid>
+        )}
+      </div>
+    </>
   );
 };
 

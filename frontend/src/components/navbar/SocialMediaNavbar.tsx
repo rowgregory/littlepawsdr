@@ -62,7 +62,7 @@ const InstaArrow = styled.i`
   margin-bottom: 1rem;
 `;
 
-const SocialMediaNavbar = () => {
+const SocialMediaNavbar = ({ nl, setNl }: any) => {
   const theme = useTheme() as any;
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
@@ -104,7 +104,7 @@ const SocialMediaNavbar = () => {
                 ? handleShow()
                 : obj.linkKey
                 ? window.open(obj.linkKey, '_blank')
-                : window.scrollTo(0, document.body.scrollHeight)
+                : setNl(!nl)
             }
           >
             <i className={obj.className} style={obj.color}></i>

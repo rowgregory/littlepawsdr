@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Form } from 'react-bootstrap';
+import { Form, Image } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../actions/userActions';
 import {
@@ -22,11 +22,11 @@ import { validateEmailRegex } from '../utils/regex';
 import HexagonLoader from '../components/Loaders/HexagonLoader/HexagonLoader';
 import loginEffect from '../components/sounds/login.mp3';
 import failedLoginAttempt from '../components/sounds/thump02.wav';
-import LogoDay from '../components/assets/logo-background-transparent-purple4.png';
+import LogoDay from '../components/assets/logoF7.jpg';
 import UIfx from 'uifx';
 import LeftArrow from '../components/svg/LeftArrow';
 import { Link } from 'react-router-dom';
-import { LogoCheckout } from '../components/styles/place-order/Styles';
+import { Accordion } from '../components/styles/place-order/Styles';
 
 const useLoginForm = (cb: any, setErrors: any) => {
   const values = {
@@ -55,7 +55,7 @@ const useLoginForm = (cb: any, setErrors: any) => {
   return { inputs, handleInputChange, onSubmit, setInputs };
 };
 
-const Login = ({ location, history }: any) => {
+const Login = ({ history }: any) => {
   const [capsLockOn, setCapsLocksOn] = useState(false);
   const [showPassword, setShowPassword] = useState({ password: false });
   const [errors, setErrors] = useState({}) as any;
@@ -101,21 +101,29 @@ const Login = ({ location, history }: any) => {
     document.addEventListener('keyup', listener);
 
     return () => document.removeEventListener('keyup', listener);
-  }, [error, history, userInfo]);
+  }, [dispatch, error, history, userInfo]);
 
   return (
     <Container>
       <Link to='/'>
-        <LogoCheckout src={LogoDay} />
+        <Image
+          src={LogoDay}
+          alt='Little Paws Dachshund Rescue'
+          style={{
+            position: 'absolute',
+            top: '12px',
+            left: '12px',
+            width: '75px',
+          }}
+        />
       </Link>
       {loading && <HexagonLoader />}
       <FormWrapper className='mx-auto px-3'>
         <Text fontSize='1.5rem' textAlign='center' marginBottom='0.65rem'>
           Sign in to Little Paws
         </Text>
-        <LeftArrow text='To Home' url='/' />
+        <LeftArrow text='Home' url='/' />
         <FormContainer>
-          {error && <Message variant='danger'>{error}</Message>}
           {capsLockOn && <Message variant='warning'>(Caps Lock is on)</Message>}
           <Form onSubmit={onSubmit}>
             <JumpingInput
@@ -162,6 +170,7 @@ const Login = ({ location, history }: any) => {
         <CreateAccountContainer className='py-3 mt-3'>
           New to Little Paws?{' '}
           <StyledLink
+            style={{ fontWeight: 400 }}
             to='/register'
             onClick={() => dispatch({ type: USER_LOGIN_RESET })}
           >
@@ -170,6 +179,24 @@ const Login = ({ location, history }: any) => {
           .
         </CreateAccountContainer>
       </FormWrapper>
+      <div
+        style={{
+          position: 'fixed',
+          bottom: 20,
+          left: 0,
+          right: 0,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          width: '100%',
+          maxWidth: '500px',
+          marginInline: 'auto',
+        }}
+      >
+        <Accordion toggle={error} maxheight='65px' className='w-100'>
+          <Message variant='danger'>{error}</Message>
+        </Accordion>
+      </div>
     </Container>
   );
 };

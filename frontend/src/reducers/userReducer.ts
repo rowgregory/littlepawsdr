@@ -76,7 +76,7 @@ export const userLoginReducer = (state = {}, action) => {
       return {
         loading: false,
         success: false,
-        errors: {},
+        error: '',
       };
     default:
       return state;
@@ -101,10 +101,7 @@ export const userRegisterReducer = (state = { success: false }, action) => {
         error: action.payload,
       };
     case USER_REGISTER_RESET:
-      return {
-        loading: false,
-        success: false,
-      };
+      return {};
     default:
       return state;
   }
