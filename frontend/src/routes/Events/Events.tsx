@@ -12,22 +12,7 @@ import EventDog from '../../components/assets/events01.jpg';
 import LeftArrow from '../../components/svg/LeftArrow';
 import RightArrow from '../../components/svg/RightArrow';
 import Message from '../../components/Message';
-
-const Container = styled.div<{ hasEvents: string }>`
-  background-image: radial-gradient(
-    ${({ theme }) => (theme.mode === 'day' ? '#e5e5e5' : theme.input.bg)} 2px,
-    transparent 2px
-  );
-  background-size: 32px 32px;
-  height: ${({ hasEvents }) =>
-    hasEvents === 'true' ? '' : 'calc(100vh - 1050.5px)'};
-`;
-const Wrapper = styled.div`
-  margin-inline: auto;
-  max-width: 980px;
-  width: 100%;
-  padding-inline: 16px;
-`;
+import { Container } from '../../components/styles/shop/Styles';
 
 const EventsContainer = styled.div`
   display: flex;
@@ -120,72 +105,71 @@ const Events = ({ history }: RouteComponentProps) => {
           Photo by Ilona Ilyés
         </Text>
       </div>
-      <Container hasEvents={(events?.length > 0).toString()}>
-        <Wrapper>
-          <div className='w-100 d-flex justify-content-between mt-3'>
-            <LeftArrow text='To Home' url='/' text2='Shop' url2='/shop' />
-            <RightArrow text='Blog' url='/about/blog' />
-          </div>
-          <Text
-            marginBottom='48px'
-            marginTop='56px'
-            fontSize='32px'
-            textAlign='center'
-            fontWeight={400}
-          >
-            Little Paws Dachshund Rescue host a number of fund raising events
-            throughout the year. We hope to see you at some in{' '}
-            {new Date().getFullYear()}!
-          </Text>
-        </Wrapper>
-        <div
-          style={{
-            maxWidth: '1450px',
-            width: '100%',
-            marginInline: 'auto',
-          }}
-        >
-          {error ? (
-            <div className='d-flex flex-column align-items-center'>
-              <Message variant='danger'>{error}</Message>
-            </div>
-          ) : events?.length === 0 ? (
-            <div className='d-flex flex-column align-items-center'>
-              <div className='mb-3'>
-                <EventIcon />
-              </div>
-              <Text>Sorry, no events at the moment. Check back soon!</Text>
-            </div>
-          ) : (
-            <EventsContainer>
-              {timeLineData()?.map((obj, i) => (
-                <div key={i} className='my-1 w-100'>
-                  <Month bg={obj?.bg} className='ml-0' donothover={true}>
-                    {obj?.abbrv}
-                  </Month>
-
-                  {events?.map(
-                    (event: any) =>
-                      event?.startDate?.split('-')[1] === obj?.digits && (
-                        <div key={event?._id} className='my-3'>
-                          {loading ? (
-                            <LoadingImg
-                              w='100%'
-                              h='10rem'
-                              borderRadius='0.5rem'
-                            />
-                          ) : (
-                            <EventCard event={event} history={history} />
-                          )}
-                        </div>
-                      )
-                  )}
-                </div>
-              ))}
-            </EventsContainer>
-          )}
+      <Container>
+        <div className='w-100 d-flex justify-content-between mt-3'>
+          <LeftArrow text='To Home' url='/' text2='Shop' url2='/shop' />
+          <RightArrow text='Blog' url='/about/blog' />
         </div>
+        <Text
+          marginBottom='48px'
+          marginTop='56px'
+          fontSize='32px'
+          textAlign='center'
+          fontWeight={400}
+        >
+          Little Paws Dachshund Rescue host a number of fund raising events
+          throughout the year. We hope to see you at some in{' '}
+          {new Date().getFullYear()}!
+        </Text>
       </Container>
+      <div
+        style={{
+          maxWidth: '1450px',
+          width: '100%',
+          marginInline: 'auto',
+          paddingBottom: '64px',
+        }}
+      >
+        {error ? (
+          <div className='d-flex flex-column align-items-center'>
+            <Message variant='danger'>{error}</Message>
+          </div>
+        ) : events?.length === 0 ? (
+          <div className='d-flex flex-column align-items-center'>
+            <div className='mb-3'>
+              <EventIcon />
+            </div>
+            <Text>Sorry, no events at the moment. Check back soon!</Text>
+          </div>
+        ) : (
+          <EventsContainer>
+            {timeLineData()?.map((obj, i) => (
+              <div key={i} className='my-1 w-100'>
+                <Month bg={obj?.bg} className='ml-0' donothover={true}>
+                  {obj?.abbrv}
+                </Month>
+
+                {events?.map(
+                  (event: any) =>
+                    event?.startDate?.split('-')[1] === obj?.digits && (
+                      <div key={event?._id} className='my-3'>
+                        {loading ? (
+                          <LoadingImg
+                            w='100%'
+                            h='10rem'
+                            borderRadius='0.5rem'
+                          />
+                        ) : (
+                          <EventCard event={event} history={history} />
+                        )}
+                      </div>
+                    )
+                )}
+              </div>
+            ))}
+          </EventsContainer>
+        )}
+      </div>
     </>
   );
 };

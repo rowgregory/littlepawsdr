@@ -127,7 +127,7 @@ const Education = () => {
           maxWidth: '980px',
           width: '100%',
           marginInline: 'auto',
-          marginBottom: '96px',
+          marginBottom: '64px',
           paddingInline: '16px',
         }}
       >

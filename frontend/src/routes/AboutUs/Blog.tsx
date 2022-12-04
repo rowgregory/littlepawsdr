@@ -130,7 +130,7 @@ const Blog = () => {
           maxWidth: '768px',
           width: '100%',
           marginInline: 'auto',
-          paddingBottom: '128px',
+          paddingBottom: '64px',
         }}
       >
         {error ? (

@@ -107,6 +107,7 @@ const Shop = () => {
           maxWidth: '1450px',
           width: '100%',
           marginInline: 'auto',
+          paddingBottom: '64px',
         }}
       >
         {error ? (
