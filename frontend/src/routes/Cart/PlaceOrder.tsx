@@ -183,8 +183,7 @@ const PlaceOrder = ({ history, location }: any) => {
         purchase_units: [
           {
             amount: {
-              value: '0.01',
-              // value: totalPrice(inputs.state, cartItems),
+              value: totalPrice(inputs.state, cartItems),
             },
           },
         ],
