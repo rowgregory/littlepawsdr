@@ -12,14 +12,13 @@ const App = () => {
   const theme = useTheme();
 
   const PayPalOptions = {
-    'client-id':
-      'AXj82_D3nbHIZzg-CaOFmAOPwb-1YcSTwRhx61HfTMhLQSLab2r5t9MULu0S079sI4NsB8zZvZRbHMOD',
+    'client-id': process.env.REACT_APP_PAYPAL_PROD,
     currency: 'USD',
     intent: 'capture',
     components: 'buttons,funding-eligibility',
     'enable-funding': 'venmo',
     vault: true,
-  };
+  } as any;
 
   return (
     <PayPalScriptProvider options={PayPalOptions}>

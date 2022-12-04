@@ -41,7 +41,7 @@ import { register } from '../../actions/userActions';
 
 const PlaceOrder = ({ history, location }: any) => {
   const dispatch = useDispatch();
-  const [sdkReady, setSdkReady] = useState(false);
+  // const [sdkReady, setSdkReady] = useState(false);
   const [orderLoader, setOrderLoader] = useState(false);
   const [revealPayment, setRevealPayment] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -112,19 +112,19 @@ const PlaceOrder = ({ history, location }: any) => {
 
   const strength = validations.reduce((acc, cur) => acc + cur, 0);
 
-  useEffect(() => {
-    const addPayPalScript = async () => {
-      const script = document.createElement('script');
-      script.type = 'text/javascript';
-      script.src = `https://www.paypal.com/sdk/js?client-id=${process.env.REACT_APP_PAYPAL_CLIENT_ID_PROD}`;
-      script.async = true;
-      script.onload = () => setSdkReady(true);
-      document.body.appendChild(script);
-    };
-    if (!sdkReady) {
-      addPayPalScript();
-    }
-  }, [sdkReady]);
+  // useEffect(() => {
+  //   const addPayPalScript = async () => {
+  //     const script = document.createElement('script');
+  //     script.type = 'text/javascript';
+  //     script.src = `https://www.paypal.com/sdk/js?client-id=${process.env.REACT_APP_PAYPAL_PROD}`;
+  //     script.async = true;
+  //     script.onload = () => setSdkReady(true);
+  //     document.body.appendChild(script);
+  //   };
+  //   if (!sdkReady) {
+  //     addPayPalScript();
+  //   }
+  // }, [sdkReady]);
 
   useEffect(() => {
     if (success) {
