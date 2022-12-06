@@ -405,7 +405,7 @@ const sendRegisterConfirmationEmail = asyncHandler(async (req, res) => {
 // @route   PUT /api/users/confirmed
 // @access  Private
 const userIsConfirmed = asyncHandler(async (req, res) => {
-  const { email, token, name, id } = req.body;
+  const { email, name, id } = req.body;
 
   try {
     const userExists = await User.findOne({ email });
@@ -436,27 +436,12 @@ const userIsConfirmed = asyncHandler(async (req, res) => {
         theme: 'sync',
         confirmed: true,
         publicId: '',
-        token,
+        token: generateToken({ name, email }, '24h'),
       });
 
-      await user.save();
+      const updatedUser = await user.save();
 
-      res.status(201).json({
-        _id: user._id,
-        confirmed: user.confirmed,
-        name: user.name,
-        email: user.email,
-        isAdmin: user.isAdmin,
-        isVolunteer: user.isVolunteer,
-        avatar: user.avatar,
-        volunteerTitle: user.volunteerTitle,
-        volunteerEmail: user.volunteerEmail,
-        profileCardTheme: user.profileCardTheme,
-        online: user.online,
-        theme: user.theme,
-        token: generateToken(user._id, '24h'),
-        publicId: user.publicId,
-      });
+      res.json(updatedUser);
     }
   } catch (error) {
     const createdError = new Error({

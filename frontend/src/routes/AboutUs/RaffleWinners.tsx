@@ -79,7 +79,7 @@ const RaffleWinners = () => {
         }}
       >
         <div className='w-100 d-flex justify-content-between mt-3 mb-5'>
-          <LeftArrow text='To Home' url='/' text2='Blog' url2='/about/blog' />
+          <LeftArrow text='Home' url='/' text2='Blog' url2='/about/blog' />
           <RightArrow text='Education Tips' url='/about/education' />
         </div>
         {error && <Message variant='danger'>{error}</Message>}

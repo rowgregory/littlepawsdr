@@ -135,7 +135,7 @@ const Education = () => {
           className='w-100 d-flex justify-content-between mt-3'
           style={{ marginBottom: '56px' }}
         >
-          <LeftArrow text='To Home' url='/' text2='Blog' url2='/about/blog' />
+          <LeftArrow text='Home' url='/' text2='Blog' url2='/about/blog' />
           <RightArrow text='About Us' url='/about/team-members' />
         </div>
         <Text

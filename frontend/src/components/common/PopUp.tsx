@@ -50,17 +50,12 @@ const ContinueBtn = styled.button`
   border-radius: 25px;
   background: ${({ theme }) => theme.white};
   color: ${({ theme }) => theme.colors.quinary};
-  border: 2px solid ${({ theme }) => theme.colors.quinary};
+  border: 0;
   transition: 300ms;
 
   :focus,
   :active {
     background: ${({ theme }) => theme.colors.quinary} !important;
-  }
-  :hover {
-    background: ${({ theme }) => theme.colors.quinary};
-    border: 2px solid ${({ theme }) => theme.colors.quinary};
-    color: #fff;
   }
 `;
 
@@ -141,7 +136,7 @@ const PopUp = () => {
               >
                 <Form.Group controlId='newsletterEmail' className='mb-0 w-75'>
                   <Form.Control
-                    className='pt-0 mt-0 popup'
+                    className='py-0 mt-0 popup'
                     placeholder='Email address'
                     required
                     as='input'

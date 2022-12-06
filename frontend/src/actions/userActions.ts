@@ -402,7 +402,7 @@ export const updatedUserToConfirmed =
 
       const { data } = await axios.put(
         `/api/users/confirmed`,
-        { email, token, name, id },
+        { email, name, id },
         config
       );
 

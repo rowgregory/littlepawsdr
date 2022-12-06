@@ -73,12 +73,7 @@ const AdoptionApplication = () => {
         }}
       >
         <div className='w-100 d-flex justify-content-between mt-3'>
-          <LeftArrow
-            text='To Home'
-            url='/'
-            text2='Check'
-            url2='/donate/check'
-          />
+          <LeftArrow text='Home' url='/' text2='Check' url2='/donate/check' />
           <RightArrow text='Adopt a Senior' url='/available/senior' />
         </div>
         <Text fontSize='32px' fontWeight={400} marginTop='56px'>

@@ -94,7 +94,7 @@ const Settings = () => {
     inputs?.newPassword?.length >= 9 ? 1 : 0,
     inputs?.newPassword?.search(/[A-Z]/) > -1 ? 1 : 0,
     inputs?.newPassword?.search(/[0-9]/) > -1 ? 1 : 0,
-    inputs?.newPassword?.search(/[~`! @#$%^&*()_+={}|:;"',.?]/) > -1 ? 1 : 0,
+    inputs?.newPassword?.search(/[~`!-@#$%^ &*()_+={}|:;"',.?]/) > -1 ? 1 : 0,
   ];
 
   const strength = validations.reduce((acc, cur) => acc + cur, 0);

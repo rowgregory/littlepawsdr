@@ -29,7 +29,6 @@ import {
   privacyPolicyLinkKey,
   termsOfServiceLinkKey,
 } from '../utils/footerUtils';
-import LeftArrow from '../components/svg/LeftArrow';
 import { Accordion } from '../components/styles/place-order/Styles';
 // import ReCAPTCHA from 'react-google-recaptcha';
 // import axios from 'axios';
@@ -76,8 +75,9 @@ const Register = ({ location }: any) => {
     confirmPassword: false,
   });
   const [errors, setErrors] = useState({}) as any;
-  const [show, setShow] = useState(false);
+  const [show, setShow] = useState(true);
   const [submittedForm, setSubmittedForm] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
   // const [recap, setRecap] = useState(false);
 
   const {
@@ -92,8 +92,17 @@ const Register = ({ location }: any) => {
     if (!isValid) setSubmittedForm(false);
 
     if (isValid && strength === 4) {
-      dispatch(register(inputs.name, inputs.email, inputs.password));
-      // setRecap(true);
+      if (inputs.password === inputs.confirmPassword) {
+        setErrorMsg('');
+        dispatch(register(inputs.name, inputs.email, inputs.password));
+        // setRecap(true);
+        setSubmittedForm(false);
+      } else {
+        setErrorMsg('Passwords do not match');
+        setSubmittedForm(false);
+      }
+    } else {
+      setErrorMsg('Password is not strong enough');
       setSubmittedForm(false);
     }
   };
@@ -114,7 +123,7 @@ const Register = ({ location }: any) => {
     inputs?.password?.length >= 9 ? 1 : 0,
     inputs?.password?.search(/[A-Z]/) > -1 ? 1 : 0,
     inputs?.password?.search(/[0-9]/) > -1 ? 1 : 0,
-    inputs?.password?.search(/[~`! @#$%^&*()_+={}|:;"',.?]/) > -1 ? 1 : 0,
+    inputs?.password?.search(/[~`!-@#$%^ &*()_+={}|:;"',.?]/) > -1 ? 1 : 0,
   ];
 
   const strength = validations.reduce((acc, cur) => acc + cur, 0);
@@ -147,7 +156,6 @@ const Register = ({ location }: any) => {
         <Text fontSize='1.5rem' textAlign='center' marginBottom='0.65rem'>
           {loading ? 'One moment' : 'Welcome to Little Paws'}
         </Text>
-        <LeftArrow text='Back to sign in' url='/login' />
         <FormContainer>
           <Form onSubmit={onSubmit}>
             <JumpingInput
@@ -280,8 +288,12 @@ const Register = ({ location }: any) => {
           marginInline: 'auto',
         }}
       >
-        <Accordion toggle={error} maxheight='65px' className='w-100'>
-          <Message variant='danger'>{error}</Message>
+        <Accordion
+          toggle={error || errorMsg}
+          maxheight='65px'
+          className='w-100'
+        >
+          <Message variant='danger'>{error || errorMsg}</Message>
         </Accordion>
       </div>
     </Container>

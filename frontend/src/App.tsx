@@ -17,7 +17,6 @@ const App = () => {
     intent: 'capture',
     components: 'buttons,funding-eligibility',
     'enable-funding': 'venmo',
-    vault: true,
   } as any;
 
   return (

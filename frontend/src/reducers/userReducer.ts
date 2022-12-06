@@ -348,7 +348,7 @@ export const userVerifyEmailReducer = (state = {}, action) => {
 };
 
 // @ts-ignore
-export const userConfirmedReducer = (state = {}, action) => {
+export const userConfirmedReducer = (state = { userInfo: {} }, action) => {
   switch (action.type) {
     case USER_CONFIRMED_REQUEST:
       return {
@@ -363,6 +363,7 @@ export const userConfirmedReducer = (state = {}, action) => {
     case USER_CONFIRMED_FAIL:
       return {
         loading: false,
+        success: false,
         error: action.payload,
         userInfo: {},
       };

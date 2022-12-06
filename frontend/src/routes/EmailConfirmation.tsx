@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, useRouteMatch } from 'react-router-dom';
 import styled from 'styled-components';
 import { updatedUserToConfirmed } from '../actions/userActions';
-import HorizontalLoader from '../components/HorizontalLoader';
 import Message from '../components/Message';
 import { USER_REGISTER_RESET } from '../constants/userConstants';
 import { Text } from '../components/styles/Styles';
@@ -12,35 +11,58 @@ import SuccessDog from '../components/assets/raffle-winner01.jpg';
 import ErrorDog from '../components/assets/email-conf01.jpg';
 import LeftArrow from '../components/svg/LeftArrow';
 import RightArrow from '../components/svg/RightArrow';
+import HexagonLoader from '../components/Loaders/HexagonLoader/HexagonLoader';
+import { LoadingImg } from '../components/LoadingImg';
 
-const StyledLink = styled(Link)`
-  :hover {
-    text-decoration: none;
-  }
-  :nth-child(2) {
-    margin: 0 1rem;
-  }
-  :nth-child(3) {
-    margin: 0 1rem 0 0;
+const CircleContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 100%;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
   }
 `;
-const Box = styled.div<{ bg: string }>`
-  height: 150px;
-  border-radius: 50%;
-  aspect-ratio: 1/1;
-  background: ${({ bg, theme }) => theme.colors[bg]};
+
+const Circle = styled(Link)<{ bg: string }>`
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: Duru Sans;
+  background: ${({ bg, theme }) => theme.colors[bg]};
   color: #fff;
   transition: 300ms;
-  box-shadow: 0 5px 15px 0px rgba(0, 0, 0, 0.6);
+  width: 100%;
+  height: 100px;
+  font-size: 18px;
+  text-transform: uppercase;
   :hover {
-    filter: brightness(1.1);
+    text-decoration: none;
+    color: #fff;
     box-shadow: 0 25px 15px 0px rgba(0, 0, 0, 0.2);
     transform: translatey(-15px);
-    text-
+  }
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    height: 150px;
+    width: 150px;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    box-shadow: 0 5px 15px 0px rgba(0, 0, 0, 0.6);
+    :hover {
+      filter: brightness(1.1);
+      box-shadow: 0 25px 15px 0px rgba(0, 0, 0, 0.2);
+      transform: translatey(-15px);
+      color: #fff;
+      text-decoration: none;
+    }
+    :nth-child(2) {
+      margin: 0 1rem;
+    }
+    :nth-child(3) {
+      margin: 0 1rem 0 0;
+    }
   }
 `;
 
@@ -58,7 +80,7 @@ const EmailConfirmation = ({ history }: any) => {
   const { userInfo: userLoginInfo } = userLogin;
 
   const userConfirmed = useSelector((state: any) => state.userConfirmed);
-  let { loading: loadingUserConfirmed, error: errorUserConfirmed } =
+  const { loading: loadingUserConfirmed, error: errorUserConfirmed } =
     userConfirmed;
 
   const jwtHasNotExpiredYet = useCallback(() => {
@@ -98,31 +120,75 @@ const EmailConfirmation = ({ history }: any) => {
 
   return (
     <>
+      {loadingUserConfirmed && <HexagonLoader />}
       <div style={{ position: 'relative', marginTop: '75px' }}>
-        <Image
-          src={
-            userLoginInfo?.confirmed && !errorUserConfirmed
-              ? SuccessDog
-              : ErrorDog
-          }
-          width='100%'
-          style={{ height: '500px', objectFit: 'cover' }}
-        />
-        <Text
-          fontWeight={500}
-          fontSize='48px'
-          color='#fff'
-          style={{
-            position: 'absolute',
-            top: '200px',
-            left: '50px',
-            zIndex: 2,
-          }}
-        >
-          {userLoginInfo?.confirmed && !errorUserConfirmed
-            ? 'Account created!'
-            : 'Oops, something went wrong :('}
-        </Text>
+        {loadingUserConfirmed ? (
+          <>
+            <LoadingImg w='100%' h='500px' />
+            <Text
+              fontWeight={500}
+              fontSize='48px'
+              color='#fff'
+              style={{
+                position: 'absolute',
+                top: '200px',
+                left: '50px',
+                zIndex: 2,
+              }}
+            >
+              Almost there!
+            </Text>
+          </>
+        ) : (
+          userLoginInfo?.confirmed &&
+          !errorUserConfirmed && (
+            <>
+              <Image
+                src={SuccessDog}
+                width='100%'
+                style={{ height: '500px', objectFit: 'cover' }}
+              />
+              <Text
+                fontWeight={500}
+                fontSize='48px'
+                color='#fff'
+                style={{
+                  position: 'absolute',
+                  top: '200px',
+                  left: '50px',
+                  zIndex: 2,
+                }}
+              >
+                Account created!
+              </Text>
+            </>
+          )
+        )}
+        {errorUserConfirmed && (
+          <>
+            <Image
+              src={ErrorDog}
+              width='100%'
+              style={{ height: '500px', objectFit: 'cover' }}
+            />
+            <Text
+              fontWeight={500}
+              fontSize='48px'
+              color='#fff'
+              style={{
+                position: 'absolute',
+                top: '200px',
+                left: '50px',
+                zIndex: 2,
+              }}
+            >
+              {userLoginInfo?.confirmed && !errorUserConfirmed
+                ? 'Account created!'
+                : 'Oops, something went wrong :('}
+            </Text>
+          </>
+        )}
+
         <Text
           onClick={() =>
             window.open(
@@ -144,13 +210,17 @@ const EmailConfirmation = ({ history }: any) => {
             zIndex: 2,
           }}
         >
-          Photo by{' '}
-          {userLoginInfo?.confirmed ? 'Dominika Roseclay' : 'Rebecca Chandler'}
+          {loadingUserConfirmed
+            ? ''
+            : userLoginInfo?.confirmed
+            ? 'Photo by Dominika Roseclay'
+            : 'Photo by Rebecca Chandler'}
         </Text>
       </div>
       <>
-        {loadingUserConfirmed && <HorizontalLoader />}
-        {errorUserConfirmed || message ? (
+        {loadingUserConfirmed ? (
+          <></>
+        ) : errorUserConfirmed || message ? (
           <div
             style={{
               maxWidth: '689px',
@@ -186,7 +256,7 @@ const EmailConfirmation = ({ history }: any) => {
             >
               <div className='w-100 d-flex justify-content-between mt-3 mb-5'>
                 <LeftArrow
-                  text='To Home'
+                  text='Home'
                   url='/'
                   text2='Available Dachshunds'
                   url2='/available'
@@ -218,11 +288,7 @@ const EmailConfirmation = ({ history }: any) => {
               >
                 What would you like to do first?
               </Text>
-              <Text
-                className='d-flex justify-content-center mx-auto'
-                textAlign='center'
-                width='100%'
-              >
+              <CircleContainer>
                 {[
                   { textKey: 'Shop', linkKey: '/shop', bg: 'secondary' },
                   {
@@ -232,11 +298,11 @@ const EmailConfirmation = ({ history }: any) => {
                   },
                   { textKey: 'Donate', linkKey: '/donate', bg: 'quaternary' },
                 ].map((obj: any, i: number) => (
-                  <StyledLink to={obj.linkKey} key={i}>
-                    <Box bg={obj.bg}>{obj.textKey}</Box>
-                  </StyledLink>
+                  <Circle to={obj.linkKey} key={i} bg={obj.bg}>
+                    {obj.textKey}
+                  </Circle>
                 ))}
-              </Text>
+              </CircleContainer>
             </div>
           )
         )}

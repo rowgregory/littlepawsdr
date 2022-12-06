@@ -71,7 +71,7 @@ const ContactUs = () => {
       >
         <div className='w-100 d-flex justify-content-between mt-3'>
           <LeftArrow
-            text='To Home'
+            text='Home'
             url='/'
             text2='About Us'
             url2='/about/team-members'

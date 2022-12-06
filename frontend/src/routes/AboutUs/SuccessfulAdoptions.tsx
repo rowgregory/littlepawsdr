@@ -127,12 +127,7 @@ const SuccessfulAdoptions = () => {
       {error && <Message variant='danger'>{error}</Message>}
       <Container>
         <div className='w-100 d-flex justify-content-between mt-3'>
-          <LeftArrow
-            text='To Home'
-            url='/'
-            text2='On Hold'
-            url2='/about/hold'
-          />
+          <LeftArrow text='Home' url='/' text2='On Hold' url2='/about/hold' />
           <RightArrow text='Rainbow Bridge' url='/about/rainbow-bridge' />
         </div>
         {loading && (

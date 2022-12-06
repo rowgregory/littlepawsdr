@@ -85,7 +85,7 @@ export const PasswordRequirements = ({ validations, open }: any) => {
           ) : (
             <i className='fas fa-times' style={{ color: 'red' }}></i>
           )}
-          &nbsp; must contain one symbol ~`! @#$%^&*()_+={}|:;"',.?
+          &nbsp; must contain one symbol ~`!-@#$%^ &*()_+={}|:;"',.?
         </Text>
       </div>
     </Accordion>

@@ -124,12 +124,7 @@ const DogsOnHold = () => {
       </div>
       <Container>
         <div className='w-100 d-flex justify-content-between mt-3'>
-          <LeftArrow
-            text='To Home'
-            url='/'
-            text2='Surrender'
-            url2='/surrender'
-          />
+          <LeftArrow text='Home' url='/' text2='Surrender' url2='/surrender' />
           <RightArrow
             text='Successful Adoptions'
             url='/about/successful-adoptions'

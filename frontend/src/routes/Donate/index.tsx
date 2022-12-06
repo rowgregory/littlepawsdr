@@ -142,7 +142,7 @@ const DonateRoutes = ({ location }: any) => {
           >
             <div className='w-100 d-flex justify-content-between mt-3'>
               <LeftArrow
-                text='To Home'
+                text='Home'
                 url='/'
                 text2={
                   location?.pathname === '/donate/shop-to-help'

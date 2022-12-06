@@ -111,7 +111,7 @@ const Blog = () => {
       </div>
       <Container>
         <div className='w-100 d-flex justify-content-between mt-3'>
-          <LeftArrow text='To Home' url='/' text2='Events' url2='/events' />
+          <LeftArrow text='Home' url='/' text2='Events' url2='/events' />
           <RightArrow text='Education Tips' url='/about/education' />
         </div>
         {loading && <HexagonLoader />}

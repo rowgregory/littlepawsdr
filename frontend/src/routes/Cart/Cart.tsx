@@ -148,7 +148,7 @@ const Cart = () => {
                 ))}
                 <tr style={{ background: '#ecf0f1' }}>
                   <td>
-                    <LeftArrow text='Back to Shop' url='/shop' />
+                    <LeftArrow text='Shop' url='/shop' />
                   </td>
                   <td></td>
                   <td>

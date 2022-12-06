@@ -81,7 +81,7 @@ const VolunteerApplication = () => {
       >
         <div className='w-100 d-flex justify-content-between mt-3'>
           <LeftArrow
-            text='To Home'
+            text='Home'
             url='/'
             text2='Adoption FAQ'
             url2='/adopt/faq'

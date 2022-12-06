@@ -60,7 +60,7 @@ const ResetPassword = ({ match }: any) => {
     password.length >= 9 ? 1 : 0,
     password.search(/[A-Z]/) > -1 ? 1 : 0,
     password.search(/[0-9]/) > -1 ? 1 : 0,
-    password.search(/[~`! @#$%^&*()_+={}|:;"',.?]/) > -1 ? 1 : 0,
+    password.search(/[~`!-@#$%^ &*()_+={}|:;"',.?]/) > -1 ? 1 : 0,
   ];
 
   const strength = validations.reduce((acc, cur) => acc + cur, 0);

@@ -72,7 +72,7 @@ const AdoptionFAQ = () => {
           className='w-100 d-flex justify-content-between mt-3'
           style={{ marginBottom: '96px' }}
         >
-          <LeftArrow text='To Home' url='/' text2='Fees' url2='/adopt/fees' />
+          <LeftArrow text='Home' url='/' text2='Fees' url2='/adopt/fees' />
           <RightArrow
             text='Volunteer Application'
             url='/volunteer/volunteer-application'

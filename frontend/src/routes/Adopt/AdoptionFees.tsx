@@ -114,7 +114,7 @@ const AdoptionFees = ({ history }: any) => {
       >
         <div className='w-100 d-flex justify-content-between mt-3'>
           <LeftArrow
-            text='To Home'
+            text='Home'
             url='/'
             text2='Adoption Information'
             url2='/adopt/info'

@@ -24,7 +24,6 @@ import loginEffect from '../components/sounds/login.mp3';
 import failedLoginAttempt from '../components/sounds/thump02.wav';
 import LogoDay from '../components/assets/logoF7.jpg';
 import UIfx from 'uifx';
-import LeftArrow from '../components/svg/LeftArrow';
 import { Link } from 'react-router-dom';
 import { Accordion } from '../components/styles/place-order/Styles';
 
@@ -122,7 +121,6 @@ const Login = ({ history }: any) => {
         <Text fontSize='1.5rem' textAlign='center' marginBottom='0.65rem'>
           Sign in to Little Paws
         </Text>
-        <LeftArrow text='Home' url='/' />
         <FormContainer>
           {capsLockOn && <Message variant='warning'>(Caps Lock is on)</Message>}
           <Form onSubmit={onSubmit}>

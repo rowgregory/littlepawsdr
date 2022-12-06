@@ -156,7 +156,7 @@ const ListAvailableDogs = () => {
         style={{ maxWidth: '75rem', marginBottom: '56px' }}
       >
         <LeftArrow
-          text='To Home'
+          text='Home'
           url='/'
           text2='Contact Us'
           url2='about/contact-us'

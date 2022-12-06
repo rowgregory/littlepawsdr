@@ -156,7 +156,7 @@ const SponsorSanctuary = () => {
         {error && <Message variant='danger'>{error}</Message>}
         <div className='w-100 d-flex justify-content-between mt-3'>
           <LeftArrow
-            text='To Home'
+            text='Home'
             url='/'
             text2='Available Dachshunds'
             url2='/available'
