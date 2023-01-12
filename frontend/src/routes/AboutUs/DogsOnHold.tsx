@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Col, Card, Pagination, Image } from 'react-bootstrap';
+import { Pagination, Image } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import { getDogsByStatusPicturesAndVideours } from '../../actions/dachshundsActions';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import Message from '../../components/Message';
 import { Link } from 'react-router-dom';
 import { Text } from '../../components/styles/Styles';
@@ -14,13 +14,14 @@ import OnHoldDog from '../../components/assets/hold01.jpeg';
 import LeftArrow from '../../components/svg/LeftArrow';
 import RightArrow from '../../components/svg/RightArrow';
 import { LoadingImg } from '../../components/LoadingImg';
+import LegacyWallpaper from '../../components/assets/aqua_tile.jpg';
 
-const DogContainer = styled(Col)`
+const DogContainer = styled.div`
   display: grid;
   grid-gap: 1.5rem;
   grid-template-columns: 1fr;
-  padding: 1rem;
-  grid-row-gap: 120px;
+  padding-block: 1rem;
+  grid-row-gap: 100px;
   margin-bottom: 96px;
   margin-top: 75px;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
@@ -36,7 +37,6 @@ const Container = styled.div`
   width: 100%;
   margin-inline: auto;
   margin-bottom: 96px;
-  padding-inline: 16px;
 `;
 
 const TextContainer = styled.div`
@@ -56,6 +56,45 @@ const TextContainer = styled.div`
   justify-content: center;
 `;
 
+const MoveLeft = keyframes`
+ 0% {
+    background-position: 0 0;
+ }
+ 100% {
+    background-position: -100% 0;
+ }
+`;
+
+const SupportFoster = styled.div`
+  padding-block: 60px;
+  margin-top: 96px;
+  position: relative;
+  overflow: hidden;
+  &:before {
+    content: '';
+    position: absolute;
+    background: url(${LegacyWallpaper});
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: -1;
+  }
+  :hover {
+    &:before {
+      animation: ${MoveLeft} 20s linear infinite;
+    }
+  }
+  a {
+    color: #fff;
+    font-size: 24px;
+    font-weight: 600;
+    :hover {
+      text-decoration: none;
+    }
+  }
+`;
+
 const DogsOnHold = () => {
   const dispatch = useDispatch();
   const [paginatedPage, setPaginatedPage] = useState(1);
@@ -67,7 +106,7 @@ const DogsOnHold = () => {
   const { error, dachshunds, loading } = dachshund;
 
   useEffect(() => {
-    const itemsPerPage = 12;
+    const itemsPerPage = 21;
     const indexOfLastItem = paginatedPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
@@ -98,7 +137,7 @@ const DogsOnHold = () => {
             zIndex: 2,
           }}
         >
-          On Hold
+          Not Available For Adoption Yet
         </Text>
         <Text
           onClick={() =>
@@ -130,6 +169,9 @@ const DogsOnHold = () => {
             url='/about/successful-adoptions'
           />
         </div>
+        <SupportFoster className='d-flex w-100 justify-content-center'>
+          <Link to='/donate'>Support a Foster Here</Link>
+        </SupportFoster>
         {error && <Message variant='danger'>{error}</Message>}
 
         {loading && (
@@ -139,20 +181,19 @@ const DogsOnHold = () => {
             ))}
           </DogContainer>
         )}
-        <DogContainer lg={12}>
+        <DogContainer>
           {paginatedItems?.map((dachshund: any) => (
             <div
               key={dachshund.id}
               className='rounded d-flex justify-content-center h-100'
               style={{ position: 'relative' }}
             >
-              <Card.Img
+              <Image
                 src={dachshund?.attributes?.photos[0] ?? NoImgDog}
                 alt='successful-adoption'
                 style={{
                   aspectRatio: '1 / 1',
                   objectFit: 'cover',
-                  maxWidth: '300px',
                   width: '100%',
                 }}
               />

@@ -338,6 +338,9 @@ export const logout = (user: any) => async (dispatch: any, getState: any) => {
       const newsletterEmail = localStorage.getItem('newsletterEmail')
         ? JSON.parse(localStorage.getItem('newsletterEmail') || '')
         : false;
+      const agreedToCookies = localStorage.getItem('agreedToCookies')
+        ? JSON.parse(localStorage.getItem('agreedToCookies') || '')
+        : false;
       localStorage.clear();
       sessionStorage.clear();
       localStorage.setItem('cartItems', JSON.stringify(cartItems));
@@ -346,6 +349,7 @@ export const logout = (user: any) => async (dispatch: any, getState: any) => {
         JSON.stringify(continuedToSite)
       );
       localStorage.setItem('newsletterEmail', JSON.stringify(newsletterEmail));
+      localStorage.setItem('agreedToCookies', JSON.stringify(agreedToCookies));
     }
   } catch (error: any) {
     dispatch({

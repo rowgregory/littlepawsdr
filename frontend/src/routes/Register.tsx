@@ -101,9 +101,6 @@ const Register = ({ location }: any) => {
         setErrorMsg('Passwords do not match');
         setSubmittedForm(false);
       }
-    } else {
-      setErrorMsg('Password is not strong enough');
-      setSubmittedForm(false);
     }
   };
 
@@ -152,10 +149,10 @@ const Register = ({ location }: any) => {
           />
         </div>
       ) : ( */}
+      <Text fontSize='1.5rem' textAlign='center' marginBottom='0.65rem'>
+        {loading ? 'One moment' : 'Welcome to Little Paws Dachshund Rescue'}
+      </Text>
       <FormWrapper className='mx-auto px-3'>
-        <Text fontSize='1.5rem' textAlign='center' marginBottom='0.65rem'>
-          {loading ? 'One moment' : 'Welcome to Little Paws'}
-        </Text>
         <FormContainer>
           <Form onSubmit={onSubmit}>
             <JumpingInput

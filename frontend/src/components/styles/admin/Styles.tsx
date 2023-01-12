@@ -130,6 +130,9 @@ export const PaginationContainer = styled.div`
     .active {
       span,
       a {
+        :hover {
+          color: #fff !important;
+        }
         background-color: ${({ theme }) => theme.colors.quinary} !important;
         border-color: ${({ theme }) => theme.colors.quinary} !important;
       }
@@ -138,8 +141,7 @@ export const PaginationContainer = styled.div`
       span,
       a {
         :hover {
-          background-color: ${({ theme }) => theme.colors.quinary} !important;
-          border-color: ${({ theme }) => theme.colors.quinary} !important;
+          color: ${({ theme }) => theme.colors.quinary} !important;
         }
         :focus {
           box-shadow: none !important;

@@ -10,6 +10,25 @@ const GlobalStyles = createGlobalStyle<{
     overflow:${({ hasClickedHamburger }) =>
       hasClickedHamburger ? 'hidden' : ''};
   }
+
+  .pagination {
+    border: 1px solid #ededed;
+  }
+
+  .page-link {
+    background: #fff;
+    color: ${({ theme }) => theme.colors.quinary};
+    height: 48px;
+    width: 48px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .page-link:hover {
+    background-color: ${({ theme }) => theme.secondaryBg} !important;
+  }
+
   ::-webkit-scrollbar-thumb {
     -webkit-border-radius:auto;
     border-radius:auto;

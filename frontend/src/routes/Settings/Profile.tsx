@@ -33,6 +33,7 @@ import {
   ProfilePicCol,
   SettingsTitleContainer,
 } from '../../components/styles/profile/Styles';
+import { validateFullNameRegex } from '../../utils/regex';
 
 const Profile = () => {
   const dispatch = useDispatch();
@@ -125,17 +126,24 @@ const Profile = () => {
         setClouadinaryData
       );
     } else {
-      dispatch(
-        updateUserProfile({
-          id: user._id,
-          name,
-          volunteerTitle,
-          volunteerEmail,
-          profileCardTheme,
-          avatar,
-          publicId,
-        })
-      );
+      if (validateFullNameRegex.test(name)) {
+        setErrorMsg('');
+        dispatch(
+          updateUserProfile({
+            id: user._id,
+            name,
+            volunteerTitle,
+            volunteerEmail,
+            profileCardTheme,
+            avatar,
+            publicId,
+          })
+        );
+      } else {
+        setUploading(false);
+        setSubmittedForm(false);
+        setErrorMsg('Please enter full name.');
+      }
     }
   };
 
@@ -156,14 +164,33 @@ const Profile = () => {
 
   return (
     <Container>
+      <div
+        style={{
+          position: 'fixed',
+          bottom: 20,
+          left: 0,
+          right: 0,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          width: '100%',
+          maxWidth: '500px',
+          marginInline: 'auto',
+        }}
+      >
+        <Accordion
+          toggle={errorMsg !== '' || error}
+          maxheight='65px'
+          className='w-100'
+        >
+          <Message variant='danger'>{errorMsg || error}</Message>
+        </Accordion>
+      </div>
       <SettingsTitleContainer className='d-flex justify-content-between align-items-center'>
         <WelcomeText>Profile</WelcomeText>
         {checkmark && <Checkmark />}
       </SettingsTitleContainer>
       {(loading || loadingUpdate || submittedForm) && <HexagonLoader />}
-      {(errorMsg || error) && (
-        <Message variant='danger'>{errorMsg || error}</Message>
-      )}
       <Form className='mt-4'>
         <div className='d-flex flex-wrap'>
           <FirstCol xl={6} lg={8} className='pl-0'>

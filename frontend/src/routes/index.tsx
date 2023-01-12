@@ -28,6 +28,8 @@ import ECards from './ECards';
 import ECardDetails from './ECardDetails';
 import EcardPlaceOrder from './EcardPlaceOrder';
 import ReturnPolicy from './ReturnPolicy';
+import CookiePolicyPopUp from '../components/CookiePolicyPopUp';
+import CookiePolicy from './CookiePolicy';
 
 type LazyModulePromise<T = {}> = Promise<{ default: ComponentType<T> }>;
 
@@ -78,8 +80,10 @@ export const Routes: FC = () => {
       <PopUp />
       <GlobalStyles />
       <Navbar />
+      <CookiePolicyPopUp />
       <Page url={pathname} fluid>
         <Switch>
+          <Route path='/cookie-policy' component={CookiePolicy} />
           <Route path='/return-policy' component={ReturnPolicy} />
           <Route path='/e-card/order/:id' component={ECardOrderReceipt} />
           <Route path='/e-cards' component={ECards} />

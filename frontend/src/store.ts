@@ -13,13 +13,13 @@ let userInfoFromStorage: any = sessionStorage.getItem('userInfo')
   ? JSON.parse(sessionStorage.getItem('userInfo') || '')
   : null;
 
+if (localStorage.getItem('cartItems') === 'undefined') {
+  localStorage.removeItem('cartItems');
+}
+
 const cartItemsFromStorage = localStorage.getItem('cartItems')
   ? JSON.parse(localStorage.getItem('cartItems') || '')
   : [];
-
-const shippingAddressFromStorage = localStorage.getItem('shippingAddress')
-  ? JSON.parse(localStorage.getItem('shippingAddress') || '')
-  : {};
 
 const paymentMethodFromStorage = localStorage.getItem('paymentMethod')
   ? JSON.parse(localStorage.getItem('paymentMethod') || '')
@@ -34,7 +34,6 @@ const initialState: any = {
   userLogin: { userInfo: userInfoFromStorage },
   cart: {
     cartItems: cartItemsFromStorage,
-    shippingAddress: shippingAddressFromStorage,
     paymentMethod: paymentMethodFromStorage,
   },
   guestUserRegister: { guestUserInfo: guestUserInfoFromStorage },

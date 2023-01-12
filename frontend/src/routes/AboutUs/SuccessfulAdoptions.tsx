@@ -69,7 +69,7 @@ const SuccessfulAdoptions = () => {
   let { error, dachshunds, loading } = dachshund;
 
   useEffect(() => {
-    const itemsPerPage = 24;
+    const itemsPerPage = 30;
     const indexOfLastItem = paginatedPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
@@ -185,7 +185,7 @@ const SuccessfulAdoptions = () => {
         </DogContainer>
         <PaginationContainer>
           <Pagination className='my-3'>
-            {rangeV2(dachshunds, paginatedPage, setPaginatedPage, 24)}
+            {rangeV2(dachshunds, paginatedPage, setPaginatedPage, 30)}
           </Pagination>
         </PaginationContainer>
       </Container>

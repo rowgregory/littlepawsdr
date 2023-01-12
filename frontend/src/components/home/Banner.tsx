@@ -183,7 +183,7 @@ const Banner = () => {
       <Container>
         <ReactPlayer
           style={{ position: 'absolute', top: 0, left: 0 }}
-          url='https://res.cloudinary.com/little-paws-dachshund-rescue/video/upload/v1657055078/video_1_vuv4b4.mp4'
+          url='https://res.cloudinary.com/dro7mux7a/video/upload/v1673299260/landing-dachshund_verv2a.mp4'
           playsinline
           controls={false}
           playing={true}

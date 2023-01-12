@@ -69,7 +69,7 @@ const ParallaxImg2 = styled.div`
   background-size: cover;
   background-attachment: fixed;
   background-position: center center;
-  background-image: url('https://res.cloudinary.com/little-paws-dachshund-rescue/image/upload/v1657117988/parallax-img-1_lglhxi.jpg');
+  background-image: url('https://res.cloudinary.com/dro7mux7a/image/upload/v1673299654/the-goal-2_pcu80y.jpg');
   background-repeat: no-repeat;
   filter: brightness(0.8);
 `;
@@ -241,7 +241,7 @@ const Home = () => {
         </div>
         <MobileImageSection>
           <Image
-            src='https://res.cloudinary.com/little-paws-dachshund-rescue/image/upload/v1657117988/parallax-img-1_lglhxi.jpg'
+            src='https://res.cloudinary.com/dro7mux7a/image/upload/v1673299654/the-goal-2_pcu80y.jpg'
             alt='LPDR'
             width='100%'
           />

@@ -15,7 +15,6 @@ import {
   FormWrapper,
   StyledButton,
 } from '../components/styles/Styles';
-import LeftArrow from '../components/svg/LeftArrow';
 import { RESET_EMAIL_SEND_RESET } from '../constants/resetPasswordContants';
 
 const useForgotPasswordForm = (cb: any) => {
@@ -67,7 +66,6 @@ const ForgotPassword = () => {
         <Text fontSize='1.5rem' textAlign='center' marginBottom='0.65rem'>
           Forgot Password
         </Text>
-        <LeftArrow text='Back to sign in' url='/login' />
         <FormContainer>
           <Form onSubmit={onSubmit}>
             <JumpingInput

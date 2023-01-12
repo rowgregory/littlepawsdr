@@ -112,9 +112,8 @@ export const Container = styled.div`
   flex-direction: column;
   background: ${({ theme }) => theme.input.bg};
   background: ${({ theme }) => theme.secondaryBg};
-  padding-top: 3rem;
-  padding-top: 70px;
-  height: 100vh;
+  padding-block: 70px;
+  min-height: 100vh;
 `;
 
 export const CreateAccountContainer = styled.div`

@@ -356,7 +356,6 @@ const Dashboard = () => {
           <Text fontWeight={500} fontSize='17px' color='#373737'>
             Recent Transactions
           </Text>
-          <Text color='#b1b1b1'>See All</Text>
         </div>
         {allRecentTransactions
           ?.map((item: any, i: number) => (

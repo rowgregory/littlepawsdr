@@ -86,7 +86,9 @@ export const SettingsLayoutWithSideBar: FC<SettingsLayoutWithSideBarProps> = ({
             {capitalizeFirstLetter(userInfo?.name?.split(' ')[0])}
           </Text>
         </div>
-        <StyledLink to='/about/team-members'>Go to public profile</StyledLink>
+        {userInfo?.isAdmin && (
+          <StyledLink to='/about/team-members'>Go to public profile</StyledLink>
+        )}
       </TopRow>
       <SideBarChildrenWrapper>
         <SideBar>{sideBar}</SideBar>

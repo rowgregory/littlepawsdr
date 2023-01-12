@@ -183,7 +183,7 @@ const UserDropdown = ({
               className='d-flex justify-content-between align-items-center px-4 py-3'
             >
               <Text>
-                <i className='fas fa-arrow-left mr-2'></i>Go Back
+                <i className='fas fa-arrow-left mr-2'></i>Back
               </Text>
             </MyOrdersBtn>
             <AvatarHeaderLinks
@@ -208,8 +208,9 @@ const UserDropdown = ({
               to='/shop'
               className='d-flex justify-content-between align-items-center px-4 py-3'
             >
-              <Text>Continue Shipping</Text>
-              <i className='fas fa-arrow-right'></i>
+              <Text>
+                Shop <i className='fas fa-arrow-right ml-2'></i>
+              </Text>
             </AvatarHeaderLinks>
           </div>
         </CSSTransition>

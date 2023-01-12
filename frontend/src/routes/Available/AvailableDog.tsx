@@ -140,7 +140,7 @@ const FlexContainer = styled.div`
   }
 `;
 
-const AvailableDog = ({ match, history }: any) => {
+const AvailableDog = ({ match }: any) => {
   const dispatch = useDispatch();
   const [typeLocations, setTypeLocations] = useState('');
   const { state } = useLocation() as any;
@@ -152,6 +152,7 @@ const AvailableDog = ({ match, history }: any) => {
 
   useEffect(() => {
     dispatch(getDachshundDetails(match.params.id));
+    window.scrollTo(0, 0);
   }, [dispatch, match]);
   useEffect(() => {
     locationsPromise(dachshund, setTypeLocations);

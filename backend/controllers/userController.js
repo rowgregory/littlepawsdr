@@ -19,7 +19,10 @@ const authUser = asyncHandler(async (req, res) => {
 
     if (user && (await user.matchPassword(password))) {
       user.online = true;
-      user.token = generateToken(user._id, '24h');
+      user.token = generateToken(
+        { id: user._id, name: user.name, email: user.email },
+        '24h'
+      );
 
       const updatedUser = await user.save();
 
@@ -86,7 +89,7 @@ const registerUser = asyncHandler(async (req, res) => {
       name,
       email,
       password,
-      token: generateToken(uuidv4(), '6h'),
+      token: generateToken({ id: uuidv4(), name, email }, '6h'),
     };
 
     if (user) {
@@ -436,10 +439,19 @@ const userIsConfirmed = asyncHandler(async (req, res) => {
         theme: 'sync',
         confirmed: true,
         publicId: '',
-        token: generateToken({ name, email }, '24h'),
       });
 
-      const updatedUser = await user.save();
+      const createdUser = await user.save();
+
+      createdUser.token = generateToken(
+        {
+          id: createdUser._id,
+          name: createdUser.name,
+          email: createdUser.email,
+        },
+        '24h'
+      );
+      const updatedUser = await createdUser.save();
 
       res.json(updatedUser);
     }

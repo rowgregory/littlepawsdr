@@ -63,7 +63,6 @@ const MyOrders = ({ history }: any) => {
   const handleShow = () => setShow(true);
 
   const {
-    userLogin: { userInfo },
     orderListMy: { loading, error, orders },
   } = useSelector((state: any) => state);
 
@@ -76,12 +75,8 @@ const MyOrders = ({ history }: any) => {
   }, [orders, paginatedPage]);
 
   useEffect(() => {
-    if (!userInfo) {
-      history.push('/');
-    } else {
-      dispatch(listMyOrders());
-    }
-  }, [history, dispatch, userInfo]);
+    dispatch(listMyOrders());
+  }, [history, dispatch]);
 
   if (orders?.length === 0) {
     return <NoItemsDefault items='orders' Icon={NoOrders} />;

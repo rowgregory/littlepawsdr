@@ -69,7 +69,6 @@ const EcardPlaceOrder = ({ history }: any) => {
     state: { ecard },
   } = useLocation() as any;
   const dispatch = useDispatch();
-  // const [sdkReady, setSdkReady] = useState(false);
   const [orderLoader, setOrderLoader] = useState(false);
   const [revealPersonalize, setRevealPersonalize] = useState(true);
   const [revealMyInfo, setRevealMyInfo] = useState(false);
@@ -122,21 +121,6 @@ const EcardPlaceOrder = ({ history }: any) => {
     passedStepOne ? myInfoCallback : personalizeCallback,
     ecard
   );
-
-  // useEffect(() => {
-  //   const addPayPalScript = async () => {
-  //     const script = document.createElement('script');
-  //     script.type = 'text/javascript';
-  //     script.src = `https://www.paypal.com/sdk/js?client-id=${process.env.REACT_APP_PAYPAL_PROD}`;
-  //     script.async = true;
-  //     script.onload = () => setSdkReady(true);
-  //     document.body.appendChild(script);
-  //   };
-
-  //   if (!sdkReady) {
-  //     addPayPalScript();
-  //   }
-  // }, [sdkReady]);
 
   useEffect(() => {
     if (success) {
