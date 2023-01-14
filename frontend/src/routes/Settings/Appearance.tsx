@@ -74,7 +74,9 @@ const Appearance = () => {
   }, [dispatch, successUpdateProfile]);
   return (
     <>
-      {errorUpdateProfile ? (
+      {true ? (
+        <Text>Coming Soon!</Text>
+      ) : errorUpdateProfile ? (
         <Message variant='danger'>{errorUpdateProfile}</Message>
       ) : (
         <>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Form } from 'react-bootstrap';
+import { Form, Image } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { register } from '../actions/userActions';
 import {
@@ -30,6 +30,8 @@ import {
   termsOfServiceLinkKey,
 } from '../utils/footerUtils';
 import { Accordion } from '../components/styles/place-order/Styles';
+import { Link } from 'react-router-dom';
+import LogoDay from '../components/assets/logo.png';
 // import ReCAPTCHA from 'react-google-recaptcha';
 // import axios from 'axios';
 
@@ -149,11 +151,27 @@ const Register = ({ location }: any) => {
           />
         </div>
       ) : ( */}
-      <Text fontSize='1.5rem' textAlign='center' marginBottom='0.65rem'>
-        {loading ? 'One moment' : 'Welcome to Little Paws Dachshund Rescue'}
-      </Text>
       <FormWrapper className='mx-auto px-3'>
         <FormContainer>
+          <Link to='/'>
+            <Image
+              src={LogoDay}
+              alt='Little Paws Dachshund Rescue'
+              style={{
+                width: '150px',
+                marginLeft: '-16px',
+                marginBottom: '32px',
+              }}
+            />
+          </Link>
+          <Text
+            color='#22c2b7'
+            fontSize='33px'
+            marginBottom='16px'
+            fontWeight={400}
+          >
+            {loading ? 'One moment' : 'Join us!'}
+          </Text>
           <Form onSubmit={onSubmit}>
             <JumpingInput
               autocomplete
@@ -248,9 +266,12 @@ const Register = ({ location }: any) => {
             </span>
           </Text>
         </FormContainer>
-        <CreateAccountContainer className='py-3 mt-3'>
-          Already have an account? <StyledLink to='/login'>Sign In</StyledLink>
+        <CreateAccountContainer className='pt-3 pb-2 mt-3'>
+          Already have an account?
         </CreateAccountContainer>
+        <StyledLink className='d-flex justify-content-center' to='/login'>
+          Sign In
+        </StyledLink>
       </FormWrapper>
       {/* )} */}
       <div

@@ -63,10 +63,13 @@ const ForgotPassword = () => {
     <Container className='align-items-center'>
       {loading && <HexagonLoader />}
       <FormWrapper className='mx-auto px-3'>
-        <Text fontSize='1.5rem' textAlign='center' marginBottom='0.65rem'>
-          Forgot Password
-        </Text>
         <FormContainer>
+          <Text color='#22c2b7' fontSize='33px' fontWeight={400}>
+            Reset Password
+          </Text>
+          <Text marginBottom='16px' marginTop='16px'>
+            Enter the email address you registered with.
+          </Text>
           <Form onSubmit={onSubmit}>
             <JumpingInput
               name='forgotPasswordEmail'
@@ -89,12 +92,12 @@ const ForgotPassword = () => {
         <CreateAccountContainer className='py-3 mt-3'>
           Remembered your password?{' '}
           <StyledLink
+            className='d-flex justify-content-center'
             onClick={() => dispatch({ type: RESET_EMAIL_SEND_RESET })}
             to='/login'
           >
             Sign In
           </StyledLink>
-          .
         </CreateAccountContainer>
       </FormWrapper>
       <div

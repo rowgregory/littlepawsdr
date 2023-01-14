@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import LegacyWallpaper from '../../components/assets/aqua_tile.jpg';
 
 export const StyledCard = styled.div`
   border-radius: 0;
@@ -96,6 +97,10 @@ export const StyledButton = styled(Button)`
     filter: brightness(0.9);
   }
   box-shadow: none !important;
+  padding: 16px 24px;
+  border-radius: 0.75rem;
+  font-weight: 400;
+  font-size: 16px;
 `;
 
 export const StyledLink = styled(Link)`
@@ -104,6 +109,8 @@ export const StyledLink = styled(Link)`
     color: ${({ theme }) => theme.colors.secondary};
     filter: brightness(0.9);
   }
+  text-align: center;
+  font-weight: 400;
 `;
 
 export const Container = styled.div`
@@ -112,29 +119,32 @@ export const Container = styled.div`
   flex-direction: column;
   background: ${({ theme }) => theme.input.bg};
   background: ${({ theme }) => theme.secondaryBg};
-  padding-block: 70px;
+  padding-block: 145px;
   min-height: 100vh;
+  background: url(${LegacyWallpaper});
 `;
 
-export const CreateAccountContainer = styled.div`
-  font-weight: 300;
-  text-align: center;
-  border: 1px solid #ededed;
-  border-radius: 0.4rem;
-  background: ${({ theme }) => theme.bg};
-`;
-
-export const FormContainer = styled.div`
-  margin-top: 16px;
-  padding: 16px;
+export const FormWrapper = styled.div`
+  margin-inline: auto;
+  padding: 32px;
+  max-width: 472px;
+  width: 100%;
   background: ${({ theme }) => (theme.mode === 'night' ? '#161b22' : '#fff')};
   border: 0.8px solid
     ${({ theme }) => (theme.mode === 'night' ? '#21262d' : '#ededed')};
   border-radius: 0.4rem;
 `;
 
-export const FormWrapper = styled.div`
-  max-width: 340px;
+export const FormContainer = styled.div`
+  max-width: 330px;
   width: 100%;
   margin-inline: auto;
+  padding-block: 32px;
+`;
+
+export const CreateAccountContainer = styled.div`
+  font-weight: 300;
+  text-align: center;
+  border-radius: 0.4rem;
+  background: ${({ theme }) => theme.bg};
 `;

@@ -22,7 +22,7 @@ import { validateEmailRegex } from '../utils/regex';
 import HexagonLoader from '../components/Loaders/HexagonLoader/HexagonLoader';
 import loginEffect from '../components/sounds/login.mp3';
 import failedLoginAttempt from '../components/sounds/thump02.wav';
-import LogoDay from '../components/assets/logoF7.jpg';
+import Logo from '../components/assets/logo.png';
 import UIfx from 'uifx';
 import { Link } from 'react-router-dom';
 import { Accordion } from '../components/styles/place-order/Styles';
@@ -104,24 +104,28 @@ const Login = ({ history }: any) => {
 
   return (
     <Container>
-      <Link to='/'>
-        <Image
-          src={LogoDay}
-          alt='Little Paws Dachshund Rescue'
-          style={{
-            position: 'absolute',
-            top: '12px',
-            left: '12px',
-            width: '75px',
-          }}
-        />
-      </Link>
       {loading && <HexagonLoader />}
-      <FormWrapper className='mx-auto px-3'>
-        <Text fontSize='1.5rem' textAlign='center' marginBottom='0.65rem'>
-          Sign in to Little Paws
-        </Text>
+      <FormWrapper>
         <FormContainer>
+          <Link to='/'>
+            <Image
+              src={Logo}
+              alt='Little Paws Dachshund Rescue'
+              style={{
+                width: '150px',
+                marginLeft: '-16px',
+                marginBottom: '32px',
+              }}
+            />
+          </Link>
+          <Text
+            color='#22c2b7'
+            fontSize='33px'
+            marginBottom='16px'
+            fontWeight={400}
+          >
+            Sign In
+          </Text>
           {capsLockOn && <Message variant='warning'>(Caps Lock is on)</Message>}
           <Form onSubmit={onSubmit}>
             <JumpingInput
@@ -151,7 +155,7 @@ const Login = ({ history }: any) => {
                   dispatch({ type: USER_LOGIN_RESET });
                 }}
               >
-                Forgot Password?
+                Reset password
               </StyledLink>
             </div>
             <StyledButton
@@ -164,18 +168,17 @@ const Login = ({ history }: any) => {
               </Text>
             </StyledButton>
           </Form>
-        </FormContainer>
-        <CreateAccountContainer className='py-3 mt-3'>
-          New to Little Paws?{' '}
+          <CreateAccountContainer className='pt-3 pb-2 mt-3'>
+            New to Little Paws Dachshund Rescue?
+          </CreateAccountContainer>
           <StyledLink
-            style={{ fontWeight: 400 }}
+            className='d-flex justify-content-center'
             to='/register'
             onClick={() => dispatch({ type: USER_LOGIN_RESET })}
           >
-            Create an account
+            Join now
           </StyledLink>
-          .
-        </CreateAccountContainer>
+        </FormContainer>
       </FormWrapper>
       <div
         style={{
