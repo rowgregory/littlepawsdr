@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { useTheme } from 'styled-components';
 import { Text } from '../components/styles/Styles';
-import SurrenderDog from '../components/assets/surrender02.jpeg';
+import SurrenderDog from '../components/assets/surrender02.webp';
 import { Image } from 'react-bootstrap';
 import LeftArrow from '../components/svg/LeftArrow';
 import RightArrow from '../components/svg/RightArrow';
@@ -21,6 +21,7 @@ const Surrender = () => {
           src={SurrenderDog}
           width='100%'
           style={{ height: '500px', objectFit: 'cover' }}
+          loading='lazy'
         />
         <Text
           fontWeight={500}
@@ -74,7 +75,7 @@ const Surrender = () => {
             text2='Sanctuary'
             url2='/about/sanctuary'
           />
-          <RightArrow text='On Hold' url='/about/hold' />
+          <RightArrow text='Not Available for Adoption Yet' url='/about/hold' />
         </div>
         <Text
           fontSize='31px'

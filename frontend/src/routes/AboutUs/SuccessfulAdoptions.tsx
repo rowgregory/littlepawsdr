@@ -127,7 +127,12 @@ const SuccessfulAdoptions = () => {
       {error && <Message variant='danger'>{error}</Message>}
       <Container>
         <div className='w-100 d-flex justify-content-between mt-3'>
-          <LeftArrow text='Home' url='/' text2='On Hold' url2='/about/hold' />
+          <LeftArrow
+            text='Home'
+            url='/'
+            text2='Not Available for Adoption Yet'
+            url2='/about/hold'
+          />
           <RightArrow text='Rainbow Bridge' url='/about/rainbow-bridge' />
         </div>
         {loading && (
@@ -154,6 +159,7 @@ const SuccessfulAdoptions = () => {
                     maxWidth: '300px',
                     width: '100%',
                   }}
+                  loading='lazy'
                 />
 
                 <TextContainer>

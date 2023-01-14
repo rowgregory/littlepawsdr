@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import SubscribeBtn from '../../components/assets/subscribe_btn_3.png';
 import styled from 'styled-components';
 import { Text } from '../../components/styles/Styles';
-import SponsorDog from '../../components/assets/sanctuary01.jpeg';
+import SponsorDog from '../../components/assets/sanctuary01.webp';
 import { Image } from 'react-bootstrap';
 import SponsorGift from '../../components/svg/SponsorGift';
 import { useDispatch, useSelector } from 'react-redux';
@@ -108,6 +108,7 @@ const SponsorSanctuary = () => {
           src={SponsorDog}
           width='100%'
           style={{ height: '500px', objectFit: 'cover' }}
+          loading='lazy'
         />
         <Text
           fontWeight={500}
