@@ -41,7 +41,7 @@ const LeftNavigation: FC<LeftNavigationProps> = ({ openMenu, setOpenMenu }) => {
         width < 900 ? `${window.innerWidth}px` : '75vw';
       overlayRef.current.style.left = '0px';
     } else {
-      overlayRef.current.style.left = `-${window.innerWidth}px`;
+      overlayRef.current.style.left = `-${window.innerWidth + 500}px`;
     }
   }, [openMenu, width]);
 
