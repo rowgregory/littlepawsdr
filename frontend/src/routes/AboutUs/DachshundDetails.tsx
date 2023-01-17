@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Carousel, Image } from 'react-bootstrap';
 import { Text } from '../../components/styles/Styles';
@@ -207,12 +207,15 @@ const DachshundDetails = () => {
           <Text fontSize='24px' fontWeight='600' marginBottom='30px'>
             About {name}
           </Text>
-          <Text fontSize='14px' style={{ whiteSpace: 'pre-line' }}>
+          <Text fontSize='14px'>
             {descriptionText
-              ?.replace(/&#39;/g, "'")
+              .replace(/&#39;/g, "'")
               .replace(/&rsquo;/g, "'")
               .replace(/&amp;/g, '&')
-              .replace(/&nbsp;/g, '')}
+              .replace(/&nbsp;/g, '')
+              .replace(/&ldquo;/g, '"')
+              .replace(/&rdquo;/g, '"')
+              .replace(/&mdash;/g, '')}
           </Text>
         </div>
         <div style={{ flex: '1 1 0px' }}>

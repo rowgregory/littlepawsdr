@@ -286,16 +286,20 @@ const AvailableDog = ({ match }: any) => {
             border='1px solid rgb(68, 68, 68)'
             p='0.5rem 1rem'
             fontSize='1.15rem'
+            marginBottom='16px'
           >
             Adoption Fee: {adoptionFeeString}
           </Text>
-          <Text fontSize='0.875rem' style={{ whiteSpace: 'pre-line' }}>
+          <Text fontSize='0.875rem'>
             {descriptionText !== undefined &&
               descriptionText
                 .replace(/&#39;/g, "'")
                 .replace(/&rsquo;/g, "'")
                 .replace(/&amp;/g, '&')
-                .replace(/&nbsp;/g, '')}
+                .replace(/&nbsp;/g, '')
+                .replace(/&ldquo;/g, '"')
+                .replace(/&rdquo;/g, '"')
+                .replace(/&mdash;/g, '')}
           </Text>
         </div>
         <div style={{ flex: '1 1 0px' }}>
