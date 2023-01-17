@@ -7,13 +7,30 @@ import { Text } from './styles/Styles';
 const Container = styled.div`
   position: fixed;
   z-index: 101;
-  bottom: 16px;
-  right: 16px;
-  width: 100%;
-  max-width: 400px;
   background: #ededed;
   display: flex;
   flex-direction: column;
+  width: 100vw;
+  bottom: 0;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+  div {
+    div {
+      padding: 10px;
+      font-size: 11px;
+    }
+  }
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    bottom: 16px;
+    right: 16px;
+    width: 100%;
+    max-width: 400px;
+    div {
+      div {
+        font-size: 16px;
+        padding: 14px;
+      }
+    }
+  }
 `;
 
 const CookiePolicyPopUp = () => {

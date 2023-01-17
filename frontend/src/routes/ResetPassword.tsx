@@ -6,6 +6,7 @@ import {
   Container,
   CreateAccountContainer,
   FormContainer,
+  FormWrapper,
   StyledButton,
   StyledLink,
   Text,
@@ -13,7 +14,6 @@ import {
 import PasswordMeter, {
   PasswordRequirements,
 } from '../components/PasswordMeter';
-import { CSSTransition } from 'react-transition-group';
 import Message from '../components/Message';
 import HexagonLoader from '../components/Loaders/HexagonLoader/HexagonLoader';
 import { Link } from 'react-router-dom';
@@ -23,7 +23,6 @@ const ResetPassword = ({ match }: any) => {
   const tokenId = match.params.id;
   const dispatch = useDispatch();
   const [password, setPassword] = useState('');
-  const [activeMenu, setActiveMenu] = useState('reset-password') as any;
   const [showPassword, setShowPassword] = useState({ password: false });
   const [errorMsg, setMessage] = useState('');
   const [show, setShow] = useState(true);
@@ -40,12 +39,6 @@ const ResetPassword = ({ match }: any) => {
   useEffect(() => {
     dispatch(verifyToken(tokenId));
   }, [dispatch, tokenId]);
-
-  useEffect(() => {
-    if (message === 'Password Updated!') {
-      setActiveMenu('password-updated');
-    }
-  }, [message]);
 
   const submitHandler = (e: any) => {
     e.preventDefault();
@@ -73,76 +66,70 @@ const ResetPassword = ({ match }: any) => {
   ) : (
     <Container className='align-items-center'>
       {(loadingVerifyToken || loadingResetPassword) && <HexagonLoader />}
-      {(message || errorMsg) && (
-        <Message variant={errorMsg ? 'danger' : 'success'}>
-          {message || errorMsg}
-        </Message>
-      )}
-      <div
-        className='mx-auto px-3 pt-4'
-        style={{
-          maxWidth: '340px',
-          width: '100%',
-          overflow: 'hidden !important',
-        }}
-      >
-        <CSSTransition
-          in={activeMenu === 'reset-password'}
-          unmountOnExit
-          timeout={500}
-          classNames='slide-up'
-        >
-          <div style={{ width: '340px' }}>
-            <Text fontSize='1.5rem' textAlign='center' marginBottom='0.65rem'>
-              Reset Password
-            </Text>
-            <FormContainer>
-              <Form onSubmit={submitHandler}>
-                <JumpingInput
-                  name='password'
-                  label='Password'
-                  value={password || ''}
-                  handleInputChange={(e: any) => setPassword(e.target.value)}
-                  type={showPassword.password ? 'text' : 'password'}
-                  error={''}
-                  blur={() => ({})}
-                  showPassword={showPassword.password}
-                  setShowPassword={setShowPassword}
-                />
-                <PasswordMeter validations={validations} strength={strength} />
-                <Text
-                  onClick={() => setShow(!show)}
-                  fontWeight={400}
-                  className='d-flex align-items-center justify-content-between mb-2'
-                >
-                  {show ? 'Hide ' : 'Show '}password requirements
-                  {<i className={`fas fa-chevron-${show ? 'up' : 'down'}`}></i>}
-                </Text>
-                <PasswordRequirements validations={validations} open={show} />
-                <StyledButton
-                  disabled={loadingResetPassword || password === ''}
-                  type='submit'
-                  className='d-flex align-items-center border-0 w-100 justify-content-center mt-3'
-                >
-                  Updat{loadingResetPassword ? 'ing' : 'e'}&nbsp;&nbsp;
-                </StyledButton>
-              </Form>
-            </FormContainer>
-          </div>
-        </CSSTransition>
-        <CSSTransition
-          in={activeMenu === 'password-updated'}
-          unmountOnExit
-          timeout={500}
-          classNames='menu-secondary'
-        >
-          <div style={{ width: '340px' }}>
-            <CreateAccountContainer className='py-3 mt-3'>
-              <StyledLink to='/login'>Sign In</StyledLink>
-            </CreateAccountContainer>
-          </div>
-        </CSSTransition>
-      </div>
+      <FormWrapper>
+        <FormContainer>
+          {errorMsg ? (
+            <Message variant='danger'>{errorMsg}</Message>
+          ) : message ? (
+            <>
+              <Message variant='success'>{message}</Message>
+              <CreateAccountContainer className='py-3 mt-4'>
+                <StyledLink to='/login'>Sign In</StyledLink>
+              </CreateAccountContainer>
+            </>
+          ) : (
+            <>
+              <Text
+                color='#22c2b7'
+                fontSize='33px'
+                marginBottom='16px'
+                fontWeight={400}
+              >
+                Reset Password
+              </Text>
+              <FormContainer>
+                <Form onSubmit={submitHandler}>
+                  <JumpingInput
+                    name='password'
+                    label='Password'
+                    value={password || ''}
+                    handleInputChange={(e: any) => setPassword(e.target.value)}
+                    type={showPassword.password ? 'text' : 'password'}
+                    error={''}
+                    blur={() => ({})}
+                    showPassword={showPassword.password}
+                    setShowPassword={setShowPassword}
+                  />
+                  <PasswordMeter
+                    validations={validations}
+                    strength={strength}
+                  />
+                  <Text
+                    onClick={() => setShow(!show)}
+                    fontWeight={400}
+                    className='d-flex align-items-center justify-content-between mb-2'
+                  >
+                    {show ? 'Hide ' : 'Show '}password requirements
+                    {
+                      <i
+                        className={`fas fa-chevron-${show ? 'up' : 'down'}`}
+                      ></i>
+                    }
+                  </Text>
+                  <PasswordRequirements validations={validations} open={show} />
+                  <StyledButton
+                    disabled={loadingResetPassword || password === ''}
+                    type='submit'
+                    className='d-flex align-items-center border-0 w-100 justify-content-center mt-3'
+                  >
+                    Updat{loadingResetPassword ? 'ing' : 'e'}&nbsp;&nbsp;
+                  </StyledButton>
+                </Form>
+              </FormContainer>
+            </>
+          )}
+        </FormContainer>
+      </FormWrapper>
     </Container>
   );
 };

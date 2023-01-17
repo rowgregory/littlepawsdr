@@ -65,7 +65,7 @@ const ForgotPassword = () => {
       <FormWrapper className='mx-auto px-3'>
         <FormContainer>
           <Text color='#22c2b7' fontSize='33px' fontWeight={400}>
-            Reset Password
+            Forgot Password
           </Text>
           <Text marginBottom='16px' marginTop='16px'>
             Enter the email address you registered with.

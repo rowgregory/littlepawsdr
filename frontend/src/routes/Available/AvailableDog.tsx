@@ -34,25 +34,31 @@ const StyledCarousel = styled(Carousel)`
   height: 100%;
   aspect-ratio: 1/1;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    width: 425px;
-    height: 425px;
+    width: 65%;
+    height: 65%;
   }
 `;
 
 const Container = styled.div`
   max-width: ${({ theme }) => theme.breakpoints[3]};
   margin-inline: auto;
-  margin-top: 96px;
-  padding: 16px;
+  padding-inline: 8px;
+  margin-top: 24px;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    margin-top: 96px;
+    padding: 16px;
+  }
 `;
+
 const AdoptMeLink = styled(Link)`
   color: ${({ theme }) => theme.colors.secondary};
-  width: fit-content;
-  font-family: 'Ubuntu', sans-serif;
+  width: 100%;
+  text-align: center;
   font-size: 1.25rem;
   padding: 0.375rem 1.5rem;
   border: 2px solid ${({ theme }) => theme.colors.secondary};
   transition: 300ms;
+  margin-bottom: 48px;
   :hover {
     background: ${({ theme }) => theme.colors.secondary};
     color: ${({ theme }) => theme.white};
@@ -69,7 +75,10 @@ const BottomSection = styled.div`
   grid-template-columns: 1fr;
   margin: 5rem 0rem;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
+  }
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
   }
   div {
     color: #fff;
@@ -133,10 +142,10 @@ const DetailsGrid = styled.div`
 const FlexContainer = styled.div`
   display: flex;
   flex-direction: column;
-  margin: 1rem;
+  margin-top: 32px;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    margin: 0;
     flex-direction: row;
+    margin-bottom: 60px;
   }
 `;
 
@@ -246,7 +255,7 @@ const AvailableDog = ({ match }: any) => {
 
       {error && <Message variant='danger'>{error}</Message>}
 
-      <FlexContainer style={{ marginBottom: '60px', marginTop: '32px' }}>
+      <FlexContainer>
         {loading ? (
           <StyledCarousel>
             <LoadingImg w='100%' />
@@ -286,19 +295,45 @@ const AvailableDog = ({ match }: any) => {
             border='1px solid rgb(68, 68, 68)'
             p='0.5rem 1rem'
             fontSize='1.15rem'
-            marginBottom='16px'
+            marginBottom='32px'
           >
             Adoption Fee: {adoptionFeeString}
           </Text>
-          <Text fontSize='0.875rem'>
+
+          <Text
+            fontSize='15px'
+            textIndent='20px'
+            marginBottom='48px'
+            lineHeight='24px'
+          >
             {descriptionText !== undefined &&
               descriptionText
                 .replace(/&#39;/g, "'")
                 .replace(/&rsquo;/g, "'")
                 .replace(/&amp;/g, '&')
-                .replace(/&nbsp;/g, '')
+                .replace(/&nbsp;/g, ' ')
                 .replace(/&ldquo;/g, '"')
                 .replace(/&rdquo;/g, '"')
+                .replace(
+                  `If the dog is adopted over a state line, there will be an additional charge for a health certificate (required by law) of anywhere between $45.00 and $150.00.`,
+                  ''
+                )
+                .replace(
+                  `If the dog is adopted over a state line, there will be an additional charge for a health certificate (required by law) of anywhere between $45.00 and $150.00.`,
+                  ''
+                )
+                .replace(
+                  `If he is adopted over a state line, there will be an additional charge for a health certificate (required by law) of anywhere between $45.00 and $100.00.`,
+                  ''
+                )
+                .replace(
+                  `If the dog is adopted over a state line, there will be an additional charge for a health certificate (required by law) of anywhere between $45.00 and $100.00.`,
+                  ''
+                )
+                .replace(
+                  `The amount depends upon what the veterinarian charges LPDR.`,
+                  ''
+                )
                 .replace(/&mdash;/g, '')}
           </Text>
         </div>
@@ -319,15 +354,20 @@ const AvailableDog = ({ match }: any) => {
 
       <BottomSection>
         <div className='d-flex flex-column p-3'>
-          <Text
-            fontWeight='bold'
-            fontSize='1.25rem'
-            marginBottom='0.75rem'
-            fontFamily='Duru Sans'
-          >
+          <Text fontWeight='bold' fontSize='1.15rem' marginBottom='0.55rem'>
+            Dogs Adopted Over a State Line
+          </Text>
+          <Text>
+            There will be an additional charge for a health certificate
+            (required by law) of anywhere between $45.00 and $150.00. The amount
+            depends upon what the veterinarian charges LPDR.
+          </Text>
+        </div>
+        <div className='d-flex flex-column p-3'>
+          <Text fontWeight='bold' fontSize='1.15rem' marginBottom='0.55rem'>
             Dogs Adopted in New England
           </Text>
-          <Text fontFamily='Duru Sans'>
+          <Text>
             Dogs adopted in New England are subject to additional rules and
             regulations by the state departments of agriculture. Complying with
             these regulations is expensive for our rescue, and some dogs adopted
@@ -336,29 +376,19 @@ const AvailableDog = ({ match }: any) => {
           </Text>
         </div>
         <div className='d-flex flex-column p-3'>
-          <Text
-            fontWeight='bold'
-            fontSize='1.25rem'
-            marginBottom='0.75rem'
-            fontFamily='Duru Sans'
-          >
+          <Text fontWeight='bold' fontSize='1.15rem' marginBottom='0.55rem'>
             Adoption Fee Info
           </Text>
-          <Text fontFamily='Duru Sans'>
+          <Text>
             There will be a $45 fee for a health certificate if you will be
             traveling over state lines. This is required by law.
           </Text>
         </div>
         <div className='d-flex flex-column p-3'>
-          <Text
-            fontWeight='bold'
-            fontSize='1.25rem'
-            marginBottom='0.75rem'
-            fontFamily='Duru Sans'
-          >
+          <Text fontWeight='bold' fontSize='1.15rem' marginBottom='0.55rem'>
             Transportation Help
           </Text>
-          <Text fontFamily='Duru Sans'>
+          <Text>
             If you see a furbaby that would be a match for your family, please
             don’t let distance stand in the way of your adoption. LPDR can work
             with you to have a volunteer transport to assist with transportation
