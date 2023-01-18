@@ -238,7 +238,6 @@ export const RecentTransactionItemContainer = styled.div`
 
 export const ItemName = styled.div`
   font-weight: 400;
-  width: 155px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

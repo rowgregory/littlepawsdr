@@ -159,7 +159,7 @@ const DonationList = () => {
                         <Text>{donation?.email}</Text>
                       </td>
                       <td>
-                        <Text>{donation?.donationAmount}</Text>
+                        <Text>${donation?.donationAmount}</Text>
                       </td>
                       <td>
                         <Text>{formatDate(donation?.createdAt)}</Text>

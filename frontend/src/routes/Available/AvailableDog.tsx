@@ -308,33 +308,33 @@ const AvailableDog = ({ match }: any) => {
           >
             {descriptionText !== undefined &&
               descriptionText
-                .replace(/&#39;/g, "'")
-                .replace(/&rsquo;/g, "'")
-                .replace(/&amp;/g, '&')
-                .replace(/&nbsp;/g, ' ')
-                .replace(/&ldquo;/g, '"')
-                .replace(/&rdquo;/g, '"')
-                .replace(
+                ?.replace(/&#39;/g, "'")
+                ?.replace(/&rsquo;/g, "'")
+                ?.replace(/&amp;/g, '&')
+                ?.replace(/&nbsp;/g, ' ')
+                ?.replace(/&ldquo;/g, '"')
+                ?.replace(/&rdquo;/g, '"')
+                ?.replace(
                   `If the dog is adopted over a state line, there will be an additional charge for a health certificate (required by law) of anywhere between $45.00 and $150.00.`,
                   ''
                 )
-                .replace(
+                ?.replace(
                   `If the dog is adopted over a state line, there will be an additional charge for a health certificate (required by law) of anywhere between $45.00 and $150.00.`,
                   ''
                 )
-                .replace(
+                ?.replace(
                   `If he is adopted over a state line, there will be an additional charge for a health certificate (required by law) of anywhere between $45.00 and $100.00.`,
                   ''
                 )
-                .replace(
+                ?.replace(
                   `If the dog is adopted over a state line, there will be an additional charge for a health certificate (required by law) of anywhere between $45.00 and $100.00.`,
                   ''
                 )
-                .replace(
+                ?.replace(
                   `The amount depends upon what the veterinarian charges LPDR.`,
                   ''
                 )
-                .replace(/&mdash;/g, '')}
+                ?.replace(/&mdash;/g, '')}
           </Text>
         </div>
         <div style={{ flex: '1 1 0px' }}>

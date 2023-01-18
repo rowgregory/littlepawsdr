@@ -21,7 +21,6 @@ const Surrender = () => {
           src={SurrenderDog}
           width='100%'
           style={{ height: '500px', objectFit: 'cover' }}
-          loading='lazy'
         />
         <Text
           fontWeight={500}

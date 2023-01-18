@@ -21,11 +21,6 @@ const ContactInfoContainer = styled.div`
   flex-direction: column;
   width: 100%;
   margin-top: 2rem;
-
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    flex-direction: row;
-    justify-content: space-between;
-  }
 `;
 
 const DonationEdit = () => {
@@ -91,17 +86,11 @@ const DonationEdit = () => {
       ) : (
         <TableAndPaginationContainer>
           <div>
-            <Text>
-              Donation Id: <span>{donation?._id}</span>
-            </Text>
-            <Text>
-              Date: <span>{formatDate(donation?.createdAt)}</span>
-            </Text>
-            <Text className='mt-3 mb-1'>
+            <Text className='mb-1'>
               Donation amount:{' '}
               <span
                 style={{
-                  fontSize: '1.25rem',
+                  fontSize: '1.5rem',
                   fontWeight: 400,
                   color: '#9761aa',
                 }}
@@ -109,7 +98,15 @@ const DonationEdit = () => {
                 ${donation?.donationAmount?.toFixed(2)}
               </span>
             </Text>
-
+            <Text className='mb-1'>
+              Donation cycle: <span>{donation?.donationType}</span>
+            </Text>
+            <Text className='mb-1'>
+              Donation Id: <span>{donation?._id}</span>
+            </Text>
+            <Text className='mb-1'>
+              Date: <span>{formatDate(donation?.createdAt)}</span>
+            </Text>
             <ContactInfoContainer>
               <div className='mb-5'>
                 <Text fontWeight='400' className='mb-1'>
@@ -120,11 +117,7 @@ const DonationEdit = () => {
                   <br />
                   {donation?.address}
                   <br />
-                  {donation?.city}
-                  <br />
-                  {donation?.state}
-                  <br />
-                  {donation?.zipPostalCode}
+                  {donation?.city}, {donation?.state} {donation?.zipPostalCode}
                 </Text>
               </div>
 
@@ -134,7 +127,6 @@ const DonationEdit = () => {
                 </Text>
                 <Text>{donation?.email}</Text>
               </div>
-
               <div className='mb-5'>
                 <Text fontWeight='400' className='mb-1'>
                   In Honor/Memory

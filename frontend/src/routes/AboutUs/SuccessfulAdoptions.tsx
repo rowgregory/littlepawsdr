@@ -180,9 +180,11 @@ const SuccessfulAdoptions = () => {
                   </Link>
                   <Text>
                     Adopted:{' '}
-                    {formatDate(
-                      dachshund?.attributes?.adoptedDate?.split('T')[0]
-                    )}
+                    {
+                      formatDate(
+                        dachshund?.attributes?.adoptedDate?.split('T')[0]
+                      ).split(',')[0]
+                    }
                   </Text>
                 </TextContainer>
               </div>

@@ -224,7 +224,7 @@ const DogsOnHold = () => {
         </DogContainer>
         <PaginationContainer>
           <Pagination className='my-3'>
-            {rangeV2(dachshunds, paginatedPage, setPaginatedPage, 12)}
+            {rangeV2(dachshunds, paginatedPage, setPaginatedPage, 21)}
           </Pagination>
         </PaginationContainer>
       </Container>

@@ -114,63 +114,71 @@ const UserList = () => {
               </tr>
             </TableHead>
             <tbody>
-              {filteredUsers?.map((user: any) => (
-                <TableRow key={user?._id}>
-                  <td>
-                    <OnlineCircle online={user.online} />
-                  </td>
-                  <td>
-                    <Text>{user?.name}</Text>
-                  </td>
-                  <td>
-                    <Text>
-                      <a href={`mailto: ${user?.email}`}>{user.email}</a>
-                    </Text>
-                  </td>
-                  <td>
-                    {user?.isAdmin ? (
-                      <i
-                        className='fas fa-check'
-                        style={{ color: 'green' }}
-                      ></i>
-                    ) : (
-                      <i className='fas fa-times' style={{ color: 'red' }}></i>
-                    )}{' '}
-                  </td>
-                  <td>
-                    {user?.email !== userInfo?.email && (
-                      <LinkContainer to={`/admin/user/${user?._id}/edit`}>
-                        <StyledEditBtn>
-                          <i
-                            style={{ color: '#9761aa' }}
-                            className='fas fa-edit'
-                          ></i>
-                        </StyledEditBtn>
-                      </LinkContainer>
-                    )}
-                  </td>
-                  <td>
-                    {user?.email !== userInfo?.email && (
-                      <StyledEditBtn
-                        className='border-0'
-                        onClick={() => {
-                          setId(user?._id);
-                          handleShow();
-                        }}
-                      >
-                        {loadingDelete && id === user?._id ? (
-                          <Spinner size='sm' animation='border' />
-                        ) : (
-                          <i
-                            style={{ color: '#cc0000' }}
-                            className='fas fa-trash'
-                          ></i>
-                        )}
-                      </StyledEditBtn>
-                    )}
-                  </td>
-                </TableRow>
-              ))}
+              {filteredUsers
+                ?.map(
+                  (user: any) =>
+                    user.email !== 'it.little.paws@gmail.com' && (
+                      <TableRow key={user?._id}>
+                        <td>
+                          <OnlineCircle online={user.online} />
+                        </td>
+                        <td>
+                          <Text>{user?.name}</Text>
+                        </td>
+                        <td>
+                          <Text>
+                            <a href={`mailto: ${user?.email}`}>{user.email}</a>
+                          </Text>
+                        </td>
+                        <td>
+                          {user?.isAdmin ? (
+                            <i
+                              className='fas fa-check'
+                              style={{ color: 'green' }}
+                            ></i>
+                          ) : (
+                            <i
+                              className='fas fa-times'
+                              style={{ color: 'red' }}
+                            ></i>
+                          )}{' '}
+                        </td>
+                        <td>
+                          {user?.email !== userInfo?.email && (
+                            <LinkContainer to={`/admin/user/${user?._id}/edit`}>
+                              <StyledEditBtn>
+                                <i
+                                  style={{ color: '#9761aa' }}
+                                  className='fas fa-edit'
+                                ></i>
+                              </StyledEditBtn>
+                            </LinkContainer>
+                          )}
+                        </td>
+                        <td>
+                          {user?.email !== userInfo?.email && (
+                            <StyledEditBtn
+                              className='border-0'
+                              onClick={() => {
+                                setId(user?._id);
+                                handleShow();
+                              }}
+                            >
+                              {loadingDelete && id === user?._id ? (
+                                <Spinner size='sm' animation='border' />
+                              ) : (
+                                <i
+                                  style={{ color: '#cc0000' }}
+                                  className='fas fa-trash'
+                                ></i>
+                              )}
+                            </StyledEditBtn>
+                          )}
+                        </td>
+                      </TableRow>
+                    )
+                )
+                .reverse()}
             </tbody>
           </Table>
           <PaginationContainer>

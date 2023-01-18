@@ -4,6 +4,7 @@ import { Carousel, Image } from 'react-bootstrap';
 import { Text } from '../../components/styles/Styles';
 import styled from 'styled-components';
 import LeftArrow from '../../components/svg/LeftArrow';
+import NoImgDog from '../../components/assets/no_image_dog.jpg';
 
 const StyledCarousel = styled(Carousel)`
   background: ${({ theme }) => theme.card.bg};
@@ -182,17 +183,29 @@ const DachshundDetails = () => {
         url={`/about/${state?.directBackTo}`}
       />
       <FlexContainer>
-        <StyledCarousel pause='hover'>
-          {photos?.map((photo: string, i: number) => (
-            <Carousel.Item key={i} interval={4000}>
-              <Image
-                src={photo}
-                alt={`${photo}-${i}`}
-                style={{ aspectRatio: '1/1' }}
-              />
-            </Carousel.Item>
-          ))}
-        </StyledCarousel>
+        {photos?.length === 0 ? (
+          <Image
+            src={NoImgDog}
+            style={{
+              aspectRatio: '1/1',
+              maxWidth: '425px',
+              width: '100%',
+              objectFit: 'cover',
+            }}
+          />
+        ) : (
+          <StyledCarousel pause='hover'>
+            {photos?.map((photo: string, i: number) => (
+              <Carousel.Item key={i} interval={4000}>
+                <Image
+                  src={photo}
+                  alt={`${photo}-${i}`}
+                  style={{ aspectRatio: '1/1' }}
+                />
+              </Carousel.Item>
+            ))}
+          </StyledCarousel>
+        )}
         <DogDetailsContainer>
           <Text fontSize='36px' fontWeight='500'>
             {name}
@@ -209,13 +222,13 @@ const DachshundDetails = () => {
           </Text>
           <Text fontSize='14px'>
             {descriptionText
-              .replace(/&#39;/g, "'")
-              .replace(/&rsquo;/g, "'")
-              .replace(/&amp;/g, '&')
-              .replace(/&nbsp;/g, '')
-              .replace(/&ldquo;/g, '"')
-              .replace(/&rdquo;/g, '"')
-              .replace(/&mdash;/g, '')}
+              ?.replace(/&#39;/g, "'")
+              ?.replace(/&rsquo;/g, "'")
+              ?.replace(/&amp;/g, '&')
+              ?.replace(/&nbsp;/g, '')
+              ?.replace(/&ldquo;/g, '"')
+              ?.replace(/&rdquo;/g, '"')
+              ?.replace(/&mdash;/g, '')}
           </Text>
         </div>
         <div style={{ flex: '1 1 0px' }}>

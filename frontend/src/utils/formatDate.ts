@@ -21,5 +21,5 @@ export const formatDate = (date: any) => {
   timeValue += seconds < 10 ? ':0' + seconds : ':' + seconds;
   timeValue += hours >= 12 ? ' P.M.' : ' A.M.';
 
-  return `${firstPartOfDate}`;
+  return `${firstPartOfDate}, ${timeValue}`;
 };

@@ -27,17 +27,22 @@ const RecentTransactionItem = ({ viewTransaction, item }: any) => {
             style={{ objectFit: 'cover' }}
           />
         )}
-        <div
-          className='d-flex flex-column align-items-baseline'
-          style={{ maxWidth: '140px' }}
-        >
-          <ItemName>
-            {item?.orderItems
-              ? item?.orderItems[0].name
-              : item?.donationAmount
-              ? 'Donation'
-              : item?.name}
-          </ItemName>
+        <div className='d-flex flex-column align-items-start'>
+          <div className='d-flex'>
+            <ItemName>
+              {item?.orderItems
+                ? item?.orderItems[0].name
+                : item?.donationAmount
+                ? 'Donation'
+                : item?.name}
+            </ItemName>
+            {item?.donationAmount && (
+              <Text>
+                &nbsp;- {item?.firstName[0]}.{item.lastName}
+              </Text>
+            )}
+          </div>
+
           <Text
             fontWeight={300}
             color='#c1c1c1'
