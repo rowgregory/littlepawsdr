@@ -26,7 +26,7 @@ const OrderItemContainer = styled.div`
   grid-template-columns: 1fr;
   gap: 12px;
   overflow-y: scroll;
-  padding: 32px 0 0 32px;
+  padding: 32px;
   background: ${({ theme }) => theme.secondaryBg};
   ::-webkit-scrollbar {
     display: none; /* Safari and Chrome */

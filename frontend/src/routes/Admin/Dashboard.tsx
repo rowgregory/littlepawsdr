@@ -176,7 +176,7 @@ const Dashboard = () => {
         pathname: `/admin/donation/${item?._id}/edit`,
         state: { directBackTo: 'dashboard' },
       });
-    } else if (item?.orderId) {
+    } else if (item?.orderItems) {
       history.push({
         pathname: `/admin/order`,
         state: item,

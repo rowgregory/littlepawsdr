@@ -26,7 +26,7 @@ import {
   validateMyInfo,
   validatePersonalize,
 } from '../utils/validateECardCheckout';
-import { taxAmount } from '../utils/placeOrder';
+import Message from '../components/Message';
 
 const useECardForm = (cb: any, eCardToPurchase: any) => {
   const [inputs, setInputs] = useState({
@@ -38,8 +38,9 @@ const useECardForm = (cb: any, eCardToPurchase: any) => {
     email: '',
     message: '',
     eCardToPurchase: {} as any,
-    state: '',
   });
+
+  sessionStorage.setItem('ecardinputs', JSON.stringify(inputs));
 
   useEffect(() => {
     if (eCardToPurchase) {
@@ -77,6 +78,7 @@ const EcardPlaceOrder = ({ history }: any) => {
   const [errors, setErrors] = useState({}) as any;
   const [passedStepOne, setPassedStepOne] = useState(false);
   const [passedStepTwo, setPassedStepTwo] = useState(false);
+  const [message, setMessage] = useState('');
   const closeModal = () => setShowModal(false) as any;
 
   const [{ isPending }] = usePayPalScriptReducer();
@@ -124,6 +126,7 @@ const EcardPlaceOrder = ({ history }: any) => {
 
   useEffect(() => {
     if (success) {
+      sessionStorage.removeItem('ecardinputs');
       history.push({
         pathname: `/e-card/order/${eCardOrder._id}`,
         state: { eCardOrder },
@@ -136,32 +139,36 @@ const EcardPlaceOrder = ({ history }: any) => {
     return (Math.round(num * 100) / 100).toFixed(2);
   };
 
-  const taxPrice = addDecimals(
-    taxAmount(inputs.state) * Number(inputs?.eCardToPurchase?.price)
-  );
-
-  const totalPrice = addDecimals(+inputs?.eCardToPurchase?.price + +taxPrice);
+  const totalPrice = addDecimals(+inputs?.eCardToPurchase?.price);
 
   const successPaymentHandler = (details: any) => {
     if (details.status === 'COMPLETED' && details.id) {
-      dispatch(
-        createECardOrder({
-          recipientsFirstName: inputs.recipientsFirstName,
-          recipientsEmail: inputs.recipientsEmail,
-          dateToSend: inputs.dateToSend,
-          firstName: inputs.firstName,
-          lastName: inputs.lastName,
-          email: inputs.email,
-          message: inputs.message,
-          taxPrice,
-          totalPrice,
-          image: inputs.eCardToPurchase.image,
-          state: inputs.state,
-          name: inputs.eCardToPurchase.name,
-          orderId: details.id,
-          subTotal: inputs?.eCardToPurchase?.price,
-        })
+      const ecardInputs = JSON.parse(
+        sessionStorage.getItem('ecardinputs') || ''
       );
+
+      try {
+        dispatch(
+          createECardOrder({
+            recipientsFirstName: ecardInputs.recipientsFirstName,
+            recipientsEmail: ecardInputs.recipientsEmail,
+            dateToSend: ecardInputs.dateToSend,
+            firstName: ecardInputs.firstName,
+            lastName: ecardInputs.lastName,
+            email: ecardInputs.email,
+            message: ecardInputs.message,
+            totalPrice,
+            image: inputs.eCardToPurchase.image,
+            name: inputs.eCardToPurchase.name,
+            orderId: details.id,
+            subTotal: inputs?.eCardToPurchase?.price,
+          })
+        );
+      } catch (err) {
+        setOrderLoader(false);
+        setMessage(`Error: Please try again - ${err}`);
+        setTimeout(() => setMessage(''), 10000);
+      }
     }
   };
 
@@ -203,6 +210,7 @@ const EcardPlaceOrder = ({ history }: any) => {
       <Container>
         <SubContainer>
           <LeftRail lg={6} md={7} sm={12} className='left-rail'>
+            {message && <Message variant='danger'>{message}</Message>}
             <LeftRailContainer>
               <LeftRailSectionTitle>
                 <div className='d-flex align-items-center justify-content-between'>
@@ -346,15 +354,6 @@ const EcardPlaceOrder = ({ history }: any) => {
                   type='text'
                   error={errors?.email}
                 />
-                <JumpingInput
-                  name='state'
-                  label='Enter State'
-                  value={inputs.state || ''}
-                  handleInputChange={handleInputChange}
-                  type='text'
-                  isSelect
-                  error={errors?.state}
-                />
                 <ProceedBtn
                   onClick={onSubmit}
                   type='submit'
@@ -406,22 +405,10 @@ const EcardPlaceOrder = ({ history }: any) => {
               <Text>Subtotal 1 item</Text>
               <Text>${ecard.price}</Text>
             </div>
-            <div className='d-flex justify-content-between'>
-              <Text>Tax</Text>
-              <Text>
-                ${addDecimals(taxAmount(inputs.state) * +ecard.price)}
-              </Text>
-            </div>
             <hr className='my-3' />
             <div className='d-flex justify-content-between font-weight-bold mb-4'>
               <Text fontSize='1.125rem'>Order total</Text>
-              <Text fontSize='1.125rem'>
-                $
-                {(
-                  +ecard.price +
-                  +taxAmount(inputs.state) * +ecard.price
-                ).toFixed(2)}
-              </Text>
+              <Text fontSize='1.125rem'>${(+ecard.price).toFixed(2)}</Text>
             </div>
           </RightRail>
         </SubContainer>

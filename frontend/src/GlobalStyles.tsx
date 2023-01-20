@@ -52,7 +52,7 @@ input[type='month'], input[type='date'] {
       left: 200px;
     }
     @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-      left: 450px;
+      left: 125px;
     }
   }
 }
@@ -120,6 +120,7 @@ div, span, p, h1, h2, h3, h4, h5, h6, input, select, ::placeholder, label, li {
     padding: 18px;
     color: ${({ theme }) => theme.text} !important;
     border:1px solid ${({ theme }) => theme.input.border} !important;
+    text-indent: 18px;
   }
 
   select {

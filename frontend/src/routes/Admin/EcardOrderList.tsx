@@ -21,7 +21,6 @@ import { WelcomeText } from '../../components/styles/DashboardStyles';
 import { rangeV2 } from '../../components/common/Pagination';
 import BreadCrumb from '../../components/common/BreadCrumb';
 import { Link } from 'react-router-dom';
-import GalaxyView from '../../components/svg/GalaxyView';
 
 const EcardOrderList = () => {
   const dispatch = useDispatch();
@@ -122,7 +121,10 @@ const EcardOrderList = () => {
                   <td>{order?.totalPrice}</td>
                   <td>
                     <Link to={{ pathname: '/admin/order/ecard', state: order }}>
-                      <GalaxyView />
+                      <i
+                        className='fas fa-edit'
+                        style={{ color: '#9761aa' }}
+                      ></i>
                     </Link>
                   </td>
                 </TableRow>

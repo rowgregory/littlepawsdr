@@ -68,8 +68,9 @@ const ECardOrderReceipt = () => {
             borderBottom='1px solid #f2f2f2'
             marginBottom='22px'
           >
-            Your ecard order has been confirmed and your item will be sent on{' '}
-            {formatDate(state?.dateToSend)}
+            Your ecard order has been confirmed and will be sent to{' '}
+            {state?.recipientsEmail} on{' '}
+            {formatDate(state?.dateToSend).split(',')[0]}
           </Text>
           <table style={{ borderBottom: '1px solid #f2f2f2', width: '100%' }}>
             <thead>
@@ -133,13 +134,6 @@ const ECardOrderReceipt = () => {
             <div className='d-flex justify-content-between w-25 mb-1'>
               <Text>Subtotal</Text>
               <Text fontWeight={400}>${state?.subTotal}</Text>
-            </div>
-            <div
-              className='d-flex justify-content-between w-25 mb-1'
-              style={{ borderBottom: '1px solid #f2f2f2' }}
-            >
-              <Text>Tax Fee</Text>
-              <Text fontWeight={400}>${state?.taxPrice.toFixed(2)}</Text>
             </div>
             <div
               className='d-flex mt-2 pb-2 justify-content-between w-25'

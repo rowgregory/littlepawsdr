@@ -122,7 +122,7 @@ const Blog = () => {
           fontWeight={400}
           textAlign='center'
         >
-          Litlte Paws blog with the latest updates
+          Little Paws blog with the latest updates
         </Text>
       </Container>
       <div

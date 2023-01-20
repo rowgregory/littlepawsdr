@@ -123,24 +123,32 @@ export const send_mail = async (body, res, type, token, hasEmailBeenSent) => {
       .then(() => res.status(200).json({ message: 'Confirmation email sent' }))
       .catch(err => console.log('ERROR: ', err));
   } else if (type === 'eCardPurchaseConfirmation') {
-    const mailOptions = {
-      from: `redspeck@prodigy.net`,
-      to: `${body.email}`,
-      subject: `E-Card purchase confirmation`,
-      text:
-        `You are receiving this because you have just purshased an E-Card from Little Paws Dachshund Rescue for $${body.totalPrice}.\n` +
-        `Your order will be sent to ${body.recipientsFirstName} at ${
-          body.recipientsEmail
-        } on ${body.dateToSend.split('T')[0]}.\n\n`,
-    };
-
-    transporter.sendMail(mailOptions, (err, res) => {
-      if (err) {
-        console.error('Error: ', err);
-      } else {
-        console.log(`Confirmation email sent to ${res.envelope.to[0]}`);
-      }
-    });
+    pugEmail
+      .send({
+        template: 'ecardconfirmation',
+        message: {
+          from: 'Little Paws Dachshund Rescue <no-reply@littlepawsdr.org',
+          to: body.email,
+        },
+        locals: {
+          recipientsFirstName: body.recipientsFirstName,
+          recipientsEmail: body.recipientsEmail,
+          dateToSend: formatDate(body.dateToSend),
+          firstName: body.firstName,
+          lastName: body.lastName,
+          email: body.email,
+          message: body.message,
+          totalPrice: body.totalPrice,
+          image: body.image,
+          name: body.name,
+          orderId: body.orderId,
+          subTotal: body.subTotal,
+          createdAt: formatDate(body.createdAt),
+          id: body._id,
+        },
+      })
+      .then(() => res.status(201).json(body))
+      .catch(err => console.log('ERROR: ', err));
   } else if (type === 'resetPassword') {
     const mailOptions = {
       from: `redspeck@prodigy.net`,
@@ -233,10 +241,6 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 app.use(cors());
-
-app.get('/api/config/paypal', (req, res) =>
-  res.send(process.env.PAYPAL_CLIENT_ID)
-);
 
 app.get('/api', (req, res) =>
   res.status(200).send('WELCOME TO LITLLE PAWS API')

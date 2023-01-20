@@ -68,7 +68,7 @@ export const sendECard = async () => {
 
     pugEmail
       .send({
-        template: 'ecardconfirmation',
+        template: 'ecard',
         message: {
           from: 'Little Paws Dachshund Rescue <no-reply@littlepawsdr.org',
           to: eCard.recipientsEmail,

@@ -15,10 +15,8 @@ const createECardOrder = asyncHandler(async (req, res) => {
     lastName,
     email,
     message,
-    taxPrice,
     totalPrice,
     image,
-    state,
     name,
     orderId,
     subTotal,
@@ -33,11 +31,8 @@ const createECardOrder = asyncHandler(async (req, res) => {
       lastName,
       email,
       message,
-      taxPrice,
       totalPrice,
       image,
-      isSent: false,
-      state,
       name,
       orderId,
       subTotal,
@@ -45,9 +40,7 @@ const createECardOrder = asyncHandler(async (req, res) => {
 
     const createdECard = await eCard.save();
 
-    send_mail(req.body, res, 'eCardPurchaseConfirmation');
-
-    res.status(201).json(createdECard);
+    send_mail(createdECard, res, 'eCardPurchaseConfirmation');
   } catch (err) {
     const createdError = new Error({
       functionName: 'CREATE_ECARD_ORDER_PUBLIC',

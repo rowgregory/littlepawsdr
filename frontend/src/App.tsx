@@ -12,7 +12,7 @@ const App = () => {
   const theme = useTheme();
 
   const PayPalOptions = {
-    'client-id': process.env.REACT_APP_PAYPAL_PROD,
+    'client-id': process.env.REACT_APP_PAYPAL_CLIENT_ID,
     currency: 'USD',
     intent: 'capture',
     components: 'buttons,funding-eligibility',

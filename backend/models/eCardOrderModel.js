@@ -33,11 +33,6 @@ const eCardOrderSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    taxPrice: {
-      type: Number,
-      required: true,
-      default: 0.0,
-    },
     totalPrice: {
       type: Number,
       required: true,
@@ -49,9 +44,7 @@ const eCardOrderSchema = mongoose.Schema(
     },
     isSent: {
       type: Boolean,
-    },
-    state: {
-      type: String,
+      default: false,
     },
     name: {
       type: String,
