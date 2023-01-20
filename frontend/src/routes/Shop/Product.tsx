@@ -3,6 +3,7 @@ import { Image } from 'react-bootstrap';
 import { Link, useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { ProceedBtn } from '../../components/forms/ShippingForm';
+import { Text } from '../../components/styles/Styles';
 
 const Container = styled.div`
   width: 100%;
@@ -20,10 +21,15 @@ const Container = styled.div`
 `;
 
 const ProductName = styled(Link)`
-  font-weight: 400;
+  font-weight: 600;
   height: 42px;
-  font-size: 14px;
-  color: ${({ theme }) => theme.colors.secondary};
+  font-size: 24px;
+  color: ${({ theme }) => theme.colors.quinary};
+  :hover {
+    color: ${({ theme }) => theme.colors.quinary};
+    text-decoration: none;
+    filter: brightness(0.75);
+  }
 `;
 
 const ProductImg = styled(Image)`
@@ -33,10 +39,9 @@ const ProductImg = styled(Image)`
   border-radius: 0;
 `;
 
-const Price = styled.div`
-  font-size: 25px;
+const Price = styled.span`
+  font-size: 18px;
   font-weight: 600;
-  margin-bottom: 16px;
   text-align: center;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
     text-align: left;
@@ -70,7 +75,11 @@ const Product = ({ product, isEcard }: any) => {
         {product?.name}
       </ProductName>
       <div className='d-flex flex-column'>
-        <Price>${product?.price?.toFixed(2)}</Price>
+        <Text marginBottom='4px'>
+          <Price style={{ color: '#22c2b7' }}>FREE</Price>
+          {isEcard ? ' ecard' : ' product'} with a{' '}
+          <Price>${product?.price}</Price> donation!
+        </Text>
         <ProceedBtn
           onClick={() =>
             history.push({
@@ -81,7 +90,7 @@ const Product = ({ product, isEcard }: any) => {
             })
           }
         >
-          View Product
+          View {isEcard ? 'Ecard' : 'Product'}
         </ProceedBtn>
       </div>
     </Container>
