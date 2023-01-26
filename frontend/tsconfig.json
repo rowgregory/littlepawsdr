@@ -2,11 +2,7 @@
   "compilerOptions": {
     "target": "es5",
     "downlevelIteration": true,
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -22,9 +18,10 @@
     "jsx": "react-jsx"
   },
   "include": [
-    "src", 
+    "src",
     "../backend/utils/crypto.js",
     "audio.d.ts",
-    "react-google-recaptcha.d.ts"
-  ],
+    "react-google-recaptcha.d.ts",
+    "crypto.d.ts"
+  ]
 }
