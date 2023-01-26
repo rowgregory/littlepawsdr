@@ -98,7 +98,7 @@ export const StyledButton = styled(Button)`
   }
   box-shadow: none !important;
   padding: 16px 24px;
-  border-radius: 0.75rem;
+  border-radius: 0.76rem;
   font-weight: 400;
   font-size: 16px;
 `;
