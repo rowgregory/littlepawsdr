@@ -80,10 +80,10 @@ const Login = ({ history }: any) => {
           'rememberMe',
           JSON.stringify({
             email: inputs.email,
-            // password: CryptoJS.AES.encrypt(
-            //   JSON.stringify(inputs.password),
-            //   secret
-            // ).toString(),
+            password: CryptoJS.AES.encrypt(
+              JSON.stringify(inputs.password),
+              secret
+            ).toString(),
             rememberMe: true,
           })
         );
