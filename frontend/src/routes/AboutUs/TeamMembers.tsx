@@ -41,7 +41,7 @@ const TeamMembers = () => {
   const location = useLocation() as any;
 
   useEffect(() => {
-    if (location.state.from === 'dashboard') {
+    if (location?.state?.from === 'dashboard') {
       window.scrollTo(0, 1000);
     }
   }, [location.state]);
