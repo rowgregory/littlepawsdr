@@ -75,23 +75,22 @@ const Login = ({ history }: any) => {
     const isValid = validateLoginForm(setErrors, inputs, formIsValid);
     if (!isValid) failedLoginAttemptFx.play();
     if (isValid) {
-      dispatch(login(inputs.email.toLowerCase(), inputs.password));
-
       if (rememberMe) {
         localStorage.setItem(
           'rememberMe',
           JSON.stringify({
             email: inputs.email,
-            password: CryptoJS.AES.encrypt(
-              JSON.stringify(inputs.password),
-              secret
-            ).toString(),
+            // password: CryptoJS.AES.encrypt(
+            //   JSON.stringify(inputs.password),
+            //   secret
+            // ).toString(),
             rememberMe: true,
           })
         );
       } else {
         localStorage.removeItem('rememberMe');
       }
+      dispatch(login(inputs.email.toLowerCase(), inputs.password));
     }
   };
 
