@@ -59,7 +59,7 @@ export const login = (email: any, password: any) => async (dispatch: any) => {
     dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
 
     localStorage.removeItem('guestUserInfo');
-    sessionStorage.setItem('userInfo', JSON.stringify(data));
+    localStorage.setItem('userInfo', JSON.stringify(data));
   } catch (error: any) {
     dispatch({
       type: USER_LOGIN_FAIL,
@@ -189,7 +189,7 @@ export const updateUserProfile =
       dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
       dispatch({ type: USER_DETAILS_SUCCESS, payload: data });
 
-      sessionStorage.setItem('userInfo', JSON.stringify(data));
+      localStorage.setItem('userInfo', JSON.stringify(data));
     } catch (error: any) {
       dispatch({
         type: USER_UPDATE_PROFILE_FAIL,
@@ -341,6 +341,9 @@ export const logout = (user: any) => async (dispatch: any, getState: any) => {
       const agreedToCookies = localStorage.getItem('agreedToCookies')
         ? JSON.parse(localStorage.getItem('agreedToCookies') || '')
         : false;
+      const rememberMe = localStorage.getItem('rememberMe')
+        ? JSON.parse(localStorage.getItem('rememberMe') || '')
+        : {};
       localStorage.clear();
       sessionStorage.clear();
       localStorage.setItem('cartItems', JSON.stringify(cartItems));
@@ -350,6 +353,7 @@ export const logout = (user: any) => async (dispatch: any, getState: any) => {
       );
       localStorage.setItem('newsletterEmail', JSON.stringify(newsletterEmail));
       localStorage.setItem('agreedToCookies', JSON.stringify(agreedToCookies));
+      localStorage.setItem('rememberMe', JSON.stringify(rememberMe));
     }
   } catch (error: any) {
     dispatch({
@@ -413,7 +417,7 @@ export const updatedUserToConfirmed =
       dispatch({ type: USER_CONFIRMED_SUCCESS, payload: data });
       dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
 
-      sessionStorage.setItem('userInfo', JSON.stringify(data));
+      localStorage.setItem('userInfo', JSON.stringify(data));
     } catch (error: any) {
       dispatch({
         type: USER_CONFIRMED_FAIL,
@@ -447,7 +451,7 @@ export const generateTokenForNewSession =
 
       dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
 
-      sessionStorage.setItem('userInfo', JSON.stringify(data));
+      localStorage.setItem('userInfo', JSON.stringify(data));
     } catch (error: any) {
       dispatch({
         type: USER_GENERATE_NEW_TOKEN_FAIL,

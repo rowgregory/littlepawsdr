@@ -274,7 +274,7 @@ const SponsorSanctuary = () => {
           maxWidth='700px'
           textAlign='center'
         >
-          Your generosity makes an tremendous impact for dachshunds just waiting
+          Your generosity makes a tremendous impact for dachshunds just waiting
           for a{' '}
           <span
             style={{

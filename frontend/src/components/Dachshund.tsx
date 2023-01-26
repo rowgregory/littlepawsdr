@@ -72,7 +72,7 @@ const Dachshund = ({ dachshund }: any) => {
               },
             }}
           >
-            ADOPT
+            READ MORE
           </ShowMoreLink>
         </div>
       </Card.Body>

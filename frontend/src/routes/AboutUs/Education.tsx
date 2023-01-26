@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Message from '../../components/Message';
 import { useEffect } from 'react';
 import { listEducationTips } from '../../actions/educationTipActions';
-import EducationDog from '../../components/assets/education01.jpg';
+import EducationDog from '../../components/assets/EducationTipsDog.jpg';
 import styled from 'styled-components';
 import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
 import LeftArrow from '../../components/svg/LeftArrow';
@@ -103,7 +103,7 @@ const Education = () => {
         <Text
           onClick={() =>
             window.open(
-              'https://pixabay.com/users/venomdesign-5201978/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=3870567',
+              'https://www.pexels.com/photo/black-dog-in-close-up-photogrpahy-11555848/',
               '_blank'
             )
           }
@@ -119,7 +119,7 @@ const Education = () => {
             zIndex: 2,
           }}
         >
-          Photo by Markus Wittmann
+          Photo by Alfo Medeiros
         </Text>
       </div>
       <div

@@ -78,7 +78,7 @@ const BottomSection = styled.div`
     grid-template-columns: 1fr 1fr;
   }
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
   }
   div {
     color: #fff;
@@ -149,6 +149,34 @@ const FlexContainer = styled.div`
   }
 `;
 
+const Description = styled.div`
+  font-size: 15px;
+  margin-bottom: 48px;
+  font-family: 'Roboto' !important;
+  font-weight: 300;
+
+  p {
+    font-weight: 300;
+    line-height: 20px !important;
+    span {
+      font-family: 'Roboto' !important;
+      font-size: 15px !important;
+      line-height: 20px !important;
+
+      span {
+        text-indent: 20px !important;
+        strong {
+          font-size: 15px !important;
+          font-family: 'Roboto' !important;
+        }
+      }
+    }
+    strong {
+      font-family: 'Roboto' !important;
+    }
+  }
+`;
+
 const AvailableDog = ({ match }: any) => {
   const dispatch = useDispatch();
   const [typeLocations, setTypeLocations] = useState('');
@@ -173,7 +201,7 @@ const AvailableDog = ({ match }: any) => {
     ageGroup,
     sex,
     adoptionFeeString,
-    descriptionText,
+    descriptionHtml,
     photos,
     isDogsOk,
     isKidsOk,
@@ -257,9 +285,7 @@ const AvailableDog = ({ match }: any) => {
 
       <FlexContainer>
         {loading ? (
-          <StyledCarousel>
-            <LoadingImg w='100%' />
-          </StyledCarousel>
+          <LoadingImg w='65%' h='65%' />
         ) : (
           <StyledCarousel pause='hover'>
             {photos?.map((photo: string, i: number) => (
@@ -299,43 +325,9 @@ const AvailableDog = ({ match }: any) => {
           >
             Adoption Fee: {adoptionFeeString}
           </Text>
-
-          <Text
-            fontSize='15px'
-            textIndent='20px'
-            marginBottom='48px'
-            lineHeight='24px'
-          >
-            {descriptionText !== undefined &&
-              descriptionText
-                ?.replace(/&#39;/g, "'")
-                ?.replace(/&rsquo;/g, "'")
-                ?.replace(/&amp;/g, '&')
-                ?.replace(/&nbsp;/g, ' ')
-                ?.replace(/&ldquo;/g, '"')
-                ?.replace(/&rdquo;/g, '"')
-                ?.replace(
-                  `If the dog is adopted over a state line, there will be an additional charge for a health certificate (required by law) of anywhere between $45.00 and $150.00.`,
-                  ''
-                )
-                ?.replace(
-                  `If the dog is adopted over a state line, there will be an additional charge for a health certificate (required by law) of anywhere between $45.00 and $150.00.`,
-                  ''
-                )
-                ?.replace(
-                  `If he is adopted over a state line, there will be an additional charge for a health certificate (required by law) of anywhere between $45.00 and $100.00.`,
-                  ''
-                )
-                ?.replace(
-                  `If the dog is adopted over a state line, there will be an additional charge for a health certificate (required by law) of anywhere between $45.00 and $100.00.`,
-                  ''
-                )
-                ?.replace(
-                  `The amount depends upon what the veterinarian charges LPDR.`,
-                  ''
-                )
-                ?.replace(/&mdash;/g, '')}
-          </Text>
+          <Description
+            dangerouslySetInnerHTML={{ __html: descriptionHtml }}
+          ></Description>
         </div>
         <div style={{ flex: '1 1 0px' }}>
           <Text fontSize='1.5rem' fontWeight='600' marginBottom='1.875rem'>
@@ -351,18 +343,7 @@ const AvailableDog = ({ match }: any) => {
           </DetailsGrid>
         </div>
       </FlexContainer>
-
       <BottomSection>
-        <div className='d-flex flex-column p-3'>
-          <Text fontWeight='bold' fontSize='1.15rem' marginBottom='0.55rem'>
-            Dogs Adopted Over a State Line
-          </Text>
-          <Text>
-            There will be an additional charge for a health certificate
-            (required by law) of anywhere between $45.00 and $150.00. The amount
-            depends upon what the veterinarian charges LPDR.
-          </Text>
-        </div>
         <div className='d-flex flex-column p-3'>
           <Text fontWeight='bold' fontSize='1.15rem' marginBottom='0.55rem'>
             Dogs Adopted in New England

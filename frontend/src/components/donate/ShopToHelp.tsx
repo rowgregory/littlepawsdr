@@ -1,7 +1,6 @@
 import React from 'react';
 import { Text } from '../../components/styles/Styles';
 import { Image } from 'react-bootstrap';
-import eBay from '../../components/assets/ebay.png';
 import amazonSmile from '../../components/assets/amazon-smile-3.jpeg';
 import Chewy from '../../components/assets/chewy.png';
 import iGive from '../../components/assets/i-give.png';
@@ -110,29 +109,13 @@ const ShopToHelp = () => {
       >
         You can also SHOP to HELP!
       </Text>
-      <Text>
-        We fundraise with partnerships with Amazon, Ebay, and other dog-loving
+      <Text marginBottom='32px'>
+        We fundraise with partnerships with Amazon, and other dog-loving
         organizations. A few times a year we hold our popular, seasonal
         auctions. Check out ways that you can shop and help keep our fosters’
         tails wagging! Find new or gently used dachshund-themed items, or items
         for your pup on our eBay page.
       </Text>
-      <div className='d-flex justify-content-center my-5'>
-        <Image
-          onClick={() =>
-            (window.location.href =
-              'https://www.ebay.com/usr/littlepawsdachshundrescue')
-          }
-          src={eBay}
-          alt='eBay-shop-to-help'
-          style={{
-            maxWidth: '300px',
-            width: '100%',
-            marginBottom: '5rem',
-            cursor: 'pointer',
-          }}
-        />
-      </div>
       <Text>
         Would you rather donate items instead of money? LPDR maintains an Amazon
         Wish List for any basic needs such as leashes, harnesses, collars,
@@ -176,14 +159,15 @@ const ShopToHelp = () => {
           style={{
             maxWidth: '300px',
             width: '100%',
-            marginBottom: '80px',
             cursor: 'pointer',
           }}
         />
       </div>
       <BottomRow>
-        <div className='d-flex flex-column justify-content-center'>
-          <Text>Shop Pet Meds and provide pet supplies for pets in need.</Text>
+        <div className='d-flex flex-column justify-content-center mb-5'>
+          <Text className='d-flex justify-content-center'>
+            Shop Pet Meds and provide pet supplies for pets in need.
+          </Text>
           <PetMeds
             onClick={() => (window.location.href = 'http://www.petmeds.org/')}
             style={{ cursor: 'pointer' }}

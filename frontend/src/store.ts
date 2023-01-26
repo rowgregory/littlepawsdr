@@ -9,8 +9,8 @@ const dachshundsFromStorage = localStorage.getItem('dachshunds')
   ? JSON.parse(localStorage.getItem('dachshunds') || '')
   : [];
 
-let userInfoFromStorage: any = sessionStorage.getItem('userInfo')
-  ? JSON.parse(sessionStorage.getItem('userInfo') || '')
+let userInfoFromStorage: any = localStorage.getItem('userInfo')
+  ? JSON.parse(localStorage.getItem('userInfo') || '')
   : null;
 
 if (localStorage.getItem('cartItems') === 'undefined') {

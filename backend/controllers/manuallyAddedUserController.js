@@ -11,9 +11,11 @@ const manuallyAddUser = asyncHandler(async (req, res) => {
     const createdUser = await ManuallyAddedUser.create({
       name: '',
       image: cloudImages().upload,
-      message: '',
-      affiliation: '',
+      email: '',
+      affiliation: 'Board Member',
       publicId: '',
+      profileCardTheme:
+        'https://res.cloudinary.com/doyd0ewgk/image/upload/v1612043441/field_tree2.jpg',
     });
 
     await createdUser.save();
@@ -87,7 +89,8 @@ const getManuallyAddedUsers = asyncHandler(async (req, res) => {
 //@access Private/Admin
 const updateManuallyAddedUser = asyncHandler(async (req, res) => {
   try {
-    const { name, affiliation, message, image, publicId } = req.body;
+    const { name, affiliation, email, image, publicId, profileCardTheme } =
+      req.body;
 
     const manuallyAddedUser = await ManuallyAddedUser.findById(req.params.id);
 
@@ -97,10 +100,12 @@ const updateManuallyAddedUser = asyncHandler(async (req, res) => {
       affiliation === ''
         ? affiliation
         : affiliation || manuallyAddedUser.affiliation;
-    manuallyAddedUser.message =
-      message === '' ? message : message || manuallyAddedUser.message;
+    manuallyAddedUser.email =
+      email === '' ? email : email || manuallyAddedUser.email;
     manuallyAddedUser.image = image || manuallyAddedUser.image;
     manuallyAddedUser.publicId = publicId || manuallyAddedUser.publicId;
+    manuallyAddedUser.profileCardTheme =
+      profileCardTheme ?? manuallyAddedUser.profileCardTheme;
 
     const updatedManuallyAddedUser = await manuallyAddedUser.save();
 

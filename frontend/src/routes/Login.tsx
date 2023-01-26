@@ -26,6 +26,7 @@ import Logo from '../components/assets/logo.png';
 import UIfx from 'uifx';
 import { Link } from 'react-router-dom';
 import { Accordion } from '../components/styles/place-order/Styles';
+import CryptoJS from 'crypto-js';
 
 const useLoginForm = (cb: any, setErrors: any) => {
   const values = {
@@ -55,10 +56,13 @@ const useLoginForm = (cb: any, setErrors: any) => {
 };
 
 const Login = ({ history }: any) => {
+  const dispatch = useDispatch();
   const [capsLockOn, setCapsLocksOn] = useState(false);
   const [showPassword, setShowPassword] = useState({ password: false });
   const [errors, setErrors] = useState({}) as any;
-  const dispatch = useDispatch();
+  const [rememberMe, setRememberMe] = useState(false);
+
+  const secret: string = process.env.REACT_APP_REMEMBER_ME!;
 
   const {
     userLogin: { loading, error, userInfo },
@@ -72,10 +76,26 @@ const Login = ({ history }: any) => {
     if (!isValid) failedLoginAttemptFx.play();
     if (isValid) {
       dispatch(login(inputs.email.toLowerCase(), inputs.password));
+
+      if (rememberMe) {
+        localStorage.setItem(
+          'rememberMe',
+          JSON.stringify({
+            email: inputs.email,
+            password: CryptoJS.AES.encrypt(
+              JSON.stringify(inputs.password),
+              secret
+            ).toString(),
+            rememberMe: true,
+          })
+        );
+      } else {
+        localStorage.removeItem('rememberMe');
+      }
     }
   };
 
-  const { inputs, handleInputChange, onSubmit } = useLoginForm(
+  const { inputs, handleInputChange, onSubmit, setInputs } = useLoginForm(
     loginFormCallback,
     setErrors
   );
@@ -101,6 +121,32 @@ const Login = ({ history }: any) => {
 
     return () => document.removeEventListener('keyup', listener);
   }, [dispatch, error, history, userInfo]);
+
+  useEffect(() => {
+    const parsedLoginData = localStorage.getItem('rememberMe')
+      ? JSON.parse(localStorage.getItem('rememberMe') || '')
+      : {};
+
+    const rememberMeWasSwitchedOn =
+      Object.keys(parsedLoginData)?.length > 0 &&
+      Object.getPrototypeOf(parsedLoginData) === Object.prototype;
+
+    if (rememberMeWasSwitchedOn) {
+      const bytes = CryptoJS.AES.decrypt(parsedLoginData.password, secret);
+
+      const decryptedPassword = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+
+      if (decryptedPassword) {
+        setInputs((inputs: any) => ({
+          ...inputs,
+          email: parsedLoginData.email,
+          password: decryptedPassword,
+        }));
+
+        setRememberMe(true);
+      }
+    }
+  }, [secret, setInputs]);
 
   return (
     <Container>
@@ -148,6 +194,17 @@ const Login = ({ history }: any) => {
               showPassword={showPassword.password}
               setShowPassword={setShowPassword}
             />
+            <Form.Group
+              className='d-flex align-items-center'
+              controlId='rememberMe'
+            >
+              <Form.Check
+                type='switch'
+                checked={rememberMe || false}
+                onChange={(e: any) => setRememberMe(e.target.checked)}
+              ></Form.Check>
+              <Form.Label className='mb-0'>Remember Me</Form.Label>
+            </Form.Group>
             <div className='mt-3'>
               <StyledLink
                 to='/forgot-password'
@@ -155,7 +212,7 @@ const Login = ({ history }: any) => {
                   dispatch({ type: USER_LOGIN_RESET });
                 }}
               >
-                Reset password
+                Forgot password
               </StyledLink>
             </div>
             <StyledButton

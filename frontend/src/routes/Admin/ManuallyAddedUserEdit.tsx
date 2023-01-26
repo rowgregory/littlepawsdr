@@ -27,6 +27,13 @@ import PhotoUploadIcon from '../../components/svg/PhotoUploadIcon';
 import RemovePhotoIcon from '../../components/svg/RemovePhotoIcon';
 import { defaultImages } from '../../utils/defaultImages';
 import BreadCrumb from '../../components/common/BreadCrumb';
+import {
+  CardTheme,
+  Label,
+  ProfileCardImg,
+} from '../../components/styles/profile/Styles';
+import { Accordion } from '../../components/styles/place-order/Styles';
+import { themes } from '../../utils/profileCardThemes';
 
 const ManuallyAddedUserEdit = () => {
   const match = useRouteMatch<{ id: string }>();
@@ -36,7 +43,8 @@ const ManuallyAddedUserEdit = () => {
   const [name, setName] = useState('');
   const [image, setImage] = useState('');
   const [affiliation, setAffiliation] = useState('');
-  const [message, setMessage] = useState('');
+  const [email, setEmail] = useState('');
+  const [profileCardTheme, setProfileCardTheme] = useState('');
   const [uploading, setUploading] = useState(false);
   const [publicId, setPublicId] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
@@ -44,6 +52,7 @@ const ManuallyAddedUserEdit = () => {
   const [file, setFile] = useState({}) as any;
   const [imgUploadStatus, setImageUploadStatus] = useState('') as any;
   const [cloudinaryData, setClouadinaryData] = useState({}) as any;
+  const [showCardThemes, setShowCardThemes] = useState(false);
 
   const {
     manuallyAddedUserDetails: { loading, error, manuallyAddedUser },
@@ -64,8 +73,9 @@ const ManuallyAddedUserEdit = () => {
     setName(manuallyAddedUser?.name);
     setImage(manuallyAddedUser?.image);
     setAffiliation(manuallyAddedUser?.affiliation);
-    setMessage(manuallyAddedUser?.message);
+    setEmail(manuallyAddedUser?.email);
     setPublicId(manuallyAddedUser?.publicId);
+    setProfileCardTheme(manuallyAddedUser?.profileCardTheme);
   }, [manuallyAddedUser]);
 
   useEffect(() => {
@@ -75,20 +85,13 @@ const ManuallyAddedUserEdit = () => {
           _id: manuallyAddedUserId,
           name,
           affiliation,
-          message,
+          email,
           image: cloudinaryData.secureUrl,
           publicId: cloudinaryData.publicId,
         })
       );
     }
-  }, [
-    affiliation,
-    cloudinaryData,
-    dispatch,
-    manuallyAddedUserId,
-    message,
-    name,
-  ]);
+  }, [affiliation, cloudinaryData, dispatch, manuallyAddedUserId, email, name]);
 
   useEffect(() => {
     if (successUpdate && submittedForm) {
@@ -115,8 +118,9 @@ const ManuallyAddedUserEdit = () => {
           _id: manuallyAddedUserId,
           name,
           affiliation,
-          message,
+          email,
           image,
+          profileCardTheme,
         })
       );
     }
@@ -138,11 +142,11 @@ const ManuallyAddedUserEdit = () => {
 
   return (
     <Container>
-      <WelcomeText className='mb-1'>Volunteer Edit</WelcomeText>
+      <WelcomeText className='mb-1'>Board Member Edit</WelcomeText>
       <BreadCrumb
         step1='Home'
         step2='Dashboard'
-        step3='Volunteers'
+        step3='Board Members'
         step4={manuallyAddedUser?.name}
         step5='Edit'
         url1='/'
@@ -210,13 +214,42 @@ const ManuallyAddedUserEdit = () => {
             onChange={(e) => setAffiliation(e.target.value)}
           ></Form.Control>
         </Form.Group>
-        <Form.Group controlId='message' className='mt-5'>
-          <Form.Label>Message</Form.Label>
+        <Form.Group controlId='email' className='mt-5'>
+          <Form.Label>Email</Form.Label>
           <Form.Control
-            type='textarea'
-            value={message || ''}
-            onChange={(e) => setMessage(e.target.value)}
+            type='text'
+            value={email || ''}
+            onChange={(e) => setEmail(e.target.value)}
           ></Form.Control>
+        </Form.Group>
+        <Form.Group className='d-flex flex-column' controlId='profileCardTheme'>
+          <Label>Profile card theme</Label>
+          <Accordion
+            toggle={showCardThemes}
+            maxheight='1015px'
+            style={{ minHeight: '225px' }}
+          >
+            {themes.map((theme: string, i: number) => (
+              <CardTheme
+                key={i}
+                selected={theme === profileCardTheme}
+                inline
+                label={<ProfileCardImg src={theme} alt={`${theme}-${i}`} />}
+                type='radio'
+                id={`inline-radio-${i} bgColor`}
+                value={theme || ''}
+                checked={profileCardTheme === theme}
+                onChange={(e: any) => setProfileCardTheme(e.target.value)}
+              />
+            ))}
+          </Accordion>
+          <Text
+            onClick={() => setShowCardThemes(!showCardThemes)}
+            cursor='pointer'
+            marginTop='8px'
+          >
+            {showCardThemes ? 'See Less...' : 'See More...'}
+          </Text>
         </Form.Group>
         <UpdateBtn onClick={(e: any) => submitHandler(e)}>
           Updat{loadingUpdate ? 'ing...' : 'e'}

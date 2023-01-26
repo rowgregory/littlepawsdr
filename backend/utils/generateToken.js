@@ -6,5 +6,3 @@ export const generateToken = (user, expiresIn) =>
     process.env.JWT_SECRET,
     { expiresIn }
   );
-// export const generateToken = (id, expiresIn) =>
-//   jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn });

@@ -164,7 +164,7 @@ const peopleLinks = [
     pathMatch: 'user',
   },
   {
-    textKey: 'Volunteers',
+    textKey: 'Board Members',
     linkKey: '/admin/manuallyAddedUserList',
     icon: <UsersIcon />,
     pathMatch: 'manuallyAddedUser',

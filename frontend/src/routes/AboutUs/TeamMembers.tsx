@@ -4,12 +4,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { listWhoWeAreUsers } from '../../actions/userActions';
 import Message from '../../components/Message';
 import { Text } from '../../components/styles/Styles';
-import { HorizontalLine } from '../../components/styles/product-details/Styles';
 import styled from 'styled-components';
 import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
 import LeftArrow from '../../components/svg/LeftArrow';
 import RightArrow from '../../components/svg/RightArrow';
-import AboutUs from '../../components/assets/about_us01.jpg';
+import AboutUs from '../../components/assets/AboutUs.jpg';
+import { useLocation } from 'react-router-dom';
 
 const ProfileCard = styled(Card)`
   background-color: ${({ theme }) => theme.card.bg};
@@ -38,6 +38,13 @@ const Position = styled(Card.Subtitle)`
 
 const TeamMembers = () => {
   const dispatch = useDispatch();
+  const location = useLocation() as any;
+
+  useEffect(() => {
+    if (location.state.from === 'dashboard') {
+      window.scrollTo(0, 1000);
+    }
+  }, [location.state]);
 
   const userWhoWeAreList = useSelector((state: any) => state.userWhoWeAreList);
   const { loading, error, users } = userWhoWeAreList;
@@ -45,6 +52,8 @@ const TeamMembers = () => {
   useEffect(() => {
     dispatch(listWhoWeAreUsers());
   }, [dispatch]);
+
+  const boardMembers = users?.users?.concat(users?.manuallyAddedUsers);
 
   return (
     <>
@@ -70,7 +79,7 @@ const TeamMembers = () => {
         <Text
           onClick={() =>
             window.open(
-              'https://pixabay.com/users/gabio-1600654/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=1191290',
+              'https://www.pexels.com/photo/a-brown-dachshund-lying-on-a-carpet-9269488/',
               '_blank'
             )
           }
@@ -86,7 +95,7 @@ const TeamMembers = () => {
             zIndex: 2,
           }}
         >
-          Photo by Gabriele Ottich
+          Photo by Vinícius Cezário
         </Text>
       </div>
       <div
@@ -165,9 +174,9 @@ const TeamMembers = () => {
                 <Message variant='danger'>{error}</Message>
               </div>
             ) : (
-              users?.users?.map(
+              boardMembers?.map(
                 (user: any, i: number) =>
-                  user?.isAdmin &&
+                  (user?.isAdmin || user?.affiliation) &&
                   user?.email !== 'it.little.paws@gmail.com' && (
                     <ProfileCard key={user._id} className='d-flex my-3'>
                       <Card.Img
@@ -182,7 +191,7 @@ const TeamMembers = () => {
 
                       <Card.Body className='d-flex flex-column mx-auto align-items-center'>
                         <CardImg
-                          src={user?.avatar}
+                          src={user?.avatar || user?.image}
                           alt={`${user?.name}-${i}`}
                           width='170px'
                           height='170px'
@@ -192,63 +201,15 @@ const TeamMembers = () => {
                           <strong>{user?.name}</strong>
                         </Name>
                         <Position className='pb-1'>
-                          {user?.volunteerTitle}
+                          {user?.volunteerTitle || user?.affiliation}
                         </Position>
-                        <Card.Text>{user?.volunteerEmail}</Card.Text>
+                        <Card.Text>
+                          {user?.volunteerEmail || user?.email}
+                        </Card.Text>
                       </Card.Body>
                     </ProfileCard>
                   )
               )
-            )}
-          </Col>
-        </Row>
-        <HorizontalLine />
-        <Row className='mx-auto d-flex flex-column px-0 mt-5'>
-          <Text fontFamily={`Duru Sans`} marginBottom='1rem'>
-            FOSTER COORDINATORS
-          </Text>
-          <Col
-            className='px-0'
-            style={{
-              display: 'flex',
-              gap: '1rem',
-              flexWrap: 'wrap',
-            }}
-          >
-            {error ? (
-              <div className='d-flex flex-column align-items-center w-100'>
-                <Message variant='danger'>{error}</Message>
-              </div>
-            ) : (
-              users?.manuallyAddedUsers?.map((user: any, i: number) => (
-                <ProfileCard key={user?._id} className='d-flex my-3'>
-                  <Card.Img
-                    src='https://res.cloudinary.com/doyd0ewgk/image/upload/v1612043441/field_tree2.jpg'
-                    alt={`${user}=${i}`}
-                    style={{
-                      height: '200px',
-                      borderRadius: '12px 12px 0 0',
-                      objectFit: 'cover',
-                    }}
-                  />
-
-                  <Card.Body className='d-flex flex-column mx-auto align-items-center'>
-                    <CardImg
-                      src={user?.image}
-                      alt={`${user?.name}-${i}`}
-                      width='170px'
-                      height='170px'
-                      roundedCircle
-                    />
-                    <Name className='pt-2'>
-                      <strong>{user?.name}</strong>
-                    </Name>
-                    <Position className='pb-4'>{user?.affiliation}</Position>
-                    <Position className='pb-1'>{user?.message}</Position>
-                    <Card.Text>{user?.volunteerEmail}</Card.Text>
-                  </Card.Body>
-                </ProfileCard>
-              ))
             )}
           </Col>
         </Row>

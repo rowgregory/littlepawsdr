@@ -10,10 +10,13 @@ const manuallyAddedUserSchema = mongoose.Schema({
   affiliation: {
     type: String,
   },
-  message: {
+  email: {
     type: String,
   },
   publicId: {
+    type: String,
+  },
+  profileCardTheme: {
     type: String,
   },
 });

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Spinner, Pagination } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import DeleteModal from '../../components/DeleteModal';
 import { Text } from '../../components/styles/Styles';
 import { MANUALLY_ADD_USER_CREATE_RESET } from '../../constants/manuallyAddUserConstants';
@@ -96,12 +96,12 @@ const ManuallyAddedUserList = () => {
 
   return (
     <Container>
-      <WelcomeText className='mb-1'>Volunteers</WelcomeText>
+      <WelcomeText className='mb-1'>Board Members</WelcomeText>
       <BreadCrumb
         step1='Home'
         step2='Dashboard'
         step3=''
-        step4='Volunteers'
+        step4='Board Members'
         url1='/'
         url2='/admin'
         url3='/admin/manuallyAddedUserList'
@@ -138,17 +138,24 @@ const ManuallyAddedUserList = () => {
               'Create'
             )}
           </CreateBtnV2>
+          <Link
+            className='mb-3'
+            to={{
+              pathname: '/about/team-members',
+              state: { from: 'dashboard' },
+            }}
+          >
+            View public profiles
+          </Link>
         </TopRow>
 
         <TableAndPaginationContainer>
           <Table hover responsive>
             <TableHead>
               <tr>
-                <th>ID</th>
                 <th>NAME</th>
                 <th>IMAGE</th>
-                <th>AFFILIATION</th>
-                <th>MESSAGE</th>
+                <th>EMAIL</th>
                 <th>EDIT</th>
                 <th>DELETE</th>
               </tr>
@@ -156,9 +163,6 @@ const ManuallyAddedUserList = () => {
             <tbody>
               {filteredManuallyAddedUsers?.map((manuallyAddedUser: any) => (
                 <TableRow key={manuallyAddedUser?._id}>
-                  <td>
-                    <Text>{manuallyAddedUser?._id}</Text>
-                  </td>
                   <td>
                     <Text>{manuallyAddedUser?.name}</Text>
                   </td>
@@ -169,10 +173,7 @@ const ManuallyAddedUserList = () => {
                     />
                   </td>
                   <td>
-                    <Text>{manuallyAddedUser?.affiliation}</Text>
-                  </td>
-                  <td>
-                    <Text>{manuallyAddedUser?.message}</Text>
+                    <Text>{manuallyAddedUser?.email}</Text>
                   </td>
                   <td>
                     <LinkContainer

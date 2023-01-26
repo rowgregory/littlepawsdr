@@ -138,9 +138,8 @@ const VolunteerApplication = () => {
           Are you crafty?
         </Text>
         <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='18px'>
-          We need your help! We are also looking for artists and crafters both
-          for our <Link to='/events'>upcoming auctions and events</Link> along
-          with our <Link to='/donate'>ETSY store</Link>.
+          We need your help! We are also looking for artists and crafters for
+          our <Link to='/events'>upcoming auctions and events</Link>.
         </Text>
         <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='18px'>
           Thank you for applying to volunteer with Little Paws Dachshund Rescue
