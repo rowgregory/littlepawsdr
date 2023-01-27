@@ -62,7 +62,7 @@ const Login = ({ history }: any) => {
   const [errors, setErrors] = useState({}) as any;
   const [rememberMe, setRememberMe] = useState(false);
 
-  const secret: string = process.env.REACT_APP_REMEMBER_ME!;
+  const secret: string = `${process.env.REACT_APP_REMEMBER_ME}`;
 
   const {
     userLogin: { loading, error, userInfo },
@@ -74,23 +74,23 @@ const Login = ({ history }: any) => {
     const failedLoginAttemptFx = new UIfx(failedLoginAttempt);
     const isValid = validateLoginForm(setErrors, inputs, formIsValid);
     if (!isValid) failedLoginAttemptFx.play();
-    if (isValid) {
-      if (rememberMe) {
-        localStorage.setItem(
-          'rememberMe',
-          JSON.stringify({
-            email: inputs.email,
-            password: CryptoJS.AES.encrypt(
-              JSON.stringify(inputs.password),
-              secret
-            ).toString(),
-            rememberMe: true,
-          })
-        );
-      } else {
-        localStorage.removeItem('rememberMe');
-      }
-      dispatch(login(inputs.email.toLowerCase(), inputs.password));
+
+    dispatch(login(inputs.email.toLowerCase(), inputs.password));
+
+    if (rememberMe) {
+      localStorage.setItem(
+        'rememberMe',
+        JSON.stringify({
+          email: inputs.email,
+          password: CryptoJS.AES.encrypt(
+            JSON.stringify(inputs.password),
+            secret
+          ).toString(),
+          rememberMe: true,
+        })
+      );
+    } else {
+      localStorage.removeItem('rememberMe');
     }
   };
 
