@@ -124,7 +124,20 @@ const JumpingInput = ({
   isTextArea,
   autocomplete,
 }: any) => {
-  const todaysDate = new Date().toISOString().split('T')[0];
+  const addLeadingZeros = (n: any) => {
+    if (n <= 9) {
+      return '0' + n;
+    }
+    return n;
+  };
+  let currentDatetime = new Date();
+  let todaysDate =
+    currentDatetime.getFullYear() +
+    '-' +
+    addLeadingZeros(currentDatetime.getMonth() + 1) +
+    '-' +
+    addLeadingZeros(currentDatetime.getDate());
+
   return (
     <Group>
       {isSelect ? (

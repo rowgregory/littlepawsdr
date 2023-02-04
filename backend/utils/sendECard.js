@@ -18,22 +18,12 @@ Oauth2_client.setCredentials({
 });
 
 export const sendECard = async () => {
-  const start = new Date(new Date().setUTCHours(0, 0, 0, 0));
-  const end = new Date(new Date().setUTCHours(23, 59, 59, 999));
+  const sendDate = new Date().toISOString().split('T')[0];
 
-  const accessToken = Oauth2_client.getAccessToken();
-
-  const aggregatedECards = await ECardOrder.aggregate([
-    {
-      $match: {
-        dateToSend: {
-          $gte: start,
-          $lt: end,
-        },
-        isSent: false,
-      },
-    },
-  ]);
+  const aggregatedECards = await ECardOrder.find({
+    dateToSend: sendDate.split('T')[0],
+    isSent: false,
+  });
 
   const eCardsToSend = Object.keys(aggregatedECards).length > 0;
   if (!eCardsToSend) return;
@@ -50,7 +40,7 @@ export const sendECard = async () => {
         clientId: connectGmailOauth().clientId,
         clientSecret: connectGmailOauth().clientSecret,
         refreshToken: connectGmailOauth().refreshToken,
-        accessToken: accessToken,
+        accessToken: Oauth2_client.getAccessToken(),
       },
     });
 

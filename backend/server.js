@@ -133,7 +133,7 @@ export const send_mail = async (body, res, type, token, hasEmailBeenSent) => {
         locals: {
           recipientsFirstName: body.recipientsFirstName,
           recipientsEmail: body.recipientsEmail,
-          dateToSend: formatDate(body.dateToSend),
+          dateToSend: new Date(body.dateToSend).toISOString().split('T')[0],
           firstName: body.firstName,
           lastName: body.lastName,
           email: body.email,

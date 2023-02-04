@@ -15,7 +15,6 @@ import {
 } from '../../components/styles/admin/Styles';
 import Message from '../../components/Message';
 import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
-import { formatDate } from '../../utils/formatDate';
 import { listECardOrders } from '../../actions/eCardOrderActions';
 import { WelcomeText } from '../../components/styles/DashboardStyles';
 import { rangeV2 } from '../../components/common/Pagination';
@@ -113,7 +112,9 @@ const EcardOrderList = () => {
                     <Text>{order?.recipientsEmail}</Text>
                   </td>
                   <td>
-                    <Text>{formatDate(order?.dateToSend)}</Text>
+                    <Text>
+                      {new Date(order?.dateToSend).toISOString().split('T')[0]}
+                    </Text>
                   </td>
                   <td>{order?.firstName}</td>
                   <td>{order?.lastName}</td>
