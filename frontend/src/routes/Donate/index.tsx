@@ -1,91 +1,24 @@
 import React from 'react';
 import { Text } from '../../components/styles/Styles';
-import DonationForm from './DonationForm';
+import DonationForm from './Donate';
 import ShopToHelp from '../../components/donate/ShopToHelp';
-import { Link, Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Route, Switch, useLocation, useRouteMatch } from 'react-router-dom';
 import FeedAFoster from '../../components/donate/FeedAFoster';
 import PageNotFound from '../../components/common/PageNotFound';
 import DonateLayoutWithSideBar from '../../components/layouts/DonateLayoutWithSideBar';
-import styled from 'styled-components';
 import DonateDog from '../../components/assets/donate_dog02.jpeg';
 import { Image } from 'react-bootstrap';
-import SponsorGift from '../../components/svg/SponsorGift';
 import LeftArrow from '../../components/svg/LeftArrow';
 import RightArrow from '../../components/svg/RightArrow';
+import LongDog from './LongDog';
+import SideBar from '../../components/donate/Sidebar';
+import Venmo from './Venmo';
+import Check from './Check';
 
-const DonateLink = styled(Link)`
-  font-size: 16px;
-  text-align: center;
-`;
-const SideBarContainer = styled.div`
-  padding: 16px;
-`;
-
-const SideBar = () => {
-  return (
-    <SideBarContainer className='d-flex flex-column'>
-      <SponsorGift />
-      <Text
-        fontSize='32px'
-        fontWeight={400}
-        marginTop='32px'
-        marginBottom='48px'
-      >
-        Other ways to donate
-      </Text>
-      {[
-        {
-          linkText: 'Donate One-Time/Monthly',
-          linkKey: '/donate',
-        },
-        {
-          linkText: 'E-Card',
-          linkKey: '/e-cards',
-        },
-        {
-          linkText: 'Venmo',
-          linkKey: '/donate/venmo',
-        },
-        {
-          linkText: 'Check',
-          linkKey: '/donate/check',
-        },
-        {
-          linkText: 'Shop To Help',
-          linkKey: '/donate/shop-to-help',
-        },
-      ].map((obj: any, i: number) => (
-        <DonateLink
-          to={obj.linkKey}
-          key={i}
-          className='mb-3'
-          onClick={() => window.scrollTo(0, 600)}
-        >
-          {obj.linkText}
-        </DonateLink>
-      ))}
-    </SideBarContainer>
-  );
-};
-
-const Venmo = () => (
-  <Text p='96px 0' fontSize='48px' fontWeight={400} textAlign='center'>
-    Venmo @littlepawsdr
-  </Text>
-);
-const Check = () => (
-  <Text p='96px 0' fontSize='48px' fontWeight={400} textAlign='center'>
-    Little Paws Dachshund Rescue
-    <br />
-    P.O. Box 232
-    <br />
-    College Park, MD 20741
-    <br />
-  </Text>
-);
-
-const DonateRoutes = ({ location }: any) => {
+const DonateRoutes = ({ timer }: any) => {
   const { path } = useRouteMatch();
+  const location = useLocation() as any;
+
   return (
     <DonateLayoutWithSideBar
       jumbotron={
@@ -151,6 +84,8 @@ const DonateRoutes = ({ location }: any) => {
                     ? 'Shop To Help'
                     : location?.pathname === '/donate/check'
                     ? 'Venmo'
+                    : location?.pathname === '/donate/long-dog'
+                    ? 'Check'
                     : 'Rainbow Bridge'
                 }
                 url2={
@@ -160,6 +95,8 @@ const DonateRoutes = ({ location }: any) => {
                     ? '/donate/shop-to-help'
                     : location?.pathname === '/donate/check'
                     ? '/donate/venmo'
+                    : location?.pathname === '/donate/long-dog'
+                    ? '/donate/check'
                     : '/about/rainbow-bridge'
                 }
               />
@@ -170,6 +107,8 @@ const DonateRoutes = ({ location }: any) => {
                     : location?.pathname === '/donate/venmo'
                     ? 'Check'
                     : location?.pathname === '/donate/check'
+                    ? 'Long Dog'
+                    : location?.pathname === '/donate/long-dog'
                     ? 'Adoption Application'
                     : 'Ecards'
                 }
@@ -179,6 +118,8 @@ const DonateRoutes = ({ location }: any) => {
                     : location?.pathname === '/donate/venmo'
                     ? '/donate/check'
                     : location?.pathname === '/donate/check'
+                    ? '/donate/long-dog'
+                    : location?.pathname === '/donate/long-dog'
                     ? '/adopt/application'
                     : '/e-cards'
                 }
@@ -227,10 +168,20 @@ const DonateRoutes = ({ location }: any) => {
     >
       <Switch>
         <Route exact path={path} component={DonationForm} />
-        <Route path={`${path}/feed-a-foster`} component={FeedAFoster} />
+        <Route
+          path={`${path}/long-dog`}
+          render={() => <LongDog timer={timer} />}
+        />
         <Route path={`${path}/shop-to-help`} component={ShopToHelp} />
         <Route path={`${path}/venmo`} component={Venmo} />
         <Route path={`${path}/check`} component={Check} />
+        {false ? (
+          <Route path={`${path}/feed-a-foster`} component={FeedAFoster} />
+        ) : (
+          <Text fontSize='16px' textAlign='center' p='128px 0'>
+            Come back in July to take part in this great fundraiser!
+          </Text>
+        )}
         <Route>
           <PageNotFound />
         </Route>

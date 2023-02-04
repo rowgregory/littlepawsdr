@@ -66,7 +66,7 @@ const ECards = () => {
           style={{
             position: 'absolute',
             zIndex: 2,
-            maxWidth: '500px',
+            maxWidth: '250px',
             width: 'fit-content',
             mixBlendMode: 'difference',
             top: '255px',
@@ -100,12 +100,7 @@ const ECards = () => {
       </div>
       <Container>
         <div className='w-100 d-flex justify-content-between mt-3'>
-          <LeftArrow
-            text='Home'
-            url='/'
-            text2='One-Time - Monthly'
-            url2='/donate'
-          />
+          <LeftArrow text='Home' url='/' text2='Donate' url2='/donate' />
           <RightArrow text='Shop To Help' url='/donate/shop-to-help' />
         </div>
         {loading && <HexagonLoader />}{' '}

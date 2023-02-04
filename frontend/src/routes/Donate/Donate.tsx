@@ -86,7 +86,7 @@ const ThankYou = styled.div<{ anim: any }>`
   }
 `;
 
-const DonationForm = () => {
+const Donate = () => {
   const [donationBtnClicked, setDonationBtnClicked] = useState(false);
 
   return (
@@ -114,17 +114,16 @@ const DonationForm = () => {
           value='C4SMAYNF4L948'
           id='donate'
         />
-        <label htmlFor='donate'>
-          <DonateBtn
-            onClick={() => setDonationBtnClicked(true)}
-            className='donate-btn'
-          >
-            DONATE
-          </DonateBtn>
-        </label>
+
+        <DonateBtn
+          onClick={() => setDonationBtnClicked(true)}
+          className='donate-btn'
+        >
+          DONATE
+        </DonateBtn>
       </form>
     </Container>
   );
 };
 
-export default DonationForm;
+export default Donate;

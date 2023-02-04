@@ -13,7 +13,6 @@ const Content = styled.div`
 
 const Main = styled.main`
   width: 100%;
-  max-width: 768px;
   margin-inline: auto;
 `;
 

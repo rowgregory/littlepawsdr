@@ -84,8 +84,8 @@ const AdoptionApplication = () => {
           <LeftArrow
             text='Home'
             url='/'
-            text2='Donate by Check'
-            url2='/donate/check'
+            text2='Long Dog'
+            url2='/donate/long-dog'
           />
           <RightArrow text='Adopt a Senior' url='/available/senior' />
         </div>

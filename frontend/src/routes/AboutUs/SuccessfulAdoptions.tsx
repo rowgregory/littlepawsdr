@@ -3,13 +3,11 @@ import { Col, Card, Pagination, Image } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import { getDogsByStatusPicturesAndVideours } from '../../actions/dachshundsActions';
 import styled from 'styled-components';
-import Message from '../../components/Message';
 import { Link } from 'react-router-dom';
 import { Text } from '../../components/styles/Styles';
 import { formatDate } from '../../utils/formatDate';
 import { LoadingImg } from '../../components/LoadingImg';
 import Successful from '../../components/assets/successful03.jpeg';
-import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
 import { PaginationContainer } from '../../components/styles/admin/Styles';
 import { rangeV2 } from '../../components/common/Pagination';
 import NoImgDog from '../../components/assets/no_image_dog.jpg';
@@ -82,7 +80,6 @@ const SuccessfulAdoptions = () => {
 
   return (
     <>
-      {loading && <HexagonLoader />}
       <div style={{ position: 'relative', marginTop: '75px' }}>
         <Image
           src={Successful}
@@ -124,7 +121,7 @@ const SuccessfulAdoptions = () => {
           Photo by Nivia Espinoza
         </Text>
       </div>
-      {error && <Message variant='danger'>{error}</Message>}
+
       <Container>
         <div className='w-100 d-flex justify-content-between mt-3'>
           <LeftArrow
@@ -135,9 +132,24 @@ const SuccessfulAdoptions = () => {
           />
           <RightArrow text='Rainbow Bridge' url='/about/rainbow-bridge' />
         </div>
+        <Text
+          fontSize='32px'
+          marginTop='56px'
+          fontWeight={400}
+          className='mb-3 mx-auto text-center'
+        >
+          Successful Adoptions are why we rescue!
+        </Text>
+        <Text className='mb-3 mt-4 text-center' fontSize='16px'>
+          We love seeing happy dachshunds living their best lives
+        </Text>
+        <Text className='mb-3 mt-4 text-center' fontSize='16px'>
+          Share your updates and photos of your adopted Little Paws doxie with
+          us on our social media pages!
+        </Text>
         {loading && (
           <DogContainer>
-            {[...Array(6).keys()].map((z: any, i: number) => (
+            {[...Array(3).keys()].map((z: any, i: number) => (
               <LoadingImg key={i} w='100%' mw='300px' />
             ))}
           </DogContainer>
@@ -161,7 +173,6 @@ const SuccessfulAdoptions = () => {
                   }}
                   loading='lazy'
                 />
-
                 <TextContainer>
                   <Link
                     to={{

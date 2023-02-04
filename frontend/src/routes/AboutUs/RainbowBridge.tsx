@@ -9,7 +9,6 @@ import { Text } from '../../components/styles/Styles';
 import { LoadingImg } from '../../components/LoadingImg';
 import RanbowBridgeDog from '../../components/assets/rainbow-bridge_dog01.jpeg';
 import NoImgDog from '../../components/assets/no_image_dog.jpg';
-import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
 import { PaginationContainer } from '../../components/styles/admin/Styles';
 import { rangeV2 } from '../../components/common/Pagination';
 import LeftArrow from '../../components/svg/LeftArrow';
@@ -81,7 +80,6 @@ const RainbowBridge = () => {
   return (
     <>
       {error && <Message variant='danger'>{error}</Message>}
-      {loading && <HexagonLoader />}
       <div style={{ position: 'relative', marginTop: '75px' }}>
         <Image
           src={RanbowBridgeDog}
@@ -131,11 +129,27 @@ const RainbowBridge = () => {
             text2='Successful Adoptions'
             url2='/about/successful-adoptions'
           />
-          <RightArrow text='Donation Form' url='/donate' />
+          <RightArrow text='Donate' url='/donate' />
         </div>
+        <Text
+          fontSize='32px'
+          marginTop='56px'
+          fontWeight={400}
+          className='mb-3 mx-auto text-center'
+        >
+          The Little Paws Family cherishes each and every dog that joins our
+          rescue.
+        </Text>
+        <Text className='mb-3 mt-4 text-center' fontSize='16px'>
+          We find comfort that they were all loved and well cared for in their
+          foster and forever homes.
+        </Text>
+        <Text className='mb-3 mt-4 text-center' fontSize='16px'>
+          We will miss you forever, and see you at the Rainbow Bridge. 🌈
+        </Text>
         {loading && (
           <DogContainer>
-            {[...Array(6).keys()].map((z: any, i: number) => (
+            {[...Array(3).keys()].map((z: any, i: number) => (
               <LoadingImg key={i} w='100%' mw='300px' />
             ))}
           </DogContainer>

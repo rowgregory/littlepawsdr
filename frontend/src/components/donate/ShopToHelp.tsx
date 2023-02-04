@@ -109,14 +109,14 @@ const ShopToHelp = () => {
       >
         You can also SHOP to HELP!
       </Text>
-      <Text marginBottom='32px'>
+      <Text className='mb-3 mt-4 mx-auto' fontSize='16px' maxWidth='680px'>
         We fundraise with partnerships with Amazon, and other dog-loving
         organizations. A few times a year we hold our popular, seasonal
         auctions. Check out ways that you can shop and help keep our fosters’
         tails wagging! Find new or gently used dachshund-themed items, or items
         for your pup on our eBay page.
       </Text>
-      <Text>
+      <Text className='mb-3 mt-4 mx-auto' fontSize='16px' maxWidth='680px'>
         Would you rather donate items instead of money? LPDR maintains an Amazon
         Wish List for any basic needs such as leashes, harnesses, collars,
         treats, etc. Simply select the item that you would like to donate and
@@ -126,38 +126,37 @@ const ShopToHelp = () => {
       <div className='d-flex justify-content-center my-5'>
         <Image
           onClick={() =>
-            (window.location.href =
-              'https://www.amazon.com/hz/wishlist/ls/3JHXXPX2GTHGE')
+            window.open(
+              'https://www.amazon.com/hz/wishlist/ls/3JHXXPX2GTHGE',
+              '_blank'
+            )
           }
           src={amazonSmile}
-          alt='eBay-shop-to-help'
+          alt='LPDR Amazon Shop to Help'
           style={{
-            maxWidth: '300px',
+            maxWidth: '400px',
             width: '100%',
-            marginBottom: '80px',
             cursor: 'pointer',
           }}
         />
       </div>
-      <Text>
+      <Text className='mb-3 mt-4 mx-auto' fontSize='16px' maxWidth='680px'>
         We are thankful to be part of the Chewy.com Shelter & Rescue Network.
         That means using the link below will get NEW customers who use it a
         donation of $20 for LPDR!
       </Text>
-      <br />
-      <Text>
+
+      <Text className='mb-3 mt-4 mx-auto' fontSize='16px' maxWidth='680px'>
         Shopping to get your pet their monthly food, treats and toys will help
         LPDR help dogs!
       </Text>
       <div className='d-flex justify-content-center my-5'>
         <Image
-          onClick={() =>
-            (window.location.href = 'https://www.chewy.com/rp/3897')
-          }
+          onClick={() => window.open('https://www.chewy.com/rp/3897', '_blank')}
           src={Chewy}
-          alt='eBay-shop-to-help'
+          alt='LPDR Chewy Shop to Help'
           style={{
-            maxWidth: '300px',
+            maxWidth: '400px',
             width: '100%',
             cursor: 'pointer',
           }}
@@ -169,7 +168,7 @@ const ShopToHelp = () => {
             Shop Pet Meds and provide pet supplies for pets in need.
           </Text>
           <PetMeds
-            onClick={() => (window.location.href = 'http://www.petmeds.org/')}
+            onClick={() => window.open('http://www.petmeds.org/', '_blank')}
             style={{ cursor: 'pointer' }}
           >
             <PetMedsTop>www.1800petmeds.com</PetMedsTop>
@@ -182,21 +181,26 @@ const ShopToHelp = () => {
         </div>
 
         <div className='d-flex flex-column justify-content-center'>
-          <Text>Help Little Paws Dachshund Rescue every time you shop.</Text>
+          <Text className='mb-3 mt-4 mx-auto' fontSize='16px' maxWidth='680px'>
+            Help Little Paws Dachshund Rescue every time you shop.
+          </Text>
           <div
             className='d-flex justify-content-center'
-            style={{ height: '200px', cursor: 'pointer' }}
+            style={{ cursor: 'pointer' }}
           >
             <Image
               onClick={() =>
-                (window.location.href =
-                  'http://www.igive.com/welcome/lptest/wr31a.cfm?c=64803&p=19992&jltest=1')
+                window.open(
+                  'http://www.igive.com/welcome/lptest/wr31a.cfm?c=64803&p=19992&jltest=1',
+                  '_blank'
+                )
               }
               src={iGive}
-              alt='eBay-shop-to-help'
+              alt='LPDR iGive Shop to Help'
               style={{
-                maxWidth: '300px',
+                maxWidth: '250px',
                 width: '100%',
+                objectFit: 'cover',
               }}
             />
           </div>
