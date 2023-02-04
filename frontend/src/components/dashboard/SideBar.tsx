@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import DashboardIcon from '../svg/DashboardIcon';
-import DonationsIcon from '../svg/DonationsIcon';
 import EcardIcon from '../svg/EcardIcon';
 import EventsIcon from '../svg/EventsIcon';
 import NewsletterEmailIcon from '../svg/NewsletterEmailIcon';
@@ -131,12 +130,6 @@ const sellingLinks = [
 ];
 
 const proceedsLinks = [
-  {
-    textKey: 'Donations',
-    linkKey: '/admin/donationList',
-    icon: <DonationsIcon />,
-    pathMatch: 'donation',
-  },
   {
     textKey: 'Product Orders',
     linkKey: '/admin/orderList',

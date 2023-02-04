@@ -48,38 +48,34 @@ export const StyledLink = styled(Link)<{ highlight: any }>`
     text-decoration: none;
     color: ${({ theme }) => theme.colors.quinary};
   }
-
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-  }
 `;
 export const StyledTitle = styled.div<{ textcolor?: any }>`
   transition: 300ms;
   color: ${({ textcolor, theme }) =>
     textcolor === 'true' ? theme.colors.quinary : theme.text};
   font-family: 'EB Garamond', serif;
+  font-size: 48px;
+  margin-left: 16px;
 
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
+    font-size: 85px;
+    margin-left: 24px;
+  }
   :hover {
     text-decoration: none;
     color: ${({ theme }) => theme.colors.quinary};
   }
-  font-size: 4rem;
-  margin-left: 12px;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-    font-size: 85px;
-    margin-left: 24px;
-  }
 `;
 
 export const AccordionWrapper = styled.div`
-  padding: 1rem;
+  padding: 4px;
   margin-top: 0;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
     padding: 40px 60px;
   }
 `;
 export const AccordionCollapse = styled(Accordion.Collapse)`
-  margin-left: 40px;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
     margin-left: 65px;
   }
 `;
@@ -93,5 +89,12 @@ export const Circle = styled.div<{ highlight?: any }>`
   margin-right: 24px;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
     margin-right: 16px;
+  }
+`;
+
+export const LinkContainer = styled.div`
+  margin-left: 55px;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+    margin-left: 0px;
   }
 `;

@@ -217,26 +217,30 @@ const EventEdit = () => {
             onChange={(e) => setDescription(e.target.value)}
           ></Form.Control>
         </Form.Group>
-        <Form.Group controlId='startDate'>
-          <Form.Label>Start Date</Form.Label>
-          <Form.Control
-            required
-            as='input'
-            type='date'
-            value={startDate || ''}
-            onChange={(e) => setStartDate(e.target.value)}
-          ></Form.Control>
-        </Form.Group>
-        <Form.Group controlId='endDate'>
-          <Form.Label>End Date</Form.Label>
-          <Form.Control
-            required
-            as='input'
-            type='date'
-            value={endDate || ''}
-            onChange={(e) => setEndDate(e.target.value)}
-          ></Form.Control>
-        </Form.Group>
+        <div style={{ position: 'relative' }}>
+          <Form.Group controlId='startDate'>
+            <Form.Label>Start Date</Form.Label>
+            <Form.Control
+              required
+              as='input'
+              type='date'
+              value={startDate || ''}
+              onChange={(e) => setStartDate(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
+        </div>
+        <div style={{ position: 'relative' }}>
+          <Form.Group controlId='endDate'>
+            <Form.Label>End Date</Form.Label>
+            <Form.Control
+              required
+              as='input'
+              type='date'
+              value={endDate || ''}
+              onChange={(e) => setEndDate(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
+        </div>
         <Form.Group controlId='image' className='d-flex flex-column'>
           <Form.Label>Image</Form.Label>
           <Form.Control

@@ -76,6 +76,10 @@ export const sideLinkData = [
         linkKey: '/adopt/faq',
         linkText: 'FAQ',
       },
+      {
+        linkKey: '/adopt/transport-application',
+        linkText: 'Transport Application',
+      },
     ],
   },
   {

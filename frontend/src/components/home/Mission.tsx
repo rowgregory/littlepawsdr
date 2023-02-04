@@ -37,17 +37,13 @@ const Mission = () => {
           src={Logo}
           width='100%'
           style={{ maxWidth: '400px', objectFit: 'cover', margin: '0 auto' }}
+          alt='LPDR Logo'
         />
-        <Text
-          fontSize='32px'
-          marginTop='56px'
-          fontWeight={400}
-          textAlign='center'
-        >
+        <h4 className='text-center mt-5 font-weight-normal'>
           LITTLE PAWS DACHSHUND RESCUE is an east coast based 501(c)3 exempt
           nonprofit dedicated to the rescue and re-homing of our favorite short
           legged breed
-        </Text>
+        </h4>
         <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='18px'>
           We specialize in finding permanent homes for dachshund and dachshund
           mixes. We strive to make the lives of all dogs better through action,

@@ -163,7 +163,7 @@ const AdoptionFees = ({ history }: any) => {
           <tbody>
             <TableRow>
               <TableData className='pl-4'>Below 1 year</TableData>
-              <TableData>$350.00 USD</TableData>
+              <TableData>$400.00 USD</TableData>
               <TableData>$45.00 USD</TableData>
             </TableRow>
             <TableRow>
@@ -178,14 +178,14 @@ const AdoptionFees = ({ history }: any) => {
             </TableRow>
             <TableRow>
               <TableData className='pl-4'>10+ years</TableData>
-              <TableData>$150.00 USD</TableData>
+              <TableData>$200.00 USD</TableData>
               <TableData>$45.00 USD</TableData>
             </TableRow>
             <TableRow>
               <TableData className='pl-4'>Adopt a Senior</TableData>
               <TableData>
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  <span>$75.00 USD</span>
+                  <span style={{ fontSize: '16px' }}>$100.00 USD</span>
                   <section
                     onClick={() => history.push('/adopt/senior-dogs')}
                     style={{ cursor: 'pointer' }}

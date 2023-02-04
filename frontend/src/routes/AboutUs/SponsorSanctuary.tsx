@@ -2,19 +2,19 @@ import React, { useEffect, useState } from 'react';
 import SubscribeBtn from '../../components/assets/subscribe_btn_3.png';
 import styled from 'styled-components';
 import { Text } from '../../components/styles/Styles';
-import SponsorDog from '../../components/assets/sanctuary01.webp';
+import SponsorDog from '../../components/assets/sanctuary.jpg';
 import { Image } from 'react-bootstrap';
 import SponsorGift from '../../components/svg/SponsorGift';
 import { useDispatch, useSelector } from 'react-redux';
 import { getDogsByStatusPicturesAndVideours } from '../../actions/dachshundsActions';
 import { Link } from 'react-router-dom';
 import { Accordion } from '../../components/styles/place-order/Styles';
-import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
 import Message from '../../components/Message';
 import { useWindowSize } from '../../utils/useWindowSize';
 import NoImgDog from '../../components/assets/no_image_dog.jpg';
 import LeftArrow from '../../components/svg/LeftArrow';
 import RightArrow from '../../components/svg/RightArrow';
+import { LoadingImg } from '../../components/LoadingImg';
 
 export const PayPalCard = styled.div`
   border-radius: 12px;
@@ -29,7 +29,8 @@ export const PayPalCard = styled.div`
 
 export const PayPalButton = styled.input`
   height: 145px !important;
-  width: 300px;
+  max-width: 300px;
+  width: 100%;
   object-fit: contain;
   background: ${({ theme }) => theme.secondaryBg} !important;
   :focus {
@@ -102,12 +103,11 @@ const SponsorSanctuary = () => {
 
   return (
     <>
-      {loading && <HexagonLoader />}
-      <div style={{ position: 'relative', marginTop: '75px' }}>
+      <div style={{ position: 'relative' }}>
         <Image
           src={SponsorDog}
           width='100%'
-          style={{ height: '500px', objectFit: 'cover' }}
+          style={{ height: '575px', objectFit: 'cover' }}
         />
         <Text
           fontWeight={500}
@@ -125,7 +125,7 @@ const SponsorSanctuary = () => {
         <Text
           onClick={() =>
             window.open(
-              'https://www.pexels.com/photo/adorable-puppy-of-dachshund-in-park-4193995/',
+              'https://www.pexels.com/photo/a-woman-carrying-her-dog-4091966/',
               '_blank'
             )
           }
@@ -141,7 +141,7 @@ const SponsorSanctuary = () => {
             zIndex: 2,
           }}
         >
-          Photo by Dominika Roseclay
+          Photo by Oliver King
         </Text>
       </div>
       <div
@@ -191,7 +191,7 @@ const SponsorSanctuary = () => {
           >
             Monthly Sponsorship
           </Text>
-          <div className='d-flex justify-content-center p-0'>
+          <div className='d-flex justify-content-center w-100'>
             <form
               className='d-flex flex-column justify-content-between align-items-center'
               action='https://www.paypal.com/cgi-bin/webscr'
@@ -204,7 +204,7 @@ const SponsorSanctuary = () => {
                 name='hosted_button_id'
                 value='JZPCSEMTVANHQ'
               />
-              <table>
+              <table className='w-100' style={{ maxWidth: '400px' }}>
                 <tbody>
                   <tr>
                     <td>
@@ -216,7 +216,7 @@ const SponsorSanctuary = () => {
                       <select
                         name='os0'
                         style={{
-                          width: '300px',
+                          width: '100%',
                           borderRadius: '8px',
                           cursor: 'pointer',
                           border: 'none',
@@ -294,35 +294,39 @@ const SponsorSanctuary = () => {
           style={{ minHeight: width < 545 ? '460px' : '335px' }}
         >
           <DogGrid>
-            {dachshunds?.map((dog: any, i: number) => (
-              <DogContainer
-                to={{
-                  pathname: `/about/dachshund`,
-                  state: {
-                    dog,
-                    directBackTo: 'sanctuary',
-                    pathName: 'Sponsor a Sanctuary',
-                  },
-                }}
-                key={i}
-              >
-                <Image
-                  src={dog?.attributes?.photos[0] ?? NoImgDog}
-                  width='100%'
-                  style={{
-                    aspectRatio: '1/1',
-                    maxWidth: '300px',
-                    objectFit: 'cover',
-                  }}
-                />
-                <TextContainer>
-                  <Text fontWeight={400} fontSize='18px'>
-                    {dog?.attributes?.name}
-                  </Text>
-                  <Text>{dog?.attributes?.breedString}</Text>
-                </TextContainer>
-              </DogContainer>
-            ))}
+            {loading
+              ? [1, 2, 3].map((_: any, i: number) => (
+                  <LoadingImg w='100%' mw='300px' h='100%' key={i} />
+                ))
+              : dachshunds?.map((dog: any, i: number) => (
+                  <DogContainer
+                    to={{
+                      pathname: `/about/dachshund`,
+                      state: {
+                        dog,
+                        directBackTo: 'sanctuary',
+                        pathName: 'Sponsor a Sanctuary',
+                      },
+                    }}
+                    key={i}
+                  >
+                    <Image
+                      src={dog?.attributes?.photos[0] ?? NoImgDog}
+                      width='100%'
+                      style={{
+                        aspectRatio: '1/1',
+                        maxWidth: '300px',
+                        objectFit: 'cover',
+                      }}
+                    />
+                    <TextContainer>
+                      <Text fontWeight={400} fontSize='18px'>
+                        {dog?.attributes?.name}
+                      </Text>
+                      <Text>{dog?.attributes?.breedString}</Text>
+                    </TextContainer>
+                  </DogContainer>
+                ))}
           </DogGrid>
         </Accordion>
         <Text

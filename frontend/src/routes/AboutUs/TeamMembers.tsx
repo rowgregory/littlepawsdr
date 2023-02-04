@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { Row, Image, Card, Col } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { listWhoWeAreUsers } from '../../actions/userActions';
-import Message from '../../components/Message';
 import { Text } from '../../components/styles/Styles';
 import styled from 'styled-components';
 import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
@@ -10,8 +9,9 @@ import LeftArrow from '../../components/svg/LeftArrow';
 import RightArrow from '../../components/svg/RightArrow';
 import AboutUs from '../../components/assets/AboutUs.jpg';
 import { useLocation } from 'react-router-dom';
+import CardFlip from '../../components/boardmember-card/CardFlip';
 
-const ProfileCard = styled(Card)`
+export const ProfileCard = styled(Card)`
   background-color: ${({ theme }) => theme.card.bg};
   border: none;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
@@ -23,17 +23,24 @@ const ProfileCard = styled(Card)`
   }
 `;
 
-const CardImg = styled(Image)`
-  object-fit: cover;
-  border: ${({ theme }) => `4px solid ${theme.card.bg}`};
-  margin-top: -170px;
+export const Name = styled(Card.Title)`
+  color: ${({ theme }) => theme.card.text};
+`;
+export const Position = styled(Card.Subtitle)`
+  color: ${({ theme }) => theme.card.text};
 `;
 
-const Name = styled(Card.Title)`
-  color: ${({ theme }) => theme.card.text};
-`;
-const Position = styled(Card.Subtitle)`
-  color: ${({ theme }) => theme.card.text};
+const CardWrapper = styled(Col)`
+  display: grid;
+  justify-content: center;
+  grid-gap: 96px;
+  grid-template-columns: repeat(auto-fill, 100%);
+  grid-template-rows: repeat(auto-fill, 500px);
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
+    grid-gap: 96px 32px;
+    grid-template-columns: repeat(auto-fill, 600px);
+    grid-template-rows: repeat(auto-fill, 380px);
+  }
 `;
 
 const TeamMembers = () => {
@@ -47,7 +54,7 @@ const TeamMembers = () => {
   }, [location.state]);
 
   const userWhoWeAreList = useSelector((state: any) => state.userWhoWeAreList);
-  const { loading, error, users } = userWhoWeAreList;
+  const { loading, users } = userWhoWeAreList;
 
   useEffect(() => {
     dispatch(listWhoWeAreUsers());
@@ -57,6 +64,29 @@ const TeamMembers = () => {
 
   return (
     <>
+      <div
+        style={{
+          position: 'fixed',
+          right: 'calc(100% - 163px)',
+          top: 0,
+          bottom: 0,
+          left: 0,
+          zIndex: -1,
+        }}
+      >
+        <div
+          style={{
+            height: '163px',
+            transformOrigin: 'left',
+            transform: 'rotate(90deg) translate(0%, -50%)',
+            width: '200vh',
+          }}
+        >
+          <Text fontSize='150px' fontWeight={600} color='#e5e8ed'>
+            Little Paws Dachshund Reschue
+          </Text>
+        </div>
+      </div>
       <div style={{ position: 'relative', marginTop: '75px' }}>
         <Image
           src={AboutUs}
@@ -66,20 +96,20 @@ const TeamMembers = () => {
         <Text
           fontWeight={500}
           fontSize='48px'
-          color='#fff'
           style={{
             position: 'absolute',
             top: '200px',
             left: '50px',
             zIndex: 2,
+            mixBlendMode: 'difference',
           }}
         >
-          About Us
+          Little Paws Crew
         </Text>
         <Text
           onClick={() =>
             window.open(
-              'https://www.pexels.com/photo/a-brown-dachshund-lying-on-a-carpet-9269488/',
+              'https://unsplash.com/@ibaxez?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText',
               '_blank'
             )
           }
@@ -95,19 +125,22 @@ const TeamMembers = () => {
             zIndex: 2,
           }}
         >
-          Photo by Vinícius Cezário
+          Photo by Carlos Ibáñez
         </Text>
       </div>
       <div
         style={{
-          maxWidth: '980px',
+          maxWidth: '1280px',
           width: '100%',
           marginInline: 'auto',
           marginBottom: '96px',
           paddingInline: '16px',
         }}
       >
-        <div className='w-100 d-flex justify-content-between mt-3'>
+        <div
+          className='w-100 mx-auto d-flex justify-content-between mt-3'
+          style={{ maxWidth: '980px' }}
+        >
           <LeftArrow
             text='Home'
             url='/'
@@ -141,7 +174,7 @@ const TeamMembers = () => {
           roles within our rescue. So many of you have reached out and asked how
           you can help! We are touched by everyone’s generosity.
         </Text>
-        <Text maxWidth='680px' fontSize='16px' className='mb-4 mx-auto'>
+        <Text maxWidth='680px' fontSize='16px' className='mx-auto'>
           Right now, we are in need of monetary donations. Happy endings for our
           dachshunds in need can only happen with your support. Please allow us
           to continue to say “YES WE CAN” to those calls asking for assistance
@@ -149,69 +182,20 @@ const TeamMembers = () => {
           been neglected and abused and deserves a warm bed and a kind hand to
           rub his or her tummy.
         </Text>
-
-        <Text
-          fontSize='31px'
-          marginTop='56px'
-          fontWeight={400}
-          textAlign='center'
-          marginBottom='24px'
-        >
-          Little Paws Crew
-        </Text>
         {loading && <HexagonLoader />}
-
-        <Row className='mx-auto d-flex flex-column px-0 mb-5'>
-          <Col
-            className='px-0 d-flex'
-            style={{
-              gap: '1rem',
-              flexWrap: 'wrap',
-            }}
-          >
-            {error ? (
-              <div className='d-flex flex-column align-items-center w-100'>
-                <Message variant='danger'>{error}</Message>
-              </div>
-            ) : (
-              boardMembers?.map(
-                (user: any, i: number) =>
-                  (user?.isAdmin || user?.affiliation) &&
-                  user?.email !== 'it.little.paws@gmail.com' && (
-                    <ProfileCard key={user._id} className='d-flex my-3'>
-                      <Card.Img
-                        src={user.profileCardTheme}
-                        alt={`${user}-${i}`}
-                        style={{
-                          height: '200px',
-                          borderRadius: '12px 12px 0 0',
-                          objectFit: 'cover',
-                        }}
-                      />
-
-                      <Card.Body className='d-flex flex-column mx-auto align-items-center'>
-                        <CardImg
-                          src={user?.avatar || user?.image}
-                          alt={`${user?.name}-${i}`}
-                          width='170px'
-                          height='170px'
-                          roundedCircle
-                        />
-                        <Name className='pt-2'>
-                          <strong>{user?.name}</strong>
-                        </Name>
-                        <Position className='pb-1'>
-                          {user?.volunteerTitle || user?.affiliation}
-                        </Position>
-                        <Card.Text>
-                          {user?.volunteerEmail || user?.email}
-                        </Card.Text>
-                      </Card.Body>
-                    </ProfileCard>
-                  )
-              )
+        <Row
+          className='mx-auto d-flex flex-column px-0 mb-5'
+          style={{ marginTop: '96px' }}
+        >
+          <CardWrapper className='px-0'>
+            {boardMembers?.map(
+              (user: any) =>
+                (user?.isAdmin || user?.affiliation) &&
+                user?.email !== 'it.little.paws@gmail.com' && (
+                  <CardFlip key={user?._id} user={user} />
+                )
             )}
-          </Col>
+          </CardWrapper>
         </Row>
       </div>
     </>

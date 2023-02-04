@@ -9,10 +9,18 @@ import RightArrow from '../../components/svg/RightArrow';
 
 const AdoptionApplicationIFrame = styled.iframe<{ pageKey?: string }>`
   border: none;
-  height: 14100px;
+  height: 14000px;
   max-width: ${({ theme }) => theme.breakpoints[3]};
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-    height: 11500px;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
+    height: 11300px;
+  }
+
+  @media screen and (orientation: landscape) {
+    height: 12000px;
+  }
+
+  @media screen and (orientation: portrait) and (min-device-width: 768px) and (max-device-width: 1024px) {
+    height: 12000px;
   }
 `;
 

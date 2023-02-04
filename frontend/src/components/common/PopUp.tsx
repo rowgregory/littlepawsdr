@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Col, Row, Form, Button, Modal } from 'react-bootstrap';
+import { Col, Row, Form, Button, Modal, Image } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { createNewsletterEmail } from '../../actions/newsletterActions';
 import styled from 'styled-components';
@@ -8,8 +8,12 @@ import Checkmark from '../svg/Checkmark';
 import HorizontalLoader from '../HorizontalLoader';
 import { NEWSLETTER_EMAIL_CREATE_RESET } from '../../constants/newsletterConstants';
 import Message from '../Message';
+import P1 from '../../components/assets/popup1.jpg';
+import P2 from '../../components/assets/popup2.jpg';
+
 const StyledModal = styled(Modal)`
   background: rgba(0, 0, 0, 0.7) !important;
+  z-index: 5000;
   .modal-dialog {
     box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, 0.22);
     max-width: 1000px;
@@ -18,7 +22,6 @@ const StyledModal = styled(Modal)`
       border: 0;
 
       .modal-body {
-        overflow: hidden;
         .modal-header {
           border: 0;
         }
@@ -35,14 +38,15 @@ const StyledModal = styled(Modal)`
 const Title = styled.div`
   font-size: 32px;
   color: ${({ theme }) => theme.colors.quinary};
+  position: relative;
 `;
 
 const RightSideModal = styled.div`
   background: ${({ theme }) => theme.bg};
-  padding: 2rem 1rem;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-    padding: 3rem;
-    border-radius: 0.75rem;
+  padding: 0 1.5rem 1rem;
+  border-radius: 0 0 0.75rem 0.75rem;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    padding: 0 3rem 1.5rem;
   }
 `;
 
@@ -52,18 +56,13 @@ const ContinueBtn = styled.button`
   color: ${({ theme }) => theme.colors.quinary};
   border: 0;
   transition: 300ms;
-
-  :focus,
-  :active {
-    background: ${({ theme }) => theme.colors.quinary} !important;
-  }
 `;
 
 export const SubscribeBtn = styled(Button)`
   height: 45px;
   border-radius: 0 25px 25px 0;
   border: 0;
-  width: 25%;
+  width: 40%;
   padding: 0;
   background: ${({ theme }) => theme.colors.quinary};
   transition: 300ms;
@@ -78,6 +77,16 @@ export const CheckmarkContainer = styled.div`
   border-top: 1px solid ${({ theme }) => theme.separator};
   border-right: 1px solid ${({ theme }) => theme.separator};
   border-bottom: 1px solid ${({ theme }) => theme.separator};
+`;
+
+const Convex = styled.div`
+  background: #fff;
+  height: 50px;
+  width: 100%;
+  border-radius: 50%;
+  position: absolute;
+  top: -25px;
+  box-shadow: 0px -27px 26px 6px rgba(0, 0, 0, 0.35);
 `;
 
 const PopUp = () => {
@@ -121,7 +130,40 @@ const PopUp = () => {
           className='d-flex justify-content-center align-items-center popup'
           onEscapeKeyDown={() => handleClose()}
         >
-          <Modal.Body className='p-0'>
+          <Modal.Body className='p-0 d-flex flex-column'>
+            <div
+              style={{
+                borderRadius: '0.75rem 0.75rem 0 0',
+                maxWidth: '600px',
+                width: '100%',
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr',
+              }}
+            >
+              <Image
+                src={P1}
+                width='100%'
+                style={{
+                  aspectRatio: '1/1',
+                  objectFit: 'cover',
+                  borderRadius: '0.75rem 0 0 0',
+                  width: '100%',
+                }}
+              />
+              <Image
+                src={P2}
+                width='100%'
+                style={{
+                  aspectRatio: '1/1',
+                  objectFit: 'cover',
+                  borderRadius: '0 0.75rem 0 0',
+                  width: '100%',
+                }}
+              />
+            </div>
+            <div style={{ position: 'relative' }}>
+              <Convex />
+            </div>
             <RightSideModal className='d-flex justify-content-center align-items-center flex-column'>
               <Title>Subscribe!</Title>
               <Text textAlign='center' marginBottom='2rem'>

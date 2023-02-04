@@ -119,20 +119,26 @@ export const Container = styled.div`
   flex-direction: column;
   background: ${({ theme }) => theme.input.bg};
   background: ${({ theme }) => theme.secondaryBg};
-  padding-block: 145px;
+  padding: 8px;
   min-height: 100vh;
   background: url(${LegacyWallpaper});
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    padding-block: 145px;
+  }
 `;
 
 export const FormWrapper = styled.div`
   margin-inline: auto;
   padding: 32px;
-  max-width: 472px;
   width: 100%;
+  min-height: calc(100vh - 16px);
   background: ${({ theme }) => (theme.mode === 'night' ? '#161b22' : '#fff')};
-  border: 0.8px solid
-    ${({ theme }) => (theme.mode === 'night' ? '#21262d' : '#ededed')};
-  border-radius: 0.4rem;
+  border-radius: 0;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    border-radius: 0.4rem;
+    max-width: 472px;
+    min-height: fit-content;
+  }
 `;
 
 export const FormContainer = styled.div`

@@ -1,14 +1,23 @@
 import React from 'react';
 import styled, { useTheme } from 'styled-components';
 import { Text } from '../components/styles/Styles';
-import SurrenderDog from '../components/assets/surrender02.webp';
+import SurrenderDog from '../components/assets/surrender.jpg';
 import { Image } from 'react-bootstrap';
 import LeftArrow from '../components/svg/LeftArrow';
 import RightArrow from '../components/svg/RightArrow';
 
 const SurrenderApplicationIFrame = styled.iframe`
   border: none;
-  height: 4600px;
+  height: 4200px;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
+    height: 3700px;
+  }
+  @media screen and (orientation: landscape) {
+    height: 4000px;
+  }
+  @media screen and (orientation: portrait) and (min-device-width: 768px) and (max-device-width: 1024px) {
+    height: 4000px;
+  }
 `;
 
 const Surrender = () => {
@@ -16,11 +25,15 @@ const Surrender = () => {
   const isDay = theme.mode === 'day';
   return (
     <>
-      <div style={{ position: 'relative', marginTop: '75px' }}>
+      <div
+        style={{
+          position: 'relative',
+        }}
+      >
         <Image
           src={SurrenderDog}
           width='100%'
-          style={{ height: '500px', objectFit: 'cover' }}
+          style={{ height: '575px', objectFit: 'cover' }}
         />
         <Text
           fontWeight={500}
@@ -28,7 +41,7 @@ const Surrender = () => {
           color='#fff'
           style={{
             position: 'absolute',
-            top: '200px',
+            top: '275px',
             left: '50px',
             zIndex: 2,
           }}
@@ -38,7 +51,7 @@ const Surrender = () => {
         <Text
           onClick={() =>
             window.open(
-              ' https://www.pexels.com/photo/photo-of-dog-inside-mailbox-906065/',
+              'https://www.pexels.com/photo/photo-of-dog-inside-mailbox-906065/',
               '_blank'
             )
           }

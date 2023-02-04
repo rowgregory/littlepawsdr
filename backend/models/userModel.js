@@ -75,6 +75,8 @@ const userSchema = mongoose.Schema(
       zipPostalCode: { type: String },
       country: { type: String },
     },
+    location: { type: String },
+    bio: { type: String },
   },
   {
     timestamps: true,

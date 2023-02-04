@@ -17,6 +17,7 @@ const EventsCard = styled.div`
     transform: translateY(-5px);
     box-shadow: 0 19px 100px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, 0.22);
   }
+  margin-left: 10px;
 `;
 
 interface ThreeDTextProps {

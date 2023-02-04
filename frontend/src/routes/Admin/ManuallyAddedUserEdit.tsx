@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Image } from 'react-bootstrap';
+import { Card, Form, Image } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { Text, UpdateBtn } from '../../components/styles/Styles';
 import { removePhoto } from '../../utils/removePhoto';
@@ -16,8 +16,10 @@ import {
 import Message from '../../components/Message';
 import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
 import {
+  CardImg,
   Container,
   EditForm,
+  EditFormAndPreviewContainer,
   FormFile,
   RemovePhoto,
   UploadImageSquare,
@@ -34,6 +36,8 @@ import {
 } from '../../components/styles/profile/Styles';
 import { Accordion } from '../../components/styles/place-order/Styles';
 import { themes } from '../../utils/profileCardThemes';
+import { Name, Position, ProfileCard } from '../AboutUs/TeamMembers';
+import { STATES } from '../../utils/states';
 
 const ManuallyAddedUserEdit = () => {
   const match = useRouteMatch<{ id: string }>();
@@ -53,6 +57,8 @@ const ManuallyAddedUserEdit = () => {
   const [imgUploadStatus, setImageUploadStatus] = useState('') as any;
   const [cloudinaryData, setClouadinaryData] = useState({}) as any;
   const [showCardThemes, setShowCardThemes] = useState(false);
+  const [state, setState] = useState('');
+  const [bio, setBio] = useState('');
 
   const {
     manuallyAddedUserDetails: { loading, error, manuallyAddedUser },
@@ -76,6 +82,8 @@ const ManuallyAddedUserEdit = () => {
     setEmail(manuallyAddedUser?.email);
     setPublicId(manuallyAddedUser?.publicId);
     setProfileCardTheme(manuallyAddedUser?.profileCardTheme);
+    setState(manuallyAddedUser?.location);
+    setBio(manuallyAddedUser?.bio);
   }, [manuallyAddedUser]);
 
   useEffect(() => {
@@ -88,10 +96,23 @@ const ManuallyAddedUserEdit = () => {
           email,
           image: cloudinaryData.secureUrl,
           publicId: cloudinaryData.publicId,
+          profileCardTheme,
+          location: state,
+          bio,
         })
       );
     }
-  }, [affiliation, cloudinaryData, dispatch, manuallyAddedUserId, email, name]);
+  }, [
+    affiliation,
+    cloudinaryData,
+    dispatch,
+    manuallyAddedUserId,
+    email,
+    name,
+    profileCardTheme,
+    state,
+    bio,
+  ]);
 
   useEffect(() => {
     if (successUpdate && submittedForm) {
@@ -121,6 +142,8 @@ const ManuallyAddedUserEdit = () => {
           email,
           image,
           profileCardTheme,
+          location: state,
+          bio,
         })
       );
     }
@@ -157,104 +180,171 @@ const ManuallyAddedUserEdit = () => {
         <Message variant='danger'>{error || errorUpdate || errorMsg}</Message>
       )}
       {(loading || loadingUpdate || submittedForm) && <HexagonLoader />}
-      <EditForm>
-        <Form.Group controlId='name'>
-          <Form.Label>Name</Form.Label>
-          <Form.Control
-            type='text'
-            value={name || ''}
-            onChange={(e) => setName(e.target.value)}
-          ></Form.Control>
-        </Form.Group>
-        <Form.Group controlId='image' className='d-flex flex-column'>
-          <Form.Label>Image</Form.Label>
-          <Form.Control
-            className='img-link'
-            type='text'
-            value={image || ''}
-            onChange={(e) => setImage(e.target.value)}
-          ></Form.Control>
-          <div className='d-flex'>
-            <FormFile
-              id='image-file'
-              label={
-                manuallyAddedUser?.image === defaultImages.upload ||
-                file?.name ? (
-                  <UploadImageSquare className={uploading ? 'anim' : ''}>
-                    <PhotoUploadIcon ready={file} imgStatus={imgUploadStatus} />
-                  </UploadImageSquare>
-                ) : (
-                  <Image
-                    src={manuallyAddedUser?.image}
-                    width='200px'
-                    height='200px'
-                    style={{ objectFit: 'cover' }}
-                  />
-                )
-              }
-              onChange={(e: any) => editPhotoHandler(e)}
-            ></FormFile>
-            <RemovePhoto
-              onClick={(e: any) =>
-                image === defaultImages.blog ? {} : removePhotoHandler(e)
-              }
+      <EditFormAndPreviewContainer>
+        <EditForm style={{ maxWidth: '400px', width: '100%' }}>
+          <Form.Group controlId='name'>
+            <Form.Label>Name</Form.Label>
+            <Form.Control
+              type='text'
+              value={name || ''}
+              onChange={(e) => setName(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
+          <Form.Group controlId='image' className='d-flex flex-column'>
+            <Form.Label>Image</Form.Label>
+            <Form.Control
+              className='img-link'
+              type='text'
+              value={image || ''}
+              onChange={(e) => setImage(e.target.value)}
+            ></Form.Control>
+            <div className='d-flex'>
+              <FormFile
+                id='image-file'
+                label={
+                  manuallyAddedUser?.image === defaultImages.upload ||
+                  file?.name ? (
+                    <UploadImageSquare className={uploading ? 'anim' : ''}>
+                      <PhotoUploadIcon
+                        ready={file}
+                        imgStatus={imgUploadStatus}
+                      />
+                    </UploadImageSquare>
+                  ) : (
+                    <Image
+                      src={manuallyAddedUser?.image}
+                      width='200px'
+                      height='200px'
+                      style={{ objectFit: 'cover' }}
+                    />
+                  )
+                }
+                onChange={(e: any) => editPhotoHandler(e)}
+              ></FormFile>
+              <RemovePhoto
+                onClick={(e: any) =>
+                  image === defaultImages.blog ? {} : removePhotoHandler(e)
+                }
+              >
+                <RemovePhotoIcon />
+                <Text marginLeft='0.75rem' fontWeight='300' color='#c4c4c4'>
+                  Remove Photo
+                </Text>
+              </RemovePhoto>
+            </div>
+          </Form.Group>
+          <Form.Group controlId='affiliation' className='mt-5'>
+            <Form.Label>Affiliation</Form.Label>
+            <Form.Control
+              type='text'
+              value={affiliation || ''}
+              onChange={(e) => setAffiliation(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
+          <Form.Group controlId='email' className='mt-5'>
+            <Form.Label>Email</Form.Label>
+            <Form.Control
+              type='text'
+              value={email || ''}
+              onChange={(e) => setEmail(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
+          <Form.Group controlId='state' className='mt-5'>
+            <Form.Label>State</Form.Label>
+            <Form.Control
+              name='state'
+              value={state || ''}
+              as='select'
+              onChange={(e: any) => setState(e.target.value)}
             >
-              <RemovePhotoIcon />
-              <Text marginLeft='0.75rem' fontWeight='300' color='#c4c4c4'>
-                Remove Photo
-              </Text>
-            </RemovePhoto>
-          </div>
-        </Form.Group>
-        <Form.Group controlId='affiliation' className='mt-5'>
-          <Form.Label>Affiliation</Form.Label>
-          <Form.Control
-            type='text'
-            value={affiliation || ''}
-            onChange={(e) => setAffiliation(e.target.value)}
-          ></Form.Control>
-        </Form.Group>
-        <Form.Group controlId='email' className='mt-5'>
-          <Form.Label>Email</Form.Label>
-          <Form.Control
-            type='text'
-            value={email || ''}
-            onChange={(e) => setEmail(e.target.value)}
-          ></Form.Control>
-        </Form.Group>
-        <Form.Group className='d-flex flex-column' controlId='profileCardTheme'>
-          <Label>Profile card theme</Label>
-          <Accordion
-            toggle={showCardThemes}
-            maxheight='1015px'
-            style={{ minHeight: '225px' }}
+              {STATES.map((state: any, i: number) => (
+                <option style={{ color: '#777' }} key={i}>
+                  {state.text}
+                </option>
+              ))}
+            </Form.Control>
+          </Form.Group>
+          <Form.Group controlId='message' className='mt-5'>
+            <Form.Label>Bio</Form.Label>
+            <Form.Control
+              rows={5}
+              as='textarea'
+              value={bio || ''}
+              onChange={(e) => setBio(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
+          <Form.Group
+            className='d-flex flex-column mt-5'
+            controlId='profileCardTheme'
           >
-            {themes.map((theme: string, i: number) => (
-              <CardTheme
-                key={i}
-                selected={theme === profileCardTheme}
-                inline
-                label={<ProfileCardImg src={theme} alt={`${theme}-${i}`} />}
-                type='radio'
-                id={`inline-radio-${i} bgColor`}
-                value={theme || ''}
-                checked={profileCardTheme === theme}
-                onChange={(e: any) => setProfileCardTheme(e.target.value)}
-              />
-            ))}
-          </Accordion>
-          <Text
-            onClick={() => setShowCardThemes(!showCardThemes)}
-            cursor='pointer'
-            marginTop='8px'
-          >
-            {showCardThemes ? 'See Less...' : 'See More...'}
+            <Label>Profile card theme</Label>
+            <Accordion
+              toggle={showCardThemes}
+              maxheight='1015px'
+              style={{ minHeight: '225px' }}
+            >
+              {themes.map((theme: string, i: number) => (
+                <CardTheme
+                  key={i}
+                  selected={theme === profileCardTheme}
+                  inline
+                  label={<ProfileCardImg src={theme} alt={`${theme}-${i}`} />}
+                  type='radio'
+                  id={`inline-radio-${i} bgColor`}
+                  value={theme || ''}
+                  checked={profileCardTheme === theme}
+                  onChange={(e: any) => setProfileCardTheme(e.target.value)}
+                />
+              ))}
+            </Accordion>
+            <Text
+              onClick={() => setShowCardThemes(!showCardThemes)}
+              cursor='pointer'
+              marginTop='8px'
+            >
+              {showCardThemes ? 'See Less...' : 'See More...'}
+            </Text>
+          </Form.Group>
+          <UpdateBtn onClick={(e: any) => submitHandler(e)}>
+            Updat{loadingUpdate ? 'ing...' : 'e'}
+          </UpdateBtn>
+        </EditForm>
+        <div className='d-flex flex-column'>
+          <Text fontWeight={400} fontSize='13px'>
+            Preview
           </Text>
-        </Form.Group>
-        <UpdateBtn onClick={(e: any) => submitHandler(e)}>
-          Updat{loadingUpdate ? 'ing...' : 'e'}
-        </UpdateBtn>
-      </EditForm>
+
+          <ProfileCard
+            className='d-flex my-3'
+            style={{ height: '323px', maxWidth: '300px', width: '100%' }}
+          >
+            <Card.Img
+              src={profileCardTheme}
+              alt='lanscape-card-theme'
+              style={{
+                height: '200px',
+                borderRadius: '12px 12px 0 0',
+                objectFit: 'cover',
+              }}
+            />
+
+            <Card.Body className='d-flex flex-column mx-auto align-items-center'>
+              <CardImg
+                src={image}
+                alt={name}
+                width='170px'
+                height='170px'
+                style={{ borderRadius: '50%' }}
+              />
+              <Name className='pt-2'>
+                <strong>{name}</strong>
+              </Name>
+              <Position className='pb-1'>{affiliation}</Position>
+              <Card.Text>{email}</Card.Text>
+            </Card.Body>
+          </ProfileCard>
+        </div>
+      </EditFormAndPreviewContainer>
     </Container>
   );
 };

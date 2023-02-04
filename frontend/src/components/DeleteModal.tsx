@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { Modal } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
-import { deleteDonation } from '../actions/donationActions';
 import { deleteECard } from '../actions/eCardActions';
 import { deleteEvent } from '../actions/eventActions';
 import { deleteBlog } from '../actions/blogActions';
@@ -37,9 +36,9 @@ const DeleteModal = ({ actionFunc, show, handleClose, id, publicId }: any) => {
         handleClose();
         break;
       case 'Product':
-        // if (publicId) {
-        //   await axios.post(`/api/remove-upload/${publicId}`);
-        // }
+        if (publicId) {
+          await axios.post(`/api/remove-upload/${publicId}`);
+        }
         dispatch(deleteProduct(id));
         handleClose();
         break;
@@ -48,14 +47,10 @@ const DeleteModal = ({ actionFunc, show, handleClose, id, publicId }: any) => {
         handleClose();
         break;
       case 'ECard':
-        // if (publicId) {
-        //   await axios.post(`/api/remove-upload/${publicId}`);
-        // }
+        if (publicId) {
+          await axios.post(`/api/remove-upload/${publicId}`);
+        }
         dispatch(deleteECard(id));
-        handleClose();
-        break;
-      case 'Donation':
-        dispatch(deleteDonation(id));
         handleClose();
         break;
       case 'Raffle Winner':
@@ -79,7 +74,7 @@ const DeleteModal = ({ actionFunc, show, handleClose, id, publicId }: any) => {
         dispatch(deleteEducationTip(id));
         handleClose();
         break;
-      case 'Manually Added User':
+      case 'Board Member':
         if (publicId) {
           await axios.post(`/api/remove-upload/${publicId}`);
         }

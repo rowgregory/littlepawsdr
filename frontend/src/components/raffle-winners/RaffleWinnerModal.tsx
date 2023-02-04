@@ -38,9 +38,7 @@ const RaffleWinnerModal = ({ show, handleClose, winner }: any) => {
         style={{ borderBottom: '0' }}
       >
         <div className='d-flex justify-content-between w-100'>
-          <Text fontSize='2rem' fontFamily={`Ubuntu, sans-serif`}>
-            {name}
-          </Text>
+          <Text fontSize='2rem'>{name}</Text>
           <Button variant='secondary' onClick={handleClose}>
             <i className='fas fa-times'></i>
           </Button>

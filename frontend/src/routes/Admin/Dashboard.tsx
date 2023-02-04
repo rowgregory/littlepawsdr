@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Image, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { listDonations } from '../../actions/donationActions';
 import { listOrders } from '../../actions/orderActions';
 import { listProducts } from '../../actions/productActions';
 import { listUsers, logout } from '../../actions/userActions';
@@ -88,7 +87,6 @@ const Dashboard = () => {
 
   const {
     userLogin: { userInfo },
-    donationList: { error: errorDonations, donations },
     orderList: { error: errorOrderList, orders },
     eCardOrdersList: { error: errorECardOrders, eCardOrders },
     userList: { error: errorUsers },
@@ -98,23 +96,14 @@ const Dashboard = () => {
   useEffect(() => {
     const timeToLogout = [
       errorOrderList,
-      errorDonations,
       errorUsers,
       errorECardOrders,
     ].includes('TOKEN_FAILED');
     if (timeToLogout) dispatch(logout(userInfo));
-  }, [
-    dispatch,
-    errorDonations,
-    errorECardOrders,
-    errorOrderList,
-    errorUsers,
-    userInfo,
-  ]);
+  }, [dispatch, errorECardOrders, errorOrderList, errorUsers, userInfo]);
 
   useEffect(() => {
     dispatch(listUsers());
-    dispatch(listDonations());
     dispatch(listOrders());
     dispatch(listProducts());
     dispatch(listECardOrders());
@@ -125,10 +114,6 @@ const Dashboard = () => {
 
   const orderItemsTotal = orders
     ?.reduce((acc: any, item: any) => acc + item?.totalPrice, 0)
-    .toFixed(2);
-
-  const donationsItemsTotal = donations
-    ?.reduce((acc: any, item: any) => acc + item?.donationAmount, 0)
     .toFixed(2);
 
   const eCardOrdersItemsTotal = eCardOrders
@@ -167,16 +152,11 @@ const Dashboard = () => {
   });
 
   let allRecentTransactions = orders
-    ?.concat(eCardOrders, donations)
+    ?.concat(eCardOrders)
     ?.sort((a: any, b: any) => -a.createdAt.localeCompare(b.createdAt));
 
   const viewTransaction = (item: any) => {
-    if (item?.donationType) {
-      history.push({
-        pathname: `/admin/donation/${item?._id}/edit`,
-        state: { directBackTo: 'dashboard' },
-      });
-    } else if (item?.orderItems) {
+    if (item?.orderItems) {
       history.push({
         pathname: `/admin/order`,
         state: item,
@@ -188,6 +168,15 @@ const Dashboard = () => {
       });
     }
   };
+
+  const walletTotal =
+    Number(Number(orderItemsTotal) + Number(eCardOrdersItemsTotal)).toFixed(
+      2
+    ) === 'NaN'
+      ? 0
+      : Number(Number(orderItemsTotal) + Number(eCardOrdersItemsTotal)).toFixed(
+          2
+        );
 
   return (
     <DashboardContainer>
@@ -201,7 +190,6 @@ const Dashboard = () => {
           </div>
           <ActionBtn onClick={() => handleShow()}>Actions</ActionBtn>
         </div>
-
         <div style={{ width: '100%' }}>
           <TopRow className='mx-auto'>
             <DashboardTopRow />
@@ -259,7 +247,6 @@ const Dashboard = () => {
             <TotalSalesContainer>
               <PieChart
                 orders={orderItemsTotal}
-                donations={donationsItemsTotal}
                 eCards={eCardOrdersItemsTotal}
               />
             </TotalSalesContainer>
@@ -311,11 +298,7 @@ const Dashboard = () => {
                 <div className='ml-3'>Settings</div>
               </LinkContainer>
             </SideBarLink>
-            <SideBarAccordionBtn
-              onClick={() => {
-                dispatch(logout(userInfo));
-              }}
-            >
+            <SideBarAccordionBtn onClick={() => dispatch(logout(userInfo))}>
               <LinkContainer className='d-flex align-items-center px-3 py-3'>
                 <Logout />
                 <div className='ml-3'>Sign{loadingUserLogout && 'ing'} Out</div>
@@ -338,18 +321,7 @@ const Dashboard = () => {
             fontWeight={400}
             letterSpacing='2px'
           >
-            ${' '}
-            {Number(
-              Number(orderItemsTotal) +
-                Number(donationsItemsTotal) +
-                Number(eCardOrdersItemsTotal)
-            ).toFixed(2) === 'NaN'
-              ? 0
-              : Number(
-                  Number(orderItemsTotal) +
-                    Number(donationsItemsTotal) +
-                    Number(eCardOrdersItemsTotal)
-                ).toFixed(2)}
+            ${walletTotal}
           </Text>
         </Wallet>
         <div className='d-flex align-items-baseline justify-content-between mb-4'>
@@ -357,15 +329,13 @@ const Dashboard = () => {
             Recent Transactions
           </Text>
         </div>
-        {allRecentTransactions
-          ?.map((item: any, i: number) => (
-            <RecentTransactionItem
-              viewTransaction={viewTransaction}
-              item={item}
-              key={i}
-            />
-          ))
-          .filter((_: any, i: number) => i < 6)}
+        {allRecentTransactions?.map((item: any, i: number) => (
+          <RecentTransactionItem
+            viewTransaction={viewTransaction}
+            item={item}
+            key={i}
+          />
+        ))}
       </RecentTransactions>
     </DashboardContainer>
   );

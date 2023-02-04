@@ -16,6 +16,9 @@ const manuallyAddUser = asyncHandler(async (req, res) => {
       publicId: '',
       profileCardTheme:
         'https://res.cloudinary.com/doyd0ewgk/image/upload/v1612043441/field_tree2.jpg',
+      isBoardMember: true,
+      location: 'Alabama',
+      bio: '',
     });
 
     await createdUser.save();
@@ -89,8 +92,16 @@ const getManuallyAddedUsers = asyncHandler(async (req, res) => {
 //@access Private/Admin
 const updateManuallyAddedUser = asyncHandler(async (req, res) => {
   try {
-    const { name, affiliation, email, image, publicId, profileCardTheme } =
-      req.body;
+    const {
+      name,
+      affiliation,
+      email,
+      image,
+      publicId,
+      profileCardTheme,
+      location,
+      bio,
+    } = req.body;
 
     const manuallyAddedUser = await ManuallyAddedUser.findById(req.params.id);
 
@@ -106,6 +117,8 @@ const updateManuallyAddedUser = asyncHandler(async (req, res) => {
     manuallyAddedUser.publicId = publicId || manuallyAddedUser.publicId;
     manuallyAddedUser.profileCardTheme =
       profileCardTheme ?? manuallyAddedUser.profileCardTheme;
+    manuallyAddedUser.location = location ?? manuallyAddedUser.location;
+    manuallyAddedUser.bio = bio ?? manuallyAddedUser.bio;
 
     const updatedManuallyAddedUser = await manuallyAddedUser.save();
 

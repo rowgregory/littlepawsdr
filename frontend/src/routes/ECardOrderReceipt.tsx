@@ -69,8 +69,7 @@ const ECardOrderReceipt = () => {
             marginBottom='22px'
           >
             Your ecard order has been confirmed and will be sent to{' '}
-            {state?.recipientsEmail} on{' '}
-            {formatDate(state?.dateToSend).split(',')[0]}
+            {state?.recipientsEmail} on {state?.dateToSend?.split('T')[0]}
           </Text>
           <table style={{ borderBottom: '1px solid #f2f2f2', width: '100%' }}>
             <thead>

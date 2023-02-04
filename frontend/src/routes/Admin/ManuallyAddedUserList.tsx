@@ -107,7 +107,7 @@ const ManuallyAddedUserList = () => {
         url3='/admin/manuallyAddedUserList'
       />
       <DeleteModal
-        actionFunc='Manually Added User'
+        actionFunc='Board Member'
         show={show}
         handleClose={handleClose}
         id={id}
@@ -155,6 +155,7 @@ const ManuallyAddedUserList = () => {
               <tr>
                 <th>NAME</th>
                 <th>IMAGE</th>
+                <th>CARD THEME</th>
                 <th>EMAIL</th>
                 <th>EDIT</th>
                 <th>DELETE</th>
@@ -169,6 +170,12 @@ const ManuallyAddedUserList = () => {
                   <td>
                     <TableImg
                       src={manuallyAddedUser?.image}
+                      alt={manuallyAddedUser?.name}
+                    />
+                  </td>
+                  <td>
+                    <TableImg
+                      src={manuallyAddedUser?.profileCardTheme}
                       alt={manuallyAddedUser?.name}
                     />
                   </td>

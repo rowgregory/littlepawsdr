@@ -12,7 +12,7 @@ const InsideContainer = styled.div`
   align-items: center;
 `;
 
-const SMIconContainer = styled.div`
+const SMIconContainer = styled.a`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -22,6 +22,7 @@ const SMIconContainer = styled.div`
   cursor: pointer;
   border-radius: 15px;
   :hover {
+    text-decoration: none;
     background: ${({ theme }) => theme.colors.quinary};
     color: #000;
   }
@@ -36,7 +37,6 @@ const InstagramBtn = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: 'Ubuntu', sans-serif;
   font-size: 1.25rem;
   margin-bottom: 1rem;
   cursor: pointer;
@@ -84,7 +84,7 @@ const SocialMediaNavbar = ({ nl, setNl }: any) => {
             Instagram
           </InstagramBtn>
           <Text marginBottom='1rem'>Or</Text>
-          <Text fontFamily={`Duru Sans`} textAlign='center' marginBottom='3rem'>
+          <Text textAlign='center' marginBottom='3rem'>
             Scan QR Code
           </Text>
           <InstaArrow className='fas fa-arrow-down fa-2x'></InstaArrow>

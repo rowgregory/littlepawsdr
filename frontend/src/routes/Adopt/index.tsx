@@ -6,6 +6,7 @@ import AdoptionFees from './AdoptionFees';
 import AdoptionInformation from './AdoptionInformation';
 import AdoptionFAQ from './AdoptionFAQ';
 import styled from 'styled-components';
+import TransportApplication from './TransportApplication';
 
 const Container = styled.div`
   margin-top: 75px;
@@ -23,6 +24,10 @@ const AdoptRoutes: FC = () => {
         <Route path={`${path}/info`} component={AdoptionInformation} />
         <Route path={`${path}/fees`} component={AdoptionFees} />
         <Route path={`${path}/faq`} component={AdoptionFAQ} />
+        <Route
+          path={`${path}/transport-application`}
+          component={TransportApplication}
+        />
         <Route>
           <PageNotFound />
         </Route>

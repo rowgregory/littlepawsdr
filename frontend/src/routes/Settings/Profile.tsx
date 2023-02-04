@@ -34,6 +34,7 @@ import {
   SettingsTitleContainer,
 } from '../../components/styles/profile/Styles';
 import { validateFullNameRegex } from '../../utils/regex';
+import { STATES } from '../../utils/states';
 
 const Profile = () => {
   const dispatch = useDispatch();
@@ -51,6 +52,8 @@ const Profile = () => {
   const [imgUploadStatus, setImageUploadStatus] = useState('') as any;
   const [cloudinaryData, setClouadinaryData] = useState({}) as any;
   const [showCardThemes, setShowCardThemes] = useState(false);
+  const [location, setLocation] = useState('');
+  const [bio, setBio] = useState('');
 
   const {
     userDetails: { loading, error, user },
@@ -76,6 +79,8 @@ const Profile = () => {
       setVolunteerEmail(user?.volunteerEmail);
       setProfileCardTheme(user?.profileCardTheme);
       setPublicId(user?.publicId);
+      setLocation(user?.location);
+      setBio(user?.bio);
     }
 
     return () => {
@@ -85,6 +90,8 @@ const Profile = () => {
       setVolunteerEmail('');
       setProfileCardTheme('');
       setPublicId('');
+      setLocation('');
+      setBio('');
     };
   }, [user, successUpdate]);
 
@@ -99,6 +106,8 @@ const Profile = () => {
           profileCardTheme,
           avatar: cloudinaryData?.secureUrl,
           publicId: cloudinaryData?.publicId,
+          location,
+          bio,
         })
       );
       setClouadinaryData({});
@@ -111,6 +120,8 @@ const Profile = () => {
     user,
     volunteerEmail,
     volunteerTitle,
+    location,
+    bio,
   ]);
 
   const submitHandler = (e: any) => {
@@ -137,6 +148,8 @@ const Profile = () => {
             profileCardTheme,
             avatar,
             publicId,
+            location,
+            bio,
           })
         );
       } else {
@@ -258,6 +271,30 @@ const Profile = () => {
                     value={volunteerEmail || ''}
                     onChange={(e: any) => setVolunteerEmail(e.target.value)}
                   />
+                </Form.Group>
+                <Form.Group controlId='location' className='d-flex flex-column'>
+                  <Label>State</Label>
+                  <Input
+                    name='location'
+                    value={location || ''}
+                    as='select'
+                    onChange={(e: any) => setLocation(e.target.value)}
+                  >
+                    {STATES.map((state: any, i: number) => (
+                      <option style={{ color: '#777' }} key={i}>
+                        {state.text}
+                      </option>
+                    ))}
+                  </Input>
+                </Form.Group>
+                <Form.Group controlId='bio' className='d-flex flex-column'>
+                  <Label>Bio</Label>
+                  <Input
+                    rows={5}
+                    as='textarea'
+                    value={bio || ''}
+                    onChange={(e: any) => setBio(e.target.value)}
+                  ></Input>
                 </Form.Group>
               </>
             )}

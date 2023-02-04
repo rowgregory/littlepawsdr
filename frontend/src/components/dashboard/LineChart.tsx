@@ -32,7 +32,7 @@ ChartJS.register(
   Legend
 );
 
-const LineChart = ({ orders, guestOrders }: any) => {
+const LineChart = ({ orders }: any) => {
   const circles = 'rgba(151,97,169, 0.05)';
   const rods = '#9761aa';
   const year = new Date().getFullYear();

@@ -4,8 +4,6 @@ import PageNotFound from '../../components/common/PageNotFound';
 import { DashboardLayoutWithSideBar } from '../../components/layouts/DashboardLayoutWithSideBar';
 import SideBar from '../../components/dashboard/SideBar';
 import Dashboard from './Dashboard';
-import DonationEdit from './DonationEdit';
-import DonationList from './DonationList';
 import ECardEdit from './ECardEdit';
 import ECardList from './ECardList';
 import EventEdit from './EventEdit';
@@ -40,8 +38,6 @@ const AdminRoutes: FC = () => {
         <Private path={`${path}/user/:id/edit`} component={UserEdit} />
         <Private path={`${path}/eventList`} component={EventList} />
         <Private path={`${path}/event/:id/edit`} component={EventEdit} />
-        <Private path={`${path}/donationList`} component={DonationList} />
-        <Private path={`${path}/donation/:id/edit`} component={DonationEdit} />
         <Private path={`${path}/productList`} component={ProductList} />
         <Private path={`${path}/product/:id/edit`} component={ProductEdit} />
         <Private path={`${path}/orderList`} component={OrderList} />

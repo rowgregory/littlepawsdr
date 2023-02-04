@@ -15,6 +15,7 @@ import {
   Circle,
   Container,
   Divider,
+  LinkContainer,
   Menu,
   StyledLink,
   StyledTitle,
@@ -62,6 +63,7 @@ const LeftNavigation: FC<LeftNavigationProps> = ({ openMenu, setOpenMenu }) => {
                 onClick={() => closeMenu()}
                 src={theme.mode === 'day' ? LogoDay : Logo}
                 height='48px'
+                alt='LPDR Logo'
               />
             </Link>
           </div>
@@ -78,7 +80,7 @@ const LeftNavigation: FC<LeftNavigationProps> = ({ openMenu, setOpenMenu }) => {
                   >
                     <Arrow
                       rotate={(i === index).toString()}
-                      hide={(width < 500).toString()}
+                      hide={(width < 300).toString()}
                       w={width}
                     />
                     <StyledTitle textcolor={(i === index).toString()}>
@@ -88,7 +90,10 @@ const LeftNavigation: FC<LeftNavigationProps> = ({ openMenu, setOpenMenu }) => {
                   <AccordionCollapse eventKey={`${i}`}>
                     <div className='d-flex flex-column'>
                       {obj?.links.map((link: any, l: number) => (
-                        <div className='d-flex align-items-center mb-2' key={l}>
+                        <LinkContainer
+                          className='d-flex align-items-center mb-2'
+                          key={l}
+                        >
                           <Circle
                             highlight={(pathname === link.linkKey).toString()}
                           />
@@ -100,7 +105,7 @@ const LeftNavigation: FC<LeftNavigationProps> = ({ openMenu, setOpenMenu }) => {
                           >
                             {link.linkText}
                           </StyledLink>
-                        </div>
+                        </LinkContainer>
                       ))}
                     </div>
                   </AccordionCollapse>

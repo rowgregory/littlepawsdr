@@ -30,11 +30,7 @@ const RecentTransactionItem = ({ viewTransaction, item }: any) => {
         <div className='d-flex flex-column align-items-start'>
           <div className='d-flex'>
             <ItemName>
-              {item?.orderItems
-                ? item?.orderItems[0].name
-                : item?.donationAmount
-                ? 'Donation'
-                : item?.name}
+              {item?.orderItems ? item?.orderItems[0].name : item?.name}
             </ItemName>
             {item?.donationAmount && (
               <Text>
@@ -54,11 +50,7 @@ const RecentTransactionItem = ({ viewTransaction, item }: any) => {
       </div>
 
       <Text color='#9761aa' fontWeight={600}>
-        + $
-        {(item?.donationAmount
-          ? item?.donationAmount
-          : item?.totalPrice
-        )?.toFixed(2)}
+        + ${item?.totalPrice?.toFixed(2)}
       </Text>
     </RecentTransactionItemContainer>
   );

@@ -8,8 +8,14 @@ import RightArrow from '../../components/svg/RightArrow';
 
 const FosterApplicationIFrame = styled.iframe`
   border: none;
-  height: 8000px;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+  height: 7800px;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
+    height: 6600px;
+  }
+  @media screen and (orientation: landscape) {
+    height: 7000px;
+  }
+  @media screen and (orientation: portrait) and (min-device-width: 768px) and (max-device-width: 1024px) {
     height: 7000px;
   }
 `;

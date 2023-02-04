@@ -3,7 +3,6 @@ import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { LinkContainer, SideBarLink } from './SideBar';
 import DashboardIcon from '../svg/DashboardIcon';
-import DonationsIcon from '../svg/DonationsIcon';
 import EcardIcon from '../svg/EcardIcon';
 import EventsIcon from '../svg/EventsIcon';
 import NewsletterEmailIcon from '../svg/NewsletterEmailIcon';
@@ -53,11 +52,6 @@ export const sidebarData = (): {
     textKey: 'Products',
     linkKey: '/admin/productList',
     icon: <ProductsIcon />,
-  },
-  {
-    textKey: 'Donations',
-    linkKey: '/admin/donationList',
-    icon: <DonationsIcon />,
   },
   {
     textKey: 'Users',

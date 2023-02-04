@@ -1,8 +1,3 @@
-import DuobleBubbleNight from '../components/assets/double-bubble-dark.png';
-import DuobleBubbleDay from '../components/assets/double-bubble.png';
-import TrianglesDay from '../components/assets/triangles-day.png';
-import TrianglesNight from '../components/assets/triangles-night.png';
-
 export const base = {
   breakpoints: [36, 48, 62, 75, 88, 100].map((n) => n + 'rem'),
 };
@@ -223,8 +218,6 @@ export const themes = {
     link: {
       hoverBG: '#f3f4f6',
     },
-    dachshundCardBgImg: DuobleBubbleDay,
-    eventsBg: TrianglesDay,
     cart: {
       productDetails: {
         price: '#ad5552',
@@ -359,8 +352,6 @@ export const themes = {
     link: {
       hoverBG: '#161b23',
     },
-    dachshundCardBgImg: DuobleBubbleNight,
-    eventsBg: TrianglesNight,
     cart: {
       productDetails: {
         price: colors.night.colors.red,

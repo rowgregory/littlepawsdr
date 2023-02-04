@@ -5,9 +5,9 @@ import Dachshund from '../../components/Dachshund';
 import Message from '../../components/Message';
 import styled from 'styled-components';
 import { Text } from '../../components/styles/Styles';
-import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
 import LeftArrow from '../../components/svg/LeftArrow';
 import RightArrow from '../../components/svg/RightArrow';
+import { LoadingImg } from '../../components/LoadingImg';
 
 const Container = styled.div`
   display: flex;
@@ -40,7 +40,6 @@ const RGContainer = styled.div`
 `;
 
 const RGName = styled.div`
-  font-family: 'Biryani', sans-serif;
   font-weight: 800;
   font-size: 32px;
   color: #04518d;
@@ -52,7 +51,6 @@ const RGName = styled.div`
   }
 `;
 const RGName2 = styled.div`
-  font-family: 'Biryani', sans-serif;
   font-weight: 400;
   font-size: 16px;
   color: ${({ theme }) => theme.text};
@@ -94,7 +92,6 @@ const ListAvailableDogs = () => {
 
   return (
     <Container>
-      {loading && <HexagonLoader />}
       <div
         style={{
           maxWidth: '980px',
@@ -104,15 +101,9 @@ const ListAvailableDogs = () => {
           paddingInline: '16px',
         }}
       >
-        <Text
-          fontSize='32px'
-          marginTop='56px'
-          fontWeight={400}
-          textAlign='center'
-          marginBottom='24px'
-        >
-          Adoptable Dachshunds
-        </Text>
+        <h4 className='mb-4 mt-5 d-flex justify-content-center font-weight-bold'>
+          Dachshunds to Rescue
+        </h4>
         <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='16px'>
           We are excited that you are interested in adding a dachshund or
           dachshund-mix to your family! Here you can find a list of all dogs
@@ -153,7 +144,7 @@ const ListAvailableDogs = () => {
       </OnlineAppContainer>
       <div
         className='w-100 mx-auto d-flex justify-content-between mt-3 px-3'
-        style={{ maxWidth: '75rem', marginBottom: '56px' }}
+        style={{ maxWidth: '980px', marginBottom: '56px' }}
       >
         <LeftArrow
           text='Home'
@@ -169,9 +160,13 @@ const ListAvailableDogs = () => {
         </div>
       )}
       <CardContainer>
-        {dachshunds?.data?.map((dachshund: any) => (
-          <Dachshund key={dachshund?.id} dachshund={dachshund} />
-        ))}
+        {loading
+          ? [1, 2, 3].map((_: any, i: number) => (
+              <LoadingImg w='100%' h='100%' key={i} />
+            ))
+          : dachshunds?.data?.map((dachshund: any) => (
+              <Dachshund key={dachshund?.id} dachshund={dachshund} />
+            ))}
       </CardContainer>
     </Container>
   );

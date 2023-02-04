@@ -73,7 +73,7 @@ const ContactUs = () => {
           <LeftArrow
             text='Home'
             url='/'
-            text2='About Us'
+            text2='Little Paws Crew'
             url2='/about/team-members'
           />
           <RightArrow text='Available Dachshunds' url='/available' />

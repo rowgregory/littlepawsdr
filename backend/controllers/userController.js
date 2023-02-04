@@ -130,6 +130,8 @@ const getUserProfile = asyncHandler(async (req, res) => {
       profileCardTheme: user.profileCardTheme,
       theme: user.theme,
       publicId: user.publicId,
+      location: user?.location,
+      bio: user?.bio,
     });
   } catch (err) {
     const createdError = new Error({
@@ -162,6 +164,8 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     user.theme = req.body.theme || user.theme;
     user.publicId = req.body.publicId || user.publicId;
     user.token = user.token;
+    user.location = req.body.location ?? user.location;
+    user.bio = req.body.bio ?? user.bio;
 
     if (req.body.password) {
       user.password = req.body.password;
@@ -185,6 +189,8 @@ const updateUserProfile = asyncHandler(async (req, res) => {
       theme: updatedUser.theme,
       publicId: updatedUser.publicId,
       token: updatedUser.token,
+      location: updatedUser.location,
+      bio: updatedUser.bio,
     });
   } catch (err) {
     const createdError = new Error({
@@ -280,7 +286,7 @@ const deleteUser = asyncHandler(async (req, res) => {
 // @route   GET /api/users/:id
 // @access  Private/Admin
 const getUserById = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id).select('-password');
+  const user = await User.findById(req.params.id).select('-password -token');
 
   if (user) {
     res.json(user);

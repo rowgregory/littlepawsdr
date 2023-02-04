@@ -51,14 +51,14 @@ export const DogContainer = styled(Row)`
       div {
         transition: 1300ms;
         div {
-          &::before {
+          &::after {
             content: '';
             position: absolute;
             top: 6px;
             left: 6px;
             right: 6px;
-            bottom: 70px;
-            z-idnex: 20px;
+            bottom: 51px;
+            z-index: 20px;
             border: 5px solid white;
             opacity: 0.6;
           }
@@ -147,7 +147,6 @@ export const ComingSoonText = styled.div`
   -webkit-text-fill-color: transparent;
   background-size: 200% auto;
   animation: ${shine} 10s linear infinite;
-  font-family: 'Duru', sans-serif;
 
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
     font-size: 4rem;

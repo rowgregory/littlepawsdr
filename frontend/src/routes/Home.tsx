@@ -5,7 +5,7 @@ import OurLovablePals from '../components/home/OurLovablePals';
 import { Text } from '../components/styles/Styles';
 import Shop from '../components/home/Shop';
 import styled, { useTheme } from 'styled-components';
-import HomeDog from '../components/assets/home_dog_12.jpg';
+import HomeDog from '../components/assets/home_dog_11.jpeg';
 import One from '../components/assets/footer_img_1.png';
 import Two from '../components/assets/our-purpose-2.jpeg';
 import Three from '../components/assets/our-purpose-3.jpeg';
@@ -26,9 +26,10 @@ const ParallaxWindow = styled.div`
     position: relative;
     width: 100%;
     padding-bottom: 60%;
+    height: 100vh;
   }
 `;
-const ParallaxSectionContent = styled.div`
+const ParallaxSectionContent = styled.h3`
   top: 25%;
   marign-left: auto;
   margin-right: auto;
@@ -42,6 +43,7 @@ const ParallaxSectionContent = styled.div`
   justify-content: center;
   flex-direction: column;
   align-items: center;
+  font-weight: 400;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
     font-size: 44px;
     transform: translate(-50%, -50%);

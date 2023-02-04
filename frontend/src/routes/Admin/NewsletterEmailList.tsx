@@ -52,7 +52,7 @@ const NewsletterEmailList = () => {
   }, [dispatch, success]);
 
   useEffect(() => {
-    const itemsPerPage = 10;
+    const itemsPerPage = 50;
     const indexOfLastItem = paginatedPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
@@ -86,11 +86,11 @@ const NewsletterEmailList = () => {
       <BreadCrumb
         step1='Home'
         step2='Dashboard'
-        step3=''
-        step4='Newsletter Emails'
+        step3='Newsletter Emails'
+        step4={newsletterEmails?.length}
         url1='/'
         url2='/admin'
-        url3='/admin/newsletterEmailList'
+        url3=''
       />
       <DeleteModal
         actionFunc='Newsletter Email'
@@ -128,7 +128,7 @@ const NewsletterEmailList = () => {
         </TopRow>
 
         <TableAndPaginationContainer>
-          <Table hover responsive>
+          <Table hover responsive size='sm'>
             <TableHead>
               <tr>
                 <th>EMAIL</th>
@@ -165,7 +165,7 @@ const NewsletterEmailList = () => {
           </Table>
           <PaginationContainer>
             <Pagination className='my-3'>
-              {rangeV2(newsletterEmails, paginatedPage, setPaginatedPage)}
+              {rangeV2(newsletterEmails, paginatedPage, setPaginatedPage, 50)}
             </Pagination>
           </PaginationContainer>
         </TableAndPaginationContainer>

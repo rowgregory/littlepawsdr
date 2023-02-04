@@ -12,7 +12,7 @@ const Container = styled.div<{ show: any; p: string }>`
   z-index: 5000;
   width: 100%;
   background: ${({ show, theme, p }) =>
-    show === 'true' || p !== '/' ? theme.header.bg : ''};
+    show === 'true' || p !== '/' ? 'rgba(33,30,47, .9)' : ''};
   transition: 300ms;
   border-bottom: ${({ show, theme, p }) =>
     show === 'true' || p !== '/' ? '' : '1px solid rgb(255, 255, 255, 0.5)'};

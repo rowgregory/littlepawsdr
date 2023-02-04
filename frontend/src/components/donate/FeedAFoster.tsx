@@ -47,19 +47,15 @@ const FeedAFosterForm = styled.form`
 const FeedAFoster = () => {
   return (
     <Container>
-      <Text
-        marginBottom='1rem'
-        fontSize='1.25rem'
-        fontFamily={`Ubuntu, sans-serif`}
-      >
+      <Text marginBottom='1rem' fontSize='1.25rem'>
         July is Foster Appreciation Month at LPDR!
       </Text>
       <FeedAFosterSection>
-        <Text marginBottom='1rem' fontFamily={`Ubuntu, sans-serif`}>
+        <Text marginBottom='1rem'>
           We are hosting our Second Annual Feed a Foster Fundraiser, right here,
           online!
         </Text>
-        <Text fontFamily={`Ubuntu, sans-serif`} marginBottom='1rem'>
+        <Text marginBottom='1rem'>
           Volunteering to foster a dog is a huge, rewarding commitment.
           Fostering really does save lives! When a family decides to take in a
           dachshund to foster, Little Paws provides all medical care. The family
@@ -70,10 +66,8 @@ const FeedAFoster = () => {
           These doxies are usually in sanctuary homes due to illness or age,
           requiring an extraordinary amount of care.
         </Text>
-        <Text fontFamily={`Ubuntu, sans-serif`} marginBottom='1rem'>
-          Please join us and help Feed A Foster!
-        </Text>
-        <Text fontFamily={`Ubuntu, sans-serif`} marginBottom='1rem'>
+        <Text marginBottom='1rem'>Please join us and help Feed A Foster!</Text>
+        <Text marginBottom='1rem'>
           You can choose how much food you would like to donate. Please know
           that EVERY bit counts. We currently have 40 dogs in foster homes!
           Tomorrow will likely bring more. Simply click the Paypal links below,

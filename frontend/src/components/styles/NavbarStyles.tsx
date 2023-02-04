@@ -14,7 +14,7 @@ export const AvatarInitials = styled.div<AvatarInitialsProps>`
   width: ${({ w }) => w};
   background: ${({ theme }) => theme.header.link.avatarbg};
   border-radius: 50%;
-  font-size: ${({ w }) => (w === '100px' ? '1.85rem' : '1rem')};
+  font-size: ${({ w }) => (w === '75px' ? '24px' : '1rem')};
   display: flex;
   justify-content: center;
   align-items: center;
@@ -66,11 +66,12 @@ export const FAIcons = styled.div<{
       filter: brightness(1.3);
     }
   }
-`;
 
-export const LogoutContainer = styled.div`
-  width: 100%;
-  border-top: ${({ theme }) => `1px solid  ${theme.separator}`};
+  @media screen and (max-width: 300px) {
+    &.hide {
+      display: none;
+    }
+  }
 `;
 
 export const SlyledToolTip = styled(Tooltip)`

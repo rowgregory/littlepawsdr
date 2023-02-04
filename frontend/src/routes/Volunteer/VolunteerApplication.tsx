@@ -8,20 +8,15 @@ import LeftArrow from '../../components/svg/LeftArrow';
 
 const VolunteerApplicationIFrame = styled.iframe`
   border: none;
-  @media only screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation: landscape) {
-    min-height: 3800px;
+  height: 3900px;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
+    height: 3300px;
   }
-  @media only screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation: portrait) {
-    min-height: 3800px;
-  }
-  @media only screen and (min-width: 760px) {
+  @media screen and (orientation: landscape) {
     height: 3500px;
   }
-  @media only screen and (max-width: 759px) {
-    height: 3600px;
-  }
-  @media only screen and (max-width: 480px) {
-    height: 3900px;
+  @media screen and (orientation: portrait) and (min-device-width: 768px) and (max-device-width: 1024px) {
+    height: 3500px;
   }
 `;
 
@@ -83,8 +78,8 @@ const VolunteerApplication = () => {
           <LeftArrow
             text='Home'
             url='/'
-            text2='Adoption FAQ'
-            url2='/adopt/faq'
+            text2='Transport Application'
+            url2='/adopt/transport-application'
           />
           <RightArrow
             text='Foster Application'

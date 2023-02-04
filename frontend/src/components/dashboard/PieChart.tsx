@@ -32,14 +32,14 @@ const Container = styled.div`
   border-radius: 8px;
 `;
 
-const PieChart = ({ orders, donations, eCards }: any) => {
+const PieChart = ({ orders, eCards }: any) => {
   const data = {
-    labels: ['Orders', 'Donations', 'Ecards'],
+    labels: ['Orders', 'Ecards'],
     datasets: [
       {
-        data: [orders, donations, eCards],
-        backgroundColor: ['#9761aa', '#ab80bb', '#c0a0cc'],
-        borderColor: ['#9761aa', '#ab80bb', '#c0a0cc'],
+        data: [orders, eCards],
+        backgroundColor: ['#9761aa', '#c0a0cc'],
+        borderColor: ['#9761aa', '#c0a0cc'],
         borderWidth: 1,
       },
     ],

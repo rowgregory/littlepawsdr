@@ -74,8 +74,8 @@ const AdoptionFAQ = () => {
         >
           <LeftArrow text='Home' url='/' text2='Fees' url2='/adopt/fees' />
           <RightArrow
-            text='Volunteer Application'
-            url='/volunteer/volunteer-application'
+            text='Transport Application'
+            url='/adopt/transport-application'
           />
         </div>
         {faq().map((obj, index) => (

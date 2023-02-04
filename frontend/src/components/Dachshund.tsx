@@ -52,9 +52,7 @@ const Dachshund = ({ dachshund }: any) => {
       />
       <Card.Body className='d-flex flex-column justify-content-start p-0'>
         <CardHeader>
-          <Text fontSize='24px' letterSpacing='-1px'>
-            {dachshund?.attributes?.name}
-          </Text>
+          <h5>{dachshund?.attributes?.name}</h5>
           <Card.Text as='div'>
             <Text fontSize='0.8rem'>
               {dachshund?.attributes?.sex} {dachshund?.attributes?.ageGroup}{' '}
@@ -67,6 +65,7 @@ const Dachshund = ({ dachshund }: any) => {
             to={{
               pathname: `/available/dogs/${dachshund?.id}`,
               state: {
+                dog: dachshund,
                 directBackTo: 'available',
                 pathName: 'all available dachshunds',
               },

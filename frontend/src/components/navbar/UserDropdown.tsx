@@ -1,75 +1,71 @@
 import React from 'react';
-import { AvatarInitials, LogoutContainer } from '../styles/NavbarStyles';
-import MyOrdersIcon from '../svg/MyOrdersIcon';
-import SettingsIcon from '../svg/SettingsIcon';
-import DashboardIcon from '../svg/DashboardIcon';
+import { AvatarInitials } from '../styles/NavbarStyles';
 import { Text } from '../styles/Styles';
 import { CSSTransition } from 'react-transition-group';
-import { NavDropdown, Image, Spinner, Button } from 'react-bootstrap';
+import { Image } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../../actions/userActions';
 import styled from 'styled-components';
-import OrdersIcon from '../svg/OrdersIcon';
-import EcardIcon from '../svg/EcardIcon';
 import { Link } from 'react-router-dom';
 
-const LogoutBtn = styled(Button)`
-  margin-top: 0.5rem;
-  background: transparent;
-  color: ${({ theme }) => theme.inverse};
-  border: 1px solid ${({ theme }) => theme.separator};
-  :hover {
-    background-color: ${({ theme }) => theme.colors.senary};
-  }
+const Container = styled.div`
+  z-index: 500;
 `;
 
-const AvatarHeaderLinks = styled(Link)`
+const DropDownLink = styled(Link)`
+  background: #fff;
+  padding-left: 30px;
+  border-right: 8px solid #f5f6fc;
+  border-left: 8px solid #f5f6fc;
   :hover {
-    background: ${({ theme }) => theme.secondaryBg};
-
+    background: #e3e7fb;
     text-decoration: none;
-    div {
-      color: ${({ theme }) => (theme.mode === 'day' ? theme.text : '#fff')} svg {
-        fill: #fff;
-        g {
-          path {
-            fill: #fff;
-          }
-        }
-      }
-    }
   }
 `;
 
-const NavDropdownItem = styled(NavDropdown.Item)`
-  border-bottom: 0.25px solid ${({ theme }) => theme.secondaryBg};
+const NavDropdownItem = styled.div`
+  box-shadow: 0px -4px 0 0px inset #f5f6fc;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 1rem;
+  padding: 10px;
+  align-items: flex-start;
+  border-right: 8px solid #f5f6fc;
+  border-left: 8px solid #f5f6fc;
+  border-top: 8px solid #f5f6fc;
+  border-radius: 30px 30px 0 0;
+  background: #fff;
 `;
 
 const UserImg = styled(Image)`
   object-fit: cover;
-  width: 100px;
-  height: 100px;
+  width: 65px;
+  height: 65px;
+  margin-right: 14px;
 `;
 
 const MyOrdersBtn = styled.div`
+  display: flex;
+  align-items: flex-start;
+  padding-left: 30px;
   cursor: pointer;
+  border-right: 8px solid #f5f6fc;
+  border-left: 8px solid #f5f6fc;
+  background: #fff;
   :hover {
-    background: ${({ theme }) => theme.separator};
-    div {
-      color: ${({ theme }) => (theme.mode === 'day' ? theme.text : '#fff')};
-      svg {
-        fill: #fff;
-        g {
-          path {
-            fill: #fff;
-          }
-        }
-      }
+    background: #e3e7fb;
+  }
+`;
+
+const LogoutLink = styled.div`
+  cursor: pointer;
+  padding-left: 40px;
+  border-bottom: 1px solid #ededed;
+  :hover {
+    &.nohov {
+      background: none;
+      cursor: default;
     }
+    background: #e3e7fb;
+    text-decoration: none;
   }
 `;
 
@@ -79,7 +75,6 @@ const UserDropdown = ({
   setIsVisible,
   activeMenu,
   setActiveMenu,
-  calcHeight,
   firstNameInitial,
   lastNameInitial,
 }: any) => {
@@ -89,133 +84,146 @@ const UserDropdown = ({
 
   const logoutHandler = () => dispatch(logout(userInfo));
   return (
-    userInfo && (
-      <div
-        ref={dropDownRef}
-        style={{
-          position: 'absolute',
-          width: '100%',
-          zIndex: 500,
-        }}
+    <Container ref={dropDownRef}>
+      <NavDropdownItem>
+        {userInfo?.isAdmin ? (
+          <UserImg roundedCircle src={userInfo?.avatar} alt='avatar' />
+        ) : (
+          <AvatarInitials w='65px' h='65px' style={{ marginRight: '12px' }}>
+            {firstNameInitial}
+            {lastNameInitial}
+          </AvatarInitials>
+        )}
+        <div className='py-3 d-flex flex-column'>
+          <Text fontWeight='bold'>{userInfo?.name}</Text>
+          <Text fontSize='0.75rem'>{userInfo?.email}</Text>
+        </div>
+      </NavDropdownItem>
+      <CSSTransition
+        unmountOnExit
+        timeout={500}
+        classNames='menu-primary'
+        in={activeMenu === 'main'}
       >
-        <CSSTransition
-          unmountOnExit
-          timeout={500}
-          classNames='menu-primary'
-          in={activeMenu === 'main'}
-          onEnter={calcHeight}
+        <div
+          className='menu'
+          style={{
+            background: '#f5f6fc',
+            borderRadius: '30px',
+          }}
         >
-          <div className='menu'>
-            <NavDropdownItem disabled>
-              {userInfo && (userInfo.isAdmin || userInfo.isVolunteer) ? (
-                <UserImg
-                  roundedCircle
-                  src={userInfo?.avatar}
-                  alt='avatar-pic'
-                />
-              ) : (
-                <AvatarInitials w='100px' h='100px'>
-                  {firstNameInitial}
-                  {lastNameInitial}
-                </AvatarInitials>
-              )}
-              <div className='py-3 d-flex flex-column align-items-center'>
-                <Text fontWeight='bold'>{userInfo?.name}</Text>
-                <Text fontSize='0.75rem'>{userInfo?.email}</Text>
+          {userInfo?.isAdmin && (
+            <DropDownLink
+              onClick={() => setIsVisible(false)}
+              to='/admin'
+              className='d-flex align-items-center py-3'
+            >
+              <div style={{ marginRight: '31px' }}>
+                <i
+                  className='fas fa-tachometer-alt fa-2x'
+                  style={{ color: '#434343' }}
+                ></i>
               </div>
-            </NavDropdownItem>
-            {userInfo?.isAdmin && (
-              <AvatarHeaderLinks
-                onClick={() => setIsVisible(false)}
-                to='/admin'
-                className='d-flex justify-content-between align-items-center px-4 py-3'
-              >
-                <Text>Dashboard</Text>
-                <DashboardIcon />
-              </AvatarHeaderLinks>
-            )}
-            <MyOrdersBtn
-              onClick={() => setActiveMenu('secondary')}
-              className='d-flex justify-content-between align-items-center px-4 py-3'
-            >
-              <Text>My Purchases</Text>
-              <MyOrdersIcon />
-            </MyOrdersBtn>
-            <AvatarHeaderLinks
-              onClick={() => setIsVisible(false)}
-              to='/settings/profile'
-              className='d-flex justify-content-between align-items-center px-4 py-3'
-            >
-              <Text>Settings</Text>
-              <SettingsIcon />
-            </AvatarHeaderLinks>
-            <LogoutContainer className='d-flex justify-content-center align-items-center'>
-              <LogoutBtn
-                variant='dark'
-                onClick={logoutHandler}
-                disabled={loading}
-              >
-                {loading && <Spinner animation='border' size='sm' />} Sign out
-              </LogoutBtn>
-            </LogoutContainer>
-            <div
-              className='d-flex justify-content-center'
-              style={{
-                fontSize: '0.7rem',
-                padding: '10px 0 6px',
-                transition: 'height 500ms ease',
-              }}
-            >
-              Little Paws Dachshund Rescue
+              <Text fontWeight={400}>Dashboard</Text>
+            </DropDownLink>
+          )}
+          <MyOrdersBtn
+            onClick={() => setActiveMenu('secondary')}
+            className='d-flex align-items-center  py-3'
+          >
+            <div style={{ marginRight: '34px' }}>
+              <i
+                className='fas fa-shopping-bag fa-2x'
+                style={{ color: '#434343' }}
+              ></i>
             </div>
-          </div>
-        </CSSTransition>
-        <CSSTransition
-          unmountOnExit
-          timeout={500}
-          classNames='menu-secondary'
-          in={activeMenu === 'secondary'}
-          onEnter={calcHeight}
+            <Text fontWeight={400}>My Purchases</Text>
+          </MyOrdersBtn>
+          <DropDownLink
+            onClick={() => setIsVisible(false)}
+            to='/settings/profile'
+            className='d-flex py-3 align-items-center'
+            style={{ borderRadius: '0 0 30px 30px' }}
+          >
+            <div style={{ marginRight: '31px' }}>
+              <i className='fas fa-cog fa-2x' style={{ color: '#434343' }}></i>
+            </div>
+            <Text fontWeight={400}>Settings</Text>
+          </DropDownLink>
+          <LogoutLink
+            onClick={() => logoutHandler()}
+            className='d-flex align-items-center py-3'
+          >
+            <div style={{ marginRight: '29px' }}>
+              <i
+                className='fas fa-sign-out-alt fa-2x'
+                style={{ color: '#434343' }}
+              ></i>
+            </div>
+            <Text>Sign{loading && 'ing'} out of account</Text>
+          </LogoutLink>
+          <LogoutLink
+            style={{ borderRadius: '0 0 30px 30px', paddingLeft: '0' }}
+            className='d-flex align-items-center justify-content-center py-3 nohov'
+          >
+            <Text>Little Paws Dachshund Rescue</Text>
+          </LogoutLink>
+        </div>
+      </CSSTransition>
+      <CSSTransition
+        unmountOnExit
+        timeout={500}
+        classNames='menu-secondary'
+        in={activeMenu === 'secondary'}
+      >
+        <div
+          className='menu'
+          style={{
+            background: '#f5f6fc',
+          }}
         >
-          <div className='menu'>
-            <MyOrdersBtn
-              onClick={() => setActiveMenu('main')}
-              className='d-flex justify-content-between align-items-center px-4 py-3'
-            >
-              <Text>
-                <i className='fas fa-arrow-left mr-2'></i>Back
-              </Text>
-            </MyOrdersBtn>
-            <AvatarHeaderLinks
-              onClick={() => setIsVisible(false)}
-              to='/my-orders'
-              className='d-flex justify-content-between align-items-center px-4 py-3'
-            >
-              <Text>Orders</Text>
-
-              <OrdersIcon />
-            </AvatarHeaderLinks>
-            <AvatarHeaderLinks
-              onClick={() => setIsVisible(false)}
-              to='/my-orders/e-cards'
-              className='d-flex justify-content-between align-items-center px-4 py-3'
-            >
-              <Text>E-Cards</Text>
-              <EcardIcon />
-            </AvatarHeaderLinks>
-            <AvatarHeaderLinks
-              onClick={() => setIsVisible(false)}
-              to='/shop'
-              className='d-flex justify-content-between align-items-center px-4 py-3'
-            >
-              <Text>
-                Shop <i className='fas fa-arrow-right ml-2'></i>
-              </Text>
-            </AvatarHeaderLinks>
-          </div>
-        </CSSTransition>
-      </div>
-    )
+          <DropDownLink
+            onClick={() => setIsVisible(false)}
+            to='/my-orders'
+            className='d-flex align-items-center py-3'
+          >
+            <div style={{ marginRight: '29px' }}>
+              <i
+                className='fas fa-box-open fa-2x'
+                style={{ color: '#434343' }}
+              ></i>
+            </div>
+            <Text>Products</Text>
+          </DropDownLink>
+          <DropDownLink
+            onClick={() => setIsVisible(false)}
+            to='/my-orders/e-cards'
+            className='d-flex align-items-center py-3'
+          >
+            <div style={{ marginRight: '29px' }}>
+              <i
+                className='fas fa-id-card-alt fa-2x'
+                style={{ color: '#434343' }}
+              ></i>
+            </div>
+            <Text>Ecards</Text>
+          </DropDownLink>
+          <MyOrdersBtn
+            onClick={() => setActiveMenu('main')}
+            className='d-flex align-items-center  py-3'
+            style={{ borderRadius: '0 0 30px 30px' }}
+          >
+            <div style={{ marginRight: '35px' }}>
+              <i
+                className='fas fa-long-arrow-alt-left fa-2x'
+                style={{ color: '#434343' }}
+              ></i>
+            </div>
+            <Text>Back</Text>
+          </MyOrdersBtn>
+        </div>
+      </CSSTransition>
+    </Container>
   );
 };
 

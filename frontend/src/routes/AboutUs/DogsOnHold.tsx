@@ -10,7 +10,7 @@ import NoImgDog from '../../components/assets/no_image_dog.jpg';
 import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
 import { PaginationContainer } from '../../components/styles/admin/Styles';
 import { rangeV2 } from '../../components/common/Pagination';
-import OnHoldDog from '../../components/assets/hold01.jpeg';
+import OnHoldDog from '../../components/assets/notavailable.jpg';
 import LeftArrow from '../../components/svg/LeftArrow';
 import RightArrow from '../../components/svg/RightArrow';
 import { LoadingImg } from '../../components/LoadingImg';
@@ -142,7 +142,7 @@ const DogsOnHold = () => {
         <Text
           onClick={() =>
             window.open(
-              'https://unsplash.com/@jummmm?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText',
+              'https://www.pexels.com/photo/close-up-of-sausage-dog-on-leash-10606528/',
               '_blank'
             )
           }
@@ -158,7 +158,7 @@ const DogsOnHold = () => {
             zIndex: 2,
           }}
         >
-          Photo by jum.jpeg
+          Photo by TranStudios Photography & Video
         </Text>
       </div>
       <Container>
@@ -169,6 +169,29 @@ const DogsOnHold = () => {
             url='/about/successful-adoptions'
           />
         </div>
+        <Text
+          fontSize='32px'
+          marginTop='56px'
+          fontWeight={400}
+          className='text-center'
+        >
+          In addition to our Dog’s Available for Adoption page we’re also
+          sharing our dogs in foster homes being evaluated for future adoptions.
+        </Text>
+        <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='16px'>
+          These dogs are at different stages of the evaluation process. They are
+          all safe, happy, and well cared for in their foster homes.
+        </Text>
+        <Text maxWidth='680px' className='my-3 mx-auto' fontSize='16px'>
+          We’re providing you with some basic information about each dog. We
+          hope these dogs will be up for adoption soon and we will share
+          additional details as they become available.
+        </Text>
+        <Text maxWidth='680px' className='my-3 mx-auto' fontSize='16px'>
+          Please continue to watch our Available Dogs page to see when a dog you
+          may be interested in is ready for his or her forever home. That’s when
+          we’ll be happy to accept an application from you
+        </Text>
         <SupportFoster className='d-flex w-100 justify-content-center'>
           <Link to='/donate'>Support a Foster Here</Link>
         </SupportFoster>

@@ -103,7 +103,7 @@ const Education = () => {
         <Text
           onClick={() =>
             window.open(
-              'https://www.pexels.com/photo/black-dog-in-close-up-photogrpahy-11555848/',
+              'https://www.pexels.com/photo/photograph-of-a-black-and-brown-dachshund-14111197/',
               '_blank'
             )
           }

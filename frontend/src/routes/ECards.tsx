@@ -54,23 +54,27 @@ const ECards = () => {
             top: '200px',
             left: '50px',
             zIndex: 2,
+            mixBlendMode: 'difference',
           }}
         >
           Ecards
-          <Text
-            fontSize='22px'
-            color='#fff'
-            fontWeight={600}
-            style={{
-              position: 'absolute',
-              zIndex: 2,
-              width: '500px',
-              mixBlendMode: 'difference',
-            }}
-            maxWidth='400px'
-          >
-            Offers an effortless way to stay in touch!
-          </Text>
+        </Text>
+        <Text
+          fontSize='22px'
+          color='#fff'
+          fontWeight={600}
+          style={{
+            position: 'absolute',
+            zIndex: 2,
+            maxWidth: '500px',
+            width: 'fit-content',
+            mixBlendMode: 'difference',
+            top: '255px',
+            left: '50px',
+          }}
+          maxWidth='400px'
+        >
+          Offers an effortless way to stay in touch!
         </Text>
         <Text
           onClick={() =>

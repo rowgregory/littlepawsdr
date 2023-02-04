@@ -187,7 +187,6 @@ const ProductDetails = ({ match, history }: any) => {
                 color={outOfStock ? 'red' : '#007600'}
                 fontSize='1.5rem'
                 fontWeight='500'
-                fontFamily='Duru Sans'
                 marginBottom='0.2rem'
                 style={{
                   textRendering: 'optimizeLegibility',

@@ -203,8 +203,8 @@ const EcardPlaceOrder = ({ history }: any) => {
       {(orderLoader || isPending || loadingCreate) && <HexagonLoader />}
       <LogoCheckout src={LogoDay} onClick={() => setShowModal(true)} />
       <Checkout>
-        <Text fontSize='1.75rem' letterSpacing='0'>
-          Checkout
+        <Text fontSize='1.75rem' letterSpacing='0' fontWeight={400}>
+          Checkout <i className='fas fa-lock ml-1 fa-sm'></i>
         </Text>
       </Checkout>
       <Container>
@@ -365,7 +365,9 @@ const EcardPlaceOrder = ({ history }: any) => {
             </LeftRailContainer>
             <LeftRailContainer>
               <LeftRailSectionTitle>
-                Secure Payment <i className='fas fa-lock ml-1 fa-sm'></i>
+                <div className='d-flex align-items-center'>
+                  Secure Payment <i className='fas fa-lock ml-1 fa-sm'></i>
+                </div>
               </LeftRailSectionTitle>
               <Accordion toggle={revealPayment} maxheight='1000px'>
                 <PayPalButtons
@@ -395,7 +397,7 @@ const EcardPlaceOrder = ({ history }: any) => {
                   <Col className='d-flex flex-column pr-0'>
                     <Text fontSize='0.875rem'>{ecard.name}</Text>
                     <Text fontSize='0.875rem'>{ecard.size}</Text>
-                    <Text>{ecard.price}</Text>
+                    <Text>${(+ecard?.price)?.toFixed(2)}</Text>
                   </Col>
                 </div>
               </div>
@@ -408,7 +410,7 @@ const EcardPlaceOrder = ({ history }: any) => {
             <hr className='my-3' />
             <div className='d-flex justify-content-between font-weight-bold mb-4'>
               <Text fontSize='1.125rem'>Order total</Text>
-              <Text fontSize='1.125rem'>${(+ecard.price).toFixed(2)}</Text>
+              <Text fontSize='1.125rem'>${(+ecard?.price)?.toFixed(2)}</Text>
             </div>
           </RightRail>
         </SubContainer>

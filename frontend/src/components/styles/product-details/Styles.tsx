@@ -94,7 +94,6 @@ export const AddToCartBtn = styled(Button)`
   border-radius: 0.75rem;
   border: none;
   transition: 300ms;
-  font-family: 'Libre Franklin', sans-serif;
 
   font-size: 0.9rem;
   outline: none;

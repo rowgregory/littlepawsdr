@@ -180,8 +180,20 @@ export const TableAndPaginationContainer = styled.div`
   min-height: 600px;
 `;
 
+export const EditFormAndPreviewContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    flex-direction: row;
+  }
+`;
+
 export const EditForm = styled(Form)`
   max-width: ${({ theme }) => theme.breakpoints[0]};
+  margin-right: 0px;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    margin-right: 48px;
+  }
 `;
 
 export const FormFile = styled(Form.File)`
@@ -238,7 +250,8 @@ export const RemovePhoto = styled.div`
   height: 45px;
   display: flex;
   align-items: center;
-  width: 200px;
+  max-width: 200px;
+  width: 100%;
   background: #fff;
   color: #c4c4c4;
   border: none;
@@ -249,4 +262,10 @@ export const RemovePhoto = styled.div`
     cursor: pointer;
     background: #ededed;
   }
+`;
+
+export const CardImg = styled(Image)`
+  object-fit: cover;
+  border: ${({ theme }) => `4px solid ${theme.card.bg}`};
+  margin-top: -170px;
 `;

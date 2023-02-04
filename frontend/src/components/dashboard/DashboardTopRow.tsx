@@ -8,17 +8,11 @@ import {
 import { Text } from '../styles/Styles';
 import SolidPeople from '../../components/svg/SolidPeople';
 import SolidOrdersIcon from '../../components/svg/SolidOrdersIcon';
-import SolidDonationIcon from '../../components/svg/SolidDonationIcon';
 import EcardSolidIcon from '../../components/svg/EcardSolidIcon';
 import { useSelector } from 'react-redux';
 
 const DashboardTopRow = () => {
   const {
-    donationList: {
-      loading: loadingDonations,
-      error: errorDonations,
-      donations,
-    },
     orderList: { loading: loadingOrderList, error: errorOrderList, orders },
     eCardOrdersList: {
       loading: loadingECardOrders,
@@ -29,8 +23,6 @@ const DashboardTopRow = () => {
   } = useSelector((state: any) => state);
 
   const totalOrders = orders?.length;
-
-  const totalDonations = donations?.length;
 
   const totalUsers = users?.length;
 
@@ -43,13 +35,6 @@ const DashboardTopRow = () => {
       loading: loadingOrderList,
       error: errorOrderList,
       icon: <SolidOrdersIcon />,
-    },
-    {
-      title: 'Donations',
-      itemAmount: totalDonations,
-      loading: loadingDonations,
-      error: errorDonations,
-      icon: <SolidDonationIcon />,
     },
     {
       title: 'Users',

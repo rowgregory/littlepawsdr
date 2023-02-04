@@ -54,31 +54,23 @@ const Items = styled.span<ItemsProps>`
 const DropDownContainer = styled.div<{ p?: string }>`
   z-index: 500;
   position: absolute;
-  top: 50px;
-  right: 16px;
-  width: 100%;
+  top: 65px;
+  right: 8px;
   display: flex;
   flex-direction: column;
-  background: ${({ theme }) => theme.header.link.dropDown.bg};
   overflow: hidden;
   transition: height 500ms ease;
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
-  width: 300px;
-  border-radius: 8px;
+  max-width: 350px;
+  width: 100%;
+  border-radius: 30px;
+  background: #f5f6fc;
 `;
 
 const Container = styled.nav`
   display: flex;
   align-items: center;
   padding-inline: 16px;
-  height: 56px;
-`;
-
-const CaretUp = styled.i`
-  color: ${({ theme }) => theme.header.link.dropDown.bg};
-  position: absolute;
-  right: 27px;
-  top: 39px;
 `;
 
 const RightSideNavbar = () => {
@@ -103,16 +95,8 @@ const RightSideNavbar = () => {
 
   const items = cartItems?.reduce((acc: any, item: any) => acc + +item.qty, 0);
 
-  const [menuHeight, setMenuHeight] = useState(
-    !userInfo?.isAdmin ? 387 : null
-  ) as any;
-
   useOutsideDetect(dropDownRef, setActiveMenu, setIsVisible, 'USER_DROP_DOWN');
 
-  const calcHeight = (el: any) => {
-    const height = el.offsetHeight;
-    setMenuHeight(height);
-  };
   const filteredUserNavItem = (obj: any) => {
     switch (obj?.title) {
       case 'Avatar':
@@ -120,7 +104,6 @@ const RightSideNavbar = () => {
           <StyledAvatar
             isvisible={isVisible.toString()}
             onClick={() => {
-              setMenuHeight(473.11);
               setIsVisible(true);
               setActiveMenu('main');
             }}
@@ -143,7 +126,7 @@ const RightSideNavbar = () => {
         );
       case 'Donate':
         return (
-          <FAIcons className='mr-2'>
+          <FAIcons className='mr-2 hide'>
             <Link to='/donate'>
               <i className='fas fa-dollar'></i>
             </Link>
@@ -151,7 +134,7 @@ const RightSideNavbar = () => {
         );
       case 'Cart':
         return (
-          <FAIcons className='mr-2'>
+          <FAIcons className='mr-2 hide'>
             <Link to='/cart'>
               <Items>{items}</Items>
               <i className='fas fa-shopping-cart'></i>
@@ -180,16 +163,15 @@ const RightSideNavbar = () => {
       ))}
       {isVisible && (
         <>
-          <CaretUp className='fa-solid fa-sort-up fa-2x'></CaretUp>
           <DropDownContainer
             p={p}
             style={{
               height:
                 activeMenu === 'secondary'
-                  ? menuHeight
+                  ? 306
                   : !userInfo?.isAdmin
-                  ? 387
-                  : menuHeight,
+                  ? 350
+                  : 417,
             }}
           >
             <UserDropdown
@@ -198,7 +180,6 @@ const RightSideNavbar = () => {
               setIsVisible={setIsVisible}
               activeMenu={activeMenu}
               setActiveMenu={setActiveMenu}
-              calcHeight={calcHeight}
               firstNameInitial={firstNameInitial}
               lastNameInitial={lastNameInitial}
             />

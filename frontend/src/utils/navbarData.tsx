@@ -27,31 +27,19 @@ export const NAVBAR_DATA = (userInfo?: UserInfoProps) => {
       link: '/cart',
     },
     {
-      title:
-        userInfo && (userInfo?.isAdmin || userInfo?.isVolunteer)
-          ? 'Avatar'
-          : userInfo && (!userInfo?.isAdmin || !userInfo?.isVolunteer)
-          ? 'Initials'
-          : 'Sign In',
-      links:
-        userInfo && userInfo?.isAdmin
-          ? [
-              { linkKey: '/admin', textKey: 'Dashboard' },
-              { linkKey: '/my-orders', textKey: 'My Orders' },
-              { linkKey: '/settings/profile', textKey: 'Settings' },
-            ]
-          : userInfo && userInfo?.isVolunteer
-          ? [
-              { linkKey: '/my-orders', textKey: 'My Orders' },
-              { linkKey: '/settings/profile', textKey: 'Settings' },
-            ]
-          : userInfo && !userInfo?.isAdmin && !userInfo?.isVolunteer
-          ? [
-              { linkKey: '/my-orders', textKey: 'My Orders' },
-              { linkKey: '/settings/profile', textKey: 'Settings' },
-            ]
-          : ['/login'],
-      slide: 'dropdown-slide-1',
+      title: userInfo?.isAdmin ? 'Avatar' : userInfo ? 'Initials' : 'Sign In',
+      links: userInfo?.isAdmin
+        ? [
+            { linkKey: '/admin', textKey: 'Dashboard' },
+            { linkKey: '/my-orders', textKey: 'My Orders' },
+            { linkKey: '/settings/profile', textKey: 'Settings' },
+          ]
+        : userInfo
+        ? [
+            { linkKey: '/my-orders', textKey: 'My Orders' },
+            { linkKey: '/settings/profile', textKey: 'Settings' },
+          ]
+        : ['/login'],
     }
   );
 

@@ -15,20 +15,9 @@ const Container = styled.div`
   border-bottom: 1px solid #ededed;
   gap: 16px;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    grid-template-columns: 25% 42.5% 23%;
+    grid-template-columns: 50% 30%;
     gap: 32px;
-  }
-`;
-
-const ProductName = styled(Link)`
-  font-weight: 600;
-  height: 42px;
-  font-size: 24px;
-  color: ${({ theme }) => theme.colors.quinary};
-  :hover {
-    color: ${({ theme }) => theme.colors.quinary};
-    text-decoration: none;
-    filter: brightness(0.75);
+    justify-content: space-between;
   }
 `;
 
@@ -48,39 +37,39 @@ const Price = styled.span`
   }
 `;
 
+const ImageAndNameContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    flex-direction: row;
+  }
+`;
+
 const Product = ({ product, isEcard }: any) => {
   const history = useHistory();
 
   return (
     <Container>
-      <Link
-        to={{
-          pathname: isEcard
-            ? '/e-card-details'
-            : `/shop/product/${product?._id}`,
-          state: { product },
-        }}
-      >
-        <ProductImg src={product.image} />
-      </Link>
-
-      <ProductName
-        to={{
-          pathname: isEcard
-            ? '/e-card-details'
-            : `/shop/product/${product?._id}`,
-          state: { product },
-        }}
-      >
-        {product?.name}
-      </ProductName>
-      <div className='d-flex flex-column'>
+      <ImageAndNameContainer>
+        <Link
+          to={{
+            pathname: isEcard
+              ? '/e-card-details'
+              : `/shop/product/${product?._id}`,
+            state: { product },
+          }}
+        >
+          <ProductImg src={product.image} />
+        </Link>
+      </ImageAndNameContainer>
+      <div className='d-flex flex-column align-items-start'>
         <Text marginBottom='4px'>
           <Price style={{ color: '#22c2b7' }}>FREE</Price>
           {isEcard ? ' ecard' : ' product'} with a{' '}
           <Price>${product?.price}</Price> donation!
         </Text>
         <ProceedBtn
+          className='w-100'
           onClick={() =>
             history.push({
               pathname: isEcard

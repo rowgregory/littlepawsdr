@@ -8,6 +8,7 @@ const StyledArrow = styled.svg<{ rotate: any }>`
     rotate !== 'true' ? 'rotate(90deg)' : 'rotate(420deg)'};
   :hover {
     transform: ${({ rotate }) => (rotate === 'true' ? 'rotate(440deg)' : '')};
+    margin-right: 16px;
   }
 `;
 
