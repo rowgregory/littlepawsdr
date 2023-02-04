@@ -183,7 +183,7 @@ const Banner = () => {
       <Container>
         <ReactPlayer
           style={{ position: 'absolute', top: 0, left: 0 }}
-          url='https://res.cloudinary.com/dro7mux7a/video/upload/v1673299260/landing-dachshund_verv2a.mp4'
+          url='https://res.cloudinary.com/dro7mux7a/video/upload/v1675523863/banner-dog_ey9qcq.mp4'
           playsinline
           controls={false}
           playing={true}

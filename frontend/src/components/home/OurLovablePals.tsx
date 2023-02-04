@@ -64,6 +64,7 @@ const OurLovablePals = () => {
                             <Image
                               src={dachshund?.attributes?.photos[1]}
                               alt={`${dachshund?.attributes?.name}-${i}`}
+                              loading='lazy'
                             />
                           </div>
                           <h5 className='text-center mt-2'>

@@ -38,6 +38,7 @@ const Mission = () => {
           width='100%'
           style={{ maxWidth: '400px', objectFit: 'cover', margin: '0 auto' }}
           alt='LPDR Logo'
+          loading='lazy'
         />
         <h4 className='text-center mt-5 font-weight-normal'>
           LITTLE PAWS DACHSHUND RESCUE is an east coast based 501(c)3 exempt

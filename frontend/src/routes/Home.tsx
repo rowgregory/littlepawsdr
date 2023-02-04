@@ -6,11 +6,11 @@ import { Text } from '../components/styles/Styles';
 import Shop from '../components/home/Shop';
 import styled, { useTheme } from 'styled-components';
 import HomeDog from '../components/assets/home_dog_11.jpeg';
-import One from '../components/assets/footer_img_1.png';
-import Two from '../components/assets/our-purpose-2.jpeg';
-import Three from '../components/assets/our-purpose-3.jpeg';
-import Four from '../components/assets/the-goal-2.jpeg';
-import Five from '../components/assets/pretzel-1.jpg';
+import One from '../components/assets/dog-row-home-1.png';
+import Two from '../components/assets/dog-row-home-2.webp';
+import Three from '../components/assets/dog-row-home-3.webp';
+import Four from '../components/assets/dog-row-home-4.webp';
+import Five from '../components/assets/dog-row-home-5.webp';
 import { Image } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
@@ -211,6 +211,7 @@ const Home = () => {
             width='100%'
             height='600px'
             style={{ objectFit: 'cover' }}
+            loading='lazy'
           />
           <ParallaxSectionContent>
             Changing lives four paws at a time
@@ -227,7 +228,7 @@ const Home = () => {
         </div>
         <ImageGallery>
           {homeImages.map((img: any, i: number) => (
-            <Image src={img} alt={`${img}-${i}`} key={i} />
+            <Image src={img} alt={`${img}-${i}`} key={i} loading='lazy' />
           ))}
         </ImageGallery>
         <Shop />
@@ -246,6 +247,7 @@ const Home = () => {
             src='https://res.cloudinary.com/dro7mux7a/image/upload/v1673299654/the-goal-2_pcu80y.jpg'
             alt='LPDR'
             width='100%'
+            loading='lazy'
           />
           <ParallaxSectionContent>
             You can make an impact
