@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 const useCountDown = (countdownDate: any) => {
   const Ref = useRef(null) as any;
   const [timer, setTimer] = useState('');
+  const [timerComponents, setTimerComponents] = useState([]) as any;
   const getTimeRemaining = (e: any) => {
     const total = Date.parse(e) - Date.parse(new Date() as any);
     const seconds = Math.floor((total / 1000) % 60);
@@ -31,6 +32,12 @@ const useCountDown = (countdownDate: any) => {
           seconds > 9 ? seconds : '0' + seconds
         }`
       );
+      setTimerComponents(() => [
+        { time: days > 9 ? days : `0${days}`, tag: 'DAYS' },
+        { time: hours > 9 ? hours : `0${hours}`, tag: 'HOURS' },
+        { time: minutes > 9 ? minutes : `0${minutes}`, tag: 'MINUTES' },
+        { time: seconds > 9 ? seconds : `0${seconds}`, tag: 'SECONDS' },
+      ]);
     }
   };
 
@@ -65,7 +72,7 @@ const useCountDown = (countdownDate: any) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return { timer };
+  return { timer, timerComponents };
 };
 
 export default useCountDown;

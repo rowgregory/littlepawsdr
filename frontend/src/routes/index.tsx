@@ -69,7 +69,7 @@ export const Routes: FC = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
-  const { timer } = useCountDown('2023/02/05');
+  const { timer, timerComponents } = useCountDown('2023/02/05');
 
   return (
     <>
@@ -91,7 +91,12 @@ export const Routes: FC = () => {
           <Route path='/e-cards' component={ECards} />
           <Route path='/e-card-details' component={ECardDetails} />
           <Route path='/e-card/place-order' component={EcardPlaceOrder} />
-          <Route path='/donate' render={() => <Donate timer={timer} />} />
+          <Route
+            path='/donate'
+            render={() => (
+              <Donate timer={timer} timerComponents={timerComponents} />
+            )}
+          />
           <Route path='/volunteer' component={Volunteer} />
           <Route path='/adopt' component={Adopt} />
           <Route path='/surrender' component={Surrender} />

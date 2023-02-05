@@ -15,7 +15,7 @@ import SideBar from '../../components/donate/Sidebar';
 import Venmo from './Venmo';
 import Check from './Check';
 
-const DonateRoutes = ({ timer }: any) => {
+const DonateRoutes = ({ timer, timerComponents }: any) => {
   const { path } = useRouteMatch();
   const location = useLocation() as any;
 
@@ -170,7 +170,9 @@ const DonateRoutes = ({ timer }: any) => {
         <Route exact path={path} component={DonationForm} />
         <Route
           path={`${path}/long-dog`}
-          render={() => <LongDog timer={timer} />}
+          render={() => (
+            <LongDog timer={timer} timerComponents={timerComponents} />
+          )}
         />
         <Route path={`${path}/shop-to-help`} component={ShopToHelp} />
         <Route path={`${path}/venmo`} component={Venmo} />

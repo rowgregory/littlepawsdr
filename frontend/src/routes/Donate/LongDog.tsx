@@ -45,51 +45,25 @@ const LongDogContest = styled.h3`
 const Timer = styled.h1`
   font-size: 54px;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
+    font-size: 66px;
+  }
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
     font-size: 90px;
   }
 `;
-const Days = styled.div`
-  position: absolute;
-  font-size: 14px;
-  left: 30px;
+
+const Colon = styled.div`
+  font-size: 68px;
   color: #fff;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
-    font-size: 16px;
-    left: 85px;
+    font-size: 80px;
   }
-`;
-const Hours = styled.div`
-  position: absolute;
-  font-size: 14px;
-  left: 132px;
-  color: #fff;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
-    font-size: 16px;
-    left: 256px;
-  }
-`;
-const Minutes = styled.div`
-  position: absolute;
-  font-size: 14px;
-  right: 125px;
-  color: #fff;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
-    font-size: 16px;
-    right: 238px;
-  }
-`;
-const Seconds = styled.div`
-  position: absolute;
-  font-size: 14px;
-  right: 19px;
-  color: #fff;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
-    font-size: 16px;
-    right: 63px;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    font-size: 106px;
   }
 `;
 
-const LongDog = ({ timer }: any) => {
+const LongDog = ({ timer, timerComponents }: any) => {
   const [donationBtnClicked, setDonationBtnClicked] = useState(false);
 
   const todaysDate = new Date().toISOString().split('T')[0];
@@ -123,18 +97,38 @@ const LongDog = ({ timer }: any) => {
               Coming Soon
             </h3>
             <LongDogContest>LONG DOG CONTEST</LongDogContest>
-            <Timer
-              className='font-weight-bold text-white d-flex justify-content-center'
-              style={{
-                filter: 'drop-shadow(0px 10px 10px rgb(0 0 0/0.4))',
-              }}
-            >
-              {timer}
-            </Timer>
-            <Days>DAYS</Days>
-            <Hours>HOURS</Hours>
-            <Minutes>MINUTES</Minutes>
-            <Seconds>SECONDS</Seconds>
+            <div className='d-flex justify-content-center'>
+              {timerComponents?.map((obj: any, i: number) => (
+                <div className='d-flex flex-column justify-content-end' key={i}>
+                  <div className='d-flex align-items-baseline'>
+                    <div className='d-flex flex-column'>
+                      <Timer
+                        className='d-flex font-weight-bold text-white'
+                        style={{
+                          filter: 'drop-shadow(0px 10px 10px rgb(0 0 0/0.4))',
+                        }}
+                      >
+                        {obj?.time}
+                      </Timer>
+                      <Text textAlign='center' color='#fff'>
+                        {obj?.tag}
+                      </Text>
+                    </div>
+                    <Colon
+                      style={{
+                        display: obj?.tag === 'SECONDS' ? 'none' : 'block',
+                      }}
+                    >
+                      &nbsp;:&nbsp;
+                    </Colon>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div
+              className='d-flex'
+              style={{ justifyContent: 'space-evenly' }}
+            ></div>
           </div>
         </CountDownContainer>
       )}

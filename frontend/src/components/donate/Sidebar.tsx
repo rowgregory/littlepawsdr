@@ -3,10 +3,21 @@ import SponsorGift from '../../components/svg/SponsorGift';
 import styled from 'styled-components';
 import { Text } from '../styles/Styles';
 import { Link } from 'react-router-dom';
+import AquaTile from '../../components/assets/aqua_tile.jpg';
 
 const DonateLink = styled(Link)`
   font-size: 16px;
+  font-weight: bold;
   text-align: center;
+  padding: 16px;
+  transition: 300ms;
+  color: ${({ theme }) => theme.colors.secondary};
+  :hover {
+    text-decoration: none;
+    background: url(${AquaTile});
+    background-repeat: repeat;
+    color: #fff;
+  }
 `;
 const SideBarContainer = styled.div`
   padding: 16px;
@@ -26,11 +37,11 @@ const SideBar = () => {
       </Text>
       {[
         {
-          linkText: 'Donate One-Time/Monthly',
+          linkText: 'Donate',
           linkKey: '/donate',
         },
         {
-          linkText: 'E-Card',
+          linkText: 'Ecards',
           linkKey: '/e-cards',
         },
         {
