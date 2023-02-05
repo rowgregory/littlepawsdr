@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 
-const useCountDown = (countdownDate: any) => {
+const useCountDown = (startDate: any, endDate: any, nextYearStartDate: any) => {
   const Ref = useRef(null) as any;
   const [timer, setTimer] = useState('00 : 00 : 00 : 00');
   const [timerComponents, setTimerComponents] = useState([]) as any;
+
   const getTimeRemaining = (e: any) => {
     const total = Date.parse(e) - Date.parse(new Date() as any);
     const seconds = Math.floor((total / 1000) % 60);
@@ -22,9 +23,6 @@ const useCountDown = (countdownDate: any) => {
   const startTimer = (e: any) => {
     let { total, days, hours, minutes, seconds } = getTimeRemaining(e);
     if (total >= 0) {
-      // update the timer
-      // check if less than 10 then we need to
-      // add '0' at the beginning of the variable
       setTimer(
         `${days > 9 ? days : '0' + days} : ${
           hours > 9 ? hours : '0' + hours
@@ -42,14 +40,8 @@ const useCountDown = (countdownDate: any) => {
   };
 
   const clearTimer = (e: any) => {
-    // If you adjust it you should also need to
-    // adjust the Endtime formula we are about
-    // to code next
     setTimer('00 : 00 : 00 : 00');
 
-    // If you try to remove this line the
-    // updating of timer Variable will be
-    // after 1000ms or 1sec
     if (Ref.current) clearInterval(Ref.current);
 
     const id = setInterval(() => {
@@ -58,12 +50,25 @@ const useCountDown = (countdownDate: any) => {
     Ref.current = id;
   };
 
+  const displayContest = () => {
+    const today = new Date().toISOString().split('T')[0].replaceAll('-', '/');
+
+    const sd = startDate.split('/') as any;
+    const ed = endDate.split('/') as any;
+    const t = today.split('/') as any;
+
+    const from = new Date(sd[0], parseInt(sd[1]) - 1, sd[2]);
+    const to = new Date(ed[0], parseInt(ed[1]) - 1, ed[2]);
+    const check = new Date(t[0], parseInt(t[1]) - 1, t[2]);
+
+    return check >= from && check <= to;
+  };
+
   const getDeadTime = () => {
-    let deadline = new Date(countdownDate);
-    // This is where you need to adjust if
-    // you entend to add more time
+    let deadline = new Date(startDate);
     deadline.setSeconds(deadline.getSeconds());
-    return deadline;
+
+    return displayContest() ? deadline : nextYearStartDate;
   };
 
   useEffect(() => {
@@ -72,7 +77,10 @@ const useCountDown = (countdownDate: any) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return { timer, timerComponents };
+  return {
+    timerComponents,
+    showFundraiser: displayContest() && timer === '00 : 00 : 00 : 00',
+  };
 };
 
 export default useCountDown;

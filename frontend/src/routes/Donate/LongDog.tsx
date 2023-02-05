@@ -63,27 +63,12 @@ const Colon = styled.div`
   }
 `;
 
-const LongDog = ({ timer, timerComponents }: any) => {
+const LongDog = ({ timerComponents, showFundraiser }: any) => {
   const [donationBtnClicked, setDonationBtnClicked] = useState(false);
-
-  const todaysDate = new Date().toISOString().split('T')[0];
-  const startDate = '2023-02-04';
-  const endDate = '2023-02-12';
-
-  const d1 = startDate.split('-') as any;
-  const d2 = endDate.split('-') as any;
-  const c = todaysDate.split('-') as any;
-
-  const from = new Date(d1[0], parseInt(d1[1]) - 1, d1[2]); // -1 because months are from 0 to 11
-  const to = new Date(d2[0], parseInt(d2[1]) - 1, d2[2]);
-  const check = new Date(c[0], parseInt(c[1]) - 1, c[2]);
-
-  const longDogFundraiserShouldDisplay =
-    check >= from && check <= to && timer === '00 : 00 : 00 : 00';
 
   return (
     <>
-      {!longDogFundraiserShouldDisplay && (
+      {!showFundraiser && (
         <CountDownContainer>
           <div style={{ position: 'relative' }}>
             <h3
@@ -132,7 +117,7 @@ const LongDog = ({ timer, timerComponents }: any) => {
           </div>
         </CountDownContainer>
       )}
-      {longDogFundraiserShouldDisplay && (
+      {showFundraiser && (
         <div
           className='d-flex align-items-center justify-content-center flex-column mx-auto'
           style={{
@@ -152,7 +137,7 @@ const LongDog = ({ timer, timerComponents }: any) => {
             }}
           >
             Enter to win 🏆 the Little Paws 🐾 <br />
-            Longest Dog Contest! 🐶
+            Long Dog Contest! 🐶
           </h1>
           <h5 className='font-weight-bolder mb-4'>
             How long 📏 is your dog? 🌭
@@ -177,7 +162,7 @@ const LongDog = ({ timer, timerComponents }: any) => {
             src={LongDogBasket}
             alt='Long Dog Contest Prize'
             style={{
-              maxWidth: '250px',
+              maxWidth: '550px',
               width: '100%',
               borderRadius: '50%',
               border: '7px solid #5a2b6b',

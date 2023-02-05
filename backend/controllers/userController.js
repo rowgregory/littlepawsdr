@@ -42,7 +42,6 @@ const authUser = asyncHandler(async (req, res) => {
           token: updatedUser.token,
           confirmed: updatedUser.confirmed,
           publicId: updatedUser.publicId,
-          shippingAddress: updatedUser.shippingAddress,
         });
       } else {
         res.status(401);

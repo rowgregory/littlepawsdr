@@ -1,6 +1,5 @@
 import React, { ComponentType, FC, lazy, useEffect, useState } from 'react';
 import { Switch, Route, useLocation, Redirect } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import Home from './Home';
 import Login from './Login';
 import Register from './Register';
@@ -17,7 +16,6 @@ import PopUp from '../components/common/PopUp';
 import GlobalStyles from '../GlobalStyles';
 import ContinueSessionModal from '../components/ContinueSessionModal';
 import LoginOptions from './LoginOptions';
-import { useHandleIdleUser } from '../utils/useHandleIdleUser';
 import ECardOrderReceipt from './ECardOrderReceipt';
 import Footer from '../components/Footer';
 import MyEcardOrders from './MyEcardOrders';
@@ -32,6 +30,7 @@ import CookiePolicyPopUp from '../components/CookiePolicyPopUp';
 import CookiePolicy from './CookiePolicy';
 import useCountDown from '../utils/hooks/useCountDown';
 import Donate from './Donate/index';
+import { useIdleTimer } from 'react-idle-timer';
 
 type LazyModulePromise<T = {}> = Promise<{ default: ComponentType<T> }>;
 
@@ -56,29 +55,42 @@ const Page = styled(Container)<{ url: string }>`
 `;
 
 export const Routes: FC = () => {
-  const dispatch = useDispatch();
   const { pathname } = useLocation();
   const [show, setShow] = useState(false);
-  const [continuedSession, setContinuedSession] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  // useRefreshToken(continuedSession, userInfo);
+  const handleOnIdle = () => {
+    let userInfo: any = localStorage.getItem('userInfo')
+      ? JSON.parse(localStorage.getItem('userInfo') || '')
+      : null;
 
-  useHandleIdleUser(continuedSession, setContinuedSession, handleShow);
+    if (userInfo) {
+      handleShow();
+    }
+  };
+
+  useIdleTimer({
+    timeout: 1200000, // 20min
+    onIdle: handleOnIdle,
+    crossTab: {
+      emitOnAllTabs: true,
+    },
+  });
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
-  const { timer, timerComponents } = useCountDown('2023/02/05');
+
+  const { timerComponents, showFundraiser } = useCountDown(
+    '2023/02/05',
+    '2023/02/12',
+    '2024/02/05'
+  );
 
   return (
     <>
-      <ContinueSessionModal
-        show={show}
-        handleClose={handleClose}
-        dispatch={dispatch}
-        setContinuedSession={setContinuedSession}
-      />
+      <ContinueSessionModal show={show} handleClose={handleClose} />
       <PopUp />
       <GlobalStyles />
       <Navbar />
@@ -94,7 +106,10 @@ export const Routes: FC = () => {
           <Route
             path='/donate'
             render={() => (
-              <Donate timer={timer} timerComponents={timerComponents} />
+              <Donate
+                timerComponents={timerComponents}
+                showFundraiser={showFundraiser}
+              />
             )}
           />
           <Route path='/volunteer' component={Volunteer} />

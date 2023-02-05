@@ -3,6 +3,7 @@ import { Modal } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import styled, { keyframes, css } from 'styled-components';
 import { logout } from '../actions/userActions';
+import { useDispatch } from 'react-redux';
 
 const shakeAnim = keyframes`
   10%, 90% {
@@ -110,12 +111,8 @@ export const RightBtn = styled.button`
   }
 `;
 
-const ContinueSessionModal = ({
-  show,
-  handleClose,
-  dispatch,
-  setContinuedSession,
-}: any) => {
+const ContinueSessionModal = ({ show, handleClose }: any) => {
+  const dispatch = useDispatch();
   let countdownID: any = useRef();
   let [countdown, setCountdown] = useState(60);
   const [shakeModal, setShakeModal] = useState(false);
@@ -125,14 +122,13 @@ const ContinueSessionModal = ({
 
   const continueSession = () => {
     handleClose();
-    setContinuedSession(false);
     setCountdown(60);
     clearTimeout(countdownID.current);
   };
 
-  const logOff = async () => {
+  const logOff = () => {
     handleClose();
-    await dispatch(logout(userInfo));
+    dispatch(logout(userInfo));
   };
 
   const shake = () => {
