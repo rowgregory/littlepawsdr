@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 
 const useCountDown = (countdownDate: any) => {
   const Ref = useRef(null) as any;
-  const [timer, setTimer] = useState('');
+  const [timer, setTimer] = useState('00 : 00 : 00 : 00');
   const [timerComponents, setTimerComponents] = useState([]) as any;
   const getTimeRemaining = (e: any) => {
     const total = Date.parse(e) - Date.parse(new Date() as any);
@@ -45,7 +45,7 @@ const useCountDown = (countdownDate: any) => {
     // If you adjust it you should also need to
     // adjust the Endtime formula we are about
     // to code next
-    setTimer('');
+    setTimer('00 : 00 : 00 : 00');
 
     // If you try to remove this line the
     // updating of timer Variable will be
