@@ -39,7 +39,7 @@ const shootUp = keyframes`
   filter: drop-shadow(0px 20px 8px rgb(0 0 0 / 0.4));
 }
 100% {
-  transform: scale(30);
+  transform: scale(60);
   z-index:1;
   -webkit-filter: drop-shadow(0px 25px 10px rgb(0 0 0 / 0.4));
   filter: drop-shadow(0px 25px 10px rgb(0 0 0 / 0.4));

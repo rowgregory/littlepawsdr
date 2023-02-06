@@ -74,7 +74,7 @@ const Contdown = styled.div`
   color: #3b3b3c;
   font-size: 24px;
   font-weight: bold;
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.secondary};
 `;
 
 export const LeftBtn = styled.button`
@@ -137,11 +137,13 @@ const ContinueSessionModal = ({ show, handleClose }: any) => {
   };
 
   useEffect(() => {
-    if (countdown > 0 && show) {
+    if (countdown > 0 && show)
       countdownID.current = setTimeout(() => setCountdown(countdown - 1), 1000);
-    }
+
+    if (countdown === 0) dispatch(logout(userInfo));
+
     return () => clearTimeout(countdownID.current);
-  }, [countdown, show]);
+  }, [countdown, dispatch, show, userInfo]);
 
   return (
     <Modal show={show} centered onHide={() => shake()}>

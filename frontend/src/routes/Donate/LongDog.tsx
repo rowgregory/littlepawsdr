@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import Heart from '../../components/svg/Heart';
 import LongDogQRCode from '../../components/assets/LongDogQRCode.png';
 import LongDogBasket from '../../components/assets/long-dog-basket.jpg';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { Text } from '../../components/styles/Styles';
 import { Image } from 'react-bootstrap';
-import { DonateBtn } from './Donate';
+import { DonateBtn, ThankYou } from './Donate';
+import Logo from '../../components/assets/logo-white2.png';
 
-const CountDownContainer = styled.section`
+export const CountDownContainer = styled.section`
   background: linear-gradient(
     90deg,
     hsla(284, 30%, 52%, 1) 0%,
@@ -31,7 +32,7 @@ const CountDownContainer = styled.section`
   align-items: center;
 `;
 
-const LongDogContest = styled.h3`
+export const ContestTitle = styled.h3`
   text-transform: uppercase;
   font-family: 'Paytone One';
   text-align: center;
@@ -42,7 +43,7 @@ const LongDogContest = styled.h3`
   letter-spacing: -4px;
 `;
 
-const Timer = styled.h1`
+export const Timer = styled.h1`
   font-size: 54px;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
     font-size: 66px;
@@ -52,7 +53,7 @@ const Timer = styled.h1`
   }
 `;
 
-const Colon = styled.div`
+export const Colon = styled.div`
   font-size: 68px;
   color: #fff;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
@@ -61,6 +62,55 @@ const Colon = styled.div`
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
     font-size: 106px;
   }
+`;
+
+const Spin = keyframes`
+  100% { 
+    transform: rotateZ(360deg);
+  }
+`;
+
+const CircleWrapper = styled.div`
+  position: relative;
+  max-width: 520px;
+  width: 100%;
+  aspect-ratio: 1/1;
+  margin-bottom: 52px;
+  overflow: hidden;
+  :hover {
+    cursor: pointer;
+  }
+  :active {
+    .circle {
+      animation: ${Spin} 10s linear infinite;
+      border: 5px dashed ${({ theme }) => theme.colors.secondary};
+    }
+    .anim {
+      transform: translate(0%, -100%) scale(0.95);
+    }
+  }
+
+  .anim {
+    position: absolute;
+    transform: translate(0%, -100%);
+    max-width: 500px;
+    width: 100%;
+    border-radius: 50%;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    padding: 10px;
+    transition: 300ms;
+  }
+`;
+
+const Circle = styled.div`
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-clip: content-box;
+  animation: ${Spin} 3s linear infinite;
+  border: 5px dashed #6f3b82;
 `;
 
 const LongDog = ({ timerComponents, showFundraiser }: any) => {
@@ -81,7 +131,7 @@ const LongDog = ({ timerComponents, showFundraiser }: any) => {
             >
               Coming Soon
             </h3>
-            <LongDogContest>LONG DOG CONTEST</LongDogContest>
+            <ContestTitle>LONG DOG CONTEST</ContestTitle>
             <div className='d-flex justify-content-center'>
               {timerComponents?.map((obj: any, i: number) => (
                 <div className='d-flex flex-column justify-content-end' key={i}>
@@ -121,8 +171,7 @@ const LongDog = ({ timerComponents, showFundraiser }: any) => {
         <div
           className='d-flex align-items-center justify-content-center flex-column mx-auto'
           style={{
-            padding: '128px 0',
-            overflow: 'hidden',
+            padding: '128px 16px',
             maxWidth: '520px',
             width: '100%',
           }}
@@ -158,18 +207,23 @@ const LongDog = ({ timerComponents, showFundraiser }: any) => {
           <Text fontSize='20px' fontWeight={400} marginBottom='48px'>
             You can win a fabulous gift 🛍️ basket!
           </Text>
-          <Image
-            src={LongDogBasket}
-            alt='Long Dog Contest Prize'
-            style={{
-              maxWidth: '550px',
-              width: '100%',
-              borderRadius: '50%',
-              border: '7px solid #5a2b6b',
-              marginBottom: '48px',
-            }}
-          />
-
+          <CircleWrapper>
+            <Circle className='circle' />
+            <Image
+              className='anim'
+              src={LongDogBasket}
+              alt='Long Dog Contest Prize'
+            />
+          </CircleWrapper>
+          <ThankYou anim={donationBtnClicked}>
+            <h2>Thank you</h2>
+            <h5>from</h5>
+            <Image
+              src={Logo}
+              alt='LPDR'
+              style={{ maxWidth: '300px', width: '100%' }}
+            />
+          </ThankYou>
           <Heart anim={donationBtnClicked} />
           <form
             action='https://www.paypal.com/donate'

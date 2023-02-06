@@ -65,7 +65,7 @@ to {
 }
 `;
 
-const ThankYou = styled.div<{ anim: any }>`
+export const ThankYou = styled.div<{ anim: any }>`
   animation: ${({ anim }) =>
     anim
       ? css`

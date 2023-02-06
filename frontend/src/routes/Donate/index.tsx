@@ -1,5 +1,5 @@
 import React from 'react';
-import DonationForm from './Donate';
+import Donate from './Donate';
 import ShopToHelp from '../../components/donate/ShopToHelp';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import FeedAFoster from './FeedAFoster';
@@ -17,20 +17,28 @@ const DonateRoutes = ({ timerComponents, showFundraiser }: any) => {
   return (
     <DonateLayoutWithSideBar jumbotron={<Hero />} sideBar={<SideBar />}>
       <Switch>
-        <Route exact path={path} component={DonationForm} />
+        <Route exact path={path} component={Donate} />
         <Route
           path={`${path}/long-dog`}
           render={() => (
             <LongDog
-              timerComponents={timerComponents}
-              showFundraiser={showFundraiser}
+              timerComponents={timerComponents.longDog}
+              showFundraiser={showFundraiser.showLongDog}
             />
           )}
         />
         <Route path={`${path}/shop-to-help`} component={ShopToHelp} />
         <Route path={`${path}/venmo`} component={Venmo} />
         <Route path={`${path}/check`} component={Check} />
-        <Route path={`${path}/feed-a-foster`} component={FeedAFoster} />
+        <Route
+          path={`${path}/feed-a-foster`}
+          render={() => (
+            <FeedAFoster
+              timerComponents={timerComponents.feedAFoster}
+              showFundraiser={showFundraiser.showFeedAFoster}
+            />
+          )}
+        />
         <Route>
           <PageNotFound />
         </Route>

@@ -61,7 +61,7 @@ const useCountDown = (startDate: any, endDate: any, nextYearStartDate: any) => {
     const to = new Date(ed[0], parseInt(ed[1]) - 1, ed[2]);
     const check = new Date(t[0], parseInt(t[1]) - 1, t[2]);
 
-    return check >= from && check <= to;
+    return (check >= from && check <= to) || check < from;
   };
 
   const getDeadTime = () => {

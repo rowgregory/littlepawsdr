@@ -82,11 +82,11 @@ export const Routes: FC = () => {
     window.scrollTo(0, 0);
   }, [pathname]);
 
-  const { timerComponents, showFundraiser } = useCountDown(
-    '2023/02/05',
-    '2023/02/12',
-    '2024/02/05'
-  );
+  const { timerComponents: longDog, showFundraiser: showLongDog } =
+    useCountDown('2023/02/05', '2023/02/12', '2024/02/05');
+
+  const { timerComponents: feedAFoster, showFundraiser: showFeedAFoster } =
+    useCountDown('2023/07/01', '2023/07/31', '2024/07/01');
 
   return (
     <>
@@ -107,8 +107,8 @@ export const Routes: FC = () => {
             path='/donate'
             render={() => (
               <Donate
-                timerComponents={timerComponents}
-                showFundraiser={showFundraiser}
+                timerComponents={{ longDog, feedAFoster }}
+                showFundraiser={{ showLongDog, showFeedAFoster }}
               />
             )}
           />
