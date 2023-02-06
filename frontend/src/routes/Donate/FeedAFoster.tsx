@@ -42,6 +42,15 @@ const FeedAFosterForm = styled.form`
   }
 `;
 
+const TimerComponentsContainer = styled.div`
+  display: grid;
+  grid-template-columns: fit-content(8ch) fit-content(8ch) fit-content(8ch) fit-content(
+      8ch
+    );
+  width: 100%;
+  justify-content: center;
+`;
+
 const FeedAFoster = ({ timerComponents, showFundraiser }: any) => {
   return (
     <>
@@ -204,7 +213,7 @@ const FeedAFoster = ({ timerComponents, showFundraiser }: any) => {
               Coming Soon
             </h3>
             <ContestTitle>Feed A Foster</ContestTitle>
-            <div className='d-flex justify-content-center'>
+            <TimerComponentsContainer>
               {timerComponents?.map((obj: any, i: number) => (
                 <div className='d-flex flex-column justify-content-end' key={i}>
                   <div className='d-flex align-items-baseline'>
@@ -231,7 +240,7 @@ const FeedAFoster = ({ timerComponents, showFundraiser }: any) => {
                   </div>
                 </div>
               ))}
-            </div>
+            </TimerComponentsContainer>
             <div
               className='d-flex'
               style={{ justifyContent: 'space-evenly' }}

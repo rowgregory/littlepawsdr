@@ -44,29 +44,17 @@ export const ContestTitle = styled.h3`
 `;
 
 export const Timer = styled.h1`
-  font-size: 54px;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
-    font-size: 66px;
-  }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    font-size: 90px;
-  }
+  font-size: calc(60px + 16 * ((100vw - 700px) / 700));
 `;
 
 export const Colon = styled.div`
-  font-size: 68px;
+  font-size: calc(60px + 16 * ((100vw - 700px) / 700));
   color: #fff;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
-    font-size: 80px;
-  }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    font-size: 106px;
-  }
 `;
 
 const Spin = keyframes`
   100% { 
-    transform: rotateZ(360deg);
+    transform: rotate(360deg);
   }
 `;
 
@@ -109,7 +97,7 @@ const Circle = styled.div`
   height: 100%;
   border-radius: 50%;
   background-clip: content-box;
-  animation: ${Spin} 3s linear infinite;
+  animation: ${Spin} 15s linear infinite;
   border: 5px dashed #6f3b82;
 `;
 
@@ -248,9 +236,13 @@ const LongDog = ({ timerComponents, showFundraiser }: any) => {
           </Text>
           <Image
             src={LongDogQRCode}
-            style={{ maxWidth: '192px', width: '100%' }}
+            style={{ maxWidth: '192px', width: '100%', marginBottom: '36px' }}
             alt='LPDR Long Dog QR Code'
           />
+          <Text fontSize='14px' textAlign='center'>
+            USA 🇺🇸 shipping only. International entry/winner would pay own
+            shipping. 📦
+          </Text>
         </div>
       )}
     </>
