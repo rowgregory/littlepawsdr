@@ -1,5 +1,11 @@
 import React, { ComponentType, FC, lazy, useEffect, useState } from 'react';
-import { Switch, Route, useLocation, Redirect } from 'react-router-dom';
+import {
+  Switch,
+  Route,
+  useLocation,
+  Redirect,
+  useHistory,
+} from 'react-router-dom';
 import Home from './Home';
 import Login from './Login';
 import Register from './Register';
@@ -55,7 +61,9 @@ const Page = styled(Container)<{ url: string }>`
 
 export const Routes: FC = () => {
   const { pathname } = useLocation();
+  const history = useHistory();
   const [show, setShow] = useState(false);
+
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
@@ -80,6 +88,33 @@ export const Routes: FC = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
+
+  useEffect(() => {
+    switch (pathname) {
+      case '/what-can-i-do/':
+        return history.push('/volunteer/volunteer-application');
+      case '/about-us/':
+        return history.push('/about/team-members');
+      case '/about-us/rainbow-bridge/':
+        return history.push('/about/rainbow-bridge');
+      case '/available/dachshunds/view-dog/':
+        return history.push('/available');
+      case '/house-training-a-dachshund/':
+        return history.push('/available');
+      case '/lpdr-barks-about-tom-linda-scott/':
+        return history.push('/available');
+      case '/happy-tails-pretzel/':
+        return history.push('/available');
+      case '/lpdr-barks-about-valerie-duke/':
+        return history.push('/available');
+      case '/november-is-adopt-a-senior-month/':
+        return history.push('/available/senior');
+      case '/donate/shopping-to-help/':
+        return history.push('/e-cards');
+      case '/about/dachshund':
+        return history.push('/available');
+    }
+  }, [pathname, history]);
 
   return (
     <>

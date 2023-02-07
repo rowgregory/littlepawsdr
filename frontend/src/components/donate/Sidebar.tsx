@@ -60,6 +60,10 @@ const SideBar = () => {
           linkText: 'Long Dog',
           linkKey: '/donate/long-dog',
         },
+        {
+          linkText: 'Feed A Foster',
+          linkKey: '/donate/feed-a-foster',
+        },
       ].map((obj: any, i: number) => (
         <DonateLink
           to={obj.linkKey}

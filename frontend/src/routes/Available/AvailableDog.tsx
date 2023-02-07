@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
+import { Redirect, useLocation } from 'react-router-dom';
 import { Carousel, Image } from 'react-bootstrap';
 import { Text } from '../../components/styles/Styles';
 import LeftArrow from '../../components/svg/LeftArrow';
@@ -16,7 +16,14 @@ import {
 import NoImgDog from '../../components/assets/no_image_dog.jpg';
 
 const AvailableDog = () => {
-  const { state } = useLocation() as any;
+  const { state, pathname } = useLocation() as any;
+
+  if (
+    pathname === '/available/dogs/18728573' ||
+    pathname === '/available/dogs/18021040'
+  ) {
+    return <Redirect to='/adopt/fees' />;
+  }
 
   const {
     name,
