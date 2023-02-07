@@ -11,34 +11,18 @@ import Venmo from './Venmo';
 import Check from './Check';
 import Hero from '../../components/donate/Hero';
 
-const DonateRoutes = ({ timerComponents, showFundraiser }: any) => {
+const DonateRoutes = () => {
   const { path } = useRouteMatch();
 
   return (
     <DonateLayoutWithSideBar jumbotron={<Hero />} sideBar={<SideBar />}>
       <Switch>
         <Route exact path={path} component={Donate} />
-        <Route
-          path={`${path}/long-dog`}
-          render={() => (
-            <LongDog
-              timerComponents={timerComponents.longDog}
-              showFundraiser={showFundraiser.showLongDog}
-            />
-          )}
-        />
+        <Route path={`${path}/long-dog`} render={() => <LongDog />} />
         <Route path={`${path}/shop-to-help`} component={ShopToHelp} />
         <Route path={`${path}/venmo`} component={Venmo} />
         <Route path={`${path}/check`} component={Check} />
-        <Route
-          path={`${path}/feed-a-foster`}
-          render={() => (
-            <FeedAFoster
-              timerComponents={timerComponents.feedAFoster}
-              showFundraiser={showFundraiser.showFeedAFoster}
-            />
-          )}
-        />
+        <Route path={`${path}/feed-a-foster`} component={FeedAFoster} />
         <Route>
           <PageNotFound />
         </Route>

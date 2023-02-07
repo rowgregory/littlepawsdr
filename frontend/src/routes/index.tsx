@@ -28,8 +28,6 @@ import EcardPlaceOrder from './EcardPlaceOrder';
 import ReturnPolicy from './ReturnPolicy';
 import CookiePolicyPopUp from '../components/CookiePolicyPopUp';
 import CookiePolicy from './CookiePolicy';
-import useCountDown from '../utils/hooks/useCountDown';
-import Donate from './Donate/index';
 import { useIdleTimer } from 'react-idle-timer';
 
 type LazyModulePromise<T = {}> = Promise<{ default: ComponentType<T> }>;
@@ -43,6 +41,7 @@ const Admin = lazy((): LazyModulePromise => import('./Admin'));
 const Shop = lazy((): LazyModulePromise => import('./Shop'));
 const Cart = lazy((): LazyModulePromise => import('./Cart'));
 const Settings = lazy((): LazyModulePromise => import('./Settings'));
+const Donate = lazy((): LazyModulePromise => import('./Donate'));
 
 const Page = styled(Container)<{ url: string }>`
   width: 100%;
@@ -82,12 +81,6 @@ export const Routes: FC = () => {
     window.scrollTo(0, 0);
   }, [pathname]);
 
-  const { timerComponents: longDog, showFundraiser: showLongDog } =
-    useCountDown('2023/02/05', '2023/02/12', '2024/02/05');
-
-  const { timerComponents: feedAFoster, showFundraiser: showFeedAFoster } =
-    useCountDown('2023/07/01', '2023/07/31', '2024/07/01');
-
   return (
     <>
       <ContinueSessionModal show={show} handleClose={handleClose} />
@@ -103,15 +96,7 @@ export const Routes: FC = () => {
           <Route path='/e-cards' component={ECards} />
           <Route path='/e-card-details' component={ECardDetails} />
           <Route path='/e-card/place-order' component={EcardPlaceOrder} />
-          <Route
-            path='/donate'
-            render={() => (
-              <Donate
-                timerComponents={{ longDog, feedAFoster }}
-                showFundraiser={{ showLongDog, showFeedAFoster }}
-              />
-            )}
-          />
+          <Route path='/donate' component={Donate} />
           <Route path='/volunteer' component={Volunteer} />
           <Route path='/adopt' component={Adopt} />
           <Route path='/surrender' component={Surrender} />

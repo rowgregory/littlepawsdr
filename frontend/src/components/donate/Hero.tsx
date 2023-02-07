@@ -74,6 +74,8 @@ const Hero = () => {
                 ? 'Venmo'
                 : location?.pathname === '/donate/long-dog'
                 ? 'Check'
+                : location?.pathname === '/donate/feed-a-foster'
+                ? 'Long Dog'
                 : 'Rainbow Bridge'
             }
             url2={
@@ -85,6 +87,8 @@ const Hero = () => {
                 ? '/donate/venmo'
                 : location?.pathname === '/donate/long-dog'
                 ? '/donate/check'
+                : location?.pathname === '/donate/feed-a-foster'
+                ? '/donate/long-dog'
                 : '/about/rainbow-bridge'
             }
           />
@@ -97,6 +101,8 @@ const Hero = () => {
                 : location?.pathname === '/donate/check'
                 ? 'Long Dog'
                 : location?.pathname === '/donate/long-dog'
+                ? 'Feed A Foster'
+                : location?.pathname === '/donate/feed-a-foster'
                 ? 'Adoption Application'
                 : 'Ecards'
             }
@@ -108,6 +114,8 @@ const Hero = () => {
                 : location?.pathname === '/donate/check'
                 ? '/donate/long-dog'
                 : location?.pathname === '/donate/long-dog'
+                ? '/donate/feed-a-foster'
+                : location?.pathname === '/donate/feed-a-foster'
                 ? '/adopt/application'
                 : '/e-cards'
             }
