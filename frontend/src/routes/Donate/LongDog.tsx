@@ -345,11 +345,11 @@ const LongDog = () => {
             </Text>
             <Text fontSize='20px' marginBottom='8px' fontWeight={400}>
               <Image src={Paw} width='20px' alt='LPDR Paw' /> Shipping available
-              to USA 🇺🇸 address
+              withing the USA 🇺🇸 only
             </Text>
             <Text fontSize='20px' marginBottom='8px' fontWeight={400}>
-              <Image src={Paw} width='20px' alt='LPDR Paw' /> This raffle is not
-              associated with Instagram
+              <Image src={Paw} width='20px' alt='LPDR Paw' /> This raffle 🎟️ is
+              not associated with Instagram
             </Text>
           </div>
           <CircleWrapper>

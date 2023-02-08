@@ -72,6 +72,7 @@ export const StyledLink = styled(Link)`
     color: ${({ theme }) => theme.white};
   }
   line-height: 1.9230769231;
+  font-size: 12px;
 `;
 
 export const StyledExternalLink = styled.div`
@@ -84,6 +85,7 @@ export const StyledExternalLink = styled.div`
     color: ${({ theme }) => theme.white};
   }
   line-height: 1.9230769231;
+  font-size: 12px;
 `;
 export const StyledInternalLink = styled(Link)`
   color: ${({ theme }) => theme.footer.text};
@@ -95,11 +97,13 @@ export const StyledInternalLink = styled(Link)`
     color: ${({ theme }) => theme.white};
   }
   line-height: 1.9230769231;
+  font-size: 12px;
 `;
 
 export const StyledText = styled.div`
   color: ${({ theme }) => theme.footer.text};
   line-height: 1.9230769231;
+  font-size: 12px;
 `;
 
 export const BottomFooter = styled.div`

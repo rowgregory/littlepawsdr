@@ -55,9 +55,10 @@ const resetPassword = asyncHandler(async (req, res) => {
 });
 
 const verifyToken = asyncHandler(async (req, res) => {
+  let user;
   try {
     const { token } = req.body;
-    const user = await User.findOne({ resetPasswordToken: token });
+    user = await User.findOne({ resetPasswordToken: token });
 
     const decoded = jwt.verify(
       user?.resetPasswordToken,
@@ -72,6 +73,11 @@ const verifyToken = asyncHandler(async (req, res) => {
       functionName: 'VERIFY_TOKEN_PRIVATE',
       detail: err.message,
       status: 500,
+      user: {
+        id: user?._id,
+        name: user?.name,
+        email: user?.email,
+      },
     });
 
     await createdError.save();

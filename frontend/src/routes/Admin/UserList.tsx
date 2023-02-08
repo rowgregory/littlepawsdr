@@ -50,7 +50,7 @@ const UserList = () => {
   }, [dispatch, successDelete]);
 
   useEffect(() => {
-    const itemsPerPage = 10;
+    const itemsPerPage = 50;
     const indexOfLastItem = paginatedPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
@@ -72,8 +72,8 @@ const UserList = () => {
       <BreadCrumb
         step1='Home'
         step2='Dashboard'
-        step3=''
-        step4='Users'
+        step3='Users'
+        step4={users?.length}
         url1='/'
         url2='/admin'
         url3=''
@@ -102,7 +102,7 @@ const UserList = () => {
         </TopRow>
 
         <TableAndPaginationContainer>
-          <Table hover responsive>
+          <Table hover responsive size='sm'>
             <TableHead>
               <tr>
                 <th>ONLINE</th>
@@ -183,7 +183,7 @@ const UserList = () => {
           </Table>
           <PaginationContainer>
             <Pagination className='my-3'>
-              {rangeV2(users, paginatedPage, setPaginatedPage)}
+              {rangeV2(users, paginatedPage, setPaginatedPage, 100)}
             </Pagination>
           </PaginationContainer>
         </TableAndPaginationContainer>

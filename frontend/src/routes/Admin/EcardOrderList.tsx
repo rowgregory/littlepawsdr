@@ -58,11 +58,11 @@ const EcardOrderList = () => {
       <BreadCrumb
         step1='Home'
         step2='Dashboard'
-        step3=''
-        step4='Ecards'
+        step3='Ecards'
+        step4={eCardOrders?.length}
         url1='/'
         url2='/admin'
-        url3='/admin/eCardOrderList'
+        url3=''
       />
       {error && <Message variant='danger'>{error}</Message>}
       {loading && <HexagonLoader />}
@@ -84,10 +84,8 @@ const EcardOrderList = () => {
               <tr>
                 <th>ID</th>
                 <th>IMAGE</th>
-                <th>RECIPIENTS EMAIL</th>
                 <th>DATE TO SEND</th>
-                <th>FIRST NAME</th>
-                <th>LAST NAME</th>
+                <th>SENT</th>
                 <th>EMAIL</th>
                 <th>PRICE</th>
                 <th>VIEW</th>
@@ -109,15 +107,20 @@ const EcardOrderList = () => {
                     />
                   </td>
                   <td>
-                    <Text>{order?.recipientsEmail}</Text>
-                  </td>
-                  <td>
                     <Text>
                       {new Date(order?.dateToSend).toISOString().split('T')[0]}
                     </Text>
                   </td>
-                  <td>{order?.firstName}</td>
-                  <td>{order?.lastName}</td>
+                  <td>
+                    {order?.isSent ? (
+                      <i
+                        style={{ color: 'green' }}
+                        className='fas fa-check'
+                      ></i>
+                    ) : (
+                      <i style={{ color: 'red' }} className='fas fa-times'></i>
+                    )}
+                  </td>
                   <td>{order?.email}</td>
                   <td>{order?.totalPrice}</td>
                   <td>

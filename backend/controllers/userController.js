@@ -388,8 +388,9 @@ const userLogout = asyncHandler(async (req, res) => {
       functionName: 'USER_LOGOUT_PRIVATE',
       detail: err.message,
       user: {
-        id: req?.user?._id,
-        name: req?.user?.name,
+        id: req?.body?._id,
+        name: req?.body?.name,
+        email: req?.body?.email,
       },
       status: 500,
     });
