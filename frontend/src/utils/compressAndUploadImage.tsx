@@ -13,7 +13,7 @@ export const compressAndUpload = (
   };
   setImageUploadStatus('Compressing');
   new Compressor(file, {
-    quality: 0.6,
+    quality: 0.1,
     async success(res) {
       setImageUploadStatus('Uploading');
       const formData = new FormData();

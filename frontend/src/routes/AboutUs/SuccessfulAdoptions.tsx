@@ -1,60 +1,24 @@
 import React, { useEffect, useState } from 'react';
-import { Col, Card, Pagination, Image } from 'react-bootstrap';
+import { Card, Pagination } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import { getDogsByStatusPicturesAndVideours } from '../../actions/dachshundsActions';
-import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { Text } from '../../components/styles/Styles';
 import { formatDate } from '../../utils/formatDate';
 import { LoadingImg } from '../../components/LoadingImg';
-import Successful from '../../components/assets/successful03.jpeg';
+import SuccessfulHigh from '../../components/assets/successful-high.jpeg';
+import SuccessfulLow from '../../components/assets/successful-low.jpg';
 import { PaginationContainer } from '../../components/styles/admin/Styles';
 import { rangeV2 } from '../../components/common/Pagination';
 import NoImgDog from '../../components/assets/no_image_dog.jpg';
 import LeftArrow from '../../components/svg/LeftArrow';
 import RightArrow from '../../components/svg/RightArrow';
-
-const DogContainer = styled(Col)`
-  display: grid;
-  grid-gap: 1.5rem;
-  grid-template-columns: 1fr;
-  padding: 1rem;
-  grid-row-gap: 120px;
-  margin-bottom: 96px;
-  margin-top: 75px;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    grid-template-columns: 1fr 1fr;
-  }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-    grid-template-columns: 1fr 1fr 1fr;
-  }
-`;
-
-const Container = styled.div`
-  max-width: 980px;
-  width: 100%;
-  margin-inline: auto;
-  margin-bottom: 96px;
-  padding-inline: 16px;
-`;
-const TextContainer = styled.div`
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: #fff;
-  margin-left: auto;
-  margin-right: auto;
-  width: fit-content;
-  padding: 16px;
-  padding: 16px 0 0;
-  min-width: 200px;
-  border-radius: 100px 100px 0 0;
-  text-align: center;
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-`;
+import Hero from '../../components/Hero';
+import {
+  Container,
+  DogContainer,
+  TextContainer,
+} from '../../components/styles/GridDogStyles';
 
 const SuccessfulAdoptions = () => {
   const dispatch = useDispatch();
@@ -64,7 +28,7 @@ const SuccessfulAdoptions = () => {
   const dachshund = useSelector(
     (state: any) => state.dachshundPicturesVideosStatuses
   );
-  let { error, dachshunds, loading } = dachshund;
+  let { dachshunds, loading } = dachshund;
 
   useEffect(() => {
     const itemsPerPage = 30;
@@ -80,48 +44,13 @@ const SuccessfulAdoptions = () => {
 
   return (
     <>
-      <div style={{ position: 'relative', marginTop: '75px' }}>
-        <Image
-          src={Successful}
-          width='100%'
-          style={{ height: '500px', objectFit: 'cover' }}
-        />
-        <Text
-          fontWeight={500}
-          fontSize='48px'
-          color='#fff'
-          style={{
-            position: 'absolute',
-            top: '200px',
-            left: '50px',
-            zIndex: 2,
-          }}
-        >
-          Successful Adoptions
-        </Text>
-        <Text
-          onClick={() =>
-            window.open(
-              'https://unsplash.com/@nivia?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText',
-              '_blank'
-            )
-          }
-          fontWeight={500}
-          fontSize='10px'
-          color='#fff'
-          cursor='pointer'
-          style={{
-            mixBlendMode: 'difference',
-            position: 'absolute',
-            bottom: '10px',
-            right: '10px',
-            zIndex: 2,
-          }}
-        >
-          Photo by Nivia Espinoza
-        </Text>
-      </div>
-
+      <Hero
+        low={SuccessfulLow}
+        high={SuccessfulHigh}
+        title='Successful Adoptions'
+        link='https://unsplash.com/@nivia?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText'
+        photographer='Nivia Espinoza'
+      />
       <Container>
         <div className='w-100 d-flex justify-content-between mt-3'>
           <LeftArrow

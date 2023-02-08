@@ -5,8 +5,8 @@ import { Text } from '../components/styles/Styles';
 import HexagonLoader from '../components/Loaders/HexagonLoader/HexagonLoader';
 import { eCardCategories } from '../utils/eCardCategories';
 import { Accordion } from '../components/styles/place-order/Styles';
-import { Image } from 'react-bootstrap';
-import EcardsDog from '../components/assets/ecards_dog01.jpg';
+import EcardsHigh from '../components/assets/ecards-high.jpg';
+import EcardsLow from '../components/assets/ecards-low.jpg';
 import {
   Category,
   CategoryContainer,
@@ -20,6 +20,7 @@ import RightArrow from '../components/svg/RightArrow';
 import EcardSolidIcon from '../components/svg/EcardSolidIcon';
 import Product from './Shop/Product';
 import Message from '../components/Message';
+import Hero from '../components/Hero';
 
 const ECards = () => {
   const dispatch = useDispatch();
@@ -39,65 +40,14 @@ const ECards = () => {
 
   return (
     <>
-      <div style={{ position: 'relative', marginTop: '75px' }}>
-        <Image
-          src={EcardsDog}
-          width='100%'
-          style={{ height: '500px', objectFit: 'cover' }}
-        />
-        <Text
-          fontWeight={500}
-          fontSize='48px'
-          color='#fff'
-          style={{
-            position: 'absolute',
-            top: '200px',
-            left: '50px',
-            zIndex: 2,
-            mixBlendMode: 'difference',
-          }}
-        >
-          Ecards
-        </Text>
-        <Text
-          fontSize='22px'
-          color='#fff'
-          fontWeight={600}
-          style={{
-            position: 'absolute',
-            zIndex: 2,
-            maxWidth: '250px',
-            width: 'fit-content',
-            mixBlendMode: 'difference',
-            top: '255px',
-            left: '50px',
-          }}
-          maxWidth='400px'
-        >
-          Offers an effortless way to stay in touch!
-        </Text>
-        <Text
-          onClick={() =>
-            window.open(
-              'https://www.pexels.com/photo/a-black-and-brown-dog-on-a-leash-9243153/',
-              '_blank'
-            )
-          }
-          fontWeight={500}
-          fontSize='10px'
-          color='#fff'
-          cursor='pointer'
-          style={{
-            mixBlendMode: 'difference',
-            position: 'absolute',
-            bottom: '10px',
-            right: '10px',
-            zIndex: 2,
-          }}
-        >
-          Photo by Andrzej Dworakowski
-        </Text>
-      </div>
+      <Hero
+        low={EcardsLow}
+        high={EcardsHigh}
+        title='Ecards'
+        link='https://www.pexels.com/photo/a-black-and-brown-dog-on-a-leash-9243153/'
+        photographer='Andrzej Dworakowski'
+      />
+
       <Container>
         <div className='w-100 d-flex justify-content-between mt-3'>
           <LeftArrow text='Home' url='/' text2='Donate' url2='/donate' />

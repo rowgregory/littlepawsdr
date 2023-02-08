@@ -1,10 +1,11 @@
 import React from 'react';
-import { Image } from 'react-bootstrap';
 import styled, { useTheme } from 'styled-components';
 import { Text } from '../../components/styles/Styles';
-import ContactDog from '../../components/assets/contact02.jpg';
+import ContactHigh from '../../components/assets/contact-high.jpg';
+import ContactLow from '../../components/assets/contact-low.jpg';
 import LeftArrow from '../../components/svg/LeftArrow';
 import RightArrow from '../../components/svg/RightArrow';
+import Hero from '../../components/Hero';
 
 const ContactUsIFrame = styled.iframe`
   border: none;
@@ -19,47 +20,14 @@ const ContactUs = () => {
   const isDay = theme.mode === 'day';
   return (
     <>
-      <div style={{ position: 'relative', marginTop: '75px' }}>
-        <Image
-          src={ContactDog}
-          width='100%'
-          style={{ height: '500px', objectFit: 'cover' }}
-        />
-        <Text
-          fontWeight={500}
-          fontSize='48px'
-          color='#fff'
-          style={{
-            position: 'absolute',
-            top: '200px',
-            left: '50px',
-            zIndex: 2,
-          }}
-        >
-          Contact Us
-        </Text>
-        <Text
-          onClick={() =>
-            window.open(
-              'https://pixabay.com/users/kenway_photography-19020757/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=5995679',
-              '_blank'
-            )
-          }
-          fontWeight={500}
-          fontSize='10px'
-          color='#fff'
-          cursor='pointer'
-          style={{
-            mixBlendMode: 'difference',
-            position: 'absolute',
-            bottom: '10px',
-            right: '10px',
-            zIndex: 2,
-          }}
-        >
-          Photo by Jessica Dähne
-        </Text>
-      </div>
+      <Hero
+        low={ContactLow}
+        high={ContactHigh}
+        title='Contact Us'
+        link={`https://pixabay.com/users/kenway_photography-19020757/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=5995679`}
+        photographer='Jessica Dähne'
+      />
+
       <div
         style={{
           maxWidth: '980px',

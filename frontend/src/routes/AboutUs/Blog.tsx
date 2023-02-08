@@ -9,10 +9,12 @@ import { localizeDate } from '../../utils/localizeDate';
 import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
 import { Text } from '../../components/styles/Styles';
 import NoBlogs from '../../components/svg/NoBlogs';
-import BlogDog from '../../components/assets/blog01.jpg';
+import BlogHigh from '../../components/assets/blog-high.jpg';
+import BlogLow from '../../components/assets/blog-low.jpg';
 import LeftArrow from '../../components/svg/LeftArrow';
 import RightArrow from '../../components/svg/RightArrow';
 import { Container } from '../../components/styles/shop/Styles';
+import Hero from '../../components/Hero';
 
 const ArticleContainer = styled.div`
   display: flex;
@@ -68,47 +70,13 @@ const Blog = () => {
 
   return (
     <>
-      <div style={{ position: 'relative', marginTop: '75px' }}>
-        <Image
-          src={BlogDog}
-          width='100%'
-          style={{ height: '500px', objectFit: 'cover' }}
-        />
-        <Text
-          fontWeight={500}
-          fontSize='48px'
-          color='#fff'
-          style={{
-            position: 'absolute',
-            top: '200px',
-            left: '50px',
-            zIndex: 2,
-          }}
-        >
-          Blog
-        </Text>
-        <Text
-          onClick={() =>
-            window.open(
-              'https://pixabay.com/users/marlyneart-15261801/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=4977599',
-              '_blank'
-            )
-          }
-          fontWeight={500}
-          fontSize='10px'
-          color='#fff'
-          cursor='pointer'
-          style={{
-            mixBlendMode: 'difference',
-            position: 'absolute',
-            bottom: '10px',
-            right: '10px',
-            zIndex: 2,
-          }}
-        >
-          Photo by Martine Auvray
-        </Text>
-      </div>
+      <Hero
+        low={BlogLow}
+        high={BlogHigh}
+        title='Adoption Information'
+        link={`https://pixabay.com/users/marlyneart-15261801/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=4977599`}
+        photographer='Martine Auvray'
+      />
       <Container>
         <div className='w-100 d-flex justify-content-between mt-3'>
           <LeftArrow text='Home' url='/' text2='Events' url2='/events' />

@@ -7,12 +7,13 @@ import EventCard from '../../components/EventCard';
 import { Text } from '../../components/styles/Styles';
 import { Month, timeLineData } from '../../components/raffle-winners/Timeline';
 import { LoadingImg } from '../../components/LoadingImg';
-import { Image } from 'react-bootstrap';
-import EventDog from '../../components/assets/events01.jpg';
+import EventHigh from '../../components/assets/events-high.jpg';
+import EventHLow from '../../components/assets/events-low.jpg';
 import LeftArrow from '../../components/svg/LeftArrow';
 import RightArrow from '../../components/svg/RightArrow';
 import Message from '../../components/Message';
 import { Container } from '../../components/styles/shop/Styles';
+import Hero from '../../components/Hero';
 
 const EventsContainer = styled.div`
   display: flex;
@@ -64,47 +65,14 @@ const Events = ({ history }: RouteComponentProps) => {
 
   return (
     <>
-      <div style={{ position: 'relative', marginTop: '75px' }}>
-        <Image
-          src={EventDog}
-          width='100%'
-          style={{ height: '500px', objectFit: 'cover' }}
-        />
-        <Text
-          fontWeight={500}
-          fontSize='48px'
-          color='#fff'
-          style={{
-            position: 'absolute',
-            top: '200px',
-            left: '50px',
-            zIndex: 2,
-          }}
-        >
-          Events
-        </Text>
-        <Text
-          onClick={() =>
-            window.open(
-              'https://pixabay.com/users/ilonaburschl-3558510/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=2059668',
-              '_blank'
-            )
-          }
-          fontWeight={500}
-          fontSize='10px'
-          color='#fff'
-          cursor='pointer'
-          style={{
-            mixBlendMode: 'difference',
-            position: 'absolute',
-            bottom: '10px',
-            right: '10px',
-            zIndex: 2,
-          }}
-        >
-          Photo by Ilona Ilyés
-        </Text>
-      </div>
+      <Hero
+        low={EventHLow}
+        high={EventHigh}
+        title='Events'
+        link={`https://pixabay.com/users/ilonaburschl-3558510/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=2059668`}
+        photographer='Ilona Ilyés'
+      />
+
       <Container>
         <div className='w-100 d-flex justify-content-between mt-3'>
           <LeftArrow text='Home' url='/' text2='Shop' url2='/shop' />

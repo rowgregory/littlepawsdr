@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { Card, Button, Accordion, Image } from 'react-bootstrap';
+import { Card, Button, Accordion } from 'react-bootstrap';
 import { CardTitle, Text } from '../../components/styles/Styles';
 import { faq } from '../../utils/faq';
 import styled from 'styled-components';
-import AdoptionFaqDog from '../../components/assets/adoption_faq_dog01.jpeg';
+import AdoptFaqHigh from '../../components/assets/adopt-faq-high.jpeg';
+import AdoptFaqLow from '../../components/assets/adopt-faq-low.jpg';
 import LeftArrow from '../../components/svg/LeftArrow';
 import RightArrow from '../../components/svg/RightArrow';
+import Hero from '../../components/Hero';
 
 const StyledAccordion = styled(Accordion)`
   background: ${({ theme }) => theme.input.bg};
@@ -19,46 +21,13 @@ const AdoptionFAQ = () => {
   const [idx, setIdx] = useState([]) as any;
   return (
     <>
-      <div style={{ position: 'relative' }}>
-        <Image
-          src={AdoptionFaqDog}
-          width='100%'
-          style={{ height: '500px', objectFit: 'cover' }}
-        />
-        <Text
-          fontWeight={500}
-          fontSize='48px'
-          color='#fff'
-          style={{
-            position: 'absolute',
-            top: '200px',
-            left: '50px',
-            zIndex: 2,
-          }}
-        >
-          Frequently Asked Questions
-        </Text>
-        <Text
-          onClick={() =>
-            window.open(
-              'https://unsplash.com/@matias_ristenpart?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText',
-              '_blank'
-            )
-          }
-          fontWeight={500}
-          fontSize='10px'
-          color='#fff'
-          cursor='pointer'
-          style={{
-            position: 'absolute',
-            bottom: '10px',
-            right: '10px',
-            zIndex: 2,
-          }}
-        >
-          Photo by MATÍAS ALEJANDRO
-        </Text>
-      </div>
+      <Hero
+        low={AdoptFaqLow}
+        high={AdoptFaqHigh}
+        title='Frequently Asked Questions'
+        link='https://unsplash.com/@matias_ristenpart?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText'
+        photographer='MATÍAS ALEJANDRO'
+      />
       <div
         style={{
           maxWidth: '980px',

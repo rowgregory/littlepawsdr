@@ -1,10 +1,11 @@
 import React from 'react';
-import { Image } from 'react-bootstrap';
 import styled, { useTheme } from 'styled-components';
 import { Text } from '../../components/styles/Styles';
-import FosterDog from '../../components/assets/foster_app_dog03.jpeg';
+import FosterHigh from '../../components/assets/foster-high.jpeg';
+import FosterLow from '../../components/assets/foster-low.jpg';
 import LeftArrow from '../../components/svg/LeftArrow';
 import RightArrow from '../../components/svg/RightArrow';
+import Hero from '../../components/Hero';
 
 const FosterApplicationIFrame = styled.iframe`
   border: none;
@@ -25,47 +26,14 @@ const FosterApplication = () => {
   const isDay = theme.mode === 'day';
   return (
     <>
-      <div style={{ position: 'relative' }}>
-        <Image
-          src={FosterDog}
-          width='100%'
-          style={{ height: '500px', objectFit: 'cover' }}
-        />
-        <Text
-          fontWeight={500}
-          fontSize='48px'
-          color='#fff'
-          style={{
-            position: 'absolute',
-            top: '200px',
-            left: '50px',
-            zIndex: 2,
-          }}
-        >
-          Foster Application
-        </Text>
-        <Text
-          onClick={() =>
-            window.open(
-              'https://unsplash.com/@chelsea777?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText',
-              '_blank'
-            )
-          }
-          fontWeight={500}
-          fontSize='10px'
-          color='#fff'
-          cursor='pointer'
-          style={{
-            mixBlendMode: 'difference',
-            position: 'absolute',
-            bottom: '10px',
-            right: '10px',
-            zIndex: 2,
-          }}
-        >
-          Photo by Kojirou Sasaki
-        </Text>
-      </div>
+      <Hero
+        low={FosterLow}
+        high={FosterHigh}
+        title='Foster Application'
+        link='https://unsplash.com/@chelsea777?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText'
+        photographer='Kojirou Sasaki'
+      />
+
       <div
         style={{
           maxWidth: '980px',

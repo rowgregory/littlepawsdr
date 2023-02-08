@@ -7,7 +7,6 @@ import SeniorDogs from './SeniorDogs';
 import styled from 'styled-components';
 
 const Container = styled.div`
-  margin-top: 75px;
   width: 100%;
   margin-inline: auto;
 `;

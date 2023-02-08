@@ -345,7 +345,7 @@ const LongDog = () => {
             </Text>
             <Text fontSize='20px' marginBottom='8px' fontWeight={400}>
               <Image src={Paw} width='20px' alt='LPDR Paw' /> Shipping available
-              withing the USA 🇺🇸 only
+              within the USA 🇺🇸 only
             </Text>
             <Text fontSize='20px' marginBottom='8px' fontWeight={400}>
               <Image src={Paw} width='20px' alt='LPDR Paw' /> This raffle 🎟️ is

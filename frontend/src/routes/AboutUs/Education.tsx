@@ -1,15 +1,17 @@
 import React from 'react';
-import { Card, Image } from 'react-bootstrap';
+import { Card } from 'react-bootstrap';
 import { Text, CardTitle, StyledCard } from '../../components/styles/Styles';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../../components/Message';
 import { useEffect } from 'react';
 import { listEducationTips } from '../../actions/educationTipActions';
-import EducationDog from '../../components/assets/EducationTipsDog.jpg';
+import EducationHigh from '../../components/assets/education-high.jpg';
+import EducationLow from '../../components/assets/education-low.jpg';
 import styled from 'styled-components';
 import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
 import LeftArrow from '../../components/svg/LeftArrow';
 import RightArrow from '../../components/svg/RightArrow';
+import Hero from '../../components/Hero';
 
 const Path = styled.path`
   fill: ${({ theme }) => theme.text};
@@ -81,47 +83,13 @@ const Education = () => {
 
   return (
     <>
-      <div style={{ position: 'relative', marginTop: '75px' }}>
-        <Image
-          src={EducationDog}
-          width='100%'
-          style={{ height: '500px', objectFit: 'cover' }}
-        />
-        <Text
-          fontWeight={500}
-          fontSize='48px'
-          color='#fff'
-          style={{
-            position: 'absolute',
-            top: '200px',
-            left: '50px',
-            zIndex: 2,
-          }}
-        >
-          Education Tips
-        </Text>
-        <Text
-          onClick={() =>
-            window.open(
-              'https://www.pexels.com/photo/photograph-of-a-black-and-brown-dachshund-14111197/',
-              '_blank'
-            )
-          }
-          fontWeight={500}
-          fontSize='10px'
-          color='#fff'
-          cursor='pointer'
-          style={{
-            mixBlendMode: 'difference',
-            position: 'absolute',
-            bottom: '10px',
-            right: '10px',
-            zIndex: 2,
-          }}
-        >
-          Photo by Alfo Medeiros
-        </Text>
-      </div>
+      <Hero
+        low={EducationLow}
+        high={EducationHigh}
+        title='Education Tips'
+        link='https://www.pexels.com/photo/photograph-of-a-black-and-brown-dachshund-14111197/'
+        photographer='Alfo Medeiros'
+      />
       <div
         style={{
           maxWidth: '980px',

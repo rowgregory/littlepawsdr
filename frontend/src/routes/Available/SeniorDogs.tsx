@@ -3,10 +3,11 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { Text } from '../../components/styles/Styles';
 import { reasonsToAdoptASeniorData } from '../../utils/reasonsToAdopt';
-import SeniorDog from '../../components/assets/senior_01.jpeg';
+import SeniorHigh from '../../components/assets/senior-high.jpeg';
+import SeniorLow from '../../components/assets/senior-low.jpg';
 import LeftArrow from '../../components/svg/LeftArrow';
 import RightArrow from '../../components/svg/RightArrow';
-import { Image } from 'react-bootstrap';
+import Hero from '../../components/Hero';
 
 const ViewFees = styled(Link)`
   text-decoration: underline;
@@ -15,47 +16,14 @@ const ViewFees = styled(Link)`
 const SeniorDogs = () => {
   return (
     <>
-      <div style={{ position: 'relative' }}>
-        <Image
-          src={SeniorDog}
-          width='100%'
-          style={{ height: '500px', objectFit: 'cover' }}
-        />
-        <Text
-          fontWeight={500}
-          fontSize='48px'
-          color='#fff'
-          style={{
-            position: 'absolute',
-            top: '200px',
-            left: '50px',
-            zIndex: 2,
-          }}
-        >
-          Adopt A Senior
-        </Text>
-        <Text
-          onClick={() =>
-            window.open(
-              'https://unsplash.com/@magdaleny?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText',
-              '_blank'
-            )
-          }
-          fontWeight={500}
-          fontSize='10px'
-          color='#fff'
-          cursor='pointer'
-          style={{
-            mixBlendMode: 'difference',
-            position: 'absolute',
-            bottom: '10px',
-            right: '10px',
-            zIndex: 2,
-          }}
-        >
-          Photo by Magdalena Smolnicka
-        </Text>
-      </div>
+      <Hero
+        low={SeniorLow}
+        high={SeniorHigh}
+        title='Adopt A Senior'
+        link='https://unsplash.com/@magdaleny?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText'
+        photographer='Magdalena Smolnicka'
+      />
+
       <div
         style={{
           maxWidth: '980px',

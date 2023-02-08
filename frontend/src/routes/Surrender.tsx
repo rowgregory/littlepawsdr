@@ -1,10 +1,11 @@
 import React from 'react';
 import styled, { useTheme } from 'styled-components';
 import { Text } from '../components/styles/Styles';
-import SurrenderDog from '../components/assets/surrender.jpg';
-import { Image } from 'react-bootstrap';
+import SurrenderHigh from '../components/assets/surrender.jpg';
+import SurrenderLow from '../components/assets/surrender-low.jpg';
 import LeftArrow from '../components/svg/LeftArrow';
 import RightArrow from '../components/svg/RightArrow';
+import Hero from '../components/Hero';
 
 const SurrenderApplicationIFrame = styled.iframe`
   border: none;
@@ -25,52 +26,13 @@ const Surrender = () => {
   const isDay = theme.mode === 'day';
   return (
     <>
-      <div
-        style={{
-          position: 'relative',
-        }}
-      >
-        <Image
-          src={SurrenderDog}
-          width='100%'
-          style={{ height: '575px', objectFit: 'cover' }}
-        />
-        <Text
-          fontWeight={500}
-          fontSize='48px'
-          color='#fff'
-          style={{
-            position: 'absolute',
-            top: '275px',
-            left: '50px',
-            zIndex: 2,
-          }}
-        >
-          Surrender an animal
-        </Text>
-        <Text
-          onClick={() =>
-            window.open(
-              'https://www.pexels.com/photo/photo-of-dog-inside-mailbox-906065/',
-              '_blank'
-            )
-          }
-          fontWeight={500}
-          fontSize='10px'
-          color='#fff'
-          cursor='pointer'
-          style={{
-            mixBlendMode: 'difference',
-            position: 'absolute',
-            bottom: '10px',
-            right: '10px',
-            zIndex: 2,
-          }}
-        >
-          Photo by Noelle Otto
-        </Text>
-      </div>
-
+      <Hero
+        low={SurrenderLow}
+        high={SurrenderHigh}
+        title='Surrender an animal'
+        link='https://www.pexels.com/photo/photo-of-dog-inside-mailbox-906065/'
+        photographer='Noelle Otto'
+      />
       <div
         style={{
           maxWidth: '980px',

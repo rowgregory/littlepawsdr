@@ -9,13 +9,16 @@ import LongDog from './LongDog';
 import SideBar from '../../components/donate/Sidebar';
 import Venmo from './Venmo';
 import Check from './Check';
-import Hero from '../../components/donate/Hero';
+import DonateHeroAndText from '../../components/donate/DonateHeroAndText';
 
 const DonateRoutes = () => {
   const { path } = useRouteMatch();
 
   return (
-    <DonateLayoutWithSideBar jumbotron={<Hero />} sideBar={<SideBar />}>
+    <DonateLayoutWithSideBar
+      jumbotron={<DonateHeroAndText />}
+      sideBar={<SideBar />}
+    >
       <Switch>
         <Route exact path={path} component={Donate} />
         <Route path={`${path}/long-dog`} render={() => <LongDog />} />

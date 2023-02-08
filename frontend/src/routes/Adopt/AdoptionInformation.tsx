@@ -9,8 +9,9 @@ import { Link } from 'react-router-dom';
 import { Text } from '../../components/styles/Styles';
 import LeftArrow from '../../components/svg/LeftArrow';
 import RightArrow from '../../components/svg/RightArrow';
-import { Image } from 'react-bootstrap';
-import AdoptionInfoDog from '../../components/assets/adopt_info_dog01.jpeg';
+import AdoptionInfoHigh from '../../components/assets/adopt-info-high.jpeg';
+import AdoptionInfoLow from '../../components/assets/adopt-info-low.jpg';
+import Hero from '../../components/Hero';
 
 const RequirementSection = styled.div`
   div {
@@ -57,47 +58,13 @@ export const Step = styled(Link)<{ link?: string }>`
 const AdoptionInformation = () => {
   return (
     <>
-      <div style={{ position: 'relative' }}>
-        <Image
-          src={AdoptionInfoDog}
-          width='100%'
-          style={{ height: '500px', objectFit: 'cover' }}
-        />
-        <Text
-          fontWeight={500}
-          fontSize='48px'
-          color='#fff'
-          style={{
-            position: 'absolute',
-            top: '200px',
-            left: '50px',
-            zIndex: 2,
-          }}
-        >
-          Adoption Information
-        </Text>
-        <Text
-          onClick={() =>
-            window.open(
-              'https://unsplash.com/es/@davidiz?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText',
-              '_blank'
-            )
-          }
-          fontWeight={500}
-          fontSize='10px'
-          color='#fff'
-          cursor='pointer'
-          style={{
-            mixBlendMode: 'difference',
-            position: 'absolute',
-            bottom: '10px',
-            right: '10px',
-            zIndex: 2,
-          }}
-        >
-          Photo by David Izquierdo
-        </Text>
-      </div>
+      <Hero
+        low={AdoptionInfoLow}
+        high={AdoptionInfoHigh}
+        title='Adoption Information'
+        link='https://unsplash.com/es/@davidiz?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText'
+        photographer='David Izquierdo'
+      />
       <div
         style={{
           maxWidth: '980px',

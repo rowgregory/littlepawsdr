@@ -9,7 +9,6 @@ import styled from 'styled-components';
 import TransportApplication from './TransportApplication';
 
 const Container = styled.div`
-  margin-top: 75px;
   width: 100%;
   margin-inline: auto;
 `;

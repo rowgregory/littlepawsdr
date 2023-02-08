@@ -2,98 +2,24 @@ import React, { useEffect, useState } from 'react';
 import { Pagination, Image } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import { getDogsByStatusPicturesAndVideours } from '../../actions/dachshundsActions';
-import styled, { keyframes } from 'styled-components';
 import Message from '../../components/Message';
 import { Link } from 'react-router-dom';
 import { Text } from '../../components/styles/Styles';
 import NoImgDog from '../../components/assets/no_image_dog.jpg';
-import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
 import { PaginationContainer } from '../../components/styles/admin/Styles';
 import { rangeV2 } from '../../components/common/Pagination';
-import OnHoldDog from '../../components/assets/notavailable.jpg';
+import OnHoldHigh from '../../components/assets/notavailable.jpg';
+import OnHoldLow from '../../components/assets/notavailable-low.jpg';
 import LeftArrow from '../../components/svg/LeftArrow';
 import RightArrow from '../../components/svg/RightArrow';
 import { LoadingImg } from '../../components/LoadingImg';
-import LegacyWallpaper from '../../components/assets/aqua_tile.jpg';
-
-const DogContainer = styled.div`
-  display: grid;
-  grid-gap: 1.5rem;
-  grid-template-columns: 1fr;
-  padding-block: 1rem;
-  grid-row-gap: 100px;
-  margin-bottom: 96px;
-  margin-top: 75px;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    grid-template-columns: 1fr 1fr;
-  }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-    grid-template-columns: 1fr 1fr 1fr;
-  }
-`;
-
-const Container = styled.div`
-  max-width: 980px;
-  width: 100%;
-  margin-inline: auto;
-  margin-bottom: 96px;
-`;
-
-const TextContainer = styled.div`
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: #fff;
-  margin-left: auto;
-  margin-right: auto;
-  width: fit-content;
-  padding: 16px 0 0;
-  min-width: 200px;
-  border-radius: 100px 100px 0 0;
-  text-align: center;
-  display: flex;
-  justify-content: center;
-`;
-
-const MoveLeft = keyframes`
- 0% {
-    background-position: 0 0;
- }
- 100% {
-    background-position: -100% 0;
- }
-`;
-
-const SupportFoster = styled.div`
-  padding-block: 60px;
-  margin-top: 96px;
-  position: relative;
-  overflow: hidden;
-  &:before {
-    content: '';
-    position: absolute;
-    background: url(${LegacyWallpaper});
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: -1;
-  }
-  :hover {
-    &:before {
-      animation: ${MoveLeft} 20s linear infinite;
-    }
-  }
-  a {
-    color: #fff;
-    font-size: 24px;
-    font-weight: 600;
-    :hover {
-      text-decoration: none;
-    }
-  }
-`;
+import Hero from '../../components/Hero';
+import {
+  Container,
+  DogContainer,
+  SupportFoster,
+  TextContainer,
+} from '../../components/styles/GridDogStyles';
 
 const DogsOnHold = () => {
   const dispatch = useDispatch();
@@ -119,48 +45,13 @@ const DogsOnHold = () => {
 
   return (
     <>
-      {loading && <HexagonLoader />}
-      <div style={{ position: 'relative', marginTop: '75px' }}>
-        <Image
-          src={OnHoldDog}
-          width='100%'
-          style={{ height: '500px', objectFit: 'cover' }}
-        />
-        <Text
-          fontWeight={500}
-          fontSize='48px'
-          color='#fff'
-          style={{
-            position: 'absolute',
-            top: '200px',
-            left: '50px',
-            zIndex: 2,
-          }}
-        >
-          Not Available For Adoption Yet
-        </Text>
-        <Text
-          onClick={() =>
-            window.open(
-              'https://www.pexels.com/photo/close-up-of-sausage-dog-on-leash-10606528/',
-              '_blank'
-            )
-          }
-          fontWeight={500}
-          fontSize='10px'
-          color='#fff'
-          cursor='pointer'
-          style={{
-            mixBlendMode: 'difference',
-            position: 'absolute',
-            bottom: '10px',
-            right: '10px',
-            zIndex: 2,
-          }}
-        >
-          Photo by TranStudios Photography & Video
-        </Text>
-      </div>
+      <Hero
+        low={OnHoldLow}
+        high={OnHoldHigh}
+        title='Not Available For Adoption Yet'
+        link='https://www.pexels.com/photo/close-up-of-sausage-dog-on-leash-10606528/'
+        photographer='TranStudios Photography & Video'
+      />
       <Container>
         <div className='w-100 d-flex justify-content-between mt-3'>
           <LeftArrow text='Home' url='/' text2='Surrender' url2='/surrender' />

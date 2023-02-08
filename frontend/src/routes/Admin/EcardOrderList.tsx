@@ -36,7 +36,7 @@ const EcardOrderList = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    const itemsPerPage = 10;
+    const itemsPerPage = 20;
     const indexOfLastItem = paginatedPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
@@ -137,7 +137,7 @@ const EcardOrderList = () => {
           </Table>
           <PaginationContainer>
             <Pagination className='my-3'>
-              {rangeV2(eCardOrders, paginatedPage, setPaginatedPage)}
+              {rangeV2(eCardOrders, paginatedPage, setPaginatedPage, 20)}
             </Pagination>
           </PaginationContainer>
         </TableAndPaginationContainer>

@@ -16,10 +16,11 @@ import {
 import { categories } from '../../utils/shopCategories';
 import NoShop from '../../components/svg/NoShop';
 import { Text } from '../../components/styles/Styles';
-import { Image } from 'react-bootstrap';
-import ShopDog from '../../components/assets/shop01.jpg';
+import ShopHigh from '../../components/assets/shop-high.jpg';
+import ShopLow from '../../components/assets/shop-low.jpg';
 import LeftArrow from '../../components/svg/LeftArrow';
 import RightArrow from '../../components/svg/RightArrow';
+import Hero from '../../components/Hero';
 
 const Shop = () => {
   const dispatch = useDispatch();
@@ -39,47 +40,14 @@ const Shop = () => {
 
   return (
     <>
-      <div style={{ position: 'relative', marginTop: '75px' }}>
-        <Image
-          src={ShopDog}
-          width='100%'
-          style={{ height: '500px', objectFit: 'cover' }}
-        />
-        <Text
-          fontWeight={500}
-          fontSize='48px'
-          color='#fff'
-          style={{
-            position: 'absolute',
-            top: '200px',
-            left: '50px',
-            zIndex: 2,
-          }}
-        >
-          Little Paws Clothing & Accessories
-        </Text>
-        <Text
-          onClick={() =>
-            window.open(
-              'https://pixabay.com/users/lorisw-18960023/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=6256951',
-              '_blank'
-            )
-          }
-          fontWeight={500}
-          fontSize='10px'
-          color='#fff'
-          cursor='pointer'
-          style={{
-            mixBlendMode: 'difference',
-            position: 'absolute',
-            bottom: '10px',
-            right: '10px',
-            zIndex: 2,
-          }}
-        >
-          Photo by Lori Webre
-        </Text>
-      </div>
+      <Hero
+        low={ShopLow}
+        high={ShopHigh}
+        title='Adoption Information'
+        link='https://unsplash.com/es/@davidiz?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText'
+        photographer='David Izquierdo'
+      />
+
       <Container>
         <div className='w-100 d-flex justify-content-between mt-3'>
           <LeftArrow

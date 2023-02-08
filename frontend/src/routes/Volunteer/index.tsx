@@ -5,7 +5,6 @@ import FosterApplication from './FosterApplication';
 import VolunteerApplication from './VolunteerApplication';
 
 const Container = styled.div`
-  margin-top: 75px;
   width: 100%;
   margin-inline: auto;
 `;

@@ -16,6 +16,7 @@ const Container = styled.div`
   width: 100%;
   margin-inline: auto;
   margin-bottom: 96px;
+  margin-top: 75px;
 `;
 
 const OnlineAppContainer = styled.div`

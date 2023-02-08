@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import SubscribeBtn from '../../components/assets/subscribe_btn_3.png';
 import styled from 'styled-components';
 import { Text } from '../../components/styles/Styles';
-import SponsorDog from '../../components/assets/sanctuary.jpg';
+import SponsorHigh from '../../components/assets/sanctuary.jpg';
+import SponsorLow from '../../components/assets/sanctuary-low.jpg';
 import { Image } from 'react-bootstrap';
 import SponsorGift from '../../components/svg/SponsorGift';
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,6 +16,7 @@ import NoImgDog from '../../components/assets/no_image_dog.jpg';
 import LeftArrow from '../../components/svg/LeftArrow';
 import RightArrow from '../../components/svg/RightArrow';
 import { LoadingImg } from '../../components/LoadingImg';
+import Hero from '../../components/Hero';
 
 export const PayPalCard = styled.div`
   border-radius: 12px;
@@ -103,47 +105,13 @@ const SponsorSanctuary = () => {
 
   return (
     <>
-      <div style={{ position: 'relative' }}>
-        <Image
-          src={SponsorDog}
-          width='100%'
-          style={{ height: '575px', objectFit: 'cover' }}
-        />
-        <Text
-          fontWeight={500}
-          fontSize='48px'
-          color='#fff'
-          style={{
-            position: 'absolute',
-            top: '200px',
-            left: '50px',
-            zIndex: 2,
-          }}
-        >
-          Sponsor an animal
-        </Text>
-        <Text
-          onClick={() =>
-            window.open(
-              'https://www.pexels.com/photo/a-woman-carrying-her-dog-4091966/',
-              '_blank'
-            )
-          }
-          fontWeight={500}
-          fontSize='10px'
-          color='#fff'
-          cursor='pointer'
-          style={{
-            mixBlendMode: 'difference',
-            position: 'absolute',
-            bottom: '10px',
-            right: '10px',
-            zIndex: 2,
-          }}
-        >
-          Photo by Oliver King
-        </Text>
-      </div>
+      <Hero
+        low={SponsorLow}
+        high={SponsorHigh}
+        title='Sponsor an animal'
+        link='https://www.pexels.com/photo/a-woman-carrying-her-dog-4091966/'
+        photographer='Oliver King'
+      />
       <div
         style={{
           maxWidth: '980px',

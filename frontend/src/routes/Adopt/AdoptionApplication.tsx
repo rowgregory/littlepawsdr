@@ -1,11 +1,11 @@
 import React from 'react';
 import styled, { useTheme } from 'styled-components';
 import { Text } from '../../components/styles/Styles';
-
-import AdoptionAppDog from '../../components/assets/adopt_app_dog01.jpeg';
-import { Image } from 'react-bootstrap';
+import AdoptionAppHigh from '../../components/assets/adopt-app-high.jpeg';
+import AdoptionAppLow from '../../components/assets/adopt-app-low.jpg';
 import LeftArrow from '../../components/svg/LeftArrow';
 import RightArrow from '../../components/svg/RightArrow';
+import Hero from '../../components/Hero';
 
 const AdoptionApplicationIFrame = styled.iframe<{ pageKey?: string }>`
   border: none;
@@ -29,48 +29,14 @@ const AdoptionApplication = () => {
   const isDay: boolean = theme.mode === 'day';
   return (
     <>
-      <div style={{ position: 'relative' }}>
-        <Image
-          src={AdoptionAppDog}
-          width='100%'
-          style={{ height: '500px', objectFit: 'cover' }}
-        />
-        <Text
-          fontWeight={500}
-          fontSize='48px'
-          color='#fff'
-          style={{
-            position: 'absolute',
-            top: '200px',
-            left: '50px',
-            zIndex: 2,
-            mixBlendMode: 'difference',
-          }}
-        >
-          Adoption Application
-        </Text>
-        <Text
-          onClick={() =>
-            window.open(
-              'https://unsplash.com/@erdaest?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText',
-              '_blank'
-            )
-          }
-          fontWeight={500}
-          fontSize='10px'
-          color='#fff'
-          cursor='pointer'
-          style={{
-            mixBlendMode: 'difference',
-            position: 'absolute',
-            bottom: '10px',
-            right: '10px',
-            zIndex: 2,
-          }}
-        >
-          Photo by Erda Estremera
-        </Text>
-      </div>
+      <Hero
+        low={AdoptionAppLow}
+        high={AdoptionAppHigh}
+        title='Adoption Application'
+        link='https://unsplash.com/@erdaest?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText'
+        photographer='Erda Estremera'
+      />
+
       <div
         style={{
           maxWidth: '980px',
