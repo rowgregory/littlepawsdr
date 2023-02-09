@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { listECards } from '../actions/eCardActions';
 import { Text } from '../components/styles/Styles';
-import HexagonLoader from '../components/Loaders/HexagonLoader/HexagonLoader';
 import { eCardCategories } from '../utils/eCardCategories';
 import { Accordion } from '../components/styles/place-order/Styles';
 import EcardsHigh from '../components/assets/ecards-high.jpg';
@@ -26,15 +25,24 @@ const ECards = () => {
   const dispatch = useDispatch();
   const [currentCategory, setCurrentCategory] = useState('');
   const [openAccordion, setOpenAccordion] = useState(false);
+  const [cards, setCards] = useState([]) as any;
+
   const {
     eCardList: { loading, error, eCards },
   } = useSelector((state: any) => state);
 
   useEffect(() => {
-    dispatch(listECards());
-  }, [dispatch]);
+    if (eCards === undefined) {
+      dispatch(listECards());
+    } else if (!sessionStorage['ecards']) {
+      setCards(eCards);
+      sessionStorage.setItem('ecards', JSON.stringify(eCards));
+    } else {
+      setCards(eCards);
+    }
+  }, [dispatch, eCards]);
 
-  const filteredECards = eCards?.filter((ecard: any) =>
+  const filteredECards = cards?.filter((ecard: any) =>
     ecard?.category.includes(currentCategory)
   );
 
@@ -47,13 +55,11 @@ const ECards = () => {
         link='https://www.pexels.com/photo/a-black-and-brown-dog-on-a-leash-9243153/'
         photographer='Andrzej Dworakowski'
       />
-
       <Container>
         <div className='w-100 d-flex justify-content-between mt-3'>
           <LeftArrow text='Home' url='/' text2='Donate' url2='/donate' />
           <RightArrow text='Shop To Help' url='/donate/shop-to-help' />
         </div>
-        {loading && <HexagonLoader />}{' '}
         <Text
           marginBottom='48px'
           marginTop='56px'
@@ -140,7 +146,12 @@ const ECards = () => {
                   ) : (
                     filteredECards
                       ?.map((product: any) => (
-                        <Product product={product} key={product._id} isEcard />
+                        <Product
+                          key={product._id}
+                          product={product}
+                          isEcard
+                          loading={loading}
+                        />
                       ))
                       .reverse()
                   )}

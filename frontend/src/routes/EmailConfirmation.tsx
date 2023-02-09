@@ -147,6 +147,7 @@ const EmailConfirmation = ({ history }: any) => {
                 src={SuccessDog}
                 width='100%'
                 style={{ height: '500px', objectFit: 'cover' }}
+                alt='Thank you for confirming your email!'
               />
               <Text
                 fontWeight={500}
@@ -170,6 +171,7 @@ const EmailConfirmation = ({ history }: any) => {
               src={ErrorDog}
               width='100%'
               style={{ height: '500px', objectFit: 'cover' }}
+              alt='There was a problem. Please register again.'
             />
             <Text
               fontWeight={500}

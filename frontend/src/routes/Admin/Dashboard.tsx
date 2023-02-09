@@ -270,6 +270,7 @@ const Dashboard = () => {
               width='40px'
               height='40px'
               style={{ objectFit: 'cover' }}
+              alt={`Hey ${userInfo?.name}, how are you today? :)`}
             />
           </div>
         </UserInfoContainer>

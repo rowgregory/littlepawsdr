@@ -42,6 +42,7 @@ const authUser = asyncHandler(async (req, res) => {
           token: updatedUser.token,
           confirmed: updatedUser.confirmed,
           publicId: updatedUser.publicId,
+          lastLoginTime: updatedUser.lastLoginTime,
         });
       } else {
         res.status(401);
@@ -379,6 +380,7 @@ const userLogout = asyncHandler(async (req, res) => {
     user.online = false;
     user.token = null;
     user.resetPasswordToken = null;
+    user.lastLoginTime = new Date();
 
     await user.save();
 

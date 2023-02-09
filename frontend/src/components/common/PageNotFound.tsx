@@ -59,6 +59,7 @@ const PageNotFound = () => (
         objectFit: 'cover',
         height: '300px',
       }}
+      alt='404 Error'
     />
     <Text>I think you may be looking for one of these pages.</Text>
     <div className='d-flex'>

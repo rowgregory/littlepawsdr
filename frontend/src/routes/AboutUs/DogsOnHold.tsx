@@ -104,7 +104,7 @@ const DogsOnHold = () => {
             >
               <Image
                 src={dachshund?.attributes?.photos[0] ?? NoImgDog}
-                alt='successful-adoption'
+                alt={`${dachshund?.attributes?.name} will be ready for adoption soon!`}
                 style={{
                   aspectRatio: '1 / 1',
                   objectFit: 'cover',

@@ -3,6 +3,7 @@ import { Image } from 'react-bootstrap';
 import { Link, useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { ProceedBtn } from '../../components/forms/ShippingForm';
+import { LoadingImg } from '../../components/LoadingImg';
 import { Text } from '../../components/styles/Styles';
 
 const Container = styled.div`
@@ -15,7 +16,7 @@ const Container = styled.div`
   border-bottom: 1px solid #ededed;
   gap: 16px;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    grid-template-columns: 50% 30%;
+    grid-template-columns: 30% 30%;
     gap: 32px;
     justify-content: space-between;
   }
@@ -45,9 +46,8 @@ const ImageAndNameContainer = styled.div`
   }
 `;
 
-const Product = ({ product, isEcard }: any) => {
+const Product = ({ product, isEcard, loading }: any) => {
   const history = useHistory();
-
   return (
     <Container>
       <ImageAndNameContainer>
@@ -59,28 +59,42 @@ const Product = ({ product, isEcard }: any) => {
             state: { product },
           }}
         >
-          <ProductImg src={product.image} />
+          {loading ? (
+            <LoadingImg w='100%' h='100%' mw='550px' />
+          ) : (
+            <ProductImg src={product.image} alt={product?.name} />
+          )}
         </Link>
       </ImageAndNameContainer>
       <div className='d-flex flex-column align-items-start'>
         <Text marginBottom='4px'>
-          <Price style={{ color: '#22c2b7' }}>FREE</Price>
-          {isEcard ? ' ecard' : ' product'} with a{' '}
-          <Price>${product?.price}</Price> donation!
+          {loading ? (
+            <LoadingImg w='150px' h='27px' />
+          ) : (
+            <>
+              <Price style={{ color: '#22c2b7' }}>FREE</Price>
+              {isEcard ? ' ecard' : ' product'} with a{' '}
+              <Price>${product?.price}</Price> donation!
+            </>
+          )}
         </Text>
-        <ProceedBtn
-          className='w-100'
-          onClick={() =>
-            history.push({
-              pathname: isEcard
-                ? '/e-card-details'
-                : `/shop/product/${product?._id}`,
-              state: { product },
-            })
-          }
-        >
-          View {isEcard ? 'Ecard' : 'Product'}
-        </ProceedBtn>
+        {loading ? (
+          <LoadingImg w='100%' h='40px' />
+        ) : (
+          <ProceedBtn
+            className='w-100'
+            onClick={() =>
+              history.push({
+                pathname: isEcard
+                  ? '/e-card-details'
+                  : `/shop/product/${product?._id}`,
+                state: { product },
+              })
+            }
+          >
+            View {isEcard ? 'Ecard' : 'Product'}
+          </ProceedBtn>
+        )}
       </div>
     </Container>
   );

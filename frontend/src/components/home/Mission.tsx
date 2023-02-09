@@ -1,12 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 import MaskBtn from './MaskBtn';
-import Logo from '../../components/assets/logoF7.jpg';
+import Logo from '../../components/assets/logo.png';
 import { Image } from 'react-bootstrap';
 import { Text } from '../styles/Styles';
 
 export const MissionContainer = styled.div`
-  background: ${({ theme }) => theme.secondaryBg};
   display: flex;
   width: 100%;
   margin: 0 auto;

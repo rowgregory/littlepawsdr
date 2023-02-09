@@ -22,7 +22,12 @@ const StyledLink = styled(Link)`
 const LeftArrow = ({ text, url, text2, url2 }: any) => {
   return (
     <div className='d-flex'>
-      <StyledLink to={url}>
+      <StyledLink
+        to={{
+          pathname: url,
+          state: { scrollTo: url === '/available' ? 'dachshunds' : '' },
+        }}
+      >
         <svg
           width='20px'
           height='20px'

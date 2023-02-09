@@ -93,7 +93,7 @@ const RainbowBridge = () => {
             >
               <Card.Img
                 src={dachshund?.attributes?.photos[0] ?? NoImgDog}
-                alt='successful-adoption'
+                alt={`We miss you ${dachshund?.attributes?.name}!`}
                 style={{
                   aspectRatio: '1 / 1',
                   objectFit: 'cover',

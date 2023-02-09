@@ -286,6 +286,7 @@ const SponsorSanctuary = () => {
                         maxWidth: '300px',
                         objectFit: 'cover',
                       }}
+                      alt={`Sorry, we currently don't have a picture for ${dog?.attributes?.name}`}
                     />
                     <TextContainer>
                       <Text fontWeight={400} fontSize='18px'>

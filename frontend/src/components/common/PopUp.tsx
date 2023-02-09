@@ -149,6 +149,7 @@ const PopUp = () => {
                   borderRadius: '0.75rem 0 0 0',
                   width: '100%',
                 }}
+                alt='LPDR Pop Up Rescue Dachshund'
               />
               <Image
                 src={P2}
@@ -159,6 +160,7 @@ const PopUp = () => {
                   borderRadius: '0 0.75rem 0 0',
                   width: '100%',
                 }}
+                alt='LPDR Pop Up Rescue Dachshund'
               />
             </div>
             <div style={{ position: 'relative' }}>

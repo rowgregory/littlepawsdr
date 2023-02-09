@@ -108,7 +108,7 @@ const RightSideNavbar = () => {
               setActiveMenu('main');
             }}
             src={userInfo?.avatar}
-            alt='user-avatar'
+            alt={`Hey ${userInfo?.name}! We appreciate you! Love from LPDR`}
           />
         );
       case 'Initials':

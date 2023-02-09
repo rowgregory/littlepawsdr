@@ -37,8 +37,8 @@ const Shop = () => {
   return (
     <Container>
       <ContentContainer>
-        <CheckOutText>Check out our latest products</CheckOutText>
-        <MaskBtn linkKey='/shop' textKey='LITTLE PAWS SHOP' />
+        <CheckOutText>Check out our latest ecards</CheckOutText>
+        <MaskBtn linkKey='/e-cards' textKey='ECARDS' />
       </ContentContainer>
     </Container>
   );

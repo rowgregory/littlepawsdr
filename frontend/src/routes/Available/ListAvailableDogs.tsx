@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAvailableDachshunds } from '../../actions/dachshundsActions';
 import Dachshund from '../../components/Dachshund';
@@ -8,6 +8,7 @@ import { Text } from '../../components/styles/Styles';
 import LeftArrow from '../../components/svg/LeftArrow';
 import RightArrow from '../../components/svg/RightArrow';
 import { LoadingImg } from '../../components/LoadingImg';
+import { useLocation } from 'react-router-dom';
 
 const Container = styled.div`
   display: flex;
@@ -25,7 +26,7 @@ const OnlineAppContainer = styled.div`
   align-items: center;
   justify-content: center;
   width: 100%;
-  background: #f7f7f7;
+  background: ${({ theme }) => theme.secondaryBg};
   padding: 128px 0;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
     display: flex;
@@ -78,6 +79,8 @@ const CardContainer = styled.div`
 
 const ListAvailableDogs = () => {
   const dispatch = useDispatch();
+  const location = useLocation() as any;
+  const myRef = useRef() as any;
 
   const availableDachshunds = useSelector((state: any) => state.dachshunds);
   const { loading, error, dachshunds } = availableDachshunds;
@@ -88,8 +91,19 @@ const ListAvailableDogs = () => {
   );
 
   useEffect(() => {
-    dispatch(getAvailableDachshunds());
-  }, [dispatch]);
+    const dachshundsFromStorage = localStorage.getItem('dachshunds')
+      ? JSON.parse(localStorage.getItem('dachshunds') || '')
+      : [];
+    if (JSON.stringify(dachshundsFromStorage) !== JSON.stringify(dachshunds)) {
+      dispatch(getAvailableDachshunds());
+    }
+  }, [dachshunds, dispatch]);
+
+  useEffect(() => {
+    if (location?.state?.scrollTo === 'dachshunds') {
+      setTimeout(() => window.scrollTo(0, myRef.current.offsetTop), 0);
+    }
+  }, [location]);
 
   return (
     <Container>
@@ -144,6 +158,7 @@ const ListAvailableDogs = () => {
         </RGContainer>
       </OnlineAppContainer>
       <div
+        ref={myRef}
         className='w-100 mx-auto d-flex justify-content-between mt-3 px-3'
         style={{ maxWidth: '980px', marginBottom: '56px' }}
       >

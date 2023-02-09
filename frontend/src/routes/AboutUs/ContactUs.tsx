@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { Text } from '../../components/styles/Styles';
 import ContactHigh from '../../components/assets/contact-high.jpg';
@@ -6,6 +6,7 @@ import ContactLow from '../../components/assets/contact-low.jpg';
 import LeftArrow from '../../components/svg/LeftArrow';
 import RightArrow from '../../components/svg/RightArrow';
 import Hero from '../../components/Hero';
+import { Spinner } from 'react-bootstrap';
 
 const ContactUsIFrame = styled.iframe`
   border: none;
@@ -18,6 +19,7 @@ const ContactUsIFrame = styled.iframe`
 const ContactUs = () => {
   const theme = useTheme() as any;
   const isDay = theme.mode === 'day';
+  const [showIFrameLoader, setShowIFrameLoader] = useState(true);
   return (
     <>
       <Hero
@@ -60,10 +62,15 @@ const ContactUs = () => {
         <Text fontSize='16px' maxWidth='680px'>
           You will receive a confirmation email upon completion.
         </Text>
-
+        {showIFrameLoader && (
+          <div className='d-flex justify-content-center mt-4'>
+            <Spinner animation='grow' />
+          </div>
+        )}
         <Text maxWidth='680px' className='mt-5 mx-auto'>
           {isDay ? (
             <ContactUsIFrame
+              onLoad={() => setShowIFrameLoader(false)}
               style={{ border: 'none' }}
               title='Contact Us'
               width='100%'
@@ -73,6 +80,7 @@ const ContactUs = () => {
             ></ContactUsIFrame>
           ) : (
             <ContactUsIFrame
+              onLoad={() => setShowIFrameLoader(false)}
               style={{ border: 'none' }}
               title='Contact Us'
               width='100%'

@@ -47,7 +47,7 @@ const Dachshund = ({ dachshund }: any) => {
       <Image
         className='dog'
         src={dachshund?.attributes?.photos[0]}
-        alt='lpdr'
+        alt={`LPDR dachshund name: ${dachshund?.attributes?.name}`}
         fluid
       />
       <Card.Body className='d-flex flex-column justify-content-start p-0'>

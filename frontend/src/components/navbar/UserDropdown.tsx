@@ -87,7 +87,11 @@ const UserDropdown = ({
     <Container ref={dropDownRef}>
       <NavDropdownItem>
         {userInfo?.isAdmin ? (
-          <UserImg roundedCircle src={userInfo?.avatar} alt='avatar' />
+          <UserImg
+            roundedCircle
+            src={userInfo?.avatar}
+            alt={`${userInfo?.name}`}
+          />
         ) : (
           <AvatarInitials w='65px' h='65px' style={{ marginRight: '12px' }}>
             {firstNameInitial}

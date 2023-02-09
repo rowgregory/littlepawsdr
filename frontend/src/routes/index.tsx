@@ -52,7 +52,7 @@ const Donate = lazy((): LazyModulePromise => import('./Donate'));
 const Page = styled(Container)<{ url: string }>`
   width: 100%;
   min-height: ${({ url }) =>
-    url.split('/')[1] === 'admin' ? '100%' : 'calc(100vh - 475.5px)'};
+    url.split('/')[1] === 'admin' ? '100%' : 'calc(100vh - 466px)'};
   display: flex;
   flex-direction: column;
   padding: 0;

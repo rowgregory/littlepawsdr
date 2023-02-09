@@ -116,6 +116,7 @@ const EventCard = ({ event, history }: any) => {
       </Ribbon>
 
       <Card.Img
+        alt={`LPDR Event: ${event?.title}`}
         className='mr-3'
         src={event?.image}
         style={{ aspectRatio: '1/1', objectFit: 'cover', width: '150px' }}

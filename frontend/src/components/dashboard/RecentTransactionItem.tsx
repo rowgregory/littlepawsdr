@@ -20,7 +20,7 @@ const RecentTransactionItem = ({ viewTransaction, item }: any) => {
         ) : (
           <Image
             src={item?.orderItems ? item?.orderItems[0].image : item?.image}
-            alt=''
+            alt='Customers purchased item'
             width='50px'
             height='50px'
             className='mr-3'

@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import TransportAppHigh from '../../components/assets/transport-app-high.jpg';
 import TransportAppLow from '../../components/assets/transport-app-low.jpg';
 import LeftArrow from '../../components/svg/LeftArrow';
 import RightArrow from '../../components/svg/RightArrow';
 import Hero from '../../components/Hero';
+import { Spinner } from 'react-bootstrap';
 
 const TransportApplicationIFrame = styled.iframe<{ pageKey?: string }>`
   border: none;
@@ -33,6 +34,7 @@ const ApplicationContent = styled.section`
 `;
 
 const TransportApplication = () => {
+  const [showIFrameLoader, setShowIFrameLoader] = useState(true);
   return (
     <>
       <Hero
@@ -55,7 +57,13 @@ const TransportApplication = () => {
             url='/volunteer/volunteer-application'
           />
         </div>
+        {showIFrameLoader && (
+          <div className='d-flex justify-content-center mt-4'>
+            <Spinner animation='grow' />
+          </div>
+        )}
         <TransportApplicationIFrame
+          onLoad={() => setShowIFrameLoader(false)}
           title='Transport Application'
           width='100%'
           height='7250px'

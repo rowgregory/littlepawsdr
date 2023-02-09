@@ -77,6 +77,7 @@ const userSchema = mongoose.Schema(
     },
     location: { type: String },
     bio: { type: String },
+    lastLoginTime: { type: String },
   },
   {
     timestamps: true,

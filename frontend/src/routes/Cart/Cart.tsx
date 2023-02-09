@@ -69,7 +69,7 @@ const Cart = () => {
           className='d-flex align-items-center'
           style={{ marginBottom: '64px' }}
         >
-          <Image src={LogoDay} height='48px' />
+          <Image src={LogoDay} height='48px' alt=' Cart Logo' />
           <Divider />
           <Text fontSize='28px' fontWeight={400} color='#464342'>
             {cartItems?.length === 0 ? 'Empty Shopping Cart' : 'Shopping Cart'}

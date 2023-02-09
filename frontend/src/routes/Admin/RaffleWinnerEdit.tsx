@@ -230,6 +230,7 @@ const RaffleWinnerEdit = () => {
                     width='200px'
                     height='200px'
                     style={{ objectFit: 'cover' }}
+                    alt='Raffle Winner Edit'
                   />
                 )
               }

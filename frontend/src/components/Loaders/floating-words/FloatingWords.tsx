@@ -1,9 +1,9 @@
 import React from 'react';
 import './index.css';
 
-const FloatingWords = () => {
+const FloatingWords = ({ color }: any) => {
   return (
-    <div id='load'>
+    <div id={color ? 'load2' : 'load'}>
       <div>G</div>
       <div>N</div>
       <div>I</div>

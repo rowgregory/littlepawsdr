@@ -6,7 +6,6 @@ import Message from '../../components/Message';
 import { Image } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { localizeDate } from '../../utils/localizeDate';
-import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
 import { Text } from '../../components/styles/Styles';
 import NoBlogs from '../../components/svg/NoBlogs';
 import BlogHigh from '../../components/assets/blog-high.jpg';
@@ -15,6 +14,7 @@ import LeftArrow from '../../components/svg/LeftArrow';
 import RightArrow from '../../components/svg/RightArrow';
 import { Container } from '../../components/styles/shop/Styles';
 import Hero from '../../components/Hero';
+import { LoadingImg } from '../../components/LoadingImg';
 
 const ArticleContainer = styled.div`
   display: flex;
@@ -73,7 +73,7 @@ const Blog = () => {
       <Hero
         low={BlogLow}
         high={BlogHigh}
-        title='Adoption Information'
+        title='Blog'
         link={`https://pixabay.com/users/marlyneart-15261801/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=4977599`}
         photographer='Martine Auvray'
       />
@@ -82,7 +82,6 @@ const Blog = () => {
           <LeftArrow text='Home' url='/' text2='Events' url2='/events' />
           <RightArrow text='Education Tips' url='/about/education' />
         </div>
-        {loading && <HexagonLoader />}
         <Text
           marginBottom='48px'
           marginTop='56px'
@@ -105,10 +104,10 @@ const Blog = () => {
           <div className='d-flex flex-column align-items-center'>
             <Message variant='danger'>{error}</Message>
           </div>
-        ) : blogs?.length === 0 ? (
+        ) : blogs?.length === 0 || blogs === undefined ? (
           <div className='d-flex flex-column align-items-center'>
             <div className='mb-4'>
-              <NoBlogs />
+              <NoBlogs color='#ccc' />
             </div>
             <Text>
               Sorry, no blogs available at the moment. Check back soon!
@@ -121,17 +120,21 @@ const Blog = () => {
               key={i}
             >
               <ArticleContainer>
-                <Image
-                  src={blog?.image}
-                  alt='Blog'
-                  width='100%'
-                  height='100%'
-                  style={{
-                    objectFit: 'cover',
-                    aspectRatio: '1/1',
-                    maxWidth: '150px',
-                  }}
-                />
+                {loading ? (
+                  <LoadingImg w='100%' mw='150px' h='100%' />
+                ) : (
+                  <Image
+                    src={blog?.image}
+                    alt='Blog'
+                    width='100%'
+                    height='100%'
+                    style={{
+                      objectFit: 'cover',
+                      aspectRatio: '1/1',
+                      maxWidth: '150px',
+                    }}
+                  />
+                )}
                 <ContentContainer>
                   <Text fontStyle='italic'>
                     {localizeDate(blog?.createdAt)}

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Row, Image, Card, Col } from 'react-bootstrap';
+import { Row, Card, Col } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { listWhoWeAreUsers } from '../../actions/userActions';
 import { Text } from '../../components/styles/Styles';
@@ -7,9 +7,11 @@ import styled from 'styled-components';
 import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
 import LeftArrow from '../../components/svg/LeftArrow';
 import RightArrow from '../../components/svg/RightArrow';
-import AboutUs from '../../components/assets/AboutUs.jpg';
+import AboutUsHigh from '../../components/assets/about-us-high.jpg';
+import AboutUsLow from '../../components/assets/about-us-low.jpg';
 import { useLocation } from 'react-router-dom';
 import CardFlip from '../../components/boardmember-card/CardFlip';
+import Hero from '../../components/Hero';
 
 export const ProfileCard = styled(Card)`
   background-color: ${({ theme }) => theme.card.bg};
@@ -43,6 +45,12 @@ const CardWrapper = styled(Col)`
   }
 `;
 
+const VerticalText = styled.div`
+  color: ${({ theme }) => theme.secondaryBg};
+  font-size: 150px;
+  font-weight: 600;
+`;
+
 const TeamMembers = () => {
   const dispatch = useDispatch();
   const location = useLocation() as any;
@@ -64,6 +72,13 @@ const TeamMembers = () => {
 
   return (
     <>
+      <Hero
+        low={AboutUsLow}
+        high={AboutUsHigh}
+        title='Little Paws Crew'
+        link={`https://unsplash.com/@ibaxez?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText`}
+        photographer='Carlos Ibáñez'
+      />
       <div
         style={{
           position: 'fixed',
@@ -82,51 +97,8 @@ const TeamMembers = () => {
             width: '200vh',
           }}
         >
-          <Text fontSize='150px' fontWeight={600} color='#e5e8ed'>
-            Little Paws Dachshund Reschue
-          </Text>
+          <VerticalText>Little Paws Dachshund Reschue</VerticalText>
         </div>
-      </div>
-      <div style={{ position: 'relative', marginTop: '75px' }}>
-        <Image
-          src={AboutUs}
-          width='100%'
-          style={{ height: '500px', objectFit: 'cover' }}
-        />
-        <Text
-          fontWeight={500}
-          fontSize='48px'
-          style={{
-            position: 'absolute',
-            top: '200px',
-            left: '50px',
-            zIndex: 2,
-            mixBlendMode: 'difference',
-          }}
-        >
-          Little Paws Crew
-        </Text>
-        <Text
-          onClick={() =>
-            window.open(
-              'https://unsplash.com/@ibaxez?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText',
-              '_blank'
-            )
-          }
-          fontWeight={500}
-          fontSize='10px'
-          color='#fff'
-          cursor='pointer'
-          style={{
-            mixBlendMode: 'difference',
-            position: 'absolute',
-            bottom: '10px',
-            right: '10px',
-            zIndex: 2,
-          }}
-        >
-          Photo by Carlos Ibáñez
-        </Text>
       </div>
       <div
         style={{
@@ -149,7 +121,12 @@ const TeamMembers = () => {
           />
           <RightArrow text='Contact' url='/about/contact-us' />
         </div>
-        <Text fontSize='32px' marginTop='56px' fontWeight={400}>
+        <Text
+          fontSize='32px'
+          marginTop='56px'
+          fontWeight={400}
+          style={{ maxWidth: '980px', marginInline: 'auto' }}
+        >
           We believe that dogs truly are man’s (and woman’s) best friend and
           that our beloved companions deserve the right to a soft bed, generous
           treats and unconditional love.
@@ -182,7 +159,6 @@ const TeamMembers = () => {
           been neglected and abused and deserves a warm bed and a kind hand to
           rub his or her tummy.
         </Text>
-        {loading && <HexagonLoader />}
         <Row
           className='mx-auto d-flex flex-column px-0 mb-5'
           style={{ marginTop: '96px' }}
@@ -192,7 +168,7 @@ const TeamMembers = () => {
               (user: any) =>
                 (user?.isAdmin || user?.affiliation) &&
                 user?.email !== 'it.little.paws@gmail.com' && (
-                  <CardFlip key={user?._id} user={user} />
+                  <CardFlip key={user?._id} user={user} loading={loading} />
                 )
             )}
           </CardWrapper>

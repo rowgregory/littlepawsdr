@@ -102,7 +102,7 @@ const Events = ({ history }: RouteComponentProps) => {
           <div className='d-flex flex-column align-items-center'>
             <Message variant='danger'>{error}</Message>
           </div>
-        ) : events?.length === 0 ? (
+        ) : events?.length === 0 || events === undefined ? (
           <div className='d-flex flex-column align-items-center'>
             <div className='mb-3'>
               <EventIcon />

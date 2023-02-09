@@ -29,6 +29,10 @@ const guestUserInfoFromStorage = localStorage.getItem('guestUserInfo')
   ? JSON.parse(localStorage.getItem('guestUserInfo') || '')
   : {};
 
+const ecardsFromStorage = sessionStorage.getItem('ecards')
+  ? JSON.parse(sessionStorage.getItem('ecards') || '')
+  : {};
+
 const initialState: any = {
   dachshunds: { dachshunds: dachshundsFromStorage },
   userLogin: { userInfo: userInfoFromStorage },
@@ -37,6 +41,7 @@ const initialState: any = {
     paymentMethod: paymentMethodFromStorage,
   },
   guestUserRegister: { guestUserInfo: guestUserInfoFromStorage },
+  eCardList: { ecardsFromStorage },
 };
 
 const store: any = createStore(

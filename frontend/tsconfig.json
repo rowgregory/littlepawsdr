@@ -22,6 +22,7 @@
     "../backend/utils/crypto.js",
     "audio.d.ts",
     "react-google-recaptcha.d.ts",
-    "crypto.d.ts"
+    "crypto.d.ts",
+    "index.d.ts"
   ]
 }

@@ -35,9 +35,8 @@ export const Container = styled.div`
   max-width: ${({ theme }) => theme.breakpoints[3]};
   margin-inline: auto;
   padding-inline: 8px;
-  margin-top: 24px;
+  margin-top: 96px;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    margin-top: 96px;
     padding: 16px;
   }
 `;
@@ -111,9 +110,13 @@ export const Description = styled.div`
       font-family: 'Roboto' !important;
       font-size: 15px !important;
       line-height: 20px !important;
+      background: transparent !important;
+      color: ${({ theme }) => theme.text} !important;
 
       span {
         text-indent: 20px !important;
+        background: transparent !important;
+        color: ${({ theme }) => theme.text} !important;
         strong {
           font-size: 15px !important;
           font-family: 'Roboto' !important;

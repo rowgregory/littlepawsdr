@@ -8,10 +8,10 @@ import { listEducationTips } from '../../actions/educationTipActions';
 import EducationHigh from '../../components/assets/education-high.jpg';
 import EducationLow from '../../components/assets/education-low.jpg';
 import styled from 'styled-components';
-import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
 import LeftArrow from '../../components/svg/LeftArrow';
 import RightArrow from '../../components/svg/RightArrow';
 import Hero from '../../components/Hero';
+import { LoadingImg } from '../../components/LoadingImg';
 
 const Path = styled.path`
   fill: ${({ theme }) => theme.text};
@@ -73,6 +73,7 @@ const NoEducation = () => {
 
 const Education = () => {
   const dispatch = useDispatch();
+
   const {
     educationTipList: { loading, error, educationTips },
   } = useSelector((state: any) => state);
@@ -115,7 +116,6 @@ const Education = () => {
         >
           Dachshund information of all kinds
         </Text>
-        {loading && <HexagonLoader />}
         {error ? (
           <div className='d-flex flex-column align-items-center'>
             <Message variant='danger'>{error}</Message>
@@ -138,15 +138,19 @@ const Education = () => {
                 onClick={() => window.open(obj.externalLink, '_blank')}
                 style={{ width: '300px' }}
               >
-                <Card.Img
-                  src={obj.image}
-                  alt='bg'
-                  height='250px'
-                  style={{ objectFit: 'cover' }}
-                />
+                {loading || educationTips === undefined ? (
+                  <LoadingImg w='100%' h='300px' />
+                ) : (
+                  <Card.Img
+                    src={obj.image}
+                    alt='Card background'
+                    height='300px'
+                    style={{ objectFit: 'cover', aspectRatio: '1/1' }}
+                  />
+                )}
                 <Card.Body>
                   <CardTitle>{obj.title}</CardTitle>
-                  <Text>Read</Text>
+                  <Text cursor='pointer'>Read</Text>
                 </Card.Body>
               </StyledCard>
             ))}

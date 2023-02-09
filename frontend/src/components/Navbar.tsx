@@ -1,18 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { Image } from 'react-bootstrap';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 import { Link, useLocation } from 'react-router-dom';
 import RightSideNavbar from './navbar/RightSideNavbar';
 import LeftNavigation from './navbar/LeftNavigation';
 import Logo from '../components/assets/logo-white2.png';
 import { FAIcons } from './styles/NavbarStyles';
 
-const Container = styled.div<{ show: any; p: string }>`
+const Container = styled.div<{ show: any; p: string; mode: string }>`
   position: fixed;
   z-index: 5000;
   width: 100%;
-  background: ${({ show, theme, p }) =>
-    show === 'true' || p !== '/' ? 'rgba(33,30,47, .9)' : ''};
+  background: ${({ show, theme, p, mode }) =>
+    (show === 'true' || p !== '/') && mode === 'day'
+      ? 'rgba(33,30,47, .9)'
+      : (show === 'true' || p !== '/') && mode === 'night'
+      ? 'rgb(22 27 35/ 0.9)'
+      : ''};
   transition: 300ms;
   border-bottom: ${({ show, theme, p }) =>
     show === 'true' || p !== '/' ? '' : '1px solid rgb(255, 255, 255, 0.5)'};
@@ -46,6 +50,7 @@ const Navbar = () => {
   const { pathname } = useLocation();
   const [show, setShow] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
+  const theme = useTheme() as any;
 
   useEffect(() => {
     const listener = () => {
@@ -73,7 +78,7 @@ const Navbar = () => {
   ].some((a: string) => pathname.includes(a)) ? (
     <>
       <LeftNavigation openMenu={openMenu} setOpenMenu={setOpenMenu} />
-      <Container show={show.toString()} p={pathname}>
+      <Container show={show.toString()} p={pathname} mode={theme.mode}>
         <div className='d-flex justify-content-center align-items-center'>
           <BurgerMenuBottomBorder show={show.toString()} p={pathname}>
             <FAIcons onClick={() => setOpenMenu(true)} style={{}}>

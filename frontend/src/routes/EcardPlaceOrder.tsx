@@ -201,7 +201,11 @@ const EcardPlaceOrder = ({ history }: any) => {
     <>
       <GoBackToCartModal show={showModal} close={closeModal} isEcards={true} />
       {(orderLoader || isPending || loadingCreate) && <HexagonLoader />}
-      <LogoCheckout src={LogoDay} onClick={() => setShowModal(true)} />
+      <LogoCheckout
+        src={LogoDay}
+        onClick={() => setShowModal(true)}
+        alt='Pres logo to leave checkout.'
+      />
       <Checkout>
         <Text fontSize='1.75rem' letterSpacing='0' fontWeight={400}>
           Checkout <i className='fas fa-lock ml-1 fa-sm'></i>

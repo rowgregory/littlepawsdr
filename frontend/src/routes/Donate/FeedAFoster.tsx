@@ -44,7 +44,7 @@ const FeedAFosterForm = styled.form`
   }
 `;
 
-const TimerComponentsContainer = styled.div`
+export const TimerComponentsContainer = styled.div`
   display: grid;
   grid-template-columns: fit-content(8ch) fit-content(8ch) fit-content(8ch) fit-content(
       8ch

@@ -112,7 +112,10 @@ const Footer = () => {
         )}
       </Accordion>
       <TopFooter>
-        <LogoImage src={Logo} alt='LPDR' />
+        <LogoImage
+          src={Logo}
+          alt={`Little Paws Dachshund Rescue ${new Date().getFullYear()} `}
+        />
         <LinkWrapper>
           <LinkSection>
             <LinkCategory>Our Address</LinkCategory>

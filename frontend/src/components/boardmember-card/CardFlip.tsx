@@ -15,8 +15,9 @@ import {
   ProfileCardImg,
   Right,
 } from '../styles/board-members/Styles';
+import { LoadingImg } from '../LoadingImg';
 
-const CardFlip = ({ user }: any) => {
+const CardFlip = ({ user, loading }: any) => {
   const retroHeart = `Donate! <3`;
   return (
     <div className=''>
@@ -31,31 +32,40 @@ const CardFlip = ({ user }: any) => {
           <div className='card-front'>
             <label className='w-100' htmlFor={user._id}>
               <OuterWrapper>
-                <Inner className='inner'>
-                  <BlobWrap
-                    img={user?.avatar || user?.image}
-                    className='pricing-wrap'
-                    name={user?.name}
-                  >
-                    <div className='blob'></div>
-                  </BlobWrap>
-                </Inner>
-                <ProfileCardImg src={user?.profileCardTheme} alt='LPDR' />
-                <h6>{'Donate'}</h6>
-                <Right className='d-flex flex-column w-100 mr-5'>
-                  <Name className='d-flex justify-content-center user-name'>
-                    {user?.name}
-                  </Name>
-                  <Email className='d-flex'>{user?.email}</Email>
-                  <Location className='d-flex align-items-end'>
-                    {user?.location}
-                  </Location>
-                </Right>
-                <Inner className='affiliation'>
-                  <Affiliation>
-                    {user?.volunteerTitle || user?.affiliation}
-                  </Affiliation>
-                </Inner>
+                {loading ? (
+                  <LoadingImg w='100%' h='380px' borderRadius='16px' />
+                ) : (
+                  <>
+                    <Inner className='inner'>
+                      <BlobWrap
+                        img={user?.avatar || user?.image}
+                        className='pricing-wrap'
+                        name={user?.name}
+                      >
+                        <div className='blob'></div>
+                      </BlobWrap>
+                    </Inner>
+                    <ProfileCardImg
+                      src={user?.profileCardTheme}
+                      alt={`LPDR Board member: ${user?.name}`}
+                    />
+                    <h6>{'Donate'}</h6>
+                    <Right className='d-flex flex-column w-100 mr-5'>
+                      <Name className='d-flex justify-content-center user-name'>
+                        {user?.name}
+                      </Name>
+                      <Email className='d-flex'>{user?.email}</Email>
+                      <Location className='d-flex align-items-end'>
+                        {user?.location}
+                      </Location>
+                    </Right>
+                    <Inner className='affiliation'>
+                      <Affiliation>
+                        {user?.volunteerTitle || user?.affiliation}
+                      </Affiliation>
+                    </Inner>
+                  </>
+                )}
               </OuterWrapper>
             </label>
           </div>

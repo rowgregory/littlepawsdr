@@ -18,10 +18,7 @@ import NoImgDog from '../../components/assets/no_image_dog.jpg';
 const AvailableDog = () => {
   const { state, pathname } = useLocation() as any;
 
-  if (
-    pathname === '/available/dogs/18728573' ||
-    pathname === '/available/dogs/18021040'
-  ) {
+  if (pathname === '/available/dogs/18728573') {
     return <Redirect to='/adopt/fees' />;
   }
 
@@ -121,6 +118,7 @@ const AvailableDog = () => {
               width: '100%',
               objectFit: 'cover',
             }}
+            alt={`Sorry, we currently do not have an image for ${name}`}
           />
         ) : (
           <StyledCarousel pause='hover'>
@@ -128,7 +126,7 @@ const AvailableDog = () => {
               <Carousel.Item key={i} interval={4000}>
                 <Image
                   src={photo}
-                  alt={`${photo}-${i}`}
+                  alt={`${name}`}
                   style={{ aspectRatio: '1/1' }}
                 />
               </Carousel.Item>

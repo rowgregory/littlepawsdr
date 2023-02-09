@@ -104,6 +104,7 @@ const DachshundDetails = () => {
               width: '100%',
               objectFit: 'cover',
             }}
+            alt={`Sorry, there currently is no image of ${name}`}
           />
         ) : (
           <StyledCarousel pause='hover'>

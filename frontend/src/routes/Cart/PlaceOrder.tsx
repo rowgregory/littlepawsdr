@@ -189,7 +189,11 @@ const PlaceOrder = ({ history, location }: any) => {
     <>
       <GoBackToCartModal show={showModal} close={closeModal} />
       {(orderLoader || loading || isPending) && <HexagonLoader />}
-      <LogoCheckout src={LogoDay} onClick={() => setShowModal(true)} />
+      <LogoCheckout
+        src={LogoDay}
+        onClick={() => setShowModal(true)}
+        alt='Place Order Logo'
+      />
       <Checkout>
         Checkout ({itemsTotal} item{itemsTotal !== 1 && 's'})
       </Checkout>

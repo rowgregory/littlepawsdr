@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import LegacyWallpaper from '../../components/assets/aqua_tile.jpg';
 import { Text } from '../../components/styles/Styles';
 import ReactPlayer from 'react-player/lazy';
+import Video from '../../components/videos/landing-high.mp4';
 
 const QuickOptionContainerDesktop = styled.div`
   display: none;
@@ -178,18 +179,12 @@ const Wave = styled.svg`
 `;
 
 const Banner = () => {
-  const [showVideoLoader, setShowVideoLoader] = useState(true);
   return (
     <>
       <Container>
         <ReactPlayer
-          onReady={() => setShowVideoLoader(false)}
           style={{ position: 'absolute', top: 0, left: 0 }}
-          url={
-            showVideoLoader
-              ? 'https://res.cloudinary.com/dro7mux7a/video/upload/v1675892760/landing-low_z9xovk.mp4'
-              : 'https://res.cloudinary.com/dro7mux7a/video/upload/v1675523863/banner-dog_ey9qcq.mp4'
-          }
+          url={Video}
           playsinline
           controls={false}
           playing={true}

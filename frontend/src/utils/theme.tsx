@@ -9,7 +9,7 @@ export const colors = {
       secondary: '#00acb5',
       tertiary: '#4B3F72',
       quaternary: '#1F2041',
-      quinary: '#A117F2',
+      quinary: '#9b4dc8',
       senary: '#2c3748',
       // primary: '#77b300',
       // secondary: '#26a9df',
@@ -262,7 +262,7 @@ export const themes = {
     separator: '#101315',
     header: {
       // bg: '#252526',
-      bg: '#0e1117',
+      bg: '#161b23',
       button: colors.night.colors.secondary,
       subNav: {
         bg: '',

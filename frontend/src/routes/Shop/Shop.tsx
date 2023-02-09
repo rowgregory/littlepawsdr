@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { listProducts } from '../../actions/productActions';
 import Message from '../../components/Message';
 import Product from './Product';
-import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
 import {
   Category,
   CategoryContainer,
@@ -43,7 +42,7 @@ const Shop = () => {
       <Hero
         low={ShopLow}
         high={ShopHigh}
-        title='Adoption Information'
+        title='Little Paws Shop'
         link='https://unsplash.com/es/@davidiz?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText'
         photographer='David Izquierdo'
       />
@@ -58,17 +57,18 @@ const Shop = () => {
           />
           <RightArrow text='Events' url='/events' />
         </div>
-        {loading && <HexagonLoader />}
-        <Text
-          marginBottom='48px'
-          marginTop='56px'
-          fontSize='32px'
-          fontWeight={400}
-          textAlign='center'
+        <h1
+          style={{
+            marginBottom: '48px',
+            marginTop: '56px',
+            fontSize: '32px',
+            fontWeight: 400,
+            textAlign: 'center',
+          }}
         >
           All gifts to Little Paws goes directly to help abandoned or
           surrendered dachshunds.
-        </Text>
+        </h1>
       </Container>
       <div
         style={{
@@ -82,10 +82,10 @@ const Shop = () => {
           <div className='d-flex flex-column align-items-center'>
             <Message variant='danger'>{error}</Message>
           </div>
-        ) : products?.length === 0 ? (
+        ) : products?.length === 0 || products === undefined ? (
           <div className='d-flex flex-column align-items-center'>
             <div className='mb-3'>
-              <NoShop />
+              <NoShop color='#ccc' />
             </div>
             <Text>
               Sorry, no products available at the moment. Check back soon!
@@ -131,7 +131,12 @@ const Shop = () => {
                     ) : (
                       filterProducts
                         ?.map((product: any) => (
-                          <Product product={product} key={product._id} />
+                          <Product
+                            key={product._id}
+                            product={product}
+                            isEcard={false}
+                            loading={loading}
+                          />
                         ))
                         .reverse()
                     )}
