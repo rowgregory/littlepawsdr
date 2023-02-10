@@ -3,14 +3,10 @@ import { Link } from 'react-router-dom';
 import { Col, Image } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAvailableDachshunds } from '../../actions/dachshundsActions';
-import {
-  ComingSoonText,
-  DogContainer,
-  SectionContainer,
-  SectionTitle,
-} from './styles';
+import { DogContainer, SectionContainer, SectionTitle } from './styles';
 import RightArrow from '../svg/RightArrow';
 import { LoadingImg } from '../LoadingImg';
+import GradientText from '../GradientText';
 
 const OurLovablePals = () => {
   const dispatch = useDispatch();
@@ -32,7 +28,10 @@ const OurLovablePals = () => {
       <SectionContainer>
         {[undefined, null].includes(dachshunds) ? (
           <div className='d-flex flex-column w-100 align-items-center my-5'>
-            <ComingSoonText>DACHSHUNDS COMING SOON</ComingSoonText>
+            <GradientText
+              text='DACHSHUNDS COMING SOON'
+              gradient='#2e3192,#2d459d,#268fc4,#1ed4e8,#1bffff,#1ed4e8,#268fc4,#2d459d,#2e3192'
+            />
           </div>
         ) : (
           <>

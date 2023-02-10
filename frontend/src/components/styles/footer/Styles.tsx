@@ -135,3 +135,17 @@ export const LegalWrapper = styled.div`
   display: flex;
   flex-direction: column;
 `;
+
+export const Developed = styled.div`
+  transition: 300ms;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  :hover {
+    color: #ccc;
+  }
+  margin-top: 48px;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    margin-top: 0px;
+  }
+`;

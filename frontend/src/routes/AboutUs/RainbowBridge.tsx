@@ -49,6 +49,7 @@ const RainbowBridge = () => {
         title='Rainbow Bridge'
         link='https://unsplash.com/@hannesnetzell?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText'
         photographer='Hannes Netzell'
+        gradient='#e6261f,#eb7532,#f7d038,#a3e048,#49da9a,#34bbe6,#4355db,#d23be7,#4355db,#34bbe6,#49da9a,#a3e048,#f7d038,#eb7532,#e6261f'
       />
 
       <Container>

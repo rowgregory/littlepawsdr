@@ -24,7 +24,6 @@ import ContinueSessionModal from '../components/ContinueSessionModal';
 import LoginOptions from './LoginOptions';
 import ECardOrderReceipt from './ECardOrderReceipt';
 import Footer from '../components/Footer';
-import MyEcardOrders from './MyEcardOrders';
 import Navbar from '../components/Navbar';
 import EmailConfirmation from './EmailConfirmation';
 import OrderPayPal from './OrderPayPal';
@@ -151,7 +150,6 @@ export const Routes: FC = () => {
           <Route path='/reset/:id' component={ResetPassword} />
           <Route path='/settings' component={Settings} />
           <Route exact path='/my-orders' component={MyOrders} />
-          <Route path='/my-orders/e-cards' component={MyEcardOrders} />
           <Route
             path='/email-confirmation/:to?/:em?/:na?/:id?'
             component={EmailConfirmation}

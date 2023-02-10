@@ -25,7 +25,13 @@ const LeftArrow = ({ text, url, text2, url2 }: any) => {
       <StyledLink
         to={{
           pathname: url,
-          state: { scrollTo: url === '/available' ? 'dachshunds' : '' },
+          state: {
+            scrollTo: url === '/available' ? 'dachshunds' : '',
+            backTo:
+              text === 'Back To Ecard Orders'
+                ? 'ecards'
+                : text === 'Back To Orders' && 'products',
+          },
         }}
       >
         <svg

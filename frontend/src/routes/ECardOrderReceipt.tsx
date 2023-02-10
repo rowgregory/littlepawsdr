@@ -42,7 +42,7 @@ const ECardOrderReceipt = () => {
         </div>
         <div style={{ padding: '32px' }}>
           {goBackTo === 'MY_ECARD_ORDERS' && (
-            <LeftArrow text='Back To Ecard Orders' url='/my-orders/e-cards' />
+            <LeftArrow text='Back To Ecard Orders' url='/my-orders' />
           )}
           <Text
             fontSize='24px'

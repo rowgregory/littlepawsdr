@@ -188,7 +188,7 @@ const UserDropdown = ({
         >
           <DropDownLink
             onClick={() => setIsVisible(false)}
-            to='/my-orders'
+            to={{ pathname: '/my-orders', state: 'products' }}
             className='d-flex align-items-center py-3'
           >
             <div style={{ marginRight: '29px' }}>
@@ -201,7 +201,7 @@ const UserDropdown = ({
           </DropDownLink>
           <DropDownLink
             onClick={() => setIsVisible(false)}
-            to='/my-orders/e-cards'
+            to={{ pathname: '/my-orders', state: 'ecards' }}
             className='d-flex align-items-center py-3'
           >
             <div style={{ marginRight: '29px' }}>

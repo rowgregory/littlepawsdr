@@ -6,6 +6,7 @@ import LegacyWallpaper from '../../components/assets/aqua_tile.jpg';
 export const StyledCard = styled.div`
   border-radius: 0;
   margin: 0 0.25rem;
+  box-shadow: 0 12px 35px 0 rgba(16, 39, 112, 0.07);
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
     margin: 0;
   }

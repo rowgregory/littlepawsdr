@@ -9,15 +9,14 @@ import Hero from '../components/Hero';
 
 const SurrenderApplicationIFrame = styled.iframe`
   border: none;
-  height: 4200px;
+  height: 4400px;
+
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
-    height: 3700px;
+    height: 3900px;
   }
-  @media screen and (orientation: landscape) {
-    height: 4000px;
-  }
-  @media screen and (orientation: portrait) and (min-device-width: 768px) and (max-device-width: 1024px) {
-    height: 4000px;
+
+  @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 1) {
+    height: 4200px;
   }
 `;
 

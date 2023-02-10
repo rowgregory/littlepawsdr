@@ -10,10 +10,10 @@ import {
   termsOfServiceLinkKey,
 } from '../utils/footerUtils';
 import { SubscribeBtn } from './common/PopUp';
-import { ComingSoonText } from './home/styles';
 import SocialMediaNavbar from './navbar/SocialMediaNavbar';
 import {
   BottomFooter,
+  Developed,
   LegalWrapper,
   LinkCategory,
   LinkSection,
@@ -169,22 +169,11 @@ const Footer = () => {
       </TopFooter>
       <BottomFooter>
         <SocialMediaNavbar nl={nl} setNl={setNl} />
-        <StyledExternalLink
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        <Developed
+          onClick={() => window.open('https://github.com/rowgregory', '_blank')}
         >
-          Top
-        </StyledExternalLink>
-        <ComingSoonText className='mt-0'>
-          <Text
-            cursor='pointer'
-            lineHeight='1.9230769231'
-            onClick={() =>
-              window.open('https://github.com/rowgregory', '_blank')
-            }
-          >
-            Developed by Gregory Row
-          </Text>
-        </ComingSoonText>
+          Developed by Gregory Row
+        </Developed>
       </BottomFooter>
     </StyledFooter>
   ) : (

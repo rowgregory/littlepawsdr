@@ -4,6 +4,7 @@ import Product from '../models/productModel.js';
 import { send_mail } from '../server.js';
 import Error from '../models/errorModel.js';
 import User from '../models/userModel.js';
+import ECardOrder from '../models/eCardOrderModel.js';
 
 // @desc    Create new order
 // @route   POST /api/orders
@@ -217,7 +218,11 @@ const getMyOrders = asyncHandler(async (req, res) => {
       order => order?.user?.email === req?.user?.email
     );
 
-    res.json(guestOrders?.concat(customerOrders));
+    const ecardOrders = await ECardOrder.find({ email: req.user.email });
+
+    const productOrders = guestOrders?.concat(customerOrders);
+
+    res.json({ productOrders, ecardOrders });
   } catch (err) {
     const createdError = new Error({
       functionName: 'GET_MY_ORDERS_PRIVATE',

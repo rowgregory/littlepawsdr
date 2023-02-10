@@ -1,6 +1,6 @@
 import { Row } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 
 export const SectionContainer = styled.div`
   max-width: ${({ theme }) => theme.breakpoints[5]};
@@ -79,77 +79,6 @@ export const DogContainer = styled(Row)`
         }
       }
     }
-  }
-`;
-
-export const shine = keyframes`
-    to {
-      background-position: 200% center;
-    }
-`;
-
-export const ComingSoonText = styled.div`
-  font-size: 3.2rem;
-  margin-top: 36px;
-  font-family: 'Hammersmith One', sans-serif;
-  text-align: center;
-
-  background: -webkit-linear-gradient(
-    left,
-    #2e3192,
-    #2d459d,
-    #268fc4,
-    #1ed4e8,
-    #1bffff,
-    #1ed4e8,
-    #268fc4,
-    #2d459d,
-    #2e3192
-  ); /* For Safari 5.1 to 6.0 */
-  background: -o-linear-gradient(
-    right,
-    #2e3192,
-    #2d459d,
-    #23c2e1,
-    #1feef8,
-    #1bffff,
-    #1feef8,
-    #23c2e1,
-    #2d459d,
-    #2e3192
-  ); /* For Opera 11.1 to 12.0 */
-  background: -moz-linear-gradient(
-    right,
-    #2e3192,
-    #295ba9,
-    #23c2e1,
-    #1feef8,
-    #1bffff,
-    #1feef8,
-    #23c2e1,
-    #295ba9,
-    #2e3192
-  ); /* For Firefox 3.6 to 15 */
-  background: linear-gradient(
-    to right,
-    #2e3192,
-    #295ba9,
-    #23c2e1,
-    #1feef8,
-    #1bffff,
-    #1feef8,
-    #23c2e1,
-    #295ba9,
-    #2e3192
-  ); /* Standard syntax (must be last) */
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-size: 200% auto;
-  animation: ${shine} 10s linear infinite;
-
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    font-size: 4rem;
   }
 `;
 
