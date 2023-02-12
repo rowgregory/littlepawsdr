@@ -323,7 +323,7 @@ const LongDog = () => {
             color='#6f3b82'
             fontWeight={600}
           >
-            February 5th - February 12th, {new Date().getFullYear()}
+            February 5th - February 19th, {new Date().getFullYear()}
           </Text>
         </Middle>
         <Bottom className='mt-4'>
