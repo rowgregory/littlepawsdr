@@ -200,7 +200,7 @@ const LongDog = () => {
 
   const { timerComponents, status, loading } = useCountDown(
     `${year}/02/05`,
-    `${year}/02/12`,
+    `${year}/02/19`,
     `${year + 1}/02/05`
   );
 
