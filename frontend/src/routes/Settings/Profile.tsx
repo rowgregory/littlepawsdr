@@ -104,7 +104,7 @@ const Profile = () => {
     setImageUploadStatus('Uploading to Imgbb');
     const formData = new FormData();
     formData.append('image', file);
-    const isFile = Object.keys(file).length > 0;
+    const isFile = file?.name;
     const image = isFile && (await API.uploadImageToImgbb(formData));
     setImageUploadStatus('Image uploaded!');
     setImageUploadStatus('Updating profile details');
