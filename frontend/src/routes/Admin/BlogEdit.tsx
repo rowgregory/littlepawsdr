@@ -8,7 +8,6 @@ import {
 } from '../../constants/blogConstants';
 import { UpdateBtn } from '../../components/styles/Styles';
 import { useHistory, useLocation } from 'react-router-dom';
-import uploadFileHandler from '../../utils/uploadFileHandler';
 import Message from '../../components/Message';
 import {
   Container,
@@ -20,7 +19,6 @@ import { WelcomeText } from '../../components/styles/DashboardStyles';
 import PhotoUploadIcon from '../../components/svg/PhotoUploadIcon';
 import BreadCrumb from '../../components/common/BreadCrumb';
 import API from '../../utils/api';
-import { staticUploadImage } from '../../utils/misc';
 import { defaultImages } from '../../utils/defaultImages';
 
 const useBlogEditForm = (callback?: any, data?: any) => {
@@ -83,14 +81,11 @@ const BlogEdit = () => {
 
   const editBlogCallback = async () => {
     setUploading(true);
-    if (blog?.image !== staticUploadImage) {
-      API.deleteImage(blog?.image);
-    }
-    const image = await uploadFileHandler(
-      file,
-      setUploading,
-      setImageUploadStatus
-    );
+    setImageUploadStatus('Uploading to Imgbb');
+    const formData = new FormData();
+    formData.append('image', file);
+    const isFile = file?.name;
+    const image = isFile && (await API.uploadImageToImgbb(formData));
     setImageUploadStatus('Image uploaded!');
     setImageUploadStatus(
       isEditMode ? 'Updating ecard details' : 'Creating ecard details'
@@ -101,7 +96,7 @@ const BlogEdit = () => {
           _id: blog._id,
           title: inputs.title,
           article: inputs.article,
-          image,
+          image: image?.data?.url,
         })
       );
     } else {
@@ -109,7 +104,7 @@ const BlogEdit = () => {
         createBlog({
           title: inputs.title,
           article: inputs.article,
-          image,
+          image: image?.data?.url,
         })
       );
     }

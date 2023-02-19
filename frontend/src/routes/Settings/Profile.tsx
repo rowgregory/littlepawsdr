@@ -2,13 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Form, Image, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateUserProfile } from '../../actions/userActions';
-import {
-  USER_DETAILS_RESET,
-  USER_UPDATE_PROFILE_RESET,
-} from '../../constants/userConstants';
 import { Text, UpdateBtn } from '../../components/styles/Styles';
 import Checkmark from '../../components/svg/Checkmark';
-import uploadFileHandler from '../../utils/uploadFileHandler';
 import { themes } from '../../utils/profileCardThemes';
 import {
   FormFile,
@@ -33,6 +28,7 @@ import {
 import { validateFullNameRegex } from '../../utils/regex';
 import { STATES } from '../../utils/states';
 import { useHistory } from 'react-router-dom';
+import API from '../../utils/api';
 
 const useProfileForm = (callback?: any, data?: any) => {
   const values = {
@@ -105,11 +101,13 @@ const Profile = () => {
 
   const profileCallback = async () => {
     setUploading(true);
-    const image = await uploadFileHandler(
-      file,
-      setUploading,
-      setImageUploadStatus
-    );
+    setImageUploadStatus('Uploading to Imgbb');
+    const formData = new FormData();
+    formData.append('image', file);
+    const isFile = Object.keys(file).length > 0;
+    const image = isFile && (await API.uploadImageToImgbb(formData));
+    setImageUploadStatus('Image uploaded!');
+    setImageUploadStatus('Updating profile details');
 
     const isValid = validateFullNameRegex.test(inputs.name);
 
@@ -120,7 +118,7 @@ const Profile = () => {
           name: inputs.name,
           volunteerTitle: inputs.volunteerTitle,
           profileCardTheme: inputs.profileCardTheme,
-          avatar: image,
+          avatar: image?.data?.url,
           location: inputs.location,
           bio: inputs.bio,
         })
@@ -135,13 +133,12 @@ const Profile = () => {
 
   useEffect(() => {
     if (successUpdate) {
-      dispatch({ type: USER_UPDATE_PROFILE_RESET });
-      dispatch({ type: USER_DETAILS_RESET });
+      setFile('');
 
       setCheckmark(true);
       setTimeout(() => setCheckmark(false), 3000);
     }
-  }, [successUpdate, history, dispatch]);
+  }, [successUpdate, history, dispatch, user]);
 
   const editPhotoHandler = (e: any) => setFile(e.target.files[0]);
 

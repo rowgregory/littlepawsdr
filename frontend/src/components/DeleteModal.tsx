@@ -1,4 +1,4 @@
-import axios from 'axios';
+// import axios from 'axios';
 import { Modal } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
 import { deleteECard } from '../actions/eCardActions';
@@ -25,9 +25,9 @@ const DeleteModal = ({ actionFunc, show, handleClose, id, publicId }: any) => {
   const getAction = async () => {
     switch (actionFunc) {
       case 'Event':
-        if (publicId) {
-          await axios.post(`/api/remove-upload`, { publicId });
-        }
+        // if (publicId) {
+        //   await axios.post(`/api/remove-upload`, { publicId });
+        // }
         dispatch(deleteEvent(id));
         handleClose();
         break;
@@ -48,30 +48,30 @@ const DeleteModal = ({ actionFunc, show, handleClose, id, publicId }: any) => {
         handleClose();
         break;
       case 'Raffle Winner':
-        if (publicId) {
-          await axios.post(`/api/remove-upload`, { publicId });
-        }
+        // if (publicId) {
+        //   await axios.post(`/api/remove-upload`, { publicId });
+        // }
         dispatch(deleteRaffleWinner(id));
         handleClose();
         break;
       case 'Blog':
-        if (publicId) {
-          await axios.post(`/api/remove-upload`, { publicId });
-        }
+        // if (publicId) {
+        //   await axios.post(`/api/remove-upload`, { publicId });
+        // }
         dispatch(deleteBlog(id));
         handleClose();
         break;
       case 'Education Tip':
-        if (publicId) {
-          await axios.post(`/api/remove-upload`, { publicId });
-        }
+        // if (publicId) {
+        //   await axios.post(`/api/remove-upload`, { publicId });
+        // }
         dispatch(deleteEducationTip(id));
         handleClose();
         break;
       case 'Board Member':
-        if (publicId) {
-          await axios.post(`/api/remove-upload`, { publicId });
-        }
+        // if (publicId) {
+        //   await axios.post(`/api/remove-upload`, { publicId });
+        // }
         dispatch(deleteManuallyAddedUser(id));
         handleClose();
         break;

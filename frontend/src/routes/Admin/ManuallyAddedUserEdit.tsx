@@ -100,13 +100,13 @@ const ManuallyAddedUserEdit = () => {
 
   const editManuallyAddedUserCallback = async () => {
     setUploading(true);
-    if (manuallyAddedUser?.image !== staticUploadImage) {
-      API.deleteImage(manuallyAddedUser?.image);
-    }
-    const image = await uploadFileHandler(
-      file,
-      setUploading,
-      setImageUploadStatus
+    setImageUploadStatus('Uploading to Imgbb');
+    const formData = new FormData();
+    formData.append('image', file);
+    const image = await API.uploadImageToImgbb(formData);
+    setImageUploadStatus('Image uploaded!');
+    setImageUploadStatus(
+      isEditMode ? 'Updating ecard details' : 'Creating ecard details'
     );
     if (isEditMode) {
       dispatch(
@@ -115,7 +115,7 @@ const ManuallyAddedUserEdit = () => {
           name: inputs.name,
           affiliation: inputs.affiliation,
           email: inputs.email,
-          image,
+          image: image.data.url,
           profileCardTheme: inputs.profileCardTheme,
           location: inputs.location,
           bio: inputs.bio,
@@ -127,7 +127,7 @@ const ManuallyAddedUserEdit = () => {
           name: inputs.name,
           affiliation: inputs.affiliation,
           email: inputs.email,
-          image,
+          image: image.data.url,
           profileCardTheme: inputs.profileCardTheme,
           location: inputs.location,
           bio: inputs.bio,

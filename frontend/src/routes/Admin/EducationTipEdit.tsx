@@ -10,7 +10,6 @@ import {
   EDUCATION_TIP_UPDATE_RESET,
 } from '../../constants/educationTipConstants';
 import { UpdateBtn } from '../../components/styles/Styles';
-import uploadFileHandler from '../../utils/uploadFileHandler';
 import { useHistory, useLocation } from 'react-router-dom';
 import Message from '../../components/Message';
 import {
@@ -23,7 +22,6 @@ import { WelcomeText } from '../../components/styles/DashboardStyles';
 import PhotoUploadIcon from '../../components/svg/PhotoUploadIcon';
 import BreadCrumb from '../../components/common/BreadCrumb';
 import API from '../../utils/api';
-import { staticUploadImage } from '../../utils/misc';
 import { defaultImages } from '../../utils/defaultImages';
 
 const useEcardEditForm = (callback?: any, data?: any) => {
@@ -84,14 +82,11 @@ const EducationTipEdit = () => {
 
   const editETipCallback = async () => {
     setUploading(true);
-    if (eTip?.image !== staticUploadImage) {
-      API.deleteImage(eTip?.image);
-    }
-    const image = await uploadFileHandler(
-      file,
-      setUploading,
-      setImageUploadStatus
-    );
+    setImageUploadStatus('Uploading to Imgbb');
+    const formData = new FormData();
+    formData.append('image', file);
+    const isFile = file?.name;
+    const image = isFile && (await API.uploadImageToImgbb(formData));
     setImageUploadStatus('Image uploaded!');
     setImageUploadStatus(
       isEditMode ? 'Updating ecard details' : 'Creating ecard details'
@@ -101,7 +96,7 @@ const EducationTipEdit = () => {
         updateEducationTip({
           _id: eTip._id,
           title: inputs.title,
-          image,
+          image: image?.data?.url,
           externalLink: inputs.externalLink,
         })
       );
@@ -109,7 +104,7 @@ const EducationTipEdit = () => {
       dispatch(
         createEducationTip({
           title: inputs.title,
-          image,
+          image: image?.data?.url,
           externalLink: inputs.externalLink,
         })
       );

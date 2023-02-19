@@ -86,7 +86,8 @@ const ECardEdit = () => {
     setImageUploadStatus('Uploading to Imgbb');
     const formData = new FormData();
     formData.append('image', file);
-    const image = await API.uploadImageToImgbb(formData);
+    const isFile = file?.name;
+    const image = isFile && (await API.uploadImageToImgbb(formData));
     setImageUploadStatus('Image uploaded!');
     setImageUploadStatus(
       isEditMode ? 'Updating ecard details' : 'Creating ecard details'
@@ -98,7 +99,7 @@ const ECardEdit = () => {
           category: inputs.category,
           price: inputs.price,
           name: inputs.name,
-          image: image.data.url,
+          image: image?.data?.url,
         })
       );
     } else {
@@ -107,7 +108,7 @@ const ECardEdit = () => {
           category: inputs.category,
           price: inputs.price,
           name: inputs.name,
-          image: image.data.url,
+          image: image?.data?.url,
         })
       );
     }

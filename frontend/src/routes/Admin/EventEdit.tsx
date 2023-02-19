@@ -101,13 +101,14 @@ const EventEdit = () => {
 
   const editEventCallback = async () => {
     setUploading(true);
-    if (event?.image !== staticUploadImage && !event?.image.includes('https')) {
-      await API.deleteImage(event?.image);
-    }
-    const image = await uploadFileHandler(
-      file,
-      setUploading,
-      setImageUploadStatus
+    setImageUploadStatus('Uploading to Imgbb');
+    const formData = new FormData();
+    formData.append('image', file);
+    const isFile = file?.name;
+    const image = isFile && (await API.uploadImageToImgbb(formData));
+    setImageUploadStatus('Image uploaded!');
+    setImageUploadStatus(
+      isEditMode ? 'Updating ecard details' : 'Creating ecard details'
     );
     if (isEditMode) {
       dispatch(
@@ -117,7 +118,7 @@ const EventEdit = () => {
           description: inputs.description,
           startDate: inputs.startDate,
           endDate: inputs.endDate,
-          image,
+          image: image?.data?.url,
           background: inputs.background,
           color: inputs.color,
           externalLink: inputs.externalLink,
@@ -130,7 +131,7 @@ const EventEdit = () => {
           description: inputs.description,
           startDate: inputs.startDate,
           endDate: inputs.endDate,
-          image,
+          image: image?.data?.url,
           background: inputs.background,
           color: inputs.color,
           externalLink: inputs.externalLink,
