@@ -1,5 +1,4 @@
 import React from 'react';
-import { Spinner } from 'react-bootstrap';
 import {
   DataSquare,
   DataSquareContainer,
@@ -9,46 +8,26 @@ import { Text } from '../styles/Styles';
 import SolidPeople from '../../components/svg/SolidPeople';
 import SolidOrdersIcon from '../../components/svg/SolidOrdersIcon';
 import EcardSolidIcon from '../../components/svg/EcardSolidIcon';
-import { useSelector } from 'react-redux';
+import { Spinner } from 'react-bootstrap';
 
-const DashboardTopRow = () => {
-  const {
-    orderList: { loading: loadingOrderList, error: errorOrderList, orders },
-    eCardOrdersList: {
-      loading: loadingECardOrders,
-      error: errorECardOrders,
-      eCardOrders,
-    },
-    userList: { loading: loadingUsers, error: errorUsers, users },
-  } = useSelector((state: any) => state);
-
-  const totalOrders = orders?.length;
-
-  const totalUsers = users?.length;
-
-  const totalECards = eCardOrders?.length;
-
+const DashboardTopRow = ({ dashboardDetails, loading }: any) => {
   const dashboardSquareData = () => [
     {
       title: 'Orders',
-      itemAmount: totalOrders,
-      loading: loadingOrderList,
-      error: errorOrderList,
+      itemAmount: dashboardDetails?.totalAmounts?.orders,
+
       icon: <SolidOrdersIcon />,
     },
     {
       title: 'Users',
-      itemAmount: totalUsers,
-      amountTotal: totalUsers,
-      loading: loadingUsers,
-      error: errorUsers,
+      itemAmount: dashboardDetails?.totalAmounts?.users,
+
       icon: <SolidPeople />,
     },
     {
       title: 'Ecards',
-      itemAmount: totalECards,
-      loading: loadingECardOrders,
-      error: errorECardOrders,
+      itemAmount: dashboardDetails?.totalAmounts?.ecardOrders,
+
       icon: <EcardSolidIcon />,
     },
   ];
@@ -57,14 +36,14 @@ const DashboardTopRow = () => {
     <DataSquareContainer>
       {dashboardSquareData().map((obj, i) => (
         <div key={i}>
-          <DataSquare loading={obj?.loading?.toString()}>
+          <DataSquare>
             <div className='d-flex justify-content-between align-items-center'>
               <div className='d-flex align-items-center'>
                 {obj.icon}
                 <DataSquareTitle>{obj?.title}</DataSquareTitle>
               </div>
               <Text fontWeight='bold' fontSize='14px'>
-                {obj.loading ? (
+                {loading ? (
                   <Spinner animation='border' size='sm' />
                 ) : (
                   obj?.itemAmount

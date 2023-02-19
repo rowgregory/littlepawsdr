@@ -4,9 +4,11 @@ import Error from '../models/errorModel.js';
 import { generateToken } from '../utils/generateToken.js';
 import { v4 as uuidv4 } from 'uuid';
 import { decrypt } from '../utils/crypto.js';
-import { send_mail } from '../server.js';
 import GuestUser from '../models/guestUserModel.js';
 import ManuallyAddedUser from '../models/manuallyAddedUserModel.js';
+import { sendEmail } from '../utils/sendEmail.js';
+import Order from '../models/orderModel.js';
+import ECardOrder from '../models/eCardOrderModel.js';
 
 // @desc    Auth user & get token
 // @route   POST /api/users/login
@@ -32,17 +34,15 @@ const authUser = asyncHandler(async (req, res) => {
           name: updatedUser.name,
           email: updatedUser.email,
           isAdmin: updatedUser.isAdmin,
-          isVolunteer: updatedUser.isVolunteer,
           avatar: updatedUser.avatar,
           volunteerTitle: updatedUser.volunteerTitle,
-          volunteerEmail: updatedUser.volunteerEmail,
           profileCardTheme: updatedUser.profileCardTheme,
           online: updatedUser.online,
           theme: updatedUser.theme,
           token: updatedUser.token,
           confirmed: updatedUser.confirmed,
-          publicId: updatedUser.publicId,
           lastLoginTime: updatedUser.lastLoginTime,
+          location: updatedUser.location,
         });
       } else {
         res.status(401);
@@ -78,8 +78,6 @@ const registerUser = asyncHandler(async (req, res) => {
     const userExists = await User.findOne({ email });
 
     if (userExists) {
-      // TODO
-      // send_mail(req.body, res, 'userExists');
       return res
         .status(400)
         .json({ message: 'An account with this email already exists' });
@@ -93,7 +91,7 @@ const registerUser = asyncHandler(async (req, res) => {
     };
 
     if (user) {
-      send_mail(user, res, 'sendRegisterConfirmationEmail');
+      sendEmail(user, res, 'sendRegisterConfirmationEmail');
     }
   } catch (err) {
     const createdError = new Error({
@@ -123,13 +121,10 @@ const getUserProfile = asyncHandler(async (req, res) => {
       name: user.name,
       email: user.email,
       isAdmin: user.isAdmin,
-      isVolunteer: user.isVolunteer,
       avatar: user.avatar,
       volunteerTitle: user.volunteerTitle,
-      volunteerEmail: user.volunteerEmail,
       profileCardTheme: user.profileCardTheme,
       theme: user.theme,
-      publicId: user.publicId,
       location: user?.location,
       bio: user?.bio,
     });
@@ -149,29 +144,38 @@ const getUserProfile = asyncHandler(async (req, res) => {
 // @route   PUT /api/users/profile
 // @access  Private
 const updateUserProfile = asyncHandler(async (req, res) => {
+  const {
+    name,
+    email,
+    avatar,
+    isAdmin,
+    volunteerTitle,
+    profileCardTheme,
+    theme,
+    location,
+    bio,
+    password,
+    newPassword,
+  } = req.body;
   try {
     const user = await User.findById(req.user._id);
     if (!user) return res.status(404).json({ message: 'User not found' });
 
-    user.name = req.body.name || user.name;
-    user.email = req.body.email || user.email;
-    user.avatar = req.body.avatar || user.avatar;
-    user.isAdmin = req.body.isAdmin || user.isAdmin;
-    user.isVolunteer = req.body.isVolunteer || user.isVolunteer;
-    user.volunteerTitle = req.body.volunteerTitle || user.volunteerTitle;
-    user.volunteerEmail = req.body.volunteerEmail || user.volunteerEmail;
-    user.profileCardTheme = req.body.profileCardTheme || user.profileCardTheme;
-    user.theme = req.body.theme || user.theme;
-    user.publicId = req.body.publicId || user.publicId;
-    user.token = user.token;
-    user.location = req.body.location ?? user.location;
-    user.bio = req.body.bio ?? user.bio;
+    user.name = name ?? user.name;
+    user.email = email ?? user.email;
+    user.avatar = avatar ?? user.avatar;
+    user.isAdmin = isAdmin ?? user.isAdmin;
+    user.volunteerTitle = volunteerTitle ?? user.volunteerTitle;
+    user.profileCardTheme = profileCardTheme ?? user.profileCardTheme;
+    user.theme = theme ?? user.theme;
+    user.location = location ?? user.location;
+    user.bio = bio ?? user.bio;
 
-    if (req.body.password) {
-      user.password = req.body.password;
+    if (password) {
+      user.password = password;
     }
-    if (req.body.newPassword) {
-      user.password = req.body.newPassword;
+    if (newPassword) {
+      user.password = newPassword;
     }
 
     const updatedUser = await user.save();
@@ -182,12 +186,9 @@ const updateUserProfile = asyncHandler(async (req, res) => {
       email: updatedUser.email,
       avatar: updatedUser.avatar,
       isAdmin: updatedUser.isAdmin,
-      isVolunteer: updatedUser.isVolunteer,
-      volunteerTitle: updateUser.volunteerTitle,
-      volunteerEmail: updateUser.volunteerEmail,
+      volunteerTitle: updatedUser.volunteerTitle,
       profileCardTheme: updatedUser.profileCardTheme,
       theme: updatedUser.theme,
-      publicId: updatedUser.publicId,
       token: updatedUser.token,
       location: updatedUser.location,
       bio: updatedUser.bio,
@@ -241,7 +242,7 @@ const getWhoWeAreUsers = asyncHandler(async (req, res) => {
     const users = await User.find({ isAdmin: true });
     const manuallyAddedUsers = await ManuallyAddedUser.find({});
 
-    res.json({ users, manuallyAddedUsers });
+    res.json({ boardMembers: users.concat(manuallyAddedUsers) });
   } catch (err) {
     const createdError = new Error({
       functionName: 'GET_TEAM_MEMBER_LIST',
@@ -409,7 +410,7 @@ const userLogout = asyncHandler(async (req, res) => {
 // @route   POST /api/users/register-confirmation
 // @access  Public
 const sendRegisterConfirmationEmail = asyncHandler(async (req, res) => {
-  send_mail(req.body, res, 'sendRegisterConfirmationEmail');
+  sendEmail(req.body, res, 'sendRegisterConfirmationEmail');
 });
 
 // @desc    Update user to confirmed
@@ -434,19 +435,13 @@ const userIsConfirmed = asyncHandler(async (req, res) => {
         email,
         password: decryptedPw,
         isAdmin: false,
-        isVolunteer: false,
-        avatar:
-          'https://res.cloudinary.com/doyd0ewgk/image/upload/v1611718776/profile_blank.png',
-        volunteerTitle: '',
-        volunteerEmail: '',
-        profileCardTheme:
-          'https://res.cloudinary.com/doyd0ewgk/image/upload/v1612043441/field_tree2.jpg',
-        resetPasswordToken: '',
-        resetPasswordExpires: '',
+        // avatar: '',
+        // volunteerTitle: '',
+        // volunteerEmail: '',
+        // profileCardTheme: '',
         online: true,
         theme: 'sync',
         confirmed: true,
-        publicId: '',
       });
 
       const createdUser = await user.save();
@@ -507,12 +502,107 @@ const generateTokenForSession = asyncHandler(async (req, res) => {
         online: updatedUser.online,
         theme: updatedUser.theme,
         token: updatedUser.token,
-        publicId: updatedUser.publicId,
       });
     }
   } catch (error) {
     res.status(404);
     throw new Error(`AN ERROR: ${error}`);
+  }
+});
+
+// @desc    Get dashboard details
+// @route   DELETE /api/users/dashboard-details
+// @access  Private/Admin
+const dashboardDetails = asyncHandler(async (req, res) => {
+  try {
+    const orders = await Order.find({});
+    const ecardOrders = await ECardOrder.find({});
+    const users = await User.find({});
+
+    const orderItemsTotal = orders
+      ?.reduce((acc, item) => acc + item?.totalPrice, 0)
+      .toFixed(2);
+
+    const eCardOrdersItemsTotal = ecardOrders
+      ?.reduce((acc, item) => acc + item?.totalPrice, 0)
+      .toFixed(2);
+
+    const isWalletNaN =
+      Number(Number(orderItemsTotal) + Number(eCardOrdersItemsTotal)).toFixed(
+        2
+      ) === 'NaN';
+
+    const walletTotal = isWalletNaN
+      ? 0
+      : Number(Number(orderItemsTotal) + Number(eCardOrdersItemsTotal)).toFixed(
+          2
+        );
+
+    const sortedOrders = orders
+      .concat(ecardOrders)
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+    let orderItemsArr = [];
+
+    orders?.map(obj => {
+      return obj?.orderItems.forEach(order => {
+        orderItemsArr.push(order);
+        return orderItemsArr;
+      });
+    });
+
+    const result = [
+      ...orderItemsArr
+        .reduce((acc, e) => {
+          let k = e.product;
+          if (!acc.has(k))
+            acc.set(k, { name: e.name, price: e.price, count: e.qty });
+          else acc.get(k).count += e.qty;
+          return acc;
+        }, new Map())
+        .values(),
+    ];
+
+    const topSellingProducts = result.map(obj => {
+      return {
+        ...obj,
+        totalAmount: obj?.count * obj?.price,
+      };
+    });
+
+    let sortedTopSellingProducts = topSellingProducts?.sort((a, b) => {
+      return a.count > b.count ? -1 : 1;
+    });
+
+    res.json({
+      orders,
+      ecardOrders,
+      users,
+      total: sortedOrders,
+      orderItemsTotal,
+      eCardOrdersItemsTotal,
+      walletTotal,
+      totalAmounts: {
+        orders: orders?.length,
+        users: users?.length,
+        ecardOrders: ecardOrders?.length,
+      },
+      topSellingProducts: sortedTopSellingProducts,
+    });
+  } catch (err) {
+    const createdError = new Error({
+      functionName: 'DASHBOARD_DETAILS_ADMIN',
+      detail: err.message,
+      user: {
+        id: req?.user?._id,
+        name: req?.user?.name,
+      },
+    });
+
+    await createdError.save();
+    res.status(404).json({
+      message: `500 - Server Error - ${err.message}`,
+    });
   }
 });
 
@@ -531,4 +621,5 @@ export {
   sendRegisterConfirmationEmail,
   userIsConfirmed,
   generateTokenForSession,
+  dashboardDetails,
 };

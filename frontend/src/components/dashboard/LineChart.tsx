@@ -10,17 +10,13 @@ import {
   Legend,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
-import styled from 'styled-components';
 import { Text } from '../styles/Styles';
-import { LineChartContainer } from '../styles/DashboardStyles';
-
-const Container = styled.div`
-  background: ${({ theme }) => theme.input.bg};
-  display: flex;
-  flex-direction: column;
-  padding: 20px;
-  border-radius: 8px;
-`;
+import {
+  LineChartContainer,
+  SpinnerContainer,
+  TotalSalesContainer,
+} from '../styles/DashboardStyles';
+import { Spinner } from 'react-bootstrap';
 
 ChartJS.register(
   CategoryScale,
@@ -32,7 +28,7 @@ ChartJS.register(
   Legend
 );
 
-const LineChart = ({ orders }: any) => {
+const LineChart = ({ orders, loading }: any) => {
   const circles = 'rgba(151,97,169, 0.05)';
   const rods = '#9761aa';
   const year = new Date().getFullYear();
@@ -154,8 +150,9 @@ const LineChart = ({ orders }: any) => {
       },
     },
   } as any;
+  const noData = orders?.length === 0;
   return (
-    <Container>
+    <TotalSalesContainer>
       <Text
         color='#373737'
         fontWeight={500}
@@ -164,10 +161,20 @@ const LineChart = ({ orders }: any) => {
       >
         Monthly Product Sales
       </Text>
-      <LineChartContainer>
-        <Line data={data} options={options} />
-      </LineChartContainer>
-    </Container>
+      {loading ? (
+        <SpinnerContainer>
+          <Spinner animation='border' size='sm' />
+        </SpinnerContainer>
+      ) : noData ? (
+        <Text>No data to display</Text>
+      ) : (
+        !noData && (
+          <LineChartContainer>
+            <Line data={data} options={options} />
+          </LineChartContainer>
+        )
+      )}
+    </TotalSalesContainer>
   );
 };
 

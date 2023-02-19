@@ -1,6 +1,5 @@
 import React from 'react';
 import { Doughnut } from 'react-chartjs-2';
-import styled from 'styled-components';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -12,7 +11,12 @@ import {
   Legend,
 } from 'chart.js';
 import { Text } from '../styles/Styles';
-import { LineChartContainer } from '../styles/DashboardStyles';
+import {
+  LineChartContainer,
+  SpinnerContainer,
+  TotalSalesContainer,
+} from '../styles/DashboardStyles';
+import { Spinner } from 'react-bootstrap';
 
 ChartJS.register(
   CategoryScale,
@@ -24,22 +28,16 @@ ChartJS.register(
   Legend
 );
 
-const Container = styled.div`
-  background: ${({ theme }) => theme.input.bg};
-  display: flex;
-  flex-direction: column;
-  padding: 24px;
-  border-radius: 8px;
-`;
+const PieChart = ({ orders, loading }: any) => {
+  const ordersTotal = +orders?.orderItemsTotal + +orders?.eCardOrdersItemsTotal;
 
-const PieChart = ({ orders, eCards }: any) => {
   const data = {
     labels: ['Orders', 'Ecards'],
     datasets: [
       {
-        data: [orders, eCards],
-        backgroundColor: ['#9761aa', '#c0a0cc'],
-        borderColor: ['#9761aa', '#c0a0cc'],
+        data: [orders?.orderItemsTotal, orders?.eCardOrdersItemsTotal],
+        backgroundColor: ['#9761aa', '#22c2b7'],
+        borderColor: ['#9761aa', '#22c2b7'],
         borderWidth: 1,
       },
     ],
@@ -59,15 +57,31 @@ const PieChart = ({ orders, eCards }: any) => {
       },
     },
   } as any;
+  const noData = ordersTotal === 0;
   return (
-    <Container>
-      <Text fontWeight={500} fontSize='17px' color='#373737'>
+    <TotalSalesContainer>
+      <Text
+        color='#373737'
+        fontWeight={500}
+        fontSize='17px'
+        marginBottom={noData ? '24px' : ''}
+      >
         Sales By Type
       </Text>
-      <LineChartContainer>
-        <Doughnut data={data} options={options} />
-      </LineChartContainer>
-    </Container>
+      {loading ? (
+        <SpinnerContainer>
+          <Spinner animation='border' size='sm' />
+        </SpinnerContainer>
+      ) : noData ? (
+        <Text>No data to display</Text>
+      ) : (
+        !noData && (
+          <LineChartContainer>
+            <Doughnut data={data} options={options} />
+          </LineChartContainer>
+        )
+      )}
+    </TotalSalesContainer>
   );
 };
 

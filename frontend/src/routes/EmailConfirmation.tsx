@@ -7,7 +7,8 @@ import Message from '../components/Message';
 import { USER_REGISTER_RESET } from '../constants/userConstants';
 import { Text } from '../components/styles/Styles';
 import { Image } from 'react-bootstrap';
-import SuccessDog from '../components/assets/raffle-winner01.jpg';
+import AccountCreatedHigh from '../components/assets/account-created-high.jpg';
+import AccountCreatedLow from '../components/assets/account-created-low.jpg';
 import ErrorDog from '../components/assets/email-conf01.jpg';
 import LeftArrow from '../components/svg/LeftArrow';
 import RightArrow from '../components/svg/RightArrow';
@@ -75,6 +76,7 @@ const EmailConfirmation = ({ history }: any) => {
   const userId = match.params.id;
   let expiredToken = useRef(false);
   const [message, setMessage] = useState(null || '');
+  const [showImageLoader, setShowImageLoader] = useState(true);
 
   const userLogin = useSelector((state: any) => state.userLogin);
   const { userInfo: userLoginInfo } = userLogin;
@@ -121,10 +123,10 @@ const EmailConfirmation = ({ history }: any) => {
   return (
     <>
       {loadingUserConfirmed && <HexagonLoader />}
-      <div style={{ position: 'relative', marginTop: '75px' }}>
+      <div style={{ position: 'relative' }}>
         {loadingUserConfirmed ? (
           <>
-            <LoadingImg w='100%' h='500px' />
+            <LoadingImg w='100%' h='575px' />
             <Text
               fontWeight={500}
               fontSize='48px'
@@ -144,9 +146,10 @@ const EmailConfirmation = ({ history }: any) => {
           !errorUserConfirmed && (
             <>
               <Image
-                src={SuccessDog}
+                onLoad={() => setShowImageLoader(false)}
+                src={showImageLoader ? AccountCreatedLow : AccountCreatedHigh}
                 width='100%'
-                style={{ height: '500px', objectFit: 'cover' }}
+                style={{ height: '575px', objectFit: 'cover' }}
                 alt='Thank you for confirming your email!'
               />
               <Text
@@ -170,7 +173,7 @@ const EmailConfirmation = ({ history }: any) => {
             <Image
               src={ErrorDog}
               width='100%'
-              style={{ height: '500px', objectFit: 'cover' }}
+              style={{ height: '575px', objectFit: 'cover' }}
               alt='There was a problem. Please register again.'
             />
             <Text
@@ -190,7 +193,6 @@ const EmailConfirmation = ({ history }: any) => {
             </Text>
           </>
         )}
-
         <Text
           onClick={() =>
             window.open(

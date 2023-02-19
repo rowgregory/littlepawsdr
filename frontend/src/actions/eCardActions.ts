@@ -35,34 +35,35 @@ export const listECards = () => async (dispatch: any) => {
   }
 };
 
-export const createECard = () => async (dispatch: any, getState: any) => {
-  try {
-    dispatch({ type: ECARD_CREATE_REQUEST });
+export const createECard =
+  (ecard: any) => async (dispatch: any, getState: any) => {
+    try {
+      dispatch({ type: ECARD_CREATE_REQUEST });
 
-    const {
-      userLogin: { userInfo },
-    } = getState();
+      const {
+        userLogin: { userInfo },
+      } = getState();
 
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${userInfo.token}`,
-      },
-    };
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      };
 
-    const { data } = await axios.post(`/api/ecard`, {}, config);
+      const { data } = await axios.post(`/api/ecard`, ecard, config);
 
-    dispatch({ type: ECARD_CREATE_SUCCESS, payload: data });
-  } catch (error: any) {
-    dispatch({
-      type: ECARD_CREATE_FAIL,
-      payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message,
-    });
-  }
-};
+      dispatch({ type: ECARD_CREATE_SUCCESS, payload: data });
+    } catch (error: any) {
+      dispatch({
+        type: ECARD_CREATE_FAIL,
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message,
+      });
+    }
+  };
 
 export const getECardDetails =
   (id: any) => async (dispatch: any, getState: any) => {

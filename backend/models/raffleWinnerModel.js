@@ -8,9 +8,6 @@ const raffleWinnerSchema = mongoose.Schema({
   image: {
     type: String,
   },
-  publicId: {
-    type: String,
-  },
   message: {
     type: String,
     required: true,

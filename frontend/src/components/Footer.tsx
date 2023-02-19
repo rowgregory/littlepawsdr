@@ -19,6 +19,7 @@ import {
   LinkSection,
   LinkWrapper,
   LogoImage,
+  Photographer,
   StyledExternalLink,
   StyledFooter,
   StyledInternalLink,
@@ -56,6 +57,16 @@ const Footer = () => {
     '/order',
   ].some((a: string) => pathname.includes(a)) ? (
     <StyledFooter>
+      <Photographer
+        onClick={() =>
+          window.open(
+            'https://unsplash.com/@campfire_guy?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText',
+            '_blank'
+          )
+        }
+      >
+        Photo by Darren Richardson
+      </Photographer>
       <Accordion toggle={nl} maxheight='165px'>
         <Text textAlign='center' fontWeight={600} fontSize='14px' color='#fff'>
           Subscribe!

@@ -2,26 +2,36 @@ import asyncHandler from 'express-async-handler';
 import Event from '../models/eventModel.js';
 import Error from '../models/errorModel.js';
 import { getEventStatus } from '../utils/getEventStatus.js';
-import { cloudImages } from '../data/cloudImages.js';
 
 //@desc   Create an event
 //@route  POST api/events
 //@access Private/Admin
 const createEvent = asyncHandler(async (req, res) => {
+  const {
+    title,
+    description,
+    image,
+    startDate,
+    endDate,
+    background,
+    color,
+    externalLink,
+  } = req.body;
+
   try {
+    const updatedStatus = getEventStatus(startDate, endDate);
     const event = new Event({
       user: req.user._id,
       avatar: req.user.avatar,
-      title: 'Sample title',
-      description: 'Sample description',
-      startDate: '',
-      endDate: '',
-      status: '',
-      image: cloudImages().upload,
-      background: 'linear-gradient(to top, #fddb92 0%, #d1fdff 100%)',
-      color: '#36363c',
-      publicId: '',
-      externalLink: '',
+      title,
+      description,
+      startDate,
+      endDate,
+      image,
+      background,
+      color,
+      externalLink,
+      status: updatedStatus,
     });
 
     const createdEvent = await event.save();
@@ -131,8 +141,6 @@ const updateEvent = asyncHandler(async (req, res) => {
       endDate,
       background,
       color,
-      avatar,
-      publicId,
       externalLink,
     } = req.body;
 
@@ -140,20 +148,15 @@ const updateEvent = asyncHandler(async (req, res) => {
 
     const updatedStatus = getEventStatus(startDate, endDate);
 
-    event.title = title === '' ? title : title || event.title;
-    event.description =
-      description === '' ? description : description || event.description;
-    event.image = image || event.image;
-    event.startDate = startDate || event.startDate;
-    event.endDate = endDate || event.endDate;
-    event.user = req.user._id;
-    event.background = background || event.background;
-    event.color = color || event.color;
+    event.title = title ?? event.title;
+    event.description = description ?? event.description;
+    event.image = image ?? event.image;
+    event.startDate = startDate ?? event.startDate;
+    event.endDate = endDate ?? event.endDate;
+    event.background = background ?? event.background;
+    event.color = color ?? event.color;
     event.status = updatedStatus;
-    event.avatar = avatar || event.avatar;
-    event.publicId = publicId || event.publicId;
-    event.externalLink =
-      externalLink === '' ? externalLink : externalLink || event.externalLink;
+    event.externalLink = externalLink ?? event.externalLink;
 
     const updatedEvent = await event.save();
 

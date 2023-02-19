@@ -1,6 +1,5 @@
 import asyncHandler from 'express-async-handler';
 import RaffleWinner from '../models/raffleWinnerModel.js';
-import { cloudImages } from '../data/cloudImages.js';
 
 // @desc    Get all raffle winners
 // @route   GET /api/raffle-winners
@@ -30,10 +29,9 @@ const getRaffleWinnerDetails = asyncHandler(async (req, res) => {
 // @access  Private/Admin
 const createRaffleWinner = asyncHandler(async (req, res) => {
   const raffleWinner = new RaffleWinner({
-    name: 'Sample name',
-    image: cloudImages().upload,
-    publicId: '',
-    message: 'Sample message',
+    name: '',
+    image: '',
+    message: '',
     month: new Date().toISOString().split('T')[0].substring(0, 7),
   });
 
@@ -46,14 +44,13 @@ const createRaffleWinner = asyncHandler(async (req, res) => {
 // @route   PUT /api/raffle-winner/:id
 // @access  Private/Admin
 const updateRaffleWinner = asyncHandler(async (req, res) => {
-  const { name, image, publicId, message, month } = req.body;
+  const { name, image, message, month } = req.body;
 
   const raffleWinner = await RaffleWinner.findById(req.params.id);
 
   if (raffleWinner) {
     raffleWinner.name = name || raffleWinner.name;
     raffleWinner.image = image || raffleWinner.image;
-    raffleWinner.publicId = publicId || raffleWinner.publicId;
     raffleWinner.message = message || raffleWinner.message;
     raffleWinner.month = month || raffleWinner.month;
 

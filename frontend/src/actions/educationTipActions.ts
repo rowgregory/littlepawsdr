@@ -36,7 +36,7 @@ export const listEducationTips = () => async (dispatch: any) => {
 };
 
 export const createEducationTip =
-  () => async (dispatch: any, getState: any) => {
+  (eTip: any) => async (dispatch: any, getState: any) => {
     try {
       dispatch({ type: EDUCATION_TIP_CREATE_REQUEST });
 
@@ -50,7 +50,7 @@ export const createEducationTip =
         },
       };
 
-      const { data } = await axios.post(`/api/education-tips`, {}, config);
+      const { data } = await axios.post(`/api/education-tips`, eTip, config);
 
       dispatch({ type: EDUCATION_TIP_CREATE_SUCCESS, payload: data });
     } catch (error: any) {

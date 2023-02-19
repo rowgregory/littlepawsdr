@@ -92,7 +92,7 @@ export const DataSquareContainer = styled.div`
   }
 `;
 
-export const DataSquare = styled.div<{ loading?: string }>`
+export const DataSquare = styled.div`
   display: flex;
   flex-direction: column;
   background: ${({ theme }) => theme.input.bg};
@@ -113,6 +113,7 @@ export const LineChartContainer = styled.div`
   margin: 0;
   min-height: 230px;
   height: 100%;
+  max-height: 230px;
 `;
 
 export const TopSellingProductsContainer = styled.div`
@@ -120,6 +121,10 @@ export const TopSellingProductsContainer = styled.div`
   background: #fff;
   width: 100%;
   border-radius: 8px;
+  margin-bottom: 1rem;
+  @media screen and (min-width: 1408px) {
+    margin-bottom: 0;
+  }
 `;
 
 export const TableBody = styled.tbody`
@@ -130,18 +135,15 @@ export const TableBody = styled.tbody`
       font-size: 13px;
       vertical-align: inherit;
       cursor: normal;
-      &.dashboard {
-        padding: 1rem 0.75rem;
-      }
     }
   }
 `;
 
-export const TopSellingProducts = styled.div``;
 export const TotalSalesContainer = styled.div`
   background: #fff;
   border-radius: 8px;
   width: 100%;
+  padding: 24px;
 `;
 
 export const RecentTransactions = styled.div`
@@ -253,4 +255,17 @@ export const DonatorInitials = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+`;
+
+export const SpinnerContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const Right = styled.div`
+  background: #fff;
+  right: 0;
+  padding: 32px 32px 24px;
+  min-width: 350px !important;
 `;

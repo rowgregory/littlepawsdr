@@ -26,7 +26,7 @@ const DeleteModal = ({ actionFunc, show, handleClose, id, publicId }: any) => {
     switch (actionFunc) {
       case 'Event':
         if (publicId) {
-          await axios.post(`/api/remove-upload/${publicId}`);
+          await axios.post(`/api/remove-upload`, { publicId });
         }
         dispatch(deleteEvent(id));
         handleClose();
@@ -36,9 +36,6 @@ const DeleteModal = ({ actionFunc, show, handleClose, id, publicId }: any) => {
         handleClose();
         break;
       case 'Product':
-        if (publicId) {
-          await axios.post(`/api/remove-upload/${publicId}`);
-        }
         dispatch(deleteProduct(id));
         handleClose();
         break;
@@ -47,36 +44,33 @@ const DeleteModal = ({ actionFunc, show, handleClose, id, publicId }: any) => {
         handleClose();
         break;
       case 'ECard':
-        if (publicId) {
-          await axios.post(`/api/remove-upload/${publicId}`);
-        }
         dispatch(deleteECard(id));
         handleClose();
         break;
       case 'Raffle Winner':
         if (publicId) {
-          await axios.post(`/api/remove-upload/${publicId}`);
+          await axios.post(`/api/remove-upload`, { publicId });
         }
         dispatch(deleteRaffleWinner(id));
         handleClose();
         break;
       case 'Blog':
         if (publicId) {
-          await axios.post(`/api/remove-upload/${publicId}`);
+          await axios.post(`/api/remove-upload`, { publicId });
         }
         dispatch(deleteBlog(id));
         handleClose();
         break;
       case 'Education Tip':
         if (publicId) {
-          await axios.post(`/api/remove-upload/${publicId}`);
+          await axios.post(`/api/remove-upload`, { publicId });
         }
         dispatch(deleteEducationTip(id));
         handleClose();
         break;
       case 'Board Member':
         if (publicId) {
-          await axios.post(`/api/remove-upload/${publicId}`);
+          await axios.post(`/api/remove-upload`, { publicId });
         }
         dispatch(deleteManuallyAddedUser(id));
         handleClose();

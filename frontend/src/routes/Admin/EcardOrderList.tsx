@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Image, Pagination } from 'react-bootstrap';
+import { Table, Image, Pagination, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { Text } from '../../components/styles/Styles';
 import {
@@ -12,9 +12,9 @@ import {
   Container,
   SearchInput,
   TableWrapper,
+  SpinnerContainer,
 } from '../../components/styles/admin/Styles';
 import Message from '../../components/Message';
-import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
 import { listECardOrders } from '../../actions/eCardOrderActions';
 import { WelcomeText } from '../../components/styles/DashboardStyles';
 import { rangeV2 } from '../../components/common/Pagination';
@@ -65,7 +65,6 @@ const EcardOrderList = () => {
         url3=''
       />
       {error && <Message variant='danger'>{error}</Message>}
-      {loading && <HexagonLoader />}
       <TableWrapper>
         <TopRow className='d-flex align-items-center'>
           <SearchBar>
@@ -77,6 +76,11 @@ const EcardOrderList = () => {
               onChange={(e: any) => setText(e.target.value)}
             />
           </SearchBar>
+          {loading && (
+            <SpinnerContainer>
+              <Spinner animation='border' size='sm' />
+            </SpinnerContainer>
+          )}
         </TopRow>
         <TableAndPaginationContainer>
           <Table hover responsive>

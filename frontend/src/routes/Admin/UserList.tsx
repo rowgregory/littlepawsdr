@@ -17,9 +17,9 @@ import {
   Container,
   SearchInput,
   TableWrapper,
+  SpinnerContainer,
 } from '../../components/styles/admin/Styles';
 import Message from '../../components/Message';
-import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
 import { WelcomeText } from '../../components/styles/DashboardStyles';
 import BreadCrumb from '../../components/common/BreadCrumb';
 import { rangeV2 } from '../../components/common/Pagination';
@@ -87,7 +87,6 @@ const UserList = () => {
       {(error || errorDelete) && (
         <Message variant='danger'>{error || errorDelete}</Message>
       )}
-      {(loading || loadingDelete) && <HexagonLoader />}
       <TableWrapper>
         <TopRow className='d-flex align-items-center'>
           <SearchBar>
@@ -99,6 +98,11 @@ const UserList = () => {
               onChange={(e: any) => setText(e.target.value)}
             />
           </SearchBar>
+          {loading && (
+            <SpinnerContainer>
+              <Spinner animation='border' size='sm' />
+            </SpinnerContainer>
+          )}
         </TopRow>
 
         <TableAndPaginationContainer>

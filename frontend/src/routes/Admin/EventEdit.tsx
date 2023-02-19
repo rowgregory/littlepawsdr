@@ -1,31 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import { Form, Image } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { listEventDetails, updateEvent } from '../../actions/eventActions';
+import { createEvent, updateEvent } from '../../actions/eventActions';
 import {
-  EVENT_DETAILS_RESET,
+  EVENT_CREATE_RESET,
   EVENT_UPDATE_RESET,
 } from '../../constants/eventConstants';
 import styled from 'styled-components';
-import { Text, UpdateBtn } from '../../components/styles/Styles';
-import { removePhoto } from '../../utils/removePhoto';
+import { UpdateBtn } from '../../components/styles/Styles';
 import uploadFileHandler from '../../utils/uploadFileHandler';
-import { useRouteMatch, useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import Message from '../../components/Message';
-import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
 import {
   Container,
   EditForm,
   FormFile,
-  RemovePhoto,
   UploadImageSquare,
 } from '../../components/styles/admin/Styles';
 import { WelcomeText } from '../../components/styles/DashboardStyles';
 import PhotoUploadIcon from '../../components/svg/PhotoUploadIcon';
-import RemovePhotoIcon from '../../components/svg/RemovePhotoIcon';
 import { defaultImages } from '../../utils/defaultImages';
 import BreadCrumb from '../../components/common/BreadCrumb';
 import { fontColors, gradients } from '../../utils/eventUtils';
+import API from '../../utils/api';
+import { staticUploadImage } from '../../utils/misc';
 
 const Gradient = styled(Form.Check)<{ selected?: boolean }>`
   border: ${({ selected }) =>
@@ -34,139 +32,127 @@ const Gradient = styled(Form.Check)<{ selected?: boolean }>`
   margin-right: 0;
 `;
 
+const useEventEditForm = (callback?: any, data?: any) => {
+  const values = {
+    title: '',
+    externalLink: '',
+    description: '',
+    startDate: '',
+    endDate: '',
+    image: '',
+    background: '',
+    color: '',
+  };
+  const [inputs, setInputs] = useState(values);
+
+  useEffect(() => {
+    if (data) {
+      setInputs((inputs: any) => ({
+        ...inputs,
+        title: data.title,
+        externalLink: data.externalLink,
+        description: data.description,
+        startDate: data.startDate,
+        endDate: data.endDate,
+        image: data.image,
+        background: data.background,
+        color: data.color,
+      }));
+    }
+  }, [data]);
+
+  const handleInput = (e: any) => {
+    setInputs((inputs: any) => ({
+      ...inputs,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const onSubmit = (e: any) => {
+    e.preventDefault();
+    callback();
+  };
+
+  return { inputs, handleInput, setInputs, onSubmit };
+};
+
 const EventEdit = () => {
-  const match = useRouteMatch<{ id: string }>();
+  const {
+    state: { event, isEditMode },
+  } = useLocation() as any;
   const history = useHistory();
   const dispatch = useDispatch();
-  const eventId = match.params.id;
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [image, setImage] = useState('');
   const [uploading, setUploading] = useState(false);
-  const [background, setBackground] = useState('');
-  const [color, setColor] = useState('');
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const [status, setStatus] = useState('');
-  const [errorMsg, setErrorMsg] = useState('');
-  const [publicId, setPublicId] = useState('');
-  const [submittedForm, setSubmittedForm] = useState(false);
   const [file, setFile] = useState({}) as any;
   const [imgUploadStatus, setImageUploadStatus] = useState('') as any;
-  const [cloudinaryData, setClouadinaryData] = useState({}) as any;
-  const [externalLink, setExternalLink] = useState('');
 
   const {
-    eventDetails: { loading, error, event },
     eventUpdate: {
       loading: loadingUpdate,
       error: errorUpdate,
       success: successUpdate,
     },
+    eventCreate: {
+      loading: loadingCreate,
+      error: errorCreate,
+      success: successCreate,
+    },
   } = useSelector((state: any) => state);
 
-  useEffect(() => {
-    dispatch({ type: EVENT_DETAILS_RESET });
-    dispatch(listEventDetails(eventId));
-    dispatch({ type: EVENT_UPDATE_RESET });
-  }, [dispatch, eventId, successUpdate]);
-
-  useEffect(() => {
-    setTitle(event?.title);
-    setDescription(event?.description);
-    setStartDate(event?.startDate);
-    setEndDate(event?.endDate);
-    setImage(event?.image);
-    setBackground(event?.background);
-    setColor(event?.color);
-    setPublicId(event?.publicId);
-    setStatus(event?.status);
-    setExternalLink(event?.externalLink);
-  }, [event]);
-
-  useEffect(() => {
-    if (Object.keys(cloudinaryData).length > 0) {
+  const editEventCallback = async () => {
+    setUploading(true);
+    if (event?.image !== staticUploadImage && !event?.image.includes('https')) {
+      await API.deleteImage(event?.image);
+    }
+    const image = await uploadFileHandler(
+      file,
+      setUploading,
+      setImageUploadStatus
+    );
+    if (isEditMode) {
       dispatch(
         updateEvent({
-          _id: eventId,
-          title,
-          description,
-          startDate,
-          endDate,
-          image: cloudinaryData.secureUrl,
-          background,
-          color,
-          status,
-          publicId: cloudinaryData.publicId,
-          externalLink,
+          _id: event._id,
+          title: inputs.title,
+          description: inputs.description,
+          startDate: inputs.startDate,
+          endDate: inputs.endDate,
+          image,
+          background: inputs.background,
+          color: inputs.color,
+          externalLink: inputs.externalLink,
         })
-      );
-    }
-  }, [
-    background,
-    cloudinaryData,
-    color,
-    description,
-    dispatch,
-    endDate,
-    eventId,
-    startDate,
-    status,
-    title,
-    externalLink,
-  ]);
-
-  useEffect(() => {
-    if (successUpdate && submittedForm) {
-      setSubmittedForm(false);
-      history.push('/admin/eventList');
-    }
-  }, [history, submittedForm, successUpdate]);
-
-  const submitHandler = (e: any) => {
-    e.preventDefault();
-    setSubmittedForm(true);
-    if (file?.name) {
-      setUploading(true);
-      uploadFileHandler(
-        file,
-        setUploading,
-        publicId,
-        setImageUploadStatus,
-        setClouadinaryData
       );
     } else {
       dispatch(
-        updateEvent({
-          _id: eventId,
-          title,
-          description,
-          startDate,
-          endDate,
+        createEvent({
+          title: inputs.title,
+          description: inputs.description,
+          startDate: inputs.startDate,
+          endDate: inputs.endDate,
           image,
-          background,
-          color,
-          status,
-          publicId,
-          externalLink,
+          background: inputs.background,
+          color: inputs.color,
+          externalLink: inputs.externalLink,
         })
       );
     }
   };
 
-  const editPhotoHandler = (e: any) => setFile(e.target.files[0]);
+  const { inputs, handleInput, onSubmit } = useEventEditForm(
+    editEventCallback,
+    event
+  );
 
-  const removePhotoHandler = (e: any) => {
-    e.preventDefault();
-    removePhoto(
-      event.publicId,
-      setPublicId,
-      dispatch,
-      updateEvent,
-      eventId,
-      setErrorMsg
-    );
-  };
+  useEffect(() => {
+    if (successCreate || successUpdate) {
+      history.push('/admin/eventList');
+      dispatch({ type: EVENT_UPDATE_RESET });
+      dispatch({ type: EVENT_CREATE_RESET });
+    }
+  }, [successCreate, successUpdate, history, dispatch]);
+
+  const editPhotoHandler = (e: any) => setFile(e.target.files[0]);
 
   return (
     <Container>
@@ -175,57 +161,55 @@ const EventEdit = () => {
         step1='Home'
         step2='Dashboard'
         step3='Events'
-        step4={event?.title}
-        step5='Edit'
+        step4={isEditMode ? 'Update' : 'Create'}
+        step5=''
         url1='/'
         url2='/admin'
         url3='/admin/eventList'
       />
-      {(loading || loadingUpdate || submittedForm || uploading) && (
-        <HexagonLoader />
-      )}
-      {(error || errorUpdate || errorMsg) && (
-        <Message variant='danger'>{error || errorUpdate || errorMsg}</Message>
+      {(errorCreate || errorUpdate) && (
+        <Message variant='danger'>{errorCreate || errorUpdate}</Message>
       )}
       <EditForm>
         <Form.Group controlId='title'>
           <Form.Label>Title</Form.Label>
           <Form.Control
+            name='title'
             type='text'
-            placeholder='Enter title'
-            value={title || ''}
-            onChange={(e) => setTitle(e.target.value)}
+            value={inputs.title || ''}
+            onChange={handleInput}
           ></Form.Control>
         </Form.Group>
         <Form.Group controlId='externalLink'>
           <Form.Label>External Link</Form.Label>
           <Form.Control
-            type='tedxt'
-            placeholder='Enter external link'
-            value={externalLink || ''}
-            onChange={(e) => setExternalLink(e.target.value)}
+            name='externalLink'
+            type='text'
+            value={inputs.externalLink || ''}
+            onChange={handleInput}
           ></Form.Control>
         </Form.Group>
         <Form.Group controlId='description'>
           <Form.Label>Description</Form.Label>
           <Form.Control
+            name='description'
             as='textarea'
             rows={3}
-            type='description'
-            placeholder='Enter description'
-            value={description || ''}
-            onChange={(e) => setDescription(e.target.value)}
+            type='text'
+            value={inputs.description || ''}
+            onChange={handleInput}
           ></Form.Control>
         </Form.Group>
         <div style={{ position: 'relative' }}>
           <Form.Group controlId='startDate'>
             <Form.Label>Start Date</Form.Label>
             <Form.Control
+              name='startDate'
               required
               as='input'
               type='date'
-              value={startDate || ''}
-              onChange={(e) => setStartDate(e.target.value)}
+              value={inputs.startDate || ''}
+              onChange={handleInput}
             ></Form.Control>
           </Form.Group>
         </div>
@@ -233,21 +217,23 @@ const EventEdit = () => {
           <Form.Group controlId='endDate'>
             <Form.Label>End Date</Form.Label>
             <Form.Control
+              name='endDate'
               required
               as='input'
               type='date'
-              value={endDate || ''}
-              onChange={(e) => setEndDate(e.target.value)}
+              value={inputs.endDate || ''}
+              onChange={handleInput}
             ></Form.Control>
           </Form.Group>
         </div>
         <Form.Group controlId='image' className='d-flex flex-column'>
           <Form.Label>Image</Form.Label>
           <Form.Control
+            name='image'
             className='img-link'
             type='text'
-            value={image || ''}
-            onChange={(e) => setImage(e.target.value)}
+            value={inputs.image || ''}
+            onChange={handleInput}
           ></Form.Control>
           <div className='d-flex'>
             <FormFile
@@ -269,16 +255,6 @@ const EventEdit = () => {
               }
               onChange={(e: any) => editPhotoHandler(e)}
             ></FormFile>
-            <RemovePhoto
-              onClick={(e: any) =>
-                image === defaultImages.upload ? {} : removePhotoHandler(e)
-              }
-            >
-              <RemovePhotoIcon />
-              <Text marginLeft='0.75rem' fontWeight='300' color='#c4c4c4'>
-                Remove Photo
-              </Text>
-            </RemovePhoto>
           </div>
         </Form.Group>
         <Form.Group
@@ -293,8 +269,9 @@ const EventEdit = () => {
           <div>
             {gradients.map((gradient: string, i: number) => (
               <Gradient
+                name='background'
                 key={i}
-                selected={gradient === background}
+                selected={gradient === inputs.background}
                 inline
                 label={
                   <div
@@ -309,9 +286,8 @@ const EventEdit = () => {
                 id={`inline-radio-${i} bgColor`}
                 isValid
                 value={gradient}
-                checked={background === gradient}
-                onChange={(e: any) => setBackground(e.target.value)}
-                name='backgroundColor'
+                checked={inputs.background === gradient}
+                onChange={handleInput}
               />
             ))}
           </div>
@@ -324,8 +300,9 @@ const EventEdit = () => {
           <div>
             {fontColors.map((fontColor: string, i: number) => (
               <Gradient
+                name='color'
                 key={i}
-                selected={fontColor === color}
+                selected={fontColor === inputs.color}
                 inline
                 label={
                   <div
@@ -340,15 +317,15 @@ const EventEdit = () => {
                 id={`inline-radio-${i} fontColor`}
                 isValid
                 value={fontColor}
-                checked={fontColor === color}
-                onChange={(e: any) => setColor(e.target.value)}
-                name='fontColor'
+                checked={fontColor === inputs.color}
+                onChange={handleInput}
               />
             ))}
           </div>
         </Form.Group>
-        <UpdateBtn onClick={(e: any) => submitHandler(e)}>
-          Updat{loadingUpdate ? 'ing...' : 'e'}
+        <UpdateBtn onClick={onSubmit}>
+          {isEditMode ? 'Updat' : 'Creat'}
+          {loadingUpdate || loadingCreate ? 'ing...' : 'e'}
         </UpdateBtn>
       </EditForm>
     </Container>

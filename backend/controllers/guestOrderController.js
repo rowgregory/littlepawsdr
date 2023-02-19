@@ -2,7 +2,7 @@ import asyncHandler from 'express-async-handler';
 import GuestOrder from '../models/guestOrderModel.js';
 import Product from '../models/productModel.js';
 import Error from '../models/errorModel.js';
-import { send_mail } from '../server.js';
+import { sendEmail } from '../utils/sendEmail.js';
 
 // @desc    Create new order
 // @route   POST /api/guest-orders
@@ -63,7 +63,7 @@ const addGuestOrderItems = asyncHandler(async (req, res) => {
         }
       }
 
-      const emailHasSent = await send_mail(
+      const emailHasSent = await sendEmail(
         createdGuestOrder,
         res,
         'sendOrderConfirmationEmail',

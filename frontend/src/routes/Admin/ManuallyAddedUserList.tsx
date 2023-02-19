@@ -1,14 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Spinner, Pagination } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import DeleteModal from '../../components/DeleteModal';
 import { Text } from '../../components/styles/Styles';
-import { MANUALLY_ADD_USER_CREATE_RESET } from '../../constants/manuallyAddUserConstants';
-import {
-  listManuallyAddedUsers,
-  manuallyAddUser,
-} from '../../actions/manuallyAddUserActions';
+import { listManuallyAddedUsers } from '../../actions/manuallyAddUserActions';
 import {
   SearchBar,
   TableHead,
@@ -22,35 +18,30 @@ import {
   TableWrapper,
   CreateBtnV2,
   TableImg,
+  SpinnerContainer,
 } from '../../components/styles/admin/Styles';
 import Message from '../../components/Message';
-import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
 import { WelcomeText } from '../../components/styles/DashboardStyles';
 import BreadCrumb from '../../components/common/BreadCrumb';
 import { rangeV2 } from '../../components/common/Pagination';
 import { AddIcon } from '../../components/svg/AddIcon';
 import { LinkContainer } from 'react-router-bootstrap';
+import { defaultImages } from '../../utils/defaultImages';
 
 const ManuallyAddedUserList = () => {
-  const history = useHistory();
   const dispatch = useDispatch();
   const [show, setShow] = useState(false);
   const [id, setId] = useState('');
   const [text, setText] = useState('');
-  const [publicId, setPublicId] = useState('');
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const [imagePath, setImagePath] = useState('');
   const [paginatedPage, setPaginatedPage] = useState(1);
   const [paginatedItems, setPaginatedItems] = useState<{}[]>([]) as any;
 
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
   const {
     manuallyAddedUserList: { loading, error, manuallyAddedUsers },
-    manuallyAddedUserCreate: {
-      loading: loadingCreate,
-      error: errorCreate,
-      success: successCreate,
-      manuallyAddedUser,
-    },
     manuallyAddedUserDelete: {
       loading: loadingDelete,
       error: errorDelete,
@@ -59,13 +50,8 @@ const ManuallyAddedUserList = () => {
   } = useSelector((state: any) => state);
 
   useEffect(() => {
-    dispatch({ type: MANUALLY_ADD_USER_CREATE_RESET });
-    if (successCreate) {
-      history.push(`/admin/manuallyAddedUser/${manuallyAddedUser?._id}/edit`);
-    } else {
-      dispatch(listManuallyAddedUsers());
-    }
-  }, [dispatch, history, manuallyAddedUser, successCreate, successDelete]);
+    dispatch(listManuallyAddedUsers());
+  }, [dispatch, successDelete]);
 
   manuallyAddedUsers?.sort(
     (a: any, b: any) => -a?.createdAt?.localeCompare(b?.createdAt)
@@ -81,10 +67,6 @@ const ManuallyAddedUserList = () => {
     );
   }, [manuallyAddedUsers, paginatedPage]);
 
-  const createManuallyAddedUserHandler = () => {
-    dispatch(manuallyAddUser());
-  };
-
   const filteredManuallyAddedUsers =
     text !== ''
       ? manuallyAddedUsers?.filter((blog: any) =>
@@ -93,6 +75,16 @@ const ManuallyAddedUserList = () => {
       : paginatedItems?.filter((blog: any) =>
           blog.name.toLowerCase().includes(text.toLowerCase())
         );
+
+  const manuallyAddedUser = {
+    name: '',
+    affiliation: '',
+    email: '',
+    image: defaultImages.upload,
+    profileCardTheme: '',
+    location: '',
+    bio: '',
+  };
 
   return (
     <Container>
@@ -111,14 +103,11 @@ const ManuallyAddedUserList = () => {
         show={show}
         handleClose={handleClose}
         id={id}
-        publicId={publicId}
+        publicId={imagePath}
       />
-      {(error || errorCreate || errorDelete) && (
-        <Message variant='danger'>
-          {error || errorCreate || errorDelete}
-        </Message>
+      {(error || errorDelete) && (
+        <Message variant='danger'>{error || errorDelete}</Message>
       )}
-      {(loading || loadingCreate || loadingDelete) && <HexagonLoader />}
       <TableWrapper>
         <TopRow className='d-flex align-items-center'>
           <SearchBar>
@@ -130,14 +119,23 @@ const ManuallyAddedUserList = () => {
               onChange={(e: any) => setText(e.target.value)}
             />
           </SearchBar>
-          <CreateBtnV2 onClick={createManuallyAddedUserHandler}>
-            <AddIcon />
-            {loadingCreate ? (
+          {loading ? (
+            <SpinnerContainer>
               <Spinner animation='border' size='sm' />
-            ) : (
-              'Create'
-            )}
-          </CreateBtnV2>
+            </SpinnerContainer>
+          ) : (
+            <LinkContainer
+              to={{
+                pathname: '/admin/manuallyAddedUser/id/edit',
+                state: { manuallyAddedUser },
+              }}
+            >
+              <CreateBtnV2>
+                <AddIcon />
+                Create
+              </CreateBtnV2>
+            </LinkContainer>
+          )}
           <Link
             className='mb-3'
             to={{
@@ -184,7 +182,10 @@ const ManuallyAddedUserList = () => {
                   </td>
                   <td>
                     <LinkContainer
-                      to={`/admin/manuallyAddedUser/${manuallyAddedUser?._id}/edit`}
+                      to={{
+                        pathname: `/admin/manuallyAddedUser/${manuallyAddedUser?._id}/edit`,
+                        state: { manuallyAddedUser, isEditMode: true },
+                      }}
                     >
                       <StyledEditBtn>
                         <i
@@ -199,7 +200,7 @@ const ManuallyAddedUserList = () => {
                       className='border-0'
                       onClick={() => {
                         setId(manuallyAddedUser?._id);
-                        setPublicId(manuallyAddedUser?.publicId);
+                        setImagePath(manuallyAddedUser?.image);
                         handleShow();
                       }}
                     >

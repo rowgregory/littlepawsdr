@@ -11,11 +11,11 @@ import {
 } from '../../components/styles/admin/Styles';
 import { WelcomeText } from '../../components/styles/DashboardStyles';
 import { Text } from '../../components/styles/Styles';
-import { shipOrder } from '../../actions/orderActions';
+import { getOrderDetails, shipOrder } from '../../actions/orderActions';
 import { ORDER_SHIP_RESET } from '../../constants/orderConstants';
-import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
 import Message from '../../components/Message';
 import { formatDate } from '../../utils/formatDate';
+import { LoadingImg } from '../../components/LoadingImg';
 
 const Span = styled.span`
   font-weight: 400;
@@ -41,12 +41,14 @@ const OrderEdit = () => {
   const dispatch = useDispatch();
   const [isShipped, setIsShipped] = useState(false);
 
-  const orderShip = useSelector((state: any) => state.orderShip);
   const {
-    success: successShipped,
-    loading: loadingShipped,
-    error: errorShipped,
-  } = orderShip;
+    orderShip: {
+      success: successShipped,
+      loading: loadingShipped,
+      error: errorShipped,
+    },
+    orderDetails: { order },
+  } = useSelector((state: any) => state);
 
   useEffect(() => {
     setIsShipped(state?.isShipped);
@@ -58,9 +60,9 @@ const OrderEdit = () => {
 
   useEffect(() => {
     if (successShipped) {
-      history.push('/admin/orderList');
+      dispatch(getOrderDetails(state?._id));
     }
-  }, [history, successShipped]);
+  }, [dispatch, history, state, successShipped]);
 
   return (
     <Container>
@@ -70,12 +72,11 @@ const OrderEdit = () => {
         step2='Dashboard'
         step3='Product Orders'
         step4={state?._id}
-        step5={isShipped ? `Shipped 📦` : `Not Shipped`}
+        step5={order?.isShipped ?? isShipped ? `Shipped 📦` : `Not Shipped`}
         url1='/'
         url2='/admin'
         url3='/admin/orderList'
       />
-      {loadingShipped && <HexagonLoader />}
       {errorShipped && <Message variant='danger'>{errorShipped}</Message>}
       <TableWrapper>
         <TableAndPaginationContainer className='justify-content-start'>
@@ -97,7 +98,7 @@ const OrderEdit = () => {
             <Text marginBottom='16px'>PayPal Order Id:</Text>
             <Span>{state?.orderId}</Span>
             <Text marginBottom='16px'>Email:</Text>
-            <Span>{state?.email}</Span>
+            <Span>{state?.email ?? state?.user?.email}</Span>
             <Text marginBottom='32px'>Shipping Address: </Text>
             <Span>
               <Text fontWeight={400}>{state?.shippingAddress?.name}</Text>
@@ -116,7 +117,7 @@ const OrderEdit = () => {
                   ? 'Product has been shipped'
                   : 'Product has not been shipped'
               }
-              checked={isShipped || false}
+              checked={order?.isShipped ?? isShipped ?? false}
               onChange={(e: any) =>
                 dispatch(shipOrder(state, e.target.checked))
               }
@@ -126,15 +127,21 @@ const OrderEdit = () => {
           <OrderItemContainer>
             {state?.orderItems?.map((item: any, index: number) => (
               <div key={index} className='d-flex'>
-                <Image
-                  src={item?.image}
-                  alt='product-img'
-                  width='100px'
-                  height='100px'
-                  roundedCircle
-                  className='mr-3'
-                  style={{ objectFit: 'cover' }}
-                />
+                {loadingShipped ? (
+                  <div className='mr-3'>
+                    <LoadingImg w='100px' h='100px' borderRadius='50%' />
+                  </div>
+                ) : (
+                  <Image
+                    src={item?.image}
+                    alt='product-img'
+                    width='100px'
+                    height='100px'
+                    roundedCircle
+                    className='mr-3'
+                    style={{ objectFit: 'cover' }}
+                  />
+                )}
                 <div className='d-flex flex-column'>
                   <Text fontWeight={400}>{item?.name}</Text>
                   {item?.size && <Text>Size: {item?.size}</Text>}

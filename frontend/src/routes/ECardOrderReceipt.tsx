@@ -2,13 +2,14 @@ import React, { useEffect } from 'react';
 import { Image } from 'react-bootstrap';
 import { Text } from '../components/styles/Styles';
 import styled from 'styled-components';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Logo from '../components/assets/logo-transparent.png';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { formatDate } from '../utils/formatDate';
-import LeftArrow from '../components/svg/LeftArrow';
 import { ECARD_ORDER_CREATE_RESET } from '../constants/eCardOrderContants';
 import { Wrapper } from './OrderReceipt';
+import { getECardOrderDetails } from '../actions/eCardOrderActions';
+import { LoadingImg } from '../components/LoadingImg';
 
 const Container = styled.div`
   background: ${({ theme }) => theme.secondaryBg};
@@ -16,15 +17,17 @@ const Container = styled.div`
   min-width: 768px;
 `;
 
-const ECardOrderReceipt = () => {
-  const {
-    state: { eCardOrder: state, goBackTo },
-  } = useLocation() as any;
+const ECardOrderReceipt = ({ match }: any) => {
   const dispatch = useDispatch();
+
+  const {
+    eCardOrderDetails: { loading, eCardOrder: state },
+  } = useSelector((state: any) => state);
 
   useEffect(() => {
     dispatch({ type: ECARD_ORDER_CREATE_RESET });
-  }, [dispatch]);
+    dispatch(getECardOrderDetails(match.params.id));
+  }, [dispatch, match]);
 
   return (
     <Container>
@@ -41,9 +44,6 @@ const ECardOrderReceipt = () => {
           </Link>
         </div>
         <div style={{ padding: '32px' }}>
-          {goBackTo === 'MY_ECARD_ORDERS' && (
-            <LeftArrow text='Back To Ecard Orders' url='/my-orders' />
-          )}
           <Text
             fontSize='24px'
             fontWeight={600}
@@ -69,7 +69,7 @@ const ECardOrderReceipt = () => {
             marginBottom='22px'
           >
             Your ecard order has been confirmed and will be sent to{' '}
-            {state?.recipientsEmail} on {state?.dateToSend?.split('T')[0]}
+            {state?.recipientsEmail} on {formatDate(state?.dateToSend)}
           </Text>
           <table style={{ borderBottom: '1px solid #f2f2f2', width: '100%' }}>
             <thead>
@@ -111,13 +111,20 @@ const ECardOrderReceipt = () => {
             style={{ borderBottom: '1px solid #f2f2f2' }}
           >
             <div className='d-flex'>
-              <Image
-                src={state?.image}
-                alt='product-img'
-                width='100px'
-                className='pr-3'
-                style={{ objectFit: 'cover', aspectRatio: '1/1' }}
-              />
+              {loading ? (
+                <LoadingImg mw='100px' w='100%' />
+              ) : (
+                <Image
+                  src={state?.image}
+                  alt='product-img'
+                  className='mr-3'
+                  style={{
+                    objectFit: 'cover',
+                    aspectRatio: '1/1',
+                    maxWidth: '100px',
+                  }}
+                />
+              )}
               <div className='d-flex flex-column'>
                 <Text fontWeight='400' fontSize='14px' marginBottom='10px'>
                   {state?.name}
@@ -142,7 +149,7 @@ const ECardOrderReceipt = () => {
                 Total
               </Text>
               <Text fontSize='14px' fontWeight={600}>
-                ${state?.totalPrice.toFixed(2)}
+                ${state?.totalPrice?.toFixed(2)}
               </Text>
             </div>
           </div>

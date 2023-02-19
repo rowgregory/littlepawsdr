@@ -4,6 +4,9 @@ import {
   USER_CONFIRMED_REQUEST,
   USER_CONFIRMED_RESET,
   USER_CONFIRMED_SUCCESS,
+  USER_DASHBOARD_DETAILS_FAIL,
+  USER_DASHBOARD_DETAILS_REQUEST,
+  USER_DASHBOARD_DETAILS_SUCCESS,
   USER_DELETE_FAIL,
   USER_DELETE_REQUEST,
   USER_DELETE_RESET,
@@ -380,7 +383,7 @@ export const userConfirmedReducer = (state = { userInfo: {} }, action) => {
 };
 
 // @ts-ignore
-export const generatTokenForNewSessionReducer = (state = {}, action) => {
+export const generatTokenForNewSessionReducer = (state = {}, action: any) => {
   switch (action.type) {
     case USER_GENERATE_NEW_TOKEN_REQUEST:
       return {
@@ -413,6 +416,44 @@ export const checkUsersConfirmationReducer = (state = {}, action) => {
       return {
         loading: false,
         success: false,
+      };
+    default:
+      return state;
+  }
+};
+
+// @ts-ignore
+export const dashboardDetailsReducer = (
+  state = {
+    eCardOrderItemsTotal: '',
+    orders: [],
+    ecardOrders: [],
+    users: [],
+    total: [],
+    orderItemsTotal: '',
+    walletTotal: '',
+    totalAmounts: {
+      orders: 0,
+      users: 0,
+      ecardOrders: 0,
+    },
+  },
+  action: any
+) => {
+  switch (action.type) {
+    case USER_DASHBOARD_DETAILS_REQUEST:
+      return {
+        loading: true,
+      };
+    case USER_DASHBOARD_DETAILS_SUCCESS:
+      return {
+        loading: false,
+        dashboardDetails: action.payload,
+      };
+    case USER_DASHBOARD_DETAILS_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
       };
     default:
       return state;

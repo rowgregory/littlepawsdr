@@ -53,14 +53,13 @@ const getBlogDetails = asyncHandler(async (req, res) => {
 // @route   POST /api/blog
 // @access  Private/Admin
 const createBlog = asyncHandler(async (req, res) => {
+  const { title, article, image } = req.body;
   try {
     const blog = new Blog({
       user: req.user._id,
-      title: 'Sample title',
-      article: 'Sample article',
-      image:
-        'https://res.cloudinary.com/doyd0ewgk/image/upload/v1641507406/img-placeholder.png',
-      publicId: '',
+      title,
+      article,
+      image,
       author: req.user.name,
       authorImg: req.user.avatar,
     });
@@ -92,13 +91,12 @@ const createBlog = asyncHandler(async (req, res) => {
 // @access  Private/Admin
 const updateBlog = asyncHandler(async (req, res) => {
   try {
-    const { title, article, image, publicId } = req.body;
+    const { title, article, image } = req.body;
     const blog = await Blog.findById(req.params.id);
 
-    blog.title = title === '' ? title : title || blog.title;
-    blog.article = article === '' ? article : article || blog.article;
-    blog.image = image || blog.image;
-    blog.publicId = publicId || blog.publicId;
+    blog.title = title ?? blog.title;
+    blog.article = article ?? blog.article;
+    blog.image = image ?? blog.image;
 
     const updatedBlog = await blog.save();
 

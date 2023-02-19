@@ -85,19 +85,9 @@ const ListAvailableDogs = () => {
   const availableDachshunds = useSelector((state: any) => state.dachshunds);
   const { loading, error, dachshunds } = availableDachshunds;
 
-  localStorage.setItem(
-    'dachshunds',
-    dachshunds === undefined ? JSON.stringify([]) : JSON.stringify(dachshunds)
-  );
-
   useEffect(() => {
-    const dachshundsFromStorage = localStorage.getItem('dachshunds')
-      ? JSON.parse(localStorage.getItem('dachshunds') || '')
-      : [];
-    if (JSON.stringify(dachshundsFromStorage) !== JSON.stringify(dachshunds)) {
-      dispatch(getAvailableDachshunds());
-    }
-  }, [dachshunds, dispatch]);
+    dispatch(getAvailableDachshunds());
+  }, [dispatch]);
 
   useEffect(() => {
     if (location?.state?.scrollTo === 'dachshunds') {

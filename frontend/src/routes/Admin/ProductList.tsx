@@ -2,11 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Table, Spinner, Pagination } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { listProducts, createProduct } from '../../actions/productActions';
+import { listProducts } from '../../actions/productActions';
 import DeleteModal from '../../components/DeleteModal';
-import { PRODUCT_CREATE_RESET } from '../../constants/productContstants';
 import { Text } from '../../components/styles/Styles';
-import { useHistory } from 'react-router-dom';
 import {
   SearchBar,
   TableHead,
@@ -20,14 +18,15 @@ import {
   Container,
   SearchInput,
   TableWrapper,
+  SpinnerContainer,
 } from '../../components/styles/admin/Styles';
 import styled from 'styled-components';
 import Message from '../../components/Message';
-import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
 import { WelcomeText } from '../../components/styles/DashboardStyles';
 import BreadCrumb from '../../components/common/BreadCrumb';
 import { AddIcon } from '../../components/svg/AddIcon';
 import { rangeV2 } from '../../components/common/Pagination';
+import { defaultImages } from '../../utils/defaultImages';
 
 const ProductCountTD = styled.td<{ isProductLow?: boolean }>`
   color: ${({ theme, isProductLow }) =>
@@ -36,10 +35,8 @@ const ProductCountTD = styled.td<{ isProductLow?: boolean }>`
 
 const ProductList = () => {
   const dispatch = useDispatch();
-  const history = useHistory();
   const [show, setShow] = useState(false);
   const [id, setId] = useState('');
-  const [publicId, setPublicId] = useState('');
   const [text, setText] = useState('');
   const [paginatedPage, setPaginatedPage] = useState(1);
   const [paginatedItems, setPaginatedItems] = useState<{}[]>([]) as any;
@@ -47,14 +44,8 @@ const ProductList = () => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  let {
+  const {
     productList: { loading, error, products },
-    productCreate: {
-      loading: loadingCreate,
-      error: errorCreate,
-      success: successCreate,
-      product,
-    },
     productDelete: {
       loading: loadingDelete,
       error: errorDelete,
@@ -63,16 +54,8 @@ const ProductList = () => {
   } = useSelector((state: any) => state);
 
   useEffect(() => {
-    dispatch({ type: PRODUCT_CREATE_RESET });
-    if (successCreate) {
-      history.push({
-        pathname: `/admin/product/${product._id}/edit`,
-        state: product,
-      });
-    } else {
-      dispatch(listProducts());
-    }
-  }, [dispatch, history, successCreate, successDelete, product]);
+    dispatch(listProducts());
+  }, [dispatch, successDelete]);
 
   products?.sort(
     (a: any, b: any) => -a?.createdAt?.localeCompare(b?.createdAt)
@@ -86,10 +69,6 @@ const ProductList = () => {
     setPaginatedItems(products?.slice(indexOfFirstItem, indexOfLastItem));
   }, [products, paginatedPage]);
 
-  const createProductHandler = () => {
-    dispatch(createProduct());
-  };
-
   const filteredProducts =
     text !== ''
       ? products?.filter((product: any) =>
@@ -98,6 +77,17 @@ const ProductList = () => {
       : paginatedItems?.filter((product: any) =>
           product?.name?.toLowerCase().includes(text.toLowerCase())
         );
+
+  const product = {
+    name: '',
+    price: 0,
+    image: defaultImages.upload,
+    brand: '',
+    category: '',
+    countInStock: 0,
+    description: '',
+    sizes: [],
+  };
 
   return (
     <Container>
@@ -111,18 +101,15 @@ const ProductList = () => {
         url2='/admin'
         url3=''
       />
-      {(loading || loadingCreate || loadingDelete) && <HexagonLoader />}
       <DeleteModal
         actionFunc='Product'
         show={show}
         handleClose={handleClose}
         id={id}
-        publicId={publicId}
+        publicId=''
       />
-      {(error || errorCreate || errorDelete) && (
-        <Message variant='danger'>
-          {error || errorCreate || errorDelete}
-        </Message>
+      {(error || errorDelete) && (
+        <Message variant='danger'>{error || errorDelete}</Message>
       )}
       <TableWrapper>
         <TopRow className='d-flex align-items-center'>
@@ -135,14 +122,23 @@ const ProductList = () => {
               onChange={(e: any) => setText(e.target.value)}
             />
           </SearchBar>
-          <CreateBtnV2 onClick={createProductHandler}>
-            <AddIcon />
-            {loadingCreate ? (
+          {loading ? (
+            <SpinnerContainer>
               <Spinner animation='border' size='sm' />
-            ) : (
-              'Create'
-            )}
-          </CreateBtnV2>
+            </SpinnerContainer>
+          ) : (
+            <LinkContainer
+              to={{
+                pathname: '/admin/product/id/edit',
+                state: { product },
+              }}
+            >
+              <CreateBtnV2>
+                <AddIcon />
+                Create
+              </CreateBtnV2>
+            </LinkContainer>
+          )}
         </TopRow>
         <TableAndPaginationContainer>
           <Table hover responsive>
@@ -160,7 +156,7 @@ const ProductList = () => {
             </TableHead>
             <tbody>
               {filteredProducts?.map((product: any) => (
-                <TableRow key={product._id}>
+                <TableRow key={product?._id}>
                   <td>
                     <TableImg src={product?.image} alt='avatar' />
                   </td>
@@ -182,7 +178,7 @@ const ProductList = () => {
                         ? product?.sizes?.reduce(
                             (acc: any, item: any) => acc + item.amount,
                             0
-                          ) <= 4 &&
+                          ) <= 3 &&
                           product?.sizes?.reduce(
                             (acc: any, item: any) => acc + item.amount,
                             0
@@ -200,8 +196,8 @@ const ProductList = () => {
                   <td>
                     <LinkContainer
                       to={{
-                        pathname: `/admin/product/${product._id}/edit`,
-                        state: product,
+                        pathname: `/admin/product/${product?._id}/edit`,
+                        state: { product, isEditMode: true },
                       }}
                     >
                       <StyledEditBtn>
@@ -217,7 +213,6 @@ const ProductList = () => {
                       className='border-0'
                       onClick={() => {
                         setId(product?._id);
-                        setPublicId(product?.publicId);
                         handleShow();
                       }}
                     >

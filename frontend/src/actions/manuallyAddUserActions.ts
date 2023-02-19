@@ -17,33 +17,34 @@ import {
   MANUALLY_ADD_USER_UPDATE_SUCCESS,
 } from '../constants/manuallyAddUserConstants';
 
-export const manuallyAddUser = () => async (dispatch: any, getState: any) => {
-  try {
-    dispatch({ type: MANUALLY_ADD_USER_CREATE_REQUEST });
-    const {
-      userLogin: { userInfo },
-    } = getState();
+export const manuallyAddUser =
+  (user: any) => async (dispatch: any, getState: any) => {
+    try {
+      dispatch({ type: MANUALLY_ADD_USER_CREATE_REQUEST });
+      const {
+        userLogin: { userInfo },
+      } = getState();
 
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${userInfo.token}`,
-      },
-    };
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      };
 
-    const { data } = await axios.post(`/api/manually-add-user`, {}, config);
+      const { data } = await axios.post(`/api/manually-add-user`, user, config);
 
-    dispatch({ type: MANUALLY_ADD_USER_CREATE_SUCCESS, payload: data });
-  } catch (error: any) {
-    dispatch({
-      type: MANUALLY_ADD_USER_CREATE_FAIL,
-      payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message,
-    });
-  }
-};
+      dispatch({ type: MANUALLY_ADD_USER_CREATE_SUCCESS, payload: data });
+    } catch (error: any) {
+      dispatch({
+        type: MANUALLY_ADD_USER_CREATE_FAIL,
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message,
+      });
+    }
+  };
 
 export const getManuallyAddedUserDetails =
   (id: any) => async (dispatch: any, getState: any) => {

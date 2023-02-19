@@ -3,10 +3,8 @@ import { LinkContainer } from 'react-router-bootstrap';
 import { Table, Pagination, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import DeleteModal from '../../components/DeleteModal';
-import { createECard, listECards } from '../../actions/eCardActions';
-import { ECARD_CREATE_RESET } from '../../constants/eCardConstants';
+import { listECards } from '../../actions/eCardActions';
 import { Text } from '../../components/styles/Styles';
-import { useHistory } from 'react-router-dom';
 import {
   SearchBar,
   TableHead,
@@ -20,20 +18,19 @@ import {
   Container,
   SearchInput,
   TableWrapper,
+  SpinnerContainer,
 } from '../../components/styles/admin/Styles';
 import Message from '../../components/Message';
-import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
 import { WelcomeText } from '../../components/styles/DashboardStyles';
 import BreadCrumb from '../../components/common/BreadCrumb';
 import { AddIcon } from '../../components/svg/AddIcon';
 import { rangeV2 } from '../../components/common/Pagination';
+import { defaultImages } from '../../utils/defaultImages';
 
 const ECardList = () => {
-  const history = useHistory();
   const dispatch = useDispatch();
   const [show, setShow] = useState(false);
   const [id, setId] = useState('');
-  const [publicId, setPublicId] = useState('');
   const [text, setText] = useState('');
   const [paginatedPage, setPaginatedPage] = useState(1);
   const [paginatedItems, setPaginatedItems] = useState<{}[]>([]) as any;
@@ -43,12 +40,6 @@ const ECardList = () => {
 
   let {
     eCardList: { loading, error, eCards },
-    eCardCreate: {
-      loading: loadingCreate,
-      error: errorCreate,
-      success: successCreate,
-      eCard,
-    },
     eCardDelete: {
       success: successDelete,
       error: errorDelete,
@@ -57,13 +48,8 @@ const ECardList = () => {
   } = useSelector((state: any) => state);
 
   useEffect(() => {
-    dispatch({ type: ECARD_CREATE_RESET });
-    if (successCreate) {
-      history.push(`/admin/eCard/${eCard._id}/edit`);
-    } else {
-      dispatch(listECards());
-    }
-  }, [eCard, dispatch, history, successCreate, successDelete]);
+    dispatch(listECards());
+  }, [dispatch, successDelete]);
 
   eCards?.sort((a: any, b: any) => -a?.createdAt?.localeCompare(b?.createdAt));
 
@@ -75,10 +61,6 @@ const ECardList = () => {
     setPaginatedItems(eCards?.slice(indexOfFirstItem, indexOfLastItem));
   }, [eCards, paginatedPage]);
 
-  const createECardHandler = () => {
-    dispatch(createECard());
-  };
-
   let filteredECards =
     text !== ''
       ? eCards?.filter((eCard: any) =>
@@ -87,6 +69,13 @@ const ECardList = () => {
       : paginatedItems?.filter((eCard: any) =>
           eCard?.category?.toLowerCase().includes(text.toLowerCase())
         );
+
+  const eCard = {
+    name: '',
+    category: 'Anniversary',
+    price: 20,
+    image: defaultImages.upload,
+  };
 
   return (
     <Container>
@@ -100,18 +89,15 @@ const ECardList = () => {
         url2='/admin'
         url3='/admin/eCardList'
       />
-      {(loading || loadingCreate || loadingDelete) && <HexagonLoader />}
       <DeleteModal
         actionFunc='ECard'
         show={show}
         handleClose={handleClose}
         id={id}
-        publicId={publicId}
+        publicId=''
       />
-      {(error || errorCreate || errorDelete) && (
-        <Message variant='danger'>
-          {error || errorCreate || errorDelete}
-        </Message>
+      {(error || errorDelete) && (
+        <Message variant='danger'>{error || errorDelete}</Message>
       )}
       <TableWrapper>
         <TopRow className='d-flex align-items-center'>
@@ -124,14 +110,23 @@ const ECardList = () => {
               onChange={(e: any) => setText(e.target.value)}
             />
           </SearchBar>
-          <CreateBtnV2 onClick={createECardHandler}>
-            <AddIcon />
-            {loadingCreate ? (
+          {loading ? (
+            <SpinnerContainer>
               <Spinner animation='border' size='sm' />
-            ) : (
-              'Create'
-            )}
-          </CreateBtnV2>
+            </SpinnerContainer>
+          ) : (
+            <LinkContainer
+              to={{
+                pathname: '/admin/eCard/id/edit',
+                state: { eCard },
+              }}
+            >
+              <CreateBtnV2>
+                <AddIcon />
+                Create
+              </CreateBtnV2>
+            </LinkContainer>
+          )}
         </TopRow>
         <TableAndPaginationContainer>
           <Table hover responsive>
@@ -161,7 +156,12 @@ const ECardList = () => {
                     <Text>${eCard?.price?.toFixed(2)}</Text>
                   </td>
                   <td>
-                    <LinkContainer to={`/admin/eCard/${eCard._id}/edit`}>
+                    <LinkContainer
+                      to={{
+                        pathname: `/admin/eCard/${eCard._id}/edit`,
+                        state: { eCard, isEditMode: true },
+                      }}
+                    >
                       <StyledEditBtn>
                         <i
                           style={{ color: '#9761aa' }}
@@ -175,7 +175,6 @@ const ECardList = () => {
                       className='border-0'
                       onClick={() => {
                         setId(eCard._id);
-                        setPublicId(eCard.publicId);
                         handleShow();
                       }}
                     >

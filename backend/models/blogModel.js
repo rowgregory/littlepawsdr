@@ -16,9 +16,6 @@ const blogSchema = mongoose.Schema(
     image: {
       type: String,
     },
-    publicId: {
-      type: String,
-    },
     author: {
       type: String,
     },

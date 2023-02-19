@@ -9,6 +9,7 @@ export const StyledFooter = styled.footer`
   background: ${({ theme }) => theme.footer.bg};
   border-top: ${({ theme }) => `3px solid ${theme.smcontainer.bg}`};
   padding: 1rem;
+  position: relative;
 `;
 
 export const TopFooter = styled.div`
@@ -148,4 +149,14 @@ export const Developed = styled.div`
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
     margin-top: 0px;
   }
+`;
+
+export const Photographer = styled.div`
+  position: absolute;
+  top: -22px;
+  right: 10px;
+  color: #dfdfdf;
+  font-size: 10px;
+  z-index: 20;
+  cursor: pointer;
 `;

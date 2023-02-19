@@ -1,7 +1,7 @@
 import asyncHandler from 'express-async-handler';
 import User from '../models/userModel.js';
 import { generateToken } from '../utils/generateToken.js';
-import { send_mail } from '../server.js';
+import { sendEmail } from '../utils/sendEmail.js';
 import jwt from 'jsonwebtoken';
 import Error from '../models/errorModel.js';
 
@@ -37,7 +37,7 @@ const resetPassword = asyncHandler(async (req, res) => {
 
       await user.save();
 
-      send_mail(req.body, res, 'resetPassword', token);
+      sendEmail(req.body, res, 'resetPassword', token);
     }
   } catch (err) {
     const createdError = new Error({

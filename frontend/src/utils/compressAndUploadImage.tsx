@@ -1,30 +1,20 @@
 import axios from 'axios';
-import Compressor from 'compressorjs';
 
-export const compressAndUpload = (
+export const compressAndUpload = async (
   file: any,
-  setImageUploadStatus: any,
-  setClouadinaryData?: any
+  setImageUploadStatus: any
 ) => {
   const config = {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
   };
-  setImageUploadStatus('Compressing');
-  new Compressor(file, {
-    quality: 0.1,
-    async success(res) {
-      setImageUploadStatus('Uploading');
-      const formData = new FormData();
-      formData.append('image', res);
+  setImageUploadStatus('Uploading');
+  const formData = new FormData();
+  formData.append('image', file);
 
-      const { data } = await axios.post('/upload', formData, config);
-      setImageUploadStatus('Uploaded!');
-      setClouadinaryData({
-        publicId: data?.public_id,
-        secureUrl: data?.secure_url,
-      });
-    },
-  });
+  const { data } = await axios.post('/upload', formData, config);
+
+  setImageUploadStatus('Uploaded!');
+  return data;
 };

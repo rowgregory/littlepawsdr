@@ -35,33 +35,34 @@ export const listBlogs = () => async (dispatch: any) => {
   }
 };
 
-export const createBlog = () => async (dispatch: any, getState: any) => {
-  try {
-    dispatch({ type: BLOG_CREATE_REQUEST });
+export const createBlog =
+  (blog: any) => async (dispatch: any, getState: any) => {
+    try {
+      dispatch({ type: BLOG_CREATE_REQUEST });
 
-    const {
-      userLogin: { userInfo },
-    } = getState();
+      const {
+        userLogin: { userInfo },
+      } = getState();
 
-    const config = {
-      headers: {
-        Authorization: `Bearer ${userInfo.token}`,
-      },
-    };
+      const config = {
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      };
 
-    const { data } = await axios.post(`/api/blog`, {}, config);
+      const { data } = await axios.post(`/api/blog`, blog, config);
 
-    dispatch({ type: BLOG_CREATE_SUCCESS, payload: data });
-  } catch (error: any) {
-    dispatch({
-      type: BLOG_CREATE_FAIL,
-      payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message,
-    });
-  }
-};
+      dispatch({ type: BLOG_CREATE_SUCCESS, payload: data });
+    } catch (error: any) {
+      dispatch({
+        type: BLOG_CREATE_FAIL,
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message,
+      });
+    }
+  };
 
 export const getBlogDetails = (id: any) => async (dispatch: any) => {
   try {

@@ -33,9 +33,6 @@ const eventSchema = mongoose.Schema({
   color: {
     type: String,
   },
-  publicId: {
-    type: String,
-  },
   date: {
     type: Date,
     default: Date.now,

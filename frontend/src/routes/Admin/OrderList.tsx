@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Pagination } from 'react-bootstrap';
+import { Table, Pagination, Spinner, Image } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { listOrders } from '../../actions/orderActions';
 import { Text } from '../../components/styles/Styles';
@@ -14,9 +14,9 @@ import {
   SearchInput,
   TableWrapper,
   StyledEditBtn,
+  SpinnerContainer,
 } from '../../components/styles/admin/Styles';
 import Message from '../../components/Message';
-import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
 import { formatDate } from '../../utils/formatDate';
 import { WelcomeText } from '../../components/styles/DashboardStyles';
 import { rangeV2 } from '../../components/common/Pagination';
@@ -74,7 +74,6 @@ const OrderList = () => {
         url3='/admin/orderList'
       />
       {error && <Message variant='danger'>{error}</Message>}
-      {loading && <HexagonLoader />}
       <TableWrapper>
         <TopRow className='d-flex align-items-center'>
           <SearchBar>
@@ -86,12 +85,18 @@ const OrderList = () => {
               onChange={(e: any) => setText(e.target.value)}
             />
           </SearchBar>
+          {loading && (
+            <SpinnerContainer>
+              <Spinner animation='border' size='sm' />
+            </SpinnerContainer>
+          )}
         </TopRow>
         <TableAndPaginationContainer>
           <Table striped hover responsive>
             <TableHead>
               <tr>
                 <th>ID</th>
+                <th>PRODUCT</th>
                 <th>NAME/EMAIL(guest)</th>
                 <th onClick={() => setOrder(filteredOrders.reverse())}>DATE</th>
                 <th>ORDER TOTAL</th>
@@ -107,6 +112,15 @@ const OrderList = () => {
                       <Text>{order?._id}</Text>
                     </td>
                     <td>
+                      <Image
+                        src={order?.orderItems[0]?.image}
+                        alt='ecard-order'
+                        width='40px'
+                        height='40px'
+                        style={{ borderRadius: '50%', objectFit: 'cover' }}
+                      />
+                    </td>
+                    <td>
                       <Text>
                         {order?.user?.name ?? `${order?.guestEmail} - guest`}
                       </Text>
@@ -119,7 +133,7 @@ const OrderList = () => {
                     </td>
                     <td>
                       {order?.isShipped ? (
-                        <Text>{order?.shippedOn?.slice(0, 10)}</Text>
+                        <Text>{formatDate(order?.shippedOn)}</Text>
                       ) : (
                         <i
                           className='fas fa-times'

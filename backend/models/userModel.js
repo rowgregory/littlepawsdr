@@ -21,10 +21,6 @@ const userSchema = mongoose.Schema(
       required: true,
       default: false,
     },
-    isVolunteer: {
-      type: Boolean,
-      default: false,
-    },
     avatar: {
       type: String,
       default: '',
@@ -33,19 +29,7 @@ const userSchema = mongoose.Schema(
       type: String,
       default: '',
     },
-    volunteerEmail: {
-      type: String,
-      default: '',
-    },
     profileCardTheme: {
-      type: String,
-      default: '',
-    },
-    resetPasswordToken: {
-      type: String,
-      default: '',
-    },
-    resetPasswordExpires: {
       type: String,
       default: '',
     },
@@ -60,9 +44,6 @@ const userSchema = mongoose.Schema(
     confirmed: {
       type: Boolean,
       default: false,
-    },
-    publicId: {
-      type: String,
     },
     token: {
       type: String,

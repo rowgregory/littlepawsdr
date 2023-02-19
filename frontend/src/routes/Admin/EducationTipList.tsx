@@ -2,14 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Table, Spinner, Pagination } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { LinkContainer } from 'react-router-bootstrap';
-import {
-  createEducationTip,
-  listEducationTips,
-} from '../../actions/educationTipActions';
+import { listEducationTips } from '../../actions/educationTipActions';
 import DeleteModal from '../../components/DeleteModal';
 import { Text } from '../../components/styles/Styles';
-import { EDUCATION_TIP_CREATE_RESET } from '../../constants/educationTipConstants';
-import { useHistory } from 'react-router-dom';
 import {
   SearchBar,
   TableHead,
@@ -23,34 +18,29 @@ import {
   TableWrapper,
   CreateBtnV2,
   TableImg,
+  SpinnerContainer,
 } from '../../components/styles/admin/Styles';
 import Message from '../../components/Message';
-import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
 import { WelcomeText } from '../../components/styles/DashboardStyles';
 import BreadCrumb from '../../components/common/BreadCrumb';
 import { rangeV2 } from '../../components/common/Pagination';
 import { AddIcon } from '../../components/svg/AddIcon';
+import { defaultImages } from '../../utils/defaultImages';
 
 const RaffleWinnerList = () => {
-  const history = useHistory();
   const dispatch = useDispatch();
   const [show, setShow] = useState(false);
   const [id, setId] = useState('');
   const [text, setText] = useState('');
-  const [publicId, setPublicId] = useState('');
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const [imagePath, setImagePath] = useState('');
   const [paginatedPage, setPaginatedPage] = useState(1);
   const [paginatedItems, setPaginatedItems] = useState<{}[]>([]) as any;
 
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
   const {
     educationTipList: { loading, error, educationTips },
-    educationTipCreate: {
-      loading: loadingCreate,
-      error: errorCreate,
-      success: successCreate,
-      educationTip,
-    },
     educationTipDelete: {
       loading: loadingDelete,
       error: errorDelete,
@@ -59,14 +49,8 @@ const RaffleWinnerList = () => {
   } = useSelector((state: any) => state);
 
   useEffect(() => {
-    dispatch({ type: EDUCATION_TIP_CREATE_RESET });
-
-    if (successCreate) {
-      history.push(`/admin/education-tip/${educationTip?._id}/edit`);
-    } else {
-      dispatch(listEducationTips());
-    }
-  }, [dispatch, history, successCreate, educationTip, successDelete]);
+    dispatch(listEducationTips());
+  }, [dispatch, successDelete]);
 
   educationTips?.sort(
     (a: any, b: any) => -a?.createdAt?.localeCompare(b?.createdAt)
@@ -80,10 +64,6 @@ const RaffleWinnerList = () => {
     setPaginatedItems(educationTips?.slice(indexOfFirstItem, indexOfLastItem));
   }, [educationTips, paginatedPage]);
 
-  const createEducationTipHandler = () => {
-    dispatch(createEducationTip());
-  };
-
   const filteredEducationTips =
     text !== ''
       ? educationTips?.filter((tip: any) =>
@@ -92,6 +72,12 @@ const RaffleWinnerList = () => {
       : paginatedItems?.filter((tip: any) =>
           tip?.title.toLowerCase().includes(text.toLowerCase())
         );
+
+  const eTip = {
+    title: '',
+    externalLink: '',
+    image: defaultImages.upload,
+  };
 
   return (
     <Container>
@@ -110,14 +96,11 @@ const RaffleWinnerList = () => {
         show={show}
         handleClose={handleClose}
         id={id}
-        publicId={publicId}
+        publicId={imagePath}
       />
-      {(error || errorCreate || errorDelete) && (
-        <Message variant='danger'>
-          {error || errorCreate || errorDelete}
-        </Message>
+      {(error || errorDelete) && (
+        <Message variant='danger'>{error || errorDelete}</Message>
       )}
-      {(loading || loadingCreate || loadingDelete) && <HexagonLoader />}
       <TableWrapper>
         <TopRow className='d-flex align-items-center'>
           <SearchBar>
@@ -129,14 +112,23 @@ const RaffleWinnerList = () => {
               onChange={(e: any) => setText(e.target.value)}
             />
           </SearchBar>
-          <CreateBtnV2 onClick={createEducationTipHandler}>
-            <AddIcon />
-            {loadingCreate ? (
+          {loading ? (
+            <SpinnerContainer>
               <Spinner animation='border' size='sm' />
-            ) : (
-              'Create'
-            )}
-          </CreateBtnV2>
+            </SpinnerContainer>
+          ) : (
+            <LinkContainer
+              to={{
+                pathname: '/admin/education-tip/id/edit',
+                state: { eTip },
+              }}
+            >
+              <CreateBtnV2>
+                <AddIcon />
+                Create
+              </CreateBtnV2>
+            </LinkContainer>
+          )}
         </TopRow>
         <TableAndPaginationContainer>
           <Table hover responsive>
@@ -167,7 +159,12 @@ const RaffleWinnerList = () => {
                     </Text>
                   </td>
                   <td>
-                    <LinkContainer to={`/admin/education-tip/${tip?._id}/edit`}>
+                    <LinkContainer
+                      to={{
+                        pathname: `/admin/education-tip/${tip?._id}/edit`,
+                        state: { eTip: tip, isEditMode: true },
+                      }}
+                    >
                       <StyledEditBtn>
                         <i
                           style={{ color: '#9761aa' }}
@@ -181,7 +178,7 @@ const RaffleWinnerList = () => {
                       className='border-0'
                       onClick={() => {
                         setId(tip?._id);
-                        setPublicId(tip?.publicId);
+                        setImagePath(tip?.image);
                         handleShow();
                       }}
                     >

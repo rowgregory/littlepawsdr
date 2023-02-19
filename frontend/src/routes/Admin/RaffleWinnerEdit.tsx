@@ -64,12 +64,10 @@ const RaffleWinnerEdit = () => {
   const [message, setMessage] = useState('');
   const [month, setMonth] = useState('');
   const [uploading, setUploading] = useState(false);
-  const [publicId, setPublicId] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [submittedForm, setSubmittedForm] = useState(false);
   const [file, setFile] = useState({}) as any;
   const [imgUploadStatus, setImageUploadStatus] = useState('') as any;
-  const [cloudinaryData, setClouadinaryData] = useState({}) as any;
 
   const {
     raffleWinnerDetails: { loading, error, raffleWinner },
@@ -116,23 +114,7 @@ const RaffleWinnerEdit = () => {
     setName(raffleWinner?.name);
     setImage(raffleWinner?.image);
     setMessage(raffleWinner?.message);
-    setPublicId(raffleWinner?.publicId);
   }, [raffleWinner]);
-
-  useEffect(() => {
-    if (Object.keys(cloudinaryData).length > 0) {
-      dispatch(
-        updateRaffleWinner({
-          _id: raffleWinnerId,
-          name,
-          image: cloudinaryData.secureUrl,
-          publicId: cloudinaryData.publicId,
-          month: getMonth(month),
-          message,
-        })
-      );
-    }
-  }, [cloudinaryData, dispatch, message, month, name, raffleWinnerId]);
 
   useEffect(() => {
     if (successUpdate && submittedForm) {
@@ -141,30 +123,26 @@ const RaffleWinnerEdit = () => {
     }
   }, [history, submittedForm, successUpdate]);
 
-  const submitHandler = (e: any) => {
+  const submitHandler = async (e: any) => {
     e.preventDefault();
     setSubmittedForm(true);
-    if (file?.name) {
-      setUploading(true);
-      uploadFileHandler(
-        file,
-        setUploading,
-        publicId,
-        setImageUploadStatus,
-        setClouadinaryData
-      );
-    } else {
-      dispatch(
-        updateRaffleWinner({
-          _id: raffleWinnerId,
-          name,
-          image,
-          publicId,
-          month: getMonth(month),
-          message,
-        })
-      );
-    }
+
+    setUploading(true);
+    const image = await uploadFileHandler(
+      file,
+      setUploading,
+      setImageUploadStatus
+    );
+
+    dispatch(
+      updateRaffleWinner({
+        _id: raffleWinnerId,
+        name,
+        month: getMonth(month),
+        message,
+        image,
+      })
+    );
   };
 
   const editPhotoHandler = (e: any) => setFile(e.target.files[0]);
@@ -173,7 +151,7 @@ const RaffleWinnerEdit = () => {
     e.preventDefault();
     removePhoto(
       raffleWinner.publicId,
-      setPublicId,
+      () => {},
       dispatch,
       updateRaffleWinner,
       raffleWinnerId,

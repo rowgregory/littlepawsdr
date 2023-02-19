@@ -1,6 +1,5 @@
 import asyncHandler from 'express-async-handler';
 import EducationTip from '../models/educationTipModel.js';
-import { cloudImages } from '../data/cloudImages.js';
 import Error from '../models/errorModel.js';
 
 // @desc    Get all education tips
@@ -49,12 +48,12 @@ const getEducationTipDetails = asyncHandler(async (req, res) => {
 // @route   POST /api/education-tips
 // @access  Private/Admin
 const createEducationTip = asyncHandler(async (req, res) => {
+  const { title, externalLink, image } = req.body;
   try {
     const educationTip = new EducationTip({
-      title: 'Sample title',
-      externalLink: '',
-      image: cloudImages().upload,
-      publicId: '',
+      title,
+      externalLink,
+      image,
     });
 
     const createdEducationTip = await educationTip.save();
@@ -83,17 +82,13 @@ const createEducationTip = asyncHandler(async (req, res) => {
 // @access  Private/Admin
 const updateEducationTip = asyncHandler(async (req, res) => {
   try {
-    const { title, externalLink, image, publicId } = req.body;
+    const { title, externalLink, image } = req.body;
 
     const educationTip = await EducationTip.findById(req.params.id);
 
-    educationTip.title = title === '' ? title : title || educationTip.title;
-    educationTip.externalLink =
-      externalLink === ''
-        ? externalLink
-        : externalLink || educationTip.externalLink;
-    educationTip.image = image || educationTip.image;
-    educationTip.publicId = publicId || educationTip.publicId;
+    educationTip.title = title ?? educationTip.title;
+    educationTip.externalLink = externalLink ?? educationTip.externalLink;
+    educationTip.image = image ?? educationTip.image;
 
     const updatedEducationTip = await educationTip.save();
 

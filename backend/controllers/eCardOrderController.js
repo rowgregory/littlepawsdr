@@ -1,6 +1,6 @@
 import asyncHandler from 'express-async-handler';
 import ECardOrder from '../models/eCardOrderModel.js';
-import { send_mail } from '../server.js';
+import { sendEmail } from '../utils/sendEmail.js';
 import Error from '../models/errorModel.js';
 
 //@desc   Create an eCard order
@@ -40,7 +40,7 @@ const createECardOrder = asyncHandler(async (req, res) => {
 
     const createdECard = await eCard.save();
 
-    send_mail(createdECard, res, 'eCardPurchaseConfirmation');
+    sendEmail(createdECard, res, 'eCardPurchaseConfirmation');
   } catch (err) {
     const createdError = new Error({
       functionName: 'CREATE_ECARD_ORDER_PUBLIC',

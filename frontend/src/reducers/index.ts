@@ -15,6 +15,7 @@ import {
 } from './eventReducer';
 import {
   checkUsersConfirmationReducer,
+  dashboardDetailsReducer,
   generatTokenForNewSessionReducer,
   userConfirmedReducer,
   userDeleteReducer,
@@ -29,13 +30,6 @@ import {
   userVerifyEmailReducer,
   userWhoWeAreListReducer,
 } from './userReducer';
-import {
-  donateCreateReducer,
-  donateDeleteReducer,
-  donateDetailsReducer,
-  donateListReducer,
-  donateUpdateReducer,
-} from './donationReducer';
 import {
   productCreateReducer,
   productDeletesReducer,
@@ -132,16 +126,12 @@ const allReducers = combineReducers({
   userConfirmed: userConfirmedReducer,
   userNewSession: generatTokenForNewSessionReducer,
   userCheckUsersConfirmation: checkUsersConfirmationReducer,
+  userDashboardDetails: dashboardDetailsReducer,
   eventList: eventListReducer,
   eventDelete: eventDeleteReducer,
   eventCreate: eventCreateReducer,
   eventDetails: eventDetailsReducer,
   eventUpdate: eventUpdateReducer,
-  donationCreate: donateCreateReducer,
-  donationDetails: donateDetailsReducer,
-  donationList: donateListReducer,
-  donationUpdate: donateUpdateReducer,
-  donationDelete: donateDeleteReducer,
   productList: productListReducer,
   productDetails: productDetailsReducer,
   productPublicDetails: productPublicDetailsReducer,

@@ -49,7 +49,7 @@ const CardFlip = ({ user, loading }: any) => {
                       src={user?.profileCardTheme}
                       alt={`LPDR Board member: ${user?.name}`}
                     />
-                    <h6>{'Donate'}</h6>
+                    <h6>Donate</h6>
                     <Right className='d-flex flex-column w-100 mr-5'>
                       <Name className='d-flex justify-content-center user-name'>
                         {user?.name}

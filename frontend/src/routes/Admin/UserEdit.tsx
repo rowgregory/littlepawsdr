@@ -9,7 +9,6 @@ import {
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import { Text, UpdateBtn } from '../../components/styles/Styles';
 import Message from '../../components/Message';
-import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
 import {
   Container,
   TableAndPaginationContainer,
@@ -74,7 +73,6 @@ const UserEdit = () => {
       {(error || errorUpdate) && (
         <Message variant='danger'>{error || errorUpdate}</Message>
       )}
-      {(loading || loadingUpdate) && <HexagonLoader />}
       <TableAndPaginationContainer>
         <div>
           <Text className='d-flex'>
@@ -102,8 +100,8 @@ const UserEdit = () => {
             <Form.Label className='mb-0'>Is Admin</Form.Label>
           </Form.Group>
           <UpdateBtn type='submit'>
-            <Text className='text-white ml-2'>
-              Updat{loadingUpdate ? 'ing...' : 'e'}
+            <Text className='text-white'>
+              Updat{loadingUpdate || loading ? 'ing...' : 'e'}
             </Text>
           </UpdateBtn>
         </Form>

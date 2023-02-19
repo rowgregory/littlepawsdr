@@ -1,7 +1,6 @@
 import asyncHandler from 'express-async-handler';
 import Product from '../models/productModel.js';
 import Error from '../models/errorModel.js';
-import { cloudImages } from '../data/cloudImages.js';
 
 // @desc    Get all products
 // @route   GET /api/products
@@ -81,20 +80,29 @@ const deleteProduct = asyncHandler(async (req, res) => {
 // @route   POST /api/products
 // @access  Private/Admin
 const createProduct = asyncHandler(async (req, res) => {
+  const {
+    name,
+    price,
+    image,
+    brand,
+    category,
+    description,
+    size,
+    countInStock,
+    sizes,
+  } = req.body;
   try {
     const product = new Product({
-      name: 'Sample Name',
-      price: 0,
+      name,
+      price,
       user: req.user._id,
-      image: cloudImages().upload,
-      brand: 'Little Paws',
-      category: 'Clothing',
-      countInStock: 0,
-      description: 'Sample description',
-      publicId: '',
-      size: '',
-      isLimitedProduct: true,
-      sizes: [],
+      image,
+      brand,
+      category,
+      countInStock,
+      description,
+      size,
+      sizes,
     });
 
     const createdProduct = await product.save();
@@ -130,30 +138,23 @@ const updateProduct = asyncHandler(async (req, res) => {
       brand,
       category,
       description,
-      publicId,
       size,
       countInStock,
+      sizes,
     } = req.body;
 
     const product = await Product.findById(req.params.id);
+    if (!product) return;
 
-    product.name = name === '' ? name : name || product.name;
-    product.price = price === null ? price : price || product.price;
-    product.image = image || product.image;
-    product.brand = brand === '' ? brand : brand || product.brand;
-    product.category = category || product.category;
-    product.countInStock =
-      countInStock === 0
-        ? 0
-        : countInStock > 0
-        ? countInStock
-        : product.countInStock;
-    product.description =
-      description === '' ? description : description || product.description;
-    product.publicId = publicId || product.publicId;
-    product.size = size || product.size;
-    product.isLimitedProduct = req.body.isLimitedProduct;
-    product.sizes = req.body.sizes || product.sizes;
+    product.name = name ?? product.name;
+    product.price = price ?? product.price;
+    product.image = image ?? product.image;
+    product.brand = brand ?? product.brand;
+    product.category = category ?? product.category;
+    product.countInStock = countInStock ?? product.countInStock;
+    product.description = description ?? product.description;
+    product.size = size ?? product.size;
+    product.sizes = sizes ?? product.sizes;
 
     const updatedProduct = await product.save();
     res.json(updatedProduct);
@@ -172,37 +173,6 @@ const updateProduct = asyncHandler(async (req, res) => {
     res.status(500).send({
       message: '500 - Server Error',
     });
-  }
-});
-
-// @desc    Update a product by gyest
-// @route   PUT /api/products/:id/guest ❌
-// @access  Public
-const updateProductGuest = asyncHandler(async (req, res) => {
-  const { name, price, image, brand, category, description, publicId, size } =
-    req.body;
-
-  const product = await Product.findById(req.params.id);
-
-  if (product) {
-    product.name = name || product.name;
-    product.price = price || product.price;
-    product.image = image || product.image;
-    product.brand = brand || product.brand;
-    product.category = category || product.category;
-    product.countInStock = req.body.countInStock;
-    product.description = description || product.description;
-    product.publicId = publicId || product.publicId;
-    product.size = size || product.size;
-    product.isLimitedProduct = req.body.isLimitedProduct;
-    product.sizes = req.body.sizes;
-
-    const updatedProduct = await product.save();
-
-    res.json(updatedProduct);
-  } else {
-    res.status(404);
-    throw new Error('Product not found');
   }
 });
 
@@ -233,6 +203,5 @@ export {
   deleteProduct,
   createProduct,
   updateProduct,
-  updateProductGuest,
   getPublicProductDetails,
 };

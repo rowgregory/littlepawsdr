@@ -1,13 +1,16 @@
 import express from 'express';
-import cloudinary from 'cloudinary';
+import fs from 'fs';
+import path from 'path';
+
 const router = express.Router();
 
-router.route('/:id').post((req, res, next) => {
-  const publicId = req.params.id;
+router.route('/').post((req, res, next) => {
+  const image = req.body.publicId;
   try {
-    cloudinary.uploader.destroy(publicId, result => {
-      res.send(result);
-    });
+    const __dirname = path.resolve();
+    fs.unlinkSync(path.join(__dirname, image));
+
+    res.send('Image Deleted');
   } catch (error) {
     console.log('ERROR: ', error);
   }

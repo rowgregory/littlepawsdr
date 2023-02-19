@@ -19,6 +19,7 @@ const RecentTransactionItem = ({ viewTransaction, item }: any) => {
           </DonatorInitials>
         ) : (
           <Image
+            // onError={(e:any) => e.target.src=}
             src={item?.orderItems ? item?.orderItems[0].image : item?.image}
             alt='Customers purchased item'
             width='50px'
@@ -44,7 +45,7 @@ const RecentTransactionItem = ({ viewTransaction, item }: any) => {
             color='#c1c1c1'
             className='d-flex justify-content-end'
           >
-            {formatDate(new Date(item?.createdAt))}
+            {formatDate(item?.createdAt)}
           </Text>
         </div>
       </div>

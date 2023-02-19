@@ -1,7 +1,7 @@
 import asyncHandler from 'express-async-handler';
 import Order from '../models/orderModel.js';
 import Product from '../models/productModel.js';
-import { send_mail } from '../server.js';
+import { sendEmail } from '../utils/sendEmail.js';
 import Error from '../models/errorModel.js';
 import User from '../models/userModel.js';
 import ECardOrder from '../models/eCardOrderModel.js';
@@ -82,7 +82,7 @@ const addOrderItems = asyncHandler(async (req, res) => {
         }
       }
 
-      const emailHasSent = await send_mail(
+      const emailHasSent = await sendEmail(
         createdOrder,
         res,
         'sendOrderConfirmationEmail',
@@ -274,7 +274,7 @@ const getOrders = asyncHandler(async (req, res) => {
 // @access  Public
 const sendOrderConfirmationEmail = asyncHandler(async (req, res) => {
   try {
-    send_mail(req.body, res, 'sendOrderConfirmationEmail');
+    sendEmail(req.body, res, 'sendOrderConfirmationEmail');
   } catch (err) {
     const createdError = new Error({
       functionName: 'SEND_ORDER_CONFIRMATION_EMAIL',

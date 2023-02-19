@@ -10,9 +10,6 @@ const educationTipSchema = mongoose.Schema({
   image: {
     type: String,
   },
-  publicId: {
-    type: String,
-  },
 });
 
 const EducationTip = mongoose.model('EducationTip', educationTipSchema);

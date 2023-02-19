@@ -56,6 +56,17 @@ export const TableImg = styled(Image)`
 export const SearchBar = styled(Form.Group)`
   width: 20rem;
 `;
+export const SpinnerContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: ${({ theme }) => theme.white} !important;
+  margin-bottom: 1rem;
+  padding: 0 1.5rem;
+  height: 45px;
+  color: #373737;
+  border-radius: 0.75rem;
+`;
 
 export const CreateBtnV2 = styled.button`
   display: flex;
@@ -199,10 +210,13 @@ export const EditForm = styled(Form)`
 export const FormFile = styled(Form.File)`
   display: flex;
   align-items: center;
+  justify-content: center;
   background: #fff;
   font-weight: 300;
   transition: 300ms;
   margin-right: 1rem;
+  height: 200px;
+  width: 200px;
   :hover {
     background: #ededed;
   }

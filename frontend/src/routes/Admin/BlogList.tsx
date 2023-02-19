@@ -2,11 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Table, Spinner, Pagination } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { LinkContainer } from 'react-router-bootstrap';
-import { useHistory } from 'react-router-dom';
-import { createBlog, listBlogs } from '../../actions/blogActions';
+import { listBlogs } from '../../actions/blogActions';
 import DeleteModal from '../../components/DeleteModal';
 import { Text } from '../../components/styles/Styles';
-import { BLOG_CREATE_RESET } from '../../constants/blogConstants';
 import {
   SearchBar,
   TableHead,
@@ -20,34 +18,30 @@ import {
   TableWrapper,
   CreateBtnV2,
   TableImg,
+  SpinnerContainer,
 } from '../../components/styles/admin/Styles';
 import Message from '../../components/Message';
-import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
 import { WelcomeText } from '../../components/styles/DashboardStyles';
 import BreadCrumb from '../../components/common/BreadCrumb';
 import { rangeV2 } from '../../components/common/Pagination';
 import { AddIcon } from '../../components/svg/AddIcon';
+import { defaultImages } from '../../utils/defaultImages';
 
 const BlogList = () => {
-  const history = useHistory();
   const dispatch = useDispatch();
   const [show, setShow] = useState(false);
   const [id, setId] = useState('');
   const [text, setText] = useState('');
-  const [publicId, setPublicId] = useState('');
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const [imagePath, setImagePath] = useState('');
   const [paginatedPage, setPaginatedPage] = useState(1);
   const [paginatedItems, setPaginatedItems] = useState<{}[]>([]) as any;
 
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
   const {
     blogList: { loading, error, blogs },
-    blogCreate: {
-      loading: loadingCreate,
-      error: errorCreate,
-      success: successCreate,
-      blog,
-    },
+
     blogDelete: {
       loading: loadingDelete,
       error: errorDelete,
@@ -56,13 +50,8 @@ const BlogList = () => {
   } = useSelector((state: any) => state);
 
   useEffect(() => {
-    dispatch({ type: BLOG_CREATE_RESET });
-    if (successCreate) {
-      history.push(`/admin/blog/${blog?._id}/edit`);
-    } else {
-      dispatch(listBlogs());
-    }
-  }, [blog?._id, dispatch, history, successCreate, successDelete]);
+    dispatch(listBlogs());
+  }, [dispatch, successDelete]);
 
   blogs?.sort((a: any, b: any) => -a?.createdAt?.localeCompare(b?.createdAt));
 
@@ -74,10 +63,6 @@ const BlogList = () => {
     setPaginatedItems(blogs?.slice(indexOfFirstItem, indexOfLastItem));
   }, [blogs, paginatedPage]);
 
-  const createBlogHandler = () => {
-    dispatch(createBlog());
-  };
-
   const filteredBlogs =
     text !== ''
       ? blogs?.filter((blog: any) =>
@@ -86,6 +71,12 @@ const BlogList = () => {
       : paginatedItems?.filter((blog: any) =>
           blog._id.toLowerCase().includes(text.toLowerCase())
         );
+
+  const blog = {
+    title: '',
+    article: '',
+    image: defaultImages.upload,
+  };
 
   return (
     <Container>
@@ -99,19 +90,15 @@ const BlogList = () => {
         url2='/admin'
         url3='/admin/blogList'
       />
-      {(error || errorCreate || errorDelete) && (
-        <Message variant='danger'>
-          {error || errorCreate || errorDelete}
-        </Message>
+      {(error || errorDelete) && (
+        <Message variant='danger'>{error || errorDelete}</Message>
       )}
-
-      {(loading || loadingCreate || loadingDelete) && <HexagonLoader />}
       <DeleteModal
         actionFunc='Blog'
         show={show}
         handleClose={handleClose}
         id={id}
-        publicId={publicId}
+        publicId={imagePath}
       />
       <TableWrapper>
         <TopRow className='d-flex align-items-center'>
@@ -124,14 +111,23 @@ const BlogList = () => {
               onChange={(e: any) => setText(e.target.value)}
             />
           </SearchBar>
-          <CreateBtnV2 onClick={createBlogHandler}>
-            <AddIcon />
-            {loadingCreate ? (
+          {loading ? (
+            <SpinnerContainer>
               <Spinner animation='border' size='sm' />
-            ) : (
-              'Create'
-            )}
-          </CreateBtnV2>
+            </SpinnerContainer>
+          ) : (
+            <LinkContainer
+              to={{
+                pathname: '/admin/blog/id/edit',
+                state: { blog },
+              }}
+            >
+              <CreateBtnV2>
+                <AddIcon />
+                Create
+              </CreateBtnV2>
+            </LinkContainer>
+          )}
         </TopRow>
 
         <TableAndPaginationContainer>
@@ -162,7 +158,12 @@ const BlogList = () => {
                     <Text>{blog?.article.substring(0, 200)}</Text>
                   </td>
                   <td>
-                    <LinkContainer to={`/admin/blog/${blog?._id}/edit`}>
+                    <LinkContainer
+                      to={{
+                        pathname: `/admin/blog/${blog?._id}/edit`,
+                        state: { blog, isEditMode: true },
+                      }}
+                    >
                       <StyledEditBtn>
                         <i
                           style={{ color: '#9761aa' }}
@@ -176,7 +177,7 @@ const BlogList = () => {
                       className='border-0'
                       onClick={() => {
                         setId(blog?._id);
-                        setPublicId(blog?.publicId);
+                        setImagePath(blog?.image);
                         handleShow();
                       }}
                     >

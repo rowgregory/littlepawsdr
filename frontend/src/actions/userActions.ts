@@ -5,6 +5,9 @@ import {
   USER_CONFIRMED_FAIL,
   USER_CONFIRMED_REQUEST,
   USER_CONFIRMED_SUCCESS,
+  USER_DASHBOARD_DETAILS_FAIL,
+  USER_DASHBOARD_DETAILS_REQUEST,
+  USER_DASHBOARD_DETAILS_SUCCESS,
   USER_DELETE_FAIL,
   USER_DELETE_REQUEST,
   USER_DELETE_SUCCESS,
@@ -455,6 +458,36 @@ export const generateTokenForNewSession =
     } catch (error: any) {
       dispatch({
         type: USER_GENERATE_NEW_TOKEN_FAIL,
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message,
+      });
+    }
+  };
+
+export const listDashboardDetails =
+  () => async (dispatch: any, getState: any) => {
+    try {
+      const {
+        userLogin: { userInfo },
+      } = getState();
+
+      dispatch({ type: USER_DASHBOARD_DETAILS_REQUEST });
+
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+
+      const { data } = await axios.get(`/api/users/dashboard-details`, config);
+
+      dispatch({ type: USER_DASHBOARD_DETAILS_SUCCESS, payload: data });
+    } catch (error: any) {
+      dispatch({
+        type: USER_DASHBOARD_DETAILS_FAIL,
         payload:
           error.response && error.response.data.message
             ? error.response.data.message

@@ -1,27 +1,18 @@
-import nodemailer from 'nodemailer';
-import Email from 'email-templates';
-import ECardOrder from '../models/eCardOrderModel.js';
-import path from 'path';
-import google from 'googleapis';
+import ECardOrder from '../../models/eCardOrderModel.js';
 import colors from 'colors';
-import connectGmailOauth from '../config/oauth.js';
 
-const OAuth2 = google.google.auth.OAuth2;
+export const sendEcard = async pugEmail => {
+  const today = new Date().toLocaleDateString();
 
-const Oauth2_client = new OAuth2(
-  connectGmailOauth().clientId,
-  connectGmailOauth().clientSecret
-);
+  const t = today.split('/');
+  const y = t[2];
+  const d = t[0];
+  const m = t[1];
 
-Oauth2_client.setCredentials({
-  refresh_token: connectGmailOauth().refreshToken,
-});
-
-export const sendECard = async () => {
-  const sendDate = new Date().toISOString().split('T')[0];
+  const dateToCheck = `${y}-0${d}-${m}T00:00:00.000+00:00`;
 
   const aggregatedECards = await ECardOrder.find({
-    dateToSend: sendDate.split('T')[0],
+    dateToSend: dateToCheck,
     isSent: false,
   });
 
@@ -29,33 +20,6 @@ export const sendECard = async () => {
   if (!eCardsToSend) return;
 
   aggregatedECards?.forEach(eCard => {
-    const __dirname = path.resolve();
-    const root = path.join(__dirname, 'emails');
-
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        type: 'OAuth2',
-        user: `${process.env.EMAIL_ADDRESS}`,
-        clientId: connectGmailOauth().clientId,
-        clientSecret: connectGmailOauth().clientSecret,
-        refreshToken: connectGmailOauth().refreshToken,
-        accessToken: Oauth2_client.getAccessToken(),
-      },
-    });
-
-    const pugEmail = new Email({
-      transport: transporter,
-      send: true,
-      preview: false,
-      views: {
-        options: {
-          extention: 'pug',
-        },
-        root,
-      },
-    });
-
     pugEmail
       .send({
         template: 'ecard',
@@ -93,3 +57,5 @@ export const sendECard = async () => {
       .catch(err => console.log(`${err}`.brightRed));
   });
 };
+
+export default sendEcard;

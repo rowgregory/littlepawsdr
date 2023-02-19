@@ -23,9 +23,9 @@ const Container = styled.div`
 `;
 
 const ProductImg = styled(Image)`
-  object-fit: contain;
+  object-fit: cover;
   width: 100%;
-  width: 100%;
+  aspect-ratio: 1/1;
   border-radius: 0;
 `;
 

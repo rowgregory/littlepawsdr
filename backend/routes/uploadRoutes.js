@@ -1,38 +1,43 @@
 import express from 'express';
 import multer from 'multer';
-import streamifier from 'streamifier';
-import cloudinary from 'cloudinary';
+import path from 'path';
 const router = express.Router();
 
-const fileUpload = multer();
+const storage = multer.diskStorage({
+  destination(req, file, cb) {
+    cb(null, 'uploads/');
+  },
+  filename(req, file, cb) {
+    cb(
+      null,
+      `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`
+    );
+  },
+});
+const checkFileType = (file, cb) => {
+  const filetypes = /jpg|jpeg|png|heic|webp/;
+  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+  const mimetype = filetypes.test(file.mimetype);
 
-router.route('/').post(fileUpload.single('image'), function (req, res, next) {
+  if (extname && mimetype) {
+    return cb(null, true);
+  } else {
+    cb('Images only!');
+  }
+};
+
+const upload = multer({
+  storage,
+  fileFilter: (req, file, cb) => {
+    checkFileType(file, cb);
+  },
+});
+
+router.route('/').post(upload.single('image'), (req, res, next) => {
   try {
-    let streamUpload = req => {
-      return new Promise((resolve, reject) => {
-        let stream = cloudinary.v2.uploader.upload_stream((error, result) => {
-          if (result) {
-            resolve(result);
-          } else {
-            reject(error);
-          }
-        });
-
-        streamifier.createReadStream(req.file.buffer).pipe(stream);
-      });
-    };
-
-    async function upload(req) {
-      try {
-        let result = await streamUpload(req);
-        res.send(result);
-      } catch (error) {
-        console.log('ERROR: ', error);
-        res.send({ msg: 'Upload cancelled' });
-      }
+    if (req.file) {
+      res.status(200).send(`/${req.file.path}`);
     }
-
-    upload(req);
   } catch (error) {
     console.log('ERROR: ', error);
     res.send({ msg: 'Please upload a photo first' });

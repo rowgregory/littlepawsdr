@@ -1,5 +1,4 @@
 import asyncHandler from 'express-async-handler';
-import { cloudImages } from '../data/cloudImages.js';
 import ManuallyAddedUser from '../models/manuallyAddedUserModel.js';
 import Error from '../models/errorModel.js';
 
@@ -7,18 +6,18 @@ import Error from '../models/errorModel.js';
 // @route   POST /api/users/manually-add-user
 // @access  Private
 const manuallyAddUser = asyncHandler(async (req, res) => {
+  const { name, affiliation, email, image, profileCardTheme, location, bio } =
+    req.body;
   try {
     const createdUser = await ManuallyAddedUser.create({
-      name: '',
-      image: cloudImages().upload,
-      email: '',
-      affiliation: 'Board Member',
-      publicId: '',
-      profileCardTheme:
-        'https://res.cloudinary.com/doyd0ewgk/image/upload/v1612043441/field_tree2.jpg',
+      name,
+      image,
+      email,
+      affiliation,
+      profileCardTheme,
       isBoardMember: true,
-      location: 'Alabama',
-      bio: '',
+      location,
+      bio,
     });
 
     await createdUser.save();
@@ -92,29 +91,16 @@ const getManuallyAddedUsers = asyncHandler(async (req, res) => {
 //@access Private/Admin
 const updateManuallyAddedUser = asyncHandler(async (req, res) => {
   try {
-    const {
-      name,
-      affiliation,
-      email,
-      image,
-      publicId,
-      profileCardTheme,
-      location,
-      bio,
-    } = req.body;
+    const { name, affiliation, email, image, profileCardTheme, location, bio } =
+      req.body;
 
     const manuallyAddedUser = await ManuallyAddedUser.findById(req.params.id);
 
-    manuallyAddedUser.name =
-      name === '' ? name : name || manuallyAddedUser.name;
+    manuallyAddedUser.name = name ?? manuallyAddedUser.name;
     manuallyAddedUser.affiliation =
-      affiliation === ''
-        ? affiliation
-        : affiliation || manuallyAddedUser.affiliation;
-    manuallyAddedUser.email =
-      email === '' ? email : email || manuallyAddedUser.email;
-    manuallyAddedUser.image = image || manuallyAddedUser.image;
-    manuallyAddedUser.publicId = publicId || manuallyAddedUser.publicId;
+      affiliation ?? manuallyAddedUser.affiliation;
+    manuallyAddedUser.email = email ?? manuallyAddedUser.email;
+    manuallyAddedUser.image = image ?? manuallyAddedUser.image;
     manuallyAddedUser.profileCardTheme =
       profileCardTheme ?? manuallyAddedUser.profileCardTheme;
     manuallyAddedUser.location = location ?? manuallyAddedUser.location;

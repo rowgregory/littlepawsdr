@@ -12,29 +12,14 @@ const BlogDetails = ({ location }: any) => {
         <div
           style={{
             position: 'relative',
-            marginTop: '75px',
             marginInline: 'auto',
-            maxWidth: '980px',
           }}
         >
           <Image
             src={blog?.image}
             width='100%'
-            style={{ height: '600px', objectFit: 'cover' }}
+            style={{ height: '575px', objectFit: 'contain' }}
           />
-          <Text
-            fontWeight={500}
-            fontSize='48px'
-            color='#fff'
-            style={{
-              position: 'absolute',
-              top: '200px',
-              left: '50px',
-              zIndex: 2,
-            }}
-          >
-            Blog
-          </Text>
         </div>
       </div>
       <div

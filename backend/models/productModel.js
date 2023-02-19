@@ -37,14 +37,12 @@ const productSchema = mongoose.Schema(
       type: Number,
       default: 0,
     },
-    publicId: {
-      type: String,
-    },
     size: {
       type: String,
     },
     isLimitedProduct: {
       type: Boolean,
+      default: true,
     },
     sizes: {
       type: Array,

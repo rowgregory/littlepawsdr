@@ -1,9 +1,12 @@
 import cron from 'node-cron';
-import { sendECard } from './sendECard.js';
+import { sendEmail } from './sendEmail.js';
 import { updateEventStatus } from './updateEventStatus.js';
 
-export const cronJobs = ONLINE => ({
-  sendECard: ONLINE && cron.schedule('*/10 * * * *', () => sendECard()),
-  updateEventStatus:
-    ONLINE && cron.schedule('*/45 * * * *', async () => updateEventStatus()),
+export const cronJobs = () => ({
+  sendEcard: cron.schedule('*/10 * * * *', () =>
+    sendEmail({}, {}, 'ecard', '', false)
+  ),
+  updateEventStatus: cron.schedule('*/45 * * * *', async () =>
+    updateEventStatus()
+  ),
 });

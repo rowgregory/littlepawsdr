@@ -26,7 +26,7 @@ export const removePhoto = async (
     } else if (currentPage === 'blog') {
       update({
         _id: id,
-        image: defaultImages.blog,
+        image: defaultImages.upload,
         publicId: '',
       });
     }

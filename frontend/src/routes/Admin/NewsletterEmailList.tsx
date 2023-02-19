@@ -16,9 +16,9 @@ import {
   TableWrapper,
   StyledEditBtn,
   CreateBtnV2,
+  SpinnerContainer,
 } from '../../components/styles/admin/Styles';
 import Message from '../../components/Message';
-import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
 import { WelcomeText } from '../../components/styles/DashboardStyles';
 import { rangeV2 } from '../../components/common/Pagination';
 import BreadCrumb from '../../components/common/BreadCrumb';
@@ -103,7 +103,6 @@ const NewsletterEmailList = () => {
           {error || errorDelete || loadingCopy.message}
         </Message>
       )}
-      {(loading || loadingDelete) && <HexagonLoader />}
       <TableWrapper>
         <TopRow className='d-flex align-items-center'>
           <SearchBar>
@@ -115,16 +114,22 @@ const NewsletterEmailList = () => {
               onChange={(e: any) => setText(e.target.value)}
             />
           </SearchBar>
-          <CreateBtnV2 onClick={copyEmails}>
-            {loadingCopy.loading ? (
+          {loading ? (
+            <SpinnerContainer>
               <Spinner animation='border' size='sm' />
-            ) : (
-              <>
-                <CopyIcon />
-                <Text>Copy</Text>
-              </>
-            )}
-          </CreateBtnV2>
+            </SpinnerContainer>
+          ) : (
+            <CreateBtnV2 onClick={copyEmails}>
+              {loadingCopy.loading ? (
+                <Spinner animation='border' size='sm' />
+              ) : (
+                <>
+                  <CopyIcon />
+                  <Text>Copy</Text>
+                </>
+              )}
+            </CreateBtnV2>
+          )}
         </TopRow>
 
         <TableAndPaginationContainer>

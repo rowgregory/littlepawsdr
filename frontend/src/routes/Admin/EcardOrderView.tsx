@@ -1,5 +1,4 @@
-import { Image } from 'react-bootstrap';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import BreadCrumb from '../../components/common/BreadCrumb';
 import {
@@ -12,20 +11,6 @@ import { formatDate } from '../../utils/formatDate';
 
 const Span = styled.span`
   font-weight: 400;
-`;
-
-const OrderItemContainer = styled.div`
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 12px;
-  overflow-y: scroll;
-  padding: 32px;
-  background: ${({ theme }) => theme.secondaryBg};
-  ::-webkit-scrollbar {
-    display: none; /* Safari and Chrome */
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* Internet Explorer 10+ */
-  }
 `;
 
 const EcardOrderView = () => {
@@ -60,9 +45,7 @@ const EcardOrderView = () => {
           <Text marginBottom='16px'>Created On: </Text>
           <Span>{formatDate(state?.createdAt)}</Span>
           <Text marginBottom='16px'>Date To Be Sent: </Text>
-          <Span>
-            {new Date(state?.dateToSend)?.toISOString().split('T')[0]}
-          </Span>
+          <Span>{formatDate(state?.dateToSend)}</Span>
           <Text marginBottom='16px'>Order Id: </Text>
           <Span>{state?._id}</Span>
           <Text marginBottom='16px'>PayPal Order Id:</Text>
@@ -75,27 +58,9 @@ const EcardOrderView = () => {
           <Span>{state?.recipientsFirstName}</Span>
           <Text marginBottom='16px'>Receipient's Email:</Text>
           <Span>{state?.recipientsEmail}</Span>
-        </div>
-        <div className='d-flex flex-column w-100'>
-          <Text marginBottom='8px'>Ecard Details</Text>
-          <OrderItemContainer>
-            <div className='d-flex'>
-              <Image
-                src={state?.image}
-                alt='product-img'
-                width='100px'
-                height='100px'
-                className='mr-3'
-                style={{ objectFit: 'cover' }}
-              />
-              <div className='d-flex justify-content-between'>
-                <div className='d-flex flex-column'>
-                  <Text fontWeight={400}>{state?.name}</Text>
-                  <Text>Message: {state?.message}</Text>
-                </div>
-              </div>
-            </div>
-          </OrderItemContainer>
+          <Link style={{ fontSize: '14px' }} to={`/e-card/order/${state?._id}`}>
+            View Receipt
+          </Link>
         </div>
       </TableAndPaginationContainer>
     </Container>

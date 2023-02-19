@@ -1,129 +1,134 @@
 import React, { useEffect, useState } from 'react';
 import { Form, Image } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { getBlogDetails, updateBlog } from '../../actions/blogActions';
+import { createBlog, updateBlog } from '../../actions/blogActions';
 import {
-  BLOG_DETAILS_RESET,
+  BLOG_CREATE_RESET,
   BLOG_UPDATE_RESET,
 } from '../../constants/blogConstants';
-import { Text, UpdateBtn } from '../../components/styles/Styles';
-import { useRouteMatch, useHistory } from 'react-router-dom';
+import { UpdateBtn } from '../../components/styles/Styles';
+import { useHistory, useLocation } from 'react-router-dom';
 import uploadFileHandler from '../../utils/uploadFileHandler';
-import { removePhoto } from '../../utils/removePhoto';
 import Message from '../../components/Message';
-import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
 import {
   Container,
   EditForm,
   FormFile,
-  RemovePhoto,
   UploadImageSquare,
 } from '../../components/styles/admin/Styles';
 import { WelcomeText } from '../../components/styles/DashboardStyles';
 import PhotoUploadIcon from '../../components/svg/PhotoUploadIcon';
-import RemovePhotoIcon from '../../components/svg/RemovePhotoIcon';
-import { defaultImages } from '../../utils/defaultImages';
 import BreadCrumb from '../../components/common/BreadCrumb';
+import API from '../../utils/api';
+import { staticUploadImage } from '../../utils/misc';
+import { defaultImages } from '../../utils/defaultImages';
+
+const useBlogEditForm = (callback?: any, data?: any) => {
+  const values = {
+    title: '',
+    article: '',
+    image: '',
+  };
+  const [inputs, setInputs] = useState(values);
+
+  useEffect(() => {
+    if (data) {
+      setInputs((inputs: any) => ({
+        ...inputs,
+        title: data?.title,
+        article: data?.article,
+        image: data?.image,
+      }));
+    }
+  }, [data]);
+
+  const handleInput = (e: any) => {
+    setInputs((inputs: any) => ({
+      ...inputs,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const onSubmit = (e: any) => {
+    e.preventDefault();
+    callback();
+  };
+
+  return { inputs, handleInput, setInputs, onSubmit };
+};
 
 const BlogEdit = () => {
-  const match = useRouteMatch<{ id: string }>();
+  const {
+    state: { blog, isEditMode },
+  } = useLocation() as any;
   const history = useHistory();
   const dispatch = useDispatch();
-  const blogId = match.params.id;
-  const [title, setTitle] = useState('');
-  const [article, setArticle] = useState('');
-  const [image, setImage] = useState('');
-  const [submittedForm, setSubmittedForm] = useState(false);
+
   const [uploading, setUploading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState('');
-  const [publicId, setPublicId] = useState('');
   const [file, setFile] = useState({}) as any;
   const [imgUploadStatus, setImageUploadStatus] = useState('') as any;
-  const [cloudinaryData, setClouadinaryData] = useState({}) as any;
 
   const {
-    blogDetails: { loading, error, blog },
     blogUpdate: {
       loading: loadingUpdate,
       error: errorUpdate,
       success: successUpdate,
     },
+    blogCreate: {
+      loading: loadingCreate,
+      error: errorCreate,
+      success: successCreate,
+    },
   } = useSelector((state: any) => state);
 
-  useEffect(() => {
-    dispatch({ type: BLOG_DETAILS_RESET });
-    dispatch(getBlogDetails(blogId));
-    dispatch({ type: BLOG_UPDATE_RESET });
-  }, [dispatch, blogId, successUpdate]);
-
-  useEffect(() => {
-    if (Object.keys(cloudinaryData).length > 0) {
+  const editBlogCallback = async () => {
+    setUploading(true);
+    if (blog?.image !== staticUploadImage) {
+      API.deleteImage(blog?.image);
+    }
+    const image = await uploadFileHandler(
+      file,
+      setUploading,
+      setImageUploadStatus
+    );
+    setImageUploadStatus('Image uploaded!');
+    setImageUploadStatus(
+      isEditMode ? 'Updating ecard details' : 'Creating ecard details'
+    );
+    if (isEditMode) {
       dispatch(
         updateBlog({
-          _id: blogId,
-          title,
-          article,
-          image: cloudinaryData.secureUrl,
-          publicId: cloudinaryData.publicId,
+          _id: blog._id,
+          title: inputs.title,
+          article: inputs.article,
+          image,
         })
-      );
-    }
-  }, [article, blogId, cloudinaryData, dispatch, title]);
-
-  useEffect(() => {
-    setTitle(blog?.title);
-    setArticle(blog?.article);
-    setImage(blog?.image);
-    setPublicId(blog?.publicId);
-  }, [blog]);
-
-  useEffect(() => {
-    if (successUpdate && submittedForm) {
-      setSubmittedForm(false);
-      history.push('/admin/blogs');
-    }
-  }, [successUpdate, submittedForm, history]);
-
-  const submitHandler = (e: any) => {
-    e.preventDefault();
-    setSubmittedForm(true);
-    if (file?.name) {
-      setUploading(true);
-      uploadFileHandler(
-        file,
-        setUploading,
-        publicId,
-        setImageUploadStatus,
-        setClouadinaryData
       );
     } else {
       dispatch(
-        updateBlog({
-          _id: blogId,
-          title,
-          article,
+        createBlog({
+          title: inputs.title,
+          article: inputs.article,
           image,
-          publicId,
         })
       );
     }
   };
 
-  const editPhotoHandler = (e: any) => setFile(e.target.files[0]);
+  const { inputs, handleInput, onSubmit } = useBlogEditForm(
+    editBlogCallback,
+    blog
+  );
 
-  const removePhotoHandler = (e: any) => {
-    e.preventDefault();
-    removePhoto(
-      blog.publicId,
-      setPublicId,
-      dispatch,
-      updateBlog,
-      blogId,
-      setErrorMsg,
-      false,
-      'blog'
-    );
-  };
+  useEffect(() => {
+    if (successCreate || successUpdate) {
+      history.push('/admin/blogs');
+      dispatch({ type: BLOG_UPDATE_RESET });
+      dispatch({ type: BLOG_CREATE_RESET });
+    }
+  }, [successUpdate, history, successCreate, dispatch]);
+
+  const editPhotoHandler = (e: any) => setFile(e.target.files[0]);
 
   return (
     <Container>
@@ -132,39 +137,40 @@ const BlogEdit = () => {
         step1='Home'
         step2='Dashboard'
         step3='Blogs'
-        step4={blog?.title}
-        step5='Edit'
+        step4={isEditMode ? 'Update' : 'Create'}
+        step5=''
         url1='/'
         url2='/admin'
         url3='/admin/blogs'
       />
-      {(error || errorUpdate || errorMsg) && (
-        <Message variant='danger'>{error || errorUpdate || errorMsg}</Message>
+      {(errorCreate || errorUpdate) && (
+        <Message variant='danger'>{errorCreate || errorUpdate}</Message>
       )}
-      {(loading || loadingUpdate || submittedForm) && <HexagonLoader />}
       <EditForm>
         <Form.Group controlId='name'>
           <Form.Label>Title</Form.Label>
           <Form.Control
+            name='title'
             type='text'
-            value={title || ''}
-            onChange={(e) => setTitle(e.target.value)}
+            value={inputs?.title || ''}
+            onChange={handleInput}
           ></Form.Control>
         </Form.Group>
 
         <Form.Group controlId='image' className='d-flex flex-column'>
           <Form.Label>Image</Form.Label>
           <Form.Control
+            name='image'
             className='img-link'
             type='text'
-            value={image || ''}
-            onChange={(e) => setImage(e.target.value)}
+            value={inputs?.image || ''}
+            onChange={handleInput}
           ></Form.Control>
           <div className='d-flex'>
             <FormFile
               id='image-file'
               label={
-                blog?.image === defaultImages.blog || file?.name ? (
+                blog?.image === defaultImages.upload || file?.name ? (
                   <UploadImageSquare className={uploading ? 'anim' : ''}>
                     <PhotoUploadIcon ready={file} imgStatus={imgUploadStatus} />
                   </UploadImageSquare>
@@ -180,29 +186,21 @@ const BlogEdit = () => {
               }
               onChange={(e: any) => editPhotoHandler(e)}
             ></FormFile>
-            <RemovePhoto
-              onClick={(e: any) =>
-                image === defaultImages.blog ? {} : removePhotoHandler(e)
-              }
-            >
-              <RemovePhotoIcon />
-              <Text marginLeft='0.75rem' fontWeight='300' color='#c4c4c4'>
-                Remove Photo
-              </Text>
-            </RemovePhoto>
           </div>
         </Form.Group>
         <Form.Group controlId='message' className='mt-5'>
           <Form.Label>Article</Form.Label>
           <Form.Control
+            name='article'
             rows={5}
             as='textarea'
-            value={article || ''}
-            onChange={(e) => setArticle(e.target.value)}
+            value={inputs?.article || ''}
+            onChange={handleInput}
           ></Form.Control>
         </Form.Group>
-        <UpdateBtn onClick={(e: any) => submitHandler(e)}>
-          Updat{loadingUpdate ? 'ing...' : 'e'}
+        <UpdateBtn onClick={onSubmit}>
+          {isEditMode ? 'Updat' : 'Creat'}
+          {loadingUpdate || loadingCreate ? 'ing...' : 'e'}
         </UpdateBtn>
       </EditForm>
     </Container>

@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { listWhoWeAreUsers } from '../../actions/userActions';
 import { Text } from '../../components/styles/Styles';
 import styled from 'styled-components';
-import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
 import LeftArrow from '../../components/svg/LeftArrow';
 import RightArrow from '../../components/svg/RightArrow';
 import AboutUsHigh from '../../components/assets/about-us-high.jpg';
@@ -68,7 +67,7 @@ const TeamMembers = () => {
     dispatch(listWhoWeAreUsers());
   }, [dispatch]);
 
-  const boardMembers = users?.users?.concat(users?.manuallyAddedUsers);
+  const boardMembers = users?.boardMembers;
 
   return (
     <>

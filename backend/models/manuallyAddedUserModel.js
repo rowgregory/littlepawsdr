@@ -14,9 +14,6 @@ const manuallyAddedUserSchema = mongoose.Schema(
     email: {
       type: String,
     },
-    publicId: {
-      type: String,
-    },
     profileCardTheme: {
       type: String,
     },

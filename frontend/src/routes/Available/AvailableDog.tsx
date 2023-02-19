@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Redirect, useLocation } from 'react-router-dom';
 import { Carousel, Image } from 'react-bootstrap';
 import { Text } from '../../components/styles/Styles';
@@ -14,102 +14,97 @@ import {
   StyledCarousel,
 } from '../../components/styles/AvailableDog/Styles';
 import NoImgDog from '../../components/assets/no_image_dog.jpg';
+import { useDispatch, useSelector } from 'react-redux';
+import { getDachshundDetails } from '../../actions/dachshundsActions';
+import { LoadingImg } from '../../components/LoadingImg';
 
-const AvailableDog = () => {
+const AvailableDog = ({ match }: any) => {
   const { state, pathname } = useLocation() as any;
+  const dispatch = useDispatch();
+  const dogId = match?.params?.id;
+
+  const {
+    dachshundDetails: { loading, dachshund },
+  } = useSelector((state: any) => state);
+
+  useEffect(() => {
+    if (state?.dog === undefined) {
+      dispatch(getDachshundDetails(dogId));
+    }
+  }, [dispatch, dogId, state]);
 
   if (pathname === '/available/dogs/18728573') {
     return <Redirect to='/adopt/fees' />;
   }
 
-  const {
-    name,
-    breedString,
-    ageGroup,
-    sex,
-    photos,
-    isDogsOk,
-    isKidsOk,
-    ageString,
-    sizeGroup,
-    colorDetails,
-    groomingNeeds,
-    isHousetrained,
-    housetrainedReasonNot,
-    newPeopleReaction,
-    isCatsOk,
-    vocalLevel,
-    descriptionHtml,
-    adoptionFeeString,
-  } = state?.dog?.attributes;
+  const attributes = state?.dog?.attributes || dachshund?.data[0]?.attributes;
 
   const detailsData = () => [
     {
       title: 'Name',
-      textKey: name,
+      textKey: attributes?.name,
     },
     {
       title: 'Age',
-      textKey: ageString,
+      textKey: attributes?.ageString,
     },
     {
       title: 'Gender',
-      textKey: sex,
+      textKey: attributes?.sex,
     },
     {
       title: 'Size',
-      textKey: sizeGroup,
+      textKey: attributes?.sizeGroup,
     },
     {
       title: 'Primary Color',
-      textKey: colorDetails,
+      textKey: attributes?.colorDetails,
     },
     {
       title: 'Grooming Needs',
-      textKey: groomingNeeds,
+      textKey: attributes?.groomingNeeds,
     },
     {
       title: 'Ok with kids',
-      textKey: isKidsOk ? 'YES' : 'NO',
+      textKey: attributes?.isKidsOk ? 'YES' : 'NO',
     },
     {
       title: 'Housetrained',
-      textKey: isHousetrained ? 'YES' : housetrainedReasonNot,
+      textKey: attributes?.isHousetrained
+        ? 'YES'
+        : attributes?.housetrainedReasonNot,
     },
     {
       title: 'New People Reaction',
-      textKey: newPeopleReaction,
+      textKey: attributes?.newPeopleReaction,
     },
     {
       title: 'Vocal Level',
-      textKey: vocalLevel,
+      textKey: attributes?.vocalLevel,
     },
     {
       title: 'Ok with dogs',
-      textKey: isDogsOk ? 'YES' : 'NO',
+      textKey: attributes?.isDogsOk ? 'YES' : 'NO',
     },
     {
       title: 'Okay with cats',
-      textKey: isCatsOk ? 'YES' : 'NO',
+      textKey: attributes?.isCatsOk ? 'YES' : 'NO',
     },
   ];
 
   return (
     <Container>
-      <LeftArrow
-        text={`Back to ${state?.pathName}`}
-        url={`/${state?.directBackTo}`}
-      />
-
+      <LeftArrow text='Back' url='/available' />
       {state?.pathName === 'home' && (
         <>
           <Text>Or</Text>
           <LeftArrow text={`See all available dachshunds`} url={`/available`} />
         </>
       )}
-
       <FlexContainer>
-        {photos?.length === 0 ? (
+        {loading ? (
+          <LoadingImg mw='65%' w='' />
+        ) : attributes?.photos?.length === 0 ? (
           <Image
             src={NoImgDog}
             style={{
@@ -118,15 +113,15 @@ const AvailableDog = () => {
               width: '100%',
               objectFit: 'cover',
             }}
-            alt={`Sorry, we currently do not have an image for ${name}`}
+            alt={`Sorry, we currently do not have an image for ${attributes?.name}`}
           />
         ) : (
           <StyledCarousel pause='hover'>
-            {photos?.map((photo: string, i: number) => (
+            {attributes?.photos?.map((photo: string, i: number) => (
               <Carousel.Item key={i} interval={4000}>
                 <Image
                   src={photo}
-                  alt={`${name}`}
+                  alt={`${attributes?.name}`}
                   style={{ aspectRatio: '1/1' }}
                 />
               </Carousel.Item>
@@ -135,10 +130,10 @@ const AvailableDog = () => {
         )}
         <DogDetailsContainer>
           <Text fontSize='2.25rem' fontWeight='500'>
-            {name}
+            {attributes?.name}
           </Text>
           <Text marginBottom='1.875rem'>
-            {ageGroup} {sex} {breedString}
+            {attributes?.ageGroup} {attributes?.sex} {attributes?.breedString}
           </Text>
           <AdoptMeLink to='/adopt/application' type='button'>
             Adopt
@@ -148,7 +143,7 @@ const AvailableDog = () => {
       <FlexContainer>
         <div className='d-flex flex-column mr-4' style={{ flex: '1 1 0px' }}>
           <Text fontSize='1.5rem' fontWeight='600' marginBottom='1.875rem'>
-            About {name}
+            About {attributes?.name}
           </Text>
           <Text
             border='1px solid rgb(68, 68, 68)'
@@ -156,10 +151,10 @@ const AvailableDog = () => {
             fontSize='1.15rem'
             marginBottom='32px'
           >
-            Adoption Fee: {adoptionFeeString}
+            Adoption Fee: {attributes?.adoptionFeeString}
           </Text>
           <Description
-            dangerouslySetInnerHTML={{ __html: descriptionHtml }}
+            dangerouslySetInnerHTML={{ __html: attributes?.descriptionHtml }}
           ></Description>
         </div>
         <div style={{ flex: '1 1 0px' }}>

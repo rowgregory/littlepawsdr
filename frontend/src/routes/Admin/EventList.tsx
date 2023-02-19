@@ -2,11 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Table, Spinner, Pagination } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { listEvents, createEvent } from '../../actions/eventActions';
-import { EVENT_CREATE_RESET } from '../../constants/eventConstants';
+import { listEvents } from '../../actions/eventActions';
 import DeleteModal from '../../components/DeleteModal';
 import { Text } from '../../components/styles/Styles';
-import { useHistory } from 'react-router';
 import {
   SearchBar,
   TableHead,
@@ -20,35 +18,30 @@ import {
   TableWrapper,
   CreateBtnV2,
   TableImg,
+  SpinnerContainer,
 } from '../../components/styles/admin/Styles';
 import { WelcomeText } from '../../components/styles/DashboardStyles';
 import BreadCrumb from '../../components/common/BreadCrumb';
 import { rangeV2 } from '../../components/common/Pagination';
 import Message from '../../components/Message';
-import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
-import { formatDate } from '../../utils/formatDate';
 import { AddIcon } from '../../components/svg/AddIcon';
+import { defaultImages } from '../../utils/defaultImages';
+import { formatDate } from '../../utils/formatDate';
 
 const EventList = () => {
-  const history = useHistory();
   const dispatch = useDispatch();
   const [show, setShow] = useState(false);
   const [id, setId] = useState('');
-  const [publicId, setPublicId] = useState('');
   const [text, setText] = useState('');
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const [imagePath, setImagePath] = useState('');
   const [paginatedPage, setPaginatedPage] = useState(1);
   const [paginatedItems, setPaginatedItems] = useState<{}[]>([]) as any;
 
-  const {
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  let {
     eventList: { loading, error, events },
-    eventCreate: {
-      loading: loadingCreate,
-      error: errorCreate,
-      success: successCreate,
-      event: createdEvent,
-    },
     eventDelete: {
       loading: loadingDelete,
       error: errorDelete,
@@ -57,16 +50,8 @@ const EventList = () => {
   } = useSelector((state: any) => state);
 
   useEffect(() => {
-    dispatch({ type: EVENT_CREATE_RESET });
-    if (successCreate) {
-      history.push({
-        pathname: `/admin/event/${createdEvent._id}/edit`,
-        state: { createdEvent },
-      });
-    } else {
-      dispatch(listEvents());
-    }
-  }, [dispatch, history, successCreate, createdEvent, successDelete]);
+    dispatch(listEvents());
+  }, [dispatch, successDelete]);
 
   useEffect(() => {
     const itemsPerPage = 10;
@@ -76,10 +61,6 @@ const EventList = () => {
     setPaginatedItems(events?.slice(indexOfFirstItem, indexOfLastItem));
   }, [events, paginatedPage]);
 
-  const createEventHandler = () => {
-    dispatch(createEvent());
-  };
-
   const filteredEvents =
     text !== ''
       ? events?.filter((event: any) =>
@@ -88,6 +69,17 @@ const EventList = () => {
       : paginatedItems?.filter((event: any) =>
           event?.title?.toLowerCase().includes(text.toLowerCase())
         );
+
+  const event = {
+    title: '',
+    externalLink: '',
+    description: '',
+    startDate: '',
+    endDate: '',
+    image: defaultImages.upload,
+    background: '',
+    color: '',
+  };
 
   return (
     <Container>
@@ -106,14 +98,11 @@ const EventList = () => {
         show={show}
         handleClose={handleClose}
         id={id}
-        publicId={publicId}
+        publicId={imagePath}
       />
-      {(error || errorCreate || errorDelete) && (
-        <Message variant='danger'>
-          {error || errorCreate || errorDelete}
-        </Message>
+      {(error || errorDelete) && (
+        <Message variant='danger'>{error || errorDelete}</Message>
       )}
-      {(loading || loadingCreate || loadingDelete) && <HexagonLoader />}
       <TableWrapper>
         <TopRow className='d-flex align-items-center'>
           <SearchBar>
@@ -125,23 +114,32 @@ const EventList = () => {
               onChange={(e: any) => setText(e.target.value)}
             />
           </SearchBar>
-          <CreateBtnV2 onClick={createEventHandler}>
-            <AddIcon />
-            {loadingCreate ? (
+          {loading ? (
+            <SpinnerContainer>
               <Spinner animation='border' size='sm' />
-            ) : (
-              'Create'
-            )}
-          </CreateBtnV2>
+            </SpinnerContainer>
+          ) : (
+            <LinkContainer
+              to={{
+                pathname: '/admin/event/id/edit',
+                state: { event },
+              }}
+            >
+              <CreateBtnV2>
+                <AddIcon />
+                Create
+              </CreateBtnV2>
+            </LinkContainer>
+          )}
         </TopRow>
-
         <TableAndPaginationContainer>
           <Table hover responsive>
             <TableHead>
               <tr>
                 <th>TITLE</th>
                 <th>IMAGE</th>
-                <th>DATE</th>
+                <th>START DATE</th>
+                <th>END DATE</th>
                 <th>STATUS</th>
                 <th>EDIT</th>
                 <th>DELETE</th>
@@ -157,10 +155,10 @@ const EventList = () => {
                     <TableImg src={event?.image} alt={event?.name} />
                   </td>
                   <td>
-                    <Text>
-                      {event?.startDate && formatDate(event?.startDate)} -{' '}
-                      {event?.endDate && formatDate(event?.endDate)}
-                    </Text>
+                    <Text>{formatDate(event?.startDate)}</Text>
+                  </td>
+                  <td>
+                    <Text>{formatDate(event?.endDate)}</Text>
                   </td>
                   <td>
                     <Text>{event?.status}</Text>
@@ -169,7 +167,7 @@ const EventList = () => {
                     <LinkContainer
                       to={{
                         pathname: `/admin/event/${event?._id}/edit`,
-                        state: { event },
+                        state: { event, isEditMode: true },
                       }}
                     >
                       <StyledEditBtn>
@@ -185,7 +183,7 @@ const EventList = () => {
                       className='border-0'
                       onClick={() => {
                         setId(event?._id);
-                        setPublicId(event?.publicId);
+                        setImagePath(event?.image);
                         handleShow();
                       }}
                     >

@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 const headers = {
   'Content-Type': 'application/vnd.api+json',
   Authorization: `${process.env.REACT_APP_RESCUE_GROUPS_API_KEY}`,
@@ -64,6 +66,41 @@ const API = {
       return data;
     } catch (err) {
       return { message: 'Rescue Groups Error' };
+    }
+  },
+  uploadImageToImgbb: async (formData: any) => {
+    try {
+      let response = axios
+        .post(
+          'https://api.imgbb.com/1/upload?key=a704ca29c0200fd79511918c24fd90d6',
+          formData
+        )
+        .then((res) => {
+          return res.data;
+        })
+        .catch((error) => {
+          return error;
+        });
+
+      return response;
+    } catch (err: any) {
+      return err.message;
+    }
+  },
+  deleteImage: async (path: any) => {
+    try {
+      let response = axios
+        .post('/api/remove-upload', { publicId: path })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((error) => {
+          return error;
+        });
+
+      return response;
+    } catch (err: any) {
+      return err.message;
     }
   },
 };

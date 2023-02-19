@@ -4,7 +4,6 @@ import Banner from '../components/home/Banner';
 import OurLovablePals from '../components/home/OurLovablePals';
 import { Text } from '../components/styles/Styles';
 import Shop from '../components/home/Shop';
-import styled, { useTheme } from 'styled-components';
 import HomeDog from '../components/assets/home_dog_11.jpeg';
 import One from '../components/assets/dog-row-home-1.png';
 import Two from '../components/assets/dog-row-home-2.webp';
@@ -12,179 +11,20 @@ import Three from '../components/assets/dog-row-home-3.webp';
 import Four from '../components/assets/dog-row-home-4.webp';
 import Five from '../components/assets/dog-row-home-5.webp';
 import { Image } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-
-const HomeContainer = styled.div`
-  margin: 96px auto 0;
-  width: 100%;
-`;
-
-const ParallaxWindow = styled.div`
-  display: none;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-    display: block;
-    position: relative;
-    width: 100%;
-    padding-bottom: 60%;
-    height: 100vh;
-  }
-`;
-const ParallaxSectionContent = styled.h3`
-  top: 25%;
-  marign-left: auto;
-  margin-right: auto;
-  position: absolute;
-  padding: 0 20px;
-  z-index: 25;
-  color: #fff;
-  font-size: 28px;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  align-items: center;
-  font-weight: 400;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-    font-size: 44px;
-    transform: translate(-50%, -50%);
-    left: 50%;
-    top: 50%;
-  }
-`;
-const ParallaxImg = styled.div`
-  position: absolute;
-  z-index: 20;
-  width: 100%;
-  height: 100%;
-  background-size: cover;
-  background-attachment: fixed;
-  background-position: center center;
-  background-image: url(${HomeDog});
-  background-repeat: no-repeat;
-  filter: brightness(0.8);
-`;
-const ParallaxImg2 = styled.div`
-  position: absolute;
-  z-index: 20;
-  width: 100%;
-  height: 100%;
-  background-size: cover;
-  background-attachment: fixed;
-  background-position: center center;
-  background-image: url('https://res.cloudinary.com/dro7mux7a/image/upload/v1673299654/the-goal-2_pcu80y.jpg');
-  background-repeat: no-repeat;
-  filter: brightness(0.8);
-`;
-
-const ImageGallery = styled.div`
-  background: ${({ theme }) => theme.header.bg};
-  padding: 20px;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-  width: 100%;
-  img {
-    object-fit: cover;
-    width: 100%;
-    height: 100%;
-    aspect-ratio: 1/1;
-  }
-`;
-
-const Divider = () => {
-  return (
-    <svg
-      viewBox='0 -20 700 110'
-      width='100%'
-      height='80'
-      preserveAspectRatio='none'
-      style={{ position: 'absolute', top: '-80px', zIndex: 100 }}
-    >
-      <path
-        d='M0,10 c80,-18 230,-12 350,7 c80,13 260,17 350,-5 v100 h-700z'
-        fill='#211e2f'
-      />
-    </svg>
-  );
-};
-
-const threeOptionData = (colors: any) => {
-  return [
-    {
-      title: 'Donate',
-      text: 'Every gift can make a difference for a dachshund in need.',
-      bgColor: colors.tertiary,
-      linkKey: '/donate',
-    },
-    {
-      title: 'Events',
-      text: "Don't forget to participate in our monthly fundraisers and events.",
-      bgColor: colors.secondary,
-      linkKey: '/events',
-    },
-    {
-      title: 'Blog',
-      text: 'Our dedicated volunteers keep you up to date with the latest dachshund news.',
-      bgColor: colors.tertiary,
-      linkKey: '/about/blog',
-    },
-  ];
-};
-
-export const hex2rgba = (hex: any, alpha: number) => {
-  const [r, g, b] = hex.match(/\w\w/g).map((x: any) => parseInt(x, 16));
-  return `rgba(${r},${g},${b},${alpha})`;
-};
-
-const ThreeOptions = styled.div`
-  display: grid;
-  grid-template-columns: 1fr;
-  box-sizing: border-box;
-
-  gap: 0.5rem;
-  width: 75%;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-  }
-`;
-
-const DifferenceCard = styled(Link)<{
-  bgcolor: string;
-}>`
-  display: none;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-    aspect-ratio: 1/1;
-    position: relative;
-    width: 100%;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    padding: 1rem;
-    text-align: center;
-    background: ${({ bgcolor }) => bgcolor};
-    div {
-      color: #fff;
-    }
-    :hover {
-      text-decoration: none;
-    }
-  }
-`;
-
-const MobileImageSection = styled.div`
-  display: block;
-  position: relative;
-  width: 100%;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-    display: none;
-  }
-`;
+import Parallax2 from '../components/assets/parallax-2.jpg';
+import {
+  HomeContainer,
+  ImageGallery,
+  MobileImageSection,
+  ParallaxImg,
+  ParallaxImg2,
+  ParallaxSectionContent,
+  ParallaxWindow,
+} from '../components/home/styles';
+import { WaveDivider } from '../components/home/WaveDivider';
 
 const Home = () => {
   const homeImages = [One, Two, Three, Four, Five];
-  const theme = useTheme() as any;
 
   return (
     <>
@@ -199,7 +39,7 @@ const Home = () => {
           window.open('https://mixkit.co/@rubenvelasco/', '_blank')
         }
       >
-        Video by Ruben Velasco{' '}
+        Video by Ruben Velasco
       </Text>
       <HomeContainer>
         <OurLovablePals />
@@ -209,11 +49,16 @@ const Home = () => {
             src={HomeDog}
             alt='LPDR'
             width='100%'
-            height='600px'
-            style={{ objectFit: 'cover' }}
+            style={{ objectFit: 'cover', height: '100vh' }}
             loading='lazy'
           />
-          <ParallaxSectionContent>
+          <ParallaxSectionContent
+            style={{
+              textAlign: 'center',
+              filter: 'drop-shadow(0px 20px 10px rgb(0 0 0/0.4))',
+              fontSize: '56px',
+            }}
+          >
             Changing lives four paws at a time
           </ParallaxSectionContent>
         </MobileImageSection>
@@ -224,7 +69,7 @@ const Home = () => {
           <ParallaxImg />
         </ParallaxWindow>
         <div style={{ position: 'relative', width: '100%' }}>
-          <Divider />
+          <WaveDivider />
         </div>
         <ImageGallery>
           {homeImages.map((img: any, i: number) => (
@@ -240,33 +85,26 @@ const Home = () => {
             transform: 'rotateX(180deg)',
           }}
         >
-          <Divider />
+          <WaveDivider />
         </div>
         <MobileImageSection>
           <Image
-            src='https://res.cloudinary.com/dro7mux7a/image/upload/v1673299654/the-goal-2_pcu80y.jpg'
+            src={Parallax2}
             alt='LPDR'
             width='100%'
             loading='lazy'
+            style={{ objectFit: 'cover', height: '100vh' }}
           />
-          <ParallaxSectionContent>
+          <ParallaxSectionContent
+            style={{
+              textAlign: 'center',
+              filter: 'drop-shadow(0px 20px 10px rgb(0 0 0/0.4))',
+              fontSize: '56px',
+            }}
+          >
             You can make an impact
-            <ThreeOptions>
-              {threeOptionData(theme.colors).map((obj: any, i: number) => (
-                <DifferenceCard
-                  to={obj.linkKey}
-                  key={i}
-                  bgcolor={hex2rgba(obj.bgColor, 0.7)}
-                >
-                  <Text fontSize='2rem' fontWeight='500' marginBottom='1.25rem'>
-                    {obj.title}
-                  </Text>
-                  <Text fontSize='1.125rem'>{obj.text}</Text>
-                </DifferenceCard>
-              ))}
-            </ThreeOptions>
           </ParallaxSectionContent>
-        </MobileImageSection>{' '}
+        </MobileImageSection>
         <ParallaxWindow>
           <ParallaxSectionContent>
             You can make an impact

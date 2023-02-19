@@ -60,3 +60,15 @@ export const SettingsTitleContainer = styled.div`
 export const Label = styled(Form.Label)`
   margin-bottom: 0;
 `;
+export const AccordionWrapper = styled.div`
+  position: fixed;
+  bottom: 20;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 500px;
+  margin-inline: auto;
+`;

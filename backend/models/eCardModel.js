@@ -5,7 +5,6 @@ const eCardSchema = mongoose.Schema(
     category: { type: String },
     price: { type: Number },
     image: { type: String },
-    publicId: { type: String },
     name: { type: String },
   },
   {
