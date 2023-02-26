@@ -189,10 +189,13 @@ const AvailableDog = ({ match }: any) => {
             Transportation Help
           </Text>
           <Text>
-            If you see a furbaby that would be a match for your family, please
-            don’t let distance stand in the way of your adoption. LPDR can work
-            with you to have a volunteer transport to assist with transportation
-            or refer you to a paid transport.
+            If you see a dog that is a match for your family a LPDR volunteer
+            transport may be arranged to bring the dog to you. However, some of
+            our dogs have distance restrictions and need to be adopted within a
+            specific number of miles from their foster homes. We’ll inform you
+            if the dog you’ve applied for is not able to travel long distances
+            by car. A paid transport can also be arranged for any dog that does
+            not have travel restrictions.
           </Text>
         </div>
       </BottomSection>

@@ -220,7 +220,7 @@ const LongDog = () => {
               ? 'Thank you to everybody who participated. See you next year!'
               : 'Coming Soon'}
           </h3>
-          <ContestTitle>LONG DOG CONTEST</ContestTitle>
+          <ContestTitle>LONG DOG RAFFLE</ContestTitle>
           <div className='d-flex justify-content-center'>
             {loading ? (
               <ContestTitle>LOADING</ContestTitle>
