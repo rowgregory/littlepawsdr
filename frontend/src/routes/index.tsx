@@ -111,8 +111,8 @@ export const Routes: FC = () => {
       case '/donate/shopping-to-help/':
         return history.push('/e-cards');
       case '/donate/sponsor-a-sanctuary-dog/':
-        return history.push('/donate/e-cards');
-      case '/welcome-to-little-paws-dachshund-rescue':
+        return history.push('/e-cards');
+      case '/welcome-to-little-paws-dachshund-rescue/':
         return history.push('/');
     }
   }, [pathname, history]);
