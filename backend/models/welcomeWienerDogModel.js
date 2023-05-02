@@ -1,6 +1,6 @@
-import { Schema, model } from 'mongoose';
+import mongoose from 'mongoose';
 
-const welcomeWienerDogSchema = Schema(
+const welcomeWienerDogSchema = mongoose.Schema(
   {
     displayUrl: {
       type: String,
@@ -22,5 +22,8 @@ const welcomeWienerDogSchema = Schema(
   { timestamps: true }
 );
 
-const WelcomeWienerDog = model('WelcomeWienerDog', welcomeWienerDogSchema);
+const WelcomeWienerDog = mongoose.model(
+  'WelcomeWienerDog',
+  welcomeWienerDogSchema
+);
 export default WelcomeWienerDog;

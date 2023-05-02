@@ -1,20 +1,26 @@
-const express = require('express');
+import express from 'express';
+import {
+  getAllWelcomeWienerDogs,
+  getWelcomeWienerDogById,
+  createWelcomeWienerDog,
+  updateWelcomeWienerDog,
+  deleteWelcomeWienerDog,
+} from '../controllers/welcomeWienerDogController.js';
 const router = express.Router();
-const welcomeWienerDogController = require('../controllers/welcomeWienerDogController');
 
 // GET all welcomeWienerDogs
-router.get('/', welcomeWienerDogController.getAllWelcomeWienerDogs);
+router.get('/', getAllWelcomeWienerDogs);
 
 // GET a welcomeWienerDog by id
-router.get('/:id', welcomeWienerDogController.getWelcomeWienerDogById);
+router.get('/:id', getWelcomeWienerDogById);
 
 // POST a new welcomeWienerDog
-router.post('/', welcomeWienerDogController.createWelcomeWienerDog);
+router.post('/', createWelcomeWienerDog);
 
 // PUT update a welcomeWienerDog by id
-router.put('/:id', welcomeWienerDogController.updateWelcomeWienerDog);
+router.put('/:id', updateWelcomeWienerDog);
 
 // DELETE a welcomeWienerDog by id
-router.delete('/:id', welcomeWienerDogController.deleteWelcomeWienerDog);
+router.delete('/:id', deleteWelcomeWienerDog);
 
-module.exports = router;
+export default router;

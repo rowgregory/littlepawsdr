@@ -1,4 +1,4 @@
-import WelcomeWienerDog from '../models/welcomeWienerDog.js';
+import WelcomeWienerDog from '../models/welcomeWienerDogModel.js';
 
 // Get all Welcome Wiener Dogs
 const getAllWelcomeWienerDogs = async (req, res) => {
@@ -72,7 +72,7 @@ const deleteWelcomeWienerDog = async (req, res) => {
   }
 };
 
-module.exports = {
+export {
   getAllWelcomeWienerDogs,
   getWelcomeWienerDogById,
   createWelcomeWienerDog,

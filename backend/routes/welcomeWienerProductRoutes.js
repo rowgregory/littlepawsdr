@@ -1,23 +1,25 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const welcomeWienerProductController = require('../controllers/welcomeWienerProductController.js');
-
+import {
+  getAllWelcomeWienerProducts,
+  getWelcomeWienerProductById,
+  createWelcomeWienerProduct,
+  updateWelcomeWienerProduct,
+  deleteWelcomeWienerProduct,
+} from '../controllers/welcomeWienerProductController.js';
 // GET all welcomeWienerProducts
-router.get('/', welcomeWienerProductController.getAllWelcomeWienerProducts);
+router.get('/', getAllWelcomeWienerProducts);
 
 // GET a welcomeWienerPruduct by id
-router.get('/:id', welcomeWienerProductController.getWelcomeWienerProductById);
+router.get('/:id', getWelcomeWienerProductById);
 
 // POST a new welcomeWienerProduct
-router.post('/', welcomeWienerProductController.createWelcomeWienerProduct);
+router.post('/', createWelcomeWienerProduct);
 
 // PUT update a welcomeWienerProduct by id
-router.put('/:id', welcomeWienerProductController.updateWelcomeWienerProduct);
+router.put('/:id', updateWelcomeWienerProduct);
 
 // DELETE a welcomeWienerProduct by id
-router.delete(
-  '/:id',
-  welcomeWienerProductController.deleteWelcomeWienerProduct
-);
+router.delete('/:id', deleteWelcomeWienerProduct);
 
-module.exports = router;
+export default router;

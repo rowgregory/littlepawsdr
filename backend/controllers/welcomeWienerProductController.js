@@ -1,7 +1,7 @@
-import WelcomeWienerProduct from '../models/welcomeWienerProduct.js';
+import WelcomeWienerProduct from '../models/welcomeWienerProductModel.js';
 
 // Function to retrieve all welcomeWienerProducts
-const getWelcomeWienerProducts = async (req, res) => {
+const getAllWelcomeWienerProducts = async (req, res) => {
   try {
     const welcomeWienerProducts = await WelcomeWienerProduct.find();
     res.status(200).json(welcomeWienerProducts);
@@ -74,7 +74,7 @@ const getWelcomeWienerProductById = async (req, res) => {
 };
 
 export {
-  getWelcomeWienerProducts,
+  getAllWelcomeWienerProducts,
   updateWelcomeWienerProduct,
   createWelcomeWienerProduct,
   deleteWelcomeWienerProduct,

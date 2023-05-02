@@ -1,6 +1,6 @@
-import { Schema, model } from 'mongoose';
+import mongoose from 'mongoose';
 
-const welcomeWienerProductSchema = Schema(
+const welcomeWienerProductSchema = mongoose.Schema(
   {
     displayUrl: {
       type: String,
@@ -18,7 +18,7 @@ const welcomeWienerProductSchema = Schema(
   { timestamps: true }
 );
 
-const WelcomeWienerProduct = model(
+const WelcomeWienerProduct = mongoose.model(
   'WelcomeWienerProduct',
   welcomeWienerProductSchema
 );

@@ -22,7 +22,7 @@ import educationTipRoutes from './routes/educationTipRoutes.js';
 import manuallyAddedUserRoutes from './routes/manuallyAddedUserRoutes.js';
 import recaptchaRoutes from './routes/recaptchaRoutes.js';
 import welcomeWienerDog from './routes/welcomeWienerDogRoutes.js';
-import welcomeWienerProduct from './routes/welcomeWienerProduct.js';
+import welcomeWienerProduct from './routes/welcomeWienerProductRoutes.js';
 import errorRoutes from './routes/errorRoutes.js';
 import cors from 'cors';
 
