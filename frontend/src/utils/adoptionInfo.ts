@@ -27,27 +27,27 @@ export const fiveStepProcess = (): SixStepProcessProps[] => {
       titleKey: 'Step One: Application',
       text: 'Fill out an adoption application.',
       text2:
-        'While we encourage you to let us know on your application if one of our dogs has captured your interest, we use this simply as a guide for matching and your listing of specific dog in no way implies claim to this particular dog.',
+        'While we encourage you to let us know on your application if one of our dogs has captured your interest, we cannot guarantee you will be selected for that specific dog.',
       text3:
         'NOTE: Adoption Applications expire 6 months from the date of receipt. If you have already submitted an Adoption Application and it has been longer than 6 months, you will need to fill out a new Adoption Application.',
       linkKey: '/adopt',
       path: 'Application',
     },
     {
-      titleKey: 'Step Two: Reference Checks',
-      text: 'All references will be checked prior to home visit. We will contact your current vet, if you have one, for a reference.',
+      titleKey: 'Step Two: Application Review',
+      text: 'Our Application Coordinator will review your application and if all requirements are met your application will move on to the reference check portion of the process.',
     },
     {
-      titleKey: 'Step Three: Application Review',
-      text: 'Processor reviews the application, calls the vet if you have one, verifies vaccinations and spay/neuter. We email personal references (if email is provided) or call them if necessary. Email is best since as references can respond when they are available.',
+      titleKey: 'Step Three: Reference Checks',
+      text: 'All references will be checked prior to a potential virtual home visit. We will contact your current and past veterinarian, personal references, and landlord, if applicable.',
     },
     {
       titleKey: 'Step Four: Home Visit',
-      text: 'A volunteer will come to your home to visit with you and discuss care of dachshunds. Also, the volunteer will look for any potential problems and check to be sure that your fencing is secure. Your home visit does not mean you have been approved.',
+      text: 'A volunteer will contact you to schedule a virtual home visit. All residents of your home must be present. The visit will include a tour of your home inside and out and discuss the care of your dog of interest. Your home visit does not guarantee approval.',
     },
     {
       titleKey: 'Step Five: Approval',
-      text: 'After the above steps have been completed all your information will be reviewed and a decision will be made about adoption. If at this point you are approved to adopt, LPDR will help guide you to the appropriate dog for your family.',
+      text: 'After the above steps have been completed all your information will be reviewed and a decision will be made. If at this point you are approved to adopt, LPDR will notify you of the next steps in the process to complete the adoption.',
     },
   ];
 };

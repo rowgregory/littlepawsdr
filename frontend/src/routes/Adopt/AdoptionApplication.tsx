@@ -24,6 +24,8 @@ const AdoptionApplicationIFrame = styled.iframe<{ pageKey?: string }>`
 const AdoptionApplication = () => {
   const theme = useTheme() as any;
   const isDay: boolean = theme.mode === 'day';
+  const recipient = 'applications@littlepawsdr.org';
+  const subject = 'Help with application';
   return (
     <>
       <Hero
@@ -52,74 +54,145 @@ const AdoptionApplication = () => {
           />
           <RightArrow text='Adopt a Senior' url='/available/senior' />
         </div>
-        <Text fontSize='32px' fontWeight={400} marginTop='56px'>
-          Thank you for considering adopting a rescued dachshund. Submission of
-          this application does not guarantee that you will receive a dog. We do
-          not adopt to anyone under the age of 21.
+        <Text
+          fontSize='31px'
+          marginTop='56px'
+          fontWeight={400}
+          textAlign='center'
+          marginBottom='24px'
+        >
+          About Little Paws Dachshund Rescue
         </Text>
         <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='18px'>
-          This application can take 15 - 30 minutes to complete.
+          We are an east coast based 501(c)3 exempt nonprofit dedicated to the
+          rescue and re- homing of our favorite short legged breed.
         </Text>
         <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='18px'>
-          Once your application is received and your vet and personal references
-          are approved, you will be notified that a LPDR volunteer will conduct
-          a homevisit. A homevisit is scheduled at a time that is convenient for
-          you. We require that everyone living in the home must be present at
-          the time of the homevisit, including all animals. The homevisit
-          volunteer will inspect the locations where the dachshund will eat,
-          sleep and play.
+          We specialize in finding permanent homes for dachshund and dachshund
+          mixes. We strive to make the lives of all dogs better through action,
+          advocacy, awareness, and education.
         </Text>
         <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='18px'>
-          <u>TRANSPORTATION HELP!</u>
+          It is LPDR’s goal to identify abandoned, mistreated, or homeless dogs
+          and oversee their treatment and wellbeing while working to find loving
+          owners for those in our care. If you are looking for a new family
+          member, take a look at our available dachshund and dachshund mixes.
+        </Text>
+        <Text
+          fontSize='31px'
+          marginTop='56px'
+          fontWeight={400}
+          textAlign='center'
+          maxWidth='680px'
+          marginBottom='24px'
+          marginLeft='auto'
+          marginRight='auto'
+        >
+          Thank you for considering adopting a rescued dachshund or dachshund
+          mix.
+        </Text>
+        <Text
+          maxWidth='680px'
+          className='mb-3 mt-4 mx-auto'
+          fontSize='18px'
+          fontWeight='600'
+        >
+          Adoption Qualification Requirements
         </Text>
         <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='18px'>
-          If you see a dog that is a match for your family a LPDR volunteer
-          transport may be arranged to bring the dog to you. However, some of
-          our dogs have distance restrictions and need to be adopted within a
-          specific number of miles from their foster homes. We’ll inform you if
-          the dog you’ve applied for is not able to travel long distances by
-          car. A paid transport can also be arranged for any dog that does not
-          have travel restrictions.
+          The following are the standards that our rescue adheres to. Please
+          note, each dog is different and may have additional requirements,
+          however, the list below applies to every adoption.
         </Text>
         <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='18px'>
-          <u>OFF-LEASH AND INVISIBLE FENCE POLICY</u>
+          To ensure that we are working with people that are committed to
+          adopting and welcoming a rescue into their family, we require all
+          individuals to read the dog’s bio/requirements completely to ensure
+          the dog of interest is the best match for your family and that the
+          needs of the dog can be met.  This will help us to ensure that you as
+          the adopter are fully prepared to welcome a new dog into your home.
+        </Text>
+        <Text maxWidth='680px' fontSize='18px' className='mb-4 mx-auto'>
+          <li>
+            Current and previous pets must be spayed or neutered, with some
+            exceptions for health reasons. To be considered for a medical
+            exception for spay/neuter, vet documentation is required.
+          </li>
+        </Text>
+        <Text maxWidth='680px' fontSize='18px' className='mb-4 mx-auto'>
+          <li>
+            Your pets must be current on vaccines, heartworm testing, and
+            heartworm and flea/tick prevention.
+          </li>
+        </Text>
+        <Text maxWidth='680px' fontSize='18px' className='mb-4 mx-auto'>
+          <li>
+            Veterinary records will be checked, and we utilize the AVMA
+            guidelines for preventative care to confirm annual checkups (2x
+            annually for seniors), dentals, bloodwork, and treatment provided
+            when necessary.
+          </li>
+        </Text>
+        <Text maxWidth='680px' fontSize='18px' className='mb-4 mx-auto'>
+          <li>
+            You must be at least 21 years old to be considered to adopt one of
+            our dogs.
+          </li>
+        </Text>
+        <Text
+          maxWidth='680px'
+          className='mb-3 mt-4 mx-auto'
+          fontSize='18px'
+          fontWeight='600'
+        >
+          The Adoption Application Process
         </Text>
         <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='18px'>
-          We understand that some of the very best adopters don't have fenced
-          yards. Unlike some other rescues, we do not impose the rule that all
-          adopters must have fenced yards in order to adopt.
+          Once your application is received it will be reviewed by our
+          application coordinator to determine if you meet the dog’s
+          requirements. If your application shows you would a good match, the
+          following will take place:
+        </Text>
+        <Text maxWidth='680px' fontSize='18px' className='mb-4 mx-auto'>
+          <li>Your past and current veterinarians will be contacted.</li>
+        </Text>
+        <Text maxWidth='680px' fontSize='18px' className='mb-4 mx-auto'>
+          <li>Your personal references will be contacted.</li>
+        </Text>
+        <Text maxWidth='680px' fontSize='18px' className='mb-4 mx-auto'>
+          <li>Your landlord will be contacted, if applicable.</li>
+        </Text>
+        <Text maxWidth='680px' fontSize='18px' className='mb-4 mx-auto'>
+          <li>
+            We will review the information received with the dog’s foster team
+            to determine if a home visit will be scheduled.
+          </li>
         </Text>
         <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='18px'>
-          Dachshunds are, by breed definition, scent hounds. They wi ll often go
-          into hunting mode, zoning out their humans. For their own protection,
-          the majority of LPDR dogs will need to be adopted into home
-          environments that allow them to run free in physically fenced areas
-          and/or with people who are devoted to leash walking. Please understand
-          that there is a subset of dogs that do not do well on leashes and will
-          only be adoptable to applicants with fenced homes.
+          A virtual home visit will be scheduled at a time that is convenient
+          for you. We require that everyone living in the home be present during
+          the visit, including all animals. The home visit volunteer will
+          inspect the locations where the dachshund will eat, sleep, and play,
+          etc.
         </Text>
         <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='18px'>
-          It is LPDR's position that invisible fences are not suitable for
-          dachshunds for a number of reasons. Dachshunds are known for
-          protecting their humans and others they view as part of their pack.
-          Invisible fences pose two very large problems. First, a dachshund may
-          chase something out of the yard and run right through the invisible
-          fence only to realize that the associated collar zap hurt. Thus
-          preventing them from returning to their yard as they do not want to
-          feel that pain again. Secondly, invisible fences largely serve to keep
-          your dog in, but do not keep your pet safe from other dogs or wild
-          animals entering their territory. This false sense of security has
-          been the downfall of many small dogs. For those reasons, it will be
-          uncommon that we adopt to people who utilize invisible fences.
+          If your application does not meet the requirements for the dog you
+          selected, we will contact you with more detailed information about why
+          we’re not moving forward with your application.
         </Text>
         <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='18px'>
-          Again, thank you for wanting to adopt.
+          Little Paws reserves the right to deny an application for any reason.
         </Text>
         <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='18px'>
-          Sincerely,
+          We look forward to working with you. To get help prior to completing
+          an application, please contact us at{' '}
+          <span>
+            {' '}
+            <a href={`mailto:${recipient}?subject=${subject}`}>{recipient}</a>
+          </span>
         </Text>
         <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='18px'>
-          Little Paws Dachshund Rescue Board of Directors
+          Our application can take 15-30 minutes to complete.
         </Text>
         <Text maxWidth='722px' className='mb-3 mt-4 mx-auto'>
           {isDay ? (

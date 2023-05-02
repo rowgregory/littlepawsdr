@@ -66,7 +66,7 @@ export const BottomSection = styled.div`
   grid-template-columns: 1fr;
   margin: 5rem 0rem;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
   }
   div {
     color: #fff;

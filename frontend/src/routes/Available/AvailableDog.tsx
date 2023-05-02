@@ -198,6 +198,17 @@ const AvailableDog = ({ match }: any) => {
             not have travel restrictions.
           </Text>
         </div>
+        <div className='d-flex flex-column p-3'>
+          <Text fontWeight='bold' fontSize='1.15rem' marginBottom='0.55rem'>
+            Adopting across state costs extra
+          </Text>
+          <Text>
+            If the dog is adopted over a state line, there will be an additional
+            charge for a health certificate (required by law) of anywhere
+            between $45.00 and $100.00. The amount depends upon what the
+            veterinarian charges LPDR.
+          </Text>
+        </div>
       </BottomSection>
     </Container>
   );
