@@ -21,6 +21,8 @@ import blogRoutes from './routes/BlogRoutes.js';
 import educationTipRoutes from './routes/educationTipRoutes.js';
 import manuallyAddedUserRoutes from './routes/manuallyAddedUserRoutes.js';
 import recaptchaRoutes from './routes/recaptchaRoutes.js';
+import welcomeWienerDog from './routes/welcomeWienerDogRoutes.js';
+import welcomeWienerProduct from './routes/welcomeWienerProduct.js';
 import errorRoutes from './routes/errorRoutes.js';
 import cors from 'cors';
 
@@ -56,6 +58,8 @@ app.use('/api/raffle-winner', raffleWinnerRoutes);
 app.use('/api/blog', blogRoutes);
 app.use('/api/manually-add-user', manuallyAddedUserRoutes);
 app.use('/api/recaptcha', recaptchaRoutes);
+app.use('/api/welcome-wiener-dog', welcomeWienerDog);
+app.use('/api/welcome-wiener-product', welcomeWienerProduct);
 app.use('/api/error', errorRoutes);
 
 const __dirname = path.resolve();
