@@ -9,18 +9,15 @@ import Hero from '../../components/Hero';
 
 const AdoptionApplicationIFrame = styled.iframe<{ pageKey?: string }>`
   border: none;
-  height: 14000px;
+  height: 14250px;
   max-width: ${({ theme }) => theme.breakpoints[3]};
+
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
-    height: 11300px;
+    height: 11500px;
   }
 
-  @media screen and (orientation: landscape) {
-    height: 12000px;
-  }
-
-  @media screen and (orientation: portrait) and (min-device-width: 768px) and (max-device-width: 1024px) {
-    height: 12000px;
+  @media screen and (orientation: landscape) and (max-width: 900px) {
+    height: 15150px;
   }
 `;
 
@@ -129,7 +126,6 @@ const AdoptionApplication = () => {
             <AdoptionApplicationIFrame
               title='Adoption Application'
               width='100%'
-              height='7250px'
               scrolling='no'
               src='https://toolkit.rescuegroups.org/of/f?c=WHMQCBRV'
             ></AdoptionApplicationIFrame>
@@ -139,7 +135,6 @@ const AdoptionApplication = () => {
               scrolling='no'
               title='Adoption Application'
               width='100%'
-              height='7250px'
               src='https://toolkit.rescuegroups.org/of/f?c=ZKCVRYSQ'
             ></AdoptionApplicationIFrame>
           )}
