@@ -18,6 +18,10 @@ const welcomeWienerDogSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    associatedProducts: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: 'welcomeWienerProduct',
+    },
   },
   { timestamps: true }
 );

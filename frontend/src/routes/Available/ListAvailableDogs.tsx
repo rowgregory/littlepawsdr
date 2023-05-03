@@ -111,23 +111,27 @@ const ListAvailableDogs = () => {
         </h4>
         <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='16px'>
           We are excited that you are interested in adding a dachshund or
-          dachshund-mix to your family! Here you can find a list of all dogs
-          that are available for adoption. Some of our dogs are not posted to
-          the website, so even if you do not find the dog you are looking for
-          please feel free to submit an application and we can look for that
-          perfect dog for you!
+          dachshund-mix to your family! Here is a list of all the dogs we have
+          available for adoption. We encourage you to read each dog’s bio
+          thoroughly.  Each dog has different requirements and not all may fit
+          your lifestyle.  Please complete an adoption application for a dog
+          whose needs you can meet, be it a securely fenced yard, a quiet home,
+          a special diet, a medical need, on-going house training, on-going
+          leash training, etc. 
         </Text>
         <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='16px'>
           When you adopt from LPDR, you are getting a dachshund who:
         </Text>
         <div>
           {[
-            `Has been spayed or neutered`,
-            `Had a full veterinary health check and vaccinations`,
-            `Has been Heartworm tested and treated if necessary`,
-            `Has been microchipped`,
+            `Has been spayed or neutered.`,
+            `Has had a full veterinary health check and core vaccinations.`,
+            `Has been heartworm tested and treated, if necessary.`,
+            `Is taking heartworm and flea and tick preventatives.`,
+            `Has been microchipped.`,
+            `And much more.`,
           ].map((text, i) => (
-            <Text key={i} maxWidth='680px' className='mb-3 mt-4 mx-auto'>
+            <Text key={i} maxWidth='680px' className='mb-3 mt-3 mx-auto'>
               <li style={{ fontSize: '15px' }}>{text}</li>
             </Text>
           ))}

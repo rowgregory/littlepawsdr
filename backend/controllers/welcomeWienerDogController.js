@@ -15,7 +15,9 @@ const getWelcomeWienerDogById = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const welcomeWienerDog = await WelcomeWienerDog.findById(id);
+    const welcomeWienerDog = await WelcomeWienerDog.findById(id).populate(
+      'associatedProducts'
+    );
     res.status(200).json(welcomeWienerDog);
   } catch (error) {
     res.status(404).json({ message: error.message });
