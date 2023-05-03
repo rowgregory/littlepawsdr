@@ -104,7 +104,7 @@ const AdoptionInformation = () => {
         <Text maxWidth='680px' fontSize='18px' className='mb-4 mx-auto'>
           To ensure that we are working with people who are committed to
           adopting and welcoming a rescue into their family,
-          <span style={{ fontWeight: '600' }}>
+          <span style={{ fontWeight: '600', fontSize: '18px' }}>
             {' '}
             we require all individuals to read each dog’s bio/requirements
             completely to ensure the dog of interest is the best match for your
@@ -112,7 +112,7 @@ const AdoptionInformation = () => {
           </span>{' '}
           This will help us to ensure that you as the adopter are fully prepared
           to welcome a new dog into your home.{' '}
-          <span style={{ fontWeight: '600' }}>
+          <span style={{ fontWeight: '600', fontSize: '18px' }}>
             We also encourage you to be in contact with the dog’s foster family,
             as we highly value the input of our foster families.
           </span>{' '}

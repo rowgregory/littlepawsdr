@@ -47,7 +47,7 @@ export const fiveStepProcess = (): SixStepProcessProps[] => {
     },
     {
       titleKey: 'Step Five: Approval',
-      text: 'After the above steps have been completed all your information will be reviewed and a decision will be made. If at this point you are approved to adopt, LPDR will notify you of the next steps in the process to complete the adoption.',
+      text: 'After the above steps have been completed all your information will be reviewed and a decision will be made. If at this point you are approved to adopt, LPDR will notify you of the next steps in the process to complete the adoption. Approval does not mean you will get the dog that you applied for, since we may receive multiple applications for each dog. Approval does mean that you are pre-approved for another dog who is a good match for you and your family. This pre-approval lasts for six months.',
     },
   ];
 };
