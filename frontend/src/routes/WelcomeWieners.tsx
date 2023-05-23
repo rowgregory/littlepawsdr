@@ -68,28 +68,30 @@ const WelcomeWieners = () => {
           clicking on a dachshund image below.
         </Text>
       </TopSection>
-      <WelcomeWienerGrid>
-        {dachshundList?.length === 0 ? (
-          <FirstLetter className='mb-3 mt-4 mx-auto'>
-            Great news! We will be adding Welcome Wieners shortly, where you can
-            learn all about the wonderful world of our dachshunds. From their
-            history to their unique personalities and physical traits, we will
-            have it all covered. Stay tuned for this exciting addition, and get
-            ready to fall in love with these adorable pups even more!
-          </FirstLetter>
-        ) : loading ? (
-          [1, 2, 3].map((_: any, i: number) => (
-            <LoadingImg w='100%' h='100%' key={i} />
-          ))
-        ) : (
-          dachshundList?.map(
+      {dachshundList?.length === 0 ? (
+        <FirstLetter className='mb-3 mt-4 mx-auto'>
+          Great news! We will be adding Welcome Wieners shortly, where you can
+          learn all about the wonderful world of our dachshunds. From their
+          history to their unique personalities and physical traits, we will
+          have it all covered. Stay tuned for this exciting addition, and get
+          ready to fall in love with these adorable pups even more!
+        </FirstLetter>
+      ) : loading ? (
+        [1, 2, 3].map((_: any, i: number) => (
+          <WelcomeWienerGrid>
+            <LoadingImg w='100%' h='100%' key={i} />{' '}
+          </WelcomeWienerGrid>
+        ))
+      ) : (
+        <WelcomeWienerGrid>
+          {dachshundList?.map(
             (dachshund: any) =>
               (dachshund?.isLive || userInfo?.isAdmin) && (
                 <WelcomeWienerCard key={dachshund?._id} dachshund={dachshund} />
               )
-          )
-        )}
-      </WelcomeWienerGrid>
+          )}
+        </WelcomeWienerGrid>
+      )}
     </Container>
   );
 };
