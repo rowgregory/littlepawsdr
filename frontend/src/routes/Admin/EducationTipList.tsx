@@ -39,14 +39,15 @@ const RaffleWinnerList = () => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const {
-    educationTipList: { loading, error, educationTips },
-    educationTipDelete: {
-      loading: loadingDelete,
-      error: errorDelete,
-      success: successDelete,
-    },
-  } = useSelector((state: any) => state);
+  const state = useSelector((state: any) => state);
+
+  const loading = state.educationTipList.loading;
+  const error = state.educationTipList.error;
+  const educationTips = state.educationTipList.educationTips;
+
+  const loadingDelete = state.educationTipDelete.loading;
+  const errorDelete = state.educationTipDelete.error;
+  const successDelete = state.educationTipDelete.success;
 
   useEffect(() => {
     dispatch(listEducationTips());
@@ -102,7 +103,7 @@ const RaffleWinnerList = () => {
         <Message variant='danger'>{error || errorDelete}</Message>
       )}
       <TableWrapper>
-        <TopRow className='d-flex align-items-center'>
+        <TopRow>
           <SearchBar>
             <SearchInput
               as='input'

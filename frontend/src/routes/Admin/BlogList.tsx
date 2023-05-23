@@ -39,15 +39,15 @@ const BlogList = () => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const {
-    blogList: { loading, error, blogs },
+  const state = useSelector((state: any) => state);
 
-    blogDelete: {
-      loading: loadingDelete,
-      error: errorDelete,
-      success: successDelete,
-    },
-  } = useSelector((state: any) => state);
+  const loading = state.blogList.loading;
+  const error = state.blogList.error;
+  const blogs = state.blogList.blogs;
+
+  const loadingDelete = state.blogDelete.loading;
+  const errorDelete = state.blogDelete.error;
+  const successDelete = state.blogDelete.success;
 
   useEffect(() => {
     dispatch(listBlogs());
@@ -101,7 +101,7 @@ const BlogList = () => {
         publicId={imagePath}
       />
       <TableWrapper>
-        <TopRow className='d-flex align-items-center'>
+        <TopRow>
           <SearchBar>
             <SearchInput
               as='input'

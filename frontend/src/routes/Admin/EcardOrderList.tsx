@@ -54,7 +54,7 @@ const EcardOrderList = () => {
 
   return (
     <Container>
-      <WelcomeText className='mb-1'>Ecard Orders</WelcomeText>
+      <WelcomeText>Ecard Orders</WelcomeText>
       <BreadCrumb
         step1='Home'
         step2='Dashboard'
@@ -66,7 +66,7 @@ const EcardOrderList = () => {
       />
       {error && <Message variant='danger'>{error}</Message>}
       <TableWrapper>
-        <TopRow className='d-flex align-items-center'>
+        <TopRow className='mb-3'>
           <SearchBar>
             <SearchInput
               as='input'

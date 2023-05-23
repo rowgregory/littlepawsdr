@@ -58,7 +58,7 @@ export const orderCreateReducer = (state = { order: {} }, action: any) => {
 };
 
 export const orderDetailsReducer = (
-  state = { loading: true, orderItems: [], shippingAddress: {} },
+  state = { loading: true, order: {}, shippingAddress: {} },
   action: any
 ) => {
   switch (action.type) {
@@ -134,7 +134,10 @@ export const orderPayReducer = (state = {}, action: any) => {
   }
 };
 
-export const orderListMyReducer = (state = { orders: [] }, action: any) => {
+export const orderListMyReducer = (
+  state = { orders: { welcomeWienerOrders: [], ecardOrders: [] } },
+  action: any
+) => {
   switch (action.type) {
     case ORDER_LIST_MY_REQUEST:
       return {
@@ -143,7 +146,11 @@ export const orderListMyReducer = (state = { orders: [] }, action: any) => {
     case ORDER_LIST_MY_SUCCESS:
       return {
         loading: false,
-        orders: action.payload,
+        orders: {
+          ...state.orders,
+          welcomeWienerOrders: action.payload.welcomeWienerOrders,
+          ecardOrders: action.payload.ecardOrders,
+        },
       };
     case ORDER_LIST_MY_FAIL:
       return {
@@ -151,7 +158,7 @@ export const orderListMyReducer = (state = { orders: [] }, action: any) => {
         error: action.payload,
       };
     case ORDER_LIST_MY_RESET:
-      return { orders: [] };
+      return { orders: {} };
     default:
       return state;
   }

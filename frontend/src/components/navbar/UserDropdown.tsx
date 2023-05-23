@@ -197,7 +197,7 @@ const UserDropdown = ({
                 style={{ color: '#434343' }}
               ></i>
             </div>
-            <Text>Products</Text>
+            <Text>Welcome Wiener Donations</Text>
           </DropDownLink>
           <DropDownLink
             onClick={() => setIsVisible(false)}

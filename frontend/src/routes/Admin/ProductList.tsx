@@ -44,14 +44,15 @@ const ProductList = () => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const {
-    productList: { loading, error, products },
-    productDelete: {
-      loading: loadingDelete,
-      error: errorDelete,
-      success: successDelete,
-    },
-  } = useSelector((state: any) => state);
+  const state = useSelector((state: any) => state);
+
+  const loading = state.productList.loading;
+  const error = state.productList.error;
+  const products = state.productList.products;
+
+  const loadingDelete = state.productDelete.loading;
+  const errorDelete = state.productDelete.error;
+  const successDelete = state.productDelete.success;
 
   useEffect(() => {
     dispatch(listProducts());

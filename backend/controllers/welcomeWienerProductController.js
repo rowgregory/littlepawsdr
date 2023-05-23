@@ -13,13 +13,13 @@ const getAllWelcomeWienerProducts = async (req, res) => {
 // Function to update a welcomeWienerProduct
 const updateWelcomeWienerProduct = async (req, res) => {
   const { id } = req.params;
-  const { displayUrl, name, price } = req.body;
+  const { displayUrl, name, price, description } = req.body;
 
   try {
     const updatedWelcomeWienerProduct =
       await WelcomeWienerProduct.findByIdAndUpdate(
         id,
-        { displayUrl, name, price },
+        { displayUrl, name, price, description },
         { new: true }
       );
 
@@ -31,12 +31,13 @@ const updateWelcomeWienerProduct = async (req, res) => {
 
 // Function to create a new welcomeWienerProduct
 const createWelcomeWienerProduct = async (req, res) => {
-  const { displayUrl, name, price } = req.body;
+  const { displayUrl, name, price, description } = req.body;
 
   const newWelcomeWienerProduct = new WelcomeWienerProduct({
     displayUrl,
     name,
     price,
+    description,
   });
 
   try {
@@ -53,9 +54,11 @@ const deleteWelcomeWienerProduct = async (req, res) => {
 
   try {
     await WelcomeWienerProduct.findByIdAndRemove(id);
-    res
-      .status(200)
-      .json({ message: 'Welcome Wiener Product deleted successfully.' });
+    const welcomeWienerProducts = await WelcomeWienerProduct.find();
+    res.status(200).json({
+      message: 'Welcome Wiener Product deleted successfully.',
+      productList: welcomeWienerProducts,
+    });
   } catch (error) {
     res.status(404).json({ message: error.message });
   }

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Image, Modal } from 'react-bootstrap';
 import {
   Body,
@@ -10,21 +9,37 @@ import {
 import AdminActionModalBody from '../../components/dashboard/AdminActionModalBody';
 import Logo from '../../components/assets/logo-transparent.png';
 import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { openCloseDashboardModal } from '../../actions/dashboardActions';
 
-const ActionModal = ({ show, close }: any) => {
+const ActionModal = () => {
+  const dispatch = useDispatch();
+  const state = useSelector((state: any) => state);
+  const openOrClose = state.dashboard.modal.openOrClose;
+
   return (
-    <Modal show={show} onHide={close} centered>
-      <Content>
-        <Header closeButton className='p-3'>
-          <Link to='/' className='mx-auto'>
-            <Image src={Logo} alt='LPDR' height='100px' width='auto' />
+    <Modal
+      show={openOrClose}
+      onHide={() => dispatch(openCloseDashboardModal(false))}
+      centered
+    >
+      <Content className='p-0'>
+        <Header closeButton className='p-2'>
+          <Link
+            to='/'
+            className='mx-auto'
+            onClick={() => dispatch(openCloseDashboardModal(false))}
+          >
+            <Image src={Logo} alt='LPDR' height='48px' width='auto' />
           </Link>
         </Header>
         <Body>
-          <AdminActionModalBody close={close} />
+          <AdminActionModalBody />
         </Body>
         <Footer>
-          <LeftBtn onClick={close}>Close</LeftBtn>
+          <LeftBtn onClick={() => dispatch(openCloseDashboardModal(false))}>
+            Close
+          </LeftBtn>
         </Footer>
       </Content>
     </Modal>

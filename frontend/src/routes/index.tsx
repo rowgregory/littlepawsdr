@@ -34,6 +34,9 @@ import ReturnPolicy from './ReturnPolicy';
 import CookiePolicyPopUp from '../components/CookiePolicyPopUp';
 import CookiePolicy from './CookiePolicy';
 import { useIdleTimer } from 'react-idle-timer';
+import WelcomeWieners from './WelcomeWieners';
+import WelcomeWienerDetails from './WelcomeWienerDetails';
+import WelcomeWienerOrderReceipt from './WelcomeWienerOrderReceipt';
 
 type LazyModulePromise<T = {}> = Promise<{ default: ComponentType<T> }>;
 
@@ -43,7 +46,6 @@ const Available = lazy((): LazyModulePromise => import('./Available'));
 const AboutUs = lazy((): LazyModulePromise => import('./AboutUs'));
 const Events = lazy((): LazyModulePromise => import('./Events'));
 const Admin = lazy((): LazyModulePromise => import('./Admin'));
-const Shop = lazy((): LazyModulePromise => import('./Shop'));
 const Cart = lazy((): LazyModulePromise => import('./Cart'));
 const Settings = lazy((): LazyModulePromise => import('./Settings'));
 const Donate = lazy((): LazyModulePromise => import('./Donate'));
@@ -126,6 +128,17 @@ export const Routes: FC = () => {
       <CookiePolicyPopUp />
       <Page url={pathname} fluid>
         <Switch>
+          <Route path='/welcome-wieners' component={WelcomeWieners} />
+          <Route
+            exact
+            path='/welcome-wiener/:id'
+            component={WelcomeWienerDetails}
+          />
+          <Route
+            exact
+            path='/welcome-wiener/order/:id'
+            component={WelcomeWienerOrderReceipt}
+          />
           <Route path='/cookie-policy' component={CookiePolicy} />
           <Route path='/return-policy' component={ReturnPolicy} />
           <Route path='/e-card/order/:id' component={ECardOrderReceipt} />
@@ -145,7 +158,6 @@ export const Routes: FC = () => {
           <Route path='/login-options' component={LoginOptions} />
           <Route path='/register' component={Register} />
           <Route path='/profile' component={Profile} />
-          <Route path='/shop' component={Shop} />
           <Route path='/cart' component={Cart} />
           <Route
             path='/order/:id/:order?/:shippingAddress?/:email?/:items?'

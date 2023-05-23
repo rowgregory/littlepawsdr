@@ -21,9 +21,15 @@ const cartItemsFromStorage = localStorage.getItem('cartItems')
   ? JSON.parse(localStorage.getItem('cartItems') || '')
   : [];
 
-const paymentMethodFromStorage = localStorage.getItem('paymentMethod')
-  ? JSON.parse(localStorage.getItem('paymentMethod') || '')
-  : {};
+let totalItems = 0;
+
+cartItemsFromStorage?.forEach((item: any) => {
+  totalItems += item.quantity || 1;
+});
+
+const subtotal = cartItemsFromStorage
+  ?.reduce((acc: any, item: any) => acc + Number(item.price) * item.quantity, 0)
+  .toLocaleString('en-us', { style: 'currency', currency: 'USD' });
 
 const guestUserInfoFromStorage = localStorage.getItem('guestUserInfo')
   ? JSON.parse(localStorage.getItem('guestUserInfo') || '')
@@ -38,7 +44,8 @@ const initialState: any = {
   userLogin: { userInfo: userInfoFromStorage },
   cart: {
     cartItems: cartItemsFromStorage,
-    paymentMethod: paymentMethodFromStorage,
+    cartItemsAmount: totalItems,
+    subtotal,
   },
   guestUserRegister: { guestUserInfo: guestUserInfoFromStorage },
   eCardList: { ecardsFromStorage },

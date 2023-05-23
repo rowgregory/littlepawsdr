@@ -5,6 +5,7 @@ import { sendEmail } from '../utils/sendEmail.js';
 import Error from '../models/errorModel.js';
 import User from '../models/userModel.js';
 import ECardOrder from '../models/eCardOrderModel.js';
+import WelcomeWienerOrder from '../models/welcomeWienerOrderModel.js';
 
 // @desc    Create new order
 // @route   POST /api/orders
@@ -210,19 +211,13 @@ const updateOrderToShipped = asyncHandler(async (req, res) => {
 // @access  Private
 const getMyOrders = asyncHandler(async (req, res) => {
   try {
-    const orders = await Order.find();
-    const guestOrders = orders.filter(
-      order => order?.guestEmail === req?.user?.email
-    );
-    const customerOrders = orders.filter(
-      order => order?.user?.email === req?.user?.email
-    );
-
     const ecardOrders = await ECardOrder.find({ email: req.user.email });
 
-    const productOrders = guestOrders?.concat(customerOrders);
+    const welcomeWienerOrders = await WelcomeWienerOrder.find({
+      emailAddress: req.user.email,
+    });
 
-    res.json({ productOrders, ecardOrders });
+    res.json({ welcomeWienerOrders, ecardOrders });
   } catch (err) {
     const createdError = new Error({
       functionName: 'GET_MY_ORDERS_PRIVATE',

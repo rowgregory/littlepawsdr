@@ -1,58 +1,76 @@
-import React from 'react';
 import { Image } from 'react-bootstrap';
-import { formatDate } from '../../utils/formatDate';
 import {
-  DonatorInitials,
   ItemName,
   RecentTransactionItemContainer,
 } from '../styles/DashboardStyles';
-import { Text } from '../styles/Styles';
+import { Flex, Text } from '../styles/Styles';
+import { formatDateTime } from '../../utils/formatDateTime';
+import { LoadingImg } from '../LoadingImg';
 
-const RecentTransactionItem = ({ viewTransaction, item }: any) => {
+const RecentTransactionItem = ({ viewTransaction, item, loading }: any) => {
   return (
     <RecentTransactionItemContainer onClick={() => viewTransaction(item)}>
-      <div className='d-flex'>
-        {item?.donationAmount ? (
-          <DonatorInitials>
-            {item?.firstName[0]}
-            {item?.lastName[0]}
-          </DonatorInitials>
+      <Flex marginRight='16px'>
+        {loading ? (
+          <div className='mr-3'>
+            <LoadingImg w='50px' h='50px' />
+          </div>
         ) : (
           <Image
-            // onError={(e:any) => e.target.src=}
-            src={item?.orderItems ? item?.orderItems[0].image : item?.image}
-            alt='Customers purchased item'
+            src={
+              item?.orderItems
+                ? item?.orderItems[0].dachshundImage
+                : item?.image
+            }
+            alt='Donation Item'
             width='50px'
             height='50px'
             className='mr-3'
             style={{ objectFit: 'cover' }}
           />
         )}
+
         <div className='d-flex flex-column align-items-start'>
-          <div className='d-flex'>
-            <ItemName>
-              {item?.orderItems ? item?.orderItems[0].name : item?.name}
-            </ItemName>
-            {item?.donationAmount && (
-              <Text>
-                &nbsp;- {item?.firstName[0]}.{item.lastName}
-              </Text>
+          <ItemName>
+            {loading ? (
+              <LoadingImg w='120px' h='20px' />
+            ) : item?.orderItems ? (
+              item.orderItems.map((orderItem: any) => (
+                <span key={orderItem?._id}>
+                  {orderItem?.productName} for {orderItem?.dachshundName}
+                </span>
+              ))
+            ) : (
+              item?.name
             )}
-          </div>
-
-          <Text
-            fontWeight={300}
-            color='#c1c1c1'
-            className='d-flex justify-content-end'
-          >
-            {formatDate(item?.createdAt)}
-          </Text>
+          </ItemName>
+          {!loading && (
+            <Flex flexDirection='column'>
+              <Text
+                fontWeight={300}
+                color='#c1c1c1'
+                className='d-flex justify-content-end'
+                fontSize='12px'
+              >
+                {item?.emailAddress ?? item?.email}
+              </Text>
+              <Text
+                fontWeight={300}
+                color='#c1c1c1'
+                className='d-flex justify-content-end'
+                fontSize='10px'
+              >
+                {formatDateTime(item?.createdAt)}
+              </Text>
+            </Flex>
+          )}
         </div>
-      </div>
-
-      <Text color='#9761aa' fontWeight={600}>
-        + ${item?.totalPrice?.toFixed(2)}
-      </Text>
+      </Flex>
+      {!loading && (
+        <Text color='#9761aa' fontWeight={600}>
+          + ${item?.totalPrice?.toFixed(2)}
+        </Text>
+      )}
     </RecentTransactionItemContainer>
   );
 };

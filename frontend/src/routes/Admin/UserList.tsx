@@ -35,19 +35,21 @@ const UserList = () => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const {
-    userList: { loading, error, users },
-    userLogin: { userInfo },
-    userDelete: {
-      success: successDelete,
-      loading: loadingDelete,
-      error: errorDelete,
-    },
-  } = useSelector((state: any) => state);
+  const state = useSelector((state: any) => state);
+
+  const userListLoading = state.userList.loading;
+  const userListError = state.userList.error;
+  const users = state.userList.users;
+
+  const userInfo = state.userLogin.userInfo;
+
+  const userDeleteSuccess = state.userDelete.success;
+  const userDeleteLoading = state.userDelete.loading;
+  const userDeleteError = state.userDelete.error;
 
   useEffect(() => {
     dispatch(listUsers());
-  }, [dispatch, successDelete]);
+  }, [dispatch, userDeleteSuccess]);
 
   useEffect(() => {
     const itemsPerPage = 50;
@@ -84,11 +86,11 @@ const UserList = () => {
         handleClose={handleClose}
         id={id}
       />
-      {(error || errorDelete) && (
-        <Message variant='danger'>{error || errorDelete}</Message>
+      {(userListError || userDeleteError) && (
+        <Message variant='danger'>{userListError || userDeleteError}</Message>
       )}
       <TableWrapper>
-        <TopRow className='d-flex align-items-center'>
+        <TopRow className='mb-3'>
           <SearchBar>
             <SearchInput
               as='input'
@@ -98,7 +100,7 @@ const UserList = () => {
               onChange={(e: any) => setText(e.target.value)}
             />
           </SearchBar>
-          {loading && (
+          {userListLoading && (
             <SpinnerContainer>
               <Spinner animation='border' size='sm' />
             </SpinnerContainer>
@@ -168,7 +170,7 @@ const UserList = () => {
                                 handleShow();
                               }}
                             >
-                              {loadingDelete && id === user?._id ? (
+                              {userDeleteLoading && id === user?._id ? (
                                 <Spinner size='sm' animation='border' />
                               ) : (
                                 <i

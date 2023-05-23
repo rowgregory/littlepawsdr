@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { Text } from '../styles/Styles';
@@ -7,9 +6,15 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   margin-bottom: 2rem;
+  padding-inline: 16px;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
+    padding-inline: 0px;
+  }
 `;
 
 const StyledLink = styled(Link)`
+  font-size: 13px;
+  margin-right: 4px;
   color: ${({ theme }) => theme.colors.quinary};
   :hover {
     color: ${({ theme }) => theme.colors.quinary};
@@ -28,34 +33,28 @@ const BreadCrumb = ({
 }: any) => {
   return (
     <Container>
-      <StyledLink to={url1} className='mr-1'>
-        {step1}
-      </StyledLink>
-      <i className='fas fa-chevron-right fa-sm mr-1'></i>
+      <StyledLink to={url1}>{step1}</StyledLink>
+      <i className='fas fa-chevron-right fa-xs mr-1'></i>
       <StyledLink to={url2}>{step2}</StyledLink>
-      {step3 && <i className='fas fa-chevron-right fa-sm mr-1'></i>}
+      {step3 && <i className='fas fa-chevron-right fa-xs mr-1'></i>}
       {url3 ? (
-        <StyledLink to={url3} className='mr-1'>
-          {step3}
-        </StyledLink>
+        <StyledLink to={url3}>{step3}</StyledLink>
       ) : (
         <Text
           fontWeight={400}
           color='#9761aa'
-          fontSize='16px'
+          fontSize='13px'
           marginRight='4px'
         >
           {step3}
         </Text>
       )}
-      {(typeof step4 === 'number' || typeof step4 === 'string') && (
-        <i className='fas fa-chevron-right fa-sm mr-1'></i>
-      )}
-      <Text fontWeight={400} color='#9761aa' fontSize='16px' className='mr-1'>
+      {step4 !== '' && <i className='fas fa-chevron-right fa-xs mr-1'></i>}
+      <Text fontWeight={400} color='#9761aa' fontSize='13px' className='mr-1'>
         {step4}
       </Text>
-      {step5 && <i className='fas fa-chevron-right fa-sm mr-1'></i>}
-      <Text>{step5}</Text>
+      {step5 && <i className='fas fa-chevron-right fa-xs mr-1'></i>}
+      <Text fontSize='13px'>{step5}</Text>
     </Container>
   );
 };

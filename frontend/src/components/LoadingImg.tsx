@@ -6,6 +6,7 @@ interface LoadingImmProps {
   w?: any;
   mw?: any;
   borderRadius?: any;
+  mr?: any;
 }
 
 const Shimmer = keyframes`
@@ -14,10 +15,11 @@ const Shimmer = keyframes`
 `;
 
 const LoadingContainer = styled.div<{
-  h: string;
-  w: string;
-  mw: string;
+  h?: string;
+  w?: string;
+  mw?: string;
   borderRadius?: string;
+  mr?: string;
 }>`
   height: ${({ h }) => h};
   width: ${({ w }) => w};
@@ -37,8 +39,17 @@ const LoadingContainer = styled.div<{
     ${theme.loading.one} 100%
   );`};
   aspect-ratio: 1/1;
+  margin-right: ${({ mr }) => (mr ? mr : '')};
 `;
 
-export const LoadingImg: FC<LoadingImmProps> = ({ h, w, mw, borderRadius }) => {
-  return <LoadingContainer h={h} w={w} mw={mw} borderRadius={borderRadius} />;
+export const LoadingImg: FC<LoadingImmProps> = ({
+  h,
+  w,
+  mw,
+  borderRadius,
+  mr,
+}) => {
+  return (
+    <LoadingContainer h={h} w={w} mw={mw} mr={mr} borderRadius={borderRadius} />
+  );
 };

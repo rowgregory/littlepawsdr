@@ -1,66 +1,31 @@
-import React from 'react';
 import { Image, Spinner } from 'react-bootstrap';
-import { useDispatch, useSelector } from 'react-redux';
-import { addToCart, removeFromCart } from '../../actions/cartActions';
+import { useSelector } from 'react-redux';
 import Message from '../../components/Message';
 import { Text } from '../../components/styles/Styles';
-import { subTotal, totalItems } from '../../utils/placeOrder';
 import {
-  CartBtn,
   CartContainer,
   CartItemContainer,
   CheckoutBtn,
   CheckoutBtnColumn,
   Container,
   Divider,
-  ProductName,
   SecondSubTotal,
 } from '../../components/styles/cart/Styles';
 import { Link, useHistory } from 'react-router-dom';
 import LogoDay from '../../components/assets/logo-transparent.png';
-import UIFx from 'uifx';
-import Add from '../../components/sounds/click02.wav';
-import Thump from '../../components/sounds/thump01.mp3';
 import LeftArrow from '../../components/svg/LeftArrow';
+import CartItem from './CartItem';
 
 const Cart = () => {
-  const dispatch = useDispatch();
   const history = useHistory();
-  const productAmountChanged = new UIFx(Add);
-  const reachedProductLimit = new UIFx(Thump);
 
-  let {
-    cart: { cartItems, error, loading },
-  } = useSelector((state: any) => state);
+  const state = useSelector((state: any) => state);
 
-  const addOneItem = (e: any, item: any) => {
-    const currentValue = +e.target.ariaValueNow;
-    const productAmount = item?.sizes.filter(
-      (obj: any) => obj?.size === item?.size
-    )[0]?.amount;
-    if (currentValue === item.countInStock || currentValue === productAmount) {
-      reachedProductLimit.play();
-      return;
-    }
-
-    productAmountChanged.play();
-    dispatch(
-      addToCart(item?.product, currentValue + 1, item.size, item?.sizes)
-    );
-  };
-
-  const deleteOneItem = (e: any, item: any) => {
-    const currentValue = +e.target.ariaValueNow;
-    if (currentValue === 1) {
-      reachedProductLimit.play();
-      return;
-    }
-
-    productAmountChanged.play();
-    dispatch(
-      addToCart(item?.product, currentValue - 1, item?.size, item?.sizes)
-    );
-  };
+  const cartItems = state.cart.cartItems;
+  const cartItemsAmount = state.cart.cartItemsAmount;
+  const subtotal = state.cart.subtotal;
+  const error = state.cart.error;
+  const loading = state.cart.loading;
 
   return (
     <CartContainer>
@@ -69,10 +34,12 @@ const Cart = () => {
           className='d-flex align-items-center'
           style={{ marginBottom: '64px' }}
         >
-          <Image src={LogoDay} height='48px' alt=' Cart Logo' />
+          <Link to='/welcome-wieners'>
+            <Image src={LogoDay} height='48px' alt=' Cart Logo' />
+          </Link>
           <Divider />
           <Text fontSize='28px' fontWeight={400} color='#464342'>
-            {cartItems?.length === 0 ? 'Empty Shopping Cart' : 'Shopping Cart'}
+            {cartItemsAmount === 0 ? 'Empty Shopping Cart' : 'Shopping Cart'}
           </Text>
         </div>
         {error ? (
@@ -85,77 +52,18 @@ const Cart = () => {
             <CartItemContainer>
               <tbody>
                 {cartItems?.map((item: any, i: number) => (
-                  <tr key={i}>
-                    <td style={{ padding: '10px 20px 10px', width: '125px' }}>
-                      <Image
-                        src={item?.image}
-                        alt={item?.name}
-                        roundedCircle
-                        width='85px'
-                        height='85px'
-                        style={{ objectFit: 'contain', background: '#fff' }}
-                      />
-                    </td>
-
-                    <td style={{ maxWidth: '80px' }}>
-                      <ProductName to={`/shop/product/${item?.product}`}>
-                        {item.name}
-                      </ProductName>
-                      {item?.size && <Text fontSize='12px'>{item?.size}</Text>}
-                    </td>
-                    <td>
-                      <div className='d-flex align-items-center'>
-                        <Text
-                          marginRight='8px'
-                          fontWeight={400}
-                          color='#858382'
-                          width='15px'
-                        >
-                          {item.qty}
-                        </Text>
-
-                        <div className='d-flex flex-column'>
-                          <CartBtn
-                            className='plus'
-                            onClick={(e: any) => addOneItem(e, item)}
-                            aria-valuenow={item.qty}
-                          >
-                            +
-                          </CartBtn>
-                          <CartBtn
-                            onClick={(e: any) => deleteOneItem(e, item)}
-                            aria-valuenow={item.qty}
-                          >
-                            -
-                          </CartBtn>
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      <Text className='pr-2' fontWeight='bold'>
-                        ${item?.price.toFixed(2)}
-                      </Text>
-                    </td>
-                    <td className='remove-cart-item'>
-                      <i
-                        className='fas fa-times fa-sm ml-3'
-                        onClick={() =>
-                          dispatch(removeFromCart(item.product, item.size))
-                        }
-                      ></i>
-                    </td>
-                  </tr>
+                  <CartItem key={i} item={item} />
                 ))}
                 <tr style={{ background: '#ecf0f1' }}>
                   <td>
-                    <LeftArrow text='Shop' url='/shop' />
+                    <LeftArrow text='Wieners' url='/welcome-wieners' />
                   </td>
                   <td></td>
                   <td>
                     <Text className='mb-0'>Subtotal</Text>
                   </td>
                   <td>
-                    <Text fontWeight='bold'>${subTotal(cartItems)}</Text>
+                    <Text fontWeight='bold'>{subtotal}</Text>
                   </td>
                 </tr>
               </tbody>
@@ -175,7 +83,7 @@ const Cart = () => {
           </Text>
           <div className='d-flex align-items-baseline justify-content-between w-100'>
             <Text fontSize='14px' color='#fff'>
-              Subtotal ({totalItems(cartItems)}&nbsp;items):&nbsp;
+              Subtotal ({cartItemsAmount}&nbsp;items):&nbsp;
             </Text>
             <Text
               color='#fff'
@@ -183,7 +91,7 @@ const Cart = () => {
               fontSize='14px'
               marginBottom='0'
             >
-              ${subTotal(cartItems)}
+              {subtotal}
             </Text>
           </div>
         </SecondSubTotal>
@@ -199,7 +107,7 @@ const Cart = () => {
 
           <CheckoutBtn
             disabled={cartItems?.length <= 0}
-            onClick={() => history.push({ pathname: '/login-options' })}
+            onClick={() => history.push({ pathname: '/cart/place-order' })}
           >
             Checkout
           </CheckoutBtn>

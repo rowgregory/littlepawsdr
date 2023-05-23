@@ -32,6 +32,7 @@ export const Container = styled.div<{ emptycart?: boolean }>`
 export const ProductName = styled(Link)`
   color: ${({ theme }) => theme.card.text};
   text-decoration: none;
+  font-size: 13px;
   :hover {
     color: ${({ theme }) => theme.card.text};
   }

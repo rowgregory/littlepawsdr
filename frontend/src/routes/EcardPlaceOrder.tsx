@@ -9,7 +9,7 @@ import {
   Container,
   LeftRail,
   LeftRailSectionTitle,
-  RightRail,
+  RightRailContainer,
   SubContainer,
   LeftRailContainer,
   Accordion,
@@ -383,7 +383,7 @@ const EcardPlaceOrder = ({ history }: any) => {
               </Accordion>
             </LeftRailContainer>
           </LeftRail>
-          <RightRail lg={3} md={4} sm={12} className='right-rail'>
+          <RightRailContainer lg={3} md={4} sm={12} className='right-rail'>
             <Col className='px-0'>
               <Text
                 fontWeight='bold'
@@ -416,7 +416,7 @@ const EcardPlaceOrder = ({ history }: any) => {
               <Text fontSize='1.125rem'>Order total</Text>
               <Text fontSize='1.125rem'>${(+ecard?.price)?.toFixed(2)}</Text>
             </div>
-          </RightRail>
+          </RightRailContainer>
         </SubContainer>
       </Container>
     </>

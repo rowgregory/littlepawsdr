@@ -1,10 +1,11 @@
 import React from 'react';
-import { Text } from '../../components/styles/Styles';
+import { Flex, Text } from '../../components/styles/Styles';
 import { Image } from 'react-bootstrap';
 import amazonSmile from '../../components/assets/amazon-smile-3.jpeg';
 import Chewy from '../../components/assets/chewy.png';
 import iGive from '../../components/assets/i-give.png';
 import styled from 'styled-components';
+import BonfireLogo from '../../components/assets/bonfire-logo.png';
 
 export const TradeMarkSVG = () => {
   return (
@@ -116,18 +117,27 @@ const ShopToHelp = () => {
         tails wagging! Find new or gently used dachshund-themed items, or items
         for your pup on our eBay page.
       </Text>
-      <Text className='mb-3 mt-4 mx-auto' fontSize='16px' maxWidth='680px'>
+      <Text className='mb-5 mt-4 mx-auto' fontSize='16px' maxWidth='680px'>
         Would you rather donate items instead of money? LPDR maintains an Amazon
         Wish List for any basic needs such as leashes, harnesses, collars,
         treats, etc. Simply select the item that you would like to donate and
         check out through Amazon. The item is shipped to Little Paws and sent to
         a foster dachshund in need.
       </Text>
-      <div className='d-flex justify-content-center my-5'>
+      <Flex
+        flexDirection='column'
+        marginTop='36px'
+        marginBottom='36px'
+        maxWidth='680px'
+        marginLeft='auto'
+        marginRight='auto'
+        borderBottom='1px solid #ededed'
+        paddingBottom='35px'
+      >
         <Image
           onClick={() =>
             window.open(
-              'https://www.amazon.com/hz/wishlist/ls/3JHXXPX2GTHGE',
+              'https://www.amazon.com/registries/gl/search?registryType=pet&name=Little+paws+dachshund+rescue+',
               '_blank'
             )
           }
@@ -137,75 +147,144 @@ const ShopToHelp = () => {
             maxWidth: '400px',
             width: '100%',
             cursor: 'pointer',
+            alignSelf: 'center',
           }}
         />
-      </div>
-      <Text className='mb-3 mt-4 mx-auto' fontSize='16px' maxWidth='680px'>
-        We are thankful to be part of the Chewy.com Shelter & Rescue Network.
-        That means using the link below will get NEW customers who use it a
-        donation of $20 for LPDR!
-      </Text>
-
-      <Text className='mb-3 mt-4 mx-auto' fontSize='16px' maxWidth='680px'>
-        Shopping to get your pet their monthly food, treats and toys will help
-        LPDR help dogs!
-      </Text>
-      <div className='d-flex justify-content-center my-5'>
+      </Flex>
+      <Flex
+        flexDirection='column'
+        marginTop='36px'
+        marginBottom='36px'
+        maxWidth='680px'
+        marginLeft='auto'
+        marginRight='auto'
+        borderBottom='1px solid #ededed'
+        paddingBottom='35px'
+      >
+        <Text fontSize='16px' marginBottom='15px'>
+          Exciting news! Little Paws Dachshund Rescue has partnered with Chewy.
+          Now you can support us by purchasing items from our wishlist and
+          sending them directly to our rescued dogs.
+        </Text>
+        <Text fontSize='16px' marginBottom='15px'>
+          With just a few clicks, you can provide food, toys, and supplies that
+          make a real difference in their lives. Your support helps us give
+          these dachshunds the care they deserve.
+        </Text>
+        <Text fontSize='16px'>
+          Visit our Chewy account and join us in making a lasting impact on
+          their journey to finding forever homes. Together, we can bring joy and
+          comfort to these adorable pups. Shop now and make a difference!
+        </Text>
         <Image
-          onClick={() => window.open('https://www.chewy.com/rp/3897', '_blank')}
+          onClick={() =>
+            window.open(
+              'https://www.chewy.com/g/little-paws-dachshund-resccue_b106319134#wish-list&wishlistsortby=DEFAULT',
+              '_blank'
+            )
+          }
           src={Chewy}
           alt='LPDR Chewy Shop to Help'
           style={{
             maxWidth: '400px',
             width: '100%',
             cursor: 'pointer',
+            alignSelf: 'center',
           }}
         />
-      </div>
-      <BottomRow>
-        <div className='d-flex flex-column justify-content-center mb-5'>
-          <Text className='d-flex justify-content-center'>
-            Shop Pet Meds and provide pet supplies for pets in need.
-          </Text>
-          <PetMeds
-            onClick={() => window.open('http://www.petmeds.org/', '_blank')}
-            style={{ cursor: 'pointer' }}
-          >
-            <PetMedsTop>www.1800petmeds.com</PetMedsTop>
-            <PetMedsMiddle>
-              <PetMedsMiddleLeft>1-800-PetMeds</PetMedsMiddleLeft>
-              <TradeMarkSVG />
-            </PetMedsMiddle>
-            <PetMedsBottom>America's Largest Pet Pharmacy</PetMedsBottom>
-          </PetMeds>
-        </div>
+      </Flex>
+      <Flex
+        flexDirection='column'
+        marginTop='36px'
+        marginBottom='36px'
+        maxWidth='680px'
+        marginLeft='auto'
+        marginRight='auto'
+        borderBottom='1px solid #ededed'
+        paddingBottom='35px'
+      >
+        <Text className='mb-3 mt-4 mx-auto' fontSize='16px' maxWidth='680px'>
+          Shop Pet Meds and provide pet supplies for pets in need.
+        </Text>
+        <PetMeds
+          onClick={() => window.open('http://www.petmeds.org/', '_blank')}
+          style={{ cursor: 'pointer', alignSelf: 'center' }}
+        >
+          <PetMedsTop>www.1800petmeds.com</PetMedsTop>
+          <PetMedsMiddle>
+            <PetMedsMiddleLeft>1-800-PetMeds</PetMedsMiddleLeft>
+            <TradeMarkSVG />
+          </PetMedsMiddle>
+          <PetMedsBottom>America's Largest Pet Pharmacy</PetMedsBottom>
+        </PetMeds>
+      </Flex>
 
-        <div className='d-flex flex-column justify-content-center'>
-          <Text className='mb-3 mt-4 mx-auto' fontSize='16px' maxWidth='680px'>
-            Help Little Paws Dachshund Rescue every time you shop.
-          </Text>
-          <div
-            className='d-flex justify-content-center'
-            style={{ cursor: 'pointer' }}
-          >
-            <Image
-              onClick={() =>
-                window.open(
-                  'http://www.igive.com/welcome/lptest/wr31a.cfm?c=64803&p=19992&jltest=1',
-                  '_blank'
-                )
-              }
-              src={iGive}
-              alt='LPDR iGive Shop to Help'
-              style={{
-                maxWidth: '250px',
-                width: '100%',
-                objectFit: 'cover',
-              }}
-            />
-          </div>
-        </div>
-      </BottomRow>
+      <Flex
+        flexDirection='column'
+        marginTop='36px'
+        marginBottom='36px'
+        maxWidth='680px'
+        marginLeft='auto'
+        marginRight='auto'
+        borderBottom='1px solid #ededed'
+        paddingBottom='35px'
+      >
+        <Text className='mb-3 mt-4 mx-auto' fontSize='16px' maxWidth='680px'>
+          Help Little Paws Dachshund Rescue every time you shop.
+        </Text>
+
+        <Image
+          onClick={() =>
+            window.open(
+              'http://www.igive.com/welcome/lptest/wr31a.cfm?c=64803&p=19992&jltest=1',
+              '_blank'
+            )
+          }
+          src={iGive}
+          alt='LPDR iGive Shop to Help'
+          style={{
+            maxWidth: '250px',
+            width: '100%',
+            objectFit: 'cover',
+            alignSelf: 'center',
+          }}
+        />
+      </Flex>
+      <Flex
+        flexDirection='column'
+        marginTop='36px'
+        marginBottom='36px'
+        maxWidth='680px'
+        marginLeft='auto'
+        marginRight='auto'
+        borderBottom='1px solid #ededed'
+        paddingBottom='35px'
+      >
+        <Text fontSize='16px' marginBottom='15px'>
+          We are excited to announce that Little Paws Dachshund Rescue has
+          partnered with Bonfire! Our new account allows supporters to
+          contribute to our cause by purchasing custom merchandise. With
+          Bonfire, you can show your support while enjoying quality products,
+          and all proceeds go directly towards rescuing and caring for
+          dachshunds in need.
+        </Text>
+        <Image
+          onClick={() =>
+            window.open(
+              'https://www.bonfire.com/store/little-paws-dachshund-rescue/',
+              '_blank'
+            )
+          }
+          src={BonfireLogo}
+          style={{
+            width: '400px',
+            alignSelf: 'center',
+            height: '200px',
+            objectFit: 'cover',
+            cursor: 'pointer',
+          }}
+        />
+      </Flex>
     </div>
   );
 };

@@ -40,14 +40,15 @@ const ManuallyAddedUserList = () => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const {
-    manuallyAddedUserList: { loading, error, manuallyAddedUsers },
-    manuallyAddedUserDelete: {
-      loading: loadingDelete,
-      error: errorDelete,
-      success: successDelete,
-    },
-  } = useSelector((state: any) => state);
+  const state = useSelector((state: any) => state);
+
+  const loading = state.manuallyAddedUserList.loading;
+  const error = state.manuallyAddedUserList.error;
+  const manuallyAddedUsers = state.manuallyAddedUserList.manuallyAddedUsers;
+
+  const loadingDelete = state.manuallyAddedUserDelete.loading;
+  const errorDelete = state.manuallyAddedUserDelete.error;
+  const successDelete = state.manuallyAddedUserDelete.success;
 
   useEffect(() => {
     dispatch(listManuallyAddedUsers());
@@ -109,7 +110,7 @@ const ManuallyAddedUserList = () => {
         <Message variant='danger'>{error || errorDelete}</Message>
       )}
       <TableWrapper>
-        <TopRow className='d-flex align-items-center'>
+        <TopRow className='mb-3'>
           <SearchBar>
             <SearchInput
               as='input'
@@ -136,17 +137,7 @@ const ManuallyAddedUserList = () => {
               </CreateBtnV2>
             </LinkContainer>
           )}
-          <Link
-            className='mb-3'
-            to={{
-              pathname: '/about/team-members',
-              state: { from: 'dashboard' },
-            }}
-          >
-            View public profiles
-          </Link>
         </TopRow>
-
         <TableAndPaginationContainer>
           <Table hover responsive>
             <TableHead>

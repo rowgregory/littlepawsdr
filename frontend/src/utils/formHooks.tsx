@@ -44,6 +44,7 @@ const usePlaceOrderShippingForm = (cb: any) => {
 const useCreateAccountCheckoutForm = (cb: any) => {
   const [fields, setFields] = useState({
     fullName: '',
+    emailAddress: '',
     password: '',
   }) as any;
 

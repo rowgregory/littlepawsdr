@@ -1,4 +1,3 @@
-import React from 'react';
 import { Image } from 'react-bootstrap';
 import { useLocation } from 'react-router-dom';
 import {
@@ -23,7 +22,7 @@ const ECardDetails = () => {
         width: '100%',
       }}
     >
-      <LeftArrow text='Back To Ecards' url='/e-cards' />
+      <LeftArrow text='Ecards' url='/e-cards' />
       <ECardContainer>
         <Half>
           <Image

@@ -1,4 +1,4 @@
-import { validateFullNameRegex } from './regex';
+import { validateEmailRegex, validateFullNameRegex } from './regex';
 
 export const inputName = (inputs: any, formIsValid: any, setErrors: any) => {
   if (!validateFullNameRegex.test(inputs?.name)) {
@@ -119,6 +119,25 @@ export const inputFullName = (
   return formIsValid;
 };
 
+export const inputEmailAddress = (
+  inputs: any,
+  formIsValid: any,
+  setErrors: any
+) => {
+  if (!validateEmailRegex.test(inputs?.emailAddress)) {
+    formIsValid = false;
+    setErrors((errors: any) => ({
+      ...errors,
+      emailAddress: 'Enter email address to continue',
+    }));
+  } else {
+    formIsValid = true;
+    setErrors((errors: any) => ({ ...errors, emailAddress: '' }));
+  }
+
+  return formIsValid;
+};
+
 export const inputPassword = (
   inputs: any,
   formIsValid: any,
@@ -143,10 +162,9 @@ const validateAccountCreateCheckoutForm = (
   inputs: any,
   formIsValid: any
 ) => {
-  let hasFullName = inputFullName(inputs, formIsValid, setErrors);
-  let hasValidPassowrd = inputPassword(inputs, formIsValid, setErrors);
+  let hasValidEmailAddress = inputEmailAddress(inputs, formIsValid, setErrors);
 
-  formIsValid = [hasFullName, hasValidPassowrd].every(
+  formIsValid = [hasValidEmailAddress].every(
     (field: boolean) => field === true
   );
   return formIsValid;

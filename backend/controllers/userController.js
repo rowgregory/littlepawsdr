@@ -7,8 +7,8 @@ import { decrypt } from '../utils/crypto.js';
 import GuestUser from '../models/guestUserModel.js';
 import ManuallyAddedUser from '../models/manuallyAddedUserModel.js';
 import { sendEmail } from '../utils/sendEmail.js';
-import Order from '../models/orderModel.js';
 import ECardOrder from '../models/eCardOrderModel.js';
+import WelcomeWienerOrder from '../models/welcomeWienerOrderModel.js';
 
 // @desc    Auth user & get token
 // @route   POST /api/users/login
@@ -511,79 +511,66 @@ const generateTokenForSession = asyncHandler(async (req, res) => {
 });
 
 // @desc    Get dashboard details
-// @route   DELETE /api/users/dashboard-details
+// @route   GET /api/users/dashboard-details
 // @access  Private/Admin
 const dashboardDetails = asyncHandler(async (req, res) => {
   try {
-    const orders = await Order.find({});
+    const welcomeWienerOrders = await WelcomeWienerOrder.find({});
     const ecardOrders = await ECardOrder.find({});
     const users = await User.find({});
 
-    const orderItemsTotal = orders
-      ?.reduce((acc, item) => acc + item?.totalPrice, 0)
+    const orderItemsTotal = welcomeWienerOrders
+      .reduce((acc, item) => acc + item?.totalPrice || 0, 0)
       .toFixed(2);
-
     const eCardOrdersItemsTotal = ecardOrders
-      ?.reduce((acc, item) => acc + item?.totalPrice, 0)
+      .reduce((acc, item) => acc + item?.totalPrice || 0, 0)
       .toFixed(2);
 
-    const isWalletNaN =
-      Number(Number(orderItemsTotal) + Number(eCardOrdersItemsTotal)).toFixed(
-        2
-      ) === 'NaN';
+    const walletTotal = Number(orderItemsTotal) + Number(eCardOrdersItemsTotal);
+    const sortedOrders = [...welcomeWienerOrders, ...ecardOrders].sort(
+      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+    );
 
-    const walletTotal = isWalletNaN
-      ? 0
-      : Number(Number(orderItemsTotal) + Number(eCardOrdersItemsTotal)).toFixed(
-          2
-        );
+    const orderItemsArr = welcomeWienerOrders.flatMap(obj => obj?.orderItems);
 
-    const sortedOrders = orders
-      .concat(ecardOrders)
-      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
-    let orderItemsArr = [];
-
-    orders?.map(obj => {
-      return obj?.orderItems.forEach(order => {
-        orderItemsArr.push(order);
-        return orderItemsArr;
-      });
-    });
-
-    const result = [
-      ...orderItemsArr
+    const result = Array.from(
+      orderItemsArr
         .reduce((acc, e) => {
-          let k = e.product;
-          if (!acc.has(k))
-            acc.set(k, { name: e.name, price: e.price, count: e.qty });
-          else acc.get(k).count += e.qty;
+          const k = e.productName && e.dachshundName;
+          if (!acc.has(k)) {
+            acc.set(k, {
+              name: e.productName,
+              price: e.price,
+              count: e.quantity,
+              dachshundName: e.dachshundName,
+            });
+          } else {
+            acc.get(k).count += e.quantity;
+          }
           return acc;
         }, new Map())
-        .values(),
-    ];
+        .values()
+    );
 
-    const topSellingProducts = result.map(obj => {
-      return {
-        ...obj,
-        totalAmount: obj?.count * obj?.price,
-      };
-    });
+    const topSellingProducts = result.map(obj => ({
+      ...obj,
+      totalAmount: obj.count * obj.price,
+    }));
 
-    let sortedTopSellingProducts = topSellingProducts?.sort((a, b) => {
-      return a.count > b.count ? -1 : 1;
-    });
+    const sortedTopSellingProducts = topSellingProducts.sort((a, b) =>
+      a.count > b.count ? -1 : 1
+    );
 
     res.json({
-      orders,
+      welcomeWienerOrders,
       ecardOrders,
       users,
       total: sortedOrders,
       orderItemsTotal,
       eCardOrdersItemsTotal,
-      walletTotal,
+      walletTotal: isNaN(walletTotal) ? 0 : walletTotal.toFixed(2),
       totalAmounts: {
-        orders: orders?.length,
+        welcomeWienerOrders: welcomeWienerOrders?.length,
         users: users?.length,
         ecardOrders: ecardOrders?.length,
       },

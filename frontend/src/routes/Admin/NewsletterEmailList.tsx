@@ -82,7 +82,7 @@ const NewsletterEmailList = () => {
 
   return (
     <Container>
-      <WelcomeText className='mb-1'>Newsletter Emails</WelcomeText>
+      <WelcomeText>Newsletter Emails</WelcomeText>
       <BreadCrumb
         step1='Home'
         step2='Dashboard'
@@ -104,7 +104,7 @@ const NewsletterEmailList = () => {
         </Message>
       )}
       <TableWrapper>
-        <TopRow className='d-flex align-items-center'>
+        <TopRow>
           <SearchBar>
             <SearchInput
               as='input'

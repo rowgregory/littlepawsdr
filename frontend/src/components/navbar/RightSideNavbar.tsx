@@ -79,11 +79,10 @@ const RightSideNavbar = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [activeMenu, setActiveMenu] = useState('main');
 
-  const cart = useSelector((state: { cart: { cartItems: [] } }) => state.cart);
-  const { cartItems } = cart;
+  const state = useSelector((state: any) => state);
 
-  const userLogin = useSelector((state: UserInfoProps) => state.userLogin);
-  const { userInfo } = userLogin;
+  const cartItemsAmount = state.cart.cartItemsAmount;
+  const userInfo = state.userLogin.userInfo;
 
   const { cartAndUserMenuItems } = NAVBAR_DATA(userInfo);
 
@@ -92,8 +91,6 @@ const RightSideNavbar = () => {
     userInfo && userInfo?.name?.split(' ')[1]
       ? userInfo?.name?.split(' ')[1][0].toUpperCase().trim()
       : '';
-
-  const items = cartItems?.reduce((acc: any, item: any) => acc + +item.qty, 0);
 
   useOutsideDetect(dropDownRef, setActiveMenu, setIsVisible, 'USER_DROP_DOWN');
 
@@ -136,7 +133,7 @@ const RightSideNavbar = () => {
         return (
           <FAIcons className='mr-2 hide'>
             <Link to='/cart'>
-              <Items>{items}</Items>
+              <Items>{cartItemsAmount}</Items>
               <i className='fas fa-shopping-cart'></i>
             </Link>
           </FAIcons>

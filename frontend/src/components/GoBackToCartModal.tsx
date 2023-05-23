@@ -1,9 +1,7 @@
 import React from 'react';
 import { Button, Modal } from 'react-bootstrap';
 import { Text } from './styles/Styles';
-import { useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
-import { USER_REGISTER_RESET } from '../constants/userConstants';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 const StyledModal = styled(Modal)`
@@ -21,9 +19,6 @@ const StyledModal = styled(Modal)`
 `;
 
 const GoBackToCartModal = ({ show, close, isEcards }: any) => {
-  const dispatch = useDispatch();
-  const history = useHistory();
-
   return (
     <StyledModal show={show} centered>
       <div className='p-3'>
@@ -34,16 +29,12 @@ const GoBackToCartModal = ({ show, close, isEcards }: any) => {
           <Button onClick={close} variant='secondary'>
             No
           </Button>
-          <Button
-            variant=''
+          <Link
             className='ml-3'
-            onClick={() => {
-              history.push(isEcards ? '/e-cards' : '/cart');
-              dispatch({ type: USER_REGISTER_RESET });
-            }}
+            to={isEcards ? '/e-cards' : '/welcome-wieners'}
           >
             Yes
-          </Button>
+          </Link>
         </div>
       </Modal.Footer>
     </StyledModal>

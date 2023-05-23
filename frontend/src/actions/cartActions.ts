@@ -5,8 +5,12 @@ import {
   CART_ADD_ITEM_REQUEST,
   CART_ADD_ITEM_SUCCESS,
   CART_REMOVE_ITEM,
-  CART_SAVE_PAYMENT_METHOD,
-  CART_SAVE_SHIPPING_ADDRESS,
+  OPEN_CART_DRAWER,
+  WELCOME_WIENER_ADD_CART_ITEM_FAIL,
+  WELCOME_WIENER_ADD_CART_ITEM_REQUEST,
+  WELCOME_WIENER_ADD_CART_ITEM_SUCCESS,
+  WELCOME_WIENER_DELETE_CART_ITEM_SUCCESS,
+  WELCOME_WIENER_REMOVE_CART_ITEM,
 } from '../constants/cartConstants';
 
 export const addToCart =
@@ -61,20 +65,77 @@ export const removeFromCart =
     );
   };
 
-export const saveShippingAddress =
-  (data: any) => async (dispatch: any, getState: any) => {
-    dispatch({
-      type: CART_SAVE_SHIPPING_ADDRESS,
-      payload: data,
-    });
+export const addWelcomeWienerProductToCart =
+  (cartItem: any) => async (dispatch: any, getState: any) => {
+    try {
+      dispatch({
+        type: WELCOME_WIENER_ADD_CART_ITEM_REQUEST,
+      });
+      dispatch({
+        type: WELCOME_WIENER_ADD_CART_ITEM_SUCCESS,
+        payload: cartItem,
+      });
 
-    localStorage.setItem('shippingAddress', JSON.stringify(data));
+      localStorage.setItem(
+        'cartItems',
+        JSON.stringify(getState().cart.cartItems)
+      );
+    } catch (err: any) {
+      dispatch({
+        type: WELCOME_WIENER_ADD_CART_ITEM_FAIL,
+        payload:
+          err.response && err.response.data.message
+            ? err.response.data.message
+            : err.message,
+      });
+    }
   };
-export const savePaymentMethod = (data: any) => async (dispatch: any) => {
-  dispatch({
-    type: CART_SAVE_PAYMENT_METHOD,
-    payload: data,
-  });
 
-  localStorage.setItem('paymentMethod', JSON.stringify(data));
-};
+export const deletWelcomeWienerProductFromCart =
+  (cartItem: any) => async (dispatch: any, getState: any) => {
+    try {
+      dispatch({
+        type: WELCOME_WIENER_DELETE_CART_ITEM_SUCCESS,
+        payload: cartItem,
+      });
+
+      localStorage.setItem(
+        'cartItems',
+        JSON.stringify(getState().cart.cartItems)
+      );
+    } catch (err: any) {
+      dispatch({
+        type: WELCOME_WIENER_ADD_CART_ITEM_FAIL,
+        payload:
+          err.response && err.response.data.message
+            ? err.response.data.message
+            : err.message,
+      });
+    }
+  };
+
+export const removeWelcomeWienerProductFromCart =
+  (cartItem: any) => async (dispatch: any, getState: any) => {
+    try {
+      dispatch({
+        type: WELCOME_WIENER_REMOVE_CART_ITEM,
+        payload: cartItem,
+      });
+
+      localStorage.setItem(
+        'cartItems',
+        JSON.stringify(getState().cart.cartItems)
+      );
+    } catch (err: any) {
+      dispatch({
+        type: WELCOME_WIENER_ADD_CART_ITEM_FAIL,
+        payload:
+          err.response && err.response.data.message
+            ? err.response.data.message
+            : err.message,
+      });
+    }
+  };
+
+export const openCartDrawer = (show: any) => async (dispatch: any) =>
+  dispatch({ type: OPEN_CART_DRAWER, payload: show });

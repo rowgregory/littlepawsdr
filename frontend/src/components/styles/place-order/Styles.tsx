@@ -69,7 +69,7 @@ export const LeftRail = styled(Col)`
   width: 100%;
   margin-bottom: 2rem;
   margin-right: 0;
-  padding: 0 16px 16px;
+  padding: 0;
 
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
     padding: 1rem;
@@ -85,6 +85,11 @@ export const LeftRailSectionTitle = styled.div`
   background: ${({ theme }) => theme.secondaryBg};
   padding: 14px 18px;
   color: ${({ theme }) => theme.text};
+  border-top: 0.75px solid #e1e1e1;
+  border-bottom: 0.75px solid #e1e1e1;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    border: 0;
+  }
 `;
 
 export const LeftRailContainer = styled.div`
@@ -92,13 +97,14 @@ export const LeftRailContainer = styled.div`
   margin: 0 auto;
 `;
 
-export const RightRail = styled(Col)`
-  padding: 1rem;
+export const RightRailContainer = styled(Col)`
+  padding: 16px 0;
   width: 100%;
   border-radius: 0.5rem;
   height: fit-content;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
     border: 1px solid #ededed;
+    padding: 1rem;
   }
 `;
 
@@ -117,8 +123,9 @@ export const AccordionX = styled.div<{ toggle: boolean; maxwidth?: string }>`
 export const Name = styled.div`
   text-overflow: ellipsis;
   overflow: hidden;
-  width: 100px;
+  /* width: 150px; */
   white-space: nowrap;
+  font-size: 13px;
 `;
 
 export const QuestionContainer = styled.div`
@@ -126,4 +133,23 @@ export const QuestionContainer = styled.div`
   height: 20px;
   width: 20px;
   border-radius: 50%;
+`;
+export const CartItem = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding-inline: 16px;
+`;
+
+export const PaypalBtnContainer = styled.div`
+  padding-inline: 16px;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    padding-inline: 0px;
+  }
+`;
+
+export const DetailsContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding-inline: 16px;
 `;

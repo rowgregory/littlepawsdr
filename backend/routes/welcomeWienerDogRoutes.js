@@ -5,22 +5,28 @@ import {
   createWelcomeWienerDog,
   updateWelcomeWienerDog,
   deleteWelcomeWienerDog,
+  toggleWelcomeWienerDog,
 } from '../controllers/welcomeWienerDogController.js';
 const router = express.Router();
+
+import { protect, admin } from '../middleware/authMiddleware.js';
+
+// PUT toggle a welcomeWienerDog by id
+router.put('/toggle-live', protect, admin, toggleWelcomeWienerDog);
 
 // GET all welcomeWienerDogs
 router.get('/', getAllWelcomeWienerDogs);
 
-// GET a welcomeWienerDog by id
-router.get('/:id', getWelcomeWienerDogById);
-
 // POST a new welcomeWienerDog
-router.post('/', createWelcomeWienerDog);
+router.post('/', protect, admin, createWelcomeWienerDog);
 
 // PUT update a welcomeWienerDog by id
-router.put('/:id', updateWelcomeWienerDog);
+router.put('/:id', protect, admin, updateWelcomeWienerDog);
 
 // DELETE a welcomeWienerDog by id
-router.delete('/:id', deleteWelcomeWienerDog);
+router.delete('/:id', protect, admin, deleteWelcomeWienerDog);
+
+// GET a welcomeWienerDog by id
+router.get('/:id', getWelcomeWienerDogById);
 
 export default router;

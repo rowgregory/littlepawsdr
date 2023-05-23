@@ -1,14 +1,24 @@
 export const formatDateTime = (
   value: number | string | any,
-  options?: Intl.DateTimeFormatOptions,
   locale = 'en-US'
 ) => {
-  const defaultOption: { year: '2-digit'; month: 'numeric'; day: '2-digit' } = {
-    year: '2-digit',
-    month: 'numeric',
-    day: '2-digit',
+  const defaultOption: {
+    month: 'short';
+    day: 'numeric';
+    year: 'numeric';
+    hour: 'numeric';
+    minute: 'numeric';
+    hour12: true;
+    timeZone: 'America/New_York';
+  } = {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true,
+    timeZone: 'America/New_York',
   };
-  const overrideOption = { ...defaultOption, ...options };
-  const date = new Date(value.replace('-', '/'));
-  return new Intl.DateTimeFormat(locale, overrideOption).format(date);
+  const overrideOption = { ...defaultOption };
+  return new Date(value).toLocaleString(locale, overrideOption);
 };

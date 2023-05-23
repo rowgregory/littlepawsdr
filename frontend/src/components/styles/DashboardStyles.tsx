@@ -1,4 +1,5 @@
 import { Row } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 
 export const DashboardContainer = styled.div`
@@ -27,6 +28,11 @@ export const MiddleRow = styled.div`
 export const WelcomeText = styled.div`
   color: #3b3b3c;
   font-size: 26px;
+  padding-inline: 16px;
+  padding-top: 16px;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
+    padding-inline: 0px;
+  }
 `;
 
 export const ActionBtn = styled.div`
@@ -35,22 +41,34 @@ export const ActionBtn = styled.div`
   color: ${({ theme }) => theme.white};
   text-transform: uppercase;
   background: ${({ theme }) => theme.colors.quinary};
-  margin-right: 4px;
-  border-radius: 8px;
-  border: 1px solid ${({ theme }) => theme.separator};
+  border-radius: 50%;
   transition: 300ms;
   display: flex;
-  align-items: end;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 501;
+  height: 56px;
+  width: 56px;
+
+  :hover {
+    i {
+      transition: 300ms;
+      transform: rotate(180deg);
+    }
+  }
+
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
     margin-right: 16px;
   }
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
     display: none;
   }
-  :hover {
-    filter: brightness(1.3);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-  }
+
+  box-shadow: 0px 6px 10px 0px rgba(0, 0, 0, 0.14),
+    0px 1px 18px 0px rgba(0, 0, 0, 0.12), 0px 3px 5px -1px rgba(0, 0, 0, 0.2);
 `;
 
 export const Middle = styled.div`
@@ -101,6 +119,20 @@ export const DataSquare = styled.div`
   height: 100%;
   padding: 15.2px 21.6px;
   min-width: 215px;
+`;
+export const DataSquareLink = styled(Link)`
+  display: flex;
+  flex-direction: column;
+  background: ${({ theme }) => theme.input.bg};
+  border-radius: 8px;
+  justify-content: space-between;
+  height: 100%;
+  padding: 15.2px 21.6px;
+  min-width: 215px;
+  :hover {
+    text-decoration: none;
+    filter: brightness(0.98);
+  }
 `;
 
 export const DataSquareTitle = styled.div`
@@ -243,18 +275,11 @@ export const ItemName = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-`;
-
-export const DonatorInitials = styled.div`
-  width: 50px;
-  height: 50px;
-  border: 2px solid ${({ theme }) => theme.colors.quinary};
-  color: ${({ theme }) => theme.colors.quinary};
-  font-size: 20px;
-  margin-right: 1rem;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  span {
+    font-size: 13px;
+  }
 `;
 
 export const SpinnerContainer = styled.div`

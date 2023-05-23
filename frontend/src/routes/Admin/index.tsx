@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { Switch, Route, useRouteMatch, Redirect } from 'react-router-dom';
 import PageNotFound from '../../components/common/PageNotFound';
 import { DashboardLayoutWithSideBar } from '../../components/layouts/DashboardLayoutWithSideBar';
-import SideBar from '../../components/dashboard/SideBar';
+import SideBar from '../../components/dashboard/sidebar/SideBar';
 import Dashboard from './Dashboard';
 import ECardEdit from './ECardEdit';
 import ECardList from './ECardList';
@@ -26,6 +26,13 @@ import ManuallyAddedUserEdit from './ManuallyAddedUserEdit';
 import EcardOrderList from './EcardOrderList';
 import OrderEdit from './OrderEdit';
 import EcardOrderView from './EcardOrderView';
+import WelcomeWienerProductList from './WelcomeWienerProductList';
+import WelcomeWienerProductCreate from './WelcomeWienerProductCreate';
+import WelcomeWienerProductEdit from './WelcomeWienerProductEdit';
+import WelcomeWienerDachshundList from './WelcomeWienerDachshundList';
+import WelcomeWienerDachshundCreate from './WelcomeWienerDachshundCreate';
+import WelcomeWienerDachshundEdit from './WelcomeWienerDachshundEdit';
+import WelcomeWienerOrderList from './WelcomeWienerOrderList';
 
 const AdminRoutes: FC = () => {
   const { path } = useRouteMatch();
@@ -72,6 +79,34 @@ const AdminRoutes: FC = () => {
         <Private
           path={`${path}/manuallyAddedUserList`}
           component={ManuallyAddedUserList}
+        />
+        <Private
+          path={`${path}/welcome-wiener/product/list`}
+          component={WelcomeWienerProductList}
+        />
+        <Private
+          path={`${path}/welcome-wiener/product/create`}
+          component={WelcomeWienerProductCreate}
+        />
+        <Private
+          path={`${path}/welcome-wiener/product/:id/edit`}
+          component={WelcomeWienerProductEdit}
+        />
+        <Private
+          path={`${path}/welcome-wiener/dachshund/list`}
+          component={WelcomeWienerDachshundList}
+        />
+        <Private
+          path={`${path}/welcome-wiener/dachshund/create`}
+          component={WelcomeWienerDachshundCreate}
+        />
+        <Private
+          path={`${path}/welcome-wiener/dachshund/:id/edit`}
+          component={WelcomeWienerDachshundEdit}
+        />
+        <Private
+          path={`${path}/welcome-wiener/order/list`}
+          component={WelcomeWienerOrderList}
         />
         <Route path='/404' component={PageNotFound} />
         <Redirect to='/404' />

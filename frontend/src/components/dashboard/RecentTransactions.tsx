@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
-import { Image } from 'react-bootstrap';
+import { Image, Spinner } from 'react-bootstrap';
 import ProductsIcon from '../svg/ProductsIcon';
 import EcardIcon from '../svg/EcardIcon';
 import { Accordion } from '../styles/place-order/Styles';
-import { LinkContainer, SideBarAccordionBtn, SideBarLink } from './SideBar';
 import { Circles, UserInfoContainer, Wallet } from '../styles/DashboardStyles';
 import { Text } from '../styles/Styles';
 import OrdersIcon from '../svg/OrdersIcon';
@@ -14,17 +13,25 @@ import { logout } from '../../actions/userActions';
 import Logout from '../svg/Logout';
 import RecentTransactionItem from './RecentTransactionItem';
 import UserAvatar from '../../components/assets/user-avatar.jpeg';
+import {
+  LinkContainer,
+  SideBarAccordionBtn,
+  SideBarLink,
+} from './sidebar/styles';
+import formatCurrency from '../../utils/formatCurrency';
 
 const myLinks = [
   {
-    textKey: 'Products',
+    textKey: 'Welcome Wiener Donations',
     linkKey: '/my-orders',
     icon: <ProductsIcon />,
+    state: 'products',
   },
   {
     textKey: 'Ecards',
-    linkKey: '/my-orders/e-cards',
+    linkKey: '/my-orders',
     icon: <EcardIcon />,
+    state: 'ecards',
   },
 ];
 
@@ -34,7 +41,7 @@ const PurchasesAccordion = ({ revealPurchases }: any) => {
   return (
     <Accordion toggle={revealPurchases} maxheight='130px'>
       {myLinks.map((obj: any, i: number) => (
-        <SideBarLink key={i} to={obj?.linkKey}>
+        <SideBarLink key={i} to={{ pathname: obj?.linkKey, state: obj?.state }}>
           <LinkContainer
             active={(obj?.linkKey === pathname).toString()}
             className='d-flex align-items-center px-3 py-3 mb-2'
@@ -52,18 +59,16 @@ const RecentTransactions = ({
   userInfo,
   loadingUserLogout,
   dashboardDetails,
+  loading,
 }: any) => {
   const history = useHistory();
   const dispatch = useDispatch();
-
   const [revealMyLinks, setRevealMyLinks] = useState(false);
   const [revealPurchases, setRevealPurchases] = useState(false);
+
   const viewTransaction = (item: any) => {
     if (item?.orderItems) {
-      history.push({
-        pathname: `/admin/order`,
-        state: item,
-      });
+      history.push(`/welcome-wiener/order/${item?._id}`);
     } else {
       history.push({
         pathname: `/admin/order/ecard`,
@@ -137,7 +142,11 @@ const RecentTransactions = ({
           Wallet
         </Text>
         <Text color='#fff' fontSize='32px' fontWeight={400} letterSpacing='2px'>
-          ${dashboardDetails?.walletTotal}
+          {loading ? (
+            <Spinner animation='border' style={{ color: '#fff' }} />
+          ) : (
+            formatCurrency(dashboardDetails?.walletTotal)
+          )}
         </Text>
       </Wallet>
       <div className='d-flex align-items-baseline justify-content-between mb-4'>
@@ -151,9 +160,10 @@ const RecentTransactions = ({
             viewTransaction={viewTransaction}
             item={item}
             key={i}
+            loading={loading}
           />
         ))
-        .filter((_: any, i: number) => i < 7)}
+        .filter((_: any, i: number) => i < 10)}
     </>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Table, Pagination, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
@@ -38,14 +38,15 @@ const ECardList = () => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  let {
-    eCardList: { loading, error, eCards },
-    eCardDelete: {
-      success: successDelete,
-      error: errorDelete,
-      loading: loadingDelete,
-    },
-  } = useSelector((state: any) => state);
+  const state = useSelector((state: any) => state);
+
+  const loading = state.eCardList.loading;
+  const error = state.eCardList.error;
+  const eCards = state.eCardList.eCards;
+
+  const successDelete = state.eCardDelete.success;
+  const errorDelete = state.eCardDelete.error;
+  const loadingDelete = state.eCardDelete.loading;
 
   useEffect(() => {
     dispatch(listECards());
@@ -79,7 +80,7 @@ const ECardList = () => {
 
   return (
     <Container>
-      <WelcomeText className='mb-1'>Ecards</WelcomeText>
+      <WelcomeText>Ecards</WelcomeText>
       <BreadCrumb
         step1='Home'
         step2='Dashboard'
@@ -100,7 +101,7 @@ const ECardList = () => {
         <Message variant='danger'>{error || errorDelete}</Message>
       )}
       <TableWrapper>
-        <TopRow className='d-flex align-items-center'>
+        <TopRow>
           <SearchBar>
             <SearchInput
               as='input'

@@ -9,6 +9,7 @@ import ecardPurchase from './emails/ecardPurchase.js';
 import resetPassword from './emails/resetPassword.js';
 import productPurchase from './emails/productPurchase.js';
 import sendEcard from './emails/sendEcard.js';
+import welcomeWienerPurchase from './emails/welcomeWienerPurchase.js';
 
 const OAuth2 = google.google.auth.OAuth2;
 
@@ -32,7 +33,6 @@ export const sendEmail = async (body, res, type, token, hasEmailBeenSent) => {
   let accessToken = await Oauth2_client.getAccessToken();
 
   if (!accessToken.token) {
-    console.log('GENERATING NEW ACCESS TOKEN');
     const response = await fetch('https://www.googleapis.com/oauth2/v4/token', {
       method: 'post',
       body: JSON.stringify({
@@ -89,5 +89,7 @@ export const sendEmail = async (body, res, type, token, hasEmailBeenSent) => {
       return productPurchase(pugEmail, body, hasEmailBeenSent);
     case 'ecard':
       return sendEcard(pugEmail);
+    case 'sendWelcomeWienerOrderConfirmationEmail':
+      return welcomeWienerPurchase(pugEmail, body, hasEmailBeenSent);
   }
 };

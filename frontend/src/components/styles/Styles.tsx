@@ -73,6 +73,56 @@ export const Text = styled.div<TextProps>`
   max-width: ${({ maxWidth }) => (maxWidth ? maxWidth : '')};
 `;
 
+interface FlexProps {
+  paddingBottom?: string;
+  paddingLeft?: string;
+  paddingRight?: string;
+  paddingTop?: string;
+  marginBottom?: string;
+  marginLeft?: string;
+  marginRight?: string;
+  marginTop?: string;
+  background?: string;
+  width?: string;
+  border?: string;
+  height?: string;
+  cursor?: string;
+  maxWidth?: string;
+  display?: string;
+  flexDirection?: string;
+  alignItems?: string;
+  justifyContent?: string;
+  flex?: string;
+  borderBottom?: string;
+}
+
+export const Flex = styled.div<FlexProps>`
+  padding-bottom: ${({ paddingBottom }) =>
+    paddingBottom ? paddingBottom : '0'};
+  padding-left: ${({ paddingLeft }) => (paddingLeft ? paddingLeft : '0')};
+  padding-right: ${({ paddingRight }) => (paddingRight ? paddingRight : '0')};
+  padding-top: ${({ paddingTop }) => (paddingTop ? paddingTop : '0')};
+  margin-bottom: ${({ marginBottom }) => (marginBottom ? marginBottom : '0')};
+  margin-left: ${({ marginLeft }) => (marginLeft ? marginLeft : '0')};
+  margin-right: ${({ marginRight }) => (marginRight ? marginRight : '0')};
+  margin-top: ${({ marginTop }) => (marginTop ? marginTop : '0')};
+  background: ${({ background }) => (background ? background : '')};
+  width: ${({ width }) => (width ? width : '')};
+  border: ${({ border }) => (border ? border : '')};
+  height: ${({ height }) => (height ? height : '')};
+  cursor: ${({ cursor }) => (cursor ? cursor : '')};
+  max-width: ${({ maxWidth }) => (maxWidth ? maxWidth : '')};
+  display: ${({ display }) => (display ? display : 'flex')};
+  flex-direction: ${({ flexDirection }) =>
+    flexDirection ? flexDirection : 'row'};
+  align-items: ${({ alignItems }) => (alignItems ? alignItems : 'flex-start')};
+  justify-content: ${({ justifyContent }) =>
+    justifyContent ? justifyContent : 'flex-start'};
+  flex: ${({ flex }) => (flex ? flex : '1 0 0')};
+  border-bottom: ${({ borderBottom }) =>
+    borderBottom ? borderBottom : '1 0 0'};
+`;
+
 export const UpdateBtn = styled(Button)`
   background: ${({ theme }) => theme.colors.quinary};
   border: 1px solid ${({ theme }) => theme.colors.quinary};
@@ -154,4 +204,9 @@ export const CreateAccountContainer = styled.div`
   text-align: center;
   border-radius: 0.4rem;
   background: ${({ theme }) => theme.bg};
+`;
+
+export const ErrorText = styled.div`
+  color: red;
+  font-size: 12px;
 `;

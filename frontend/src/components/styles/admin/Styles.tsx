@@ -3,14 +3,14 @@ import styled, { keyframes } from 'styled-components';
 
 export const Container = styled.div`
   background: #f6f9fe;
-  min-height: 100vh;
   margin: 0;
   display: flex;
   flex-direction: column;
-  padding: 32px 32px 48px;
   width: 100%;
-
+  padding-bottom: 24px;
+  min-height: 100vh;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
+    padding: 32px 32px 28px;
     width: calc(100vw - 285px);
   }
 `;
@@ -54,8 +54,9 @@ export const TableImg = styled(Image)`
 `;
 
 export const SearchBar = styled(Form.Group)`
-  width: 20rem;
+  margin-bottom: 0;
 `;
+
 export const SpinnerContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -95,9 +96,16 @@ export const CreateBtnV2 = styled.button`
 
 export const TopRow = styled.div`
   width: 100%;
-  grid-gap: 1rem;
+  grid-gap: 10px;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
+  padding-inline: 16px;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    grid-template-columns: 1fr 1fr;
+  }
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
+    padding-inline: 0px;
+  }
 `;
 
 export const StyledEditBtn = styled.button`
@@ -169,7 +177,7 @@ export const SearchInput = styled(Form.Control)`
   }
   border-radius: 0.5rem !important;
   border: none;
-  width: 20rem;
+  width: 100%;
   :focus {
     box-shadow: none;
     outline: none;
@@ -185,10 +193,13 @@ export const TableAndPaginationContainer = styled.div`
   justify-content: space-between;
   flex-direction: column;
   border-radius: 1rem;
-  height: calc(100vh - 236px);
-  padding: 1.5rem;
+  height: calc(100vh - 231px);
+  padding-left: 16px;
   background: #fff;
   min-height: 600px;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
+    height: calc(100vh - 236px);
+  }
 `;
 
 export const EditFormAndPreviewContainer = styled.div`
@@ -200,10 +211,11 @@ export const EditFormAndPreviewContainer = styled.div`
 `;
 
 export const EditForm = styled(Form)`
-  max-width: ${({ theme }) => theme.breakpoints[0]};
-  margin-right: 0px;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    margin-right: 48px;
+  max-width: 400px;
+  width: 100%;
+  padding-inline: 16px;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
+    padding: 0;
   }
 `;
 
@@ -278,8 +290,26 @@ export const RemovePhoto = styled.div`
   }
 `;
 
-export const CardImg = styled(Image)`
-  object-fit: cover;
-  border: ${({ theme }) => `4px solid ${theme.card.bg}`};
-  margin-top: -170px;
+export const FormInnerContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
+    flex-direction: row;
+  }
+`;
+export const FormLeftContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  max-width: 400px;
+  width: 100%;
+  margin-right: 0;
+
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
+    margin-right: 32px;
+  }
+`;
+export const FormRightContainer = styled.div`
+  display: flex;
+  flex-direction: column;
 `;

@@ -204,9 +204,9 @@ const AvailableDog = ({ match }: any) => {
           </Text>
           <Text>
             If the dog is adopted over a state line, there will be an additional
-            charge for a health certificate (required by law) of anywhere
-            between $45.00 and $100.00. The amount depends upon what the
-            veterinarian charges LPDR.
+            charge for a health certificate (required by law). The cost of the
+            health certificate is the responsibility of the adopter. The amount
+            depends upon what the veterinarian charges LPDR.
           </Text>
         </div>
       </BottomSection>

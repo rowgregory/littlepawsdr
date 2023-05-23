@@ -168,14 +168,12 @@ input[name='cardnumber'] {
 textarea {
   background: ${({ theme }) => theme.input.bg} !important;
   transition: 300ms;
-  margin: 0.25rem 0 1rem  !important;
-  font-family: 'Roboto'  !important;
+  margin: 0.25rem 0 0  !important;
+  font-family: Roboto  !important;
   border-radius: 0px  !important;
   box-shadow: 0 !important;
-  padding:6px 0 !important;
   color: ${({ theme }) => theme.text} !important;
-  border:1px solid ${({ theme }) => theme.input.border} !important;
-  text-indent: 18px;
+  border:0 !important;
   :focus {
     outline: none !important;
   }

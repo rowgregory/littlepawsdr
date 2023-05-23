@@ -19,7 +19,7 @@ const TopSellingProducts = ({ dashboardDetails, loading }: any) => {
         marginBottom='24px'
         fontSize='17px'
       >
-        Top Selling Products
+        Top Selling Welcome Wiener Donations
       </Text>
 
       {loading ? (
@@ -43,7 +43,12 @@ const TopSellingProducts = ({ dashboardDetails, loading }: any) => {
               {dashboardDetails?.topSellingProducts
                 ?.map((product: any, i: number) => (
                   <tr key={i} className='hover'>
-                    <td className='py-3 px-2'>{product?.name}</td>
+                    <td className='py-3 px-2'>
+                      {product?.name} for{' '}
+                      <span style={{ fontWeight: '300', fontSize: '12px' }}>
+                        {product?.dachshundName}
+                      </span>
+                    </td>
                     <td className='py-3 px-2'>${product?.price}</td>
                     <td className='py-3 px-2'>{product?.count}</td>
                     <td className='py-3 px-2'>

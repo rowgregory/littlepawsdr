@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -17,6 +16,9 @@ import {
   TotalSalesContainer,
 } from '../styles/DashboardStyles';
 import { Spinner } from 'react-bootstrap';
+import { useDispatch, useSelector } from 'react-redux';
+import { getLineChartData } from '../../actions/dashboardActions';
+import { useEffect } from 'react';
 
 ChartJS.register(
   CategoryScale,
@@ -29,128 +31,21 @@ ChartJS.register(
 );
 
 const LineChart = ({ orders, loading }: any) => {
-  const circles = 'rgba(151,97,169, 0.05)';
-  const rods = '#9761aa';
-  const year = new Date().getFullYear();
+  const dispatch = useDispatch();
 
-  const sortedByDate = orders?.sort((a: any, b: any) => {
-    const c = new Date(a.createdAt) as any;
-    const d = new Date(b.createdAt) as any;
-    return c - d;
-  });
-
-  let dateArr = [] as any;
-  const summedUpDates = [] as any;
-  const revenue = [] as any;
-  const revenueFromOrders = {} as any;
-
-  sortedByDate?.map((obj: any) => {
-    return obj?.orderItems.forEach((order: any) => {
-      dateArr.push({
-        ...order,
-        createdAt: obj.createdAt.split('T')[0],
-      });
-      return dateArr;
-    });
-  });
-
-  const isDateSumedUp = (date: any) =>
-    summedUpDates?.indexOf(date.substring(0, 7)) !== -1;
-
-  const sumUpDate = (date: any) => {
-    let sum = 0;
-    dateArr.forEach((t: any) => {
-      if (t.createdAt.substring(0, 7) === date.substring(0, 7)) {
-        sum += t.price * t.qty;
-      }
-    });
-    summedUpDates.push(date.substring(0, 7));
-    revenue.push(sum);
-  };
-
-  dateArr?.forEach((t: any) => {
-    if (!isDateSumedUp(t.createdAt)) {
-      sumUpDate(t.createdAt);
+  useEffect(() => {
+    if (orders) {
+      dispatch(getLineChartData(orders));
     }
-  });
+  }, [dispatch, orders]);
 
-  summedUpDates?.forEach(
-    (d: any, i: any) => (revenueFromOrders[d] = revenue[i])
-  );
+  const state = useSelector((state: any) => state);
 
-  const graphData = [
-    revenueFromOrders[`${year}-01`] ?? null,
-    revenueFromOrders[`${year}-02`] ?? null,
-    revenueFromOrders[`${year}-03`] ?? null,
-    revenueFromOrders[`${year}-04`] ?? null,
-    revenueFromOrders[`${year}-05`] ?? null,
-    revenueFromOrders[`${year}-06`] ?? null,
-    revenueFromOrders[`${year}-07`] ?? null,
-    revenueFromOrders[`${year}-08`] ?? null,
-    revenueFromOrders[`${year}-09`] ?? null,
-    revenueFromOrders[`${year}-10`] ?? null,
-    revenueFromOrders[`${year}-11`] ?? null,
-    revenueFromOrders[`${year}-12`] ?? null,
-  ];
+  const data = state?.dashboard?.linechart?.data;
+  const options = state?.dashboard?.linechart?.options;
 
-  const data = {
-    labels: [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-    ],
-    datasets: [
-      {
-        label: 'Total product sales',
-        data: graphData.map((num: any) => num),
-        fill: true,
-        backgroundColor: circles,
-        borderColor: rods,
-        tension: 0.1,
-        spanGaps: true,
-      },
-    ],
-  };
+  const noData = data === undefined && options === undefined;
 
-  const options = {
-    maintainAspectRatio: false,
-    responsive: true,
-    scales: {
-      y: {
-        grid: {
-          drawBorder: false,
-          color: '#fff',
-        },
-        ticks: {
-          color: '#c4c4c4',
-        },
-      },
-      x: {
-        grid: {
-          drawBorder: false,
-          color: '#fff',
-        },
-        ticks: {
-          color: '#c4c4c4',
-        },
-      },
-    },
-    plugins: {
-      legend: {
-        display: false,
-      },
-    },
-  } as any;
-  const noData = orders?.length === 0;
   return (
     <TotalSalesContainer>
       <Text
@@ -159,7 +54,7 @@ const LineChart = ({ orders, loading }: any) => {
         marginBottom='24px'
         fontSize='17px'
       >
-        Monthly Product Sales
+        Monthly Welcome Wiener Donations
       </Text>
       {loading ? (
         <SpinnerContainer>

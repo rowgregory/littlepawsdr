@@ -178,7 +178,9 @@ const AdoptionFees = ({ history }: any) => {
                   </section>
                 </div>
               </TableData>
-              <TableData>$45.00 USD</TableData>
+              <TableData>
+                Health certificate cost is the responsibility of the adopter.
+              </TableData>
             </TableRow>
           </tbody>
         </AdoptionFeeTable>

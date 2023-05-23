@@ -19,15 +19,14 @@ import {
   Title,
 } from './ContinueSessionModal';
 import { deleteManuallyAddedUser } from '../actions/manuallyAddUserActions';
+import { deleteWelcomeWienerProduct } from '../actions/welcomeWienerProductActions';
+import { deleteWelcomeWienerDachshund } from '../actions/welcomeWienerDachshundActions';
 
-const DeleteModal = ({ actionFunc, show, handleClose, id, publicId }: any) => {
+const DeleteModal = ({ actionFunc, show, handleClose, id }: any) => {
   const dispatch = useDispatch();
   const getAction = async () => {
     switch (actionFunc) {
       case 'Event':
-        // if (publicId) {
-        //   await axios.post(`/api/remove-upload`, { publicId });
-        // }
         dispatch(deleteEvent(id));
         handleClose();
         break;
@@ -48,31 +47,27 @@ const DeleteModal = ({ actionFunc, show, handleClose, id, publicId }: any) => {
         handleClose();
         break;
       case 'Raffle Winner':
-        // if (publicId) {
-        //   await axios.post(`/api/remove-upload`, { publicId });
-        // }
         dispatch(deleteRaffleWinner(id));
         handleClose();
         break;
       case 'Blog':
-        // if (publicId) {
-        //   await axios.post(`/api/remove-upload`, { publicId });
-        // }
         dispatch(deleteBlog(id));
         handleClose();
         break;
       case 'Education Tip':
-        // if (publicId) {
-        //   await axios.post(`/api/remove-upload`, { publicId });
-        // }
         dispatch(deleteEducationTip(id));
         handleClose();
         break;
       case 'Board Member':
-        // if (publicId) {
-        //   await axios.post(`/api/remove-upload`, { publicId });
-        // }
         dispatch(deleteManuallyAddedUser(id));
+        handleClose();
+        break;
+      case 'Welcome Wiener Product':
+        dispatch(deleteWelcomeWienerProduct(id));
+        handleClose();
+        break;
+      case 'Welcome Wiener Dachshund':
+        dispatch(deleteWelcomeWienerDachshund(id));
         handleClose();
         break;
       default:

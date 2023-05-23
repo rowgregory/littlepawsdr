@@ -66,7 +66,7 @@ const PieChart = ({ orders, loading }: any) => {
         fontSize='17px'
         marginBottom={noData ? '24px' : ''}
       >
-        Sales By Type
+        Sales By Donation Type
       </Text>
       {loading ? (
         <SpinnerContainer>

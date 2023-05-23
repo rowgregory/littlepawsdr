@@ -40,14 +40,15 @@ const EventList = () => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  let {
-    eventList: { loading, error, events },
-    eventDelete: {
-      loading: loadingDelete,
-      error: errorDelete,
-      success: successDelete,
-    },
-  } = useSelector((state: any) => state);
+  const state = useSelector((state: any) => state);
+
+  const loading = state.eventList.loading;
+  const error = state.eventList.error;
+  const events = state.eventList.events;
+
+  const loadingDelete = state.eventDelete.loading;
+  const errorDelete = state.eventDelete.error;
+  const successDelete = state.eventDelete.success;
 
   useEffect(() => {
     dispatch(listEvents());
@@ -104,7 +105,7 @@ const EventList = () => {
         <Message variant='danger'>{error || errorDelete}</Message>
       )}
       <TableWrapper>
-        <TopRow className='d-flex align-items-center'>
+        <TopRow>
           <SearchBar>
             <SearchInput
               as='input'

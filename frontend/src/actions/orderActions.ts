@@ -161,7 +161,13 @@ export const listMyOrders = () => async (dispatch: any, getState: any) => {
 
     const { data } = await axios.get(`/api/orders/my-orders`, config);
 
-    dispatch({ type: ORDER_LIST_MY_SUCCESS, payload: data });
+    dispatch({
+      type: ORDER_LIST_MY_SUCCESS,
+      payload: {
+        welcomeWienerOrders: data.welcomeWienerOrders,
+        ecardOrders: data.ecardOrders,
+      },
+    });
   } catch (error: any) {
     dispatch({
       type: ORDER_LIST_MY_FAIL,

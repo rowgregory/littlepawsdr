@@ -132,7 +132,9 @@ const ECardEdit = () => {
 
   return (
     <Container>
-      <WelcomeText className='mb-1'>Ecard Edit</WelcomeText>
+      <WelcomeText className='mb-1'>
+        Ecard {isEditMode ? 'Edit' : 'Create'}
+      </WelcomeText>
       <BreadCrumb
         step1='Home'
         step2='Dashboard'

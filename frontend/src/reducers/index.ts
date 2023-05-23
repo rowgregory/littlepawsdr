@@ -36,7 +36,6 @@ import {
   productDetailsReducer,
   productListReducer,
   productPublicDetailsReducer,
-  productReviewCreateReducer,
   productUpdateGuestReducer,
   productUpdateReducer,
 } from './productReducter';
@@ -105,6 +104,27 @@ import {
   manuallyAddUserUpdateReducer,
 } from './manuallyAddUserReducer';
 import { deferPayPayButtonReducer } from './paypalReducer';
+import {
+  welcomeWienerProductCreateReducer,
+  welcomeWienerProductDeleteReducer,
+  welcomeWienerProductDetailsReducer,
+  welcomeWienerProductListReducer,
+  welcomeWienerProductUpdateReducer,
+} from './welcomeWienerProductReducer';
+import {
+  welcomeWienerDachshundCreateReducer,
+  welcomeWienerDachshundDeleteReducer,
+  welcomeWienerDachshundDetailsReducer,
+  welcomeWienerDachshundListReducer,
+  welcomeWienerDachshundToggledReducer,
+  welcomeWienerDachshundUpdateReducer,
+} from './welcomeWienerDachshundReducer';
+import {
+  welcomeWienerOrderCreateReducer,
+  welcomeWienerOrderDetailsReducer,
+  welcomeWienerOrderListReducer,
+} from './welcomeWienerOrderReducer';
+import { dashboardReducer } from './dashboardReducer';
 
 const allReducers = combineReducers({
   dachshunds: dachshundListReducer,
@@ -112,6 +132,7 @@ const allReducers = combineReducers({
   dachshundSuccessfulAdoptions: dachshundSuccessfulAdoptionsReducer,
   dachshundSanctuaryOrPassedAway: dachshundSanctuaryOrPassedAwayReducer,
   dachshundPicturesVideosStatuses: dachshundPicturesVideosStatusReducer,
+  dashboard: dashboardReducer,
   userLogin: userLoginReducer,
   userRegister: userRegisterReducer,
   userDetails: userDetailsReducer,
@@ -139,7 +160,6 @@ const allReducers = combineReducers({
   productCreate: productCreateReducer,
   productUpdate: productUpdateReducer,
   productUpdateGUest: productUpdateGuestReducer,
-  productReviewCreate: productReviewCreateReducer,
   cart: cartReducer,
   orderCreate: orderCreateReducer,
   orderDetails: orderDetailsReducer,
@@ -187,6 +207,20 @@ const allReducers = combineReducers({
   manuallyAddedUserDelete: manuallyAddUserDeleteReducer,
   manuallyAddedUserDetails: manuallyAddUserDetailsReducer,
   deferPayPalButton: deferPayPayButtonReducer,
+  welcomeWienerProductList: welcomeWienerProductListReducer,
+  welcomeWienerProductCreate: welcomeWienerProductCreateReducer,
+  welcomeWienerProductUpdate: welcomeWienerProductUpdateReducer,
+  welcomeWienerProductDelete: welcomeWienerProductDeleteReducer,
+  welcomeWienerProductDetails: welcomeWienerProductDetailsReducer,
+  welcomeWienerDachshundList: welcomeWienerDachshundListReducer,
+  welcomeWienerDachshundCreate: welcomeWienerDachshundCreateReducer,
+  welcomeWienerDachshundUpdate: welcomeWienerDachshundUpdateReducer,
+  welcomeWienerDachshundDelete: welcomeWienerDachshundDeleteReducer,
+  welcomeWienerDachshundDetails: welcomeWienerDachshundDetailsReducer,
+  welcomeWienerOrderCreate: welcomeWienerOrderCreateReducer,
+  welcomeWienerOrderDetails: welcomeWienerOrderDetailsReducer,
+  welcomeWienerOrderList: welcomeWienerOrderListReducer,
+  welcomeWienerDachshundToggle: welcomeWienerDachshundToggledReducer,
 });
 
 export default allReducers;

@@ -23,6 +23,7 @@ import manuallyAddedUserRoutes from './routes/manuallyAddedUserRoutes.js';
 import recaptchaRoutes from './routes/recaptchaRoutes.js';
 import welcomeWienerDog from './routes/welcomeWienerDogRoutes.js';
 import welcomeWienerProduct from './routes/welcomeWienerProductRoutes.js';
+import welcomeWienerOrder from './routes/welcomeWienerOrderRoutes.js';
 import errorRoutes from './routes/errorRoutes.js';
 import cors from 'cors';
 
@@ -60,6 +61,7 @@ app.use('/api/manually-add-user', manuallyAddedUserRoutes);
 app.use('/api/recaptcha', recaptchaRoutes);
 app.use('/api/welcome-wiener-dog', welcomeWienerDog);
 app.use('/api/welcome-wiener-product', welcomeWienerProduct);
+app.use('/api/welcome-wiener-order', welcomeWienerOrder);
 app.use('/api/error', errorRoutes);
 
 const __dirname = path.resolve();

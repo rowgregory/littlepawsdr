@@ -128,3 +128,8 @@ export const Description = styled.div`
     }
   }
 `;
+
+export const ImageContainer = styled.div`
+  width: 100%;
+  aspect-ratio: 1/1;
+`;
