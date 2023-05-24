@@ -37,14 +37,19 @@ export const TableRow = styled.tr<{ noBorder?: boolean }>`
 `;
 
 export const TableWrapper = styled.div`
-  padding: 192px 16px;
+  padding: 192px 0px;
   background: ${({ theme }) => theme.secondaryBg};
   margin-inline: auto;
+
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    padding: 192px 16px;
+  }
 `;
 
 export const TableData = styled.td`
   width: 360px;
-  padding: 16px;
+  padding-left: 16px;
+  padding-block: 8px;
   color: ${({ theme }) => theme.card.text};
   font-size: 16px;
   div {
@@ -56,6 +61,10 @@ export const TableData = styled.td`
     font-size: 16px;
     font-weight: 600;
     height: 75px;
+    padding-right: 16px;
+  }
+
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
   }
 `;
 
@@ -128,27 +137,27 @@ const AdoptionFees = ({ history }: any) => {
           </thead>
           <tbody>
             <TableRow>
-              <TableData className='pl-4'>Below 1 year</TableData>
+              <TableData>Below 1 year</TableData>
               <TableData>$400.00 USD</TableData>
-              <TableData>$45.00 USD</TableData>
+              <TableData>See below</TableData>
             </TableRow>
             <TableRow>
-              <TableData className='pl-4'>1 - 5 years</TableData>
+              <TableData>1 - 5 years</TableData>
               <TableData>$325.00 USD</TableData>
-              <TableData>$45.00 USD</TableData>
+              <TableData>See below</TableData>
             </TableRow>
             <TableRow>
-              <TableData className='pl-4'>6 - 9 years</TableData>
+              <TableData>6 - 9 years</TableData>
               <TableData>$275.00 USD</TableData>
-              <TableData>$45.00 USD</TableData>
+              <TableData>See below</TableData>
             </TableRow>
             <TableRow>
-              <TableData className='pl-4'>10+ years</TableData>
+              <TableData>10+ years</TableData>
               <TableData>$200.00 USD</TableData>
-              <TableData>$45.00 USD</TableData>
+              <TableData>See below</TableData>
             </TableRow>
             <TableRow>
-              <TableData className='pl-4'>Adopt a Senior</TableData>
+              <TableData>Adopt a Senior</TableData>
               <TableData>
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
                   <span style={{ fontSize: '16px' }}>$100.00 USD</span>
@@ -161,7 +170,7 @@ const AdoptionFees = ({ history }: any) => {
                 </div>
               </TableData>
 
-              <TableData>$45.00 USD</TableData>
+              <TableData>See below</TableData>
             </TableRow>
             <TableRow noBorder={true}>
               <TableData></TableData>
@@ -184,7 +193,7 @@ const AdoptionFees = ({ history }: any) => {
             </TableRow>
           </tbody>
         </AdoptionFeeTable>
-        <Text maxWidth='980px' className='mx-auto mt-3' fontSize='10px'>
+        <Text maxWidth='980px' className='mx-auto mt-3 px-2' fontSize='10px'>
           *Note: In accordance with the Department of Agriculture in MA, NH, ME
           and RI, All dogs adopted in these states are charged an additional
           $150 to cover regulatory requirements.
