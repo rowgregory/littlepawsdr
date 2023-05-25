@@ -1,38 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Modal } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
-import styled, { keyframes, css } from 'styled-components';
+import styled from 'styled-components';
 import { logout } from '../actions/userActions';
 import { useDispatch } from 'react-redux';
 
-const shakeAnim = keyframes`
-  10%, 90% {
-    transform: translate3d(-1px, 0, 0);
-  }
-  
-  20%, 80% {
-    transform: translate3d(2px, 0, 0);
-  }
-
-  30%, 50%, 70% {
-    transform: translate3d(-4px, 0, 0);
-  }
-
-  40%, 60% {
-    transform: translate3d(4px, 0, 0);
-  }
-`;
 export const Content = styled.div<{ shake?: any }>`
   background: ${({ theme }) => theme.bg};
   padding: 16px;
   transform: translate3d(0, 0, 0);
   perspective: 1000px;
-  animation: ${({ shake }) =>
-    shake === 'true'
-      ? css`
-          ${shakeAnim} 0.82s cubic-bezier(.36,.07,.19,.97) both
-        `
-      : ''};
 `;
 
 export const Header = styled(Modal.Header)`

@@ -31,6 +31,7 @@ export const Container = styled.aside`
     min-height: 400px;
     max-height: 500px;
     justify-content: flex-start;
+    align-items: center;
     transform: translateY(-700px);
     &.move-down {
       transform: translateY(0px);

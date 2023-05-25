@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const welcomeWienerProductSchema = mongoose.Schema(
   {
-    displayUrl: {
+    icon: {
       type: String,
       required: true,
     },

@@ -53,12 +53,12 @@ const RightRail = ({ revealItems, setRevealItems }: any) => {
           <CartItem key={index}>
             <div className='d-flex'>
               <Image
-                src={item?.productImage}
+                src={item?.dachshundImage}
                 alt={item?.name}
                 width='50px'
                 height='50px'
                 className='mr-3'
-                style={{ objectFit: 'contain' }}
+                style={{ objectFit: 'cover' }}
               />
 
               <div className='d-flex flex-column'>

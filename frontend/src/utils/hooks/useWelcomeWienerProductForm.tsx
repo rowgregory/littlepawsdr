@@ -2,14 +2,14 @@ import { useCallback, useEffect, useState } from 'react';
 
 interface WWDachshundFormValues {
   name: string;
-  displayUrl: string;
+  icon: string;
   price: string;
   description: string;
 }
 
 interface WWDachshundFormErrors {
   name?: string;
-  displayUrl?: string;
+  icon?: string;
   price?: string;
   description?: string;
 }
@@ -24,9 +24,9 @@ const validationRules: Record<string, WWDachshundValidationRule> = {
     required: true,
     message: 'Enter name to continue',
   },
-  displayUrl: {
+  icon: {
     required: true,
-    message: 'Choose image to continue',
+    message: 'Choose icon to continue',
   },
   price: {
     required: true,
@@ -40,16 +40,12 @@ const validationRules: Record<string, WWDachshundValidationRule> = {
 
 const values: WWDachshundFormValues = {
   name: '',
-  displayUrl: '',
+  icon: '',
   price: '',
   description: '',
 };
 
-const useWelcomeWienerProductForm = (
-  callback: () => void,
-  setFile: any,
-  data?: any
-) => {
+const useWelcomeWienerProductForm = (callback: () => void, data?: any) => {
   const [inputs, setInputs] = useState<WWDachshundFormValues>(values);
   const [errors, setErrors] = useState<WWDachshundFormErrors>({});
   const [showErrors, setShowErrors] = useState<boolean>(false);
@@ -79,7 +75,7 @@ const useWelcomeWienerProductForm = (
       setInputs((inputs: any) => ({
         ...inputs,
         name: data.name,
-        displayUrl: data.displayUrl,
+        icon: data.icon,
         price: data.price,
         description: data.description,
       }));
@@ -96,14 +92,6 @@ const useWelcomeWienerProductForm = (
     if (showErrors) {
       setErrors(validate(inputs));
     }
-  };
-
-  const handleFileInputChange = (event: any) => {
-    setFile(event.target.files[0]);
-    setInputs((prevInputs) => ({
-      ...prevInputs,
-      displayUrl: event.target.files[0].name,
-    }));
   };
 
   const onSubmit = (e: any) => {
@@ -135,7 +123,6 @@ const useWelcomeWienerProductForm = (
     errors,
     showErrors,
     setInputs,
-    handleFileInputChange,
     validate,
   };
 };

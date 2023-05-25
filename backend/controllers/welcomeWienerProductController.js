@@ -13,13 +13,13 @@ const getAllWelcomeWienerProducts = async (req, res) => {
 // Function to update a welcomeWienerProduct
 const updateWelcomeWienerProduct = async (req, res) => {
   const { id } = req.params;
-  const { displayUrl, name, price, description } = req.body;
+  const { icon, name, price, description } = req.body;
 
   try {
     const updatedWelcomeWienerProduct =
       await WelcomeWienerProduct.findByIdAndUpdate(
         id,
-        { displayUrl, name, price, description },
+        { icon, name, price, description },
         { new: true }
       );
 
@@ -31,10 +31,10 @@ const updateWelcomeWienerProduct = async (req, res) => {
 
 // Function to create a new welcomeWienerProduct
 const createWelcomeWienerProduct = async (req, res) => {
-  const { displayUrl, name, price, description } = req.body;
+  const { icon, name, price, description } = req.body;
 
   const newWelcomeWienerProduct = new WelcomeWienerProduct({
-    displayUrl,
+    icon,
     name,
     price,
     description,

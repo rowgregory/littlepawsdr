@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Form, Image } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { createEvent, updateEvent } from '../../actions/eventActions';
@@ -8,7 +8,6 @@ import {
 } from '../../constants/eventConstants';
 import styled from 'styled-components';
 import { UpdateBtn } from '../../components/styles/Styles';
-import uploadFileHandler from '../../utils/uploadFileHandler';
 import { useHistory, useLocation } from 'react-router-dom';
 import Message from '../../components/Message';
 import {
@@ -23,7 +22,6 @@ import { defaultImages } from '../../utils/defaultImages';
 import BreadCrumb from '../../components/common/BreadCrumb';
 import { fontColors, gradients } from '../../utils/eventUtils';
 import API from '../../utils/api';
-import { staticUploadImage } from '../../utils/misc';
 
 const Gradient = styled(Form.Check)<{ selected?: boolean }>`
   border: ${({ selected }) =>

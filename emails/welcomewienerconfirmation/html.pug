@@ -232,7 +232,7 @@ html(xmlns='http://www.w3.org/1999/xhtml')
         each val in orderItems
           .order-item 
             .picture-name-qty
-              img.img(src=val.productImage, alt=val.dachshundName style='width:60px; height:60px; object-fit:cover;')
+              img.img(src=val.dachshundImage, alt=val.dachshundName style='width:60px; height:60px; object-fit:cover;')
               .qty-size
                 strong.product-name #{val.productName} for #{val.dachshundName}
                 div Quantity: #{val.quantity}

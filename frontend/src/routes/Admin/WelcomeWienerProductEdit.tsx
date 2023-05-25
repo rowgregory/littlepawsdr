@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import { Container } from '../../components/styles/admin/Styles';
 import { WelcomeText } from '../../components/styles/DashboardStyles';
 import BreadCrumb from '../../components/common/BreadCrumb';
-import API from '../../utils/api';
 import {
   getWelcomeWienerProductDetails,
   updateWelcomeWienerProduct,
@@ -17,9 +16,6 @@ const WelcomeWienerProductEdit = () => {
   const { id } = useParams() as any;
   const history = useHistory();
   const dispatch = useDispatch();
-  const [uploading, setUploading] = useState(false);
-  const [file, setFile] = useState({}) as any;
-  const [imgUploadStatus, setImageUploadStatus] = useState('') as any;
 
   const {
     welcomeWienerProductUpdate: {
@@ -30,23 +26,13 @@ const WelcomeWienerProductEdit = () => {
   } = useSelector((state: any) => state);
 
   const updateWelcomeWienerProductCallback = async () => {
-    let image;
-    if (file?.size > 0) {
-      setUploading(true);
-      setImageUploadStatus('Uploading to Imgbb');
-      const formData = new FormData();
-      formData.append('image', file);
-      image = await API.uploadImageToImgbb(formData);
-      setImageUploadStatus('Image uploaded!');
-    }
-
     dispatch(
       updateWelcomeWienerProduct({
         _id: product?._id,
         name: inputs?.name,
         description: inputs?.description,
         price: inputs?.price,
-        displayUrl: image?.data?.url ?? inputs?.displayUrl,
+        displayUrl: inputs?.icon,
       })
     );
   };
@@ -67,13 +53,8 @@ const WelcomeWienerProductEdit = () => {
     inputs,
     errors,
     setInputs,
-    handleFileInputChange,
     validate,
-  } = useWelcomeWienerProductForm(
-    updateWelcomeWienerProductCallback,
-    setFile,
-    product
-  );
+  } = useWelcomeWienerProductForm(updateWelcomeWienerProductCallback, product);
 
   return (
     <Container>
@@ -91,16 +72,12 @@ const WelcomeWienerProductEdit = () => {
       <CreateEditWelcomeWienerProductForm
         inputs={inputs}
         handleInput={handleInput}
-        file={file}
-        uploading={uploading || loadingDetails || loadingUpdate}
-        setFile={setFile}
+        uploading={loadingDetails || loadingUpdate}
         onSubmit={onSubmit}
         submitBtnText='Updat'
-        imgUploadStatus={imgUploadStatus}
         setInputs={setInputs}
         errors={errors}
         handleBlur={handleBlur}
-        handleFileInputChange={handleFileInputChange}
         validate={validate}
       />
     </Container>

@@ -35,12 +35,12 @@ const CartItem = ({ item }: any) => {
     <tr>
       <td style={{ padding: '10px 13px 10px 13px', width: '100px' }}>
         <Image
-          src={item?.image ?? item?.productImage}
+          src={item?.dachshundImage}
           alt={item?.name}
           roundedCircle
           width='85px'
           height='85px'
-          style={{ objectFit: 'contain', background: '#fff' }}
+          style={{ objectFit: 'cover', background: '#fff' }}
         />
       </td>
 

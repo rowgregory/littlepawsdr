@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { Image } from 'react-bootstrap';
 import { Text } from '../styles/Styles';
 
 const Container = styled.div<{ selected: boolean }>`
@@ -61,11 +60,7 @@ const WelcomeWienerProduct = ({ product, setInputs, inputs }: any) => {
           <i className='fas fa-check' style={{ color: '#fff' }}></i>
         </CheckMark>
       )}
-      <Image
-        style={{ objectFit: 'cover', aspectRatio: '1/1', width: '40px' }}
-        src={product.displayUrl}
-        alt={product.name}
-      />
+      <i className={`${product?.icon} fa-2x`}></i>
       <div className='d-flex flex-column ml-3'>
         <Text
           fontSize='14px'

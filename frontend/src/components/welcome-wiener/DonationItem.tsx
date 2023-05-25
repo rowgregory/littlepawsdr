@@ -1,6 +1,6 @@
 import { Flex, Text } from '../styles/Styles';
 import styled from 'styled-components';
-import { Button, Image, Spinner } from 'react-bootstrap';
+import { Button, Spinner } from 'react-bootstrap';
 import {
   addWelcomeWienerProductToCart,
   openCartDrawer,
@@ -14,7 +14,7 @@ interface DonationItemProps {
     description: string;
     name: string;
     price: number;
-    displayUrl: string;
+    icon: string;
   };
 }
 
@@ -43,7 +43,7 @@ const DonationItem = ({ item }: DonationItemProps) => {
       dachshundName: dachshund?.name,
       dachshundImage: dachshund?.displayUrl,
       price: item?.price?.toString(),
-      productImage: item?.displayUrl,
+      productIcon: item?.icon,
       productName: item?.name,
       productId: item?._id,
       dachshundId: dachshund?._id,
@@ -57,12 +57,10 @@ const DonationItem = ({ item }: DonationItemProps) => {
       {dachshundDetailsLoading ? (
         <LoadingImg w='55px' h='55px' mr='16px' />
       ) : (
-        <Image
-          src={item?.displayUrl}
-          width='55px'
-          height='55px'
-          style={{ objectFit: 'cover', marginRight: '16px' }}
-        />
+        <i
+          className={`${item?.icon} fa-2x d-flexjustify-content-center`}
+          style={{ width: '55px', height: '55px' }}
+        ></i>
       )}
       <Flex flexDirection='column'>
         {dachshundDetailsLoading ? (

@@ -21,12 +21,9 @@ const WelcomeWienerOrderReceipt = () => {
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch();
 
-  const loading = useSelector(
-    (state: any) => state.welcomeWienerOrderDetails.loading
-  );
-  const welcomeWienerOrder = useSelector(
-    (state: any) => state.welcomeWienerOrderDetails.welcomeWienerOrder
-  );
+  const state = useSelector((state: any) => state);
+  const loading = state.welcomeWienerOrderDetails.loading;
+  const welcomeWienerOrder = state.welcomeWienerOrderDetails.welcomeWienerOrder;
 
   useEffect(() => {
     dispatch({ type: WELCOME_WIENER_ORDER_CREATE_RESET });

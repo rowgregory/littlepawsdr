@@ -64,7 +64,7 @@ const CartDrawer = () => {
             </Text>
             <Flex className='mt-3'>
               <Image
-                src={cartItem?.productImage}
+                src={cartItem?.dachshundImage}
                 style={{ objectFit: 'cover' }}
                 width='65px'
                 height='65px'

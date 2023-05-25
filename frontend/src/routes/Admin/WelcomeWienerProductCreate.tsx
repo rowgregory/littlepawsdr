@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Container } from '../../components/styles/admin/Styles';
 import { WelcomeText } from '../../components/styles/DashboardStyles';
 import BreadCrumb from '../../components/common/BreadCrumb';
-import API from '../../utils/api';
 import { createWelcomeWienerProduct } from '../../actions/welcomeWienerProductActions';
 import { WELCOME_WIENER_PRODUCT_CREATE_RESET } from '../../constants/welcomeWienerProductConstants';
 import CreateEditWelcomeWienerProductForm from '../../components/forms/CreateEditWelcomeWienerProductForm';
@@ -13,9 +12,6 @@ import useWelcomeWienerProductForm from '../../utils/hooks/useWelcomeWienerProdu
 const WelcomeWienerProductCreate = () => {
   const history = useHistory();
   const dispatch = useDispatch();
-  const [uploading, setUploading] = useState(false);
-  const [file, setFile] = useState({}) as any;
-  const [imgUploadStatus, setImageUploadStatus] = useState('') as any;
 
   const {
     welcomeWienerProductCreate: {
@@ -24,23 +20,13 @@ const WelcomeWienerProductCreate = () => {
     },
   } = useSelector((state: any) => state);
 
-  const createWelcomeWienerProductCallback = async () => {
-    let image;
-    if (file) {
-      setUploading(true);
-      setImageUploadStatus('Uploading to Imgbb');
-      const formData = new FormData();
-      formData.append('image', file);
-      image = await API.uploadImageToImgbb(formData);
-      setImageUploadStatus('Image uploaded!');
-    }
-
+  const createWelcomeWienerProductCallback = () => {
     dispatch(
       createWelcomeWienerProduct({
         name: inputs?.name,
         description: inputs?.description,
         price: inputs?.price,
-        displayUrl: image?.data?.url,
+        icon: inputs.icon,
       })
     );
   };
@@ -59,9 +45,8 @@ const WelcomeWienerProductCreate = () => {
     inputs,
     errors,
     setInputs,
-    handleFileInputChange,
     validate,
-  } = useWelcomeWienerProductForm(createWelcomeWienerProductCallback, setFile);
+  } = useWelcomeWienerProductForm(createWelcomeWienerProductCallback);
 
   return (
     <Container>
@@ -79,16 +64,12 @@ const WelcomeWienerProductCreate = () => {
       <CreateEditWelcomeWienerProductForm
         inputs={inputs}
         handleInput={handleInput}
-        file={file}
-        uploading={uploading || loadingCreate}
-        setFile={setFile}
+        uploading={loadingCreate}
         onSubmit={onSubmit}
         submitBtnText='Creat'
-        imgUploadStatus={imgUploadStatus}
         setInputs={setInputs}
         errors={errors}
         handleBlur={handleBlur}
-        handleFileInputChange={handleFileInputChange}
         validate={validate}
       />
     </Container>

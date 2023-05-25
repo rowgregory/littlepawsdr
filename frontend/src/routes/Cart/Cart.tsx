@@ -45,7 +45,7 @@ const Cart = () => {
         {error ? (
           <>
             <Message variant='danger'>{error}</Message>
-            <Link to='/shop'>Go to Shop</Link>
+            <Link to='/welcome-wieners'>Go to Welcome Wieners</Link>
           </>
         ) : (
           <>
@@ -55,8 +55,8 @@ const Cart = () => {
                   <CartItem key={i} item={item} />
                 ))}
                 <tr style={{ background: '#ecf0f1' }}>
-                  <td>
-                    <LeftArrow text='Wieners' url='/welcome-wieners' />
+                  <td style={{ width: '136px' }}>
+                    <LeftArrow text='Welcome Wieners' url='/welcome-wieners' />
                   </td>
                   <td></td>
                   <td>

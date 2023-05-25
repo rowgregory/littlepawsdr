@@ -78,8 +78,8 @@ const WelcomeWieners = () => {
         </FirstLetter>
       ) : loading ? (
         [1, 2, 3].map((_: any, i: number) => (
-          <WelcomeWienerGrid>
-            <LoadingImg w='100%' h='100%' key={i} />{' '}
+          <WelcomeWienerGrid key={i}>
+            <LoadingImg w='300px' h='300px' key={i} />{' '}
           </WelcomeWienerGrid>
         ))
       ) : (

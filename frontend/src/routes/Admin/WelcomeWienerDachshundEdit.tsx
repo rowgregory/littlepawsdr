@@ -31,7 +31,7 @@ const WelcomeWienerDachshundEdit = () => {
 
   const updateWelcomeWienerDachshundCallback = async () => {
     let image;
-    if (file) {
+    if (file?.name) {
       setUploading(true);
       setImageUploadStatus('Uploading to Imgbb');
       const formData = new FormData();

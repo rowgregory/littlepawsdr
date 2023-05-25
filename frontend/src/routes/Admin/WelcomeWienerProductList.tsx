@@ -16,7 +16,6 @@ import {
   SearchInput,
   TableWrapper,
   CreateBtnV2,
-  TableImg,
   SpinnerContainer,
 } from '../../components/styles/admin/Styles';
 import { WelcomeText } from '../../components/styles/DashboardStyles';
@@ -135,7 +134,7 @@ const WelcomeWienerProductList = () => {
             <TableHead>
               <tr>
                 <th>NAME</th>
-                <th>IMAGE</th>
+                <th>ICON</th>
                 <th>DESCRIPTION</th>
                 <th>PRICE</th>
                 <th>EDIT</th>
@@ -149,7 +148,7 @@ const WelcomeWienerProductList = () => {
                     <Text>{product?.name}</Text>
                   </td>
                   <td>
-                    <TableImg src={product?.displayUrl} alt={product?.name} />
+                    <i className={`${product?.icon} fa-2x`}></i>
                   </td>
                   <td>
                     <Text>{shortenText(product?.description)}</Text>
