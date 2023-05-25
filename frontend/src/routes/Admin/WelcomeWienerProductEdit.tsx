@@ -16,23 +16,22 @@ const WelcomeWienerProductEdit = () => {
   const { id } = useParams() as any;
   const history = useHistory();
   const dispatch = useDispatch();
+  const state = useSelector((state: any) => state);
 
-  const {
-    welcomeWienerProductUpdate: {
-      loading: loadingUpdate,
-      success: successUpdate,
-    },
-    welcomeWienerProductDetails: { loading: loadingDetails, product },
-  } = useSelector((state: any) => state);
+  const loadingUpdate = state.welcomeWienerProductUpdate.loading;
+  const successUpdate = state.welcomeWienerProductUpdate.success;
+
+  const loadingDetails = state.welcomeWienerProductDetails.loading;
+  const product = state.welcomeWienerProductDetails.product;
 
   const updateWelcomeWienerProductCallback = async () => {
     dispatch(
       updateWelcomeWienerProduct({
-        _id: product?._id,
+        _id: id,
         name: inputs?.name,
         description: inputs?.description,
         price: inputs?.price,
-        displayUrl: inputs?.icon,
+        icon: inputs?.icon,
       })
     );
   };
