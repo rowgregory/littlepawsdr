@@ -81,7 +81,7 @@ export const IsLiveIndicator = styled.div`
   width: 30px;
   border-radius: 50%;
   background: green;
-  right: 5px;
+  right: 15px;
   top: 5px;
   z-index: 100;
   i {

@@ -24,10 +24,11 @@ const FirstLetter = styled.div`
 
 const WelcomeWieners = () => {
   const dispatch = useDispatch();
-  const {
-    welcomeWienerDachshundList: { loading, dachshundList },
-  } = useSelector((state: any) => state);
-  const userInfo = useSelector((state: any) => state.userLogin.userInfo);
+  const state = useSelector((state: any) => state);
+
+  const loading = state?.welcomeWienerDachshundList.loading;
+  const dachshundList = state?.welcomeWienerDachshundList.dachshundList;
+  const userInfo = state.userLogin.userInfo;
 
   useEffect(() => {
     dispatch(listWelcomeWienerDachshunds());
@@ -77,11 +78,11 @@ const WelcomeWieners = () => {
           ready to fall in love with these adorable pups even more!
         </FirstLetter>
       ) : loading ? (
-        [1, 2, 3].map((_: any, i: number) => (
-          <WelcomeWienerGrid key={i}>
-            <LoadingImg w='300px' h='300px' key={i} />{' '}
-          </WelcomeWienerGrid>
-        ))
+        <WelcomeWienerGrid>
+          {[1, 2, 3].map((_: any, i: number) => (
+            <LoadingImg w='300px' h='300px' key={i} />
+          ))}
+        </WelcomeWienerGrid>
       ) : (
         <WelcomeWienerGrid>
           {dachshundList?.map(
