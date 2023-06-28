@@ -222,41 +222,41 @@ const getMyOrders = asyncHandler(async (req, res) => {
       email: req.user.email,
     });
 
-    const convertedEcardOrders = ecardOrders.filter(order => {
+    const convertedEcardOrders = ecardOrders.map(order => {
       // repair logic for converting legacy ecards to new order shape
-      if (order.firstName && order.lastName) {
+      if (order?.firstName && order?.lastName) {
         const orderItems = [
           {
-            _id: order._id,
-            price: order.totalPrice,
-            subtotal: order.subTotal,
+            _id: order?._id,
+            price: order?.totalPrice,
+            subtotal: order?.subTotal,
             quantity: 1,
-            email: order.email,
-            isPhysicalProduct: order.isPhysicalProduct,
-            recipientsFullName: order.recipientsFirstName,
-            recipientsEmail: order.recipientsEmail,
-            dateToSend: order.dateToSend,
-            message: order.message,
-            isSent: order.isSent,
-            productImage: order.image,
-            productName: order.name,
+            email: order?.email,
+            isPhysicalProduct: order?.isPhysicalProduct,
+            recipientsFullName: order?.recipientsFirstName,
+            recipientsEmail: order?.recipientsEmail,
+            dateToSend: order?.dateToSend,
+            message: order?.message,
+            isSent: order?.isSent,
+            productImage: order?.image,
+            productName: order?.name,
             isEcard: true,
           },
         ];
 
         return {
-          name: `${order.firstName}${order.lastName}`,
+          _id: order?._id,
+          name: `${order?.firstName}${order?.lastName}`,
           orderItems,
-          totalPrice: order.totalPrice,
-          paypalOrderId: order.orderId,
-          email: order.email,
-          requiresShipping: order.isPhysicalProduct,
-          subtotal: order.subotal,
+          totalPrice: order?.totalPrice,
+          paypalOrderId: order?.orderId,
+          email: order?.email,
+          requiresShipping: order?.isPhysicalProduct,
+          subtotal: order?.totalPrice,
           totalItems: 1,
-          createdAt: order.createdAt,
+          createdAt: order?.createdAt,
         };
       }
-      return;
     });
 
     const ecardsAndOrders =

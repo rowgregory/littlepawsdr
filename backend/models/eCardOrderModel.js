@@ -17,8 +17,12 @@ const eCardOrderSchema = mongoose.Schema(
     productName: { type: String },
     name: { type: String },
     orderId: { type: String },
+
+    // legacy attributes
     firstName: { type: String },
     lastName: { type: String },
+    recipientsFirstName: { type: String },
+    subTotal: { type: Number },
   },
   {
     timestamps: true,

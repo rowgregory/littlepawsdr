@@ -20,7 +20,7 @@ const ListMyOrders = ({ order }: any) => {
               <Text>Email</Text>
               <Text fontWeight={600}>{order?.email}</Text>
             </Col>
-            <Col md={4} className='mb-2'>
+            <Col md={4} className='mb-2 ml-5'>
               <Text className='d-flex'>Order id:</Text>
               <Text fontWeight={600}>{order?._id}</Text>
             </Col>
@@ -29,7 +29,7 @@ const ListMyOrders = ({ order }: any) => {
       </CardHeader>
       <CardBody className='d-flex justify-content-between mt-4'>
         <div className='d-flex flex-column'>
-          {order?.orderItems.map((item: any, i: number) => (
+          {order?.orderItems?.map((item: any, i: number) => (
             <div
               key={i}
               className='d-flex justify-content-between align-items-start'
