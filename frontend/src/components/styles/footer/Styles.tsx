@@ -145,8 +145,10 @@ export const Developed = styled.div`
   :hover {
     color: #ccc;
   }
-  margin-top: 48px;
+  margin-top: 28px;
+
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    margin-right: 100px;
     margin-top: 0px;
   }
 `;

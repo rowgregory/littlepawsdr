@@ -5,7 +5,7 @@ import { Text } from '../styles/Styles';
 const Container = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: 24px;
   padding-inline: 16px;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
     padding-inline: 0px;
@@ -30,6 +30,8 @@ const BreadCrumb = ({
   url1,
   url2,
   url3,
+  setProductType,
+  productType,
 }: any) => {
   return (
     <Container>
@@ -38,7 +40,12 @@ const BreadCrumb = ({
       <StyledLink to={url2}>{step2}</StyledLink>
       {step3 && <i className='fas fa-chevron-right fa-xs mr-1'></i>}
       {url3 ? (
-        <StyledLink to={url3}>{step3}</StyledLink>
+        <StyledLink
+          onClick={() => productType && setProductType('Orders')}
+          to={url3}
+        >
+          {step3}
+        </StyledLink>
       ) : (
         <Text
           fontWeight={400}
@@ -49,10 +56,19 @@ const BreadCrumb = ({
           {step3}
         </Text>
       )}
-      {step4 !== '' && <i className='fas fa-chevron-right fa-xs mr-1'></i>}
-      <Text fontWeight={400} color='#9761aa' fontSize='13px' className='mr-1'>
-        {step4}
-      </Text>
+      {step4 !== '' && productType !== 'Orders' && (
+        <i className='fas fa-chevron-right fa-xs mr-1'></i>
+      )}
+      {productType !== 'Orders' && (
+        <Text
+          fontWeight={400}
+          color='#9761aa'
+          fontSize='13px'
+          marginRight='4px'
+        >
+          {step4}
+        </Text>
+      )}
       {step5 && <i className='fas fa-chevron-right fa-xs mr-1'></i>}
       <Text fontSize='13px'>{step5}</Text>
     </Container>

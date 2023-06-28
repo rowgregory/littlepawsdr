@@ -4,8 +4,9 @@ import { CardBody, CardHeader, OrderImg } from '../styles/my-orders/Styles';
 import { localizeDate } from '../../utils/localizeDate';
 import { StyledCard, Text } from '../styles/Styles';
 import ErrorImg from '../../components/assets/404_dog01.png';
+import addDecimals from '../../utils/addDecimals';
 
-const MyWelcomeWienerOrders = ({ order }: any) => {
+const ListMyOrders = ({ order }: any) => {
   return (
     <StyledCard className='mb-5'>
       <CardHeader>
@@ -17,7 +18,7 @@ const MyWelcomeWienerOrders = ({ order }: any) => {
             </Col>
             <Col md={2} className='mb-2'>
               <Text>Email</Text>
-              <Text fontWeight={600}>{order?.emailAddress}</Text>
+              <Text fontWeight={600}>{order?.email}</Text>
             </Col>
             <Col md={4} className='mb-2'>
               <Text className='d-flex'>Order id:</Text>
@@ -26,31 +27,34 @@ const MyWelcomeWienerOrders = ({ order }: any) => {
           </Col>
         </Row>
       </CardHeader>
-      <CardBody>
+      <CardBody className='d-flex justify-content-between mt-4'>
         <div className='d-flex flex-column'>
-          {order?.orderItems.map((item: any) => (
+          {order?.orderItems.map((item: any, i: number) => (
             <div
-              key={item._id}
-              className='d-flex justify-content-between align-items-start mt-4'
+              key={i}
+              className='d-flex justify-content-between align-items-start'
             >
               <div className='d-flex'>
                 <OrderImg
                   onError={(e: any) => (e.target.src = ErrorImg)}
-                  src={item?.dachshundImage}
+                  src={item?.dachshundImage || item?.productImage}
                   alt='ecard-order-item'
                 />
 
                 <div className='d-flex flex-column ml-3 justify-content-between'>
                   <div>
                     <Text>
-                      {item?.productName} for {item?.dachshundName}
+                      {item?.productName}{' '}
+                      {item?.dachshundName && ` for ${item?.dachshundName}`}
                     </Text>
                     <Text>Qty: {item?.quantity}</Text>
                   </div>
                   <Link
                     style={{ fontSize: '13px' }}
                     to={{
-                      pathname: `/welcome-wiener/order/${order?._id}`,
+                      pathname: item?.isEcard
+                        ? `/e-card/order/${item?._id}`
+                        : `/order/${order?._id}`,
                       state: { order, goBackTo: 'MY_ORDERS' },
                     }}
                   >
@@ -58,16 +62,17 @@ const MyWelcomeWienerOrders = ({ order }: any) => {
                   </Link>
                 </div>
               </div>
-              <div className='d-flex flex-column justify-content-center align-items-end'>
-                <Text>Total</Text>
-                <Text fontWeight={600}>${Number(item?.price)?.toFixed(2)}</Text>
-              </div>
+              <div className='d-flex flex-column justify-content-center align-items-end'></div>
             </div>
           ))}
+        </div>
+        <div>
+          <Text>Total</Text>
+          <Text fontWeight={600}>{addDecimals(order?.totalPrice)}</Text>
         </div>
       </CardBody>
     </StyledCard>
   );
 };
 
-export default MyWelcomeWienerOrders;
+export default ListMyOrders;

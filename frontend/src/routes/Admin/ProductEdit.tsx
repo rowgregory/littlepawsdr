@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Form, Image } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { createProduct, updateProduct } from '../../actions/productActions';
+import { updateProduct } from '../../actions/productActions';
 import { UpdateBtn } from '../../components/styles/Styles';
 import { useHistory, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
@@ -22,10 +22,7 @@ import BreadCrumb from '../../components/common/BreadCrumb';
 import PhotoUploadIcon from '../../components/svg/PhotoUploadIcon';
 import { Accordion } from '../../components/styles/place-order/Styles';
 import { categories } from '../../utils/shopCategories';
-import {
-  PRODUCT_CREATE_RESET,
-  PRODUCT_UPDATE_RESET,
-} from '../../constants/productContstants';
+import { PRODUCT_UPDATE_RESET } from '../../constants/productContstants';
 import API from '../../utils/api';
 
 const SizeContainer = styled.div`
@@ -60,6 +57,7 @@ const useProductEditForm = (
   const values = {
     name: '',
     price: 0,
+    shippingPrice: 0,
     image: '',
     brand: '',
     category: '',
@@ -75,6 +73,7 @@ const useProductEditForm = (
         ...inputs,
         name: data.name,
         price: data.price,
+        shippingPrice: data.shippingPrice,
         image: data.image,
         brand: data.brand,
         category: data.category,
@@ -105,29 +104,21 @@ const useProductEditForm = (
 
 const ProductEdit = () => {
   const {
-    state: { product, isEditMode },
+    state: { product },
   } = useLocation() as any;
   const history = useHistory();
   const dispatch = useDispatch();
-  const [countInStock, setCountInStock] = useState(0);
   const [uploading, setUploading] = useState(false);
   const [productSizes, setProductSizes] = useState([]) as any;
   const [doesProductHaveSizes, setDoesProductHaveSizes] = useState(false);
   const [file, setFile] = useState({}) as any;
   const [imgUploadStatus, setImageUploadStatus] = useState('') as any;
 
-  let {
-    productUpdate: {
-      loading: loadingUpdate,
-      error: errorUpdate,
-      success: successUpdate,
-    },
-    productCreate: {
-      loading: loadingCreate,
-      error: errorCreate,
-      success: successCreate,
-    },
-  } = useSelector((state: any) => state);
+  const state = useSelector((state: any) => state);
+
+  const loading = state?.productUpdate?.loading;
+  const error = state?.productUpdate?.error;
+  const success = state?.productUpdate?.success;
 
   const editProductCallback = async () => {
     setUploading(true);
@@ -138,42 +129,25 @@ const ProductEdit = () => {
     const isFile = file?.name;
     const image = isFile && (await API.uploadImageToImgbb(formData));
     setImageUploadStatus('Image uploaded!');
-    setImageUploadStatus(
-      isEditMode ? 'Updating ecard details' : 'Creating ecard details'
-    );
 
     let sortedSizes = productSizes?.sort(
       (a: any, b: any) => weights[a?.size] - weights[b?.size]
     );
 
-    if (isEditMode) {
-      dispatch(
-        updateProduct({
-          _id: product?._id,
-          name: inputs.name,
-          price: inputs.price,
-          brand: inputs.brand,
-          category: inputs.category,
-          description: inputs.description,
-          countInStock,
-          image: image?.data?.url,
-          sizes: sortedSizes,
-        })
-      );
-    } else {
-      dispatch(
-        createProduct({
-          name: inputs.name,
-          price: inputs.price,
-          brand: inputs.brand,
-          category: inputs.category,
-          description: inputs.description,
-          countInStock,
-          image: image?.data?.url,
-          sizes: sortedSizes,
-        })
-      );
-    }
+    dispatch(
+      updateProduct({
+        _id: product?._id,
+        name: inputs.name,
+        price: inputs.price,
+        shippingPrice: inputs.shippingPrice,
+        brand: inputs.brand,
+        category: inputs.category,
+        description: inputs.description,
+        countInStock: inputs.countInStock,
+        image: image?.data?.url,
+        sizes: sortedSizes,
+      })
+    );
   };
 
   const { inputs, handleInput, onSubmit } = useProductEditForm(
@@ -193,12 +167,11 @@ const ProductEdit = () => {
   } as any;
 
   useEffect(() => {
-    if (successCreate || successUpdate) {
-      history.push('/admin/productList');
+    if (success) {
+      history.push('/admin/product/list');
       dispatch({ type: PRODUCT_UPDATE_RESET });
-      dispatch({ type: PRODUCT_CREATE_RESET });
     }
-  }, [dispatch, history, successCreate, successUpdate]);
+  }, [dispatch, history, success]);
 
   const editPhotoHandler = (e: any) => setFile(e.target.files[0]);
 
@@ -234,11 +207,9 @@ const ProductEdit = () => {
         step5='Edit'
         url1='/'
         url2='/admin'
-        url3='/admin/productList'
+        url3='/admin/product/list'
       />
-      {(errorUpdate || errorCreate) && (
-        <Message variant='danger'>{errorUpdate || errorCreate}</Message>
-      )}
+      {error && <Message variant='danger'>{error}</Message>}
       <EditForm>
         <Form.Group controlId='name'>
           <Form.Label>Name</Form.Label>
@@ -257,7 +228,16 @@ const ProductEdit = () => {
             type='number'
             step='any'
             min='0'
-            value={inputs.price || 0}
+            value={inputs.price || ''}
+            onChange={handleInput}
+          ></Form.Control>
+        </Form.Group>
+        <Form.Group controlId='shippingPrice'>
+          <Form.Label>Shipping Price</Form.Label>
+          <Form.Control
+            name='shippingPrice'
+            type='number'
+            value={inputs.shippingPrice || ''}
             onChange={handleInput}
           ></Form.Control>
         </Form.Group>
@@ -285,8 +265,6 @@ const ProductEdit = () => {
               setDoesProductHaveSizes(e.target.checked);
               if (doesProductHaveSizes) {
                 setProductSizes([]);
-              } else {
-                setCountInStock(0);
               }
             }}
           ></Form.Check>
@@ -419,8 +397,8 @@ const ProductEdit = () => {
           ></Form.Control>
         </Form.Group>
         <UpdateBtn onClick={onSubmit}>
-          {isEditMode ? 'Updat' : 'Creat'}
-          {loadingUpdate || loadingCreate ? 'ing...' : 'e'}
+          Updat
+          {loading ? 'ing...' : 'e'}
         </UpdateBtn>
       </EditForm>
     </Container>

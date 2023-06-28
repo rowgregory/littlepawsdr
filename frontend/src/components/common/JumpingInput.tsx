@@ -69,9 +69,10 @@ export const Select = styled(Form.Control)<{
 `;
 
 export const TextArea = styled.textarea<{ error: any }>`
-  padding: 19px 5px 5px 0px !important;
+  padding: 19px 15px 5px !important;
   font-size: 13px;
-  border: ${({ error }) => (error ? '1px solid #d42825' : '')} !important;
+  border: ${({ error, theme }) =>
+    error ? '1px solid #d42825' : `1px solid ${theme.input.border}`} !important;
   width: 100%;
   :focus,
   :not(:placeholder-shown) {

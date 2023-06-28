@@ -16,9 +16,6 @@ import {
   TotalSalesContainer,
 } from '../styles/DashboardStyles';
 import { Spinner } from 'react-bootstrap';
-import { useDispatch, useSelector } from 'react-redux';
-import { getLineChartData } from '../../actions/dashboardActions';
-import { useEffect } from 'react';
 
 ChartJS.register(
   CategoryScale,
@@ -30,21 +27,10 @@ ChartJS.register(
   Legend
 );
 
-const LineChart = ({ orders, loading }: any) => {
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (orders) {
-      dispatch(getLineChartData(orders));
-    }
-  }, [dispatch, orders]);
-
-  const state = useSelector((state: any) => state);
-
-  const data = state?.dashboard?.linechart?.data;
-  const options = state?.dashboard?.linechart?.options;
-
-  const noData = data === undefined && options === undefined;
+const LineChart = ({ lineChart, loading }: any) => {
+  const noData = lineChart?.data?.datasets.every((obj: any) =>
+    obj.data?.every((month: any) => month === null)
+  );
 
   return (
     <TotalSalesContainer>
@@ -54,7 +40,7 @@ const LineChart = ({ orders, loading }: any) => {
         marginBottom='24px'
         fontSize='17px'
       >
-        Monthly Welcome Wiener Donations
+        Monthly Order Sales
       </Text>
       {loading ? (
         <SpinnerContainer>
@@ -63,9 +49,10 @@ const LineChart = ({ orders, loading }: any) => {
       ) : noData ? (
         <Text>No data to display</Text>
       ) : (
-        !noData && (
+        !noData &&
+        lineChart?.data?.labels?.length > 0 && (
           <LineChartContainer>
-            <Line data={data} options={options} />
+            <Line data={lineChart?.data} options={lineChart?.options} />
           </LineChartContainer>
         )
       )}

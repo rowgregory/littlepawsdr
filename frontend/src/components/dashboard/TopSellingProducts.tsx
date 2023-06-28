@@ -1,4 +1,3 @@
-import React from 'react';
 import { Spinner } from 'react-bootstrap';
 import { TableHead } from '../styles/admin/Styles';
 import {
@@ -7,10 +6,10 @@ import {
   TopSellingProductsContainer,
 } from '../styles/DashboardStyles';
 import { Text } from '../styles/Styles';
+import addDecimals from '../../utils/addDecimals';
 
-const TopSellingProducts = ({ dashboardDetails, loading }: any) => {
-  const noData = dashboardDetails?.topSellingProducts?.length === 0;
-
+const TopSellingProducts = ({ topSellingProducts, loading }: any) => {
+  const noData = topSellingProducts?.length === 0;
   return (
     <TopSellingProductsContainer>
       <Text
@@ -19,7 +18,7 @@ const TopSellingProducts = ({ dashboardDetails, loading }: any) => {
         marginBottom='24px'
         fontSize='17px'
       >
-        Top Selling Welcome Wiener Donations
+        Top Selling Items
       </Text>
 
       {loading ? (
@@ -35,24 +34,41 @@ const TopSellingProducts = ({ dashboardDetails, loading }: any) => {
               <tr className='topSellingProducts'>
                 <th>NAME</th>
                 <th>PRICE</th>
-                <th>QUANTITY</th>
-                <th>AMOUNT</th>
+                <th>QTY</th>
+                <th>SUBTOTAL</th>
+                <th>SHIPPING</th>
+                <th>TOTAL</th>
               </tr>
             </TableHead>
             <TableBody>
-              {dashboardDetails?.topSellingProducts
+              {topSellingProducts
                 ?.map((product: any, i: number) => (
                   <tr key={i} className='hover'>
                     <td className='py-3 px-2'>
-                      {product?.name} for{' '}
-                      <span style={{ fontWeight: '300', fontSize: '12px' }}>
-                        {product?.dachshundName}
-                      </span>
+                      {product?.name}
+                      {product?.dachshundName && (
+                        <span
+                          style={{
+                            fontWeight: '400',
+                            fontSize: '13px',
+                            color: '#c4c4c4',
+                            fontFamily: 'Roboto',
+                          }}
+                        >
+                          {` for ${product?.dachshundName}`}
+                        </span>
+                      )}
                     </td>
-                    <td className='py-3 px-2'>${product?.price}</td>
+                    <td className='py-3 px-2'>{addDecimals(product?.price)}</td>
                     <td className='py-3 px-2'>{product?.count}</td>
                     <td className='py-3 px-2'>
-                      ${product?.totalAmount?.toFixed(2)}
+                      {addDecimals(product?.subtotal)}
+                    </td>
+                    <td className='py-3 px-2'>
+                      {addDecimals(product?.shippingTotal)}
+                    </td>
+                    <td className='py-3 px-2'>
+                      {addDecimals(product?.totalAmount)}
                     </td>
                   </tr>
                 ))

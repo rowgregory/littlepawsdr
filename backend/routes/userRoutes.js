@@ -14,15 +14,15 @@ import {
   confirmOldPassword,
   sendRegisterConfirmationEmail,
   userIsConfirmed,
-  generateTokenForSession,
   dashboardDetails,
+  getRefreshToken,
 } from '../controllers/userController.js';
 import { protect, admin } from '../middleware/authMiddleware.js';
 
 router.route('/').post(registerUser).get(protect, admin, getUsers);
 router.route('/dashboard-details').get(protect, admin, dashboardDetails);
 router.route('/who-we-are').get(getWhoWeAreUsers);
-router.route('/generate-new-token').put(protect, generateTokenForSession);
+router.route('/refresh-token').post(getRefreshToken);
 router.post('/login', authUser);
 router.put('/logout', userLogout);
 router

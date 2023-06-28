@@ -21,20 +21,6 @@ const cartItemsFromStorage = localStorage.getItem('cartItems')
   ? JSON.parse(localStorage.getItem('cartItems') || '')
   : [];
 
-let totalItems = 0;
-
-cartItemsFromStorage?.forEach((item: any) => {
-  totalItems += item.quantity || 1;
-});
-
-const subtotal = cartItemsFromStorage
-  ?.reduce((acc: any, item: any) => acc + Number(item.price) * item.quantity, 0)
-  .toLocaleString('en-us', { style: 'currency', currency: 'USD' });
-
-const guestUserInfoFromStorage = localStorage.getItem('guestUserInfo')
-  ? JSON.parse(localStorage.getItem('guestUserInfo') || '')
-  : {};
-
 const ecardsFromStorage = sessionStorage.getItem('ecards')
   ? JSON.parse(sessionStorage.getItem('ecards') || '')
   : {};
@@ -43,11 +29,14 @@ const initialState: any = {
   dachshunds: { dachshunds: dachshundsFromStorage },
   userLogin: { userInfo: userInfoFromStorage },
   cart: {
-    cartItems: cartItemsFromStorage,
-    cartItemsAmount: totalItems,
-    subtotal,
+    cartItems: cartItemsFromStorage?.cartItems ?? [],
+    cartItemsAmount: cartItemsFromStorage?.cartItemsAmount ?? 0,
+    subtotal: cartItemsFromStorage?.subtotal ?? 0,
+    shippingPrice: cartItemsFromStorage?.shippingPrice ?? 0,
+    isPhysicalProduct: cartItemsFromStorage?.isPhysicalProduct,
+    totalPrice: cartItemsFromStorage?.totalPrice ?? 0,
+    cartDrawer: false,
   },
-  guestUserRegister: { guestUserInfo: guestUserInfoFromStorage },
   eCardList: { ecardsFromStorage },
 };
 

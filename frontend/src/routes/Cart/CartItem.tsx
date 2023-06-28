@@ -1,8 +1,8 @@
 import {
-  addWelcomeWienerProductToCart,
-  deletWelcomeWienerProductFromCart,
   openCartDrawer,
-  removeWelcomeWienerProductFromCart,
+  removeProductFromCart,
+  deleteProductFromCart,
+  addProductToCart,
 } from '../../actions/cartActions';
 import UIFx from 'uifx';
 import Add from '../../components/sounds/click02.wav';
@@ -17,8 +17,19 @@ const CartItem = ({ item }: any) => {
 
   const productAmountChanged = new UIFx(Add);
   const reachedProductLimit = new UIFx(Thump);
+
   const addOneItem = (item: any) => {
-    dispatch(addWelcomeWienerProductToCart(item));
+    const productAmount = item?.sizes?.find(
+      (p: any) => p.size === item.size
+    )?.amount;
+
+    if (
+      item.quantity + 1 <= productAmount ||
+      item.dachshundId ||
+      item.quantity + 1 <= item.countInStock
+    ) {
+      dispatch(addProductToCart(item));
+    }
   };
 
   const deleteOneItem = (e: any, item: any) => {
@@ -29,13 +40,14 @@ const CartItem = ({ item }: any) => {
     }
 
     productAmountChanged.play();
-    dispatch(deletWelcomeWienerProductFromCart(item));
+    dispatch(deleteProductFromCart(item));
   };
+
   return (
     <tr>
-      <td style={{ padding: '10px 13px 10px 13px', width: '100px' }}>
+      <td style={{ padding: '10px 13px 10px 13px', width: '75px' }}>
         <Image
-          src={item?.dachshundImage}
+          src={item?.dachshundImage ?? item?.productImage}
           alt={item?.name}
           roundedCircle
           width='85px'
@@ -46,35 +58,49 @@ const CartItem = ({ item }: any) => {
 
       <td style={{ maxWidth: '60px' }}>
         <ProductName
-          to={`/welcome-wiener/${item?.dachshundId}`}
+          to={
+            item?.dachshundId
+              ? `/welcome-wiener/${item?.dachshundId}`
+              : `/merch/${item?.id ?? item?.productId}`
+          }
           onClick={() => dispatch(openCartDrawer(false))}
         >
-          {item.productName} for {item.dachshundName}
+          {item.isEcard
+            ? `Sending ecard to ${item?.recipientsEmail}`
+            : item.productName}
+          {item.dachshundName && ` for ${item?.dachshundName}`}
         </ProductName>
         {item?.size && <Text fontSize='12px'>{item?.size}</Text>}
       </td>
       <td>
-        <div className='d-flex align-items-center'>
-          <Text marginRight='8px' fontWeight={400} color='#858382' width='15px'>
-            {item.qty ?? item?.quantity}
-          </Text>
+        {!item?.isEcard && (
+          <div className='d-flex align-items-center'>
+            <Text
+              marginRight='8px'
+              fontWeight={400}
+              color='#858382'
+              width='15px'
+            >
+              {item.qty ?? item?.quantity}
+            </Text>
 
-          <div className='d-flex flex-column'>
-            <CartBtn
-              className='plus'
-              onClick={() => addOneItem(item)}
-              aria-valuenow={item.qty ?? item?.quantity}
-            >
-              +
-            </CartBtn>
-            <CartBtn
-              onClick={(e: any) => deleteOneItem(e, item)}
-              aria-valuenow={item.qty ?? item?.quantity}
-            >
-              -
-            </CartBtn>
+            <div className='d-flex flex-column'>
+              <CartBtn
+                className='plus'
+                onClick={() => addOneItem({ ...item, from: 'cart' })}
+                aria-valuenow={item.qty ?? item?.quantity}
+              >
+                +
+              </CartBtn>
+              <CartBtn
+                onClick={(e: any) => deleteOneItem(e, item)}
+                aria-valuenow={item.qty ?? item?.quantity}
+              >
+                -
+              </CartBtn>
+            </div>
           </div>
-        </div>
+        )}
       </td>
       <td>
         <Text className='pr-2' fontWeight='bold'>
@@ -84,7 +110,7 @@ const CartItem = ({ item }: any) => {
       <td className='remove-cart-item'>
         <i
           className='fas fa-times fa-sm ml-3'
-          onClick={() => dispatch(removeWelcomeWienerProductFromCart(item))}
+          onClick={() => dispatch(removeProductFromCart(item))}
         ></i>
       </td>
     </tr>

@@ -1,44 +1,28 @@
 import {
-  DataSquare,
   DataSquareContainer,
   DataSquareLink,
   DataSquareTitle,
 } from '../styles/DashboardStyles';
 import { Text } from '../styles/Styles';
 import SolidPeople from '../../components/svg/SolidPeople';
-import SolidOrdersIcon from '../../components/svg/SolidOrdersIcon';
-import EcardSolidIcon from '../../components/svg/EcardSolidIcon';
 import { Spinner } from 'react-bootstrap';
+import ProductsIcon from '../svg/ProductsIcon';
 
 const DashboardTopRow = ({ dashboardDetails, loading }: any) => {
   const dashboardSquareData = () => [
     {
-      title: 'Welcome Wiener Donations',
-      itemAmount: dashboardDetails?.totalAmounts?.welcomeWienerOrders,
-      plus: '-',
-      linkKey: '/admin/welcome-wiener/order/list',
-      icon: <SolidOrdersIcon />,
+      title: 'Orders',
+      itemAmount: dashboardDetails?.totalAmounts?.orders,
+
+      linkKey: '/admin/orders',
+      icon: <ProductsIcon />,
     },
     {
       title: 'Users',
       itemAmount: dashboardDetails?.totalAmounts?.users,
-      plus: '-',
+
       linkKey: '/admin/userList',
       icon: <SolidPeople />,
-    },
-    {
-      title: 'Ecard Donations',
-      itemAmount: dashboardDetails?.totalAmounts?.ecardOrders,
-      plus: '-',
-      linkKey: '/admin/eCardOrderList',
-      icon: <EcardSolidIcon />,
-    },
-    {
-      title: 'Create Welcome Wiener Product',
-      itemAmount: null,
-      plus: <i className='fas fa-plus'></i>,
-      linkKey: '/admin/welcome-wiener/product/create',
-      icon: <i className='fas fa-dog' style={{ color: '#9761aa' }}></i>,
     },
   ];
 
@@ -67,17 +51,9 @@ const DashboardTopRow = ({ dashboardDetails, loading }: any) => {
   return (
     <DataSquareContainer>
       {dashboardSquareData().map((obj, i) => (
-        <div key={i}>
-          {obj?.plus ? (
-            <DataSquareLink to={obj?.linkKey}>
-              <DataSquareContent obj={obj} loading={loading} />
-            </DataSquareLink>
-          ) : (
-            <DataSquare>
-              <DataSquareContent obj={obj} loading={loading} />
-            </DataSquare>
-          )}
-        </div>
+        <DataSquareLink key={i} to={obj?.linkKey}>
+          <DataSquareContent obj={obj} loading={loading} />
+        </DataSquareLink>
       ))}
     </DataSquareContainer>
   );

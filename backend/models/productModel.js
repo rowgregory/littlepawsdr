@@ -2,10 +2,6 @@ import mongoose from 'mongoose';
 
 const productSchema = mongoose.Schema(
   {
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-    },
     name: {
       type: String,
     },
@@ -21,15 +17,11 @@ const productSchema = mongoose.Schema(
     description: {
       type: String,
     },
-    rating: {
-      type: Number,
-      default: 0,
-    },
-    numReviews: {
-      type: Number,
-      default: 0,
-    },
     price: {
+      type: Number,
+      default: 0,
+    },
+    shippingPrice: {
       type: Number,
       default: 0,
     },
@@ -40,12 +32,17 @@ const productSchema = mongoose.Schema(
     size: {
       type: String,
     },
-    isLimitedProduct: {
-      type: Boolean,
-      default: true,
-    },
     sizes: {
       type: Array,
+      default: null,
+    },
+    hasSizes: {
+      type: Boolean,
+      default: false,
+    },
+    isPhysicalProduct: {
+      type: Boolean,
+      default: true,
     },
   },
   {

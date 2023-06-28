@@ -1,38 +1,34 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { listDashboardDetails, logout } from '../../actions/userActions';
+import { listDashboardDetails } from '../../actions/userActions';
 import LineChart from '../../components/dashboard/LineChart';
 import PieChart from '../../components/dashboard/PieChart';
-import { Text } from '../../components/styles/Styles';
 import {
   BottomRow,
   DashboardContainer,
   Middle,
   MiddleRow,
   Right,
+  SubheaderText,
   TopRow,
   WelcomeText,
+  WelcomeTextWrapper,
 } from '../../components/styles/DashboardStyles';
 import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
 import DashboardTopRow from '../../components/dashboard/DashboardTopRow';
 import TopSellingProducts from '../../components/dashboard/TopSellingProducts';
 import RecentTransactions from '../../components/dashboard/RecentTransactions';
+import SplitTextToChars from '../../utils/SplitTextToChars';
 
 const Dashboard = () => {
   const dispatch = useDispatch();
-
   const state = useSelector((state: any) => state);
 
   const userInfo = state.userLogin.userInfo;
   const loading = state.userDashboardDetails.loading;
   const dashboardDetails = state.userDashboardDetails.dashboardDetails;
-  const error = state.userDashboardDetails.error;
-  const loadingUserLogout = state.userLogout.loading;
 
-  useEffect(() => {
-    const timeToLogout = [error].includes('TOKEN_FAILED');
-    if (timeToLogout) dispatch(logout(userInfo));
-  }, [dispatch, error, userInfo]);
+  const loadingUserLogout = state.userLogout.loading;
 
   useEffect(() => {
     dispatch(listDashboardDetails());
@@ -41,14 +37,20 @@ const Dashboard = () => {
   return (
     <DashboardContainer>
       {loadingUserLogout && <HexagonLoader />}
-
       <Middle>
-        <div className='d-flex align-items-center justify-content-between mb-4'>
-          <div>
-            <WelcomeText>Hello {userInfo?.name?.split(' ')[0]}</WelcomeText>
-            <Text color='#c8cbcd'>Here you can manage everything</Text>
-          </div>
-        </div>
+        <WelcomeTextWrapper>
+          <WelcomeText className='dashboard'>
+            <SplitTextToChars
+              text={`Hello ${userInfo?.name?.split(' ')[0]}`}
+              page='dashboard'
+              fontSize='26px'
+            />
+          </WelcomeText>
+          <SubheaderText color='#c8cbcd'>
+            Here you can manage everything
+          </SubheaderText>
+        </WelcomeTextWrapper>
+
         <div style={{ width: '100%' }}>
           <TopRow className='mx-auto'>
             <DashboardTopRow
@@ -58,17 +60,17 @@ const Dashboard = () => {
           </TopRow>
           <MiddleRow>
             <LineChart
-              orders={dashboardDetails?.welcomeWienerOrders}
+              lineChart={dashboardDetails?.lineChart}
               loading={loading}
             />
           </MiddleRow>
           <BottomRow>
             <TopSellingProducts
-              dashboardDetails={dashboardDetails}
+              topSellingProducts={dashboardDetails?.topSellingProducts}
               loading={loading}
             />
 
-            <PieChart orders={dashboardDetails} loading={loading} />
+            <PieChart details={dashboardDetails} loading={loading} />
           </BottomRow>
         </div>
       </Middle>

@@ -19,6 +19,12 @@ const sellingLinks = [
     icon: <i className='fas fa-bone'></i>,
     pathMatch: 'welcomeWiener',
   },
+  {
+    textKey: 'Products',
+    linkKey: '/admin/product/list',
+    icon: <i className='fas fa-box'></i>,
+    pathMatch: 'productList',
+  },
 ];
 
 const SellingAccordion = ({
@@ -36,7 +42,7 @@ const SellingAccordion = ({
         }
       >
         <LinkContainer
-          active={reveal.toString()}
+          active={reveal?.toString()}
           className='d-flex align-items-center px-3 py-3 mb-2'
         >
           <div>
@@ -55,7 +61,7 @@ const SellingAccordion = ({
             <LinkContainer
               active={(
                 obj?.linkKey === pathname ||
-                obj.pathMatch === pathname.split('/')[2]
+                obj?.pathMatch === pathname.split('/')[2]
               ).toString()}
               className='d-flex align-items-center py-3 mb-2'
             >

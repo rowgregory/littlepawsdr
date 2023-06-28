@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { Col, Image, Spinner } from 'react-bootstrap';
+import { useEffect, useState } from 'react';
+import { Col, Image, Modal, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { addToCart } from '../../actions/cartActions';
+import { addProductToCart, openCartDrawer } from '../../actions/cartActions';
 import { getPublicProductDetails } from '../../actions/productActions';
 import Message from '../../components/Message';
 import {
   AddToCartBtn,
   HorizontalLine,
+  PriceContainer,
   ProductDetailsContainer,
   Quantity,
   SelectInput,
@@ -16,26 +17,74 @@ import {
 import { Text } from '../../components/styles/Styles';
 import { LoadingImg } from '../../components/LoadingImg';
 import LeftArrow from '../../components/svg/LeftArrow';
+import CartDrawer from '../../components/CartDrawer';
+import { ProceedBtn } from '../../components/forms/ShippingForm';
+import EcardForm from '../../components/forms/EcardForm';
+import { validatePersonalize } from '../../utils/validateECardCheckout';
+import { Content } from '../../components/ContinueSessionModal';
+import { v4 as uuidv4 } from 'uuid';
 
-const ProductDetails = ({ match, history }: any) => {
+const useECardForm = (cb: any) => {
+  const [inputs, setInputs] = useState({
+    recipientsFullName: '',
+    recipientsEmail: '',
+    dateToSend: '',
+    message: '',
+  });
+
+  const handleInput = (event: any) => {
+    event.persist();
+
+    setInputs((inputs) => ({
+      ...inputs,
+      [event.target.name]: event.target.value,
+    }));
+  };
+
+  const onSubmit = (e: any) => {
+    e.preventDefault();
+    cb();
+  };
+
+  return { handleInput, inputs, onSubmit };
+};
+
+const ProductDetails = ({ match }: any) => {
   const productId = match.params.id;
   const dispatch = useDispatch();
   const [qty, setQty] = useState<number>(1);
   const [message, setMessage] = useState('');
   const [size, setSize] = useState('');
   const [outOfStock, setOutOfStock] = useState(false);
+  const [editForm, setEditForm] = useState(false);
+  const [errors, setErrors] = useState({}) as any;
 
-  const {
-    cart: { loading: loadingCart },
-    productPublicDetails: {
-      loading: loadingProductPublicDetails,
-      error: errorProductPublicDetails,
-      product,
-    },
-  } = useSelector((state: any) => state);
+  const state = useSelector((state: any) => state);
+
+  const loadingCart = state.cart.loading;
+
+  const loading = state.productPublicDetails.loading;
+  const error = state.productPublicDetails.error;
+  const productDetails = state.productPublicDetails.product;
+
+  const product = productDetails?.product;
+  const isEcard = productDetails?.isEcard;
+
+  let formIsValid: boolean = false;
+
+  const personalizeCallback = () => {
+    const isValid = validatePersonalize(setErrors, inputs, formIsValid);
+
+    if (isValid) {
+      addToCartHandler(product);
+    }
+  };
+
+  const { inputs, handleInput, onSubmit } = useECardForm(personalizeCallback);
 
   useEffect(() => {
     dispatch(getPublicProductDetails(productId));
+    dispatch(openCartDrawer(false));
   }, [dispatch, productId]);
 
   useEffect(() => {
@@ -58,12 +107,46 @@ const ProductDetails = ({ match, history }: any) => {
   }, [product, size]);
 
   const addToCartHandler = (item?: any) => {
-    dispatch(addToCart(item?._id, qty, size, product?.sizes));
-    history.push('/cart');
+    if (isEcard) {
+      const ecardCartItem = {
+        price: item?.price,
+        productImage: item?.image,
+        productName: item?.name,
+        productId: uuidv4(),
+        quantity: 1,
+        isEcard: true,
+        recipientsFullName: inputs.recipientsFullName,
+        recipientsEmail: inputs.recipientsEmail,
+        dateToSend: inputs.dateToSend,
+        message: inputs.message,
+        isPhysicalProduct: false,
+        subtotal: item.price,
+        totalPrice: item.price,
+        shippingPrice: 0,
+      };
+      dispatch(addProductToCart(ecardCartItem));
+      dispatch(openCartDrawer(true));
+      setEditForm(false);
+    } else {
+      const productCartItem = {
+        price: item?.price,
+        productImage: item?.image,
+        productName: item?.name,
+        productId: item?._id,
+        quantity: Number(qty),
+        size,
+        sizes: product?.sizes,
+        isEcard: false,
+        countInStock: product?.countInStock,
+        isPhysicalProduct: true,
+        shippingPrice: product?.shippingPrice,
+      };
+      dispatch(addProductToCart(productCartItem));
+      dispatch(openCartDrawer(true));
+    }
   };
 
-  if (errorProductPublicDetails)
-    return <Message variant='danger'>{errorProductPublicDetails}</Message>;
+  if (error) return <Message variant='danger'>{error}</Message>;
 
   return (
     <div
@@ -74,9 +157,10 @@ const ProductDetails = ({ match, history }: any) => {
         width: '100%',
       }}
     >
-      <LeftArrow text='Back To Shop' url='/shop' />
+      <CartDrawer />
+      <LeftArrow text='Back To Merch' url='/merch' />
       <ProductDetailsContainer>
-        {!loadingProductPublicDetails && (
+        {!loading && (
           <Image
             src={product?.image}
             alt={product?.name}
@@ -95,7 +179,7 @@ const ProductDetails = ({ match, history }: any) => {
             {product?.name}
           </Text>
           <HorizontalLine margin='0 0 1rem 0' />
-          <div className='d-flex'>
+          <PriceContainer>
             <div style={{ position: 'relative' }}>
               <Text style={{ position: 'absolute', top: '6px' }}>$</Text>
             </div>
@@ -117,13 +201,13 @@ const ProductDetails = ({ match, history }: any) => {
                 {product?.price?.toString()?.split('.')[1]}
               </sup>
             </Text>
-          </div>
+          </PriceContainer>
           {message && (
             <Message variant='success'>
               {message} <span onClick={() => setMessage('')}>X</span>
             </Message>
           )}
-          {product?.sizes?.length !== 0 && (
+          {product?.sizes?.length !== 0 && !isEcard && (
             <SelectInputContainer
               style={{
                 width: '84px',
@@ -145,18 +229,24 @@ const ProductDetails = ({ match, history }: any) => {
               </SelectInput>
             </SelectInputContainer>
           )}
-          <HorizontalLine margin='0 0 1rem 0' />
-          <Text fontWeight='bold'>About this item</Text>
-          <ul className='pl-4'>
-            {product?.description?.split('|').map((item: any, i: number) => (
-              <Text key={i}>
-                <li>{item}</li>
-              </Text>
-            ))}
-          </ul>
+          {!isEcard && (
+            <>
+              <HorizontalLine margin='0 0 1rem 0' />
+              <Text fontWeight='bold'>About this item</Text>
+              <ul className='pl-4'>
+                {product?.description
+                  ?.split('|')
+                  .map((item: any, i: number) => (
+                    <Text key={i}>
+                      <li>{item}</li>
+                    </Text>
+                  ))}
+              </ul>
+            </>
+          )}
         </Col>
         <Col>
-          {loadingProductPublicDetails ? (
+          {loading ? (
             <LoadingImg w='100%' />
           ) : (
             <ThirdColumnWrapper>
@@ -183,19 +273,21 @@ const ProductDetails = ({ match, history }: any) => {
                   </sup>
                 </Text>
               </div>
-              <Text
-                color={outOfStock ? 'red' : '#007600'}
-                fontSize='1.5rem'
-                fontWeight='500'
-                marginBottom='0.2rem'
-                style={{
-                  textRendering: 'optimizeLegibility',
-                  lineHeight: '24px',
-                }}
-              >
-                {outOfStock ? 'Not In stock' : 'In stock'}
-              </Text>
-              {!outOfStock && (
+              {!isEcard && (
+                <Text
+                  color={outOfStock ? 'red' : '#007600'}
+                  fontSize='1.5rem'
+                  fontWeight='500'
+                  marginBottom='0.2rem'
+                  style={{
+                    textRendering: 'optimizeLegibility',
+                    lineHeight: '24px',
+                  }}
+                >
+                  {outOfStock ? 'Not In stock' : 'In stock'}
+                </Text>
+              )}
+              {!outOfStock && !isEcard && (
                 <>
                   <Text marginBottom='1rem' fontWeight='400'>
                     Usually ships within 4 to 5 days
@@ -234,26 +326,51 @@ const ProductDetails = ({ match, history }: any) => {
                   </SelectInputContainer>
                 </>
               )}
-              <AddToCartBtn
-                disabled={outOfStock}
-                onClick={() => addToCartHandler(product)}
-              >
-                {loadingCart ? (
-                  <Spinner
-                    as='span'
-                    animation='border'
-                    size='sm'
-                    role='status'
-                    aria-hidden='true'
-                  />
-                ) : (
-                  'Add To Cart'
-                )}
-              </AddToCartBtn>
+              {isEcard ? (
+                <ProceedBtn onClick={() => setEditForm(!editForm)}>
+                  Personalize
+                </ProceedBtn>
+              ) : (
+                <AddToCartBtn
+                  disabled={outOfStock}
+                  onClick={() => addToCartHandler(product)}
+                >
+                  {loadingCart ? (
+                    <Spinner
+                      as='span'
+                      animation='border'
+                      size='sm'
+                      role='status'
+                      aria-hidden='true'
+                    />
+                  ) : (
+                    'Add To Cart'
+                  )}
+                </AddToCartBtn>
+              )}
             </ThirdColumnWrapper>
           )}
         </Col>
       </ProductDetailsContainer>
+      <Modal
+        show={editForm}
+        centered
+        onHide={() => {
+          setErrors({});
+          setEditForm(false);
+        }}
+      >
+        <Content>
+          <EcardForm
+            inputs={inputs}
+            handleInputChange={handleInput}
+            errors={errors}
+            formIsValid={formIsValid}
+            setErrors={setErrors}
+            onSubmit={onSubmit}
+          />
+        </Content>
+      </Modal>
     </div>
   );
 };

@@ -1,10 +1,7 @@
 import { Flex, Text } from '../styles/Styles';
 import styled from 'styled-components';
 import { Button, Spinner } from 'react-bootstrap';
-import {
-  addWelcomeWienerProductToCart,
-  openCartDrawer,
-} from '../../actions/cartActions';
+import { addProductToCart, openCartDrawer } from '../../actions/cartActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { LoadingImg } from '../LoadingImg';
 
@@ -40,15 +37,19 @@ const DonationItem = ({ item }: DonationItemProps) => {
 
   const addToCartHandler = () => {
     const cartItem = {
-      dachshundName: dachshund?.name,
+      price: item?.price,
       dachshundImage: dachshund?.displayUrl,
-      price: item?.price?.toString(),
-      productIcon: item?.icon,
       productName: item?.name,
       productId: item?._id,
+      quantity: 1,
+      dachshundName: dachshund?.name,
+      productIcon: item?.icon,
       dachshundId: dachshund?._id,
+      from: 'cart',
+      isPhysicalProduct: false,
+      shippingPrice: 0,
     };
-    dispatch(addWelcomeWienerProductToCart(cartItem));
+    dispatch(addProductToCart(cartItem));
     dispatch(openCartDrawer(true));
   };
 

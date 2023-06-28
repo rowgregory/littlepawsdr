@@ -18,7 +18,7 @@ const Toast = ({ showToast, setShowToast, headerText, bodyText }: any) => {
       autohide
       show={showToast}
       onClose={() => {
-        setShowToast(false);
+        setShowToast && setShowToast(false);
       }}
     >
       <T.Header>

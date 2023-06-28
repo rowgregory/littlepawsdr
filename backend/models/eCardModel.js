@@ -6,6 +6,7 @@ const eCardSchema = mongoose.Schema(
     price: { type: Number },
     image: { type: String },
     name: { type: String },
+    isEcard: { type: Boolean, default: true },
   },
   {
     timestamps: true,

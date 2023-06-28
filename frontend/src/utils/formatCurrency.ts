@@ -1,5 +1,7 @@
 const formatCurrency = (number: number) => {
-  if (number % 1000 === 0) {
+  if (number === 0) {
+    return `$${number}`;
+  } else if (number % 1000 === 0) {
     const formattedNumber = Math.floor(number / 1000);
     return `$${formattedNumber}K`;
   } else if (number >= 1000 && number < 10000) {

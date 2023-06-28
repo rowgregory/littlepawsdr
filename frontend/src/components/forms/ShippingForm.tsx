@@ -1,10 +1,8 @@
-import React from 'react';
 import { Form } from 'react-bootstrap';
 import styled from 'styled-components';
 import {
   inputAddress,
   inputCity,
-  inputName,
   inputState,
   inputZipPostalCode,
 } from '../../utils/validateShippingForm';
@@ -35,19 +33,10 @@ const ShippingForm = ({
   errors,
   formIsValid,
   setErrors,
-  onSubmit,
+  submitShippingAddress,
 }: any) => {
   return (
     <Form>
-      <JumpingInput
-        name='name'
-        label='Full Name'
-        value={inputs.name || ''}
-        handleInputChange={handleInputChange}
-        type='text'
-        error={errors?.name}
-        blur={() => inputName(inputs, formIsValid, setErrors)}
-      />
       <JumpingInput
         name='address'
         label='Address'
@@ -85,7 +74,10 @@ const ShippingForm = ({
         error={errors?.zipPostalCode}
         blur={() => inputZipPostalCode(inputs, formIsValid, setErrors)}
       />
-      <ProceedBtn onClick={onSubmit} type='submit' className='mb-5 mt-4'>
+      <ProceedBtn
+        onClick={(e: any) => submitShippingAddress(e)}
+        className='mb-5 mt-4'
+      >
         Use this address
       </ProceedBtn>
     </Form>

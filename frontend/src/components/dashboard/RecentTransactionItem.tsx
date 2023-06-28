@@ -6,6 +6,7 @@ import {
 import { Flex, Text } from '../styles/Styles';
 import { formatDateTime } from '../../utils/formatDateTime';
 import { LoadingImg } from '../LoadingImg';
+import addDecimals from '../../utils/addDecimals';
 
 const RecentTransactionItem = ({ viewTransaction, item, loading }: any) => {
   return (
@@ -18,9 +19,8 @@ const RecentTransactionItem = ({ viewTransaction, item, loading }: any) => {
         ) : (
           <Image
             src={
-              item?.orderItems
-                ? item?.orderItems[0].dachshundImage
-                : item?.image
+              item?.orderItems[0]?.dachshundImage ??
+              item?.orderItems[0]?.productImage
             }
             alt='Donation Item'
             width='50px'
@@ -34,14 +34,8 @@ const RecentTransactionItem = ({ viewTransaction, item, loading }: any) => {
           <ItemName>
             {loading ? (
               <LoadingImg w='120px' h='20px' />
-            ) : item?.orderItems ? (
-              item.orderItems.map((orderItem: any) => (
-                <span key={orderItem?._id}>
-                  {orderItem?.productName} for {orderItem?.dachshundName}
-                </span>
-              ))
             ) : (
-              item?.name
+              `${item?.totalItems} item${item?.totalItems > 1 ? 's' : ''}`
             )}
           </ItemName>
           {!loading && (
@@ -52,7 +46,7 @@ const RecentTransactionItem = ({ viewTransaction, item, loading }: any) => {
                 className='d-flex justify-content-end'
                 fontSize='12px'
               >
-                {item?.emailAddress ?? item?.email}
+                {item?.email}
               </Text>
               <Text
                 fontWeight={300}
@@ -68,7 +62,7 @@ const RecentTransactionItem = ({ viewTransaction, item, loading }: any) => {
       </Flex>
       {!loading && (
         <Text color='#9761aa' fontWeight={600}>
-          + ${item?.totalPrice?.toFixed(2)}
+          + {addDecimals(item?.totalPrice)}
         </Text>
       )}
     </RecentTransactionItemContainer>

@@ -194,18 +194,15 @@ const AdoptionApplication = () => {
         <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='18px'>
           Our application can take 15-30 minutes to complete.
         </Text>
-        <Text maxWidth='722px' className='mb-3 mt-4 mx-auto'>
+        <Text maxWidth='722px' className='mb-3 mt-5 mx-auto'>
           {isDay ? (
             <AdoptionApplicationIFrame
               title='Adoption Application'
               width='100%'
-              scrolling='no'
               src='https://toolkit.rescuegroups.org/of/f?c=WHMQCBRV'
             ></AdoptionApplicationIFrame>
           ) : (
             <AdoptionApplicationIFrame
-              aria-autocomplete='none'
-              scrolling='no'
               title='Adoption Application'
               width='100%'
               src='https://toolkit.rescuegroups.org/of/f?c=ZKCVRYSQ'

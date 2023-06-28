@@ -9,6 +9,9 @@ import ManuallyAddedUser from '../models/manuallyAddedUserModel.js';
 import { sendEmail } from '../utils/sendEmail.js';
 import ECardOrder from '../models/eCardOrderModel.js';
 import WelcomeWienerOrder from '../models/welcomeWienerOrderModel.js';
+import ProductOrder from '../models/productOrderModel.js';
+import Order from '../models/orderModel.js';
+import { getLineChartData } from '../utils/getLineChartData.js';
 
 // @desc    Auth user & get token
 // @route   POST /api/users/login
@@ -23,7 +26,7 @@ const authUser = asyncHandler(async (req, res) => {
       user.online = true;
       user.token = generateToken(
         { id: user._id, name: user.name, email: user.email },
-        '24h'
+        '1h'
       );
 
       const updatedUser = await user.save();
@@ -53,7 +56,7 @@ const authUser = asyncHandler(async (req, res) => {
         message: 'Invalid email or password',
       });
     }
-  } catch (error) {
+  } catch (err) {
     const createdError = new Error({
       functionName: 'USER_LOGIN_PUBLIC',
       detail: err.message,
@@ -473,43 +476,6 @@ const userIsConfirmed = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Generate new token for session
-// @route   PUT /api/users/generate-new-token ❌
-// @access  Private
-const generateTokenForSession = asyncHandler(async (req, res) => {
-  try {
-    const user = await User.findById(req.user._id);
-
-    if ([null, undefined].includes(user))
-      throw new Error('User does not exist');
-
-    if (user) {
-      user.token = generateToken(req.user._id, '24hr');
-
-      const updatedUser = await user.save();
-
-      res.status(201).json({
-        _id: updatedUser._id,
-        confirmed: updatedUser.confirmed,
-        name: updatedUser.name,
-        email: updatedUser.email,
-        isAdmin: updatedUser.isAdmin,
-        isVolunteer: updatedUser.isVolunteer,
-        avatar: updatedUser.avatar,
-        volunteerTitle: updatedUser.volunteerTitle,
-        volunteerEmail: updatedUser.volunteerEmail,
-        profileCardTheme: updatedUser.profileCardTheme,
-        online: updatedUser.online,
-        theme: updatedUser.theme,
-        token: updatedUser.token,
-      });
-    }
-  } catch (error) {
-    res.status(404);
-    throw new Error(`AN ERROR: ${error}`);
-  }
-});
-
 // @desc    Get dashboard details
 // @route   GET /api/users/dashboard-details
 // @access  Private/Admin
@@ -517,64 +483,97 @@ const dashboardDetails = asyncHandler(async (req, res) => {
   try {
     const welcomeWienerOrders = await WelcomeWienerOrder.find({});
     const ecardOrders = await ECardOrder.find({});
+    const productOrders = await ProductOrder.find({});
+    const orders = await Order.find({});
     const users = await User.find({});
 
-    const orderItemsTotal = welcomeWienerOrders
-      .reduce((acc, item) => acc + item?.totalPrice || 0, 0)
-      .toFixed(2);
-    const eCardOrdersItemsTotal = ecardOrders
-      .reduce((acc, item) => acc + item?.totalPrice || 0, 0)
-      .toFixed(2);
-
-    const walletTotal = Number(orderItemsTotal) + Number(eCardOrdersItemsTotal);
-    const sortedOrders = [...welcomeWienerOrders, ...ecardOrders].sort(
-      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+    const welcomeWienerOrdersItemsTotal = welcomeWienerOrders?.reduce(
+      (acc, item) => acc + item?.price * item?.quantity || 0,
+      0
     );
 
-    const orderItemsArr = welcomeWienerOrders.flatMap(obj => obj?.orderItems);
-
-    const result = Array.from(
-      orderItemsArr
-        .reduce((acc, e) => {
-          const k = e.productName && e.dachshundName;
-          if (!acc.has(k)) {
-            acc.set(k, {
-              name: e.productName,
-              price: e.price,
-              count: e.quantity,
-              dachshundName: e.dachshundName,
-            });
-          } else {
-            acc.get(k).count += e.quantity;
-          }
-          return acc;
-        }, new Map())
-        .values()
+    const ecardOrdersItemsTotal = ecardOrders?.reduce(
+      (acc, item) => acc + item?.totalPrice || 0,
+      0
+    );
+    const productOrdersItemsTotal = productOrders?.reduce(
+      (acc, item) => acc + item?.totalPrice || 0,
+      0
     );
 
-    const topSellingProducts = result.map(obj => ({
-      ...obj,
-      totalAmount: obj.count * obj.price,
+    const walletTotal = Number(
+      welcomeWienerOrdersItemsTotal +
+        ecardOrdersItemsTotal +
+        productOrdersItemsTotal
+    );
+
+    const sortedOrders = [
+      ...welcomeWienerOrders,
+      ...ecardOrders,
+      ...productOrders,
+    ].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+    const result = Object.values(
+      sortedOrders.reduce((acc, item) => {
+        const name = item?.productName || item?.dachshundName || item?.name;
+        if (!acc[name]) {
+          acc[name] = {
+            name: item?.productName || item?.name,
+            price: item?.price || item?.totalPrice,
+            count: item?.quantity || 1,
+            dachshundName: item?.dachshundName || null,
+            shippingPrice: item?.shippingPrice || 0,
+          };
+        } else {
+          acc[name].price = item?.price || item?.totalPrice;
+          acc[name].count++;
+        }
+        return acc;
+      }, {})
+    ).map(({ name, price, count, dachshundName, shippingPrice }) => ({
+      name,
+      price,
+      count,
+      dachshundName,
+      shippingPrice,
     }));
 
-    const sortedTopSellingProducts = topSellingProducts.sort((a, b) =>
-      a.count > b.count ? -1 : 1
+    const sortedTopSellingProducts = result
+      .map(obj => ({
+        ...obj,
+        subtotal: obj.count * obj.price,
+        totalAmount:
+          obj.count * obj.price + obj.count * Number(obj.shippingPrice),
+        shippingTotal: obj.count * Number(obj.shippingPrice),
+      }))
+      .sort((a, b) => (a.count > b.count ? -1 : 1));
+
+    const lineChart = getLineChartData(
+      productOrders,
+      ecardOrders,
+      welcomeWienerOrders
     );
 
     res.json({
-      welcomeWienerOrders,
+      orders,
       ecardOrders,
+      productOrders,
+      welcomeWienerOrders,
       users,
       total: sortedOrders,
-      orderItemsTotal,
-      eCardOrdersItemsTotal,
-      walletTotal: isNaN(walletTotal) ? 0 : walletTotal.toFixed(2),
+      productOrdersItemsTotal,
+      ecardOrdersItemsTotal,
+      welcomeWienerOrdersItemsTotal,
+      walletTotal,
       totalAmounts: {
         welcomeWienerOrders: welcomeWienerOrders?.length,
         users: users?.length,
         ecardOrders: ecardOrders?.length,
+        productOrders: productOrders?.length,
+        orders: orders?.length,
       },
       topSellingProducts: sortedTopSellingProducts,
+      lineChart,
     });
   } catch (err) {
     const createdError = new Error({
@@ -593,6 +592,15 @@ const dashboardDetails = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Get new refresh token
+// @route   POST /api/users/refresh-token
+// @access  Private
+const getRefreshToken = asyncHandler(async (req, res) => {
+  const refreshToken = generateToken({ id: req.body.id }, '1h');
+
+  res.status(201).json({ refreshToken });
+});
+
 export {
   authUser,
   registerUser,
@@ -607,6 +615,6 @@ export {
   userLogout,
   sendRegisterConfirmationEmail,
   userIsConfirmed,
-  generateTokenForSession,
   dashboardDetails,
+  getRefreshToken,
 };

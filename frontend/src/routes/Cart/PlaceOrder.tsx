@@ -15,23 +15,32 @@ import {
   PaypalBtnContainer,
 } from '../../components/styles/place-order/Styles';
 import GoBackToCartModal from '../../components/GoBackToCartModal';
-import { useCreateAccountCheckoutForm } from '../../utils/formHooks';
-import { validateAccountCreateCheckoutForm } from '../../utils/validateShippingForm';
+import { usePlaceOrderForm } from '../../utils/formHooks';
+import {
+  inputEmailAddress,
+  inputFullName,
+  validateContactInfoForm,
+  validateShippingForm,
+} from '../../utils/validateShippingForm';
 import LogoDay from '../../components/assets/logo-transparent.png';
 import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
-import CreateAccountCheckoutForm from '../../components/forms/CreateAccountCheckoutForm';
 import RightRail from '../../components/place-order/RightRail';
-import { createWelcomeWienerOrder } from '../../actions/welcomeWienerOrderActions';
+import JumpingInput from '../../components/common/JumpingInput';
+import { Button } from 'react-bootstrap';
+import ShippingForm from '../../components/forms/ShippingForm';
+import { createOrder } from '../../actions/orderActions';
 
 const PlaceOrder = ({ history }: any) => {
   const dispatch = useDispatch();
   const [orderLoader, setOrderLoader] = useState(false);
+  const [revealShippingAddress, setRevealShippingAddress] = useState(false);
   const [revealPayment, setRevealPayment] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [errors, setErrors] = useState({}) as any;
-  const closeModal = () => setShowModal(false) as any;
   const [revealItems, setRevealItems] = useState(true);
   const [revealContactInfo, setRevealContactInfo] = useState(true);
+
+  const closeModal = () => setShowModal(false) as any;
 
   const [{ isPending }] = usePayPalScriptReducer();
 
@@ -39,53 +48,80 @@ const PlaceOrder = ({ history }: any) => {
   const cartItems = state.cart.cartItems;
   const cartItemsAmount = state.cart.cartItemsAmount;
   const subtotal = state.cart.subtotal;
-  const welcomeWienerOrder = state.welcomeWienerOrderCreate.welcomeWienerOrder;
-  const success = state.welcomeWienerOrderCreate.success;
-  const error = state.welcomeWienerOrderCreate.error;
-  const loading = state.welcomeWienerOrderCreate.loading;
+  const totalPrice = state.cart.totalPrice;
+  const isPhysicalProduct = state.cart.isPhysicalProduct;
+  const shippingPrice = state.cart.shippingPrice;
+  const order = state.orderCreate.order;
+  const success = state.orderCreate.success;
+  const error = state.orderCreate.error;
+  const loading = state.orderCreate.loading;
 
   let formIsValid: boolean = false;
 
-  const acCb = () => {
-    const isValid = validateAccountCreateCheckoutForm(
-      setErrors,
-      fields,
-      formIsValid
-    );
+  const hasPhysicalProduct = cartItems.some(
+    (product: any) => product.isPhysicalProduct
+  );
+
+  const submitContactInfo = () => {
+    const isValid = validateContactInfoForm(setErrors, inputs, formIsValid);
     if (isValid) {
       setRevealContactInfo(false);
+      if (hasPhysicalProduct) {
+        setRevealShippingAddress(true);
+      } else {
+        setRevealPayment(true);
+      }
+    }
+  };
+
+  const submitShippingAddress = (e: any) => {
+    e.preventDefault();
+    const isValid = validateShippingForm(setErrors, inputs, formIsValid);
+    if (isValid) {
+      setRevealShippingAddress(false);
       setRevealPayment(true);
     }
   };
 
-  const { handleInput, fields, onCreate } = useCreateAccountCheckoutForm(acCb);
+  const { handleInput, inputs } = usePlaceOrderForm();
 
   useEffect(() => {
     if (success) {
       history.push({
-        pathname: `/welcome-wiener/order/${welcomeWienerOrder?._id}`,
+        pathname: `/order/${order?._id}`,
       });
       setOrderLoader(false);
     } else if (error) {
+      console.log('ERROR: ', error);
       setOrderLoader(false);
-      history.push({
-        pathname: `/paypal/order`,
-        state: error,
-      });
     }
-  }, [welcomeWienerOrder, success, error, history]);
+
+    if (cartItems?.length === 0) history.push('/cart');
+  }, [order, success, error, history, cartItems]);
 
   const successPaymentHandler = (details: any) => {
-    console.log('SUCCESS: ', details);
     if (details.status === 'COMPLETED' && details.id) {
-      dispatch(
-        createWelcomeWienerOrder({
-          orderItems: cartItems,
-          totalPrice: Number(subtotal.replace(/[^0-9.-]+/g, '')),
-          paypalOrderId: details.id,
-          emailAddress: fields.emailAddress,
-        })
-      );
+      const shippingAddress = {
+        address: inputs?.address,
+        city: inputs?.city,
+        state: inputs?.state,
+        zipPostalCode: inputs?.zipPostalCode,
+      };
+
+      const order = {
+        name: inputs.name,
+        orderItems: cartItems,
+        subtotal,
+        totalPrice,
+        paypalOrderId: details.id,
+        email: inputs.emailAddress,
+        ...(hasPhysicalProduct && { shippingAddress }),
+        shippingPrice,
+        isPhysicalProduct,
+        totalItems: cartItemsAmount,
+      };
+
+      dispatch(createOrder(order));
     }
   };
 
@@ -97,7 +133,7 @@ const PlaceOrder = ({ history }: any) => {
         purchase_units: [
           {
             amount: {
-              value: Number(subtotal.replace(/[^0-9.-]+/g, '')),
+              value: subtotal,
             },
           },
         ],
@@ -135,13 +171,13 @@ const PlaceOrder = ({ history }: any) => {
                   <div className='d-flex align-items-center'>
                     <Flex flexDirection='column'>
                       <Flex alignItems='center'>
-                        <Text fontSize='16px' fontWeight={400}>
+                        <Text fontSize='22px' fontWeight={400}>
                           Contact Info
                         </Text>{' '}
                         <i className='fas fa-user ml-1 fa-sm'></i>{' '}
                       </Flex>
                       {revealPayment && (
-                        <Text fontSize='12px'>{fields.emailAddress}</Text>
+                        <Text fontSize='12px'>{inputs.emailAddress}</Text>
                       )}
                     </Flex>
                   </div>
@@ -158,17 +194,59 @@ const PlaceOrder = ({ history }: any) => {
                   )}
                 </div>
               </LeftRailSectionTitle>
-              <Accordion toggle={revealContactInfo} maxheight='156px'>
-                <CreateAccountCheckoutForm
-                  fields={fields}
-                  handleInput={handleInput}
-                  errors={errors}
-                  formIsValid={formIsValid}
-                  setErrors={setErrors}
-                  onCreate={onCreate}
+              <Accordion toggle={revealContactInfo} maxheight='234px'>
+                <JumpingInput
+                  name='name'
+                  label='Name'
+                  value={inputs.name || ''}
+                  handleInputChange={handleInput}
+                  type='text'
+                  error={errors?.name}
+                  blur={() => inputFullName(inputs, formIsValid, setErrors)}
                 />
+                <JumpingInput
+                  name='emailAddress'
+                  label='Email Address'
+                  value={inputs.emailAddress || ''}
+                  handleInputChange={handleInput}
+                  type='text'
+                  error={errors?.emailAddress}
+                  blur={() => inputEmailAddress(inputs, formIsValid, setErrors)}
+                />
+
+                <Button
+                  className='mb-3 mr-3'
+                  onClick={() => submitContactInfo()}
+                >
+                  Continue to {hasPhysicalProduct ? 'shipping' : 'payment'}
+                </Button>
               </Accordion>
             </LeftRailContainer>
+            {hasPhysicalProduct && (
+              <LeftRailContainer>
+                <LeftRailSectionTitle>
+                  <div className='d-flex justify-content-between w-100'>
+                    <div className='d-flex align-items-center'>
+                      <Text fontSize='22px' fontWeight={400}>
+                        Shipping Address
+                      </Text>
+                      <i className='fas fa-truck ml-1 fa-sm'></i>
+                    </div>
+                  </div>
+                </LeftRailSectionTitle>
+                <Accordion toggle={revealShippingAddress} maxheight='600px'>
+                  <ShippingForm
+                    inputs={inputs}
+                    handleInputChange={handleInput}
+                    errors={errors}
+                    formIsValid={formIsValid}
+                    setErrors={setErrors}
+                    submitShippingAddress={submitShippingAddress}
+                  />
+                </Accordion>
+              </LeftRailContainer>
+            )}
+
             <LeftRailContainer>
               <LeftRailSectionTitle>
                 <div className='d-flex justify-content-between w-100'>
@@ -180,7 +258,7 @@ const PlaceOrder = ({ history }: any) => {
                   </div>
                 </div>
               </LeftRailSectionTitle>
-              <Accordion toggle={revealPayment} maxheight='267px'>
+              <Accordion toggle={revealPayment} maxheight='685px'>
                 <PaypalBtnContainer>
                   <PayPalButtons
                     style={payPalComponents.style}

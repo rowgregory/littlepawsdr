@@ -2,83 +2,61 @@ import mongoose from 'mongoose';
 
 const orderSchema = mongoose.Schema(
   {
-    user: {
-      id: mongoose.Schema.Types.ObjectId,
-      email: { type: String },
-      name: { type: String },
-    },
-    customer: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-    },
+    name: { type: String, required: true },
+    // model for all products, ecards, products, welcome wieners
     orderItems: [
       {
-        name: { type: String, required: true },
-        qty: { type: Number, required: true },
-        image: { type: String, required: true },
         price: { type: Number, required: true },
-        product: {
-          type: mongoose.Schema.Types.ObjectId,
-          required: true,
-          ref: 'Product',
-        },
+        subtotal: { type: String },
+        productId: { type: String },
+        productImage: { type: String },
+        productName: { type: String },
+        quantity: { type: Number },
+        email: { type: String },
+
+        // product specific field
+        shippingPrice: { type: String },
         size: { type: String },
+        isPhysicalProduct: { type: Boolean },
+
+        // welcome wiener specific fields
+        dachshundId: { type: String },
+        dachshundImage: { type: String },
+        dachshundName: { type: String },
+        productIcon: { type: String },
+
+        // ecard specific fields
+        recipientsFullName: { type: String },
+        recipientsEmail: { type: String },
+        dateToSend: { type: Date },
+        firstName: { type: String },
+        lastName: { type: String },
+        message: { type: String },
+        isSent: { type: String },
+        image: { type: String },
+        name: { type: String },
       },
     ],
-    shippingAddress: {
-      name: { type: String, required: true },
-      address: { type: String, required: true },
-      city: { type: String, required: true },
-      state: { type: String, required: true },
-      zipPostalCode: { type: String, required: true },
-      country: { type: String, required: true },
-    },
-    paymentMethod: {
-      type: String,
-      required: true,
-    },
-    paymentResult: {
-      id: { type: String },
-      status: { type: String },
-      update_time: { type: String },
-      email_address: { type: String },
-    },
-    taxPrice: {
-      type: Number,
-      required: true,
-      default: 0.0,
-    },
-    shippingPrice: {
-      type: Number,
-      required: true,
-      default: 0.0,
-    },
-    totalPrice: {
-      type: Number,
-      required: true,
-      default: 0.0,
-    },
-    isPaid: {
-      type: Boolean,
-      required: true,
-      default: false,
-    },
-    paidAt: {
-      type: Date,
-    },
-    isShipped: {
-      type: Boolean,
-      required: true,
-      default: false,
-    },
-    shippedOn: {
-      type: Date,
-    },
-    orderId: { type: String },
-    guestEmail: { type: String },
+    totalPrice: { type: Number, required: true, default: 0.0 },
+    paypalOrderId: { type: String, required: true },
+    email: { type: String, required: true },
     confirmationEmailHasBeenSent: { type: Boolean },
-    isGuestOrder: { type: Boolean },
-    itemsPrice: { type: Number },
+    orderShippedconfirmationEmailHasBeenSent: { type: Boolean },
+
+    // physical product fields
+    shippingAddress: {
+      address: { type: String },
+      city: { type: String },
+      state: { type: String },
+      zipPostalCode: { type: String },
+    },
+    shippingPrice: { type: Number, default: 0.0 },
+    isShipped: { type: Boolean, default: false },
+    shippedOn: { type: Date },
+    trackingNumber: { type: String },
+    requiresShipping: { type: Boolean },
+    subtotal: { type: Number },
+    totalItems: { type: Number },
   },
   {
     timestamps: true,

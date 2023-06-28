@@ -1,11 +1,10 @@
-import { FC } from 'react';
-import { useSelector } from 'react-redux';
-import { Route, Redirect } from 'react-router-dom';
+import axios from 'axios';
+import { FC, useEffect, ComponentType } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { RouteProps, Route, RouteComponentProps } from 'react-router-dom';
 
-interface PrivateRouteProps {
-  exact?: boolean;
-  path: string;
-  component: FC;
+interface PrivateRouteProps extends RouteProps {
+  component: ComponentType<RouteComponentProps<any>> | ComponentType<any>;
 }
 
 export interface UserInfoProps {
@@ -29,32 +28,51 @@ export interface UserInfoProps {
   };
 }
 
-const Private: FC<PrivateRouteProps> = ({
-  exact,
-  path,
-  component: Component,
-}) => {
-  const userLogin = useSelector((state: UserInfoProps) => state.userLogin);
-  const { userInfo } = userLogin;
-  const auth = userInfo?.isAdmin;
-  return (
-    <Route
-      exact={exact ?? false}
-      path={path}
-      render={({ location }) =>
-        auth ? (
-          <Component />
-        ) : (
-          <Redirect
-            to={{
-              pathname: '/login',
-              state: { from: location },
-            }}
-          />
-        )
-      }
-    />
-  );
+const refreshAccessToken = async (id: any) => {
+  try {
+    // Make a request to the server to generate a new token
+    const { data } = await axios.post('/api/users/refresh-token', { id });
+    const { refreshToken } = data;
+
+    return refreshToken;
+  } catch (error) {
+    return Promise.reject(error);
+  }
 };
 
-export default Private;
+const PrivateRoute: FC<PrivateRouteProps> = ({
+  component: Component,
+  ...rest
+}) => {
+  const dispatch = useDispatch();
+  const userLogin = useSelector((state: UserInfoProps) => state.userLogin);
+  const { userInfo } = userLogin;
+
+  useEffect(() => {
+    const refreshToken = async () => {
+      try {
+        // Check if the access token has expired
+        const expirationTime =
+          JSON.parse(atob(userInfo?.token.split('.')[1])).exp * 1000;
+        if (expirationTime <= Date.now()) {
+          // Access token has expired, refresh it
+          const newToken = await refreshAccessToken(userInfo._id);
+
+          // Update the userInfo object in the Redux store with the new token
+          const updatedUserInfo = { ...userInfo, token: newToken };
+
+          localStorage.setItem('userInfo', JSON.stringify(updatedUserInfo));
+        }
+      } catch (error) {
+        // Handle error refreshing token
+        console.error('Error refreshing token:', error);
+      }
+    };
+
+    refreshToken();
+  }, [dispatch, userInfo]);
+
+  return <Route {...rest} render={(props) => <Component {...props} />} />;
+};
+
+export default PrivateRoute;

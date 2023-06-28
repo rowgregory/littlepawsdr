@@ -14,22 +14,23 @@ export const CardBody = styled.div`
 `;
 
 export const OrderImg = styled(Card.Img)`
-  max-width: 130px;
+  max-width: 100px;
   object-fit: cover;
   width: 100%;
   aspect-ratio: 1/1;
   margin-right: 16px;
-  border: 1px solid #ccc;
 `;
 
 export const TabContainer = styled.div`
   display: flex;
+  align-items: center;
   border-bottom: 3px solid ${({ theme }) => theme.colors.quinary};
   width: 100%;
   margin-bottom: 26px;
 `;
 export const Tab = styled.div<{ active?: any }>`
   display: flex;
+  margin-right: 8px;
   justify-content: center;
   align-items: center;
   padding: 10px 20px;

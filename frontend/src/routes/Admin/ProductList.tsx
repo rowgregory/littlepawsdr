@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Table, Spinner, Pagination } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
@@ -13,20 +13,20 @@ import {
   StyledEditBtn,
   CreateBtnV2,
   TopRow,
-  PaginationContainer,
   TableAndPaginationContainer,
   Container,
   SearchInput,
   TableWrapper,
   SpinnerContainer,
+  PaginationContainer,
 } from '../../components/styles/admin/Styles';
 import styled from 'styled-components';
 import Message from '../../components/Message';
 import { WelcomeText } from '../../components/styles/DashboardStyles';
 import BreadCrumb from '../../components/common/BreadCrumb';
 import { AddIcon } from '../../components/svg/AddIcon';
-import { rangeV2 } from '../../components/common/Pagination';
 import { defaultImages } from '../../utils/defaultImages';
+import { rangeV2 } from '../../components/common/Pagination';
 
 const ProductCountTD = styled.td<{ isProductLow?: boolean }>`
   color: ${({ theme, isProductLow }) =>
@@ -57,10 +57,6 @@ const ProductList = () => {
   useEffect(() => {
     dispatch(listProducts());
   }, [dispatch, successDelete]);
-
-  products?.sort(
-    (a: any, b: any) => -a?.createdAt?.localeCompare(b?.createdAt)
-  );
 
   useEffect(() => {
     const itemsPerPage = 10;
@@ -107,13 +103,12 @@ const ProductList = () => {
         show={show}
         handleClose={handleClose}
         id={id}
-        publicId=''
       />
       {(error || errorDelete) && (
         <Message variant='danger'>{error || errorDelete}</Message>
       )}
       <TableWrapper>
-        <TopRow className='d-flex align-items-center'>
+        <TopRow>
           <SearchBar>
             <SearchInput
               as='input'
@@ -130,7 +125,7 @@ const ProductList = () => {
           ) : (
             <LinkContainer
               to={{
-                pathname: '/admin/product/id/edit',
+                pathname: '/admin/product/create',
                 state: { product },
               }}
             >
@@ -150,85 +145,89 @@ const ProductList = () => {
                 <th>PRICE</th>
                 <th>CATEGORY</th>
                 <th>BRAND</th>
-                <th>QTYY</th>
+                <th>QTY</th>
                 <th>EDIT</th>
                 <th>DELETE</th>
               </tr>
             </TableHead>
             <tbody>
-              {filteredProducts?.map((product: any) => (
-                <TableRow key={product?._id}>
-                  <td>
-                    <TableImg src={product?.image} alt='avatar' />
-                  </td>
-                  <td>
-                    <Text>{product?.name}</Text>
-                  </td>
-                  <td>
-                    <Text>${product?.price}</Text>
-                  </td>
-                  <td>
-                    <Text>{product?.category}</Text>
-                  </td>
-                  <td>
-                    <Text>{product?.brand}</Text>
-                  </td>
-                  <ProductCountTD
-                    isProductLow={
-                      product?.sizes?.length > 0
+              {filteredProducts
+                ?.map((product: any) => (
+                  <TableRow key={product?._id}>
+                    <td>
+                      <TableImg src={product?.image} alt='avatar' />
+                    </td>
+                    <td>
+                      <Text>{product?.name}</Text>
+                    </td>
+                    <td>
+                      <Text>${product?.price}</Text>
+                    </td>
+                    <td>
+                      <Text>{product?.category}</Text>
+                    </td>
+                    <td>
+                      <Text>{product?.brand}</Text>
+                    </td>
+                    <ProductCountTD
+                      isProductLow={
+                        product?.sizes?.length > 0
+                          ? product?.sizes?.reduce(
+                              (acc: any, item: any) => acc + item.amount,
+                              0
+                            ) <= 3 &&
+                            product?.sizes?.reduce(
+                              (acc: any, item: any) => acc + item.amount,
+                              0
+                            )
+                          : product?.countInStock <= 3
+                      }
+                    >
+                      {product?.sizes?.length > 0
                         ? product?.sizes?.reduce(
                             (acc: any, item: any) => acc + item.amount,
                             0
-                          ) <= 3 &&
-                          product?.sizes?.reduce(
-                            (acc: any, item: any) => acc + item.amount,
-                            0
                           )
-                        : product?.countInStock <= 3
-                    }
-                  >
-                    {product?.sizes?.length > 0
-                      ? product?.sizes?.reduce(
-                          (acc: any, item: any) => acc + item.amount,
-                          0
-                        )
-                      : product?.countInStock}
-                  </ProductCountTD>
-                  <td>
-                    <LinkContainer
-                      to={{
-                        pathname: `/admin/product/${product?._id}/edit`,
-                        state: { product, isEditMode: true },
-                      }}
-                    >
-                      <StyledEditBtn>
-                        <i
-                          style={{ color: '#9761aa' }}
-                          className='fas fa-edit'
-                        ></i>
+                        : product?.countInStock}
+                    </ProductCountTD>
+                    <td>
+                      <LinkContainer
+                        to={{
+                          pathname: `/admin/product/${product?._id}/edit`,
+                          state: { product, isEditMode: true },
+                        }}
+                      >
+                        <StyledEditBtn>
+                          <i
+                            style={{ color: '#9761aa' }}
+                            className='fas fa-edit'
+                          ></i>
+                        </StyledEditBtn>
+                      </LinkContainer>
+                    </td>
+                    <td>
+                      <StyledEditBtn
+                        className='border-0'
+                        onClick={() => {
+                          setId(product?._id);
+                          handleShow();
+                        }}
+                      >
+                        {loadingDelete && id === product?._id ? (
+                          <Spinner size='sm' animation='border' />
+                        ) : (
+                          <i
+                            style={{ color: '#cc0000' }}
+                            className='fas fa-trash'
+                          ></i>
+                        )}
                       </StyledEditBtn>
-                    </LinkContainer>
-                  </td>
-                  <td>
-                    <StyledEditBtn
-                      className='border-0'
-                      onClick={() => {
-                        setId(product?._id);
-                        handleShow();
-                      }}
-                    >
-                      {loadingDelete && id === product?._id ? (
-                        <Spinner size='sm' animation='border' />
-                      ) : (
-                        <i
-                          style={{ color: '#cc0000' }}
-                          className='fas fa-trash'
-                        ></i>
-                      )}
-                    </StyledEditBtn>
-                  </td>
-                </TableRow>
-              ))}
+                    </td>
+                  </TableRow>
+                ))
+                ?.sort(
+                  (a: any, b: any) => -a?.createdAt?.localeCompare(b?.createdAt)
+                )}
             </tbody>
           </Table>
           <PaginationContainer>

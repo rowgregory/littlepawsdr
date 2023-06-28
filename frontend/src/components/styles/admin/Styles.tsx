@@ -1,4 +1,4 @@
-import { Form, Image } from 'react-bootstrap';
+import { Form, Image, Table } from 'react-bootstrap';
 import styled, { keyframes } from 'styled-components';
 
 export const Container = styled.div`
@@ -75,7 +75,6 @@ export const CreateBtnV2 = styled.button`
   align-items: center;
   background: ${({ theme }) => theme.white} !important;
   border: none;
-  margin-bottom: 1rem;
   padding: 0 1.5rem;
   height: 45px;
   transition: 300ms;
@@ -100,11 +99,14 @@ export const TopRow = styled.div`
   display: grid;
   grid-template-columns: 1fr;
   padding-inline: 16px;
+  margin-bottom: 16px;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
     grid-template-columns: 1fr 1fr;
+    width: 75%;
   }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
     padding-inline: 0px;
+    width: 50%;
   }
 `;
 
@@ -193,10 +195,11 @@ export const TableAndPaginationContainer = styled.div`
   justify-content: space-between;
   flex-direction: column;
   border-radius: 1rem;
-  height: calc(100vh - 231px);
-  padding-left: 16px;
+  height: calc(100vh - 192px);
+  padding-inline: 16px;
   background: #fff;
   min-height: 600px;
+  margin-left: 0;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
     height: calc(100vh - 236px);
   }
@@ -214,6 +217,7 @@ export const EditForm = styled(Form)`
   max-width: 400px;
   width: 100%;
   padding-inline: 16px;
+  margin-top: 24px;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
     padding: 0;
   }
@@ -229,9 +233,6 @@ export const FormFile = styled(Form.File)`
   margin-right: 1rem;
   height: 200px;
   width: 200px;
-  :hover {
-    background: #ededed;
-  }
   label {
     cursor: pointer;
     display: flex;
@@ -312,4 +313,96 @@ export const FormLeftContainer = styled.div`
 export const FormRightContainer = styled.div`
   display: flex;
   flex-direction: column;
+`;
+
+export const ItemsSummaryTable = styled(Table)`
+  width: 100%;
+  margin-bottom: 0;
+  thead {
+    tr {
+      th {
+        border-top: 0px !important;
+        border-bottom: 0px !important;
+        padding-left: 0px !important;
+      }
+    }
+  }
+  tbody {
+    tr {
+      td {
+        vertical-align: inherit;
+        padding-left: 0 !important;
+        border-top: 1px solid #d8d9dc !important;
+        padding: 12px;
+      }
+    }
+  }
+`;
+
+export const OrderEditDataContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background: #f6f9fe;
+  padding: 0;
+  border-radius: 0px;
+
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
+    padding: 20px;
+    border-radius: 16px;
+  }
+`;
+
+export const OrderNumber = styled.div`
+  font-weight: 600;
+  font-size: 20px;
+  margin-top: 22px;
+  margin-bottom: 22px;
+  margin-left: 16px;
+  span {
+    font-size: 20px;
+    font-weight: 600;
+    color: #ad85bd;
+  }
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
+    font-size: 26px;
+    span {
+      color: #ad85bd;
+      font-weight: 600;
+      font-size: 26px;
+    }
+    margin-left: 0px;
+  }
+`;
+
+export const ItemsSummaryContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
+    flex-direction: row;
+  }
+`;
+
+export const OrderEditLeftSideContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-right: 0px;
+  margin-bottom: 20px;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
+    width: 60%;
+    margin-right: 20px;
+    margin-bottom: 0px;
+  }
+`;
+
+export const OrderEditRightSideContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: 70px;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
+    width: 40%;
+  }
 `;

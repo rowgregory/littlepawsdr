@@ -1,6 +1,7 @@
 import asyncHandler from 'express-async-handler';
 import Product from '../models/productModel.js';
 import Error from '../models/errorModel.js';
+import Ecard from '../models/eCardModel.js';
 
 // @desc    Get all products
 // @route   GET /api/products
@@ -10,6 +11,30 @@ const getProducts = asyncHandler(async (req, res) => {
     const products = await Product.find({});
 
     res.json(products);
+  } catch (err) {
+    const createdError = new Error({
+      functionName: 'GET_PRODUCT_LIST',
+      detail: err.message,
+      status: 500,
+    });
+    await createdError.save();
+    res.status(500).send({
+      message: '500 - Server Error',
+    });
+  }
+});
+
+// @desc    Get all products
+// @route   GET /api/products/ecards
+// @access  Public
+const getProductsAndEcards = asyncHandler(async (req, res) => {
+  try {
+    // products for merch store
+    const products = await Product.find({});
+    const ecards = await Ecard.find({});
+
+    const productsAndEcards = products.concat(ecards);
+    res.json(productsAndEcards);
   } catch (err) {
     const createdError = new Error({
       functionName: 'GET_PRODUCT_LIST_PUBLIC',
@@ -83,6 +108,7 @@ const createProduct = asyncHandler(async (req, res) => {
   const {
     name,
     price,
+    shippingPrice,
     image,
     brand,
     category,
@@ -95,6 +121,7 @@ const createProduct = asyncHandler(async (req, res) => {
     const product = new Product({
       name,
       price,
+      shippingPrice,
       user: req.user._id,
       image,
       brand,
@@ -103,6 +130,7 @@ const createProduct = asyncHandler(async (req, res) => {
       description,
       size,
       sizes,
+      isPhysicalProduct: true,
     });
 
     const createdProduct = await product.save();
@@ -141,6 +169,7 @@ const updateProduct = asyncHandler(async (req, res) => {
       size,
       countInStock,
       sizes,
+      shippingPrice,
     } = req.body;
 
     const product = await Product.findById(req.params.id);
@@ -148,6 +177,7 @@ const updateProduct = asyncHandler(async (req, res) => {
 
     product.name = name ?? product.name;
     product.price = price ?? product.price;
+    product.shippingPrice = shippingPrice ?? product.shippingPrice;
     product.image = image ?? product.image;
     product.brand = brand ?? product.brand;
     product.category = category ?? product.category;
@@ -182,9 +212,12 @@ const updateProduct = asyncHandler(async (req, res) => {
 const getPublicProductDetails = asyncHandler(async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
-    if (!product) return res.status(404).json({ message: 'Product Not Found' });
-
-    return res.json(product);
+    if (product) return res.status(200).json({ product, isEcard: false });
+    else {
+      const ecard = await Ecard.findById(req.params.id);
+      if (ecard) return res.status(200).json({ product: ecard, isEcard: true });
+      else return res.status(404).json({ message: 'Product Not Found' });
+    }
   } catch (err) {
     res.status(500).json({ message: 'Server Error' });
     const createdError = new Error({
@@ -204,4 +237,5 @@ export {
   createProduct,
   updateProduct,
   getPublicProductDetails,
+  getProductsAndEcards,
 };

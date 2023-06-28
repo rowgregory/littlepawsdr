@@ -36,10 +36,6 @@ export const sideLinkData = [
         linkText: 'One-Time/Monthly',
       },
       {
-        linkKey: '/e-cards',
-        linkText: 'Ecards',
-      },
-      {
         linkKey: '/donate/shop-to-help',
         linkText: 'Shop To Help',
       },
@@ -110,10 +106,10 @@ export const sideLinkData = [
 ];
 
 export const singleLinkData = [
-  // {
-  //   linkKey: '/shop',
-  //   linkText: 'Shop',
-  // },
+  {
+    linkKey: '/merch',
+    linkText: 'Merch',
+  },
   {
     linkKey: '/events',
     linkText: 'Events',

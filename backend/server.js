@@ -6,10 +6,8 @@ import morgan from 'morgan';
 import connectDB from './config/db.js';
 import { cronJobs } from './utils/cronJobs.js';
 import userRoutes from './routes/userRoutes.js';
-import guestRoutes from './routes/guestRoutes.js';
 import eventRoutes from './routes/eventRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
-import removeUploadRoutes from './routes/removeUploadRoutes.js';
 import productRoutes from './routes/productRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
 import forgotPasswordRoutes from './routes/forgotPasswordRoutes.js';
@@ -23,7 +21,6 @@ import manuallyAddedUserRoutes from './routes/manuallyAddedUserRoutes.js';
 import recaptchaRoutes from './routes/recaptchaRoutes.js';
 import welcomeWienerDog from './routes/welcomeWienerDogRoutes.js';
 import welcomeWienerProduct from './routes/welcomeWienerProductRoutes.js';
-import welcomeWienerOrder from './routes/welcomeWienerOrderRoutes.js';
 import errorRoutes from './routes/errorRoutes.js';
 import cors from 'cors';
 
@@ -44,12 +41,10 @@ if (process.env.NODE_ENV === 'development') {
 app.use(cors());
 
 app.use('/api/users', userRoutes);
-app.use('/api/guest', guestRoutes);
+app.use('/api/order', orderRoutes);
 app.use('/api/education-tips', educationTipRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/products', productRoutes);
-app.use('/api/orders', orderRoutes);
-app.use('/api/remove-upload', removeUploadRoutes);
 app.use('/upload', uploadRoutes);
 app.use('/api/forgotpassword', forgotPasswordRoutes);
 app.use('/api/newsletter', newsletterRoutes);
@@ -61,12 +56,9 @@ app.use('/api/manually-add-user', manuallyAddedUserRoutes);
 app.use('/api/recaptcha', recaptchaRoutes);
 app.use('/api/welcome-wiener-dog', welcomeWienerDog);
 app.use('/api/welcome-wiener-product', welcomeWienerProduct);
-app.use('/api/welcome-wiener-order', welcomeWienerOrder);
 app.use('/api/error', errorRoutes);
 
 const __dirname = path.resolve();
-
-app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
 
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '/frontend/build')));

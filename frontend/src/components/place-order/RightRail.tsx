@@ -10,13 +10,16 @@ import {
 import { Text } from '../styles/Styles';
 import { useSelector } from 'react-redux';
 import { Image } from 'react-bootstrap';
+import addDecimals from '../../utils/addDecimals';
 
 const RightRail = ({ revealItems, setRevealItems }: any) => {
   const state = useSelector((state: any) => state);
-
-  const cartItems = state.cart.cartItems;
-  const cartItemsAmount = state.cart.cartItemsAmount;
-  const subtotal = state.cart.subtotal;
+  const cart = state?.cart;
+  const cartItems = cart?.cartItems;
+  const cartItemsAmount = cart?.cartItemsAmount;
+  const subtotal = cart?.subtotal;
+  const shippingPrice = cart?.shippingPrice;
+  const totalPrice = cart?.totalPrice;
 
   useEffect(() => {
     if (window.innerWidth < 768) {
@@ -43,7 +46,7 @@ const RightRail = ({ revealItems, setRevealItems }: any) => {
             }}
           ></i>
         </Text>
-        <Text fontWeight={400}>{subtotal}</Text>
+        <Text fontWeight={400}>{addDecimals(totalPrice)}</Text>
       </LeftRailSectionTitle>
       <Accordion
         toggle={revealItems}
@@ -53,7 +56,7 @@ const RightRail = ({ revealItems, setRevealItems }: any) => {
           <CartItem key={index}>
             <div className='d-flex'>
               <Image
-                src={item?.dachshundImage}
+                src={item?.dachshundImage ?? item?.productImage}
                 alt={item?.name}
                 width='50px'
                 height='50px'
@@ -63,13 +66,14 @@ const RightRail = ({ revealItems, setRevealItems }: any) => {
 
               <div className='d-flex flex-column'>
                 <Name>
-                  {item?.productName} for {item?.dachshundName}
+                  {item?.productName}{' '}
+                  {item?.dachshundName && ` for ${item?.dachshundName}`}
                 </Name>
                 <Text fontSize='11px'>Quantity: {item?.quantity}</Text>
               </div>
             </div>
             <Text fontWeight={600}>
-              ${(Number(item?.quantity) * Number(item?.price))?.toFixed(2)}
+              {addDecimals(item?.quantity * item?.price)}
             </Text>
           </CartItem>
         ))}
@@ -82,13 +86,19 @@ const RightRail = ({ revealItems, setRevealItems }: any) => {
               {cartItemsAmount === 1 ? '' : 's'})
             </Text>
           </Text>
-          <Text>{subtotal}</Text>
+          <Text>{addDecimals(subtotal)}</Text>
         </DetailsContainer>
+        {state?.cart?.isPhysicalProduct && (
+          <DetailsContainer>
+            <Text className='d-flex align-items-baseline'>Shipping Price</Text>
+            <Text>{addDecimals(shippingPrice)}</Text>
+          </DetailsContainer>
+        )}
         <hr className='my-3' />
         <DetailsContainer>
           <Text>Order total</Text>
           <Text fontWeight={600} className='pb-4'>
-            {subtotal}
+            {addDecimals(totalPrice)}
           </Text>
         </DetailsContainer>
       </Accordion>

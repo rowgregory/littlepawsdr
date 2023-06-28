@@ -50,7 +50,7 @@ const FosterApplication = () => {
             text2='Volunteer Application'
             url2='/volunteer/volunteer-application'
           />
-          <RightArrow text='Shop' url='/shop' />
+          <RightArrow text='Merch' url='/merch' />
         </div>
         <Text
           fontSize='32px'
@@ -139,14 +139,12 @@ const FosterApplication = () => {
         <Text maxWidth='680px' className='mx-auto'>
           {isDay ? (
             <FosterApplicationIFrame
-              scrolling='no'
               title='Foster-Application'
               width='100%'
               src='https://toolkit.rescuegroups.org/of/f?c=DGKQZWCQ'
             ></FosterApplicationIFrame>
           ) : (
             <FosterApplicationIFrame
-              scrolling='no'
               title='Foster-Application'
               width='100%'
               src='https://toolkit.rescuegroups.org/of/f?c=NXGDQBDV'

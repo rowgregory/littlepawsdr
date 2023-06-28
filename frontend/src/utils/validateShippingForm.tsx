@@ -83,19 +83,14 @@ const validateShippingForm = (
   inputs: any,
   formIsValid: any
 ) => {
-  let hasName = inputName(inputs, formIsValid, setErrors);
   let hasAddress = inputAddress(inputs, formIsValid, setErrors);
   let hasCity = inputCity(inputs, formIsValid, setErrors);
   let hasState = inputState(inputs, formIsValid, setErrors);
   let hasZipPostalCode = inputZipPostalCode(inputs, formIsValid, setErrors);
 
-  formIsValid = [
-    hasName,
-    hasAddress,
-    hasCity,
-    hasState,
-    hasZipPostalCode,
-  ].every((field: boolean) => field === true);
+  formIsValid = [hasAddress, hasCity, hasState, hasZipPostalCode].every(
+    (field: boolean) => field === true
+  );
 
   return formIsValid;
 };
@@ -105,15 +100,15 @@ export const inputFullName = (
   formIsValid: any,
   setErrors: any
 ) => {
-  if (!validateFullNameRegex.test(inputs?.fullName)) {
+  if (!validateFullNameRegex.test(inputs?.name)) {
     formIsValid = false;
     setErrors((errors: any) => ({
       ...errors,
-      fullName: 'Enter full name to continue',
+      name: 'Enter full name to continue',
     }));
   } else {
     formIsValid = true;
-    setErrors((errors: any) => ({ ...errors, fullName: '' }));
+    setErrors((errors: any) => ({ ...errors, name: '' }));
   }
 
   return formIsValid;
@@ -157,17 +152,18 @@ export const inputPassword = (
   return formIsValid;
 };
 
-const validateAccountCreateCheckoutForm = (
+const validateContactInfoForm = (
   setErrors: any,
   inputs: any,
   formIsValid: any
 ) => {
   let hasValidEmailAddress = inputEmailAddress(inputs, formIsValid, setErrors);
+  let hasName = inputFullName(inputs, formIsValid, setErrors);
 
-  formIsValid = [hasValidEmailAddress].every(
+  formIsValid = [hasValidEmailAddress, hasName].every(
     (field: boolean) => field === true
   );
   return formIsValid;
 };
 
-export { validateShippingForm, validateAccountCreateCheckoutForm };
+export { validateShippingForm, validateContactInfoForm };

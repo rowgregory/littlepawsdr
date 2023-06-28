@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { listProducts } from '../../actions/productActions';
+import { listProductsAndEcards } from '../../actions/productActions';
 import Message from '../../components/Message';
 import Product from './Product';
 import {
@@ -21,19 +21,23 @@ import LeftArrow from '../../components/svg/LeftArrow';
 import RightArrow from '../../components/svg/RightArrow';
 import Hero from '../../components/Hero';
 
-const Shop = () => {
+const Merch = () => {
   const dispatch = useDispatch();
   const [currentCategory, setCurrentCategory] = useState('');
 
-  let {
-    productList: { loading, error, products },
-  } = useSelector((state: any) => state);
+  const state = useSelector((state: any) => state);
+
+  let loading = state.productEcardList.loading;
+  const error = state.productEcardList.error;
+  const productsAndEcards = state.productEcardList.products;
+
+  // loading = true;
 
   useEffect(() => {
-    dispatch(listProducts());
+    dispatch(listProductsAndEcards());
   }, [dispatch]);
 
-  const filterProducts = products?.filter((product: any) =>
+  const filterProductsAndEcards = productsAndEcards?.filter((product: any) =>
     product?.category.includes(currentCategory)
   );
 
@@ -42,7 +46,7 @@ const Shop = () => {
       <Hero
         low={ShopLow}
         high={ShopHigh}
-        title='Little Paws Shop'
+        title='Little Paws Merch'
         link='https://unsplash.com/es/@davidiz?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText'
         photographer='David Izquierdo'
       />
@@ -82,7 +86,8 @@ const Shop = () => {
           <div className='d-flex flex-column align-items-center'>
             <Message variant='danger'>{error}</Message>
           </div>
-        ) : products?.length === 0 || products === undefined ? (
+        ) : productsAndEcards?.length === 0 ||
+          productsAndEcards === undefined ? (
           <div className='d-flex flex-column align-items-center'>
             <div className='mb-3'>
               <NoShop color='#ccc' />
@@ -122,19 +127,18 @@ const Shop = () => {
                   }}
                 >
                   <GridIconContainer>
-                    {filterProducts?.length} item
-                    {filterProducts?.length === 1 ? '' : 's'}
+                    {filterProductsAndEcards?.length} item
+                    {filterProductsAndEcards?.length === 1 ? '' : 's'}
                   </GridIconContainer>
                   <div className='d-flex flex-column'>
-                    {filterProducts?.length === 0 ? (
+                    {filterProductsAndEcards?.length === 0 ? (
                       <Text marginTop='16px'>No products available</Text>
                     ) : (
-                      filterProducts
+                      filterProductsAndEcards
                         ?.map((product: any) => (
                           <Product
                             key={product._id}
                             product={product}
-                            isEcard={false}
                             loading={loading}
                           />
                         ))
@@ -151,4 +155,4 @@ const Shop = () => {
   );
 };
 
-export default Shop;
+export default Merch;

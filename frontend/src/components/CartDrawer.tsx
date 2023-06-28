@@ -1,4 +1,4 @@
-import { memo, useEffect, useMemo, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   CheckoutNowBtn,
@@ -12,21 +12,20 @@ import useHandleOutsideClick from '../utils/hooks/useOutsideHandleClick';
 import { Flex, Text } from './styles/Styles';
 import { Image } from 'react-bootstrap';
 import { openCartDrawer } from '../actions/cartActions';
+import addDecimals from '../utils/addDecimals';
 
 const CartDrawer = () => {
   const dispatch = useDispatch();
   const cartRef = useRef(null) as any;
 
-  const cartDrawer = useSelector((state: any) => state.cart.cartDrawer);
-  const cartItemsAmount = useSelector(
-    (state: any) => state.cart.cartItemsAmount
-  );
-  const cartItem = useSelector((state: any) => state.cart.cartItem);
-  const subtotal = useSelector((state: any) => state.cart.subtotal);
+  const state = useSelector((state: any) => state);
 
-  const memoizedCartDrawer = useMemo(() => cartDrawer, [cartDrawer]);
+  const cartDrawer = state.cart.cartDrawer;
+  const cartItemsAmount = state.cart.cartItemsAmount;
+  const cartItem = state.cart.cartItem;
+  const subtotal = state.cart.subtotal;
 
-  const animation = memoizedCartDrawer ? 'move-down' : '';
+  const animation = cartDrawer ? 'move-down' : '';
 
   useHandleOutsideClick(() => {
     dispatch(openCartDrawer(false));
@@ -60,19 +59,24 @@ const CartDrawer = () => {
                   style={{ color: 'green' }}
                 ></i>
               </span>
-              1 item added to your cart
+              {cartItem?.quantity ?? 1} item{cartItemsAmount > 1 && 's'} added
+              to your cart
             </Text>
             <Flex className='mt-3'>
               <Image
-                src={cartItem?.dachshundImage}
+                src={cartItem?.dachshundImage ?? cartItem?.productImage}
                 style={{ objectFit: 'cover' }}
                 width='65px'
                 height='65px'
               />
               <Flex flexDirection='column' marginLeft='16px'>
                 <Text>
-                  {cartItem?.productName} for {cartItem?.dachshundName}
+                  {cartItem?.productName}
+                  {cartItem?.dachshundName && ` for ${cartItem?.dachshundName}`}
                 </Text>
+                {cartItem?.size && (
+                  <Text fontSize='12px'>{cartItem?.size}</Text>
+                )}
               </Flex>
             </Flex>
           </Flex>
@@ -91,7 +95,7 @@ const CartDrawer = () => {
           </Text>
           <Flex justifyContent='space-between' width='100%' marginTop='12px'>
             <Text>Order Subtotal: </Text>
-            <Text>{subtotal} </Text>
+            <Text>{addDecimals(subtotal)} </Text>
           </Flex>
           <Flex
             justifyContent='space-between'
@@ -101,14 +105,22 @@ const CartDrawer = () => {
           >
             <Text fontWeight='500'>Subtotal: </Text>
             <Text fontWeight='500' p='0 0 16px'>
-              {subtotal}{' '}
+              {addDecimals(subtotal)}
             </Text>
           </Flex>
           <Flex width='100%' justifyContent='space-between' marginTop='16px'>
-            <ContineShoppingBtn to='/welcome-wieners'>
+            <ContineShoppingBtn
+              to={cartItem?.dachshundId ? '/welcome-wieners' : '/merch'}
+              onClick={() => openCartDrawer(false)}
+            >
               EXPLORE MORE
             </ContineShoppingBtn>
-            <CheckoutNowBtn to='/cart/place-order'>CHECKOUT NOW</CheckoutNowBtn>
+            <CheckoutNowBtn
+              onClick={() => openCartDrawer(false)}
+              to='/cart/place-order'
+            >
+              CHECKOUT NOW
+            </CheckoutNowBtn>
           </Flex>
         </CheckoutWrapper>
       </InnerWrapper>
@@ -116,4 +128,4 @@ const CartDrawer = () => {
   );
 };
 
-export default memo(CartDrawer);
+export default CartDrawer;

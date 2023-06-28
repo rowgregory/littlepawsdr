@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { GUEST_USER_REGISTER_RESET } from '../constants/guestUserConstants';
 import {
   USER_CHECK_IF_CONFIRMED_RESET,
   USER_CONFIRMED_FAIL,
@@ -15,7 +14,6 @@ import {
   USER_DETAILS_REQUEST,
   USER_DETAILS_RESET,
   USER_DETAILS_SUCCESS,
-  USER_GENERATE_NEW_TOKEN_FAIL,
   USER_LIST_FAIL,
   USER_LIST_REQUEST,
   USER_LIST_SUCCESS,
@@ -47,7 +45,6 @@ import {
 export const login = (email: any, password: any) => async (dispatch: any) => {
   try {
     dispatch({ type: USER_LOGIN_REQUEST });
-    dispatch({ type: GUEST_USER_REGISTER_RESET });
 
     const config = {
       headers: {
@@ -424,40 +421,6 @@ export const updatedUserToConfirmed =
     } catch (error: any) {
       dispatch({
         type: USER_CONFIRMED_FAIL,
-        payload:
-          error.response && error.response.data.message
-            ? error.response.data.message
-            : error.message,
-      });
-    }
-  };
-
-export const generateTokenForNewSession =
-  () => async (dispatch: any, getState: any) => {
-    try {
-      const {
-        userLogin: { userInfo },
-      } = getState();
-
-      const config = {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${userInfo.token}`,
-        },
-      };
-
-      const { data } = await axios.put(
-        `/api/users/generate-new-token`,
-        {},
-        config
-      );
-
-      dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
-
-      localStorage.setItem('userInfo', JSON.stringify(data));
-    } catch (error: any) {
-      dispatch({
-        type: USER_GENERATE_NEW_TOKEN_FAIL,
         payload:
           error.response && error.response.data.message
             ? error.response.data.message

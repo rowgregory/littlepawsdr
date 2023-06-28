@@ -28,16 +28,23 @@ ChartJS.register(
   Legend
 );
 
-const PieChart = ({ orders, loading }: any) => {
-  const ordersTotal = +orders?.orderItemsTotal + +orders?.eCardOrdersItemsTotal;
+const PieChart = ({ details, loading }: any) => {
+  const ordersTotal =
+    details?.productOrdersItemsTotal +
+    details?.ecardOrdersItemsTotal +
+    details?.welcomeWienerOrdersItemsTotal;
 
   const data = {
-    labels: ['Orders', 'Ecards'],
+    labels: ['Products', 'Ecards', 'Welcome Wieners'],
     datasets: [
       {
-        data: [orders?.orderItemsTotal, orders?.eCardOrdersItemsTotal],
-        backgroundColor: ['#9761aa', '#22c2b7'],
-        borderColor: ['#9761aa', '#22c2b7'],
+        data: [
+          details?.productOrdersItemsTotal,
+          details?.ecardOrdersItemsTotal,
+          details?.welcomeWienerOrdersItemsTotal,
+        ],
+        backgroundColor: ['#9761aa', '#22c2b7', '#8BBF9F'],
+        borderColor: ['#9761aa', '#22c2b7', '#8BBF9F'],
         borderWidth: 1,
       },
     ],
@@ -57,6 +64,7 @@ const PieChart = ({ orders, loading }: any) => {
       },
     },
   } as any;
+
   const noData = ordersTotal === 0;
   return (
     <TotalSalesContainer>
@@ -66,7 +74,7 @@ const PieChart = ({ orders, loading }: any) => {
         fontSize='17px'
         marginBottom={noData ? '24px' : ''}
       >
-        Sales By Donation Type
+        Total Sales
       </Text>
       {loading ? (
         <SpinnerContainer>

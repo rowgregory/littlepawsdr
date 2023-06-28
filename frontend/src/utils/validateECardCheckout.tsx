@@ -1,18 +1,21 @@
-import { validateEmailRegex } from './regex';
+import { validateEmailRegex, validateFullNameRegex } from './regex';
 
-export const inputRecipientsFirstName = (
+export const inputRecipientsFullName = (
   inputs: any,
   formIsValid?: any,
   setErrors?: any
 ) => {
-  if (inputs.recipientsFirstName !== '') {
-    formIsValid = true;
-    setErrors((errors: any) => ({ ...errors, recipientsFirstName: '' }));
-  } else {
+  if (!validateFullNameRegex.test(inputs.recipientsFullName)) {
     formIsValid = false;
     setErrors((errors: any) => ({
       ...errors,
-      recipientsFirstName: 'Enter recipients first name to continue',
+      recipientsFullName: 'Enter recipients full name to continue',
+    }));
+  } else {
+    formIsValid = true;
+    setErrors((errors: any) => ({
+      ...errors,
+      recipientsFullName: '',
     }));
   }
 
@@ -87,7 +90,7 @@ export const validatePersonalize = (
   inputs: any,
   formIsValid: any
 ) => {
-  const validRecipientsFirstName: boolean = inputRecipientsFirstName(
+  const validRecipientsFullName: boolean = inputRecipientsFullName(
     inputs,
     formIsValid,
     setErrors
@@ -105,100 +108,9 @@ export const validatePersonalize = (
   );
 
   return (
-    validRecipientsFirstName &&
+    validRecipientsFullName &&
     validRecipientsEmail &&
     validMessage &&
     validDateToSend
   );
-};
-
-export const inputFirstName = (
-  inputs: any,
-  formIsValid?: any,
-  setErrors?: any
-) => {
-  if (inputs.firstName !== '') {
-    formIsValid = true;
-    setErrors((errors: any) => ({ ...errors, firstName: '' }));
-  } else {
-    formIsValid = false;
-    setErrors((errors: any) => ({
-      ...errors,
-      firstName: 'Please enter first name',
-    }));
-  }
-
-  return formIsValid;
-};
-
-export const inputEmail = (inputs: any, formIsValid?: any, setErrors?: any) => {
-  if (!inputs?.email) {
-    formIsValid = false;
-    setErrors((errors: any) => ({
-      ...errors,
-      email: 'Enter email to continue.',
-    }));
-  } else if (!validateEmailRegex.test(inputs?.email)) {
-    formIsValid = false;
-    setErrors((errors: any) => ({
-      ...errors,
-      email: 'Enter a valid email to continue.',
-    }));
-  } else {
-    formIsValid = true;
-    setErrors((errors: any) => ({ ...errors, email: '' }));
-  }
-
-  return formIsValid;
-};
-
-export const inputLastName = (
-  inputs: any,
-  formIsValid?: any,
-  setErrors?: any
-) => {
-  if (inputs.lastName !== '') {
-    formIsValid = true;
-    setErrors((errors: any) => ({ ...errors, lastName: '' }));
-  } else {
-    formIsValid = false;
-    setErrors((errors: any) => ({
-      ...errors,
-      lastName: 'Please enter last name',
-    }));
-  }
-
-  return formIsValid;
-};
-
-export const inputState = (inputs: any, formIsValid?: any, setErrors?: any) => {
-  if (inputs.state !== '') {
-    formIsValid = true;
-    setErrors((errors: any) => ({ ...errors, state: '' }));
-  } else {
-    formIsValid = false;
-    setErrors((errors: any) => ({
-      ...errors,
-      state: 'Please choose a state',
-    }));
-  }
-
-  return formIsValid;
-};
-
-export const validateMyInfo = (
-  setErrors: any,
-  inputs: any,
-  formIsValid: any
-) => {
-  const validFirstName: boolean = inputFirstName(
-    inputs,
-    formIsValid,
-    setErrors
-  );
-  const validEmail: boolean = inputEmail(inputs, formIsValid, setErrors);
-  const validLastName: boolean = inputLastName(inputs, formIsValid, setErrors);
-  const validState: boolean = inputState(inputs, formIsValid, setErrors);
-
-  return validFirstName && validEmail && validLastName && validState;
 };

@@ -1,7 +1,7 @@
 import { Image, Spinner } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import Message from '../../components/Message';
-import { Text } from '../../components/styles/Styles';
+import { Flex, Text } from '../../components/styles/Styles';
 import {
   CartContainer,
   CartItemContainer,
@@ -15,6 +15,8 @@ import { Link, useHistory } from 'react-router-dom';
 import LogoDay from '../../components/assets/logo-transparent.png';
 import LeftArrow from '../../components/svg/LeftArrow';
 import CartItem from './CartItem';
+import addDecimals from '../../utils/addDecimals';
+import SplitTextToChars from '../../utils/SplitTextToChars';
 
 const Cart = () => {
   const history = useHistory();
@@ -34,7 +36,7 @@ const Cart = () => {
           className='d-flex align-items-center'
           style={{ marginBottom: '64px' }}
         >
-          <Link to='/welcome-wieners'>
+          <Link to='/'>
             <Image src={LogoDay} height='48px' alt=' Cart Logo' />
           </Link>
           <Divider />
@@ -46,29 +48,37 @@ const Cart = () => {
           <>
             <Message variant='danger'>{error}</Message>
             <Link to='/welcome-wieners'>Go to Welcome Wieners</Link>
+            <Link to='/merch'>Go to Merch</Link>
           </>
+        ) : cartItemsAmount > 0 ? (
+          <CartItemContainer>
+            <tbody>
+              {cartItems?.map((item: any, i: number) => (
+                <CartItem key={i} item={item} />
+              ))}
+              <tr style={{ background: '#ecf0f1' }}>
+                <td style={{ width: '136px' }}>
+                  <LeftArrow text='Welcome Wieners' url='/welcome-wieners' />
+                  <LeftArrow text='Merch' url='/merch' />
+                </td>
+                <td></td>
+                <td>
+                  <Text className='mb-0'>Subtotal</Text>
+                </td>
+                <td>
+                  <Text fontWeight='bold'>{addDecimals(subtotal)}</Text>
+                </td>
+              </tr>
+            </tbody>
+          </CartItemContainer>
         ) : (
-          <>
-            <CartItemContainer>
-              <tbody>
-                {cartItems?.map((item: any, i: number) => (
-                  <CartItem key={i} item={item} />
-                ))}
-                <tr style={{ background: '#ecf0f1' }}>
-                  <td style={{ width: '136px' }}>
-                    <LeftArrow text='Welcome Wieners' url='/welcome-wieners' />
-                  </td>
-                  <td></td>
-                  <td>
-                    <Text className='mb-0'>Subtotal</Text>
-                  </td>
-                  <td>
-                    <Text fontWeight='bold'>{subtotal}</Text>
-                  </td>
-                </tr>
-              </tbody>
-            </CartItemContainer>
-          </>
+          <Flex flexDirection='column' width='100%'>
+            <SplitTextToChars
+              text='Hey, thanks for being here! Checkout out our latest ecards, products, or welcome wieners!'
+              page='cart'
+              fontSize='16px'
+            />
+          </Flex>
         )}
       </Container>
       <CheckoutBtnColumn>
@@ -91,7 +101,7 @@ const Cart = () => {
               fontSize='14px'
               marginBottom='0'
             >
-              {subtotal}
+              {addDecimals(subtotal)}
             </Text>
           </div>
         </SecondSubTotal>

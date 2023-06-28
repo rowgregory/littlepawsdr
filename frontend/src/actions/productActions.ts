@@ -1,5 +1,8 @@
 import axios from 'axios';
 import {
+  PRODUCT_AND_ECARD_LIST_FAIL,
+  PRODUCT_AND_ECARD_LIST_REQUEST,
+  PRODUCT_AND_ECARD_LIST_SUCCESS,
   PRODUCT_CREATE_FAIL,
   PRODUCT_CREATE_REQUEST,
   PRODUCT_CREATE_SUCCESS,
@@ -22,6 +25,7 @@ import {
   PRODUCT_UPDATE_REQUEST,
   PRODUCT_UPDATE_SUCCESS,
 } from '../constants/productContstants';
+import { UPDATE_CART } from '../constants/cartConstants';
 
 export const listProducts = () => async (dispatch: any) => {
   try {
@@ -33,6 +37,23 @@ export const listProducts = () => async (dispatch: any) => {
   } catch (error: any) {
     dispatch({
       type: PRODUCT_LIST_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : '404 - Not Found',
+    });
+  }
+};
+export const listProductsAndEcards = () => async (dispatch: any) => {
+  try {
+    dispatch({ type: PRODUCT_AND_ECARD_LIST_REQUEST });
+
+    const { data } = await axios.get(`/api/products/ecards`);
+
+    dispatch({ type: PRODUCT_AND_ECARD_LIST_SUCCESS, payload: data });
+  } catch (error: any) {
+    dispatch({
+      type: PRODUCT_AND_ECARD_LIST_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message
@@ -102,6 +123,7 @@ export const deleteProduct =
 
       const {
         userLogin: { userInfo },
+        cart,
       } = getState();
 
       const config = {
@@ -110,9 +132,16 @@ export const deleteProduct =
         },
       };
 
-      await axios.delete(`/api/products/${id}`, config);
+      const deletedProduct = await axios.delete(`/api/products/${id}`, config);
 
-      dispatch({ type: PRODUCT_DELETE_SUCCESS });
+      if (deletedProduct) {
+        const updatedCartItems = cart.cartItems.filter(
+          (item: any) => item.productId !== id
+        );
+
+        dispatch({ type: PRODUCT_DELETE_SUCCESS });
+        dispatch({ type: UPDATE_CART, payload: updatedCartItems });
+      }
     } catch (error: any) {
       dispatch({
         type: PRODUCT_DELETE_FAIL,

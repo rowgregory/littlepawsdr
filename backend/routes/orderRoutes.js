@@ -2,23 +2,20 @@ import express from 'express';
 const router = express.Router();
 
 import {
-  addOrderItems,
-  getMyOrders,
+  createOrder,
   getOrderById,
   getOrders,
-  updateOrderToPaid,
-  updateOrderToShipped,
+  getMyOrders,
   sendOrderConfirmationEmail,
+  updateOrderWithTrackingNumber,
 } from '../controllers/orderController.js';
 
 import { protect, admin } from '../middleware/authMiddleware.js';
 
-router.route('/unauthenticated').post(addOrderItems);
-router.route('/').post(protect, addOrderItems).get(protect, admin, getOrders);
+router.route('/').post(createOrder).get(protect, admin, getOrders);
 router.route('/my-orders').get(protect, getMyOrders);
 router.route('/:id').get(getOrderById);
-router.route('/:id/pay').put(protect, updateOrderToPaid);
-router.route('/:id/ship').put(protect, admin, updateOrderToShipped);
 router.route('/send-order-confirmation-email').post(sendOrderConfirmationEmail);
+router.route('/:id/tracking-number').put(updateOrderWithTrackingNumber);
 
 export default router;

@@ -31,9 +31,9 @@ import {
   userWhoWeAreListReducer,
 } from './userReducer';
 import {
+  productAndEcardListReducer,
   productCreateReducer,
   productDeletesReducer,
-  productDetailsReducer,
   productListReducer,
   productPublicDetailsReducer,
   productUpdateGuestReducer,
@@ -44,11 +44,10 @@ import {
   orderCreateReducer,
   orderDetailsReducer,
   orderEmailConfirmationReducer,
-  orderGuestDetailsReducer,
   orderListMyReducer,
   orderListReducer,
-  orderPayReducer,
   orderShipReducer,
+  orderTrackingNumberReducer,
 } from './orderReducer';
 import { createPaymentIntentReducer } from './stripeReducer';
 import {
@@ -64,8 +63,6 @@ import {
 import {
   eCardOrderCreateReducer,
   eCardOrderDetailsReducer,
-  ecardOrdersListMyReducer,
-  eCardOrdersListReducer,
 } from './eCardOrderReducer';
 import {
   eCardCreateReducer,
@@ -95,7 +92,6 @@ import {
   educationTipListReducer,
   educationTipUpdateReducer,
 } from './educationTipReducer';
-import { guestUserRegisterReducer } from './guestUserReducer';
 import {
   manuallyAddUserCreateReducer,
   manuallyAddUserDeleteReducer,
@@ -119,11 +115,6 @@ import {
   welcomeWienerDachshundToggledReducer,
   welcomeWienerDachshundUpdateReducer,
 } from './welcomeWienerDachshundReducer';
-import {
-  welcomeWienerOrderCreateReducer,
-  welcomeWienerOrderDetailsReducer,
-  welcomeWienerOrderListReducer,
-} from './welcomeWienerOrderReducer';
 import { dashboardReducer } from './dashboardReducer';
 
 const allReducers = combineReducers({
@@ -154,21 +145,20 @@ const allReducers = combineReducers({
   eventDetails: eventDetailsReducer,
   eventUpdate: eventUpdateReducer,
   productList: productListReducer,
-  productDetails: productDetailsReducer,
   productPublicDetails: productPublicDetailsReducer,
   productDelete: productDeletesReducer,
   productCreate: productCreateReducer,
   productUpdate: productUpdateReducer,
   productUpdateGUest: productUpdateGuestReducer,
+  productEcardList: productAndEcardListReducer,
   cart: cartReducer,
   orderCreate: orderCreateReducer,
   orderDetails: orderDetailsReducer,
-  orderGuestDetails: orderGuestDetailsReducer,
-  orderPay: orderPayReducer,
   orderShip: orderShipReducer,
   orderListMy: orderListMyReducer,
   orderList: orderListReducer,
   orderEmailConfirmation: orderEmailConfirmationReducer,
+  orderTrackingNumber: orderTrackingNumberReducer,
   stripePayment: createPaymentIntentReducer,
   sendEmail: sendEmailReducer,
   verifyToken: verifyTokenReducer,
@@ -178,8 +168,6 @@ const allReducers = combineReducers({
   newsletterEmailDelete: newsletterEmailDeleteReducer,
   eCardOrderCreate: eCardOrderCreateReducer,
   eCardOrderDetails: eCardOrderDetailsReducer,
-  eCardOrdersList: eCardOrdersListReducer,
-  ecardOrdersListMy: ecardOrdersListMyReducer,
   eCardList: eCardListReducer,
   eCardCreate: eCardCreateReducer,
   eCardDetails: eCardDetailsReducer,
@@ -200,7 +188,6 @@ const allReducers = combineReducers({
   educationTipDetails: educationTipDetailsReducer,
   educationTipUpdate: educationTipUpdateReducer,
   educationTipDelete: educationTipDeleteReducer,
-  guestUserRegister: guestUserRegisterReducer,
   manuallyAddedUserList: manuallyAddUserListReducer,
   manuallyAddedUserCreate: manuallyAddUserCreateReducer,
   manuallyAddedUserUpdate: manuallyAddUserUpdateReducer,
@@ -217,9 +204,6 @@ const allReducers = combineReducers({
   welcomeWienerDachshundUpdate: welcomeWienerDachshundUpdateReducer,
   welcomeWienerDachshundDelete: welcomeWienerDachshundDeleteReducer,
   welcomeWienerDachshundDetails: welcomeWienerDachshundDetailsReducer,
-  welcomeWienerOrderCreate: welcomeWienerOrderCreateReducer,
-  welcomeWienerOrderDetails: welcomeWienerOrderDetailsReducer,
-  welcomeWienerOrderList: welcomeWienerOrderListReducer,
   welcomeWienerDachshundToggle: welcomeWienerDachshundToggledReducer,
 });
 

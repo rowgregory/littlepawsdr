@@ -3,6 +3,7 @@ export const formatDateTime = (
   locale = 'en-US'
 ) => {
   const defaultOption: {
+    weekday: 'short';
     month: 'short';
     day: 'numeric';
     year: 'numeric';
@@ -11,6 +12,7 @@ export const formatDateTime = (
     hour12: true;
     timeZone: 'America/New_York';
   } = {
+    weekday: 'short',
     month: 'short',
     day: 'numeric',
     year: 'numeric',

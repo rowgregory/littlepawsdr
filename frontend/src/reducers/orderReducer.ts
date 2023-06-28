@@ -5,10 +5,6 @@ import {
   ORDER_DETAILS_REQUEST,
   ORDER_DETAILS_SUCCESS,
   ORDER_DETAILS_FAIL,
-  ORDER_PAY_RESET,
-  ORDER_PAY_REQUEST,
-  ORDER_PAY_FAIL,
-  ORDER_PAY_SUCCESS,
   ORDER_LIST_MY_REQUEST,
   ORDER_LIST_MY_SUCCESS,
   ORDER_LIST_MY_FAIL,
@@ -21,13 +17,14 @@ import {
   ORDER_SHIP_SUCCESS,
   ORDER_SHIP_FAIL,
   ORDER_SHIP_RESET,
-  ORDER_GUEST_DETAILS_REQUEST,
-  ORDER_GUEST_DETAILS_SUCCESS,
-  ORDER_GUEST_DETAILS_FAIL,
   ORDER_EMAIL_CONFIRMATION_FAIL,
   ORDER_EMAIL_CONFIRMATION_SUCCESS,
   ORDER_EMAIL_CONFIRMATION_REQUEST,
   ORDER_DETAILS_RESET,
+  TRACKING_NUMBER_REQUEST,
+  TRACKING_NUMBER_SUCCESS,
+  TRACKING_NUMBER_FAIL,
+  TRACKING_NUMBER_RESET,
 } from '../constants/orderConstants';
 
 export const orderCreateReducer = (state = { order: {} }, action: any) => {
@@ -58,7 +55,7 @@ export const orderCreateReducer = (state = { order: {} }, action: any) => {
 };
 
 export const orderDetailsReducer = (
-  state = { loading: true, order: {}, shippingAddress: {} },
+  state = { loading: true, order: {} },
   action: any
 ) => {
   switch (action.type) {
@@ -86,58 +83,7 @@ export const orderDetailsReducer = (
   }
 };
 
-export const orderGuestDetailsReducer = (
-  state = { loading: true, orderItems: [], shippingAddress: {} },
-  action: any
-) => {
-  switch (action.type) {
-    case ORDER_GUEST_DETAILS_REQUEST:
-      return {
-        ...state,
-        loading: true,
-      };
-    case ORDER_GUEST_DETAILS_SUCCESS:
-      return {
-        loading: false,
-        guestOrder: action.payload,
-      };
-    case ORDER_GUEST_DETAILS_FAIL:
-      return {
-        loading: false,
-        error: action.payload,
-      };
-    default:
-      return state;
-  }
-};
-
-export const orderPayReducer = (state = {}, action: any) => {
-  switch (action.type) {
-    case ORDER_PAY_REQUEST:
-      return {
-        loading: true,
-      };
-    case ORDER_PAY_SUCCESS:
-      return {
-        loading: false,
-        success: true,
-      };
-    case ORDER_PAY_FAIL:
-      return {
-        loading: false,
-        error: action.payload,
-      };
-    case ORDER_PAY_RESET:
-      return {};
-    default:
-      return state;
-  }
-};
-
-export const orderListMyReducer = (
-  state = { orders: { welcomeWienerOrders: [], ecardOrders: [] } },
-  action: any
-) => {
+export const orderListMyReducer = (state = { orders: [] }, action: any) => {
   switch (action.type) {
     case ORDER_LIST_MY_REQUEST:
       return {
@@ -146,11 +92,7 @@ export const orderListMyReducer = (
     case ORDER_LIST_MY_SUCCESS:
       return {
         loading: false,
-        orders: {
-          ...state.orders,
-          welcomeWienerOrders: action.payload.welcomeWienerOrders,
-          ecardOrders: action.payload.ecardOrders,
-        },
+        orders: action.payload,
       };
     case ORDER_LIST_MY_FAIL:
       return {
@@ -158,7 +100,7 @@ export const orderListMyReducer = (
         error: action.payload,
       };
     case ORDER_LIST_MY_RESET:
-      return { orders: {} };
+      return { orders: [] };
     default:
       return state;
   }
@@ -185,7 +127,7 @@ export const orderListReducer = (state = { orders: [] }, action: any) => {
   }
 };
 
-export const orderShipReducer = (state = { isShipped: false }, action: any) => {
+export const orderShipReducer = (state = {}, action: any) => {
   switch (action.type) {
     case ORDER_SHIP_REQUEST:
       return {
@@ -197,7 +139,6 @@ export const orderShipReducer = (state = { isShipped: false }, action: any) => {
         ...state,
         loading: false,
         success: true,
-        isShipped: action.payload,
       };
     case ORDER_SHIP_FAIL:
       return {
@@ -207,8 +148,8 @@ export const orderShipReducer = (state = { isShipped: false }, action: any) => {
       };
     case ORDER_SHIP_RESET:
       return {
+        loading: false,
         success: false,
-        isShipped: false,
       };
     default:
       return state;
@@ -230,6 +171,32 @@ export const orderEmailConfirmationReducer = (state = {}, action: any) => {
       return {
         loading: false,
         error: action.payload,
+      };
+    default:
+      return state;
+  }
+};
+
+export const orderTrackingNumberReducer = (state = {}, action: any) => {
+  switch (action.type) {
+    case TRACKING_NUMBER_REQUEST:
+      return {
+        loading: true,
+      };
+    case TRACKING_NUMBER_SUCCESS:
+      return {
+        loading: false,
+        success: true,
+      };
+    case TRACKING_NUMBER_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      };
+    case TRACKING_NUMBER_RESET:
+      return {
+        loading: false,
+        success: false,
       };
     default:
       return state;

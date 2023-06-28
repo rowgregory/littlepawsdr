@@ -1,12 +1,13 @@
 import { formatDate } from '../../utils/formatDate.js';
 
 const productPurchase = (pugEmail, body, hasEmailBeenSent) => {
+  console.log('BODY: ', body);
   pugEmail
     .send({
       template: 'orderconfirmation',
       message: {
         from: 'Little Paws Dachshund Rescue <no-reply@littlepawsdr.org',
-        to: body?.user?.email ?? body?.guestEmail,
+        to: body?.email,
       },
       locals: {
         id: body?._id,
@@ -14,38 +15,30 @@ const productPurchase = (pugEmail, body, hasEmailBeenSent) => {
         shippingAddress: JSON.stringify(body?.shippingAddress),
         orderForEmail: {
           orderDate: formatDate(body?.createdAt),
-          subTotal: body?.itemsPrice,
+          subtotal: body?.subtotal,
           shippingPrice: body?.shippingPrice,
-          taxPrice: body?.taxPrice,
           totalPrice: body?.totalPrice,
-          name: body?.user?.name,
         },
         shippingAddressForEmail: body?.shippingAddress,
         order: JSON.stringify({
           orderDate: body?.createdAt?.toString(),
-          subTotal: body?.itemsPrice,
+          subtotal: body?.subtotal,
           shippingPrice: body?.shippingPrice,
-          taxPrice: body?.taxPrice,
           totalPrice: body?.totalPrice,
-          name: body?.user?.name,
         }),
-        email: body?.user?.email ?? body?.guestEmail,
+        email: body?.email,
         items: JSON.stringify(
           body?.orderItems.map(obj => ({
-            name: obj.name,
+            productName: obj.productName,
             image: encodeURIComponent(obj?.image),
             price: obj.price,
-            qty: obj.qty,
+            quantity: obj.quantity,
           }))
         ),
       },
     })
     .then(() => {
-      console.log(
-        `Order confirmation email has been sent to ${
-          body?.user?.email ?? body?.guestEmail
-        }`
-      );
+      console.log(`Order confirmation email has been sent to ${body?.email}`);
     });
   hasEmailBeenSent = true;
   return hasEmailBeenSent;

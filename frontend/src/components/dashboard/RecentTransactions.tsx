@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { Image, Spinner } from 'react-bootstrap';
-import ProductsIcon from '../svg/ProductsIcon';
-import EcardIcon from '../svg/EcardIcon';
 import { Accordion } from '../styles/place-order/Styles';
 import { Circles, UserInfoContainer, Wallet } from '../styles/DashboardStyles';
 import { Text } from '../styles/Styles';
@@ -20,41 +18,6 @@ import {
 } from './sidebar/styles';
 import formatCurrency from '../../utils/formatCurrency';
 
-const myLinks = [
-  {
-    textKey: 'Welcome Wiener Donations',
-    linkKey: '/my-orders',
-    icon: <ProductsIcon />,
-    state: 'products',
-  },
-  {
-    textKey: 'Ecards',
-    linkKey: '/my-orders',
-    icon: <EcardIcon />,
-    state: 'ecards',
-  },
-];
-
-const PurchasesAccordion = ({ revealPurchases }: any) => {
-  const { pathname } = useLocation();
-
-  return (
-    <Accordion toggle={revealPurchases} maxheight='130px'>
-      {myLinks.map((obj: any, i: number) => (
-        <SideBarLink key={i} to={{ pathname: obj?.linkKey, state: obj?.state }}>
-          <LinkContainer
-            active={(obj?.linkKey === pathname).toString()}
-            className='d-flex align-items-center px-3 py-3 mb-2'
-          >
-            <div className='ml-3'>{obj?.icon}</div>
-            <div className='ml-3'>{obj?.textKey}</div>
-          </LinkContainer>
-        </SideBarLink>
-      ))}
-    </Accordion>
-  );
-};
-
 const RecentTransactions = ({
   userInfo,
   loadingUserLogout,
@@ -64,18 +27,11 @@ const RecentTransactions = ({
   const history = useHistory();
   const dispatch = useDispatch();
   const [revealMyLinks, setRevealMyLinks] = useState(false);
-  const [revealPurchases, setRevealPurchases] = useState(false);
 
   const viewTransaction = (item: any) => {
-    if (item?.orderItems) {
-      history.push(`/welcome-wiener/order/${item?._id}`);
-    } else {
-      history.push({
-        pathname: `/admin/order/ecard`,
-        state: item,
-      });
-    }
+    history.push(`/admin/order/${item?._id}`);
   };
+
   return (
     <>
       <UserInfoContainer>
@@ -100,24 +56,13 @@ const RecentTransactions = ({
         </div>
       </UserInfoContainer>
       <div className='mb-4 mt-2'>
-        <Accordion
-          toggle={revealMyLinks}
-          maxheight={revealPurchases ? '320px' : '190px'}
-        >
-          <SideBarAccordionBtn
-            onClick={() => {
-              setRevealPurchases(!revealPurchases);
-            }}
-          >
-            <LinkContainer
-              active={revealPurchases.toString()}
-              className='d-flex align-items-center'
-            >
+        <Accordion toggle={revealMyLinks} maxheight='190px'>
+          <SideBarLink to='/my-orders'>
+            <LinkContainer className='d-flex align-items-center px-3 py-3'>
               <OrdersIcon />
-              <div className='ml-3'>Purchases</div>
+              <div className='ml-3'>My Orders</div>
             </LinkContainer>
-          </SideBarAccordionBtn>
-          <PurchasesAccordion revealPurchases={revealPurchases} />
+          </SideBarLink>
           <SideBarLink to='/settings/profile'>
             <LinkContainer className='d-flex align-items-center px-3 py-3'>
               <SettingsIcon />
@@ -145,7 +90,7 @@ const RecentTransactions = ({
           {loading ? (
             <Spinner animation='border' style={{ color: '#fff' }} />
           ) : (
-            formatCurrency(dashboardDetails?.walletTotal)
+            formatCurrency(Number(dashboardDetails?.walletTotal))
           )}
         </Text>
       </Wallet>
@@ -154,7 +99,7 @@ const RecentTransactions = ({
           Recent Transactions
         </Text>
       </div>
-      {dashboardDetails?.total
+      {dashboardDetails?.orders
         ?.map((item: any, i: number) => (
           <RecentTransactionItem
             viewTransaction={viewTransaction}
@@ -163,7 +108,8 @@ const RecentTransactions = ({
             loading={loading}
           />
         ))
-        .filter((_: any, i: number) => i < 10)}
+        .filter((_: any, i: number) => i < 10)
+        .reverse()}
     </>
   );
 };

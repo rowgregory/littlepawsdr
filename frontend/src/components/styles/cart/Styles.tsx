@@ -24,6 +24,10 @@ export const Container = styled.div<{ emptycart?: boolean }>`
     min-height: 100vh;
   }
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+    padding: 48px 45px 0 45px;
+    min-height: 100vh;
+  }
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
     padding: 48px 64px 0 64px;
     min-height: 100vh;
   }

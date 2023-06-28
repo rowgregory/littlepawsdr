@@ -6,10 +6,6 @@ import {
   PRODUCT_DELETE_FAIL,
   PRODUCT_DELETE_REQUEST,
   PRODUCT_DELETE_SUCCESS,
-  PRODUCT_DETAILS_FAIL,
-  PRODUCT_DETAILS_REQUEST,
-  PRODUCT_DETAILS_RESET,
-  PRODUCT_DETAILS_SUCCESS,
   PRODUCT_GUEST_UPDATE_FAIL,
   PRODUCT_GUEST_UPDATE_REQUEST,
   PRODUCT_GUEST_UPDATE_RESET,
@@ -25,6 +21,9 @@ import {
   PRODUCT_UPDATE_REQUEST,
   PRODUCT_UPDATE_RESET,
   PRODUCT_UPDATE_SUCCESS,
+  PRODUCT_AND_ECARD_LIST_REQUEST,
+  PRODUCT_AND_ECARD_LIST_SUCCESS,
+  PRODUCT_AND_ECARD_LIST_FAIL,
 } from '../constants/productContstants';
 
 export const productListReducer = (
@@ -55,32 +54,24 @@ export const productListReducer = (
       return state;
   }
 };
-
-export const productDetailsReducer = (
-  state = { product: {} },
+export const productAndEcardListReducer = (
+  state = { products: [] },
   action: { type: any; payload: any }
 ) => {
   switch (action.type) {
-    case PRODUCT_DETAILS_REQUEST:
+    case PRODUCT_AND_ECARD_LIST_REQUEST:
       return {
-        ...state,
         loading: true,
       };
-    case PRODUCT_DETAILS_SUCCESS:
+    case PRODUCT_AND_ECARD_LIST_SUCCESS:
       return {
-        ...state,
         loading: false,
-        product: action.payload,
+        products: action.payload,
       };
-    case PRODUCT_DETAILS_FAIL:
+    case PRODUCT_AND_ECARD_LIST_FAIL:
       return {
-        ...state,
         loading: false,
         error: action.payload,
-      };
-    case PRODUCT_DETAILS_RESET:
-      return {
-        product: {},
       };
     default:
       return state;

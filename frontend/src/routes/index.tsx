@@ -21,22 +21,16 @@ import PageNotFound from '../components/common/PageNotFound';
 import PopUp from '../components/common/PopUp';
 import GlobalStyles from '../GlobalStyles';
 import ContinueSessionModal from '../components/ContinueSessionModal';
-import LoginOptions from './LoginOptions';
-import ECardOrderReceipt from './ECardOrderReceipt';
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
 import EmailConfirmation from './EmailConfirmation';
-import OrderPayPal from './OrderPayPal';
-import ECards from './ECards';
-import ECardDetails from './ECardDetails';
-import EcardPlaceOrder from './EcardPlaceOrder';
 import ReturnPolicy from './ReturnPolicy';
 import CookiePolicyPopUp from '../components/CookiePolicyPopUp';
 import CookiePolicy from './CookiePolicy';
 import { useIdleTimer } from 'react-idle-timer';
 import WelcomeWieners from './WelcomeWieners';
 import WelcomeWienerDetails from './WelcomeWienerDetails';
-import WelcomeWienerOrderReceipt from './WelcomeWienerOrderReceipt';
+import ECardOrderReceipt from './ECardOrderReceipt';
 
 type LazyModulePromise<T = {}> = Promise<{ default: ComponentType<T> }>;
 
@@ -49,6 +43,7 @@ const Admin = lazy((): LazyModulePromise => import('./Admin'));
 const Cart = lazy((): LazyModulePromise => import('./Cart'));
 const Settings = lazy((): LazyModulePromise => import('./Settings'));
 const Donate = lazy((): LazyModulePromise => import('./Donate'));
+const Merch = lazy((): LazyModulePromise => import('./Merch'));
 
 const Page = styled(Container)<{ url: string }>`
   width: 100%;
@@ -134,17 +129,9 @@ export const Routes: FC = () => {
             path='/welcome-wiener/:id'
             component={WelcomeWienerDetails}
           />
-          <Route
-            exact
-            path='/welcome-wiener/order/:id'
-            component={WelcomeWienerOrderReceipt}
-          />
           <Route path='/cookie-policy' component={CookiePolicy} />
           <Route path='/return-policy' component={ReturnPolicy} />
           <Route path='/e-card/order/:id' component={ECardOrderReceipt} />
-          <Route path='/e-cards' component={ECards} />
-          <Route path='/e-card-details' component={ECardDetails} />
-          <Route path='/e-card/place-order' component={EcardPlaceOrder} />
           <Route path='/donate' component={Donate} />
           <Route path='/volunteer' component={Volunteer} />
           <Route path='/adopt' component={Adopt} />
@@ -155,10 +142,10 @@ export const Routes: FC = () => {
           <Route path='/admin' component={Admin} />
           <Route path='/forgot-password' component={ForgotPassword} />
           <Route path='/login' component={Login} />
-          <Route path='/login-options' component={LoginOptions} />
           <Route path='/register' component={Register} />
           <Route path='/profile' component={Profile} />
           <Route path='/cart' component={Cart} />
+          <Route path='/merch' component={Merch} />
           <Route
             path='/order/:id/:order?/:shippingAddress?/:email?/:items?'
             component={OrderReceipt}
@@ -170,7 +157,6 @@ export const Routes: FC = () => {
             path='/email-confirmation/:to?/:em?/:na?/:id?'
             component={EmailConfirmation}
           />
-          <Route path='/paypal/order' component={OrderPayPal} />
           <Route exact path='/' component={Home} />
           <Route path='/404' component={PageNotFound} />
           <Redirect to='/404' />

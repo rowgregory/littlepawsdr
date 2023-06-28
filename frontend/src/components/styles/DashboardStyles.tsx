@@ -1,4 +1,3 @@
-import { Row } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 
@@ -14,8 +13,8 @@ export const DashboardContainer = styled.div`
   }
 `;
 
-export const TopRow = styled(Row)`
-  margin-bottom: 2rem;
+export const TopRow = styled.div`
+  margin-bottom: 32px;
 `;
 
 export const MiddleRow = styled.div`
@@ -28,11 +27,27 @@ export const MiddleRow = styled.div`
 export const WelcomeText = styled.div`
   color: #3b3b3c;
   font-size: 26px;
-  padding-inline: 16px;
-  padding-top: 16px;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    padding-inline: 0px;
+  padding: 16px 0 0 16px;
+
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
+    padding: 16px 0 0;
   }
+`;
+export const SubheaderText = styled.div`
+  color: #3b3b3c;
+  font-size: 12px;
+  padding: 0 0 0 16px;
+
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
+    padding: 0;
+  }
+`;
+
+export const WelcomeTextWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  margin-bottom: 24px;
 `;
 
 export const ActionBtn = styled.div`
@@ -73,9 +88,12 @@ export const ActionBtn = styled.div`
 
 export const Middle = styled.div`
   width: 100%;
-  padding: 16px;
+  padding: 0px;
   @media screen and (min-width: 875px) {
     width: calc(100vw - 365px);
+  }
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    padding: 16px;
   }
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
     padding: 32px;
@@ -149,12 +167,13 @@ export const LineChartContainer = styled.div`
 `;
 
 export const TopSellingProductsContainer = styled.div`
-  padding: 24px;
+  padding: 12px;
   background: #fff;
   width: 100%;
   border-radius: 8px;
   margin-bottom: 1rem;
   @media screen and (min-width: 1408px) {
+    padding: 24px;
     margin-bottom: 0;
   }
 `;
@@ -175,7 +194,10 @@ export const TotalSalesContainer = styled.div`
   background: #fff;
   border-radius: 8px;
   width: 100%;
-  padding: 24px;
+  padding: 12px;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    padding: 24px;
+  }
 `;
 
 export const RecentTransactions = styled.div`

@@ -44,7 +44,7 @@ const PeopleAccordion = ({
         }
       >
         <LinkContainer
-          active={reveal.toString()}
+          active={reveal?.toString()}
           className='d-flex align-items-center px-3 py-3 mb-2'
         >
           <div>
@@ -63,7 +63,7 @@ const PeopleAccordion = ({
             <LinkContainer
               active={(
                 obj?.linkKey === pathname ||
-                obj.pathMatch === pathname.split('/')[2]
+                obj?.pathMatch === pathname?.split('/')[2]
               )
                 .toString()
                 .toString()}

@@ -3,12 +3,14 @@ import { Image } from 'react-bootstrap';
 import { Text } from '../components/styles/Styles';
 import styled from 'styled-components';
 import { localizeDate } from '../utils/localizeDate';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Logo from '../components/assets/logo-transparent.png';
 import { ORDER_CREATE_RESET } from '../constants/orderConstants';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { formatDate } from '../utils/formatDate';
 import LeftArrow from '../components/svg/LeftArrow';
+import { getOrderDetails } from '../actions/orderActions';
+import { formatDateTime } from '../utils/formatDateTime';
 
 const Container = styled.div`
   background: ${({ theme }) => theme.secondaryBg};
@@ -63,28 +65,32 @@ export const estimatedDelivery = (createdAt: any) => {
 };
 
 const OrderReceipt = ({ match }: any) => {
-  const { state } = useLocation() as any;
+  // const { state } = useLocation() as any;
   const dispatch = useDispatch();
   const { params } = match;
 
   const id = params?.id;
-  const order = params?.order && JSON.parse(params?.order);
-  const shippingAddress =
-    params?.shippingAddress && JSON.parse(params?.shippingAddress);
-  const email = params?.email && params?.email;
+  // const order = params?.order && JSON.parse(params?.order);
+  // const shippingAddress =
+  //   params?.shippingAddress && JSON.parse(params?.shippingAddress);
+  // const email = params?.email && params?.email;
 
-  const items =
-    params?.items &&
-    JSON.parse(params?.items)?.map((obj: any) => ({
-      image: decodeURIComponent(obj?.image),
-      name: obj.name,
-      price: obj.price,
-      qty: obj.qty,
-    }));
+  const state = useSelector((state: any) => state);
+  const order = state.orderDetails.order;
+
+  // const items =
+  //   params?.items &&
+  //   JSON.parse(params?.items)?.map((obj: any) => ({
+  //     image: decodeURIComponent(obj?.image),
+  //     name: obj.name,
+  //     price: obj.price,
+  //     qty: obj.qty,
+  //   }));
 
   useEffect(() => {
     dispatch({ type: ORDER_CREATE_RESET });
-  }, [dispatch]);
+    dispatch(getOrderDetails(id));
+  }, [dispatch, id]);
 
   return (
     <Container>
@@ -120,12 +126,7 @@ const OrderReceipt = ({ match }: any) => {
             marginBottom='10px'
             fontWeight={600}
           >
-            Hello{' '}
-            {order?.name ??
-              email ??
-              state?.order?.user?.name ??
-              state?.order?.guestEmail}
-            ,
+            Hello {order?.name},
           </Text>
           <Text
             color='#a5a7ab'
@@ -134,8 +135,8 @@ const OrderReceipt = ({ match }: any) => {
             borderBottom='1px solid #f2f2f2'
             marginBottom='22px'
           >
-            Your order has been confirmed and your item(s) will be shipped
-            within two days.
+            Your donation is much appreciated by us at Little Paws and we thank
+            you for your kind support.
           </Text>
           <table style={{ borderBottom: '1px solid #f2f2f2', width: '100%' }}>
             <thead>
@@ -146,105 +147,94 @@ const OrderReceipt = ({ match }: any) => {
                 <td>
                   <Text fontWeight={200}>Order No</Text>
                 </td>
-                <td>
-                  <Text fontWeight={200}>Payment</Text>
-                </td>
-                <td>
-                  <Text fontWeight={200}>Shipping Address</Text>
-                </td>
+                {order?.shippingAddress && (
+                  <td>
+                    <Text fontWeight={200}>Shipping Address</Text>
+                  </td>
+                )}
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td>
                   <Text fontWeight={400} p='10px 0 32px'>
-                    {formatDate(order?.orderDate ?? state?.order?.createdAt)}
+                    {formatDateTime(order?.createdAt)}
                   </Text>
                 </td>
                 <td>
                   <Text fontWeight={400} p='10px 0 32px'>
-                    {id ?? state?.order?._id}
+                    {order?._id}
                   </Text>
                 </td>
-                <td>
-                  <Text fontWeight={400} p='10px 0 32px'>
-                    PayPal
-                  </Text>
-                </td>
-                <td>
-                  <Text fontWeight={400} p='10px 0 32px'>{`${
-                    state?.order?.shippingAddress?.address ??
-                    shippingAddress?.address
-                  }, ${
-                    state?.order?.shippingAddress?.city ?? shippingAddress?.city
-                  } ${
-                    state?.order?.shippingAddress?.state ??
-                    shippingAddress.state
-                  }`}</Text>
-                </td>
+
+                {order?.shippingAddress && (
+                  <td>
+                    <Text
+                      fontWeight={400}
+                      p='10px 0 32px'
+                    >{`${order?.shippingAddress?.address}, ${order?.shippingAddress?.city} ${order?.shippingAddress?.state}`}</Text>
+                  </td>
+                )}
               </tr>
             </tbody>
           </table>
-          {(state?.order?.orderItems ?? items)?.map(
-            (item: any, index: number) => (
-              <div
-                key={index}
-                className='d-flex justify-content-between py-4 w-100 mb-4'
-                style={{ borderBottom: '1px solid #f2f2f2' }}
-              >
-                <div className='d-flex'>
-                  <Image
-                    src={item?.image}
-                    alt='product-img'
-                    width='100px'
-                    className='pr-3'
-                    style={{ objectFit: 'cover', aspectRatio: '1/1' }}
-                  />
-                  <div className='d-flex flex-column'>
-                    <Text fontWeight='400' fontSize='14px' marginBottom='10px'>
-                      {item?.name}
-                    </Text>
-                    {item?.size && (
-                      <Text fontWeight='200'>Size: {item?.size}</Text>
-                    )}
-                    <Text fontWeight='200'>Quantity: {item?.qty}</Text>
-                  </div>
+          {order?.orderItems?.map((item: any, index: number) => (
+            <div
+              key={index}
+              className='d-flex justify-content-between py-4 w-100 mb-4'
+              style={{ borderBottom: '1px solid #f2f2f2' }}
+            >
+              <div className='d-flex'>
+                <Image
+                  src={item?.productImage || item?.dachshundImage}
+                  alt='product-img'
+                  width='100px'
+                  className='pr-3'
+                  style={{ objectFit: 'contain', aspectRatio: '1/1' }}
+                />
+                <div className='d-flex flex-column'>
+                  <Text fontWeight='400' fontSize='14px' marginBottom='10px'>
+                    {item?.recipientsEmail
+                      ? `Ecard sending to ${
+                          item.recipientsEmail
+                        } on ${formatDate(item.dateToSend)}`
+                      : item?.productName}
+                  </Text>
+                  {item?.size && (
+                    <Text fontWeight='200'>Size: {item?.size}</Text>
+                  )}
+                  {!item?.dateToSend && (
+                    <Text fontWeight='200'>Quantity: {item?.quantity}</Text>
+                  )}
                 </div>
-                <Text fontWeight='600' fontSize='18px'>
-                  ${item?.price}
-                </Text>
               </div>
-            )
-          )}
+              <Text fontWeight='600' fontSize='18px'>
+                ${item?.price}
+              </Text>
+            </div>
+          ))}
           <div className='d-flex flex-column align-items-end mb-4'>
             <div className='d-flex justify-content-between w-25 mb-1'>
               <Text>Subtotal</Text>
               <Text fontWeight={400}>
                 $
-                {state?.order?.orderItems
-                  .reduce(
-                    (acc: any, item: any) => acc + item?.qty * item?.price,
+                {order?.orderItems
+                  ?.reduce(
+                    (acc: any, item: any) => acc + item?.quantity * item?.price,
                     0
                   )
-                  .toFixed(2) ?? order?.subTotal}
+                  .toFixed(2)}
               </Text>
             </div>
-            <div className='d-flex justify-content-between w-25 mb-1'>
-              <Text>Shipping Fee</Text>
-              <Text fontWeight={400}>
-                $
-                {state?.order?.shippingPrice.toFixed(2) ?? order?.shippingPrice}
-              </Text>
-            </div>
-            <div
-              className='d-flex justify-content-between w-25 mb-1'
-              style={{ borderBottom: '1px solid #f2f2f2' }}
-            >
-              <Text>Tax Fee</Text>
-              <Text fontWeight={400}>
-                ${state?.order?.taxPrice.toFixed(2) ?? order?.taxPrice}
-              </Text>
-            </div>
+            {order?.shippingPrice > 0 && (
+              <div className='d-flex justify-content-between w-25 mb-1'>
+                <Text>Shipping Fee</Text>
+                <Text fontWeight={400}>
+                  ${order?.shippingPrice?.toFixed(2)}
+                </Text>
+              </div>
+            )}
+
             <div
               className='d-flex mt-2 pb-2 justify-content-between w-25'
               style={{ borderBottom: '1px solid #f2f2f2' }}
@@ -253,23 +243,19 @@ const OrderReceipt = ({ match }: any) => {
                 Total
               </Text>
               <Text fontSize='14px' fontWeight={600}>
-                $
-                {order?.totalPrice?.toFixed(2) ??
-                  state?.order?.totalPrice.toFixed(2)}
+                ${Number(order?.totalPrice)?.toFixed(2)}
               </Text>
             </div>
           </div>
-          {!email && (
-            <Text fontSize='14px' marginBottom='24px'>
-              An email confirmation has been sent to{' '}
-              <strong className='mr-2'>
-                {email ?? state?.order?.user?.email ?? state?.order?.guestEmail}
-              </strong>
-              {state?.order?.confirmationEmailHasBeenSent && (
-                <i className='fas fa-check' style={{ color: 'green' }}></i>
-              )}
-            </Text>
-          )}
+
+          <Text fontSize='14px' marginBottom='24px'>
+            An email confirmation has been sent to{' '}
+            <strong className='mr-2'>{order?.email}</strong>
+            {order?.confirmationEmailHasBeenSent && (
+              <i className='fas fa-check' style={{ color: 'green' }}></i>
+            )}
+          </Text>
+
           <Text color='#494c59' fontSize='17px' fontWeight={600}>
             Thank you for shopping with us!
           </Text>

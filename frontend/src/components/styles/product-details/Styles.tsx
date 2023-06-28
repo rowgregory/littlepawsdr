@@ -1,6 +1,13 @@
 import { Button, Col, Form } from 'react-bootstrap';
 import styled from 'styled-components';
 
+export const PriceContainer = styled.div`
+  display: none;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
+    display: flex;
+  }
+`;
+
 export const ProductDetailsContainer = styled.div`
   display: grid;
   grid-template-columns: 1fr;

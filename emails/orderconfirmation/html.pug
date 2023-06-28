@@ -217,7 +217,8 @@ html(xmlns='http://www.w3.org/1999/xhtml')
           img.logo(src='https://i.ibb.co/GMWQxTM/logo.png' alt='little paws dachshund rescue')
           h3 Order Confirmation                          
           div Order Id: <strong>#{id}</strong>
-        div.secondary-font You order has been confirmed and your items will be shipped within two days
+        div.secondary-font Your donation is much appreciated by us at Little Paws and we thank
+          you for your kind support.
         .horizontal-line
         table(width='100%' cellpadding='0' cellspacing='0')
           tbody
@@ -235,10 +236,10 @@ html(xmlns='http://www.w3.org/1999/xhtml')
         each val in orderItems
           .order-item 
             .picture-name-qty
-              img.img(src=val.image, alt=val.name style='width:60px; height:60px')
+              img.img(src=val.dachshundImage || val.productImage, alt=val._id style='width:60px; height:60px')
               .qty-size
-                strong.product-name #{val.name}
-                div Quantity: #{val.qty}
+                strong.product-name #{val.productName || val.dachshundName}
+                div Quantity: #{val.quantity}
                 if val.size
                   div Size: #{val.size}
             strong.price $#{val.price}
@@ -247,22 +248,18 @@ html(xmlns='http://www.w3.org/1999/xhtml')
           .total-block 
             .flex 
               .float-left Subtotal 
-              .float-right  $#{orderForEmail.subTotal.toFixed(2)}
+              .float-right  $#{orderForEmail.subtotal}
             .flex 
               .float-left Shipping Fee 
-              .float-right  $#{orderForEmail.shippingPrice.toFixed(2)}
-            .flex 
-              .float-left Tax Fee 
-              .float-right  $#{orderForEmail.taxPrice.toFixed(2)}
+              .float-right  $#{orderForEmail.shippingPrice}
             .horizontal-line 
             .total 
               strong.float-left Total 
-              strong.total-price  $#{orderForEmail.totalPrice.toFixed(2)}
+              strong.total-price  $#{orderForEmail.totalPrice}
             .horizontal-line
         .clear 
           div.thank-you Thank you for shopping with us!
           div.lpdr Little Paws Dachsund Rescue
-        a.aligncenter.manage-order-btn(href=`https://littlepawsdr.herokuapp.com/order/${id}/${order}/${shippingAddress}/${email}/${items}`) Manage Order
       .footer
         -var contactLink = `<a href='https://littlepawsdr.herokuapp.com/about/contact-us')>Contact</a>`;
         .help Need Help? Visit our <span>!{contactLink}</span> page.

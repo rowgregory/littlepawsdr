@@ -33,7 +33,7 @@ const DonateHeroAndText = () => {
             url='/'
             text2={
               location?.pathname === '/donate/shop-to-help'
-                ? 'Ecards'
+                ? 'Donate One Time Or Monthly'
                 : location?.pathname === '/donate/venmo'
                 ? 'Shop To Help'
                 : location?.pathname === '/donate/check'
@@ -46,7 +46,7 @@ const DonateHeroAndText = () => {
             }
             url2={
               location?.pathname === '/donate/shop-to-help'
-                ? '/e-cards'
+                ? '/donate'
                 : location?.pathname === '/donate/venmo'
                 ? '/donate/shop-to-help'
                 : location?.pathname === '/donate/check'
@@ -70,7 +70,7 @@ const DonateHeroAndText = () => {
                 ? 'Feed A Foster'
                 : location?.pathname === '/donate/feed-a-foster'
                 ? 'Adoption Application'
-                : 'Ecards'
+                : 'Shop To Help'
             }
             url={
               location?.pathname === '/donate/shop-to-help'
@@ -83,7 +83,7 @@ const DonateHeroAndText = () => {
                 ? '/donate/feed-a-foster'
                 : location?.pathname === '/donate/feed-a-foster'
                 ? '/adopt/application'
-                : '/e-cards'
+                : '/donate/shop-to-help'
             }
           />
         </div>

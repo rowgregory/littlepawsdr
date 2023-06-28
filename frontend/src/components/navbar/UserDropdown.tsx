@@ -1,7 +1,7 @@
 import React from 'react';
 import { AvatarInitials } from '../styles/NavbarStyles';
 import { Text } from '../styles/Styles';
-import { CSSTransition } from 'react-transition-group';
+// import { CSSTransition } from 'react-transition-group';
 import { Image } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../../actions/userActions';
@@ -42,18 +42,18 @@ const UserImg = styled(Image)`
   margin-right: 14px;
 `;
 
-const MyOrdersBtn = styled.div`
-  display: flex;
-  align-items: flex-start;
-  padding-left: 30px;
-  cursor: pointer;
-  border-right: 8px solid #f5f6fc;
-  border-left: 8px solid #f5f6fc;
-  background: #fff;
-  :hover {
-    background: #e3e7fb;
-  }
-`;
+// const MyOrdersBtn = styled.div`
+//   display: flex;
+//   align-items: flex-start;
+//   padding-left: 30px;
+//   cursor: pointer;
+//   border-right: 8px solid #f5f6fc;
+//   border-left: 8px solid #f5f6fc;
+//   background: #fff;
+//   :hover {
+//     background: #e3e7fb;
+//   }
+// `;
 
 const LogoutLink = styled.div`
   cursor: pointer;
@@ -103,78 +103,79 @@ const UserDropdown = ({
           <Text fontSize='0.75rem'>{userInfo?.email}</Text>
         </div>
       </NavDropdownItem>
-      <CSSTransition
+      {/* <CSSTransition
         unmountOnExit
         timeout={500}
         classNames='menu-primary'
         in={activeMenu === 'main'}
+      > */}
+      <div
+        className='menu'
+        style={{
+          background: '#f5f6fc',
+          borderRadius: '30px',
+        }}
       >
-        <div
-          className='menu'
-          style={{
-            background: '#f5f6fc',
-            borderRadius: '30px',
-          }}
-        >
-          {userInfo?.isAdmin && (
-            <DropDownLink
-              onClick={() => setIsVisible(false)}
-              to='/admin'
-              className='d-flex align-items-center py-3'
-            >
-              <div style={{ marginRight: '31px' }}>
-                <i
-                  className='fas fa-tachometer-alt fa-2x'
-                  style={{ color: '#434343' }}
-                ></i>
-              </div>
-              <Text fontWeight={400}>Dashboard</Text>
-            </DropDownLink>
-          )}
-          <MyOrdersBtn
-            onClick={() => setActiveMenu('secondary')}
-            className='d-flex align-items-center  py-3'
-          >
-            <div style={{ marginRight: '34px' }}>
-              <i
-                className='fas fa-shopping-bag fa-2x'
-                style={{ color: '#434343' }}
-              ></i>
-            </div>
-            <Text fontWeight={400}>My Purchases</Text>
-          </MyOrdersBtn>
+        {userInfo?.isAdmin && (
           <DropDownLink
             onClick={() => setIsVisible(false)}
-            to='/settings/profile'
-            className='d-flex py-3 align-items-center'
-            style={{ borderRadius: '0 0 30px 30px' }}
-          >
-            <div style={{ marginRight: '31px' }}>
-              <i className='fas fa-cog fa-2x' style={{ color: '#434343' }}></i>
-            </div>
-            <Text fontWeight={400}>Settings</Text>
-          </DropDownLink>
-          <LogoutLink
-            onClick={() => logoutHandler()}
+            to='/admin'
             className='d-flex align-items-center py-3'
           >
-            <div style={{ marginRight: '29px' }}>
+            <div style={{ marginRight: '31px' }}>
               <i
-                className='fas fa-sign-out-alt fa-2x'
+                className='fas fa-tachometer-alt fa-2x'
                 style={{ color: '#434343' }}
               ></i>
             </div>
-            <Text>Sign{loading && 'ing'} out of account</Text>
-          </LogoutLink>
-          <LogoutLink
-            style={{ borderRadius: '0 0 30px 30px', paddingLeft: '0' }}
-            className='d-flex align-items-center justify-content-center py-3 nohov'
-          >
-            <Text>Little Paws Dachshund Rescue</Text>
-          </LogoutLink>
-        </div>
-      </CSSTransition>
-      <CSSTransition
+            <Text fontWeight={400}>Dashboard</Text>
+          </DropDownLink>
+        )}
+        <DropDownLink
+          onClick={() => setIsVisible(false)}
+          to='/my-orders'
+          className='d-flex align-items-center  py-3'
+        >
+          <div style={{ marginRight: '34px' }}>
+            <i
+              className='fas fa-shopping-bag fa-2x'
+              style={{ color: '#434343' }}
+            ></i>
+          </div>
+          <Text fontWeight={400}>My Orders</Text>
+        </DropDownLink>
+        <DropDownLink
+          onClick={() => setIsVisible(false)}
+          to='/settings/profile'
+          className='d-flex py-3 align-items-center'
+          style={{ borderRadius: '0 0 30px 30px' }}
+        >
+          <div style={{ marginRight: '31px' }}>
+            <i className='fas fa-cog fa-2x' style={{ color: '#434343' }}></i>
+          </div>
+          <Text fontWeight={400}>Settings</Text>
+        </DropDownLink>
+        <LogoutLink
+          onClick={() => logoutHandler()}
+          className='d-flex align-items-center py-3'
+        >
+          <div style={{ marginRight: '29px' }}>
+            <i
+              className='fas fa-sign-out-alt fa-2x'
+              style={{ color: '#434343' }}
+            ></i>
+          </div>
+          <Text>Sign{loading && 'ing'} out of account</Text>
+        </LogoutLink>
+        <LogoutLink
+          style={{ borderRadius: '0 0 30px 30px', paddingLeft: '0' }}
+          className='d-flex align-items-center justify-content-center py-3 nohov'
+        >
+          <Text>Little Paws Dachshund Rescue</Text>
+        </LogoutLink>
+      </div>
+      {/* </CSSTransition> */}
+      {/* <CSSTransition
         unmountOnExit
         timeout={500}
         classNames='menu-secondary'
@@ -226,7 +227,7 @@ const UserDropdown = ({
             <Text>Back</Text>
           </MyOrdersBtn>
         </div>
-      </CSSTransition>
+      </CSSTransition> */}
     </Container>
   );
 };

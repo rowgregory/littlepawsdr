@@ -1,158 +1,376 @@
-import React, { useEffect, useState } from 'react';
-import { Form, Image } from 'react-bootstrap';
+import { useEffect, useState } from 'react';
+import { Form, Image, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
-import styled from 'styled-components';
+import { useRouteMatch } from 'react-router-dom';
 import BreadCrumb from '../../components/common/BreadCrumb';
 import {
-  Container,
-  TableAndPaginationContainer,
-  TableWrapper,
+  ItemsSummaryContainer,
+  ItemsSummaryTable,
+  OrderEditDataContainer,
+  OrderEditLeftSideContainer,
+  OrderEditRightSideContainer,
+  OrderNumber,
 } from '../../components/styles/admin/Styles';
 import { WelcomeText } from '../../components/styles/DashboardStyles';
-import { Text } from '../../components/styles/Styles';
-import { getOrderDetails, shipOrder } from '../../actions/orderActions';
-import { ORDER_SHIP_RESET } from '../../constants/orderConstants';
-import Message from '../../components/Message';
-import { formatDate } from '../../utils/formatDate';
-import { LoadingImg } from '../../components/LoadingImg';
+import { Flex, Text } from '../../components/styles/Styles';
+import {
+  getOrderDetails,
+  submitTrackingNumber,
+} from '../../actions/orderActions';
 
-const Span = styled.span`
-  font-weight: 400;
-`;
-
-const OrderItemContainer = styled.div`
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 12px;
-  overflow-y: scroll;
-  padding: 32px;
-  background: ${({ theme }) => theme.secondaryBg};
-  ::-webkit-scrollbar {
-    display: none; /* Safari and Chrome */
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* Internet Explorer 10+ */
-  }
-`;
+import { formatDateTime } from '../../utils/formatDateTime';
+import addDecimals from '../../utils/addDecimals';
 
 const OrderEdit = () => {
-  const history = useHistory() as any;
-  const { state } = history.location;
   const dispatch = useDispatch();
-  const [isShipped, setIsShipped] = useState(false);
+  const { params } = useRouteMatch<{ id: string }>();
+  const id = params.id;
+  const [enterTrackingNumber, setEnterTrackingNumber] = useState(false);
+  const [trackingNumber, setTrackingNumber] = useState('');
+  const state = useSelector((state: any) => state);
 
-  const {
-    orderShip: {
-      success: successShipped,
-      loading: loadingShipped,
-      error: errorShipped,
-    },
-    orderDetails: { order },
-  } = useSelector((state: any) => state);
-
-  useEffect(() => {
-    setIsShipped(state?.isShipped);
-  }, [state]);
+  const order = state.orderDetails.order;
+  const success = state.orderTrackingNumber.success;
+  const loading = state.orderTrackingNumber.loading;
 
   useEffect(() => {
-    dispatch({ type: ORDER_SHIP_RESET });
-  }, [dispatch, successShipped]);
-
-  useEffect(() => {
-    if (successShipped) {
-      dispatch(getOrderDetails(state?._id));
-    }
-  }, [dispatch, history, state, successShipped]);
+    dispatch(getOrderDetails(id));
+    setEnterTrackingNumber(false);
+  }, [dispatch, id, success]);
 
   return (
-    <Container>
+    <div style={{ padding: '32px 32px 28px' }}>
       <WelcomeText>Order Edit</WelcomeText>
       <BreadCrumb
         step1='Home'
         step2='Dashboard'
-        step3='Product Orders'
-        step4={state?._id}
-        step5={order?.isShipped ?? isShipped ? `Shipped 📦` : `Not Shipped`}
+        step3='Orders'
+        step4=''
         url1='/'
         url2='/admin'
-        url3='/admin/orderList'
+        url3='/admin/orders'
       />
-      {errorShipped && <Message variant='danger'>{errorShipped}</Message>}
-      <TableWrapper>
-        <TableAndPaginationContainer className='justify-content-start'>
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '200px 1fr',
-              marginBottom: '48px',
-            }}
-          >
-            <Text marginBottom='16px'>Name: </Text>
-            <Span>{state?.user?.name ?? state?.guestEmail}</Span>
-            <Text marginBottom='16px'>Order Total: </Text>
-            <Span>${(state?.totalPrice).toFixed(2)}</Span>
-            <Text marginBottom='16px'>Created On: </Text>
-            <Span>{formatDate(state?.createdAt)}</Span>
-            <Text marginBottom='16px'>Order Id: </Text>
-            <Span>{state?._id}</Span>
-            <Text marginBottom='16px'>PayPal Order Id:</Text>
-            <Span>{state?.orderId}</Span>
-            <Text marginBottom='16px'>Email:</Text>
-            <Span>{state?.email ?? state?.user?.email}</Span>
-            <Text marginBottom='32px'>Shipping Address: </Text>
-            <Span>
-              <Text fontWeight={400}>{state?.shippingAddress?.name}</Text>
-              <Text fontWeight={400}>{state?.shippingAddress?.address}</Text>
-              <Text fontWeight={400}>
-                {state?.shippingAddress?.city}, {state?.shippingAddress?.state}{' '}
-                {state?.shippingAddress?.zipPostalCode}
+
+      <OrderEditDataContainer>
+        <OrderNumber>
+          Order Number <span>#{order?._id}</span>
+        </OrderNumber>
+        <ItemsSummaryContainer>
+          <OrderEditLeftSideContainer>
+            <div
+              style={{
+                background: '#fff',
+                width: '100%',
+                padding: '20px',
+                borderRadius: '12px',
+                marginBottom: '20px',
+              }}
+            >
+              <ItemsSummaryTable>
+                <thead>
+                  <tr>
+                    <th>
+                      <Text fontSize='18px' fontWeight={500}>
+                        Items summary
+                      </Text>
+                    </th>
+                    <th>
+                      <Text fontWeight={500}>QTY</Text>
+                    </th>
+                    <th>
+                      <Text fontWeight={500}>Price</Text>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {order?.orderItems?.map((order: any) => (
+                    <tr key={order?._id}>
+                      <td className='d-flex align-items-center'>
+                        <Image
+                          src={order?.productImage || order?.dachshundImage}
+                          width='50px'
+                          height='50px'
+                          style={{ objectFit: 'contain', marginRight: '30px' }}
+                        />
+                        <Text fontWeight={400}>
+                          {order?.productName}
+                          {order?.dachshundName &&
+                            ` for ${order?.dachshundName}`}
+                        </Text>
+                      </td>
+                      <td>
+                        <Text fontWeight={400}> x {order?.quantity}</Text>
+                      </td>
+                      <td>
+                        <Text fontWeight={400}>
+                          {addDecimals(order?.price)}
+                        </Text>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </ItemsSummaryTable>
+            </div>
+            <div
+              style={{
+                background: '#fff',
+                width: '100%',
+                padding: '20px',
+                borderRadius: '12px',
+              }}
+            >
+              <Text fontSize='18px' fontWeight={500} marginBottom='12px'>
+                Customer And Order Details
               </Text>
-            </Span>
-          </div>
-          <Form.Group controlId='isShipped'>
-            <Form.Check
-              type='switch'
-              label={
-                isShipped
-                  ? 'Product has been shipped'
-                  : 'Product has not been shipped'
-              }
-              checked={order?.isShipped ?? isShipped ?? false}
-              onChange={(e: any) =>
-                dispatch(shipOrder(state, e.target.checked))
-              }
-            ></Form.Check>
-          </Form.Group>
-          <Text>Order items</Text>
-          <OrderItemContainer>
-            {state?.orderItems?.map((item: any, index: number) => (
-              <div key={index} className='d-flex'>
-                {loadingShipped ? (
-                  <div className='mr-3'>
-                    <LoadingImg w='100px' h='100px' borderRadius='50%' />
-                  </div>
-                ) : (
-                  <Image
-                    src={item?.image}
-                    alt='product-img'
-                    width='100px'
-                    height='100px'
-                    roundedCircle
-                    className='mr-3'
-                    style={{ objectFit: 'cover' }}
-                  />
+              <Flex
+                justifyContent='space-between'
+                alignItems='center'
+                paddingBottom='12px'
+                paddingTop='12px'
+                style={{ borderTop: '1px solid #d8d9dc' }}
+              >
+                <Text fontWeight={400}>Customer Name</Text>
+                <Text>{order?.name}</Text>
+              </Flex>
+              <Flex
+                justifyContent='space-between'
+                alignItems='center'
+                paddingBottom='12px'
+                paddingTop='12px'
+                style={{ borderTop: '1px solid #d8d9dc' }}
+              >
+                <Text fontWeight={400}>Email</Text>
+                <Text>{order?.email}</Text>
+              </Flex>
+
+              <Flex
+                justifyContent='space-between'
+                alignItems='center'
+                paddingBottom='12px'
+                paddingTop='12px'
+                style={{ borderTop: '1px solid #d8d9dc' }}
+              >
+                <Text fontWeight={400}>Paypal Order Id</Text>
+                <Text>{order?.paypalOrderId}</Text>
+              </Flex>
+              {order?.requiresShipping && (
+                <>
+                  <Flex
+                    justifyContent='space-between'
+                    alignItems='center'
+                    paddingBottom='12px'
+                    paddingTop='12px'
+                    style={{ borderTop: '1px solid #d8d9dc' }}
+                  >
+                    <Text fontWeight={400}>Is Shipped</Text>
+                    <Text>
+                      {order?.isShipped ? (
+                        <i className='fas fa-check'></i>
+                      ) : (
+                        <i className='fas fa-times'></i>
+                      )}
+                    </Text>
+                  </Flex>
+                  <Flex
+                    justifyContent='space-between'
+                    alignItems='center'
+                    paddingBottom='12px'
+                    paddingTop='12px'
+                    style={{ borderTop: '1px solid #d8d9dc' }}
+                  >
+                    <Text fontWeight={400}>Shipped On</Text>
+                    <Text>
+                      {order?.shippedOn
+                        ? formatDateTime(order?.shippedOn)
+                        : '---'}
+                    </Text>
+                  </Flex>
+                </>
+              )}
+            </div>
+          </OrderEditLeftSideContainer>
+          <OrderEditRightSideContainer>
+            {order?.requiresShipping && (
+              <div
+                style={{
+                  background: '#fff',
+                  width: '100%',
+                  padding: '20px',
+                  borderRadius: '12px',
+                  marginBottom: '20px',
+                }}
+              >
+                <Text
+                  fontWeight={400}
+                  cursor='pointer'
+                  onClick={() => setEnterTrackingNumber(!enterTrackingNumber)}
+                  marginBottom={enterTrackingNumber ? '16px' : '0px'}
+                >
+                  {order?.trackingNumber
+                    ? `Tracking Number: ${order?.trackingNumber}`
+                    : 'Enter tracking number'}
+                </Text>
+                {enterTrackingNumber && (
+                  <Flex alignItems='center'>
+                    <Form.Group
+                      controlId='trackingNumber'
+                      className='mb-0 mr-3 w-100'
+                    >
+                      <Form.Control
+                        name='trackingNumber'
+                        type='text'
+                        value={trackingNumber || ''}
+                        onChange={(e: any) => setTrackingNumber(e.target.value)}
+                        style={{ border: '1px solid #c4c4c4' }}
+                      />
+                    </Form.Group>
+
+                    {loading ? (
+                      <Spinner animation='border' size='sm' />
+                    ) : (
+                      <i
+                        onClick={() =>
+                          trackingNumber !== '' &&
+                          dispatch(
+                            submitTrackingNumber(trackingNumber, order?._id)
+                          )
+                        }
+                        className='fas fa-check'
+                        style={{ color: 'green', cursor: 'pointer' }}
+                      ></i>
+                    )}
+                  </Flex>
                 )}
-                <div className='d-flex flex-column'>
-                  <Text fontWeight={400}>{item?.name}</Text>
-                  {item?.size && <Text>Size: {item?.size}</Text>}
-                  <Text>Qty: {item?.qty}</Text>
-                </div>
               </div>
-            ))}
-          </OrderItemContainer>
-        </TableAndPaginationContainer>
-      </TableWrapper>
-    </Container>
+            )}
+            <div
+              style={{
+                background: '#fff',
+                width: '100%',
+                padding: '20px',
+                borderRadius: '12px',
+                marginBottom: '20px',
+              }}
+            >
+              <Text fontSize='18px' fontWeight={500} marginBottom='12px'>
+                Order summary
+              </Text>
+              <Flex
+                justifyContent='space-between'
+                alignItems='center'
+                paddingBottom='6px'
+                paddingTop='6px'
+              >
+                <Text fontWeight={400}>Order Created</Text>
+                <Text>
+                  {formatDateTime(order?.createdAt)
+                    ?.split(', ')
+                    .slice(0, 3)
+                    .join(', ')}
+                </Text>
+              </Flex>
+              <Flex
+                justifyContent='space-between'
+                alignItems='center'
+                paddingBottom='6px'
+                paddingTop='6px'
+              >
+                <Text fontWeight={400}>Order Time</Text>
+                <Text>{formatDateTime(order?.createdAt)?.split(', ')[3]}</Text>
+              </Flex>
+              <Flex
+                justifyContent='space-between'
+                alignItems='center'
+                paddingBottom='6px'
+                paddingTop='6px'
+              >
+                <Text fontWeight={400}>Subtotal</Text>
+                <Text>{addDecimals(order?.subtotal)}</Text>
+              </Flex>
+              <Flex
+                justifyContent='space-between'
+                alignItems='center'
+                paddingBottom='6px'
+                paddingTop='6px'
+              >
+                <Text fontWeight={400}>Shipping Fee</Text>
+                <Text>{addDecimals(order?.shippingPrice)}</Text>
+              </Flex>
+            </div>
+            <div
+              style={{
+                background: '#fff',
+                width: '100%',
+                padding: '20px',
+                borderRadius: '12px',
+                marginBottom: '20px',
+              }}
+            >
+              <Flex
+                justifyContent='space-between'
+                alignItems='center'
+                paddingBottom='6px'
+                paddingTop='6px'
+              >
+                <Text fontWeight={400}>Total</Text>
+                <Text>{addDecimals(order?.totalPrice)}</Text>
+              </Flex>
+            </div>
+            {order?.requiresShipping && (
+              <div
+                style={{
+                  background: '#fff',
+                  width: '100%',
+                  padding: '20px',
+                  borderRadius: '12px',
+                  marginBottom: '20px',
+                }}
+              >
+                <Text fontSize='18px' fontWeight={500} marginBottom='12px'>
+                  Delivery Address
+                </Text>
+                <Flex
+                  justifyContent='space-between'
+                  alignItems='center'
+                  paddingBottom='3px'
+                  paddingTop='3px'
+                >
+                  <Text fontWeight={400}>Address</Text>
+                  <Text>{order?.shippingAddress?.address}</Text>
+                </Flex>
+                <Flex
+                  justifyContent='space-between'
+                  alignItems='center'
+                  paddingBottom='3px'
+                  paddingTop='3px'
+                >
+                  <Text fontWeight={400}>City</Text>
+                  <Text>{order?.shippingAddress?.city}</Text>
+                </Flex>
+                <Flex
+                  justifyContent='space-between'
+                  alignItems='center'
+                  paddingBottom='3px'
+                  paddingTop='3px'
+                >
+                  <Text fontWeight={400}>State</Text>
+                  <Text>{order?.shippingAddress?.state}</Text>
+                </Flex>
+                <Flex
+                  justifyContent='space-between'
+                  alignItems='center'
+                  paddingBottom='3px'
+                  paddingTop='3px'
+                >
+                  <Text fontWeight={400}>Postal Code</Text>
+                  <Text>{order?.shippingAddress?.zipPostalCode}</Text>
+                </Flex>
+              </div>
+            )}
+          </OrderEditRightSideContainer>
+        </ItemsSummaryContainer>
+      </OrderEditDataContainer>
+    </div>
   );
 };
 
