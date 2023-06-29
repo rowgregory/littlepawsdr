@@ -261,13 +261,16 @@ const AdoptionInformation = () => {
         <Text maxWidth='680px' fontSize='18px' className='mb-4 mx-auto'>
           We do not have a physical location, as all our dogs are fostered in
           individual homes on the east coast. A LPDR volunteer transport may be
-          arranged to bring a dog to you. However, some of our dogs have
-          distance restrictions and need to be adopted within a specific number
-          of miles from their foster homes. We will inform you if the dog you
-          applied for is not able to travel long distances by car. We want to
-          find the best family for each of our dachshunds, even if they are out
-          of state. Please read the bio for your dog of interest to see if there
-          is a distance restriction.
+          arranged to bring a dog to you. The cost for volunteer transport
+          includes a health certificate (required by law and issued by a
+          veterinarian), a crate (which all dogs must travel in for safety), and
+          a collar, leash, and harness. However, some of our dogs have distance
+          restrictions and need to be adopted within a specific number of miles
+          from their foster homes. We will inform you if the dog you applied for
+          is not able to travel long distances by car. We want to find the best
+          family for each of our dachshunds, even if they are out of state.
+          Please read the bio for your dog of interest to see if there is a
+          distance restriction.
         </Text>
       </div>
     </>

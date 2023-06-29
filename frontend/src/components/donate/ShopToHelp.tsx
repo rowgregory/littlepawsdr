@@ -110,47 +110,6 @@ const ShopToHelp = () => {
       >
         You can also SHOP to HELP!
       </Text>
-      <Text className='mb-3 mt-4 mx-auto' fontSize='16px' maxWidth='680px'>
-        We fundraise with partnerships with Amazon, and other dog-loving
-        organizations. A few times a year we hold our popular, seasonal
-        auctions. Check out ways that you can shop and help keep our fosters’
-        tails wagging! Find new or gently used dachshund-themed items, or items
-        for your pup on our eBay page.
-      </Text>
-      <Text className='mb-5 mt-4 mx-auto' fontSize='16px' maxWidth='680px'>
-        Would you rather donate items instead of money? LPDR maintains an Amazon
-        Wish List for any basic needs such as leashes, harnesses, collars,
-        treats, etc. Simply select the item that you would like to donate and
-        check out through Amazon. The item is shipped to Little Paws and sent to
-        a foster dachshund in need.
-      </Text>
-      <Flex
-        flexDirection='column'
-        marginTop='36px'
-        marginBottom='36px'
-        maxWidth='680px'
-        marginLeft='auto'
-        marginRight='auto'
-        borderBottom='1px solid #ededed'
-        paddingBottom='35px'
-      >
-        <Image
-          onClick={() =>
-            window.open(
-              'https://www.amazon.com/registries/gl/search?registryType=pet&name=Little+paws+dachshund+rescue+',
-              '_blank'
-            )
-          }
-          src={amazonSmile}
-          alt='LPDR Amazon Shop to Help'
-          style={{
-            maxWidth: '400px',
-            width: '100%',
-            cursor: 'pointer',
-            alignSelf: 'center',
-          }}
-        />
-      </Flex>
       <Flex
         flexDirection='column'
         marginTop='36px'
