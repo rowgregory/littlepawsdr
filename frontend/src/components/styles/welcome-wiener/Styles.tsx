@@ -19,7 +19,7 @@ export const Container = styled.aside`
   transition: 300ms;
   padding: 16px;
   box-shadow: 0px 8px 32px rgba(0, 0, 0, 0.2);
-  transform: translateY(-896px);
+  transform: translateY(-1386px);
   &.move-down {
     transform: translateY(0px);
     transition: 300ms;

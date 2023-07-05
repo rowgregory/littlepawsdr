@@ -58,6 +58,7 @@ const ProductDetails = ({ match }: any) => {
   const [outOfStock, setOutOfStock] = useState(false);
   const [editForm, setEditForm] = useState(false);
   const [errors, setErrors] = useState({}) as any;
+  const [scaleImage, setScaleImage] = useState({ isScaled: false, id: '' });
 
   const state = useSelector((state: any) => state);
 
@@ -160,18 +161,43 @@ const ProductDetails = ({ match }: any) => {
       <CartDrawer />
       <LeftArrow text='Back To Merch' url='/merch' />
       <ProductDetailsContainer>
-        {!loading && (
-          <Image
-            src={product?.image}
-            alt={product?.name}
-            width='100%'
-            style={{
-              aspectRatio: '1/1',
-              objectFit: 'contain',
-              maxWidth: '600px',
-              marginBottom: '24px',
-            }}
-          />
+        {!loading ? (
+          <div style={{ overflow: 'hidden', marginBottom: '32px' }}>
+            <Image
+              src={scaleImage?.id || product?.image}
+              style={{
+                maxWidth: '700px',
+                width: '100%',
+                objectFit: 'cover',
+                aspectRatio: '1/1',
+              }}
+            />
+            <div
+              style={{
+                marginTop: '24px',
+                display: 'flex',
+                gap: '8px',
+                overflowX: 'scroll',
+              }}
+            >
+              {product?.images?.map((img: any, i: number) => (
+                <Image
+                  onClick={() =>
+                    setScaleImage({ isScaled: !scaleImage.isScaled, id: img })
+                  }
+                  key={i}
+                  width='150px'
+                  style={{
+                    aspectRatio: '1/1',
+                    objectFit: 'cover',
+                  }}
+                  src={img}
+                />
+              ))}
+            </div>
+          </div>
+        ) : (
+          <LoadingImg w='100%' mw='700px' />
         )}
 
         <Col>
@@ -232,7 +258,9 @@ const ProductDetails = ({ match }: any) => {
           {!isEcard && (
             <>
               <HorizontalLine margin='0 0 1rem 0' />
-              <Text fontWeight='bold'>About this item</Text>
+              <Text fontWeight='bold' marginBottom='16px'>
+                About this item
+              </Text>
               <ul className='pl-4'>
                 {product?.description
                   ?.split('|')

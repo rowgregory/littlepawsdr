@@ -23,7 +23,8 @@ import PhotoUploadIcon from '../../components/svg/PhotoUploadIcon';
 import { Accordion } from '../../components/styles/place-order/Styles';
 import { categories } from '../../utils/shopCategories';
 import { PRODUCT_CREATE_RESET } from '../../constants/productContstants';
-import API from '../../utils/api';
+import { uploadFilesToImgbb } from '../../utils/uploadFilesToImgBB';
+import { sortProductSizes } from '../../utils/sortProductSizes';
 
 const SizeContainer = styled.div`
   display: flex;
@@ -59,6 +60,7 @@ const useProductCreateForm = (callback?: any) => {
     countInStock: '',
     description: '',
     sizes: [],
+    images: [],
   };
   const [inputs, setInputs] = useState(values);
 
@@ -86,7 +88,7 @@ const ProductCreate = () => {
   const [uploading, setUploading] = useState(false);
   const [productSizes, setProductSizes] = useState([]) as any;
   const [doesProductHaveSizes, setDoesProductHaveSizes] = useState(false);
-  const [file, setFile] = useState({}) as any;
+  const [files, setFiles] = useState([]) as any;
   const [imgUploadStatus, setImageUploadStatus] = useState('') as any;
 
   const state = useSelector((state: any) => state);
@@ -97,17 +99,12 @@ const ProductCreate = () => {
 
   const createProductCallback = async () => {
     setUploading(true);
-    setUploading(true);
-    setImageUploadStatus('Uploading to Imgbb');
-    const formData = new FormData();
-    formData.append('image', file);
-    const isFile = file?.name;
-    const image = isFile && (await API.uploadImageToImgbb(formData));
-    setImageUploadStatus('Image uploaded!');
+    setImageUploadStatus('Uploading');
 
-    let sortedSizes = productSizes?.sort(
-      (a: any, b: any) => weights[a?.size] - weights[b?.size]
-    );
+    const imageUrls = await uploadFilesToImgbb(files);
+    setImageUploadStatus('Images uploaded!');
+
+    const sortedSizes = sortProductSizes(productSizes);
 
     dispatch(
       createProduct({
@@ -118,7 +115,8 @@ const ProductCreate = () => {
         category: inputs.category,
         description: inputs.description,
         countInStock: inputs.countInStock,
-        image: image?.data?.url,
+        image: imageUrls[0],
+        images: imageUrls.filter(Boolean),
         sizes: sortedSizes,
       })
     );
@@ -128,15 +126,6 @@ const ProductCreate = () => {
     createProductCallback
   );
 
-  let weights = {
-    XS: 1,
-    S: 2,
-    M: 3,
-    L: 4,
-    XL: 5,
-    XXL: 6,
-  } as any;
-
   useEffect(() => {
     if (success) {
       history.push('/admin/product/list');
@@ -144,7 +133,7 @@ const ProductCreate = () => {
     }
   }, [dispatch, history, success]);
 
-  const editPhotoHandler = (e: any) => setFile(e.target.files[0]);
+  const editPhotoHandler = (e: any) => setFiles(e.target.files);
 
   const sizes_v2 = () => [
     { size: 'XS', amount: 1 },
@@ -309,31 +298,33 @@ const ProductCreate = () => {
           <Form.Label>Image</Form.Label>
           <Form.Control
             className='img-link'
-            type='text'
+            type='file'
             value={inputs.image || ''}
             onChange={handleInput}
-          ></Form.Control>
-          <div className='d-flex'>
+            multiple
+          />
+          <div className='d-flex flex-wrap'>
             <FormFile
+              type='file'
+              multiple
               id='image-file'
               label={
-                file?.name ? (
-                  <UploadImageSquare className={uploading ? 'anim' : ''}>
-                    <PhotoUploadIcon ready={file} imgStatus={imgUploadStatus} />
-                  </UploadImageSquare>
-                ) : (
-                  <Image
-                    src={product?.image}
-                    width='200px'
-                    height='200px'
-                    style={{ objectFit: 'cover' }}
-                    alt='Product'
-                    className='p-3'
-                  />
-                )
+                <Image
+                  src={product?.image}
+                  width='100px'
+                  height='100px'
+                  style={{ objectFit: 'cover' }}
+                  alt='Product'
+                  className='p-3'
+                />
               }
               onChange={(e: any) => editPhotoHandler(e)}
             ></FormFile>
+            {Array.from(files)?.map((file: any, i: number) => (
+              <UploadImageSquare key={i} className={uploading ? 'anim' : ''}>
+                <PhotoUploadIcon ready={file} imgStatus={imgUploadStatus} />
+              </UploadImageSquare>
+            ))}
           </div>
         </Form.Group>
         <Form.Group controlId='brand'>

@@ -23,11 +23,11 @@ const PhotoUploadIcon = ({ ready, imgStatus }: any) => {
           />
         </g>
       </svg>
-      <Text fontWeight='300' color='#c4c4c4'>
+      <Text fontWeight='300' color='#b6b6b6' fontSize='11px'>
         {ready?.name ? 'Ready to Upload' : 'Choose file to Upload'}
       </Text>
       <Text
-        fontSize='0.875rem'
+        fontSize='8px'
         width='168px'
         style={{
           whiteSpace: 'nowrap',
@@ -38,10 +38,9 @@ const PhotoUploadIcon = ({ ready, imgStatus }: any) => {
       >
         {ready?.name}
       </Text>
-      {ready?.type === 'image/heic' && (
-        <Text fontSize='0.625rem'>HEIC files take longer to upload</Text>
-      )}
-      <Text color='#9761aa'>{imgStatus}</Text>
+      <Text color='#9761aa' fontSize='8px'>
+        {imgStatus}
+      </Text>
     </div>
   );
 };

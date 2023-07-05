@@ -23,7 +23,9 @@ import PhotoUploadIcon from '../../components/svg/PhotoUploadIcon';
 import { Accordion } from '../../components/styles/place-order/Styles';
 import { categories } from '../../utils/shopCategories';
 import { PRODUCT_UPDATE_RESET } from '../../constants/productContstants';
-import API from '../../utils/api';
+import { uploadFilesToImgbb } from '../../utils/uploadFilesToImgBB';
+import { sortProductSizes } from '../../utils/sortProductSizes';
+import { defaultImages } from '../../utils/defaultImages';
 
 const SizeContainer = styled.div`
   display: flex;
@@ -59,6 +61,7 @@ const useProductEditForm = (
     price: 0,
     shippingPrice: 0,
     image: '',
+    images: [],
     brand: '',
     category: '',
     countInStock: 0,
@@ -75,6 +78,7 @@ const useProductEditForm = (
         price: data.price,
         shippingPrice: data.shippingPrice,
         image: data.image,
+        images: data.images,
         brand: data.brand,
         category: data.category,
         countInStock: data.countInStock,
@@ -111,7 +115,7 @@ const ProductEdit = () => {
   const [uploading, setUploading] = useState(false);
   const [productSizes, setProductSizes] = useState([]) as any;
   const [doesProductHaveSizes, setDoesProductHaveSizes] = useState(false);
-  const [file, setFile] = useState({}) as any;
+  const [files, setFiles] = useState([]) as any;
   const [imgUploadStatus, setImageUploadStatus] = useState('') as any;
 
   const state = useSelector((state: any) => state);
@@ -122,17 +126,14 @@ const ProductEdit = () => {
 
   const editProductCallback = async () => {
     setUploading(true);
-    setUploading(true);
     setImageUploadStatus('Uploading to Imgbb');
-    const formData = new FormData();
-    formData.append('image', file);
-    const isFile = file?.name;
-    const image = isFile && (await API.uploadImageToImgbb(formData));
-    setImageUploadStatus('Image uploaded!');
 
-    let sortedSizes = productSizes?.sort(
-      (a: any, b: any) => weights[a?.size] - weights[b?.size]
-    );
+    const imageUrls = await uploadFilesToImgbb(files);
+    setImageUploadStatus('Images uploaded!');
+
+    const sortedSizes = sortProductSizes(productSizes);
+
+    const updatedImages = [...inputs.images, ...imageUrls.filter(Boolean)];
 
     dispatch(
       updateProduct({
@@ -144,27 +145,19 @@ const ProductEdit = () => {
         category: inputs.category,
         description: inputs.description,
         countInStock: inputs.countInStock,
-        image: image?.data?.url,
+        image: inputs.images[0],
+        images: updatedImages,
         sizes: sortedSizes,
       })
     );
   };
 
-  const { inputs, handleInput, onSubmit } = useProductEditForm(
+  const { inputs, handleInput, setInputs, onSubmit } = useProductEditForm(
     editProductCallback,
     product,
     setDoesProductHaveSizes,
     setProductSizes
   );
-
-  let weights = {
-    XS: 1,
-    S: 2,
-    M: 3,
-    L: 4,
-    XL: 5,
-    XXL: 6,
-  } as any;
 
   useEffect(() => {
     if (success) {
@@ -173,7 +166,7 @@ const ProductEdit = () => {
     }
   }, [dispatch, history, success]);
 
-  const editPhotoHandler = (e: any) => setFile(e.target.files[0]);
+  const editPhotoHandler = (e: any) => setFiles(e.target.files);
 
   const sizes_v2 = () => [
     { size: 'XS', amount: 1 },
@@ -337,32 +330,62 @@ const ProductEdit = () => {
           <Form.Label>Image</Form.Label>
           <Form.Control
             className='img-link'
-            type='text'
-            value={inputs.image || ''}
+            type='file'
             onChange={handleInput}
-          ></Form.Control>
-          <div className='d-flex'>
+            multiple
+          />
+          <div className='d-flex' style={{ position: 'relative' }}>
             <FormFile
+              type='file'
+              multiple
               id='image-file'
               label={
-                file?.name ? (
-                  <UploadImageSquare className={uploading ? 'anim' : ''}>
-                    <PhotoUploadIcon ready={file} imgStatus={imgUploadStatus} />
-                  </UploadImageSquare>
-                ) : (
-                  <Image
-                    src={product?.image}
-                    width='200px'
-                    height='200px'
-                    style={{ objectFit: 'cover' }}
-                    alt='Product'
-                  />
-                )
+                <Image
+                  src={defaultImages.upload}
+                  width='100px'
+                  height='100px'
+                  style={{ objectFit: 'cover' }}
+                  alt='Product'
+                  className='p-3'
+                />
+                // )
               }
               onChange={(e: any) => editPhotoHandler(e)}
             ></FormFile>
+            {Array.from(files)?.map((file: any, i: number) => (
+              <UploadImageSquare key={i} className={uploading ? 'anim' : ''}>
+                <PhotoUploadIcon ready={file} imgStatus={imgUploadStatus} />
+              </UploadImageSquare>
+            ))}
           </div>
         </Form.Group>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, 100px)',
+            gap: '8px',
+            marginBottom: '24px',
+          }}
+        >
+          {Array.from(inputs.images)?.map((img: any, i: number) => (
+            <Image
+              onClick={() =>
+                setInputs((inputs: any) => ({
+                  ...inputs,
+                  images: inputs.images.filter((image: any) => image !== img),
+                }))
+              }
+              key={i}
+              src={img}
+              width='100px'
+              style={{
+                objectFit: 'cover',
+                aspectRatio: '1/1',
+              }}
+              alt='Product'
+            />
+          ))}
+        </div>
         <Form.Group controlId='brand'>
           <Form.Label>Brand</Form.Label>
           <Form.Control

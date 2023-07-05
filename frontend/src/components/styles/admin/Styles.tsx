@@ -230,9 +230,9 @@ export const FormFile = styled(Form.File)`
   background: #fff;
   font-weight: 300;
   transition: 300ms;
-  margin-right: 1rem;
-  height: 200px;
-  width: 200px;
+  margin-right: 8px;
+  height: 100px;
+  width: 100px;
   label {
     cursor: pointer;
     display: flex;
@@ -244,27 +244,28 @@ export const FormFile = styled(Form.File)`
 
 const BorderDance = keyframes`
   0% {
-    background-position: 0px 0px, 200px 197px, 0px 200px, 197px 24px;
+    background-position: 0px 0px, 100px 97px, 0px 100px, 97px 24px;
   }
   100% {
-    background-position:212px 0px, 0px 197px, 0px 0px, 197px 200px;
+    background-position:212px 0px, 0px 97px, 0px 0px, 97px 100px;
   }
 `;
 
 export const UploadImageSquare = styled.div<{ uploading?: any }>`
-  height: 200px;
-  width: 200px;
+  height: 100px;
+  width: 100px;
   display: flex;
   align-items: center;
   justify-content: center;
-
+  margin-right: 8px;
+  margin-bottom: 8px;
   background: linear-gradient(90deg, #c4c4c4 50%, transparent 50%),
     linear-gradient(90deg, #c4c4c4 50%, transparent 50%),
     linear-gradient(0deg, #c4c4c4 50%, transparent 50%),
     linear-gradient(0deg, #c4c4c4 50%, transparent 50%);
   background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
   background-size: 16px 3px, 16px 3px, 3px 16px, 3px 16px;
-  background-position: 0px 0px, 200px 197px, 0px 200px, 197px 24px;
+  background-position: 0px 0px, 100px 97px, 0px 100px, 97px 24px;
   transition: background-position 10s;
 
   &.anim {
