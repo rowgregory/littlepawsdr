@@ -133,7 +133,10 @@ const ProductCreate = () => {
     }
   }, [dispatch, history, success]);
 
-  const editPhotoHandler = (e: any) => setFiles(e.target.files);
+  const editPhotoHandler = (e: any) => {
+    const newFiles = Array.from(e.target.files);
+    setFiles((prevFiles: any) => [...prevFiles, ...newFiles]);
+  };
 
   const sizes_v2 = () => [
     { size: 'XS', amount: 1 },
