@@ -75,7 +75,12 @@ const Events = ({ history }: RouteComponentProps) => {
 
       <Container>
         <div className='w-100 d-flex justify-content-between mt-3'>
-          <LeftArrow text='Home' url='/' text2='Merch' url2='/merch' />
+          <LeftArrow
+            text='Home'
+            url='/'
+            text2='Welcome Wieners'
+            url2='/welcome-wieners'
+          />
           <RightArrow text='Blog' url='/about/blog' />
         </div>
         <Text

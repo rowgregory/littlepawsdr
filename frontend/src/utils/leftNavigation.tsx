@@ -55,10 +55,6 @@ export const sideLinkData = [
         linkKey: '/donate/feed-a-foster',
         linkText: 'Feed a Foster',
       },
-      {
-        linkKey: '/welcome-wieners',
-        linkText: 'Welcome Wieners',
-      },
     ],
   },
   {
@@ -109,6 +105,10 @@ export const singleLinkData = [
   {
     linkKey: '/merch',
     linkText: 'Merch',
+  },
+  {
+    linkKey: '/welcome-wieners',
+    linkText: 'Welcome Wieners',
   },
   {
     linkKey: '/events',

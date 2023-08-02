@@ -59,7 +59,7 @@ const Merch = () => {
             text2='Foster Application'
             url2='/volunteer/foster-application'
           />
-          <RightArrow text='Events' url='/events' />
+          <RightArrow text='Welcome Wieners' url='/welcome-wieners' />
         </div>
         <h1
           style={{
