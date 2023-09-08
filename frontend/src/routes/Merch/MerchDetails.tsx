@@ -103,12 +103,9 @@ const ProductDetails = ({ match }: any) => {
       if (productAmount === 0) return setOutOfStock(true);
       if (productAmount >= 1) return setOutOfStock(false);
     }
-    if (
-      product?.countInStock === 0 ||
-      product?.countInStock === null ||
-      product?.counInStock === undefined
-    )
+    if (product?.countInStock === 0 || product?.countInStock === null) {
       return setOutOfStock(true);
+    }
     if (product?.countInStock >= 1) return setOutOfStock(false);
   }, [product, size]);
 
