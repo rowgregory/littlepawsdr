@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { ProceedBtn } from '../../components/forms/ShippingForm';
 import { LoadingImg } from '../../components/LoadingImg';
 import { Text } from '../../components/styles/Styles';
+import { formatDateTime } from '../../utils/formatDateTime';
 
 const Container = styled.div`
   width: 100%;
@@ -44,19 +45,24 @@ const Product = ({ product, loading }: any) => {
 
   return (
     <Container>
-      <Link
-        to={{
-          pathname: `/merch/${product?._id}`,
-          state: { product },
-        }}
-      >
-        {loading ? (
-          <LoadingImg w='100%' mw='230px' />
-        ) : (
-          <ProductImg src={product.image} alt={product?.name} />
-        )}
-      </Link>
-
+      <div>
+        <Link
+          to={{
+            pathname: `/merch/${product?._id}`,
+            state: { product },
+          }}
+        >
+          {loading ? (
+            <LoadingImg w='100%' mw='230px' />
+          ) : (
+            <ProductImg src={product.image} alt={product?.name} />
+          )}
+        </Link>
+        <Text fontStyle='italic' fontSize='12px' marginTop='10px'>
+          {isEcard ? ' Ecard' : ' Product'} released on{' '}
+          {formatDateTime(product?.createdAt)}
+        </Text>
+      </div>
       <div className='d-flex flex-column align-items-start'>
         <Text marginBottom='4px'>
           {loading ? (

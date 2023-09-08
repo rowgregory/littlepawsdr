@@ -1,9 +1,7 @@
 export const categories = () => [
-  'Clothing',
-  'Pet Supplies',
-  'Outdoors',
-  'Automotive',
-  'Accessories',
-  'Books',
+  'Art Notecards',
+  'Calendars',
+  'Ecards',
+  'Tumblers',
   'Other',
 ];

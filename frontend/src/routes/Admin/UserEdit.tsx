@@ -73,8 +73,10 @@ const UserEdit = () => {
       {(error || errorUpdate) && (
         <Message variant='danger'>{error || errorUpdate}</Message>
       )}
-      <TableAndPaginationContainer>
-        <div>
+      <TableAndPaginationContainer
+        style={{ justifyContent: 'flex-start', padding: '20px' }}
+      >
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr' }}>
           <Text className='d-flex'>
             Name:{' '}
             <Text fontWeight={400} marginLeft='8px'>
@@ -90,14 +92,16 @@ const UserEdit = () => {
             </Text>
           </Text>
         </div>
-        <Form onSubmit={submitHandler}>
+        <Form onSubmit={submitHandler} className='mt-4'>
           <Form.Group className='d-flex align-items-center' controlId='isAdmin'>
             <Form.Check
               type='switch'
               checked={isAdmin || false}
               onChange={(e: any) => setIsAdmin(e.target.checked)}
             ></Form.Check>
-            <Form.Label className='mb-0'>Is Admin</Form.Label>
+            <Form.Label className='mb-0'>
+              <Text>Is Admin</Text>
+            </Form.Label>
           </Form.Group>
           <UpdateBtn type='submit'>
             <Text className='text-white'>

@@ -1,50 +1,25 @@
-import { useEffect } from 'react';
-import { Table, Pagination } from 'react-bootstrap';
+import { Table, Image } from 'react-bootstrap';
 import { Text } from '../../../components/styles/Styles';
-import {
-  TableHead,
-  TableRow,
-  PaginationContainer,
-} from '../../../components/styles/admin/Styles';
-import { rangeV2 } from '../../../components/common/Pagination';
+import { TableHead, TableRow } from '../../../components/styles/admin/Styles';
 import { Link } from 'react-router-dom';
 import addDecimals from '../../../utils/addDecimals';
 
-const ProductOrderList = ({
-  productOrders,
-  text,
-  paginatedPage,
-  setPaginatedPage,
-  paginatedItems,
-  setPaginatedItems,
-}: any) => {
+const ProductOrderList = ({ productOrders, text }: any) => {
   productOrders?.sort(
     (a: any, b: any) => -a?.createdAt?.localeCompare(b?.createdAt)
   );
 
-  useEffect(() => {
-    const itemsPerPage = 10;
-    const indexOfLastItem = paginatedPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-
-    setPaginatedItems(productOrders?.slice(indexOfFirstItem, indexOfLastItem));
-  }, [productOrders, paginatedPage, setPaginatedItems]);
-
-  const filteredProductOrders =
-    text !== ''
-      ? productOrders?.filter((order: any) =>
-          order?._id?.toLowerCase().includes(text.toLowerCase())
-        )
-      : paginatedItems?.filter((order: any) =>
-          order?._id?.toLowerCase().includes(text.toLowerCase())
-        );
+  const filteredProductOrders = productOrders?.filter((order: any) =>
+    order?._id?.toLowerCase().includes(text.toLowerCase())
+  );
 
   return (
     <>
-      <Table hover responsive>
+      <Table hover responsive size='sm'>
         <TableHead>
           <tr>
             <th>PRODUCT NAME</th>
+            <th>PRODUCT IMAGE</th>
             <th>DATE CREATED</th>
             <th>QUANTITY</th>
             <th>PRICE</th>
@@ -55,10 +30,19 @@ const ProductOrderList = ({
           </tr>
         </TableHead>
         <tbody>
-          {filteredProductOrders?.map((order: any) => (
+          {filteredProductOrders?.map((order: any, i: number) => (
             <TableRow key={order?._id}>
               <td>
                 <Text>{order?.productName}</Text>
+              </td>
+              <td>
+                <Image
+                  src={order?.productImage}
+                  alt='ecard-order'
+                  width='30px'
+                  height='30px'
+                  style={{ borderRadius: '50%', objectFit: 'cover' }}
+                />
               </td>
               <td>
                 <Text>
@@ -101,11 +85,6 @@ const ProductOrderList = ({
           ))}
         </tbody>
       </Table>
-      <PaginationContainer>
-        <Pagination className='my-3'>
-          {rangeV2(productOrders, paginatedPage, setPaginatedPage, 20)}
-        </Pagination>
-      </PaginationContainer>
     </>
   );
 };

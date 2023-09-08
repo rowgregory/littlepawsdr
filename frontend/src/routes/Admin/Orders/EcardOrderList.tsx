@@ -1,43 +1,23 @@
-import { useEffect } from 'react';
-import { Table, Image, Pagination } from 'react-bootstrap';
+import { Table, Image } from 'react-bootstrap';
 import { Text } from '../../../components/styles/Styles';
-import {
-  TableHead,
-  TableRow,
-  PaginationContainer,
-} from '../../../components/styles/admin/Styles';
-import { rangeV2 } from '../../../components/common/Pagination';
+import { TableHead, TableRow } from '../../../components/styles/admin/Styles';
 import { Link } from 'react-router-dom';
 
-const EcardOrderList = ({
-  ecardOrders,
-  text,
-  paginatedPage,
-  setPaginatedPage,
-  paginatedItems: pItems,
-  setPaginatedItems,
-}: any) => {
-  useEffect(() => {
-    const itemsPerPage = 20;
-    const indexOfLastItem = paginatedPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-
-    setPaginatedItems(
-      ecardOrders?.reverse()?.slice(indexOfFirstItem, indexOfLastItem)
-    );
-  }, [ecardOrders, paginatedPage, setPaginatedItems]);
-
-  const filteredEcardOrders = (text !== '' ? ecardOrders : pItems)?.filter(
-    (ecard: any) => ecard?.email?.toLowerCase().includes(text.toLowerCase())
+const EcardOrderList = ({ ecardOrders, text }: any) => {
+  ecardOrders?.sort(
+    (a: any, b: any) => -a?.createdAt?.localeCompare(b?.createdAt)
+  );
+  const filteredEcardOrders = ecardOrders?.filter((ecard: any) =>
+    ecard?.email?.toLowerCase().includes(text.toLowerCase())
   );
 
   return (
     <>
-      <Table hover responsive>
+      <Table hover responsive size='sm'>
         <TableHead>
           <tr>
-            <th>ID</th>
-            <th>IMAGE</th>
+            <th>ECARD NAME</th>
+            <th>ECARD IMAGE</th>
             <th>DATE TO SEND</th>
             <th>SENT</th>
             <th>EMAIL</th>
@@ -48,15 +28,13 @@ const EcardOrderList = ({
         <tbody>
           {filteredEcardOrders?.map((order: any) => (
             <TableRow key={order?._id}>
-              <td>
-                <Text>{order?._id}</Text>
-              </td>
+              <td>{order?.name || order?.productName}</td>
               <td>
                 <Image
                   src={order?.image}
                   alt='ecard-order'
-                  width='40px'
-                  height='40px'
+                  width='30px'
+                  height='30px'
                   style={{ borderRadius: '50%', objectFit: 'cover' }}
                 />
               </td>
@@ -87,11 +65,6 @@ const EcardOrderList = ({
           ))}
         </tbody>
       </Table>
-      <PaginationContainer>
-        <Pagination className='my-3'>
-          {rangeV2(ecardOrders, paginatedPage, setPaginatedPage, 20)}
-        </Pagination>
-      </PaginationContainer>
     </>
   );
 };

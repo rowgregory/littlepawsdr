@@ -195,14 +195,11 @@ export const TableAndPaginationContainer = styled.div`
   justify-content: space-between;
   flex-direction: column;
   border-radius: 1rem;
-  height: calc(100vh - 192px);
+  height: calc(100vh - 429px);
   padding-inline: 16px;
   background: #fff;
   min-height: 600px;
   margin-left: 0;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    height: calc(100vh - 236px);
-  }
 `;
 
 export const EditFormAndPreviewContainer = styled.div`
@@ -231,8 +228,6 @@ export const FormFile = styled(Form.File)`
   font-weight: 300;
   transition: 300ms;
   margin-right: 8px;
-  height: 100px;
-  width: 100px;
   label {
     cursor: pointer;
     display: flex;

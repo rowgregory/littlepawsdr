@@ -68,8 +68,6 @@ const OrdersLayout = () => {
   const state = useSelector((state: any) => state);
   const [productType, setProductType] = useState('Orders');
   const [text, setText] = useState('');
-  const [paginatedPage, setPaginatedPage] = useState(1);
-  const [paginatedItems, setPaginatedItems] = useState([]) as any;
   const [revealOrderChoices, setRevealOrderChoices] = useState(false);
   const choicesRef = useRef(null) as any;
 
@@ -142,31 +140,13 @@ const OrdersLayout = () => {
           {productType === 'Orders' ? (
             <Orders orders={orders} text={text} />
           ) : productType === 'Products' ? (
-            <ProductOrderList
-              productOrders={productOrders}
-              text={text}
-              paginatedPage={paginatedPage}
-              setPaginatedPage={setPaginatedPage}
-              paginatedItems={paginatedItems}
-              setPaginatedItems={setPaginatedItems}
-            />
+            <ProductOrderList productOrders={productOrders} text={text} />
           ) : productType === 'Ecards' ? (
-            <EcardOrderList
-              ecardOrders={ecardOrders}
-              text={text}
-              paginatedPage={paginatedPage}
-              setPaginatedPage={setPaginatedPage}
-              paginatedItems={paginatedItems}
-              setPaginatedItems={setPaginatedItems}
-            />
+            <EcardOrderList ecardOrders={ecardOrders} text={text} />
           ) : (
             <WelcomeWienerOrderList
               welcomeWienerOrders={welcomeWienerOrders}
               text={text}
-              paginatedPage={paginatedPage}
-              setPaginatedPage={setPaginatedPage}
-              paginatedItems={paginatedItems}
-              setPaginatedItems={setPaginatedItems}
             />
           )}
         </TableAndPaginationContainer>

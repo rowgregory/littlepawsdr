@@ -148,6 +148,10 @@ const createOrder = asyncHandler(async (req, res) => {
         } else {
           product.countInStock = product.countInStock - item.quantity;
 
+          if(product.countInStock === null || product.countInStock === undefined) {
+            product.countInStock = 0
+          }
+
           await product.save();
         }
       }

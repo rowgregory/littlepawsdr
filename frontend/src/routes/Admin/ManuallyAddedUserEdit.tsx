@@ -30,7 +30,6 @@ import { themes } from '../../utils/profileCardThemes';
 import { STATES } from '../../utils/states';
 import { manuallyAddUser } from '../../actions/manuallyAddUserActions';
 import API from '../../utils/api';
-import { staticUploadImage } from '../../utils/misc';
 
 const useManuallyAddedUserEditForm = (callback?: any, data?: any) => {
   const values = {

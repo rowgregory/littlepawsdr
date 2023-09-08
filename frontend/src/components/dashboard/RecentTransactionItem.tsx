@@ -50,7 +50,7 @@ const RecentTransactionItem = ({ viewTransaction, item, loading }: any) => {
               </Text>
               <Text
                 fontWeight={300}
-                color='#c1c1c1'
+                color='#6a6a6a'
                 className='d-flex justify-content-end'
                 fontSize='10px'
               >

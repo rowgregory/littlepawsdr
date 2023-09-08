@@ -113,8 +113,10 @@ const PopUp = () => {
 
   useEffect(() => {
     if (success) {
-      dispatch({ type: NEWSLETTER_EMAIL_CREATE_RESET });
-      setTimeout(() => handleClose(), 3000);
+      setTimeout(() => {
+        handleClose();
+        dispatch({ type: NEWSLETTER_EMAIL_CREATE_RESET });
+      }, 2500);
     }
   }, [dispatch, success]);
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { LinkContainer } from 'react-router-bootstrap';
-import { Table, Spinner, Pagination } from 'react-bootstrap';
+import { Table, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { listUsers } from '../../actions/userActions';
 import DeleteModal from '../../components/DeleteModal';
@@ -12,7 +12,6 @@ import {
   TableRow,
   StyledEditBtn,
   TopRow,
-  PaginationContainer,
   TableAndPaginationContainer,
   Container,
   SearchInput,
@@ -22,15 +21,13 @@ import {
 import Message from '../../components/Message';
 import { WelcomeText } from '../../components/styles/DashboardStyles';
 import BreadCrumb from '../../components/common/BreadCrumb';
-import { rangeV2 } from '../../components/common/Pagination';
+import { formatDateTime } from '../../utils/formatDateTime';
 
 const UserList = () => {
   const dispatch = useDispatch();
   const [show, setShow] = useState(false);
   const [id, setId] = useState('');
   const [text, setText] = useState('');
-  const [paginatedPage, setPaginatedPage] = useState(1);
-  const [paginatedItems, setPaginatedItems] = useState<{}[]>([]) as any;
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -51,22 +48,9 @@ const UserList = () => {
     dispatch(listUsers());
   }, [dispatch, userDeleteSuccess]);
 
-  useEffect(() => {
-    const itemsPerPage = 50;
-    const indexOfLastItem = paginatedPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-
-    setPaginatedItems(users?.slice(indexOfFirstItem, indexOfLastItem));
-  }, [users, paginatedPage]);
-
-  const filteredUsers =
-    text !== ''
-      ? users?.filter((user: any) =>
-          user.email.toLowerCase().includes(text.toLowerCase())
-        )
-      : paginatedItems?.filter((user: any) =>
-          user.email.toLowerCase().includes(text.toLowerCase())
-        );
+  const filteredUsers = users?.filter((user: any) =>
+    user.email.toLowerCase().includes(text.toLowerCase())
+  );
 
   return (
     <Container>
@@ -114,6 +98,7 @@ const UserList = () => {
                 <th>ONLINE</th>
                 <th>NAME</th>
                 <th>EMAIL</th>
+                <th>DATE CREATED</th>
                 <th>ADMIN</th>
                 <th>EDIT</th>
                 <th>DELETE</th>
@@ -121,6 +106,8 @@ const UserList = () => {
             </TableHead>
             <tbody>
               {filteredUsers
+                ?.slice()
+                ?.reverse()
                 ?.map(
                   (user: any) =>
                     user.email !== 'it.little.paws@gmail.com' && (
@@ -135,6 +122,9 @@ const UserList = () => {
                           <Text>
                             <a href={`mailto: ${user?.email}`}>{user.email}</a>
                           </Text>
+                        </td>
+                        <td>
+                          <Text>{formatDateTime(user?.createdAt)}</Text>
                         </td>
                         <td>
                           {user?.isAdmin ? (
@@ -183,15 +173,9 @@ const UserList = () => {
                         </td>
                       </TableRow>
                     )
-                )
-                .reverse()}
+                )}
             </tbody>
           </Table>
-          <PaginationContainer>
-            <Pagination className='my-3'>
-              {rangeV2(users, paginatedPage, setPaginatedPage, 100)}
-            </Pagination>
-          </PaginationContainer>
         </TableAndPaginationContainer>
       </TableWrapper>
     </Container>

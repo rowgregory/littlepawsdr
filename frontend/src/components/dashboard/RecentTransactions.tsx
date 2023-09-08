@@ -94,12 +94,14 @@ const RecentTransactions = ({
           )}
         </Text>
       </Wallet>
-      <div className='d-flex align-items-baseline justify-content-between mb-4'>
-        <Text fontWeight={500} fontSize='17px' color='#373737'>
-          Recent Transactions
+      <div className='d-flex align-items-baseline justify-content-between mb-4 mt-5'>
+        <Text fontWeight={500} fontSize='14px' color='#373737'>
+          10 MOST RECENT TRANSACTIONS
         </Text>
       </div>
       {dashboardDetails?.orders
+        ?.slice()
+        ?.reverse()
         ?.map((item: any, i: number) => (
           <RecentTransactionItem
             viewTransaction={viewTransaction}
@@ -108,8 +110,7 @@ const RecentTransactions = ({
             loading={loading}
           />
         ))
-        .filter((_: any, i: number) => i < 10)
-        .reverse()}
+        .filter((_: any, i: number) => i < 10)}
     </>
   );
 };

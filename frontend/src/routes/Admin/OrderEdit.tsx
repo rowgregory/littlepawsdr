@@ -165,9 +165,15 @@ const OrderEdit = () => {
                     <Text fontWeight={400}>Is Shipped</Text>
                     <Text>
                       {order?.isShipped ? (
-                        <i className='fas fa-check'></i>
+                        <i
+                          className='fas fa-check'
+                          style={{ color: 'green' }}
+                        ></i>
                       ) : (
-                        <i className='fas fa-times'></i>
+                        <i
+                          className='fas fa-times'
+                          style={{ color: 'red' }}
+                        ></i>
                       )}
                     </Text>
                   </Flex>
@@ -182,7 +188,7 @@ const OrderEdit = () => {
                     <Text>
                       {order?.shippedOn
                         ? formatDateTime(order?.shippedOn)
-                        : '---'}
+                        : 'ORDER NEEDS TO BE SHIPPED'}
                     </Text>
                   </Flex>
                 </>

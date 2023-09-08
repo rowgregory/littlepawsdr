@@ -20,6 +20,7 @@ import ShopLow from '../../components/assets/shop-low.jpg';
 import LeftArrow from '../../components/svg/LeftArrow';
 import RightArrow from '../../components/svg/RightArrow';
 import Hero from '../../components/Hero';
+import { eCardCategories } from '../../utils/eCardCategories';
 
 const Merch = () => {
   const dispatch = useDispatch();
@@ -27,19 +28,28 @@ const Merch = () => {
 
   const state = useSelector((state: any) => state);
 
-  let loading = state.productEcardList.loading;
+  const loading = state.productEcardList.loading;
   const error = state.productEcardList.error;
   const productsAndEcards = state.productEcardList.products;
-
-  // loading = true;
 
   useEffect(() => {
     dispatch(listProductsAndEcards());
   }, [dispatch]);
 
-  const filterProductsAndEcards = productsAndEcards?.filter((product: any) =>
-    product?.category.includes(currentCategory)
+  productsAndEcards?.sort(
+    (a: any, b: any) => -a?.createdAt?.localeCompare(b?.createdAt)
   );
+
+  const filterProductsAndEcards = productsAndEcards?.filter(
+    (product: any) =>
+      product?.category.includes(currentCategory) ||
+      (currentCategory === 'Ecards' && product.isEcard)
+  );
+
+  const ecardCountArray = productsAndEcards?.reduce((acc: any, item: any) => {
+    acc[item.category] = (acc[item.category] || 0) + 1;
+    return acc;
+  }, []);
 
   return (
     <>
@@ -106,13 +116,31 @@ const Merch = () => {
                       Category
                     </Text>
                     {categories().map((category: string, i: number) => (
-                      <Category
-                        active={category === currentCategory}
-                        key={i}
-                        onClick={() => setCurrentCategory(category)}
-                      >
-                        {category}
-                      </Category>
+                      <div key={i}>
+                        <Category
+                          active={category === currentCategory}
+                          onClick={() => setCurrentCategory(category)}
+                        >
+                          {category}
+                        </Category>
+                        {category === 'Ecards' &&
+                          eCardCategories?.map(
+                            (ecardCategory: any, i: number) => (
+                              <Category
+                                active={ecardCategory === currentCategory}
+                                key={i}
+                                onClick={() =>
+                                  setCurrentCategory(ecardCategory)
+                                }
+                                className='ml-3'
+                              >
+                                {ecardCategory}&nbsp;
+                                {ecardCountArray[ecardCategory] >= 1 &&
+                                  `(${ecardCountArray[ecardCategory]})`}
+                              </Category>
+                            )
+                          )}
+                      </div>
                     ))}
                   </CategoryContainer>
                   <ClearFilter onClick={() => setCurrentCategory('')}>
@@ -134,15 +162,13 @@ const Merch = () => {
                     {filterProductsAndEcards?.length === 0 ? (
                       <Text marginTop='16px'>No products available</Text>
                     ) : (
-                      filterProductsAndEcards
-                        ?.map((product: any) => (
-                          <Product
-                            key={product._id}
-                            product={product}
-                            loading={loading}
-                          />
-                        ))
-                        .reverse()
+                      filterProductsAndEcards?.map((product: any) => (
+                        <Product
+                          key={product._id}
+                          product={product}
+                          loading={loading}
+                        />
+                      ))
                     )}
                   </div>
                 </div>

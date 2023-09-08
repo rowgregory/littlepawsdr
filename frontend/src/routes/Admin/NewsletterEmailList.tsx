@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Table, Pagination, Spinner } from 'react-bootstrap';
+import { Table, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { listNewsletterEmail } from '../../actions/newsletterActions';
 import DeleteModal from '../../components/DeleteModal';
@@ -9,7 +9,6 @@ import {
   TableHead,
   TableRow,
   TopRow,
-  PaginationContainer,
   TableAndPaginationContainer,
   Container,
   SearchInput,
@@ -20,9 +19,9 @@ import {
 } from '../../components/styles/admin/Styles';
 import Message from '../../components/Message';
 import { WelcomeText } from '../../components/styles/DashboardStyles';
-import { rangeV2 } from '../../components/common/Pagination';
 import BreadCrumb from '../../components/common/BreadCrumb';
 import CopyIcon from '../../components/svg/CopyIcon';
+import { formatDateTime } from '../../utils/formatDateTime';
 
 const NewsletterEmailList = () => {
   const dispatch = useDispatch();
@@ -31,7 +30,7 @@ const NewsletterEmailList = () => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const [text, setText] = useState('');
-  const [paginatedPage, setPaginatedPage] = useState(1);
+  const [paginatedPage] = useState(1);
   const [paginatedItems, setPaginatedItems] = useState<{}[]>([]) as any;
   let [loadingCopy, setLoadingCopy] = useState({
     loading: false,
@@ -57,7 +56,7 @@ const NewsletterEmailList = () => {
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
     setPaginatedItems(
-      newsletterEmails?.slice(indexOfFirstItem, indexOfLastItem)
+      newsletterEmails?.reverse()?.slice(indexOfFirstItem, indexOfLastItem)
     );
   }, [newsletterEmails, paginatedPage]);
 
@@ -137,6 +136,7 @@ const NewsletterEmailList = () => {
             <TableHead>
               <tr>
                 <th>EMAIL</th>
+                <th>DATE CREATED</th>
                 <th>DELETE</th>
               </tr>
             </TableHead>
@@ -145,6 +145,13 @@ const NewsletterEmailList = () => {
                 <TableRow key={email._id}>
                   <td>
                     <Text>{email.newsletterEmail}</Text>
+                  </td>
+                  <td style={{ minWidth: '175px' }}>
+                    <Text>
+                      {email?.createdAt === undefined
+                        ? '---'
+                        : formatDateTime(email?.createdAt)}
+                    </Text>
                   </td>
                   <td>
                     <StyledEditBtn
@@ -168,11 +175,6 @@ const NewsletterEmailList = () => {
               ))}
             </tbody>
           </Table>
-          <PaginationContainer>
-            <Pagination className='my-3'>
-              {rangeV2(newsletterEmails, paginatedPage, setPaginatedPage, 50)}
-            </Pagination>
-          </PaginationContainer>
         </TableAndPaginationContainer>
       </TableWrapper>
     </Container>

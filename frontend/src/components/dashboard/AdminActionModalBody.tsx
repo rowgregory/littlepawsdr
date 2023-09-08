@@ -64,7 +64,10 @@ const AdminActionModalBody = () => {
           setWhichSectionToReveal('--', setReveal);
         }}
       >
-        <LinkContainer className='d-flex align-items-center px-3 py-3 mb-2'>
+        <LinkContainer
+          active={(pathname === '/admin/orders').toString()}
+          className='d-flex align-items-center px-3 py-3 mb-2'
+        >
           <div>
             <OrdersIcon />
           </div>
