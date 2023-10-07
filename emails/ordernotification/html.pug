@@ -3,7 +3,7 @@ html(xmlns='http://www.w3.org/1999/xhtml')
   head
     meta(name='viewport' content='width=device-width')
     meta(http-equiv='Content-Type' content='text/html; charset=UTF-8')
-    title order-confirmation
+    title order-notification
     style(type='text/css').
       * {
         font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -107,9 +107,10 @@ html(xmlns='http://www.w3.org/1999/xhtml')
       }
 
       .thank-you {
-        color: #6c6f79;
+        color: #9b6baa;
         font-size: 18px;
         font-weight: 400;
+        text-decoration: none;
       }
 
       .lpdr {
@@ -214,32 +215,25 @@ html(xmlns='http://www.w3.org/1999/xhtml')
     .container(width='800')
       .content 
         .header-section
-          img.logo(src='https://i.ibb.co/GMWQxTM/logo.png' alt='little paws dachshund rescue')
-          h3 Order Confirmation                          
+          img.logo(src='https://i.ibb.co/GMWQxTM/logo.png' alt='little paws dachshund rescue')                       
           div Order Id: <strong>#{id}</strong>
-        div.secondary-font Your donation is much appreciated by us at Little Paws and we thank
-          you for your kind support.
         .horizontal-line
         table(width='100%' cellpadding='0' cellspacing='0')
           tbody
             tr
               td
                 div.table-header Order Date                          
-                strong #{orderForEmail.orderDate}
+                strong #{orderDate}
               td
-                div.table-header Payment                        
-                strong PayPal
-              td
-                if shippingAddressForEmail
-                  div.table-header Shipping Address                       
-                  strong #{shippingAddressForEmail.address} #{shippingAddressForEmail.city} #{shippingAddressForEmail.state}
+                div.table-header Name                         
+                strong #{name}
         .horizontal-line
         each val in orderItems
           .order-item 
             .picture-name-qty
-              img.img(src=val.dachshundImage || val.productImage, alt=val._id style='width:60px; height:60px')
+              img.img(src=val.productImage, alt=val._id style='width:60px; height:60px')
               .qty-size
-                strong.product-name #{val.productName || val.dachshundName}
+                strong.product-name #{val.productName}
                 div Quantity: #{val.quantity}
                 if val.size
                   div Size: #{val.size}
@@ -249,19 +243,17 @@ html(xmlns='http://www.w3.org/1999/xhtml')
           .total-block 
             .flex 
               .float-left Subtotal 
-              .float-right  $#{orderForEmail.subtotal}
+              .float-right  $#{subtotal}
             .flex 
               .float-left Shipping Fee 
-              .float-right  $#{orderForEmail.shippingPrice}
+              .float-right  $#{shippingPrice}
             .horizontal-line 
             .total 
               strong.float-left Total 
-              strong.total-price  $#{orderForEmail.totalPrice}
+              strong.total-price  $#{totalPrice}
             .horizontal-line
         .clear 
-          div.thank-you Thank you for shopping with us!
-          div.lpdr Little Paws Dachsund Rescue
+          -var orderDetails = `<a href='http://localhost:3000/admin/order/${id}')>View Order Details</a>`;
+          div.thank-you <span>!{orderDetails}</span>
       .footer
-        -var contactLink = `<a href='https://littlepawsdr.herokuapp.com/about/contact-us')>Contact</a>`;
-        .help Need Help? Visit our <span>!{contactLink}</span> page.
         .rescue Little Paws Dachshund Rescue #{new Date().getFullYear()}

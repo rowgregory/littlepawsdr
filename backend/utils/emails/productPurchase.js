@@ -1,7 +1,6 @@
 import { formatDate } from '../../utils/formatDate.js';
 
 const productPurchase = (pugEmail, body, hasEmailBeenSent) => {
-  console.log('BODY: ', body);
   pugEmail
     .send({
       template: 'orderconfirmation',

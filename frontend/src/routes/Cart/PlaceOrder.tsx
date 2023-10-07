@@ -92,7 +92,6 @@ const PlaceOrder = ({ history }: any) => {
       });
       setOrderLoader(false);
     } else if (error) {
-      console.log('ERROR: ', error);
       setOrderLoader(false);
     }
 

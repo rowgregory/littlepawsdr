@@ -136,7 +136,7 @@ const OrdersLayout = () => {
       </TopRow>
 
       <TableWrapper>
-        <TableAndPaginationContainer>
+        <TableAndPaginationContainer style={{ justifyContent: 'flex-start' }}>
           {productType === 'Orders' ? (
             <Orders orders={orders} text={text} />
           ) : productType === 'Products' ? (

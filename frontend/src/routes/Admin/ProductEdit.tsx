@@ -145,7 +145,7 @@ const ProductEdit = () => {
         category: inputs.category,
         description: inputs.description,
         countInStock: inputs.countInStock,
-        image: inputs.images[0],
+        image: updatedImages[0],
         images: updatedImages,
         sizes: sortedSizes,
       })

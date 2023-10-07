@@ -11,6 +11,7 @@ import productPurchase from './emails/productPurchase.js';
 import sendEcard from './emails/sendEcard.js';
 import welcomeWienerPurchase from './emails/welcomeWienerPurchase.js';
 import orderShippedConfirmation from './emails/orderShippedConfirmation.js';
+import orderNotification from './emails/orderNotification.js';
 
 const OAuth2 = google.google.auth.OAuth2;
 
@@ -94,5 +95,7 @@ export const sendEmail = async (body, res, type, token, hasEmailBeenSent) => {
       return welcomeWienerPurchase(pugEmail, body, hasEmailBeenSent);
     case 'sendOrderShippedConfirmationEmail':
       return orderShippedConfirmation(pugEmail, body, hasEmailBeenSent);
+    case 'sendOrderNotificationEmail':
+      return orderNotification(pugEmail, body, hasEmailBeenSent);
   }
 };

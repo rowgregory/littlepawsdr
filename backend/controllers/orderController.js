@@ -11,123 +11,157 @@ import ProductOrder from '../models/productOrderModel.js';
 // @route   POST /api/order
 // @access  Public
 const createOrder = asyncHandler(async (req, res) => {
-  const {
-    name,
-    orderItems,
-    subtotal,
-    totalPrice,
-    paypalOrderId,
-    email,
-    shippingAddress,
-    shippingPrice,
-    isPhysicalProduct,
-    totalItems,
-  } = req.body;
+  const orderData = req.body;
 
   try {
-    const order = new Order({
-      name,
-      orderItems,
-      totalPrice,
-      subtotal,
-      paypalOrderId,
-      email,
-      shippingAddress,
-      shippingPrice,
-      confirmationEmailHasBeenSent: false,
+    const createdOrder = await createOrderDocument(orderData);
+
+    await createEcardOrders(createdOrder)
+    await createWelcomeWienerOrders(createdOrder)
+    await createProductOrders(createdOrder, res);
+
+    await updateProductStock(createdOrder);
+
+    let hasEmailBeenSent = false;
+    const orderConfirmationEmailHasBeenSent = await sendEmail(
+      createdOrder,
+      res,
+      'sendOrderConfirmationEmail',
+      '',
+      hasEmailBeenSent
+    );
+
+    createdOrder.confirmationEmailHasBeenSent = orderConfirmationEmailHasBeenSent;
+    await createdOrder.save();
+
+    res.status(201).json(createdOrder);
+  } catch (err) {
+    const createdError = new Error({
+      functionName: 'CREATE_NEW_ORDER_PUBLIC',
+      detail: `${err.message}, order id: ${orderData?.paypalOrderId}`,
+      user: {
+        email: orderData?.email,
+      },
+      status: 500,
+    });
+    await createdError.save();
+
+    res.status(500).send({
+      error: err.message,
+      message: `PayPal Order Id: ${orderData?.paypalOrderId}`,
+      data: orderData,
+      email: orderData?.email,
       isShipped: false,
-      requiresShipping: isPhysicalProduct,
-      totalItems,
     });
+  }
+});
 
-    const createdOrder = await order.save();
+async function createOrderDocument(orderData) {
+  const order = new Order({
+    ...orderData,
+    confirmationEmailHasBeenSent: false,
+    isShipped: false,
+    requiresShipping: orderData.isPhysicalProduct,
+  });
 
-    const ecards = createdOrder.orderItems.filter(item => {
-      return item.dateToSend;
-    });
+  return await order.save();
+}
 
-    if (ecards) {
-      await ecards?.map(async item => {
-        const createdEcardOrder = new ECardOrder({
-          productId: item.productId,
-          recipientsFullName: item.recipientsFullName,
-          recipientsEmail: item.recipientsEmail,
-          dateToSend: item.dateToSend,
-          email,
-          message: item.message,
-          totalPrice: item.price,
-          subtotal: item.price,
-          image: item.productImage,
-          productName: item.productName,
-          quantity: 1,
-          isPhysicalProduct: false,
-          orderId: createdOrder._id,
-        });
+async function createEcardOrders(createdOrder) {
+  const ecards = createdOrder.orderItems.filter(item => item.dateToSend);
 
-        return await createdEcardOrder.save();
+  if (ecards?.length > 0) {
+    for (const item of ecards) {
+      console.log(item)
+      const createdEcardOrder = new ECardOrder({
+        ...item,
+        productName: item.productName,
+        message: item.message,
+        dateToSend: item.dateToSend,
+        recipientsEmail: item.recipientsEmail,
+        recipientsFullName: item.recipientsFullName,
+        productId: item.productId,
+        email: createdOrder.email,
+        isPhysicalProduct: false,
+        totalPrice: item.price,
+        subtotal: item.price,
+        image: item.productImage,
+        quantity: 1,
+        orderId: createdOrder._id,
       });
+  
+      await createdEcardOrder.save();
     }
+  }
+}
 
-    const welcomeWieners = createdOrder.orderItems.filter(item => {
-      return item.dachshundId;
-    });
+async function createWelcomeWienerOrders(createdOrder) {
+  const welcomeWieners = createdOrder.orderItems.filter(item => item.dachshundId);
 
-    if (welcomeWieners) {
-      await welcomeWieners?.map(async item => {
-        const createdWelcomeWienerOrder = new WelcomeWienerOrder({
-          dachshundId: item.dachshundId,
-          dachshundImage: item.dachshundImage,
-          dachshundName: item.dachshundName,
-          price: item.price,
-          productId: item.productId,
-          productIcon: item.productIcon,
-          productName: item.productName,
-          quantity: item.quantity,
-          email,
-          isPhysicalProduct: false,
-          subtotal: item.quantity * item.price,
-          totalPrice: item.quantity * item.price,
-          orderId: createdOrder._id,
-        });
-
-        return await createdWelcomeWienerOrder.save();
+  if (welcomeWieners?.length > 0) {
+    for (const item of welcomeWieners) {
+      const createdWelcomeWienerOrder = new WelcomeWienerOrder({
+        ...item,
+        dachshundId: item.dachshundId,
+        dachshundImage: item.dachshundImage,
+        dachshundName: item.dachshundName,
+        price: item.price,
+        productId: item.productId,
+        productIcon: item.productIcon,
+        productName: item.productName,
+        quantity: item.quantity,
+        email: createdOrder.email,
+        isPhysicalProduct: false,
+        subtotal: item.quantity * item.price,
+        totalPrice: item.quantity * item.price,
+        orderId: createdOrder._id,
       });
-    }
 
-    const products = createdOrder.orderItems.filter(item => {
-      return item.isPhysicalProduct;
-    });
+      return await createdWelcomeWienerOrder.save();
+    };
+  }
+}
 
-    if (products) {
-      await products?.map(async item => {
-        const createdProductOrder = new ProductOrder({
-          price: item.price,
-          productId: item.productId,
-          productImage: item.productImage,
-          productName: item.productName,
-          quantity: item.quantity,
-          size: item.size,
-          shippingPrice: item.shippingPrice,
-          email,
-          isPhysicalProduct: true,
-          subtotal: item.quantity * item.price,
-          totalPrice:
-            item.quantity * item.price +
-            Number(item.shippingPrice) * item.quantity,
-          orderId: createdOrder._id,
-        });
+async function createProductOrders(createdOrder, res) {
+  const products = createdOrder?.orderItems.filter(item => item.isPhysicalProduct);
 
-        return await createdProductOrder.save();
+  if (products?.length > 0) {
+    const hasOrderNotificationEmailBeenSent = false;
+    const orderNotificationEmailHasSent = await sendEmail(
+      createdOrder,
+      res,
+      'sendOrderNotificationEmail',
+      '',
+      hasOrderNotificationEmailBeenSent
+    )
+
+    createdOrder.orderNotificationEmailHasBeenSent = orderNotificationEmailHasSent;
+    await createdOrder.save();
+
+    for (const item of products) {
+      const createdProductOrder = new ProductOrder({
+        ...item,
+        price: item.price,
+        email: createdOrder.email,
+        isPhysicalProduct: true,
+        subtotal: item.quantity * item.price,
+        totalPrice:
+          item.quantity * item.price +
+          Number(item.shippingPrice) * item.quantity,
+        orderId: createdOrder._id,
       });
-    }
 
-    if (shippingPrice > 0) {
-      for (const item of products) {
-        const product = await Product.findById(item.productId);
-        const objIndex = product?.sizes?.findIndex(
-          obj => obj?.size === item?.size
-        );
+      await createdProductOrder.save();
+    };
+  }
+}
 
+async function updateProductStock(createdOrder) {
+  for (const item of createdOrder?.orderItems) {
+    if (item.shippingPrice > 0 && item.isPhysicalProduct) {
+      const product = await Product.findById(item.productId);
+      if(product && product?.sizes) {
+        const objIndex = product?.sizes?.findIndex(obj => obj?.size === item?.size);
         if (product?.sizes?.length > 0) {
           const bulk = Product.collection.initializeOrderedBulkOp();
           bulk.find({ 'sizes.size': item.size, _id: product?._id }).updateOne({
@@ -146,51 +180,14 @@ const createOrder = asyncHandler(async (req, res) => {
 
           bulk.execute();
         } else {
-          product.countInStock = product.countInStock - item.quantity;
-
-          if(product.countInStock === null || product.countInStock === undefined) {
-            product.countInStock = 0
-          }
+          product.countInStock = (product.countInStock === null || product.countInStock === undefined) ? 0 : product.countInStock - item.quantity;
 
           await product.save();
         }
       }
     }
-
-    let hasEmailBeenSent = false;
-
-    const emailHasSent = await sendEmail(
-      createdOrder,
-      res,
-      'sendOrderConfirmationEmail',
-      '',
-      hasEmailBeenSent
-    );
-
-    createdOrder.confirmationEmailHasBeenSent = emailHasSent;
-    await createdOrder.save();
-
-    res.status(201).json(createdOrder);
-  } catch (err) {
-    const createdError = new Error({
-      functionName: 'CREATE_NEW_ORDER_PUBLIC',
-      detail: `${err.message}, order id: ${paypalOrderId}`,
-      user: {
-        email,
-      },
-      status: 500,
-    });
-    await createdError.save();
-
-    res.status(500).send({
-      error: err.message,
-      message: `Please call (***)***-**** to resolve issue, orderID: ${paypalOrderId}`,
-      data: req.body,
-      email,
-      isShipped: false,
-    });
   }
-});
+}
 
 // @desc    Get order by ID
 // @route   GET /api/order/:id
