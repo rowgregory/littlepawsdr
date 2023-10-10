@@ -52,7 +52,7 @@ const Container = styled(Link)<{ linkkey: string }>`
   padding: 16px 32px;
   border: 1px solid
     ${({ theme, linkkey }) =>
-      linkkey === '/e-cards' ? '#d89253' : theme.colors.quinary};
+      linkkey === '/merch' ? '#d89253' : theme.colors.quinary};
   box-sizing: border-box;
   :hover {
     text-decoration: none;
@@ -60,7 +60,7 @@ const Container = styled(Link)<{ linkkey: string }>`
 
   span {
     color: ${({ theme, linkkey }) =>
-      linkkey === '/e-cards' ? '#d89253' : theme.colors.quinary};
+      linkkey === '/merch' ? '#d89253' : theme.colors.quinary};
     text-align: center;
     width: auto;
     font-weight: 300;
@@ -84,7 +84,7 @@ const Container = styled(Link)<{ linkkey: string }>`
     letter-spacing: 1px;
     font-weight: bold;
     background-color: ${({ theme, linkkey }) =>
-      linkkey === '/e-cards' ? '#d89253' : theme.colors.quinary};
+      linkkey === '/merch' ? '#d89253' : theme.colors.quinary};
     -webkit-mask: url(${mixins.maskUrl});
     mask: url(${mixins.maskUrl});
     -webkit-mask-size: ${mixins.x1} ${mixins.y1};

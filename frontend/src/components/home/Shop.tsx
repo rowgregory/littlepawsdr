@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import MaskBtn from './MaskBtn';
 
@@ -37,8 +36,8 @@ const Shop = () => {
   return (
     <Container>
       <ContentContainer>
-        <CheckOutText>Check out our latest ecards</CheckOutText>
-        <MaskBtn linkKey='/e-cards' textKey='ECARDS' />
+        <CheckOutText>Check out our latest merchandise</CheckOutText>
+        <MaskBtn linkKey='/merch' textKey='MERCH' />
       </ContentContainer>
     </Container>
   );
