@@ -1,7 +1,5 @@
-import React from 'react';
 import { Flex, Text } from '../../components/styles/Styles';
 import { Image } from 'react-bootstrap';
-import amazonSmile from '../../components/assets/amazon-smile-3.jpeg';
 import Chewy from '../../components/assets/chewy.png';
 import iGive from '../../components/assets/i-give.png';
 import styled from 'styled-components';

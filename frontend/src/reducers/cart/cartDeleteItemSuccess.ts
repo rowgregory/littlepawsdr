@@ -1,6 +1,4 @@
 const cartDeleteItemSuccess = (state: any, action: any) => {
-  const item = action.payload;
-
   const itemExistsAlready: any = state.cartItems.find(
     (x: any) =>
       x.productId === action.payload.productId && x.size === action.payload.size

@@ -1,10 +1,9 @@
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
 import { NAVBAR_DATA } from '../../utils/navbarData';
 import { AvatarInitials, FAIcons } from '../styles/NavbarStyles';
 import { UserDropdown } from './UserDropdown';
-import { UserInfoProps } from '../common/PrivateRoute';
 import { useOutsideDetect } from '../../utils/useOutsideDetect';
 import styled from 'styled-components';
 import { Image } from 'react-bootstrap';
