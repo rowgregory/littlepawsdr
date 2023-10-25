@@ -7,6 +7,7 @@ import AdoptionInformation from './AdoptionInformation';
 import AdoptionFAQ from './AdoptionFAQ';
 import styled from 'styled-components';
 import TransportApplication from './TransportApplication';
+import SeniorDogs from './SeniorDogs';
 
 const Container = styled.div`
   width: 100%;
@@ -27,6 +28,7 @@ const AdoptRoutes: FC = () => {
           path={`${path}/transport-application`}
           component={TransportApplication}
         />
+        <Route path={`${path}/senior`} component={SeniorDogs} />
         <Route>
           <PageNotFound />
         </Route>

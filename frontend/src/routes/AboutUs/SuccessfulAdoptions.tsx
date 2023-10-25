@@ -1,46 +1,33 @@
-import React, { useEffect, useState } from 'react';
-import { Card, Pagination } from 'react-bootstrap';
-import { useSelector, useDispatch } from 'react-redux';
-import { getDogsByStatusPicturesAndVideours } from '../../actions/dachshundsActions';
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Text } from '../../components/styles/Styles';
-import { formatDate } from '../../utils/formatDate';
 import { LoadingImg } from '../../components/LoadingImg';
 import SuccessfulHigh from '../../components/assets/successful-high.jpeg';
 import SuccessfulLow from '../../components/assets/successful-low.jpg';
-import { PaginationContainer } from '../../components/styles/admin/Styles';
-import { rangeV2 } from '../../components/common/Pagination';
-import NoImgDog from '../../components/assets/no_image_dog.jpg';
 import LeftArrow from '../../components/svg/LeftArrow';
 import RightArrow from '../../components/svg/RightArrow';
 import Hero from '../../components/Hero';
 import {
   Container,
   DogContainer,
-  TextContainer,
+  LoadMoreBtn,
 } from '../../components/styles/GridDogStyles';
+import DachshundCard from '../../components/DachshundCard';
 
 const SuccessfulAdoptions = () => {
-  const dispatch = useDispatch();
-  const [paginatedPage, setPaginatedPage] = useState(1);
-  const [paginatedItems, setPaginatedItems] = useState<{}[]>([]) as any;
-
-  const dachshund = useSelector(
-    (state: any) => state.dachshundPicturesVideosStatuses
+  const [displayCount, setDisplayCount] = useState(50);
+  const state = useSelector((state: any) => state);
+  const loading = state.dachshundPicturesVideosStatuses.loading;
+  const allDahchshunds = state.dachshundPicturesVideosStatuses.dachshunds;
+  const successfulAdoptions = allDahchshunds?.filter(
+    (dachshund: any) => dachshund.relationships.statuses.data[0].id === '3'
   );
-  let { dachshunds, loading } = dachshund;
 
-  useEffect(() => {
-    const itemsPerPage = 30;
-    const indexOfLastItem = paginatedPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const displayedData = successfulAdoptions?.slice(0, displayCount);
 
-    setPaginatedItems(dachshunds?.slice(indexOfFirstItem, indexOfLastItem));
-  }, [dachshunds, paginatedPage]);
-
-  useEffect(() => {
-    dispatch(getDogsByStatusPicturesAndVideours('Adopted'));
-  }, [dispatch]);
+  const loadMore = () => {
+    setDisplayCount(displayCount + 50);
+  };
 
   return (
     <>
@@ -76,61 +63,23 @@ const SuccessfulAdoptions = () => {
           Share your updates and photos of your adopted Little Paws doxie with
           us on our social media pages!
         </Text>
-        {loading && (
-          <DogContainer>
-            {[...Array(3).keys()].map((z: any, i: number) => (
-              <LoadingImg key={i} w='100%' mw='300px' />
-            ))}
-          </DogContainer>
-        )}
-        <DogContainer lg={12}>
-          {paginatedItems?.map((dachshund: any) => {
-            return (
-              <div
-                key={dachshund.id}
-                className='rounded d-flex justify-content-center h-100'
-                style={{ position: 'relative' }}
-              >
-                <Card.Img
-                  src={dachshund?.attributes?.photos[0] ?? NoImgDog}
-                  alt='successful-adoption'
-                  style={{
-                    aspectRatio: '1 / 1',
-                    objectFit: 'cover',
-                    maxWidth: '300px',
-                    width: '100%',
-                  }}
-                  loading='lazy'
+        {}
+        <DogContainer>
+          {loading
+            ? [...Array(3).keys()].map((_: any, i: number) => (
+                <LoadingImg key={i} w='100%' mw='300px' />
+              ))
+            : displayedData?.map((dachshund: any) => (
+                <DachshundCard
+                  key={dachshund.id}
+                  dachshund={dachshund}
+                  type='successful-adoptions'
                 />
-                <TextContainer>
-                  <Link
-                    to={{
-                      pathname: `/about/dachshund`,
-                      state: {
-                        dog: dachshund,
-                        directBackTo: 'successful-adoptions',
-                        pathName: 'Sucessful Adoptions',
-                      },
-                    }}
-                    className='d-flex align-self-center'
-                  >
-                    <Text fontSize='18px' fontWeight={400}>
-                      {dachshund?.attributes?.name.split('(')[0]}
-                    </Text>
-                  </Link>
-                  <Text>
-                    Adopted: {formatDate(dachshund?.attributes?.adoptedDate)}
-                  </Text>
-                </TextContainer>
-              </div>
-            );
-          })}
+              ))}
         </DogContainer>
-        <PaginationContainer>
-          <Pagination className='my-3'>
-            {rangeV2(dachshunds, paginatedPage, setPaginatedPage, 30)}
-          </Pagination>
-        </PaginationContainer>
+        {displayCount < successfulAdoptions?.length && (
+          <LoadMoreBtn onClick={loadMore}>Load More</LoadMoreBtn>
+        )}
       </Container>
     </>
   );

@@ -1,4 +1,4 @@
-interface SixStepProcessProps {
+interface FiveStepProcessProps {
   titleKey: string;
   text: string;
   text2?: string;
@@ -21,7 +21,7 @@ export const mandatoryRequirementsForAdoptionData = () => {
   ];
 };
 
-export const fiveStepProcess = (): SixStepProcessProps[] => {
+export const fiveStepProcess = (): FiveStepProcessProps[] => {
   return [
     {
       titleKey: 'Step One: Application',

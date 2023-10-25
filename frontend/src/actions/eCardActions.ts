@@ -9,6 +9,9 @@ import {
   ECARD_DETAILS_FAIL,
   ECARD_DETAILS_REQUEST,
   ECARD_DETAILS_SUCCESS,
+  ECARD_FILTERED_LIST_FAIL,
+  ECARD_FILTERED_LIST_REQUEST,
+  ECARD_FILTERED_LIST_SUCCESS,
   ECARD_LIST_FAIL,
   ECARD_LIST_REQUEST,
   ECARD_LIST_SUCCESS,
@@ -34,6 +37,25 @@ export const listECards = () => async (dispatch: any) => {
     });
   }
 };
+
+export const listFilteredEcards =
+  (category: string) => async (dispatch: any) => {
+    try {
+      dispatch({ type: ECARD_FILTERED_LIST_REQUEST });
+
+      const { data } = await axios.get(`/api/ecard/filtered/${category}`);
+
+      dispatch({ type: ECARD_FILTERED_LIST_SUCCESS, payload: data });
+    } catch (error: any) {
+      dispatch({
+        type: ECARD_FILTERED_LIST_FAIL,
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : '404 - Not Found',
+      });
+    }
+  };
 
 export const createECard =
   (ecard: any) => async (dispatch: any, getState: any) => {

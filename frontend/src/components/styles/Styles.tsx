@@ -46,6 +46,9 @@ interface TextProps {
   height?: string;
   cursor?: string;
   maxWidth?: string;
+  textTransform?: string;
+  position?: string;
+  top?: string;
 }
 
 export const Text = styled.div<TextProps>`
@@ -71,9 +74,14 @@ export const Text = styled.div<TextProps>`
   height: ${({ height }) => (height ? height : '')};
   cursor: ${({ cursor }) => (cursor ? cursor : '')};
   max-width: ${({ maxWidth }) => (maxWidth ? maxWidth : '')};
+  text-transform: ${({ textTransform }) =>
+    textTransform ? textTransform : ''};
+  position: ${({ position }) => (position ? position : 'relative')};
+  top: ${({ top }) => (top ? top : '')};
 `;
 
 interface FlexProps {
+  fontSize?: string;
   paddingBottom?: string;
   paddingLeft?: string;
   paddingRight?: string;
@@ -94,6 +102,8 @@ interface FlexProps {
   justifyContent?: string;
   flex?: string;
   borderBottom?: string;
+  color?: string;
+  position?: string;
 }
 
 export const Flex = styled.div<FlexProps>`
@@ -121,6 +131,9 @@ export const Flex = styled.div<FlexProps>`
   flex: ${({ flex }) => (flex ? flex : '1 0 0')};
   border-bottom: ${({ borderBottom }) =>
     borderBottom ? borderBottom : '1 0 0'};
+  color: ${({ color }) => (color ? color : '')};
+  font-size: ${({ fontSize }) => (fontSize ? fontSize : '13px')};
+  position: ${({ position }) => (position ? position : 'relative')};
 `;
 
 export const UpdateBtn = styled(Button)`

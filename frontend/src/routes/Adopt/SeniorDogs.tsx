@@ -55,12 +55,12 @@ const SeniorDogs = () => {
         </Text>
 
         <div>
-          <Text maxWidth='680px' fontSize='18px' className='mb-4 mx-auto'>
+          <Text maxWidth='680px' fontSize='16px' className='mb-4 mx-auto'>
             Most senior dachshunds are housebroken and wanting to give their
             love to someone. Dachshunds can live to be 18 years old, so senior
             dachshunds still have lots of love to give.
           </Text>
-          <Text maxWidth='680px' fontSize='18px' className='mb-4 mx-auto'>
+          <Text maxWidth='680px' fontSize='16px' className='mb-4 mx-auto'>
             Little Paws Dachshund Rescue (LPDR) receive senior dachshunds from
             shelters or owner surrenders. Many times they are surrendered to us
             or to the shelter because the death of owner and other family
@@ -71,7 +71,7 @@ const SeniorDogs = () => {
             for these seniors that have given their love to someone their entire
             lives.
           </Text>
-          <Text maxWidth='680px' fontSize='18px' className='mb-4 mx-auto'>
+          <Text maxWidth='680px' fontSize='16px' className='mb-4 mx-auto'>
             Little Paws Dachshund Rescue (LPDR) would like to encourage
             experienced pet owners to adopt by offering an adoption discount fee
             to Seniors, 60 years and older, who adopt a senior
@@ -80,7 +80,7 @@ const SeniorDogs = () => {
             implant. We will also ensure they receive a dental if needed.{' '}
             <ViewFees to='/adopt/fees'>View our current fees.</ViewFees>
           </Text>
-          <Text maxWidth='680px' fontSize='18px' className='mb-4 mx-auto'>
+          <Text maxWidth='680px' fontSize='16px' className='mb-4 mx-auto'>
             To qualify for the program, you must show proof of age and have a
             care plan in place. Senior animals will be identified on our website
             with the notation{' '}
@@ -96,18 +96,18 @@ const SeniorDogs = () => {
           >
             Top 10 Reasons to Adopt An Older Dog
           </Text>
-          <div className='py-3'>
+          <div>
             {reasonsToAdoptASeniorData().map((obj, i) => (
-              <div key={i} className='mb-2 pb-2'>
+              <div key={i}>
                 <Text
                   maxWidth='680px'
-                  fontSize='18px'
-                  className='mb-2 mx-auto'
+                  fontSize='16px'
+                  className='mx-auto'
                   fontWeight={400}
                 >
                   {obj.title}
                 </Text>
-                <Text maxWidth='680px' fontSize='18px' className='mb-4 mx-auto'>
+                <Text maxWidth='680px' fontSize='16px' className='mb-4 mx-auto'>
                   {obj.reason}
                 </Text>
               </div>

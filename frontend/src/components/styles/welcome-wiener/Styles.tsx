@@ -1,8 +1,7 @@
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-export const Container = styled.aside`
-  min-height: 100vh;
+export const Container = styled.aside<{ h: number }>`
   max-width: 100%;
   width: 100%;
   height: 100%;
@@ -19,8 +18,10 @@ export const Container = styled.aside`
   transition: 300ms;
   padding: 16px;
   box-shadow: 0px 8px 32px rgba(0, 0, 0, 0.2);
-  transform: translateY(-1386px);
+  transform: ${({ h }) => `translateY(${-h}px)`};
+  height: 0;
   &.move-down {
+    min-height: 100vh;
     transform: translateY(0px);
     transition: 300ms;
     transition-easing: linear;
@@ -28,12 +29,13 @@ export const Container = styled.aside`
 
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
     padding: 48px;
-    min-height: 400px;
-    max-height: 500px;
+
     justify-content: flex-start;
     align-items: center;
-    transform: translateY(-700px);
+    transform: ${({ h }) => `translateY(-400px)`};
     &.move-down {
+      min-height: 400px;
+      max-height: 500px;
       transform: translateY(0px);
       transition: 300ms;
       transition-easing: linear;

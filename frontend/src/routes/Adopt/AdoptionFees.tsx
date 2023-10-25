@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { Text } from '../../components/styles/Styles';
 import AdoptFeesHigh from '../../components/assets/adopt-fees-high.jpeg';
@@ -6,69 +5,30 @@ import AdoptFeesLow from '../../components/assets/adopt-fees-low.jpg';
 import LeftArrow from '../../components/svg/LeftArrow';
 import RightArrow from '../../components/svg/RightArrow';
 import Hero from '../../components/Hero';
+import FeeTable from '../../components/adopt/fees/FeeTable';
+import { Container } from '../../components/styles/GridDogStyles';
 
 const UnorderedList = styled.ul`
   li {
     max-width: 680px;
-    font-size: 18px;
+    font-size: 16px;
     margin-bottom: 24px;
     margin-inline: auto;
     font-weight: 300;
   }
 `;
 
-export const AdoptionFeeTable = styled.table`
-  margin-inline: auto;
-  width: 100%;
-  border: 1px solid rgba(200, 200, 200, 0.2);
-  background: ${({ theme }) => theme.card.bg};
-  max-width: 980px;
-  tbody {
-    tr {
-      :nth-child(even) {
-        background: ${({ theme }) => theme.table.even};
-      }
-    }
-  }
-`;
+const adoptionFeeData = [
+  'Spay or neuter',
+  'Full veterinary health check',
+  'Vaccinations: Rabies, Distemper Combo (not Lepto)',
+  'Heartworm test (if found positive they undergo heartworm treatment)',
+  'Dental cleaning (if necessary)',
+  'Any additional medical treatment as necessary',
+  'Microchip',
+];
 
-export const TableRow = styled.tr<{ noBorder?: boolean }>`
-  height: 50px;
-`;
-
-export const TableWrapper = styled.div`
-  padding: 192px 0px;
-  background: ${({ theme }) => theme.secondaryBg};
-  margin-inline: auto;
-
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    padding: 192px 16px;
-  }
-`;
-
-export const TableData = styled.td`
-  width: 360px;
-  padding-left: 16px;
-  padding-block: 8px;
-  color: ${({ theme }) => theme.card.text};
-  font-size: 16px;
-  div {
-    section {
-      font-size: 10.4px;
-    }
-  }
-  &.title {
-    font-size: 16px;
-    font-weight: 600;
-    height: 75px;
-    padding-right: 16px;
-  }
-
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-  }
-`;
-
-const AdoptionFees = ({ history }: any) => {
+const AdoptionFees = () => {
   return (
     <>
       <Hero
@@ -78,15 +38,7 @@ const AdoptionFees = ({ history }: any) => {
         link='https://unsplash.com/@erdaest?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText'
         photographer='Erda Estremera'
       />
-      <div
-        style={{
-          maxWidth: '980px',
-          width: '100%',
-          marginInline: 'auto',
-          marginBottom: '96px',
-          paddingInline: '16px',
-        }}
-      >
+      <Container>
         <div className='w-100 d-flex justify-content-between mt-3'>
           <LeftArrow
             text='Home'
@@ -106,99 +58,21 @@ const AdoptionFees = ({ history }: any) => {
           Please remember that regardless of whether you are adopting a purebred
           Dachshund or a Dachshund mix, the vetting costs are still the same
         </Text>
-        <Text maxWidth='680px' fontSize='18px' className='mb-4 mx-auto'>
+        <Text maxWidth='680px' fontSize='16px' className='mb-4 mx-auto'>
           You’re still paying much less for a dog that is totally vetted than if
           you were to purchase a dog and then have to assume the vetting costs
           yourself.
         </Text>
-        <Text maxWidth='680px' fontSize='18px' className='mb-4 mx-auto'>
+        <Text maxWidth='680px' fontSize='16px' className='mb-4 mx-auto'>
           All adoption fees include:{' '}
         </Text>
         <UnorderedList>
-          <li>Spay or neuter</li>
-          <li>Full veterinary health check</li>
-          <li>Vaccinations: Rabies, Distemper Combo (not Lepto)</li>
-          <li>
-            Heartworm test (if found positive they undergo heartworm treatment)
-          </li>
-          <li>Dental cleaning (if necessary)</li>
-          <li>Any additional medical treatment as necessary</li>
-          <li>Microchip</li>
+          {adoptionFeeData.map((data: string, i: number) => (
+            <li key={i}>{data}</li>
+          ))}
         </UnorderedList>
-      </div>
-      <TableWrapper>
-        <AdoptionFeeTable>
-          <thead>
-            <TableRow noBorder={true}>
-              <TableData></TableData>
-              <TableData className='title'>Pure and Mixed Dachshunds</TableData>
-              <TableData className='title'>Health Certificate*</TableData>
-            </TableRow>
-          </thead>
-          <tbody>
-            <TableRow>
-              <TableData>Below 1 year</TableData>
-              <TableData>$400.00 USD</TableData>
-              <TableData>See below</TableData>
-            </TableRow>
-            <TableRow>
-              <TableData>1 - 5 years</TableData>
-              <TableData>$325.00 USD</TableData>
-              <TableData>See below</TableData>
-            </TableRow>
-            <TableRow>
-              <TableData>6 - 9 years</TableData>
-              <TableData>$275.00 USD</TableData>
-              <TableData>See below</TableData>
-            </TableRow>
-            <TableRow>
-              <TableData>10+ years</TableData>
-              <TableData>$200.00 USD</TableData>
-              <TableData>See below</TableData>
-            </TableRow>
-            <TableRow>
-              <TableData>Adopt a Senior</TableData>
-              <TableData>
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  <span style={{ fontSize: '16px' }}>$100.00 USD</span>
-                  <section
-                    onClick={() => history.push('/adopt/senior-dogs')}
-                    style={{ cursor: 'pointer' }}
-                  >
-                    see more information for details
-                  </section>
-                </div>
-              </TableData>
-
-              <TableData>See below</TableData>
-            </TableRow>
-            <TableRow noBorder={true}>
-              <TableData></TableData>
-              <TableData className='title'>Special Needs Dachshund</TableData>
-              <TableData className='title'>Health Certificate*</TableData>
-            </TableRow>
-            <TableRow>
-              <TableData className='pl-4'>All ages</TableData>
-              <TableData>
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  <span>$150.00 USD</span>
-                  <section>
-                    or a reduced fee determined on a case by case basis
-                  </section>
-                </div>
-              </TableData>
-              <TableData>
-                Health certificate cost is the responsibility of the adopter.
-              </TableData>
-            </TableRow>
-          </tbody>
-        </AdoptionFeeTable>
-        <Text maxWidth='980px' className='mx-auto mt-3 px-2' fontSize='10px'>
-          *Note: In accordance with the Department of Agriculture in MA, NH, ME
-          and RI, All dogs adopted in these states are charged an additional
-          $150 to cover regulatory requirements.
-        </Text>
-      </TableWrapper>
+      </Container>
+      <FeeTable />
     </>
   );
 };

@@ -15,6 +15,12 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://www.littlepawsdr.org/about/sanctuary</loc>
+    <lastmod>2023-01-15T02:31:53+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.littlepawsdr.org/adopt/</loc>
     <lastmod>2023-01-15T02:31:53+00:00</lastmod>
     <changefreq>monthly</changefreq>
@@ -27,13 +33,13 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.littlepawsdr.org/shop/</loc>
+    <loc>https://www.littlepawsdr.org/merch/</loc>
     <lastmod>2023-01-15T02:31:53+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.littlepawsdr.org/e-cards/</loc>
+    <loc>https://www.littlepawsdr.org/ecards/</loc>
     <lastmod>2023-01-15T02:31:53+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>

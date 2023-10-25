@@ -1,16 +1,22 @@
-import React, { useEffect } from 'react';
 import { Row, Card, Col } from 'react-bootstrap';
-import { useDispatch, useSelector } from 'react-redux';
-import { listWhoWeAreUsers } from '../../actions/userActions';
+import { useSelector } from 'react-redux';
 import { Text } from '../../components/styles/Styles';
 import styled from 'styled-components';
 import LeftArrow from '../../components/svg/LeftArrow';
 import RightArrow from '../../components/svg/RightArrow';
 import AboutUsHigh from '../../components/assets/about-us-high.jpg';
 import AboutUsLow from '../../components/assets/about-us-low.jpg';
-import { useLocation } from 'react-router-dom';
 import CardFlip from '../../components/boardmember-card/CardFlip';
 import Hero from '../../components/Hero';
+import { LoadingImg } from '../../components/LoadingImg';
+
+const Container = styled.div`
+  max-width: 1280px;
+  width: 100%;
+  margin-inline: auto;
+  margin-bottom: 96px;
+  padding-inline: 16px;
+`;
 
 export const ProfileCard = styled(Card)`
   background-color: ${({ theme }) => theme.card.bg};
@@ -50,24 +56,43 @@ const VerticalText = styled.div`
   font-weight: 600;
 `;
 
+const VerticalLogo = () => (
+  <div
+    style={{
+      position: 'fixed',
+      right: 'calc(100% - 163px)',
+      top: 0,
+      bottom: 0,
+      left: 0,
+      zIndex: -1,
+    }}
+  >
+    <div
+      style={{
+        height: '163px',
+        transformOrigin: 'left',
+        transform: 'rotate(90deg) translate(0%, -50%)',
+        width: '200vh',
+      }}
+    >
+      <VerticalText>Little Paws Dachshund Reschue</VerticalText>
+    </div>
+  </div>
+);
+
+const ArrowContainer = styled.div`
+  max-width: 980px;
+  width: 100%;
+  margin-inline: auto;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 16px;
+`;
+
 const TeamMembers = () => {
-  const dispatch = useDispatch();
-  const location = useLocation() as any;
-
-  useEffect(() => {
-    if (location?.state?.from === 'dashboard') {
-      window.scrollTo(0, 1000);
-    }
-  }, [location.state]);
-
-  const userWhoWeAreList = useSelector((state: any) => state.userWhoWeAreList);
-  const { loading, users } = userWhoWeAreList;
-
-  useEffect(() => {
-    dispatch(listWhoWeAreUsers());
-  }, [dispatch]);
-
-  const boardMembers = users?.boardMembers;
+  const state = useSelector((state: any) => state);
+  const users = state.userWhoWeAreList.users;
+  const loading = state.userWhoWeAreList.loading;
 
   return (
     <>
@@ -78,40 +103,9 @@ const TeamMembers = () => {
         link={`https://unsplash.com/@ibaxez?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText`}
         photographer='Carlos Ibáñez'
       />
-      <div
-        style={{
-          position: 'fixed',
-          right: 'calc(100% - 163px)',
-          top: 0,
-          bottom: 0,
-          left: 0,
-          zIndex: -1,
-        }}
-      >
-        <div
-          style={{
-            height: '163px',
-            transformOrigin: 'left',
-            transform: 'rotate(90deg) translate(0%, -50%)',
-            width: '200vh',
-          }}
-        >
-          <VerticalText>Little Paws Dachshund Reschue</VerticalText>
-        </div>
-      </div>
-      <div
-        style={{
-          maxWidth: '1280px',
-          width: '100%',
-          marginInline: 'auto',
-          marginBottom: '96px',
-          paddingInline: '16px',
-        }}
-      >
-        <div
-          className='w-100 mx-auto d-flex justify-content-between mt-3'
-          style={{ maxWidth: '980px' }}
-        >
+      <VerticalLogo />
+      <Container>
+        <ArrowContainer>
           <LeftArrow
             text='Home'
             url='/'
@@ -119,12 +113,15 @@ const TeamMembers = () => {
             url2='/about/education'
           />
           <RightArrow text='Contact' url='/about/contact-us' />
-        </div>
+        </ArrowContainer>
         <Text
           fontSize='32px'
           marginTop='56px'
           fontWeight={400}
-          style={{ maxWidth: '980px', marginInline: 'auto' }}
+          maxWidth='980px'
+          textAlign='center'
+          marginLeft='auto'
+          marginRight='auto'
         >
           We believe that dogs truly are man’s (and woman’s) best friend and
           that our beloved companions deserve the right to a soft bed, generous
@@ -163,16 +160,20 @@ const TeamMembers = () => {
           style={{ marginTop: '96px' }}
         >
           <CardWrapper className='px-0'>
-            {boardMembers?.map(
-              (user: any) =>
-                (user?.isAdmin || user?.affiliation) &&
-                user?.email !== 'it.little.paws@gmail.com' && (
-                  <CardFlip key={user?._id} user={user} loading={loading} />
-                )
+            {loading ? (
+              <LoadingImg w='100%' h='380px' borderRadius='16px' />
+            ) : (
+              users?.map(
+                (user: any) =>
+                  (user?.isAdmin || user?.affiliation) &&
+                  user?.email !== 'it.little.paws@gmail.com' && (
+                    <CardFlip key={user?._id} user={user} loading={loading} />
+                  )
+              )
             )}
           </CardWrapper>
         </Row>
-      </div>
+      </Container>
     </>
   );
 };

@@ -132,13 +132,13 @@ const SplitTextToChars: React.FC<SplitTextToCharsProps> = ({
         <div className='mt-4'>
           <LinkContainer>
             <Link to='/merch' className='link-item'>
-              Ecards
+              Merchandise
               <span>
                 <i className='fas fa-arrow-right'></i>
               </span>
             </Link>
-            <Link to='/merch' className='link-item'>
-              Products
+            <Link to='/ecards' className='link-item'>
+              Ecards
               <span>
                 <i className='fas fa-arrow-right'></i>
               </span>

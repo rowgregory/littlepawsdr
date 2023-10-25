@@ -1,7 +1,7 @@
 export const categories = () => [
   'Art Notecards',
   'Calendars',
-  'Ecards',
+  'Magnets',
   'Tumblers',
   'Other',
 ];

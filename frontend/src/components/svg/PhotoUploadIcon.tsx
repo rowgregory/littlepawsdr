@@ -1,7 +1,6 @@
-import React from 'react';
 import { Text } from '../styles/Styles';
 
-const PhotoUploadIcon = ({ ready, imgStatus }: any) => {
+const PhotoUploadIcon = ({ ready, uploading }: any) => {
   return (
     <div className='d-flex flex-column align-items-center'>
       <svg
@@ -23,12 +22,16 @@ const PhotoUploadIcon = ({ ready, imgStatus }: any) => {
           />
         </g>
       </svg>
-      <Text fontWeight='300' color='#b6b6b6' fontSize='11px'>
-        {ready?.name ? 'Ready to Upload' : 'Choose file to Upload'}
+      <Text fontWeight='300' color='#888888' fontSize='11px'>
+        {uploading
+          ? 'Uploading...'
+          : ready?.name
+          ? 'Ready to Upload'
+          : 'Choose file to Upload'}
       </Text>
       <Text
         fontSize='8px'
-        width='168px'
+        width='75px'
         style={{
           whiteSpace: 'nowrap',
           overflow: 'hidden',
@@ -37,9 +40,6 @@ const PhotoUploadIcon = ({ ready, imgStatus }: any) => {
         }}
       >
         {ready?.name}
-      </Text>
-      <Text color='#9761aa' fontSize='8px'>
-        {imgStatus}
       </Text>
     </div>
   );

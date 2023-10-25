@@ -21,7 +21,7 @@ import PhotoUploadIcon from '../../components/svg/PhotoUploadIcon';
 import { defaultImages } from '../../utils/defaultImages';
 import BreadCrumb from '../../components/common/BreadCrumb';
 import { fontColors, gradients } from '../../utils/eventUtils';
-import API from '../../utils/api';
+import { compressAndUpload } from '../../utils/uploadFilesToImgBB';
 
 const Gradient = styled(Form.Check)<{ selected?: boolean }>`
   border: ${({ selected }) =>
@@ -82,7 +82,6 @@ const EventEdit = () => {
   const dispatch = useDispatch();
   const [uploading, setUploading] = useState(false);
   const [file, setFile] = useState({}) as any;
-  const [imgUploadStatus, setImageUploadStatus] = useState('') as any;
 
   const {
     eventUpdate: {
@@ -99,15 +98,7 @@ const EventEdit = () => {
 
   const editEventCallback = async () => {
     setUploading(true);
-    setImageUploadStatus('Uploading to Imgbb');
-    const formData = new FormData();
-    formData.append('image', file);
-    const isFile = file?.name;
-    const image = isFile && (await API.uploadImageToImgbb(formData));
-    setImageUploadStatus('Image uploaded!');
-    setImageUploadStatus(
-      isEditMode ? 'Updating ecard details' : 'Creating ecard details'
-    );
+    const image = file?.name && ((await compressAndUpload(file)) as any);
     if (isEditMode) {
       dispatch(
         updateEvent({
@@ -240,7 +231,7 @@ const EventEdit = () => {
               label={
                 event?.image === defaultImages.upload || file?.name ? (
                   <UploadImageSquare className={uploading ? 'anim' : ''}>
-                    <PhotoUploadIcon ready={file} imgStatus={imgUploadStatus} />
+                    <PhotoUploadIcon ready={file} />
                   </UploadImageSquare>
                 ) : (
                   <Image

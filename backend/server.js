@@ -7,7 +7,6 @@ import connectDB from './config/db.js';
 import { cronJobs } from './utils/cronJobs.js';
 import userRoutes from './routes/userRoutes.js';
 import eventRoutes from './routes/eventRoutes.js';
-import uploadRoutes from './routes/uploadRoutes.js';
 import productRoutes from './routes/productRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
 import forgotPasswordRoutes from './routes/forgotPasswordRoutes.js';
@@ -23,16 +22,45 @@ import welcomeWienerDog from './routes/welcomeWienerDogRoutes.js';
 import welcomeWienerProduct from './routes/welcomeWienerProductRoutes.js';
 import errorRoutes from './routes/errorRoutes.js';
 import cors from 'cors';
+import http from 'http';
+import { Server } from 'socket.io';
+import { getInitialData } from './utils/getInitialData.js';
 
 const app = express();
 app.use(express.json());
+
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST'],
+  },
+});
+
+const dataNamespace = io.of('/load-initial-data'); 
+
+// Attach namespace-specific event listeners
+dataNamespace.on('connection', async (socket) => {
+  console.log(`Client connected to '/load-initial-data' namespace`);
+
+  try {
+    const initialData = await getInitialData();
+
+    // Emit the data to the client immediately
+    socket.emit('load-initial-data', initialData);
+  } catch (error) {
+    console.error('Error loading initial data:', error);
+  }
+});
+
+
 
 dotenv.config();
 
 const PORT = process.env.PORT || 5000;
 
 connectDB();
-cronJobs();
+cronJobs(io);
 
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
@@ -45,7 +73,6 @@ app.use('/api/order', orderRoutes);
 app.use('/api/education-tips', educationTipRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/products', productRoutes);
-app.use('/upload', uploadRoutes);
 app.use('/api/forgotpassword', forgotPasswordRoutes);
 app.use('/api/newsletter', newsletterRoutes);
 app.use('/api/ecard', eCardRoutes);
@@ -68,4 +95,4 @@ if (process.env.NODE_ENV === 'production') {
   );
 }
 
-app.listen(PORT, console.log(`Server running on port ${PORT}`));
+server.listen(PORT, console.log(`Server running on port ${PORT}`));

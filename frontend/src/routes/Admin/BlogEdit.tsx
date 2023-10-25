@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Form, Image } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { createBlog, updateBlog } from '../../actions/blogActions';
@@ -18,8 +18,8 @@ import {
 import { WelcomeText } from '../../components/styles/DashboardStyles';
 import PhotoUploadIcon from '../../components/svg/PhotoUploadIcon';
 import BreadCrumb from '../../components/common/BreadCrumb';
-import API from '../../utils/api';
 import { defaultImages } from '../../utils/defaultImages';
+import { compressAndUpload } from '../../utils/uploadFilesToImgBB';
 
 const useBlogEditForm = (callback?: any, data?: any) => {
   const values = {
@@ -64,7 +64,6 @@ const BlogEdit = () => {
 
   const [uploading, setUploading] = useState(false);
   const [file, setFile] = useState({}) as any;
-  const [imgUploadStatus, setImageUploadStatus] = useState('') as any;
 
   const {
     blogUpdate: {
@@ -81,15 +80,7 @@ const BlogEdit = () => {
 
   const editBlogCallback = async () => {
     setUploading(true);
-    setImageUploadStatus('Uploading to Imgbb');
-    const formData = new FormData();
-    formData.append('image', file);
-    const isFile = file?.name;
-    const image = isFile && (await API.uploadImageToImgbb(formData));
-    setImageUploadStatus('Image uploaded!');
-    setImageUploadStatus(
-      isEditMode ? 'Updating ecard details' : 'Creating ecard details'
-    );
+    const image = file?.name && ((await compressAndUpload(file)) as any);
     if (isEditMode) {
       dispatch(
         updateBlog({
@@ -167,7 +158,7 @@ const BlogEdit = () => {
               label={
                 blog?.image === defaultImages.upload || file?.name ? (
                   <UploadImageSquare className={uploading ? 'anim' : ''}>
-                    <PhotoUploadIcon ready={file} imgStatus={imgUploadStatus} />
+                    <PhotoUploadIcon ready={file} />
                   </UploadImageSquare>
                 ) : (
                   <Image

@@ -12,7 +12,6 @@ import {
 import { Text, UpdateBtn } from '../../components/styles/Styles';
 import styled from 'styled-components';
 import { removePhoto } from '../../utils/removePhoto';
-import uploadFileHandler from '../../utils/uploadFileHandler';
 import { useRouteMatch, useHistory } from 'react-router-dom';
 import Message from '../../components/Message';
 import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
@@ -67,7 +66,6 @@ const RaffleWinnerEdit = () => {
   const [errorMsg, setErrorMsg] = useState('');
   const [submittedForm, setSubmittedForm] = useState(false);
   const [file, setFile] = useState({}) as any;
-  const [imgUploadStatus, setImageUploadStatus] = useState('') as any;
 
   const {
     raffleWinnerDetails: { loading, error, raffleWinner },
@@ -128,11 +126,7 @@ const RaffleWinnerEdit = () => {
     setSubmittedForm(true);
 
     setUploading(true);
-    const image = await uploadFileHandler(
-      file,
-      setUploading,
-      setImageUploadStatus
-    );
+    // TODO use new upload image function
 
     dispatch(
       updateRaffleWinner({
@@ -200,7 +194,7 @@ const RaffleWinnerEdit = () => {
               label={
                 raffleWinner?.image === defaultImages.upload || file?.name ? (
                   <UploadImageSquare className={uploading ? 'anim' : ''}>
-                    <PhotoUploadIcon ready={file} imgStatus={imgUploadStatus} />
+                    <PhotoUploadIcon ready={file} />
                   </UploadImageSquare>
                 ) : (
                   <Image

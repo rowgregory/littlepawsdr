@@ -40,31 +40,31 @@ const ECardList = () => {
 
   const state = useSelector((state: any) => state);
 
-  const loading = state.eCardList.loading;
-  const error = state.eCardList.error;
-  const eCards = state.eCardList.eCards;
+  const loading = state.ecardList.loading;
+  const error = state.ecardList.error;
+  const ecards = state.ecardList.ecards;
 
-  const successDelete = state.eCardDelete.success;
-  const errorDelete = state.eCardDelete.error;
-  const loadingDelete = state.eCardDelete.loading;
+  const successDelete = state.ecardDelete.success;
+  const errorDelete = state.ecardDelete.error;
+  const loadingDelete = state.ecardDelete.loading;
 
   useEffect(() => {
     dispatch(listECards());
   }, [dispatch, successDelete]);
 
-  eCards?.sort((a: any, b: any) => -a?.createdAt?.localeCompare(b?.createdAt));
+  ecards?.sort((a: any, b: any) => -a?.createdAt?.localeCompare(b?.createdAt));
 
   useEffect(() => {
     const itemsPerPage = 10;
     const indexOfLastItem = paginatedPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
-    setPaginatedItems(eCards?.slice(indexOfFirstItem, indexOfLastItem));
-  }, [eCards, paginatedPage]);
+    setPaginatedItems(ecards?.slice(indexOfFirstItem, indexOfLastItem));
+  }, [ecards, paginatedPage]);
 
   let filteredECards =
     text !== ''
-      ? eCards?.filter((eCard: any) =>
+      ? ecards?.filter((eCard: any) =>
           eCard?.category?.toLowerCase().includes(text.toLowerCase())
         )
       : paginatedItems?.filter((eCard: any) =>
@@ -145,7 +145,7 @@ const ECardList = () => {
               {filteredECards?.map((eCard: any) => (
                 <TableRow key={eCard?._id}>
                   <td>
-                    <TableImg src={eCard?.image} alt='avatar' />
+                    <TableImg src={eCard?.thumb} alt='avatar' />
                   </td>
                   <td>
                     <Text>{eCard?.name}</Text>
@@ -195,7 +195,7 @@ const ECardList = () => {
           </Table>
           <PaginationContainer>
             <Pagination className='my-3'>
-              {rangeV2(eCards, paginatedPage, setPaginatedPage)}
+              {rangeV2(ecards, paginatedPage, setPaginatedPage)}
             </Pagination>
           </PaginationContainer>
         </TableAndPaginationContainer>

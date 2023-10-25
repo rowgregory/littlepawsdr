@@ -1,22 +1,16 @@
-import React, { useEffect, useState } from 'react';
 import SubscribeBtn from '../../components/assets/subscribe_btn_3.png';
 import styled from 'styled-components';
 import { Text } from '../../components/styles/Styles';
 import SponsorHigh from '../../components/assets/sanctuary.jpg';
 import SponsorLow from '../../components/assets/sanctuary-low.jpg';
-import { Image } from 'react-bootstrap';
 import SponsorGift from '../../components/svg/SponsorGift';
-import { useDispatch, useSelector } from 'react-redux';
-import { getDogsByStatusPicturesAndVideours } from '../../actions/dachshundsActions';
-import { Link } from 'react-router-dom';
-import { Accordion } from '../../components/styles/place-order/Styles';
-import Message from '../../components/Message';
-import { useWindowSize } from '../../utils/useWindowSize';
-import NoImgDog from '../../components/assets/no_image_dog.jpg';
+import { useSelector } from 'react-redux';
 import LeftArrow from '../../components/svg/LeftArrow';
 import RightArrow from '../../components/svg/RightArrow';
 import { LoadingImg } from '../../components/LoadingImg';
 import Hero from '../../components/Hero';
+import { Container, DogContainer } from '../../components/styles/GridDogStyles';
+import DachshundCard from '../../components/DachshundCard';
 
 export const PayPalCard = styled.div`
   border-radius: 12px;
@@ -59,49 +53,13 @@ const MeetSomeSacntuaryContainer = styled.div`
   flex-direction: column;
 `;
 
-const DogContainer = styled(Link)`
-  position: relative;
-`;
-
-const DogGrid = styled.div`
-  display: grid;
-  grid-column-gap: 16px;
-  padding-bottom: 48px;
-  grid-template-columns: 1fr 1fr;
-  grid-column-gap: 32px;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    grid-row-gap: 100px;
-    grid-template-columns: 1fr 1fr 1fr;
-  }
-`;
-
-const TextContainer = styled.div`
-  padding: 16px;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    position: absolute;
-    left: 0;
-    right: 0;
-    background: #fff;
-    margin-left: auto;
-    margin-right: auto;
-    width: fit-content;
-    margin-top: -42px;
-  }
-`;
-
 const SponsorSanctuary = () => {
-  const dispatch = useDispatch();
-  const [seeMore, setSeeMore] = useState(false);
-
-  const [width] = useWindowSize();
-
-  const {
-    dachshundPicturesVideosStatuses: { error, dachshunds, loading },
-  } = useSelector((state: any) => state);
-
-  useEffect(() => {
-    dispatch(getDogsByStatusPicturesAndVideours('Free Roaming'));
-  }, [dispatch]);
+  const state = useSelector((state: any) => state);
+  const loading = state.dachshundPicturesVideosStatuses.loading;
+  const allDahchshunds = state.dachshundPicturesVideosStatuses.dachshunds;
+  const sanctuaries = allDahchshunds?.filter(
+    (dachshund: any) => dachshund.relationships.statuses.data[0].id === '15'
+  );
 
   return (
     <>
@@ -112,16 +70,7 @@ const SponsorSanctuary = () => {
         link='https://www.pexels.com/photo/a-woman-carrying-her-dog-4091966/'
         photographer='Oliver King'
       />
-      <div
-        style={{
-          maxWidth: '980px',
-          width: '100%',
-          marginInline: 'auto',
-          marginBottom: '96px',
-          paddingInline: '16px',
-        }}
-      >
-        {error && <Message variant='danger'>{error}</Message>}
+      <Container>
         <div className='w-100 d-flex justify-content-between mt-3'>
           <LeftArrow
             text='Home'
@@ -134,20 +83,20 @@ const SponsorSanctuary = () => {
         <Text fontSize='32px' marginTop='56px' fontWeight={400}>
           In addition to our adoptable dogs, we have sanctuary foster dogs.
         </Text>
-        <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='16px'>
+        <Text maxWidth='700px' className='mb-3 mt-4 mx-auto' fontSize='16px'>
           These special dogs are not able to be adopted due to medical or
           behavioral circumstances, and will remain in LPDR’s care for the
           remainder of their lives.
         </Text>
-        <Text maxWidth='680px' className='my-3 mx-auto' fontSize='16px'>
+        <Text maxWidth='700px' className='my-3 mx-auto' fontSize='16px'>
           Many of our sanctuary fosters are in their senior years and require a
           little extra care. Some require monthly medication, while others need
           monthly supplies of diapers or more frequent visits to the vet.
         </Text>
-        <Text maxWidth='680px' className='my-3 mx-auto' fontSize='16px'>
+        <Text maxWidth='700px' className='my-3 mx-auto' fontSize='16px'>
           Please consider sponsoring one of our dear sanctuary dogs below.
         </Text>
-      </div>
+      </Container>
       <SponsorshipContainer>
         <SponsorGift />
         <PayPalCard>
@@ -229,7 +178,7 @@ const SponsorSanctuary = () => {
         <Text
           fontSize='32px'
           fontWeight={600}
-          marginBottom={width < 500 ? '72px' : '16px'}
+          marginBottom='72px'
           textAlign='center'
         >
           Meet some lovely pets who need a sponsor today!
@@ -238,7 +187,7 @@ const SponsorSanctuary = () => {
           fontSize='26px'
           fontWeight={600}
           color='#7a7a7a'
-          marginBottom={width < 500 ? '90px' : '48px'}
+          marginBottom='90px'
           maxWidth='700px'
           textAlign='center'
         >
@@ -254,60 +203,17 @@ const SponsorSanctuary = () => {
           </span>{' '}
           love.
         </Text>
-        <Accordion
-          toggle={seeMore}
-          maxheight={`${(
-            387 * Math.ceil(dachshunds?.length / 3)
-          ).toString()}px`}
-          style={{ minHeight: width < 545 ? '460px' : '335px' }}
-        >
-          <DogGrid>
+        <Container>
+          <DogContainer>
             {loading
-              ? [1, 2, 3].map((_: any, i: number) => (
-                  <LoadingImg w='100%' mw='300px' h='100%' key={i} />
+              ? [...Array(3).keys()].map((_: any, i: number) => (
+                  <LoadingImg key={i} w='100%' mw='300px' />
                 ))
-              : dachshunds?.map((dog: any, i: number) => (
-                  <DogContainer
-                    to={{
-                      pathname: `/about/dachshund`,
-                      state: {
-                        dog,
-                        directBackTo: 'sanctuary',
-                        pathName: 'Sponsor a Sanctuary',
-                      },
-                    }}
-                    key={i}
-                  >
-                    <Image
-                      src={dog?.attributes?.photos[0] ?? NoImgDog}
-                      width='100%'
-                      style={{
-                        aspectRatio: '1/1',
-                        maxWidth: '300px',
-                        objectFit: 'cover',
-                      }}
-                      alt={`Sorry, we currently don't have a picture for ${dog?.attributes?.name}`}
-                    />
-                    <TextContainer>
-                      <Text fontWeight={400} fontSize='18px'>
-                        {dog?.attributes?.name}
-                      </Text>
-                      <Text>{dog?.attributes?.breedString}</Text>
-                    </TextContainer>
-                  </DogContainer>
+              : sanctuaries?.map((dachshund: any) => (
+                  <DachshundCard key={dachshund.id} dachshund={dachshund} />
                 ))}
-          </DogGrid>
-        </Accordion>
-        <Text
-          onClick={() => setSeeMore(!seeMore)}
-          marginTop='60px'
-          fontSize='18px'
-          fontWeight={600}
-          color='#9761aa'
-          cursor='pointer'
-        >
-          {seeMore ? 'SEE LESS' : 'SEE MORE'}
-        </Text>
+          </DogContainer>
+        </Container>
       </MeetSomeSacntuaryContainer>
     </>
   );

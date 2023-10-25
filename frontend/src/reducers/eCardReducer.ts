@@ -18,10 +18,13 @@ import {
   ECARD_UPDATE_REQUEST,
   ECARD_UPDATE_RESET,
   ECARD_UPDATE_SUCCESS,
+  ECARD_FILTERED_LIST_REQUEST,
+  ECARD_FILTERED_LIST_SUCCESS,
+  ECARD_FILTERED_LIST_FAIL,
 } from '../constants/eCardConstants';
 
 // @ts-ignore
-export const eCardListReducer = (state = { eCards: [] }, action) => {
+export const ecardListReducer = (state = { ecards: [] }, action) => {
   switch (action.type) {
     case ECARD_LIST_REQUEST:
       return {
@@ -30,7 +33,7 @@ export const eCardListReducer = (state = { eCards: [] }, action) => {
     case ECARD_LIST_SUCCESS:
       return {
         loading: false,
-        eCards: action.payload,
+        ecards: action.payload,
       };
     case ECARD_LIST_FAIL:
       return {
@@ -39,7 +42,31 @@ export const eCardListReducer = (state = { eCards: [] }, action) => {
       };
     case ECARD_LIST_RESET:
       return {
-        eCards: [],
+        ecards: [],
+      };
+    default:
+      return state;
+  }
+};
+
+export const ecardFilteredListReducer = (
+  state = { filteredEcards: [] },
+  action: any
+) => {
+  switch (action.type) {
+    case ECARD_FILTERED_LIST_REQUEST:
+      return {
+        loading: true,
+      };
+    case ECARD_FILTERED_LIST_SUCCESS:
+      return {
+        loading: false,
+        filteredEcards: action.payload,
+      };
+    case ECARD_FILTERED_LIST_FAIL:
+      return {
+        loading: false,
+        filteredEcards: action.payload,
       };
     default:
       return state;
@@ -47,7 +74,7 @@ export const eCardListReducer = (state = { eCards: [] }, action) => {
 };
 
 // @ts-ignore
-export const eCardCreateReducer = (state = {}, action) => {
+export const ecardCreateReducer = (state = {}, action) => {
   switch (action.type) {
     case ECARD_CREATE_REQUEST:
       return {
@@ -57,7 +84,7 @@ export const eCardCreateReducer = (state = {}, action) => {
       return {
         loading: false,
         success: true,
-        eCard: action.payload,
+        ecard: action.payload,
       };
     case ECARD_CREATE_FAIL:
       return {
@@ -72,7 +99,7 @@ export const eCardCreateReducer = (state = {}, action) => {
 };
 
 // @ts-ignore
-export const eCardDetailsReducer = (state = { eCard: {} }, action) => {
+export const ecardDetailsReducer = (state = { ecard: {} }, action) => {
   switch (action.type) {
     case ECARD_DETAILS_REQUEST:
       return {
@@ -82,7 +109,7 @@ export const eCardDetailsReducer = (state = { eCard: {} }, action) => {
     case ECARD_DETAILS_SUCCESS:
       return {
         loading: false,
-        eCard: action.payload,
+        ecard: action.payload,
         success: true,
       };
     case ECARD_DETAILS_FAIL:
@@ -92,7 +119,7 @@ export const eCardDetailsReducer = (state = { eCard: {} }, action) => {
       };
     case ECARD_DETAILS_RESET:
       return {
-        eCard: {},
+        ecard: {},
       };
     default:
       return state;
@@ -100,7 +127,7 @@ export const eCardDetailsReducer = (state = { eCard: {} }, action) => {
 };
 
 // @ts-ignore
-export const eCardUpdateReducer = (state = { eCard: {} }, action) => {
+export const ecardUpdateReducer = (state = { ecard: {} }, action) => {
   switch (action.type) {
     case ECARD_UPDATE_REQUEST:
       return {
@@ -112,7 +139,7 @@ export const eCardUpdateReducer = (state = { eCard: {} }, action) => {
         ...state,
         loading: false,
         success: true,
-        eCard: action.payload,
+        ecard: action.payload,
       };
     case ECARD_UPDATE_FAIL:
       return {
@@ -122,7 +149,7 @@ export const eCardUpdateReducer = (state = { eCard: {} }, action) => {
       };
     case ECARD_UPDATE_RESET:
       return {
-        eCard: {},
+        ecard: {},
       };
     default:
       return state;
@@ -130,7 +157,7 @@ export const eCardUpdateReducer = (state = { eCard: {} }, action) => {
 };
 
 // @ts-ignore
-export const eCardDeleteReducer = (state = {}, action) => {
+export const ecardDeleteReducer = (state = {}, action) => {
   switch (action.type) {
     case ECARD_DELETE_REQUEST:
       return {

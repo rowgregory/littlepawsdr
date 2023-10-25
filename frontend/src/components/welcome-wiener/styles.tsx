@@ -12,7 +12,6 @@ export const TopSection = styled.div`
   max-width: 980px;
   width: 100%;
   margin-inline: auto;
-  margin-bottom: 96px;
   padding-inline: 16px;
 `;
 export const WelcomeWienerGrid = styled.div`

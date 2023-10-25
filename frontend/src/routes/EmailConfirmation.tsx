@@ -294,13 +294,17 @@ const EmailConfirmation = ({ history }: any) => {
               </Text>
               <CircleContainer>
                 {[
-                  { textKey: 'Shop', linkKey: '/shop', bg: 'secondary' },
+                  { textKey: 'Shop', linkKey: '/merch', bg: 'secondary' },
                   {
                     textKey: 'Send Ecard',
-                    linkKey: '/e-cards',
+                    linkKey: '/ecards',
                     bg: 'tertiary',
                   },
-                  { textKey: 'Donate', linkKey: '/donate', bg: 'quaternary' },
+                  {
+                    textKey: 'Donate',
+                    linkKey: '/welcome-wieners',
+                    bg: 'quaternary',
+                  },
                 ].map((obj: any, i: number) => (
                   <Circle to={obj.linkKey} key={i} bg={obj.bg}>
                     {obj.textKey}

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Container } from '../../components/styles/admin/Styles';
@@ -12,13 +12,9 @@ import useWelcomeWienerProductForm from '../../utils/hooks/useWelcomeWienerProdu
 const WelcomeWienerProductCreate = () => {
   const history = useHistory();
   const dispatch = useDispatch();
-
-  const {
-    welcomeWienerProductCreate: {
-      loading: loadingCreate,
-      success: successCreate,
-    },
-  } = useSelector((state: any) => state);
+  const state = useSelector((state: any) => state);
+  const loading = state.welcomeWienerProductCreate.loading;
+  const success = state.welcomeWienerProductCreate.success;
 
   const createWelcomeWienerProductCallback = () => {
     dispatch(
@@ -32,11 +28,11 @@ const WelcomeWienerProductCreate = () => {
   };
 
   useEffect(() => {
-    if (successCreate) {
+    if (success) {
       history.push('/admin/welcome-wiener/product/list');
       dispatch({ type: WELCOME_WIENER_PRODUCT_CREATE_RESET });
     }
-  }, [dispatch, history, successCreate]);
+  }, [dispatch, history, success]);
 
   const {
     onSubmit,
@@ -64,7 +60,7 @@ const WelcomeWienerProductCreate = () => {
       <CreateEditWelcomeWienerProductForm
         inputs={inputs}
         handleInput={handleInput}
-        uploading={loadingCreate}
+        uploading={loading}
         onSubmit={onSubmit}
         submitBtnText='Creat'
         setInputs={setInputs}

@@ -18,7 +18,7 @@ const StyledModal = styled(Modal)`
   }
 `;
 
-const GoBackToCartModal = ({ show, close, isEcards }: any) => {
+const GoBackToCartModal = ({ show, close }: any) => {
   return (
     <StyledModal show={show} centered>
       <div className='p-3'>
@@ -29,10 +29,7 @@ const GoBackToCartModal = ({ show, close, isEcards }: any) => {
           <Button onClick={close} variant='secondary'>
             No
           </Button>
-          <Link
-            className='ml-3'
-            to={isEcards ? '/e-cards' : '/welcome-wieners'}
-          >
+          <Link className='ml-3' to='/cart'>
             Yes
           </Link>
         </div>

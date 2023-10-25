@@ -20,9 +20,7 @@ import SplitTextToChars from '../../utils/SplitTextToChars';
 
 const Cart = () => {
   const history = useHistory();
-
   const state = useSelector((state: any) => state);
-
   const cartItems = state.cart.cartItems;
   const cartItemsAmount = state.cart.cartItemsAmount;
   const subtotal = state.cart.subtotal;
@@ -49,6 +47,7 @@ const Cart = () => {
             <Message variant='danger'>{error}</Message>
             <Link to='/welcome-wieners'>Go to Welcome Wieners</Link>
             <Link to='/merch'>Go to Merch</Link>
+            <Link to='/ecards'>Go to Ecards</Link>
           </>
         ) : cartItemsAmount > 0 ? (
           <CartItemContainer>
@@ -60,6 +59,7 @@ const Cart = () => {
                 <td style={{ width: '136px' }}>
                   <LeftArrow text='Welcome Wieners' url='/welcome-wieners' />
                   <LeftArrow text='Merch' url='/merch' />
+                  <LeftArrow text='Ecards' url='/ecards' />
                 </td>
                 <td></td>
                 <td>
@@ -74,7 +74,7 @@ const Cart = () => {
         ) : (
           <Flex flexDirection='column' width='100%'>
             <SplitTextToChars
-              text='Hey, thanks for being here! Checkout out our latest ecards, products, or welcome wieners!'
+              text='Hey, thanks for being here! Checkout out our latest merchandise, ecards, and welcome wieners!'
               page='cart'
               fontSize='16px'
             />

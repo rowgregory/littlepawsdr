@@ -65,12 +65,14 @@ import {
   eCardOrderDetailsReducer,
 } from './eCardOrderReducer';
 import {
-  eCardCreateReducer,
-  eCardDeleteReducer,
-  eCardDetailsReducer,
-  eCardListReducer,
-  eCardUpdateReducer,
-} from './eCardReducer';
+  ecardDeleteReducer,
+  ecardCreateReducer,
+  ecardDetailsReducer,
+  ecardListReducer,
+  ecardUpdateReducer,
+  ecardFilteredListReducer,
+} from './ecardReducer';
+import { searchBarListReducer } from './searchBarReducer';
 import {
   raffleWinnerCreateReducer,
   raffleWinnerDeleteReducer,
@@ -168,11 +170,12 @@ const allReducers = combineReducers({
   newsletterEmailDelete: newsletterEmailDeleteReducer,
   eCardOrderCreate: eCardOrderCreateReducer,
   eCardOrderDetails: eCardOrderDetailsReducer,
-  eCardList: eCardListReducer,
-  eCardCreate: eCardCreateReducer,
-  eCardDetails: eCardDetailsReducer,
-  eCardUpdate: eCardUpdateReducer,
-  eCardDelete: eCardDeleteReducer,
+  ecardList: ecardListReducer,
+  ecardCreate: ecardCreateReducer,
+  ecardDetails: ecardDetailsReducer,
+  ecardUpdate: ecardUpdateReducer,
+  ecardDelete: ecardDeleteReducer,
+  ecardFilteredList: ecardFilteredListReducer,
   raffleWinnerList: raffleWinnerListReducer,
   raffleWinnerCreate: raffleWinnerCreateReducer,
   raffleWinnerDetails: raffleWinnerDetailsReducer,
@@ -205,6 +208,7 @@ const allReducers = combineReducers({
   welcomeWienerDachshundDelete: welcomeWienerDachshundDeleteReducer,
   welcomeWienerDachshundDetails: welcomeWienerDachshundDetailsReducer,
   welcomeWienerDachshundToggle: welcomeWienerDachshundToggledReducer,
+  searchBar: searchBarListReducer,
 });
 
 export default allReducers;

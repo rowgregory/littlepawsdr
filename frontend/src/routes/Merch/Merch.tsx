@@ -1,7 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { listProductsAndEcards } from '../../actions/productActions';
-import Message from '../../components/Message';
+import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import Product from './Product';
 import {
   Category,
@@ -10,6 +8,7 @@ import {
   Container,
   FilterColumn,
   GridIconContainer,
+  LoadingContainer,
   PageContent,
 } from '../../components/styles/shop/Styles';
 import { categories } from '../../utils/shopCategories';
@@ -20,36 +19,22 @@ import ShopLow from '../../components/assets/shop-low.jpg';
 import LeftArrow from '../../components/svg/LeftArrow';
 import RightArrow from '../../components/svg/RightArrow';
 import Hero from '../../components/Hero';
-import { eCardCategories } from '../../utils/eCardCategories';
+import { LoadingImg } from '../../components/LoadingImg';
 
 const Merch = () => {
-  const dispatch = useDispatch();
   const [currentCategory, setCurrentCategory] = useState('');
 
   const state = useSelector((state: any) => state);
+  const loading = state.productList.loading;
+  const products = state.productList.products;
 
-  const loading = state.productEcardList.loading;
-  const error = state.productEcardList.error;
-  const productsAndEcards = state.productEcardList.products;
-
-  useEffect(() => {
-    dispatch(listProductsAndEcards());
-  }, [dispatch]);
-
-  productsAndEcards?.sort(
+  products?.sort(
     (a: any, b: any) => -a?.createdAt?.localeCompare(b?.createdAt)
   );
 
-  const filterProductsAndEcards = productsAndEcards?.filter(
-    (product: any) =>
-      product?.category.includes(currentCategory) ||
-      (currentCategory === 'Ecards' && product.isEcard)
+  const filterProducts = products?.filter((product: any) =>
+    product?.category.includes(currentCategory)
   );
-
-  const ecardCountArray = productsAndEcards?.reduce((acc: any, item: any) => {
-    acc[item.category] = (acc[item.category] || 0) + 1;
-    return acc;
-  }, []);
 
   return (
     <>
@@ -69,20 +54,18 @@ const Merch = () => {
             text2='Foster Application'
             url2='/volunteer/foster-application'
           />
-          <RightArrow text='Welcome Wieners' url='/welcome-wieners' />
+          <RightArrow text='Ecards' url='/ecards' />
         </div>
-        <h1
-          style={{
-            marginBottom: '48px',
-            marginTop: '56px',
-            fontSize: '32px',
-            fontWeight: 400,
-            textAlign: 'center',
-          }}
+        <Text
+          fontSize='31px'
+          marginTop='56px'
+          fontWeight={400}
+          textAlign='center'
+          marginBottom='24px'
         >
           All gifts to Little Paws goes directly to help abandoned or
           surrendered dachshunds.
-        </h1>
+        </Text>
       </Container>
       <div
         style={{
@@ -92,12 +75,7 @@ const Merch = () => {
           paddingBottom: '64px',
         }}
       >
-        {error ? (
-          <div className='d-flex flex-column align-items-center'>
-            <Message variant='danger'>{error}</Message>
-          </div>
-        ) : productsAndEcards?.length === 0 ||
-          productsAndEcards === undefined ? (
+        {products?.length === 0 ? (
           <div className='d-flex flex-column align-items-center'>
             <div className='mb-3'>
               <NoShop color='#ccc' />
@@ -123,23 +101,6 @@ const Merch = () => {
                         >
                           {category}
                         </Category>
-                        {category === 'Ecards' &&
-                          eCardCategories?.map(
-                            (ecardCategory: any, i: number) => (
-                              <Category
-                                active={ecardCategory === currentCategory}
-                                key={i}
-                                onClick={() =>
-                                  setCurrentCategory(ecardCategory)
-                                }
-                                className='ml-3'
-                              >
-                                {ecardCategory}&nbsp;
-                                {ecardCountArray[ecardCategory] >= 1 &&
-                                  `(${ecardCountArray[ecardCategory]})`}
-                              </Category>
-                            )
-                          )}
                       </div>
                     ))}
                   </CategoryContainer>
@@ -155,19 +116,23 @@ const Merch = () => {
                   }}
                 >
                   <GridIconContainer>
-                    {filterProductsAndEcards?.length} item
-                    {filterProductsAndEcards?.length === 1 ? '' : 's'}
+                    {filterProducts?.length} item
+                    {filterProducts?.length === 1 ? '' : 's'}
                   </GridIconContainer>
                   <div className='d-flex flex-column'>
-                    {filterProductsAndEcards?.length === 0 ? (
+                    {loading ? (
+                      <LoadingContainer>
+                        <LoadingImg ar='1/1' />
+                        <div className='flex flex-column'>
+                          <LoadingImg h='27px' w='100%' />
+                          <LoadingImg h='40px' w='100%' mt='4px' />
+                        </div>
+                      </LoadingContainer>
+                    ) : filterProducts?.length === 0 ? (
                       <Text marginTop='16px'>No products available</Text>
                     ) : (
-                      filterProductsAndEcards?.map((product: any) => (
-                        <Product
-                          key={product._id}
-                          product={product}
-                          loading={loading}
-                        />
+                      filterProducts?.map((product: any) => (
+                        <Product key={product._id} product={product} />
                       ))
                     )}
                   </div>

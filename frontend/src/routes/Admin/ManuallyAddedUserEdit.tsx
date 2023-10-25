@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Form, Image } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { Text, UpdateBtn } from '../../components/styles/Styles';
-import uploadFileHandler from '../../utils/uploadFileHandler';
 import { useHistory, useLocation } from 'react-router-dom';
 import { updateManuallyAddedUser } from '../../actions/manuallyAddUserActions';
 import {
@@ -29,7 +28,7 @@ import { Accordion } from '../../components/styles/place-order/Styles';
 import { themes } from '../../utils/profileCardThemes';
 import { STATES } from '../../utils/states';
 import { manuallyAddUser } from '../../actions/manuallyAddUserActions';
-import API from '../../utils/api';
+import { compressAndUpload } from '../../utils/uploadFilesToImgBB';
 
 const useManuallyAddedUserEditForm = (callback?: any, data?: any) => {
   const values = {
@@ -81,7 +80,6 @@ const ManuallyAddedUserEdit = () => {
   const dispatch = useDispatch();
   const [uploading, setUploading] = useState(false);
   const [file, setFile] = useState({}) as any;
-  const [imgUploadStatus, setImageUploadStatus] = useState('') as any;
   const [showCardThemes, setShowCardThemes] = useState(false);
 
   const {
@@ -99,14 +97,8 @@ const ManuallyAddedUserEdit = () => {
 
   const editManuallyAddedUserCallback = async () => {
     setUploading(true);
-    setImageUploadStatus('Uploading to Imgbb');
-    const formData = new FormData();
-    formData.append('image', file);
-    const image = await API.uploadImageToImgbb(formData);
-    setImageUploadStatus('Image uploaded!');
-    setImageUploadStatus(
-      isEditMode ? 'Updating ecard details' : 'Creating ecard details'
-    );
+    const image = file?.name && ((await compressAndUpload(file)) as any);
+
     if (isEditMode) {
       dispatch(
         updateManuallyAddedUser({
@@ -192,10 +184,7 @@ const ManuallyAddedUserEdit = () => {
                 label={
                   file?.name ? (
                     <UploadImageSquare className={uploading ? 'anim' : ''}>
-                      <PhotoUploadIcon
-                        ready={file}
-                        imgStatus={imgUploadStatus}
-                      />
+                      <PhotoUploadIcon ready={file} />
                     </UploadImageSquare>
                   ) : (
                     <Image

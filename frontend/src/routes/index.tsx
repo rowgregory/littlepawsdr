@@ -1,4 +1,4 @@
-import React, { ComponentType, FC, lazy, useEffect, useState } from 'react';
+import { ComponentType, FC, lazy, useEffect } from 'react';
 import {
   Switch,
   Route,
@@ -20,17 +20,49 @@ import styled from 'styled-components';
 import PageNotFound from '../components/common/PageNotFound';
 import PopUp from '../components/common/PopUp';
 import GlobalStyles from '../GlobalStyles';
-import ContinueSessionModal from '../components/ContinueSessionModal';
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
 import EmailConfirmation from './EmailConfirmation';
 import ReturnPolicy from './ReturnPolicy';
 import CookiePolicyPopUp from '../components/CookiePolicyPopUp';
 import CookiePolicy from './CookiePolicy';
-import { useIdleTimer } from 'react-idle-timer';
 import WelcomeWieners from './WelcomeWieners';
 import WelcomeWienerDetails from './WelcomeWienerDetails';
 import ECardOrderReceipt from './ECardOrderReceipt';
+import Ecards from './Ecards';
+import FilteredEcards from './FilteredEcards';
+import PersonalizeEcard from './PersonalizeEcard';
+import { batch, useDispatch } from 'react-redux';
+import { io } from 'socket.io-client';
+import API from '../utils/api';
+import {
+  SEARCH_BAR_LIST_REQUEST,
+  SEARCH_BAR_LIST_SUCCESS,
+} from '../constants/searchBarConstants';
+import {
+  PRODUCT_LIST_REQUEST,
+  PRODUCT_LIST_SUCCESS,
+} from '../constants/productContstants';
+import {
+  ECARD_LIST_REQUEST,
+  ECARD_LIST_SUCCESS,
+} from '../constants/eCardConstants';
+import {
+  WELCOME_WIENER_DACHSHUND_LIST_REQUEST,
+  WELCOME_WIENER_DACHSHUND_LIST_SUCCESS,
+} from '../constants/welcomeWienerDachshundConstants';
+import {
+  USER_WHO_WE_ARE_LIST_REQUEST,
+  USER_WHO_WE_ARE_LIST_SUCCESS,
+} from '../constants/userConstants';
+import {
+  DACHSHUNDS_SUCCESS,
+  DACHSHUND_PICS_VIDS_STASTUSES_REQUEST,
+  DACHSHUND_PICS_VIDS_STASTUSES_SUCCESS,
+  DACHSHUND_REQUEST,
+} from '../constants/dachshundConstants';
+
+const socket = io('/load-initial-data');
 
 type LazyModulePromise<T = {}> = Promise<{ default: ComponentType<T> }>;
 
@@ -48,42 +80,85 @@ const Merch = lazy((): LazyModulePromise => import('./Merch'));
 const Page = styled(Container)<{ url: string }>`
   width: 100%;
   min-height: ${({ url }) =>
-    url.split('/')[1] === 'admin' ? '100%' : 'calc(100vh - 466px)'};
+    url.split('/')[1] === 'admin' ? '100%' : 'calc(100vh - 822.59px)'};
   display: flex;
   flex-direction: column;
   padding: 0;
   margin: 0;
+
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    min-height: ${({ url }) =>
+      url.split('/')[1] === 'admin' ? '100%' : 'calc(100vh - 773.59px)'};
+  }
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+    min-height: ${({ url }) =>
+      url.split('/')[1] === 'admin' ? '100%' : 'calc(100vh - 426.44px)'};
+  }
 `;
 
 export const Routes: FC = () => {
+  const dispatch = useDispatch();
   const { pathname } = useLocation();
   const history = useHistory();
-  const [show, setShow] = useState(false);
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-
-  const handleOnIdle = () => {
-    let userInfo: any = localStorage.getItem('userInfo')
-      ? JSON.parse(localStorage.getItem('userInfo') || '')
-      : null;
-
-    if (userInfo) {
-      handleShow();
-    }
-  };
-
-  useIdleTimer({
-    timeout: 1200000, // 20min
-    onIdle: handleOnIdle,
-    crossTab: {
-      emitOnAllTabs: true,
-    },
-  });
+  window.scrollTo(0, 0);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
+    batch(() => {
+      dispatch({ type: SEARCH_BAR_LIST_REQUEST });
+      dispatch({ type: DACHSHUND_REQUEST });
+      dispatch({ type: PRODUCT_LIST_REQUEST });
+      dispatch({ type: ECARD_LIST_REQUEST });
+      dispatch({ type: WELCOME_WIENER_DACHSHUND_LIST_REQUEST });
+      dispatch({ type: USER_WHO_WE_ARE_LIST_REQUEST });
+      dispatch({ type: DACHSHUND_PICS_VIDS_STASTUSES_REQUEST });
+    });
+    socket.on('load-initial-data', async (initialData) => {
+      const dachshunds = await API.getDachshundDataForSearchBar();
+
+      const { boardMembers, ...searchBar } = initialData;
+      batch(() => {
+        dispatch({
+          type: SEARCH_BAR_LIST_SUCCESS,
+          payload: { searchBar, dachshund: dachshunds?.searchBarData },
+        });
+
+        dispatch({
+          type: DACHSHUNDS_SUCCESS,
+          payload: dachshunds?.available?.data,
+        });
+
+        dispatch({
+          type: PRODUCT_LIST_SUCCESS,
+          payload: initialData?.products,
+        });
+
+        dispatch({
+          type: ECARD_LIST_SUCCESS,
+          payload: initialData?.ecards,
+        });
+
+        dispatch({
+          type: WELCOME_WIENER_DACHSHUND_LIST_SUCCESS,
+          payload: initialData?.welcomeWieners,
+        });
+
+        dispatch({
+          type: USER_WHO_WE_ARE_LIST_SUCCESS,
+          payload: initialData?.boardMembers,
+        });
+
+        dispatch({
+          type: DACHSHUND_PICS_VIDS_STASTUSES_SUCCESS,
+          payload: dachshunds?.allDogs,
+        });
+      });
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [dispatch]);
 
   useEffect(() => {
     switch (pathname) {
@@ -104,11 +179,11 @@ export const Routes: FC = () => {
       case '/lpdr-barks-about-valerie-duke/':
         return history.push('/available');
       case '/november-is-adopt-a-senior-month/':
-        return history.push('/available/senior');
+        return history.push('/adopt/senior');
       case '/donate/shopping-to-help/':
-        return history.push('/e-cards');
+        return history.push('/ecards');
       case '/donate/sponsor-a-sanctuary-dog/':
-        return history.push('/e-cards');
+        return history.push('/ecards');
       case '/welcome-to-little-paws-dachshund-rescue/':
         return history.push('/');
     }
@@ -116,7 +191,6 @@ export const Routes: FC = () => {
 
   return (
     <>
-      <ContinueSessionModal show={show} handleClose={handleClose} />
       <PopUp />
       <GlobalStyles />
       <Navbar />
@@ -146,6 +220,9 @@ export const Routes: FC = () => {
           <Route path='/profile' component={Profile} />
           <Route path='/cart' component={Cart} />
           <Route path='/merch' component={Merch} />
+          <Route exact path='/ecards' component={Ecards} />
+          <Route path='/ecards/filtered' component={FilteredEcards} />
+          <Route path='/ecard/personalize/:id' component={PersonalizeEcard} />
           <Route
             path='/order/:id/:order?/:shippingAddress?/:email?/:items?'
             component={OrderReceipt}

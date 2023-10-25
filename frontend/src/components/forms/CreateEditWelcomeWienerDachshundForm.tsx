@@ -28,7 +28,6 @@ const CreateEditWelcomeWienerDachshundForm = ({
   uploading,
   onSubmit,
   submitBtnText,
-  imgUploadStatus,
   setInputs,
   errors,
   handleBlur,
@@ -93,13 +92,13 @@ const CreateEditWelcomeWienerDachshundForm = ({
               label={
                 file?.name ? (
                   <UploadImageSquare className={uploading ? 'anim' : ''}>
-                    <PhotoUploadIcon ready={file} imgStatus={imgUploadStatus} />
+                    <PhotoUploadIcon ready={file} />
                   </UploadImageSquare>
                 ) : (
                   <Image
                     src={inputs?.displayUrl || UploadImg}
-                    width='200px'
-                    height='200px'
+                    width='100px'
+                    height='100px'
                     style={{ objectFit: 'cover' }}
                     alt='Welcome Wiener Dachshund'
                   />
@@ -116,16 +115,14 @@ const CreateEditWelcomeWienerDachshundForm = ({
               {inputs?.associatedProducts?.length === 0 ? (
                 <Text p='8px 14px'>
                   Click a welcome wiener product to associate it with{' '}
-                  {inputs.name !== '' ? inputs?.name : 'this wiener'}.
+                  {inputs?.name !== '' ? inputs?.name : 'this wiener'}.
                 </Text>
               ) : (
-                inputs?.associatedProducts?.map(
-                  (product: { name: string }, i: number) => (
-                    <Text p='4px 14px' key={i}>
-                      {product?.name}
-                    </Text>
-                  )
-                )
+                inputs?.associatedProducts?.map((product: any, i: number) => (
+                  <Text p='4px 14px' key={i}>
+                    {product?.name}
+                  </Text>
+                ))
               )}
             </AssociatedProductsContainer>
             <ErrorText>{errors?.associatedProducts}</ErrorText>

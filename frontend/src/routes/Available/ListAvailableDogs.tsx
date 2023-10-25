@@ -1,8 +1,6 @@
-import React, { useEffect, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { getAvailableDachshunds } from '../../actions/dachshundsActions';
+import { useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import Dachshund from '../../components/Dachshund';
-import Message from '../../components/Message';
 import styled from 'styled-components';
 import { Text } from '../../components/styles/Styles';
 import LeftArrow from '../../components/svg/LeftArrow';
@@ -18,6 +16,13 @@ const Container = styled.div`
   margin-inline: auto;
   margin-bottom: 96px;
   margin-top: 75px;
+`;
+const InnerContainer = styled.div`
+  max-width: 980px;
+  width: 100%;
+  margin-inline: auto;
+  margin-bottom: 96px;
+  padding-inline: 16px;
 `;
 
 const OnlineAppContainer = styled.div`
@@ -62,13 +67,14 @@ const RGName2 = styled.div`
 
 const CardContainer = styled.div`
   display: grid;
-  grid-gap: 30px;
+  grid-gap: 16px;
   width: 100%;
   grid-template-columns: 1fr;
-  max-width: ${({ theme }) => theme.breakpoints[3]};
+  max-width: ${({ theme }) => theme.breakpoints[4]};
   margin-inline: auto;
   padding: 16px;
   flex-direction: column;
+  margin-top: 56px;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
     grid-template-columns: 1fr 1fr;
   }
@@ -78,16 +84,12 @@ const CardContainer = styled.div`
 `;
 
 const ListAvailableDogs = () => {
-  const dispatch = useDispatch();
   const location = useLocation() as any;
   const myRef = useRef() as any;
 
-  const availableDachshunds = useSelector((state: any) => state.dachshunds);
-  const { loading, error, dachshunds } = availableDachshunds;
-
-  useEffect(() => {
-    dispatch(getAvailableDachshunds());
-  }, [dispatch]);
+  const state = useSelector((state: any) => state);
+  const dachshunds = state.dachshunds.dachshunds;
+  const loading = state.dachshunds.loading;
 
   useEffect(() => {
     if (location?.state?.scrollTo === 'dachshunds') {
@@ -97,19 +99,11 @@ const ListAvailableDogs = () => {
 
   return (
     <Container>
-      <div
-        style={{
-          maxWidth: '980px',
-          width: '100%',
-          marginInline: 'auto',
-          marginBottom: '96px',
-          paddingInline: '16px',
-        }}
-      >
+      <InnerContainer>
         <h4 className='mb-4 mt-5 d-flex justify-content-center font-weight-bold'>
           Dachshunds to Rescue
         </h4>
-        <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='16px'>
+        <Text maxWidth='680px' className='mb-4 mx-auto' fontSize='16px'>
           We are excited that you are interested in adding a dachshund or
           dachshund-mix to your family! Here is a list of all the dogs we have
           available for adoption. We encourage you to read each dog’s bio
@@ -119,7 +113,7 @@ const ListAvailableDogs = () => {
           a special diet, a medical need, on-going house training, on-going
           leash training, etc. 
         </Text>
-        <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='16px'>
+        <Text maxWidth='680px' className='mb-4 mx-auto' fontSize='16px'>
           When you adopt from LPDR, you are getting a dachshund who:
         </Text>
         <div>
@@ -131,12 +125,12 @@ const ListAvailableDogs = () => {
             `Has been microchipped.`,
             `And much more.`,
           ].map((text, i) => (
-            <Text key={i} maxWidth='680px' className='mb-3 mt-3 mx-auto'>
-              <li style={{ fontSize: '15px' }}>{text}</li>
+            <Text key={i} maxWidth='680px' className='mb-4 mx-auto'>
+              <li style={{ fontSize: '16px' }}>{text}</li>
             </Text>
           ))}
         </div>
-      </div>
+      </InnerContainer>
       <OnlineAppContainer>
         <Text
           fontSize='0.875rem'
@@ -154,7 +148,7 @@ const ListAvailableDogs = () => {
       <div
         ref={myRef}
         className='w-100 mx-auto d-flex justify-content-between mt-3 px-3'
-        style={{ maxWidth: '980px', marginBottom: '56px' }}
+        style={{ maxWidth: '980px' }}
       >
         <LeftArrow
           text='Home'
@@ -164,17 +158,12 @@ const ListAvailableDogs = () => {
         />
         <RightArrow text='Sponsor a Sanctuary' url='/about/sanctuary' />
       </div>
-      {error && (
-        <div className='mx-auto w-50'>
-          <Message variant='danger'>{error}</Message>
-        </div>
-      )}
       <CardContainer>
         {loading
           ? [1, 2, 3].map((_: any, i: number) => (
               <LoadingImg w='100%' h='100%' key={i} />
             ))
-          : dachshunds?.data?.map((dachshund: any) => (
+          : dachshunds?.map((dachshund: any) => (
               <Dachshund key={dachshund?.id} dachshund={dachshund} />
             ))}
       </CardContainer>

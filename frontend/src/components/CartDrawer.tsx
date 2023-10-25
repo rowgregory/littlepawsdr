@@ -38,7 +38,7 @@ const CartDrawer = () => {
   }, []);
 
   return (
-    <Container ref={cartRef} className={animation}>
+    <Container ref={cartRef} className={animation} h={window.innerHeight}>
       <i
         onClick={() => dispatch(openCartDrawer(false))}
         className='fas fa-times'

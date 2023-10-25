@@ -61,7 +61,9 @@ const CartItem = ({ item }: any) => {
           to={
             item?.dachshundId
               ? `/welcome-wiener/${item?.dachshundId}`
-              : `/merch/${item?.id ?? item?.productId}`
+              : item?.isEcard
+              ? `/ecards/filtered?category=${item.category}`
+              : `/merch/${item?.productId}`
           }
           onClick={() => dispatch(openCartDrawer(false))}
         >

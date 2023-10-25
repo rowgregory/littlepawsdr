@@ -52,35 +52,38 @@ export const DogContainer = styled(Row)`
 
     :hover {
       div {
-        transition: 1300ms;
-        div {
-          &::after {
-            content: '';
-            position: absolute;
-            top: 6px;
-            left: 6px;
-            right: 6px;
-            bottom: 51px;
-            z-index: 20px;
-            border: 5px solid white;
-            opacity: 0.6;
-          }
-          img {
-            transform: rotate(20deg) scale(1.5);
-          }
+        img {
+          transform: rotate(20deg) scale(1.5);
         }
       }
     }
     div {
-      div {
-        img {
-          transition: transform 300ms ease-out;
-          object-fit: cover;
-          aspect-ratio: 1/1;
-          width: 100%;
-          height: 100%;
-        }
+      img {
+        transition: transform 300ms ease-out;
+        object-fit: cover;
+        aspect-ratio: 1/1;
+        width: 100%;
+        height: 100%;
       }
+    }
+  }
+`;
+
+export const ImageContainer = styled.div`
+  transition: 1300ms;
+  position: relative;
+  overflow: hidden;
+  :hover {
+    &::after {
+      content: '';
+      position: absolute;
+      top: 6px;
+      left: 6px;
+      right: 6px;
+      bottom: 6px;
+      z-index: 20px;
+      border: 5px solid #fff;
+      opacity: 0.6;
     }
   }
 `;

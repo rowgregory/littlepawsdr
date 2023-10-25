@@ -5,10 +5,6 @@ import allReducers from './reducers';
 
 const middleware = [thunk];
 
-const dachshundsFromStorage = localStorage.getItem('dachshunds')
-  ? JSON.parse(localStorage.getItem('dachshunds') || '')
-  : [];
-
 let userInfoFromStorage: any = localStorage.getItem('userInfo')
   ? JSON.parse(localStorage.getItem('userInfo') || '')
   : null;
@@ -21,12 +17,7 @@ const cartItemsFromStorage = localStorage.getItem('cartItems')
   ? JSON.parse(localStorage.getItem('cartItems') || '')
   : [];
 
-const ecardsFromStorage = sessionStorage.getItem('ecards')
-  ? JSON.parse(sessionStorage.getItem('ecards') || '')
-  : {};
-
 const initialState: any = {
-  dachshunds: { dachshunds: dachshundsFromStorage },
   userLogin: { userInfo: userInfoFromStorage },
   cart: {
     cartItems: cartItemsFromStorage?.cartItems ?? [],
@@ -37,7 +28,6 @@ const initialState: any = {
     totalPrice: cartItemsFromStorage?.totalPrice ?? 0,
     cartDrawer: false,
   },
-  eCardList: { ecardsFromStorage },
 };
 
 const store: any = createStore(

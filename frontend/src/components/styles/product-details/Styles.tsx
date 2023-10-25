@@ -1,27 +1,43 @@
 import { Button, Col, Form } from 'react-bootstrap';
 import styled from 'styled-components';
 
+export const Container = styled.div`
+  padding: 128px 16px;
+  max-width: 1400px;
+  margin-inline: auto;
+  width: 100%;
+`;
+
+export const InnerContainer = styled.div`
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-gap: 16px;
+  width: 100%;
+  margin-inline: auto;
+  margin-top: 18px;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    padding-inline: 16px;
+    grid-template-columns: 40% 30% 30%;
+    justify-content: center;
+  }
+`;
+
+export const ImagesContainer = styled.div`
+  margin-bottom: 32px;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
+    margin-bottom: 0;
+  }
+`;
+
 export const PriceContainer = styled.div`
   display: none;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
     display: flex;
-  }
-`;
-
-export const ProductDetailsContainer = styled.div`
-  display: grid;
-  grid-template-columns: 1fr;
-  width: 100%;
-  margin-inline: auto;
-  margin-top: 18px;
-
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-    grid-template-columns: 40% 30% 20%;
-    justify-content: center;
-  }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    grid-template-columns: 50% 30% 20%;
-    justify-content: center;
+    position: relative;
+    div:first-child {
+      position: absolute;
+      top: 6px;
+    }
   }
 `;
 
@@ -37,6 +53,32 @@ export const SelectInputContainer = styled.div`
   display: flex;
   flex-direction: column;
 
+  select {
+    appearance: none;
+    background-image: ${({ theme }) =>
+      `url("data:image/svg+xml;utf8,<svg fill='${
+        theme.mode === 'day' ? 'black' : 'white'
+      }' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>")`} !important;
+    background-repeat: no-repeat !important;
+    background-position-x: 60px !important;
+    background-position-y: 18px !important;
+    padding: 24px 32px 16px 16px !important;
+  }
+  :hover {
+    div {
+      color: ${({ theme }) => theme.colors.quinary} !important;
+    }
+  }
+`;
+
+export const SelectSizeContainer = styled.div`
+  position: relative;
+  margin-right: 16px;
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  width: 84px;
+  border: 0;
   select {
     appearance: none;
     background-image: ${({ theme }) =>
@@ -85,7 +127,7 @@ export const SelectInput = styled(Form.Control)<{ bg?: any; color?: any }>`
   }
 `;
 
-export const ThirdColumnWrapper = styled.div`
+export const AddToCartSectionContainer = styled.div`
   border: 1px solid ${({ theme }) => theme.input.border};
   height: fit-content;
   border-radius: 0.75rem;
@@ -167,24 +209,6 @@ export const SizeContainer = styled.div<{ show: boolean }>`
   display: ${({ show }) => (show ? 'flex' : 'none')};
   justify-content: space-between;
   margin-bottom: 3rem;
-`;
-
-export const Size = styled.div<{ active?: boolean }>`
-  height: 40px;
-  width: 50px;
-  border: 1px solid ${({ theme }) => theme.colors.quinary};
-  color: ${({ theme, active }) =>
-    active ? theme.white : theme.colors.quinary};
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  background: ${({ theme, active }) => (active ? theme.colors.quinary : '')};
-  transition: 300ms;
-  :hover {
-    color: ${({ theme, active }) => theme.white};
-    background: ${({ theme, active }) => (active ? '' : theme.colors.quinary)};
-  }
 `;
 
 export const ReviewsAndRatingsContainer = styled.div`

@@ -117,6 +117,7 @@ const createProduct = asyncHandler(async (req, res) => {
     countInStock,
     sizes,
     images,
+    hasSizes
   } = req.body;
   try {
     const product = new Product({
@@ -133,6 +134,7 @@ const createProduct = asyncHandler(async (req, res) => {
       sizes,
       isPhysicalProduct: true,
       images,
+      hasSizes
     });
 
     const createdProduct = await product.save();
@@ -173,6 +175,7 @@ const updateProduct = asyncHandler(async (req, res) => {
       sizes,
       shippingPrice,
       images,
+      hasSizes
     } = req.body;
 
     const product = await Product.findById(req.params.id);
@@ -189,6 +192,7 @@ const updateProduct = asyncHandler(async (req, res) => {
     product.size = size ?? product.size;
     product.sizes = sizes ?? product.sizes;
     product.images = images ?? product.images;
+    product.hasSizes = hasSizes ?? product.hasSizes;
 
     const updatedProduct = await product.save();
     res.json(updatedProduct);

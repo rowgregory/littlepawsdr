@@ -9,9 +9,16 @@ import LeftArrow from '../../components/svg/LeftArrow';
 import RightArrow from '../../components/svg/RightArrow';
 import Hero from '../../components/Hero';
 
-const StyledAccordion = styled(Accordion)`
-  background: ${({ theme }) => theme.input.bg};
+const StyledAccordion = styled(Accordion)<{ isopen?: string }>`
   border: 1px solid ${({ theme }) => theme.text};
+  button {
+    background: ${({ theme, isopen }) =>
+      isopen === 'true' ? theme.colors.quinary : theme.input.bg};
+    div {
+      color: ${({ theme, isopen }) =>
+        isopen === 'true' ? theme.input.bg : ''};
+    }
+  }
   :hover {
     border: 1px solid ${({ theme }) => theme.colors.quinary};
   }
@@ -48,7 +55,11 @@ const AdoptionFAQ = () => {
           />
         </div>
         {faq().map((obj, index) => (
-          <StyledAccordion key={index} className='mb-3'>
+          <StyledAccordion
+            key={index}
+            className='mb-3'
+            isopen={idx.includes(index).toString()}
+          >
             <Accordion.Toggle
               as={Button}
               style={{ borderRadius: 'none !important' }}

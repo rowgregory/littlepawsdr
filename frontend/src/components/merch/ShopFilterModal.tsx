@@ -7,7 +7,7 @@ import {
   Header,
   LeftBtn,
   Title,
-} from '../../components/ContinueSessionModal';
+} from '../ContinueSessionModal';
 import { categories } from '../../utils/shopCategories';
 import {
   Category,

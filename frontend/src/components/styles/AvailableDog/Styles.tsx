@@ -1,4 +1,4 @@
-import { Carousel } from 'react-bootstrap';
+import { Carousel, Image } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -19,6 +19,43 @@ export interface DachshundDetailsProps {
   };
 }
 
+export interface ImageAndNameProps {
+  info: {
+    attributes: {
+      photos: [];
+      name: string;
+      ageGroup: string;
+      sex: string;
+      breedString: string;
+    };
+    relationships: {
+      statuses: {
+        data: [
+          {
+            type: string;
+            id: string;
+          }
+        ];
+      };
+    };
+  };
+}
+export interface InfoSectionProps {
+  info: {
+    attributes: {
+      name: string;
+      descriptionHtml: string;
+    };
+  };
+}
+
+export const DefaultNoDogImg = styled(Image)`
+  aspect-ratio: 1/1;
+  max-width: 425px;
+  width: 100%;
+  objec-ffit: cover;
+`;
+
 export const StyledCarousel = styled(Carousel)`
   background: ${({ theme }) => theme.card.bg};
   border: 1px solid ${({ theme }) => theme.input.border};
@@ -33,6 +70,8 @@ export const StyledCarousel = styled(Carousel)`
 
 export const Container = styled.div`
   max-width: ${({ theme }) => theme.breakpoints[3]};
+  display: flex;
+  flex-direction: column;
   margin-inline: auto;
   padding-inline: 8px;
   margin-top: 96px;
@@ -91,9 +130,17 @@ export const FlexContainer = styled.div`
   display: flex;
   flex-direction: column;
   margin-top: 32px;
+  margin-bottom: 60px;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
     flex-direction: row;
-    margin-bottom: 60px;
+  }
+`;
+export const LoadingContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    width: 65%;
+    height: 65%;
   }
 `;
 

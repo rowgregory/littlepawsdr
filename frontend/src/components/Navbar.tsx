@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Image } from 'react-bootstrap';
 import styled, { useTheme } from 'styled-components';
 import { Link, useLocation } from 'react-router-dom';
@@ -6,6 +6,7 @@ import RightSideNavbar from './navbar/RightSideNavbar';
 import LeftNavigation from './navbar/LeftNavigation';
 import Logo from '../components/assets/logo-white2.png';
 import { FAIcons } from './styles/NavbarStyles';
+import { Overlay } from './styles/left-navigation/styles';
 
 const Container = styled.div<{ show: any; p: string; mode: string }>`
   position: fixed;
@@ -78,10 +79,11 @@ const Navbar = () => {
   ].some((a: string) => pathname.includes(a)) ? (
     <>
       <LeftNavigation openMenu={openMenu} setOpenMenu={setOpenMenu} />
+      <Overlay open={openMenu} />
       <Container show={show.toString()} p={pathname} mode={theme.mode}>
         <div className='d-flex justify-content-center align-items-center'>
           <BurgerMenuBottomBorder show={show.toString()} p={pathname}>
-            <FAIcons onClick={() => setOpenMenu(true)} style={{}}>
+            <FAIcons onClick={() => setOpenMenu(true)}>
               <div className='mr-2'>
                 <i className='fas fa-bars'></i>
               </div>

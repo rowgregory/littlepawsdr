@@ -37,7 +37,7 @@ const productPurchase = (pugEmail, body, hasEmailBeenSent) => {
       },
     })
     .then(() => {
-      console.log(`Order confirmation email has been sent to ${body?.email}`);
+      console.log(`Order confirmation email has been sent`);
     });
   hasEmailBeenSent = true;
   return hasEmailBeenSent;

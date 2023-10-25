@@ -89,7 +89,13 @@ const Convex = styled.div`
   box-shadow: 0px -27px 26px 6px rgba(0, 0, 0, 0.35);
 `;
 
-const PopUp = () => {
+const PopUp = ({
+  openEmailModal,
+  setNl,
+}: {
+  openEmailModal?: boolean;
+  setNl?: any;
+}) => {
   const [show, setShow] = useState(true);
   const handleClose = () => setShow(false);
   const [email, setNewsletterEmail] = useState('');
@@ -120,15 +126,15 @@ const PopUp = () => {
     }
   }, [dispatch, success]);
 
-  const showPopup = ![continuedSession, hasSubmittedNewsletterEmail].includes(
-    true
-  );
+  const showPopup =
+    ![continuedSession, hasSubmittedNewsletterEmail].includes(true) ||
+    openEmailModal;
 
   return (
     <>
       {showPopup && (
         <StyledModal
-          show={show}
+          show={show || openEmailModal}
           className='d-flex justify-content-center align-items-center popup'
           onEscapeKeyDown={() => handleClose()}
         >
@@ -214,6 +220,7 @@ const PopUp = () => {
                         'continuedToSite',
                         JSON.stringify(true)
                       );
+                      setNl && setNl(false);
                     }}
                   >
                     Continue to site

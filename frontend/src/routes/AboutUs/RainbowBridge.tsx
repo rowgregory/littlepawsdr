@@ -1,45 +1,33 @@
-import React, { useEffect, useState } from 'react';
-import { Card, Pagination } from 'react-bootstrap';
-import { useSelector, useDispatch } from 'react-redux';
-import { getDogsByStatusPicturesAndVideours } from '../../actions/dachshundsActions';
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Text } from '../../components/styles/Styles';
 import { LoadingImg } from '../../components/LoadingImg';
 import RainbowHigh from '../../components/assets/rainbow-high.jpeg';
 import RainbowLow from '../../components/assets/rainbow-low.jpg';
-import NoImgDog from '../../components/assets/no_image_dog.jpg';
-import { PaginationContainer } from '../../components/styles/admin/Styles';
-import { rangeV2 } from '../../components/common/Pagination';
 import LeftArrow from '../../components/svg/LeftArrow';
 import RightArrow from '../../components/svg/RightArrow';
 import Hero from '../../components/Hero';
 import {
   Container,
   DogContainer,
-  TextContainer,
+  LoadMoreBtn,
 } from '../../components/styles/GridDogStyles';
+import DachshundCard from '../../components/DachshundCard';
 
 const RainbowBridge = () => {
-  const dispatch = useDispatch();
-  const [paginatedPage, setPaginatedPage] = useState(1);
-  const [paginatedItems, setPaginatedItems] = useState<{}[]>([]) as any;
-
-  const dachshund = useSelector(
-    (state: any) => state.dachshundPicturesVideosStatuses
+  const [displayCount, setDisplayCount] = useState(50);
+  const state = useSelector((state: any) => state);
+  const loading = state.dachshundPicturesVideosStatuses.loading;
+  const allDahchshunds = state.dachshundPicturesVideosStatuses.dachshunds;
+  const rainbowBridge = allDahchshunds?.filter(
+    (dachshund: any) => dachshund.relationships.statuses.data[0].id === '7'
   );
-  const { dachshunds, loading } = dachshund;
 
-  useEffect(() => {
-    const itemsPerPage = 12;
-    const indexOfLastItem = paginatedPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const displayedData = rainbowBridge?.slice(0, displayCount);
 
-    setPaginatedItems(dachshunds?.slice(indexOfFirstItem, indexOfLastItem));
-  }, [dachshunds, paginatedPage]);
-
-  useEffect(() => {
-    dispatch(getDogsByStatusPicturesAndVideours('Passed Away'));
-  }, [dispatch]);
+  const loadMore = () => {
+    setDisplayCount(displayCount + 50);
+  };
 
   return (
     <>
@@ -85,53 +73,14 @@ const RainbowBridge = () => {
             ))}
           </DogContainer>
         )}
-        <DogContainer lg={12}>
-          {paginatedItems?.map((dachshund: any) => (
-            <div
-              key={dachshund.id}
-              className='rounded d-flex justify-content-center h-100'
-              style={{ position: 'relative' }}
-            >
-              <Card.Img
-                src={dachshund?.attributes?.photos[0] ?? NoImgDog}
-                alt={`We miss you ${dachshund?.attributes?.name}!`}
-                style={{
-                  aspectRatio: '1 / 1',
-                  objectFit: 'cover',
-                  maxWidth: '300px',
-                  width: '100%',
-                }}
-              />
-
-              <TextContainer>
-                <Link
-                  to={{
-                    pathname: `/about/dachshund`,
-                    state: {
-                      dog: dachshund,
-                      directBackTo: 'rainbow-bridge',
-                      pathName: 'Rainbow Bridge',
-                    },
-                  }}
-                  className='d-flex align-self-center'
-                >
-                  <Text
-                    fontSize='14px'
-                    fontWeight={400}
-                    className='justify-content-center d-flex'
-                  >
-                    {dachshund?.attributes?.name}
-                  </Text>
-                </Link>
-              </TextContainer>
-            </div>
+        <DogContainer>
+          {displayedData?.map((dachshund: any) => (
+            <DachshundCard key={dachshund?.id} dachshund={dachshund} />
           ))}
         </DogContainer>
-        <PaginationContainer>
-          <Pagination className='my-3'>
-            {rangeV2(dachshunds, paginatedPage, setPaginatedPage, 12)}
-          </Pagination>
-        </PaginationContainer>
+        {displayCount < rainbowBridge?.length && (
+          <LoadMoreBtn onClick={loadMore}>Load More</LoadMoreBtn>
+        )}
       </Container>
     </>
   );

@@ -89,6 +89,7 @@ export const RightBtn = styled.button`
 `;
 
 const ContinueSessionModal = ({ show, handleClose }: any) => {
+  // deprecated
   const dispatch = useDispatch();
   let countdownID: any = useRef();
   let [countdown, setCountdown] = useState(60);

@@ -42,7 +42,15 @@ const SideBar = () => {
         },
         {
           linkText: 'Ecards',
-          linkKey: '/e-cards',
+          linkKey: '/ecards',
+        },
+        {
+          linkText: 'Merch',
+          linkKey: '/merch',
+        },
+        {
+          linkText: 'Welcome Wieners',
+          linkKey: '/welcome-wieners',
         },
         {
           linkText: 'Venmo',
@@ -55,14 +63,6 @@ const SideBar = () => {
         {
           linkText: 'Shop To Help',
           linkKey: '/donate/shop-to-help',
-        },
-        {
-          linkText: 'Long Dog',
-          linkKey: '/donate/long-dog',
-        },
-        {
-          linkText: 'Feed A Foster',
-          linkKey: '/donate/feed-a-foster',
         },
       ].map((obj: any, i: number) => (
         <DonateLink

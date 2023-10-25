@@ -72,7 +72,6 @@ async function createEcardOrders(createdOrder) {
 
   if (ecards?.length > 0) {
     for (const item of ecards) {
-      console.log(item)
       const createdEcardOrder = new ECardOrder({
         ...item,
         productName: item.productName,

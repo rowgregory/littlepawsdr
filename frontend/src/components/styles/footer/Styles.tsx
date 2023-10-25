@@ -8,7 +8,7 @@ export const StyledFooter = styled.footer`
   align-items: center;
   background: ${({ theme }) => theme.footer.bg};
   border-top: ${({ theme }) => `3px solid ${theme.smcontainer.bg}`};
-  padding: 1rem;
+  padding: 16px;
   position: relative;
 `;
 
@@ -18,11 +18,10 @@ export const TopFooter = styled.div`
   max-width: 1300px;
   width: 100%;
   max-width: ${({ theme }) => theme.breakpoints[4]};
-  margin: 0 96px;
   display: flex;
   align-items: start;
-  padding: 32px 0 0;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
+  justify-content: center;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
     padding: 72px 0;
     align-items: center;
     flex-direction: row;
@@ -30,30 +29,25 @@ export const TopFooter = styled.div`
 `;
 export const LogoImage = styled(Image)`
   margin-left: -25px;
-  max-width: 270px;
+  max-width: 220px;
   width: 100%;
-  margin-right: 64px;
-  object-fit: cover;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    margin-right: 64px;
-  }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[4]}) {
-    margin-right: 96px;
+  margin-bottom: 24px;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+    margin-bottom: 0;
   }
 `;
 export const LinkWrapper = styled.div`
   width: 100%;
-  margin: 32px 0;
   display: flex;
   flex-direction: column;
 
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
     display: grid;
-    grid-template-columns: 0.75fr 0.6fr 1.5fr;
+    max-width: 1000px;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
   }
 `;
 export const LinkSection = styled.div`
-  margin-bottom: 24px;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[4]}) {
     margin-bottom: 0;
   }
@@ -62,6 +56,10 @@ export const LinkSection = styled.div`
 export const LinkCategory = styled.div`
   color: #fff;
   margin-bottom: 8px;
+  margin-top: 20px;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+    margin-top: 0;
+  }
 `;
 
 export const StyledLink = styled(Link)`
@@ -114,6 +112,7 @@ export const BottomFooter = styled.div`
   align-items: start;
   justify-content: space-between;
   flex-direction: column;
+  margin-top: 24px;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
     flex-direction: row;
     align-items: center;

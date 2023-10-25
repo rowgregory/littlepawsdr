@@ -7,6 +7,7 @@ import {
   getECardDetails,
   updateECard,
   deleteEcard,
+  getFilteredEcards
 } from '../controllers/eCardController.js';
 
 router.route('/').post(protect, admin, createECard).get(getECards);
@@ -15,5 +16,6 @@ router
   .get(protect, admin, getECardDetails)
   .put(protect, admin, updateECard)
   .delete(protect, admin, deleteEcard);
+router.route('/filtered/:category').get(getFilteredEcards)
 
 export default router;

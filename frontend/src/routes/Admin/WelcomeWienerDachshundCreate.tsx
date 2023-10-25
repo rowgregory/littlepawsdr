@@ -4,36 +4,24 @@ import { useHistory } from 'react-router-dom';
 import { Container } from '../../components/styles/admin/Styles';
 import { WelcomeText } from '../../components/styles/DashboardStyles';
 import BreadCrumb from '../../components/common/BreadCrumb';
-import API from '../../utils/api';
 import { WELCOME_WIENER_DACHSHUND_CREATE_RESET } from '../../constants/welcomeWienerDachshundConstants';
 import { createWelcomeWienerDachshund } from '../../actions/welcomeWienerDachshundActions';
 import CreateEditWelcomeWienerDachshundForm from '../../components/forms/CreateEditWelcomeWienerDachshundForm';
 import useWelcomeWienerDachshundForm from '../../utils/hooks/useWelcomeWienerDachshundForm';
+import { compressAndUpload } from '../../utils/uploadFilesToImgBB';
 
 const WelcomeWienerDachshundCreate = () => {
   const history = useHistory();
   const dispatch = useDispatch();
   const [uploading, setUploading] = useState(false);
   const [file, setFile] = useState<File | null>(null);
-  const [imgUploadStatus, setImageUploadStatus] = useState('');
-
-  const {
-    welcomeWienerDachshundCreate: {
-      loading: loadingCreate,
-      success: successCreate,
-    },
-  } = useSelector((state: any) => state);
+  const state = useSelector((state: any) => state);
+  const loading = state.welcomeWienerDachshundCreate.loading;
+  const success = state.welcomeWienerDachshundCreate.success;
 
   const createWelcomeWienerDachshundCallback = async () => {
-    let image;
-    if (file?.name) {
-      setUploading(true);
-      setImageUploadStatus('Uploading to Imgbb');
-      const formData = new FormData();
-      formData.append('image', file);
-      image = await API.uploadImageToImgbb(formData);
-      setImageUploadStatus('Image uploaded!');
-    }
+    setUploading(true);
+    const image = file?.name && ((await compressAndUpload(file)) as any);
 
     dispatch(
       createWelcomeWienerDachshund({
@@ -47,11 +35,11 @@ const WelcomeWienerDachshundCreate = () => {
   };
 
   useEffect(() => {
-    if (successCreate) {
+    if (success) {
       history.push('/admin/welcome-wiener/dachshund/list');
       dispatch({ type: WELCOME_WIENER_DACHSHUND_CREATE_RESET });
     }
-  }, [dispatch, history, successCreate]);
+  }, [dispatch, history, success]);
 
   const {
     onSubmit,
@@ -86,10 +74,9 @@ const WelcomeWienerDachshundCreate = () => {
         inputs={inputs}
         handleInput={handleInput}
         file={file}
-        uploading={uploading || loadingCreate}
+        uploading={uploading || loading}
         onSubmit={onSubmit}
         submitBtnText='Creat'
-        imgUploadStatus={imgUploadStatus}
         setInputs={setInputs}
         errors={errors}
         handleBlur={handleBlur}

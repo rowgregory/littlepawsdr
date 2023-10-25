@@ -1,203 +1,75 @@
-import React from 'react';
-import { useLocation } from 'react-router-dom';
-import { Carousel, Image } from 'react-bootstrap';
-import { Text } from '../../components/styles/Styles';
+import { useEffect } from 'react';
 import LeftArrow from '../../components/svg/LeftArrow';
-import NoImgDog from '../../components/assets/no_image_dog.jpg';
 import {
-  BottomSection,
   Container,
-  Description,
-  DetailsGrid,
-  DogDetailsContainer,
   FlexContainer,
-  StyledCarousel,
+  LoadingContainer,
 } from '../../components/styles/AvailableDog/Styles';
+import { getDachshundDetails } from '../../actions/dachshundsActions';
+import { useDispatch, useSelector } from 'react-redux';
+import { LoadingImg } from '../../components/LoadingImg';
+import ImageAndName from '../../components/dachshund-details/ImageAndName';
+import InfoSection from '../../components/dachshund-details/InfoSection';
+import BottomInfo from '../../components/dachshund-details/BottomInfo';
 
-const DachshundDetails = () => {
-  const { state } = useLocation() as any;
+const DachshundDetails = ({ match }: any) => {
+  const dispatch = useDispatch();
+  const id = match.params.id;
 
-  const {
-    name,
-    breedString,
-    ageGroup,
-    sex,
-    photos,
-    isDogsOk,
-    isKidsOk,
-    ageString,
-    sizeGroup,
-    colorDetails,
-    groomingNeeds,
-    isHousetrained,
-    housetrainedReasonNot,
-    newPeopleReaction,
-    isCatsOk,
-    vocalLevel,
-    descriptionHtml,
-  } = state?.dog?.attributes;
+  const state = useSelector((state: any) => state);
+  const loading = state.dachshundDetails.loading;
+  const dachshund = state.dachshundDetails.dachshund;
 
-  const detailsData = () => [
-    {
-      title: 'Name',
-      textKey: name,
-    },
-    {
-      title: 'Age',
-      textKey: ageString,
-    },
-    {
-      title: 'Gender',
-      textKey: sex,
-    },
-    {
-      title: 'Size',
-      textKey: sizeGroup,
-    },
-    {
-      title: 'Primary Color',
-      textKey: colorDetails,
-    },
-    {
-      title: 'Grooming Needs',
-      textKey: groomingNeeds,
-    },
-    {
-      title: 'Ok with kids',
-      textKey: isKidsOk ? 'YES' : 'NO',
-    },
-    {
-      title: 'Housetrained',
-      textKey: isHousetrained ? 'YES' : housetrainedReasonNot,
-    },
-    {
-      title: 'New People Reaction',
-      textKey: newPeopleReaction,
-    },
-    {
-      title: 'Vocal Level',
-      textKey: vocalLevel,
-    },
-    {
-      title: 'Ok with dogs',
-      textKey: isDogsOk ? 'YES' : 'NO',
-    },
-    {
-      title: 'Okay with cats',
-      textKey: isCatsOk ? 'YES' : 'NO',
-    },
-  ];
+  window.scrollTo(0, 0);
+
+  useEffect(() => {
+    dispatch(getDachshundDetails(id));
+  }, [id, dispatch]);
+
+  const info = dachshund?.data[0];
+  const dogStatusId = info?.relationships?.statuses?.data[0]?.id;
+
+  const leftArrowText =
+    dogStatusId === '17'
+      ? 'dogs on hold'
+      : dogStatusId === '3'
+      ? 'successful adotions'
+      : dogStatusId === '7'
+      ? 'rainbow bridge'
+      : dogStatusId === '15'
+      ? 'sanctuary dogs'
+      : 'available dogs';
+
+  const leftArrowUrl =
+    dogStatusId === '17'
+      ? '/about/hold'
+      : dogStatusId === '3'
+      ? '/about/successful-adoptions'
+      : dogStatusId === '7'
+      ? '/about/rainbow-bridge'
+      : dogStatusId === '15'
+      ? '/about/sanctuary'
+      : '/available';
+
+  if (loading) {
+    return (
+      <Container className='w-100'>
+        <LeftArrow text={`Back to ${leftArrowText}`} url={leftArrowUrl} />
+        <FlexContainer>
+          <LoadingContainer>
+            <LoadingImg w='100%' />
+          </LoadingContainer>
+        </FlexContainer>
+      </Container>
+    );
+  }
 
   return (
     <Container>
-      <LeftArrow
-        text={`Back to ${state?.pathName}`}
-        url={`/about/${state?.directBackTo}`}
-      />
-      <FlexContainer>
-        {photos?.length === 0 ? (
-          <Image
-            src={NoImgDog}
-            style={{
-              aspectRatio: '1/1',
-              maxWidth: '425px',
-              width: '100%',
-              objectFit: 'cover',
-            }}
-            alt={`Sorry, there currently is no image of ${name}`}
-          />
-        ) : (
-          <StyledCarousel pause='hover'>
-            {photos?.map((photo: string, i: number) => (
-              <Carousel.Item key={i} interval={4000}>
-                <Image
-                  src={photo}
-                  alt={`${photo}-${i}`}
-                  style={{ aspectRatio: '1/1' }}
-                />
-              </Carousel.Item>
-            ))}
-          </StyledCarousel>
-        )}
-        <DogDetailsContainer>
-          <Text fontSize='36px' fontWeight='500'>
-            {name}
-          </Text>
-          <Text>
-            {ageGroup} {sex} {breedString}
-          </Text>
-        </DogDetailsContainer>
-      </FlexContainer>
-      <FlexContainer>
-        <div className='d-flex flex-column mr-4' style={{ flex: '1 1 0px' }}>
-          <Text fontSize='24px' fontWeight='600' marginBottom='30px'>
-            About {name}
-          </Text>
-          <Description
-            dangerouslySetInnerHTML={{ __html: descriptionHtml }}
-          ></Description>
-        </div>
-        <div style={{ flex: '1 1 0px' }}>
-          <Text fontSize='24px' fontWeight='600' marginBottom='30px'>
-            Details
-          </Text>
-          <DetailsGrid>
-            {detailsData().map((obj: any, i: number) => (
-              <div className='d-flex flex-column' key={i}>
-                <Text fontWeight={400} fontSize='14px'>
-                  {obj.title}
-                </Text>
-                <Text>{obj.textKey}</Text>
-              </div>
-            ))}
-          </DetailsGrid>
-        </div>
-      </FlexContainer>
-      <BottomSection>
-        <div className='d-flex flex-column p-3'>
-          <Text fontWeight='bold' fontSize='24px' marginBottom='12px'>
-            Dogs Adopted in New England
-          </Text>
-          <Text>
-            Dogs adopted in New England are subject to additional rules and
-            regulations by the state departments of agriculture. Complying with
-            these regulations is expensive for our rescue, and some dogs adopted
-            in New England states are charged an additional $175.00 to cover
-            regulatory requirements.
-          </Text>
-        </div>
-        <div className='d-flex flex-column p-3'>
-          <Text fontWeight='bold' fontSize='24px' marginBottom='12px'>
-            Transportation Help and Distance Restrictions
-          </Text>
-          <Text>
-            Volunteer transport can be arranged if you see a dog that is a good
-            match for your family. The cost for volunteer transport includes a
-            health certificate (required by law and issued by a veterinarian), a
-            crate (which all dogs must travel in for safety), and a collar,
-            leash, and harness. The total for this service will be provided to
-            you in the adoption approval email. The cost of health certificates
-            varies and, in some cases, has been higher than the dog’s adoption
-            fee. <br /> <br />
-            Adopters are also welcome to travel to their newly adopted dog to
-            bring the dog home with them. A crate to safely transport the dog
-            would be the responsibility of the adopter.
-          </Text>
-        </div>
-        <div className='d-flex flex-column p-3'>
-          <Text fontWeight='bold' fontSize='1.15rem' marginBottom='0.55rem'>
-            Adopting across state costs extra
-          </Text>
-          <Text>
-            If the dog is adopted over a state line, there will be an additional
-            charge for a health certificate (required by law). The cost of the
-            health certificate is the responsibility of the adopter. The amount
-            depends upon what the veterinarian charges LPDR. The cost of a
-            health certificate varies and, in some cases, has been higher than
-            the dog’s adoption fee.
-          </Text>
-        </div>
-      </BottomSection>
+      <LeftArrow text={`Back to ${leftArrowText}`} url={leftArrowUrl} />
+      <ImageAndName info={info} />
+      <InfoSection info={info} />
+      <BottomInfo />
     </Container>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Form, Image } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { createECard, updateECard } from '../../actions/eCardActions';
@@ -20,7 +20,7 @@ import { WelcomeText } from '../../components/styles/DashboardStyles';
 import PhotoUploadIcon from '../../components/svg/PhotoUploadIcon';
 import BreadCrumb from '../../components/common/BreadCrumb';
 import Error from '../../components/assets/404_dog01.png';
-import API from '../../utils/api';
+import { compressAndUpload } from '../../utils/uploadFilesToImgBB';
 
 const useEcardEditForm = (callback?: any, data?: any) => {
   const values = {
@@ -66,32 +66,22 @@ const ECardEdit = () => {
   const dispatch = useDispatch();
   const [uploading, setUploading] = useState(false);
   const [file, setFile] = useState({}) as any;
-  const [imgUploadStatus, setImageUploadStatus] = useState('') as any;
 
-  const {
-    eCardUpdate: {
-      loading: loadingUpdate,
-      error: errorUpdate,
-      success: successUpdate,
-    },
-    eCardCreate: {
-      loading: loadingCreate,
-      error: errorCreate,
-      success: successCreate,
-    },
-  } = useSelector((state: any) => state);
+  const state = useSelector((state: any) => state);
+
+  const loadingUpdate = state.ecardUpdate.loading;
+  const errorUpdate = state.ecardUpdate.error;
+  const successUpdate = state.ecardUpdate.success;
+
+  const loadingCreate = state.ecardCreate.loading;
+  const errorCreate = state.ecardCreate.error;
+  const successCreate = state.ecardCreate.success;
 
   const editEcardCallback = async () => {
     setUploading(true);
-    setImageUploadStatus('Uploading to Imgbb');
-    const formData = new FormData();
-    formData.append('image', file);
-    const isFile = file?.name;
-    const image = isFile && (await API.uploadImageToImgbb(formData));
-    setImageUploadStatus('Image uploaded!');
-    setImageUploadStatus(
-      isEditMode ? 'Updating ecard details' : 'Creating ecard details'
-    );
+
+    const image = file?.name && ((await compressAndUpload(file)) as any);
+
     if (isEditMode) {
       dispatch(
         updateECard({
@@ -100,6 +90,7 @@ const ECardEdit = () => {
           price: inputs.price,
           name: inputs.name,
           image: image?.data?.url,
+          thumb: image?.data?.thumb?.url,
         })
       );
     } else {
@@ -109,6 +100,7 @@ const ECardEdit = () => {
           price: inputs.price,
           name: inputs.name,
           image: image?.data?.url,
+          thumb: image?.data?.thumb?.url,
         })
       );
     }
@@ -121,7 +113,6 @@ const ECardEdit = () => {
 
   useEffect(() => {
     if (successCreate || successUpdate) {
-      setImageUploadStatus('Done!');
       history.push('/admin/eCardList');
       dispatch({ type: ECARD_UPDATE_RESET });
       dispatch({ type: ECARD_CREATE_RESET });
@@ -196,7 +187,7 @@ const ECardEdit = () => {
               label={
                 file?.name ? (
                   <UploadImageSquare className={uploading ? 'anim' : ''}>
-                    <PhotoUploadIcon ready={file} imgStatus={imgUploadStatus} />
+                    <PhotoUploadIcon ready={file} />
                   </UploadImageSquare>
                 ) : (
                   <Image

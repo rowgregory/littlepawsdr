@@ -95,7 +95,7 @@ const DonateHeroAndText = () => {
         >
           Interested in supporting Little Paws Dachshund Rescue?
         </Text>
-        <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='18px'>
+        <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='16px'>
           Right now, we are in need of monetary donations. Happy endings for our
           dachshunds in need can only happen with your support. Please allow us
           to continue to say “YES WE CAN” to those calls asking for assistance
@@ -103,11 +103,11 @@ const DonateHeroAndText = () => {
           been neglected and abused and deserves a warm bed and a kind hand to
           rub his or her tummy.
         </Text>
-        <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='18px'>
+        <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='16px'>
           There are two easy ways to give monetary donations, electronically or
           check*:
         </Text>
-        <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='18px'>
+        <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='16px'>
           *Little Paws Dachshund Rescue is federal tax exemption 501(c)(3)
           public charity.
         </Text>

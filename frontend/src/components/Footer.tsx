@@ -1,15 +1,12 @@
-import React, { useState } from 'react';
-import { Form } from 'react-bootstrap';
-import { useDispatch, useSelector } from 'react-redux';
+import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { createNewsletterEmail } from '../actions/newsletterActions';
 import Logo from '../components/assets/logo-transparent.png';
 import {
   privacyPolicyLinkKey,
   quickLinks,
   termsOfServiceLinkKey,
 } from '../utils/footerUtils';
-import { SubscribeBtn } from './common/PopUp';
+import PopUp from './common/PopUp';
 import SocialMediaNavbar from './navbar/SocialMediaNavbar';
 import {
   BottomFooter,
@@ -27,23 +24,10 @@ import {
   StyledText,
   TopFooter,
 } from './styles/footer/Styles';
-import { Accordion } from './styles/place-order/Styles';
-import { Text } from './styles/Styles';
-import Checkmark from './svg/Checkmark';
 
 const Footer = () => {
   const { pathname } = useLocation();
   const [nl, setNl] = useState(false);
-  const [email, setNewsletterEmail] = useState('');
-  const dispatch = useDispatch();
-  const {
-    newsletterCreate: { error, success },
-  } = useSelector((state: any) => state);
-
-  const submitHandler = (e: any) => {
-    e.preventDefault();
-    dispatch(createNewsletterEmail(email));
-  };
 
   return ![
     '/login',
@@ -57,7 +41,9 @@ const Footer = () => {
     '/order',
   ].some((a: string) => pathname.includes(a)) ? (
     <StyledFooter>
+      <PopUp openEmailModal={nl} setNl={setNl} />
       <Photographer
+        style={{ display: pathname === '/' ? 'absolute' : 'none' }}
         onClick={() =>
           window.open(
             'https://unsplash.com/@campfire_guy?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText',
@@ -67,67 +53,12 @@ const Footer = () => {
       >
         Photo by Darren Richardson
       </Photographer>
-      <Accordion toggle={nl} maxheight='165px'>
-        <Text textAlign='center' fontWeight={600} fontSize='14px' color='#fff'>
-          Subscribe!
-        </Text>
-        <Text textAlign='center' color='#fff'>
-          Get weekly updates on our available dogs for adoption, fundraisers and
-          events!
-        </Text>
-        {success ? (
-          <div className='d-flex mt-4 flex-column align-items-center'>
-            <Checkmark />
-            <Text color='#fff' marginTop='8px' fontWeight={400}>
-              Thank you {email}!
-            </Text>
-          </div>
-        ) : (
-          <>
-            <Accordion toggle={error !== undefined} maxheight='50px'>
-              <Text color='red' textAlign='center'>
-                {error}
-              </Text>
-            </Accordion>
-            <Form
-              onSubmit={submitHandler}
-              className='d-flex w-100 justify-content-center my-4'
-              style={{ height: '165px' }}
-            >
-              <Form.Control
-                className=''
-                placeholder='Email address'
-                required
-                as='input'
-                type='email'
-                value={email}
-                onChange={(e) => setNewsletterEmail(e.target.value)}
-                style={{
-                  borderRadius: '25px 0 0 25px',
-                  border: '1px solid #d2d2d2',
-                  width: '300px',
-                }}
-              />
-
-              {!success && (
-                <SubscribeBtn
-                  type='submit'
-                  disabled={success}
-                  style={{ width: '100px' }}
-                >
-                  SUBSCRIBE
-                </SubscribeBtn>
-              )}
-            </Form>
-          </>
-        )}
-      </Accordion>
       <TopFooter>
-        <LogoImage
-          src={Logo}
-          alt={`Little Paws Dachshund Rescue ${new Date().getFullYear()} `}
-        />
         <LinkWrapper>
+          <LogoImage
+            src={Logo}
+            alt={`Little Paws Dachshund Rescue ${new Date().getFullYear()} `}
+          />
           <LinkSection>
             <LinkCategory>Our Address</LinkCategory>
             <StyledText>Little Paws Dachshund Rescue</StyledText>

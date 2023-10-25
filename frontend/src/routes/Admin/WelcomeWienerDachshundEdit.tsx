@@ -4,7 +4,6 @@ import { useHistory, useParams } from 'react-router-dom';
 import { Container } from '../../components/styles/admin/Styles';
 import { WelcomeText } from '../../components/styles/DashboardStyles';
 import BreadCrumb from '../../components/common/BreadCrumb';
-import API from '../../utils/api';
 import { WELCOME_WIENER_DACHSHUND_UPDATE_RESET } from '../../constants/welcomeWienerDachshundConstants';
 import {
   getWelcomeWienerDachshundDetails,
@@ -12,6 +11,7 @@ import {
 } from '../../actions/welcomeWienerDachshundActions';
 import CreateEditWelcomeWienerDachshundForm from '../../components/forms/CreateEditWelcomeWienerDachshundForm';
 import useWelcomeWienerDachshundForm from '../../utils/hooks/useWelcomeWienerDachshundForm';
+import { compressAndUpload } from '../../utils/uploadFilesToImgBB';
 
 const WelcomeWienerDachshundEdit = () => {
   const { id } = useParams() as any;
@@ -19,26 +19,16 @@ const WelcomeWienerDachshundEdit = () => {
   const dispatch = useDispatch();
   const [uploading, setUploading] = useState(false);
   const [file, setFile] = useState({}) as any;
-  const [imgUploadStatus, setImageUploadStatus] = useState('') as any;
 
-  const {
-    welcomeWienerDachshundUpdate: {
-      loading: loadingUpdate,
-      success: successUpdate,
-    },
-    welcomeWienerDachshundDetails: { loading: loadingDetails, dachshund },
-  } = useSelector((state: any) => state);
+  const state = useSelector((state: any) => state);
+  const loadingUpdate = state.welcomeWienerDachshundUpdate.loading;
+  const successUpdate = state.welcomeWienerDachshundUpdate.success;
+  const loadingDetails = state.welcomeWienerDachshundDetails.loading;
+  const dachshund = state.welcomeWienerDachshundDetails.dachshund;
 
   const updateWelcomeWienerDachshundCallback = async () => {
-    let image;
-    if (file?.name) {
-      setUploading(true);
-      setImageUploadStatus('Uploading to Imgbb');
-      const formData = new FormData();
-      formData.append('image', file);
-      image = await API.uploadImageToImgbb(formData);
-      setImageUploadStatus('Image uploaded!');
-    }
+    setUploading(true);
+    const image = file?.name && ((await compressAndUpload(file)) as any);
 
     dispatch(
       updateWelcomeWienerDachshund({
@@ -97,7 +87,6 @@ const WelcomeWienerDachshundEdit = () => {
         setFile={setFile}
         onSubmit={onSubmit}
         submitBtnText='Updat'
-        imgUploadStatus={imgUploadStatus}
         setInputs={setInputs}
         errors={errors}
         handleBlur={handleBlur}

@@ -252,8 +252,6 @@ export const UploadImageSquare = styled.div<{ uploading?: any }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 8px;
-  margin-bottom: 8px;
   background: linear-gradient(90deg, #c4c4c4 50%, transparent 50%),
     linear-gradient(90deg, #c4c4c4 50%, transparent 50%),
     linear-gradient(0deg, #c4c4c4 50%, transparent 50%),
@@ -262,6 +260,7 @@ export const UploadImageSquare = styled.div<{ uploading?: any }>`
   background-size: 16px 3px, 16px 3px, 3px 16px, 3px 16px;
   background-position: 0px 0px, 100px 97px, 0px 100px, 97px 24px;
   transition: background-position 10s;
+  margin-right: 4px;
 
   &.anim {
     animation: ${BorderDance} 15s infinite linear;

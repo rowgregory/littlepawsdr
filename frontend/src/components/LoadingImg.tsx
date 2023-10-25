@@ -7,6 +7,9 @@ interface LoadingImmProps {
   mw?: any;
   borderRadius?: any;
   mr?: any;
+  ar?: any;
+  maxw?: any;
+  mt?: string;
 }
 
 const Shimmer = keyframes`
@@ -20,10 +23,14 @@ const LoadingContainer = styled.div<{
   mw?: string;
   borderRadius?: string;
   mr?: string;
+  ar?: string;
+  maxw?: string;
+  mt?: string;
 }>`
   height: ${({ h }) => h};
   width: ${({ w }) => w};
   min-width: ${({ mw }) => (mw ? mw : '')};
+  max-width: ${({ maxw }) => (maxw ? maxw : '')};
   border-radius: ${({ borderRadius }) => (borderRadius ? borderRadius : '')};
   border: none;
   position: relative;
@@ -38,8 +45,9 @@ const LoadingContainer = styled.div<{
     ${theme.loading.one} 65%,
     ${theme.loading.one} 100%
   );`};
-  aspect-ratio: 1/1;
+  aspect-ratio: ${({ ar }) => (ar ? ar : '1/1')};
   margin-right: ${({ mr }) => (mr ? mr : '')};
+  margin-top: ${({ mt }) => (mt ? mt : '')};
 `;
 
 export const LoadingImg: FC<LoadingImmProps> = ({
@@ -48,8 +56,20 @@ export const LoadingImg: FC<LoadingImmProps> = ({
   mw,
   borderRadius,
   mr,
+  ar,
+  maxw,
+  mt,
 }) => {
   return (
-    <LoadingContainer h={h} w={w} mw={mw} mr={mr} borderRadius={borderRadius} />
+    <LoadingContainer
+      h={h}
+      w={w}
+      mw={mw}
+      mr={mr}
+      ar={ar}
+      borderRadius={borderRadius}
+      maxw={maxw}
+      mt={mt}
+    />
   );
 };

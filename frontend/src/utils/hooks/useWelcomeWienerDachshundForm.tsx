@@ -87,7 +87,7 @@ const useWelcomeWienerDachshundForm = (
   };
 
   useEffect(() => {
-    if (showErrors) {
+    if (showErrors || inputs?.associatedProducts) {
       setErrors(validate(inputs));
     }
   }, [inputs, showErrors, validate]);
@@ -109,11 +109,11 @@ const useWelcomeWienerDachshundForm = (
     setFile(event.target.files[0]);
     setInputs((prevInputs) => ({
       ...prevInputs,
-      displayUrl: event.target.files[0].name,
+      displayUrl: event.target.files[0]?.name,
     }));
     const validationErrors = validate({
       ...inputs,
-      displayUrl: event.target.files[0].name,
+      displayUrl: event.target.files[0]?.name,
     });
     setErrors(validationErrors);
   };

@@ -54,7 +54,7 @@ const WelcomeWienerDetails = () => {
       paddingLeft='8px'
       paddingRight='8px'
     >
-      <LeftArrow text='Back' url='/welcome-wieners' />
+      <LeftArrow text='Back to welcome wieners' url='/welcome-wieners' />
       <Container>
         <CartDrawer />
         <div>

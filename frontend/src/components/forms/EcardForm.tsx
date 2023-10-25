@@ -1,14 +1,10 @@
 import { Form } from 'react-bootstrap';
 import JumpingInput from '../common/JumpingInput';
 import { ProceedBtn } from './ShippingForm';
-import { Text } from '../styles/Styles';
 
 const EcardForm = ({ inputs, handleInputChange, errors, onSubmit }: any) => {
   return (
-    <Form className='p-3'>
-      <Text fontSize='18px' fontWeight={400} marginBottom='6px'>
-        Recipient Information
-      </Text>
+    <Form>
       <JumpingInput
         name='recipientsFullName'
         label='Enter Recipeints Full Name'

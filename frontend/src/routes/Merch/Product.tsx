@@ -1,13 +1,11 @@
-import React from 'react';
 import { Image } from 'react-bootstrap';
-import { Link, useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { ProceedBtn } from '../../components/forms/ShippingForm';
-import { LoadingImg } from '../../components/LoadingImg';
 import { Text } from '../../components/styles/Styles';
 import { formatDateTime } from '../../utils/formatDateTime';
 
-const Container = styled.div`
+const Container = styled(Link)`
   width: 100%;
   max-width: 1100px;
   display: grid;
@@ -16,10 +14,32 @@ const Container = styled.div`
   padding-top: 48px;
   border-bottom: 1px solid #ededed;
   gap: 16px;
+  text-decoration: none !important;
+
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    grid-template-columns: 30% 30%;
+    grid-template-columns: 50% 30%;
     gap: 32px;
     justify-content: space-between;
+  }
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+    grid-template-columns: 40% 30%;
+    gap: 32px;
+    justify-content: space-between;
+  }
+
+  :hover {
+    div + div {
+      button {
+        filter: brightness(1.1);
+        background: #77b300;
+        color: #fff;
+
+        :hover {
+          letter-spacing: 1px;
+          transition: 300ms;
+        }
+      }
+    }
   }
 `;
 
@@ -39,57 +59,21 @@ const Price = styled.span`
   }
 `;
 
-const Product = ({ product, loading }: any) => {
-  const history = useHistory();
-  const isEcard = product?.isEcard;
-
+const Product = ({ product }: any) => {
   return (
-    <Container>
+    <Container to={`/merch/${product?._id}`}>
       <div>
-        <Link
-          to={{
-            pathname: `/merch/${product?._id}`,
-            state: { product },
-          }}
-        >
-          {loading ? (
-            <LoadingImg w='100%' mw='230px' />
-          ) : (
-            <ProductImg src={product.image} alt={product?.name} />
-          )}
-        </Link>
+        <ProductImg src={product.image} alt={product?.name} />
         <Text fontStyle='italic' fontSize='12px' marginTop='10px'>
-          {isEcard ? ' Ecard' : ' Product'} released on{' '}
-          {formatDateTime(product?.createdAt)}
+          Product released on {formatDateTime(product?.createdAt)}
         </Text>
       </div>
       <div className='d-flex flex-column align-items-start'>
         <Text marginBottom='4px'>
-          {loading ? (
-            <LoadingImg w='150px' h='27px' />
-          ) : (
-            <>
-              <Price style={{ color: '#22c2b7' }}>FREE</Price>
-              {isEcard ? ' ecard' : ' product'} with a{' '}
-              <Price>${product?.price}</Price> donation!
-            </>
-          )}
+          <Price style={{ color: '#22c2b7' }}>FREE</Price> product with a{' '}
+          <Price>${product?.price}</Price> donation!
         </Text>
-        {loading ? (
-          <LoadingImg w='100%' h='40px' />
-        ) : (
-          <ProceedBtn
-            className='w-100'
-            onClick={() =>
-              history.push({
-                pathname: `/merch/${product?._id}`,
-                state: { product },
-              })
-            }
-          >
-            View {isEcard ? 'Ecard' : 'Product'}
-          </ProceedBtn>
-        )}
+        <ProceedBtn className='w-100'>View Product</ProceedBtn>
       </div>
     </Container>
   );

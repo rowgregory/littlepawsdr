@@ -102,3 +102,24 @@ export const SmallGridSquareContainer = styled.div<{ active: any }>`
     background: ${({ active }) => (!active ? '#9761aa' : '#ccc')};
   }
 `;
+
+export const LoadingContainer = styled.div`
+  width: 100%;
+  max-width: 1100px;
+  display: grid;
+  grid-template-columns: 1fr;
+  padding-bottom: 48px;
+  padding-top: 48px;
+  gap: 16px;
+  text-decoration: none !important;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    grid-template-columns: 50% 30%;
+    gap: 32px;
+    justify-content: space-between;
+  }
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+    grid-template-columns: 40% 30%;
+    gap: 32px;
+    justify-content: space-between;
+  }
+`;
