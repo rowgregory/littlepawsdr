@@ -71,7 +71,7 @@ import {
   ecardListReducer,
   ecardUpdateReducer,
   ecardFilteredListReducer,
-} from './ecardReducer';
+} from './eCardReducer';
 import { searchBarListReducer } from './searchBarReducer';
 import {
   raffleWinnerCreateReducer,
