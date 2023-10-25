@@ -6,7 +6,7 @@ const orderNotification = (pugEmail, body, hasEmailBeenSent) => {
     template: 'ordernotification',
     message: {
       from: 'Little Paws Dachshund Rescue <no-reply@littlepawsdr.org',
-      to: 'orders@littlepaws.org',
+      to: 'orders@littlepawsdr.org',
     },
     locals: {
       id: body?._id,
