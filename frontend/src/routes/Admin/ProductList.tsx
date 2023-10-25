@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { LinkContainer } from 'react-router-bootstrap';
-import { Table, Spinner, Pagination } from 'react-bootstrap';
+import { Table, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { listProducts } from '../../actions/productActions';
 import DeleteModal from '../../components/DeleteModal';
@@ -18,7 +18,6 @@ import {
   SearchInput,
   TableWrapper,
   SpinnerContainer,
-  PaginationContainer,
 } from '../../components/styles/admin/Styles';
 import styled from 'styled-components';
 import Message from '../../components/Message';
@@ -26,7 +25,6 @@ import { WelcomeText } from '../../components/styles/DashboardStyles';
 import BreadCrumb from '../../components/common/BreadCrumb';
 import { AddIcon } from '../../components/svg/AddIcon';
 import { defaultImages } from '../../utils/defaultImages';
-import { rangeV2 } from '../../components/common/Pagination';
 
 const ProductCountTD = styled.td<{ isProductLow?: boolean }>`
   color: ${({ theme, isProductLow }) =>
@@ -38,8 +36,6 @@ const ProductList = () => {
   const [show, setShow] = useState(false);
   const [id, setId] = useState('');
   const [text, setText] = useState('');
-  const [paginatedPage, setPaginatedPage] = useState(1);
-  const [paginatedItems, setPaginatedItems] = useState<{}[]>([]) as any;
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -58,22 +54,9 @@ const ProductList = () => {
     dispatch(listProducts());
   }, [dispatch, successDelete]);
 
-  useEffect(() => {
-    const itemsPerPage = 10;
-    const indexOfLastItem = paginatedPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-
-    setPaginatedItems(products?.slice(indexOfFirstItem, indexOfLastItem));
-  }, [products, paginatedPage]);
-
-  const filteredProducts =
-    text !== ''
-      ? products?.filter((product: any) =>
-          product?.name?.toLowerCase().includes(text.toLowerCase())
-        )
-      : paginatedItems?.filter((product: any) =>
-          product?.name?.toLowerCase().includes(text.toLowerCase())
-        );
+  const filteredProducts = products?.filter((product: any) =>
+    product?.name?.toLowerCase().includes(text.toLowerCase())
+  );
 
   const product = {
     name: '',
@@ -155,7 +138,10 @@ const ProductList = () => {
                 ?.map((product: any) => (
                   <TableRow key={product?._id}>
                     <td>
-                      <TableImg src={product?.image} alt='avatar' />
+                      <TableImg
+                        src={product?.image ?? defaultImages.upload}
+                        alt='LPDR'
+                      />
                     </td>
                     <td>
                       <Text>{product?.name}</Text>
@@ -230,11 +216,6 @@ const ProductList = () => {
                 )}
             </tbody>
           </Table>
-          <PaginationContainer>
-            <Pagination className='my-3'>
-              {rangeV2(products, paginatedPage, setPaginatedPage)}
-            </Pagination>
-          </PaginationContainer>
         </TableAndPaginationContainer>
       </TableWrapper>
     </Container>

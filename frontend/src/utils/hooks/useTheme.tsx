@@ -13,7 +13,7 @@ const useTheme = () => {
     return isDarkMode ? 'dark' : 'light';
   };
 
-  const [_, setTheme] = useState(
+  const [, setTheme] = useState(
     savedUserTheme === 'sync'
       ? getSyncMode()
       : savedUserTheme === 'light'

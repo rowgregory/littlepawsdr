@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { LinkContainer } from 'react-router-bootstrap';
-import { Table, Pagination, Spinner } from 'react-bootstrap';
+import { Table, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import DeleteModal from '../../components/DeleteModal';
 import { listECards } from '../../actions/eCardActions';
@@ -13,7 +13,6 @@ import {
   StyledEditBtn,
   CreateBtnV2,
   TopRow,
-  PaginationContainer,
   TableAndPaginationContainer,
   Container,
   SearchInput,
@@ -24,7 +23,6 @@ import Message from '../../components/Message';
 import { WelcomeText } from '../../components/styles/DashboardStyles';
 import BreadCrumb from '../../components/common/BreadCrumb';
 import { AddIcon } from '../../components/svg/AddIcon';
-import { rangeV2 } from '../../components/common/Pagination';
 import { defaultImages } from '../../utils/defaultImages';
 
 const ECardList = () => {
@@ -32,8 +30,6 @@ const ECardList = () => {
   const [show, setShow] = useState(false);
   const [id, setId] = useState('');
   const [text, setText] = useState('');
-  const [paginatedPage, setPaginatedPage] = useState(1);
-  const [paginatedItems, setPaginatedItems] = useState<{}[]>([]) as any;
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -54,22 +50,9 @@ const ECardList = () => {
 
   ecards?.sort((a: any, b: any) => -a?.createdAt?.localeCompare(b?.createdAt));
 
-  useEffect(() => {
-    const itemsPerPage = 10;
-    const indexOfLastItem = paginatedPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-
-    setPaginatedItems(ecards?.slice(indexOfFirstItem, indexOfLastItem));
-  }, [ecards, paginatedPage]);
-
-  let filteredECards =
-    text !== ''
-      ? ecards?.filter((eCard: any) =>
-          eCard?.category?.toLowerCase().includes(text.toLowerCase())
-        )
-      : paginatedItems?.filter((eCard: any) =>
-          eCard?.category?.toLowerCase().includes(text.toLowerCase())
-        );
+  let filteredECards = ecards?.filter((eCard: any) =>
+    eCard?.category?.toLowerCase().includes(text.toLowerCase())
+  );
 
   const eCard = {
     name: '',
@@ -145,7 +128,10 @@ const ECardList = () => {
               {filteredECards?.map((eCard: any) => (
                 <TableRow key={eCard?._id}>
                   <td>
-                    <TableImg src={eCard?.thumb} alt='avatar' />
+                    <TableImg
+                      src={eCard?.image ?? defaultImages.upload}
+                      alt='LPDR'
+                    />
                   </td>
                   <td>
                     <Text>{eCard?.name}</Text>
@@ -193,11 +179,6 @@ const ECardList = () => {
               ))}
             </tbody>
           </Table>
-          <PaginationContainer>
-            <Pagination className='my-3'>
-              {rangeV2(ecards, paginatedPage, setPaginatedPage)}
-            </Pagination>
-          </PaginationContainer>
         </TableAndPaginationContainer>
       </TableWrapper>
     </Container>

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Table, Spinner, Pagination } from 'react-bootstrap';
+import { useEffect, useState } from 'react';
+import { Table, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import DeleteModal from '../../components/DeleteModal';
 import { Text } from '../../components/styles/Styles';
@@ -10,7 +10,6 @@ import {
   TableRow,
   StyledEditBtn,
   TopRow,
-  PaginationContainer,
   TableAndPaginationContainer,
   Container,
   SearchInput,
@@ -22,7 +21,6 @@ import {
 import Message from '../../components/Message';
 import { WelcomeText } from '../../components/styles/DashboardStyles';
 import BreadCrumb from '../../components/common/BreadCrumb';
-import { rangeV2 } from '../../components/common/Pagination';
 import { AddIcon } from '../../components/svg/AddIcon';
 import { LinkContainer } from 'react-router-bootstrap';
 import { defaultImages } from '../../utils/defaultImages';
@@ -33,8 +31,6 @@ const ManuallyAddedUserList = () => {
   const [id, setId] = useState('');
   const [text, setText] = useState('');
   const [imagePath, setImagePath] = useState('');
-  const [paginatedPage, setPaginatedPage] = useState(1);
-  const [paginatedItems, setPaginatedItems] = useState<{}[]>([]) as any;
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -57,24 +53,10 @@ const ManuallyAddedUserList = () => {
     (a: any, b: any) => -a?.createdAt?.localeCompare(b?.createdAt)
   );
 
-  useEffect(() => {
-    const itemsPerPage = 10;
-    const indexOfLastItem = paginatedPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-
-    setPaginatedItems(
-      manuallyAddedUsers?.slice(indexOfFirstItem, indexOfLastItem)
-    );
-  }, [manuallyAddedUsers, paginatedPage]);
-
-  const filteredManuallyAddedUsers =
-    text !== ''
-      ? manuallyAddedUsers?.filter((blog: any) =>
-          blog.name.toLowerCase().includes(text.toLowerCase())
-        )
-      : paginatedItems?.filter((blog: any) =>
-          blog.name.toLowerCase().includes(text.toLowerCase())
-        );
+  const filteredManuallyAddedUsers = manuallyAddedUsers?.filter(
+    (manuallyAddedUser: any) =>
+      manuallyAddedUser.name.toLowerCase().includes(text.toLowerCase())
+  );
 
   const manuallyAddedUser = {
     name: '',
@@ -157,7 +139,7 @@ const ManuallyAddedUserList = () => {
                   </td>
                   <td>
                     <TableImg
-                      src={manuallyAddedUser?.image}
+                      src={manuallyAddedUser?.image ?? defaultImages.upload}
                       alt={manuallyAddedUser?.name}
                     />
                   </td>
@@ -208,11 +190,6 @@ const ManuallyAddedUserList = () => {
               ))}
             </tbody>
           </Table>
-          <PaginationContainer>
-            <Pagination className='my-3'>
-              {rangeV2(manuallyAddedUsers, paginatedPage, setPaginatedPage)}
-            </Pagination>
-          </PaginationContainer>
         </TableAndPaginationContainer>
       </TableWrapper>
     </Container>

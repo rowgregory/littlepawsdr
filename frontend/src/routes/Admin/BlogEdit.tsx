@@ -19,7 +19,7 @@ import { WelcomeText } from '../../components/styles/DashboardStyles';
 import PhotoUploadIcon from '../../components/svg/PhotoUploadIcon';
 import BreadCrumb from '../../components/common/BreadCrumb';
 import { defaultImages } from '../../utils/defaultImages';
-import { compressAndUpload } from '../../utils/uploadFilesToImgBB';
+import { uploadFileToFirebase } from '../../utils/uploadToFirebase';
 
 const useBlogEditForm = (callback?: any, data?: any) => {
   const values = {
@@ -61,33 +61,33 @@ const BlogEdit = () => {
   } = useLocation() as any;
   const history = useHistory();
   const dispatch = useDispatch();
-
   const [uploading, setUploading] = useState(false);
   const [file, setFile] = useState({}) as any;
 
-  const {
-    blogUpdate: {
-      loading: loadingUpdate,
-      error: errorUpdate,
-      success: successUpdate,
-    },
-    blogCreate: {
-      loading: loadingCreate,
-      error: errorCreate,
-      success: successCreate,
-    },
-  } = useSelector((state: any) => state);
+  const state = useSelector((state: any) => state);
+
+  const loadingUpdate = state.blogUpdate.loading;
+  const errorUpdate = state.blogUpdate.error;
+  const successUpdate = state.blogUpdate.success;
+
+  const loadingCreate = state.blogCreate.loading;
+  const errorCreate = state.blogCreate.error;
+  const successCreate = state.blogCreate.success;
 
   const editBlogCallback = async () => {
     setUploading(true);
-    const image = file?.name && ((await compressAndUpload(file)) as any);
+    let image = blog?.image;
+    if (file?.name) {
+      image = await uploadFileToFirebase(file);
+    }
+
     if (isEditMode) {
       dispatch(
         updateBlog({
           _id: blog._id,
           title: inputs.title,
           article: inputs.article,
-          image: image?.data?.url,
+          image,
         })
       );
     } else {
@@ -95,7 +95,7 @@ const BlogEdit = () => {
         createBlog({
           title: inputs.title,
           article: inputs.article,
-          image: image?.data?.url,
+          image,
         })
       );
     }

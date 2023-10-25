@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { LinkContainer } from 'react-router-bootstrap';
-import { Table, Spinner, Pagination } from 'react-bootstrap';
+import { Table, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { listEvents } from '../../actions/eventActions';
 import DeleteModal from '../../components/DeleteModal';
@@ -11,7 +11,6 @@ import {
   TableRow,
   StyledEditBtn,
   TopRow,
-  PaginationContainer,
   TableAndPaginationContainer,
   Container,
   SearchInput,
@@ -22,7 +21,6 @@ import {
 } from '../../components/styles/admin/Styles';
 import { WelcomeText } from '../../components/styles/DashboardStyles';
 import BreadCrumb from '../../components/common/BreadCrumb';
-import { rangeV2 } from '../../components/common/Pagination';
 import Message from '../../components/Message';
 import { AddIcon } from '../../components/svg/AddIcon';
 import { defaultImages } from '../../utils/defaultImages';
@@ -34,8 +32,6 @@ const EventList = () => {
   const [id, setId] = useState('');
   const [text, setText] = useState('');
   const [imagePath, setImagePath] = useState('');
-  const [paginatedPage, setPaginatedPage] = useState(1);
-  const [paginatedItems, setPaginatedItems] = useState<{}[]>([]) as any;
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -54,22 +50,9 @@ const EventList = () => {
     dispatch(listEvents());
   }, [dispatch, successDelete]);
 
-  useEffect(() => {
-    const itemsPerPage = 10;
-    const indexOfLastItem = paginatedPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-
-    setPaginatedItems(events?.slice(indexOfFirstItem, indexOfLastItem));
-  }, [events, paginatedPage]);
-
-  const filteredEvents =
-    text !== ''
-      ? events?.filter((event: any) =>
-          event.title.toLowerCase().includes(text.toLowerCase())
-        )
-      : paginatedItems?.filter((event: any) =>
-          event?.title?.toLowerCase().includes(text.toLowerCase())
-        );
+  const filteredEvents = events?.filter((event: any) =>
+    event.title.toLowerCase().includes(text.toLowerCase())
+  );
 
   const event = {
     title: '',
@@ -153,7 +136,10 @@ const EventList = () => {
                     <Text>{event?.title}</Text>
                   </td>
                   <td>
-                    <TableImg src={event?.image} alt={event?.name} />
+                    <TableImg
+                      src={event?.image ?? defaultImages.upload}
+                      alt={event?.name}
+                    />
                   </td>
                   <td>
                     <Text>{formatDate(event?.startDate)}</Text>
@@ -202,11 +188,6 @@ const EventList = () => {
               ))}
             </tbody>
           </Table>
-          <PaginationContainer>
-            <Pagination className='my-3'>
-              {rangeV2(events, paginatedPage, setPaginatedPage)}
-            </Pagination>
-          </PaginationContainer>
         </TableAndPaginationContainer>
       </TableWrapper>
     </Container>

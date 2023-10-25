@@ -22,7 +22,7 @@ const PhotoUploadIcon = ({ ready, uploading }: any) => {
           />
         </g>
       </svg>
-      <Text fontWeight='300' color='#888888' fontSize='11px'>
+      <Text fontWeight='300' color='#888888' fontSize='11px' textAlign='center'>
         {uploading
           ? 'Uploading...'
           : ready?.name

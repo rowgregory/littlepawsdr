@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { LinkContainer } from 'react-router-bootstrap';
-import { Table, Spinner, Pagination } from 'react-bootstrap';
+import { Table, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import DeleteModal from '../../components/DeleteModal';
 import { Flex, Text } from '../../components/styles/Styles';
@@ -10,7 +10,6 @@ import {
   TableRow,
   StyledEditBtn,
   TopRow,
-  PaginationContainer,
   TableAndPaginationContainer,
   Container,
   SearchInput,
@@ -20,7 +19,6 @@ import {
 } from '../../components/styles/admin/Styles';
 import { WelcomeText } from '../../components/styles/DashboardStyles';
 import BreadCrumb from '../../components/common/BreadCrumb';
-import { rangeV2 } from '../../components/common/Pagination';
 import Message from '../../components/Message';
 import { AddIcon } from '../../components/svg/AddIcon';
 import { defaultImages } from '../../utils/defaultImages';
@@ -35,8 +33,6 @@ const WelcomeWienerDachshundList = () => {
   const [show, setShow] = useState(false);
   const [id, setId] = useState('');
   const [text, setText] = useState('');
-  const [paginatedPage, setPaginatedPage] = useState(1);
-  const [paginatedItems, setPaginatedItems] = useState<{}[]>([]) as any;
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -57,22 +53,10 @@ const WelcomeWienerDachshundList = () => {
     (a: any, b: any) => -a?.createdAt?.localeCompare(b?.createdAt)
   );
 
-  useEffect(() => {
-    const itemsPerPage = 10;
-    const indexOfLastItem = paginatedPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-
-    setPaginatedItems(dachshundList?.slice(indexOfFirstItem, indexOfLastItem));
-  }, [dachshundList, paginatedPage]);
-
-  const filteredWelcomeWienerDachshunds =
-    text !== ''
-      ? dachshundList?.filter((dachshund: any) =>
-          dachshund?.name?.toLowerCase().includes(text.toLowerCase())
-        )
-      : paginatedItems?.filter((dachshund: any) =>
-          dachshund?.name?.toLowerCase().includes(text.toLowerCase())
-        );
+  const filteredWelcomeWienerDachshunds = dachshundList?.filter(
+    (dachshund: any) =>
+      dachshund?.name?.toLowerCase().includes(text.toLowerCase())
+  );
 
   const welcomeWienerDachshund = {
     displayUrl: defaultImages.upload,
@@ -177,7 +161,7 @@ const WelcomeWienerDachshundList = () => {
                   </td>
                   <td>
                     <TableImg
-                      src={dachshund?.displayUrl}
+                      src={dachshund?.displayUrl ?? defaultImages.upload}
                       alt={dachshund?.name}
                     />
                   </td>
@@ -245,11 +229,6 @@ const WelcomeWienerDachshundList = () => {
               ))}
             </tbody>
           </Table>
-          <PaginationContainer>
-            <Pagination className='my-3'>
-              {rangeV2(dachshundList, paginatedPage, setPaginatedPage)}
-            </Pagination>
-          </PaginationContainer>
         </TableAndPaginationContainer>
       </TableWrapper>
     </Container>

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Table, Spinner, Pagination } from 'react-bootstrap';
+import { useEffect, useState } from 'react';
+import { Table, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { LinkContainer } from 'react-router-bootstrap';
 import { listBlogs } from '../../actions/blogActions';
@@ -11,7 +11,6 @@ import {
   TableRow,
   StyledEditBtn,
   TopRow,
-  PaginationContainer,
   TableAndPaginationContainer,
   Container,
   SearchInput,
@@ -23,7 +22,6 @@ import {
 import Message from '../../components/Message';
 import { WelcomeText } from '../../components/styles/DashboardStyles';
 import BreadCrumb from '../../components/common/BreadCrumb';
-import { rangeV2 } from '../../components/common/Pagination';
 import { AddIcon } from '../../components/svg/AddIcon';
 import { defaultImages } from '../../utils/defaultImages';
 
@@ -33,8 +31,6 @@ const BlogList = () => {
   const [id, setId] = useState('');
   const [text, setText] = useState('');
   const [imagePath, setImagePath] = useState('');
-  const [paginatedPage, setPaginatedPage] = useState(1);
-  const [paginatedItems, setPaginatedItems] = useState<{}[]>([]) as any;
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -55,22 +51,9 @@ const BlogList = () => {
 
   blogs?.sort((a: any, b: any) => -a?.createdAt?.localeCompare(b?.createdAt));
 
-  useEffect(() => {
-    const itemsPerPage = 10;
-    const indexOfLastItem = paginatedPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-
-    setPaginatedItems(blogs?.slice(indexOfFirstItem, indexOfLastItem));
-  }, [blogs, paginatedPage]);
-
-  const filteredBlogs =
-    text !== ''
-      ? blogs?.filter((blog: any) =>
-          blog._id.toLowerCase().includes(text.toLowerCase())
-        )
-      : paginatedItems?.filter((blog: any) =>
-          blog._id.toLowerCase().includes(text.toLowerCase())
-        );
+  const filteredBlogs = blogs?.filter((blog: any) =>
+    blog._id.toLowerCase().includes(text.toLowerCase())
+  );
 
   const blog = {
     title: '',
@@ -152,7 +135,10 @@ const BlogList = () => {
                     <Text>{blog?.title}</Text>
                   </td>
                   <td>
-                    <TableImg src={blog?.image} alt={blog?.title} />
+                    <TableImg
+                      src={blog?.image ?? defaultImages.upload}
+                      alt={blog?.title}
+                    />
                   </td>
                   <td>
                     <Text>{blog?.article.substring(0, 200)}</Text>
@@ -195,11 +181,6 @@ const BlogList = () => {
               ))}
             </tbody>
           </Table>
-          <PaginationContainer>
-            <Pagination className='my-3'>
-              {rangeV2(blogs, paginatedPage, setPaginatedPage)}
-            </Pagination>
-          </PaginationContainer>
         </TableAndPaginationContainer>
       </TableWrapper>
     </Container>

@@ -8,27 +8,28 @@ import { WELCOME_WIENER_DACHSHUND_CREATE_RESET } from '../../constants/welcomeWi
 import { createWelcomeWienerDachshund } from '../../actions/welcomeWienerDachshundActions';
 import CreateEditWelcomeWienerDachshundForm from '../../components/forms/CreateEditWelcomeWienerDachshundForm';
 import useWelcomeWienerDachshundForm from '../../utils/hooks/useWelcomeWienerDachshundForm';
-import { compressAndUpload } from '../../utils/uploadFilesToImgBB';
+import { uploadFileToFirebase } from '../../utils/uploadToFirebase';
 
 const WelcomeWienerDachshundCreate = () => {
   const history = useHistory();
   const dispatch = useDispatch();
   const [uploading, setUploading] = useState(false);
-  const [file, setFile] = useState<File | null>(null);
+  const [file, setFile] = useState({}) as any;
   const state = useSelector((state: any) => state);
   const loading = state.welcomeWienerDachshundCreate.loading;
   const success = state.welcomeWienerDachshundCreate.success;
 
   const createWelcomeWienerDachshundCallback = async () => {
     setUploading(true);
-    const image = file?.name && ((await compressAndUpload(file)) as any);
+
+    const image = await uploadFileToFirebase(file);
 
     dispatch(
       createWelcomeWienerDachshund({
         name: inputs?.name,
         bio: inputs?.bio,
         age: inputs?.age,
-        displayUrl: image?.data?.url,
+        displayUrl: image,
         associatedProducts: inputs?.associatedProducts?.map((obj) => obj?._id),
       })
     );

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Table, Spinner, Pagination } from 'react-bootstrap';
+import { useEffect, useState } from 'react';
+import { Table, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { LinkContainer } from 'react-router-bootstrap';
 import { listEducationTips } from '../../actions/educationTipActions';
@@ -11,7 +11,6 @@ import {
   TableRow,
   StyledEditBtn,
   TopRow,
-  PaginationContainer,
   TableAndPaginationContainer,
   Container,
   SearchInput,
@@ -23,18 +22,15 @@ import {
 import Message from '../../components/Message';
 import { WelcomeText } from '../../components/styles/DashboardStyles';
 import BreadCrumb from '../../components/common/BreadCrumb';
-import { rangeV2 } from '../../components/common/Pagination';
 import { AddIcon } from '../../components/svg/AddIcon';
 import { defaultImages } from '../../utils/defaultImages';
 
-const RaffleWinnerList = () => {
+const EducationTipList = () => {
   const dispatch = useDispatch();
   const [show, setShow] = useState(false);
   const [id, setId] = useState('');
   const [text, setText] = useState('');
   const [imagePath, setImagePath] = useState('');
-  const [paginatedPage, setPaginatedPage] = useState(1);
-  const [paginatedItems, setPaginatedItems] = useState<{}[]>([]) as any;
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -57,22 +53,9 @@ const RaffleWinnerList = () => {
     (a: any, b: any) => -a?.createdAt?.localeCompare(b?.createdAt)
   );
 
-  useEffect(() => {
-    const itemsPerPage = 10;
-    const indexOfLastItem = paginatedPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-
-    setPaginatedItems(educationTips?.slice(indexOfFirstItem, indexOfLastItem));
-  }, [educationTips, paginatedPage]);
-
-  const filteredEducationTips =
-    text !== ''
-      ? educationTips?.filter((tip: any) =>
-          tip?.title.toLowerCase().includes(text.toLowerCase())
-        )
-      : paginatedItems?.filter((tip: any) =>
-          tip?.title.toLowerCase().includes(text.toLowerCase())
-        );
+  const filteredEducationTips = educationTips?.filter((tip: any) =>
+    tip?.title.toLowerCase().includes(text.toLowerCase())
+  );
 
   const eTip = {
     title: '',
@@ -149,7 +132,10 @@ const RaffleWinnerList = () => {
                     <Text>{tip?.title}</Text>
                   </td>
                   <td>
-                    <TableImg src={tip?.image} alt={tip?.title} />
+                    <TableImg
+                      src={tip?.image ?? defaultImages.upload}
+                      alt={tip?.title}
+                    />
                   </td>
                   <td>
                     <Text
@@ -197,15 +183,10 @@ const RaffleWinnerList = () => {
               ))}
             </tbody>
           </Table>
-          <PaginationContainer>
-            <Pagination className='my-3'>
-              {rangeV2(educationTips, paginatedPage, setPaginatedPage)}
-            </Pagination>
-          </PaginationContainer>
         </TableAndPaginationContainer>
       </TableWrapper>
     </Container>
   );
 };
 
-export default RaffleWinnerList;
+export default EducationTipList;

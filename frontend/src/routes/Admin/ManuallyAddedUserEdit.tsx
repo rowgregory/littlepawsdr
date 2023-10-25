@@ -28,7 +28,7 @@ import { Accordion } from '../../components/styles/place-order/Styles';
 import { themes } from '../../utils/profileCardThemes';
 import { STATES } from '../../utils/states';
 import { manuallyAddUser } from '../../actions/manuallyAddUserActions';
-import { compressAndUpload } from '../../utils/uploadFilesToImgBB';
+import { uploadFileToFirebase } from '../../utils/uploadToFirebase';
 
 const useManuallyAddedUserEditForm = (callback?: any, data?: any) => {
   const values = {
@@ -81,23 +81,21 @@ const ManuallyAddedUserEdit = () => {
   const [uploading, setUploading] = useState(false);
   const [file, setFile] = useState({}) as any;
   const [showCardThemes, setShowCardThemes] = useState(false);
-
-  const {
-    manuallyAddedUserUpdate: {
-      loading: loadingUpdate,
-      error: errorUpdate,
-      success: successUpdate,
-    },
-    manuallyAddedUserCreate: {
-      loading: loadingCreate,
-      error: errorCreate,
-      success: successCreate,
-    },
-  } = useSelector((state: any) => state);
+  const state = useSelector((state: any) => state);
+  const loadingUpdate = state.manuallyAddedUserUpdate.loading;
+  const errorUpdate = state.manuallyAddedUserUpdate.error;
+  const successUpdate = state.manuallyAddedUserUpdate.success;
+  const loadingCreate = state.manuallyAddedUserCreate.loading;
+  const errorCreate = state.manuallyAddedUserCreate.error;
+  const successCreate = state.manuallyAddedUserCreate.success;
 
   const editManuallyAddedUserCallback = async () => {
     setUploading(true);
-    const image = file?.name && ((await compressAndUpload(file)) as any);
+
+    let image = manuallyAddedUser?.image;
+    if (file?.name) {
+      image = await uploadFileToFirebase(file);
+    }
 
     if (isEditMode) {
       dispatch(
@@ -106,7 +104,7 @@ const ManuallyAddedUserEdit = () => {
           name: inputs.name,
           affiliation: inputs.affiliation,
           email: inputs.email,
-          image: image.data.url,
+          image,
           profileCardTheme: inputs.profileCardTheme,
           location: inputs.location,
           bio: inputs.bio,
@@ -118,7 +116,7 @@ const ManuallyAddedUserEdit = () => {
           name: inputs.name,
           affiliation: inputs.affiliation,
           email: inputs.email,
-          image: image.data.url,
+          image,
           profileCardTheme: inputs.profileCardTheme,
           location: inputs.location,
           bio: inputs.bio,

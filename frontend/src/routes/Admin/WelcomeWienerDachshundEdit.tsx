@@ -11,7 +11,7 @@ import {
 } from '../../actions/welcomeWienerDachshundActions';
 import CreateEditWelcomeWienerDachshundForm from '../../components/forms/CreateEditWelcomeWienerDachshundForm';
 import useWelcomeWienerDachshundForm from '../../utils/hooks/useWelcomeWienerDachshundForm';
-import { compressAndUpload } from '../../utils/uploadFilesToImgBB';
+import { uploadFileToFirebase } from '../../utils/uploadToFirebase';
 
 const WelcomeWienerDachshundEdit = () => {
   const { id } = useParams() as any;
@@ -28,7 +28,10 @@ const WelcomeWienerDachshundEdit = () => {
 
   const updateWelcomeWienerDachshundCallback = async () => {
     setUploading(true);
-    const image = file?.name && ((await compressAndUpload(file)) as any);
+    let image = dachshund?.displayUrl;
+    if (file?.name) {
+      image = await uploadFileToFirebase(file);
+    }
 
     dispatch(
       updateWelcomeWienerDachshund({
@@ -36,7 +39,7 @@ const WelcomeWienerDachshundEdit = () => {
         name: inputs?.name,
         bio: inputs?.bio,
         age: inputs?.age,
-        displayUrl: image?.data?.url ?? inputs?.displayUrl,
+        displayUrl: image ?? inputs?.displayUrl,
         associatedProducts: inputs?.associatedProducts,
       })
     );

@@ -20,7 +20,7 @@ import { WelcomeText } from '../../components/styles/DashboardStyles';
 import PhotoUploadIcon from '../../components/svg/PhotoUploadIcon';
 import BreadCrumb from '../../components/common/BreadCrumb';
 import Error from '../../components/assets/404_dog01.png';
-import { compressAndUpload } from '../../utils/uploadFilesToImgBB';
+import { uploadFileToFirebase } from '../../utils/uploadToFirebase';
 
 const useEcardEditForm = (callback?: any, data?: any) => {
   const values = {
@@ -80,7 +80,10 @@ const ECardEdit = () => {
   const editEcardCallback = async () => {
     setUploading(true);
 
-    const image = file?.name && ((await compressAndUpload(file)) as any);
+    let image = eCard?.image;
+    if (file?.name) {
+      image = await uploadFileToFirebase(file);
+    }
 
     if (isEditMode) {
       dispatch(
@@ -89,8 +92,7 @@ const ECardEdit = () => {
           category: inputs.category,
           price: inputs.price,
           name: inputs.name,
-          image: image?.data?.url,
-          thumb: image?.data?.thumb?.url,
+          image,
         })
       );
     } else {
@@ -99,8 +101,7 @@ const ECardEdit = () => {
           category: inputs.category,
           price: inputs.price,
           name: inputs.name,
-          image: image?.data?.url,
-          thumb: image?.data?.thumb?.url,
+          image,
         })
       );
     }

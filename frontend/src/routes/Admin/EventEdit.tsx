@@ -21,7 +21,7 @@ import PhotoUploadIcon from '../../components/svg/PhotoUploadIcon';
 import { defaultImages } from '../../utils/defaultImages';
 import BreadCrumb from '../../components/common/BreadCrumb';
 import { fontColors, gradients } from '../../utils/eventUtils';
-import { compressAndUpload } from '../../utils/uploadFilesToImgBB';
+import { uploadFileToFirebase } from '../../utils/uploadToFirebase';
 
 const Gradient = styled(Form.Check)<{ selected?: boolean }>`
   border: ${({ selected }) =>
@@ -82,23 +82,22 @@ const EventEdit = () => {
   const dispatch = useDispatch();
   const [uploading, setUploading] = useState(false);
   const [file, setFile] = useState({}) as any;
-
-  const {
-    eventUpdate: {
-      loading: loadingUpdate,
-      error: errorUpdate,
-      success: successUpdate,
-    },
-    eventCreate: {
-      loading: loadingCreate,
-      error: errorCreate,
-      success: successCreate,
-    },
-  } = useSelector((state: any) => state);
+  const state = useSelector((state: any) => state);
+  const loadingUpdate = state.eventUpdate.loading;
+  const errorUpdate = state.eventUpdate.error;
+  const successUpdate = state.eventUpdate.success;
+  const loadingCreate = state.eventCreate.loading;
+  const errorCreate = state.eventCreate.error;
+  const successCreate = state.eventCreate.success;
 
   const editEventCallback = async () => {
     setUploading(true);
-    const image = file?.name && ((await compressAndUpload(file)) as any);
+
+    let image = event?.image;
+    if (file?.name) {
+      image = await uploadFileToFirebase(file);
+    }
+
     if (isEditMode) {
       dispatch(
         updateEvent({
@@ -107,7 +106,7 @@ const EventEdit = () => {
           description: inputs.description,
           startDate: inputs.startDate,
           endDate: inputs.endDate,
-          image: image?.data?.url,
+          image,
           background: inputs.background,
           color: inputs.color,
           externalLink: inputs.externalLink,
@@ -120,7 +119,7 @@ const EventEdit = () => {
           description: inputs.description,
           startDate: inputs.startDate,
           endDate: inputs.endDate,
-          image: image?.data?.url,
+          image,
           background: inputs.background,
           color: inputs.color,
           externalLink: inputs.externalLink,
@@ -236,9 +235,9 @@ const EventEdit = () => {
                 ) : (
                   <Image
                     src={event?.image}
-                    width='200px'
-                    height='200px'
-                    style={{ objectFit: 'cover' }}
+                    width='100px'
+                    height='100px'
+                    style={{ objectFit: 'cover', background: 'transparent' }}
                     alt='Event Edit'
                   />
                 )

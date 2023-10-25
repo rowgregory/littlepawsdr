@@ -22,7 +22,7 @@ import { WelcomeText } from '../../components/styles/DashboardStyles';
 import PhotoUploadIcon from '../../components/svg/PhotoUploadIcon';
 import BreadCrumb from '../../components/common/BreadCrumb';
 import { defaultImages } from '../../utils/defaultImages';
-import { compressAndUpload } from '../../utils/uploadFilesToImgBB';
+import { uploadFileToFirebase } from '../../utils/uploadToFirebase';
 
 const useEcardEditForm = (callback?: any, data?: any) => {
   const values = {
@@ -82,14 +82,17 @@ const EducationTipEdit = () => {
 
   const editETipCallback = async () => {
     setUploading(true);
-    const image = file?.name && ((await compressAndUpload(file)) as any);
+    let image = eTip?.image;
+    if (file?.name) {
+      image = await uploadFileToFirebase(file);
+    }
 
     if (isEditMode) {
       dispatch(
         updateEducationTip({
           _id: eTip._id,
           title: inputs.title,
-          image: image?.data?.url,
+          image,
           externalLink: inputs.externalLink,
         })
       );
@@ -97,7 +100,7 @@ const EducationTipEdit = () => {
       dispatch(
         createEducationTip({
           title: inputs.title,
-          image: image?.data?.url,
+          image,
           externalLink: inputs.externalLink,
         })
       );

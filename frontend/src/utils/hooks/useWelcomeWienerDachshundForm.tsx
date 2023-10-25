@@ -87,7 +87,7 @@ const useWelcomeWienerDachshundForm = (
   };
 
   useEffect(() => {
-    if (showErrors || inputs?.associatedProducts) {
+    if (showErrors) {
       setErrors(validate(inputs));
     }
   }, [inputs, showErrors, validate]);

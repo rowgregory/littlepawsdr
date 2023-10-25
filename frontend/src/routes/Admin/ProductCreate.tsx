@@ -8,13 +8,13 @@ import { Container, EditForm } from '../../components/styles/admin/Styles';
 import { WelcomeText } from '../../components/styles/DashboardStyles';
 import BreadCrumb from '../../components/common/BreadCrumb';
 import { PRODUCT_CREATE_RESET } from '../../constants/productContstants';
-import { uploadFilesToImgbb } from '../../utils/uploadFilesToImgBB';
 import { sortProductSizes } from '../../utils/sortProductSizes';
 import { useProductCreateForm } from '../../utils/hooks/useProductCreateForm';
 import FirstFiveFields from '../../components/admin/products/FirstFiveFields';
 import ProductSizes from '../../components/admin/products/ProductSizes';
 import ImagesSection from '../../components/admin/products/ImagesSection';
 import LastThreeFields from '../../components/admin/products/LastThreeFields';
+import { uploadMultipleFilesToFirebase } from '../../utils/uploadToFirebase';
 
 const ProductCreate = () => {
   const {
@@ -34,7 +34,7 @@ const ProductCreate = () => {
   const createProductCallback = async () => {
     setUploading(true);
 
-    const imageUrls = await uploadFilesToImgbb(files);
+    const imageUrls = await uploadMultipleFilesToFirebase(files);
 
     const sortedSizes = sortProductSizes(productSizes);
 
