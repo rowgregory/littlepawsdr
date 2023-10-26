@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Form, Image, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateUserProfile } from '../../actions/userActions';
@@ -27,8 +27,7 @@ import {
 } from '../../components/styles/profile/Styles';
 import { validateFullNameRegex } from '../../utils/regex';
 import { STATES } from '../../utils/states';
-import { useHistory } from 'react-router-dom';
-import API from '../../utils/api';
+import { uploadFileToFirebase } from '../../utils/uploadToFirebase';
 
 const useProfileForm = (callback?: any, data?: any) => {
   const values = {
@@ -83,42 +82,33 @@ const useProfileForm = (callback?: any, data?: any) => {
 
 const Profile = () => {
   const dispatch = useDispatch();
-  const history = useHistory();
   const [uploading, setUploading] = useState(false);
   const [checkmark, setCheckmark] = useState(false);
   const [file, setFile] = useState({}) as any;
-  const [imgUploadStatus, setImageUploadStatus] = useState('') as any;
   const [showCardThemes, setShowCardThemes] = useState(false);
-
-  let {
-    userLogin: { userInfo: user },
-    userUpdateProfile: {
-      success: successUpdate,
-      loading: loadingUpdate,
-      error: errorUpdate,
-    },
-  } = useSelector((state: any) => state);
+  const state = useSelector((state: any) => state);
+  const userInfo = state.userLogin.userInfo;
+  const success = state.userUpdateProfile.success;
+  const loading = state.userUpdateProfile.loading;
+  const error = state.userUpdateProfile.error;
 
   const profileCallback = async () => {
     setUploading(true);
-    setImageUploadStatus('Uploading to Imgbb');
-    const formData = new FormData();
-    formData.append('image', file);
-    const isFile = file?.name;
-    const image = isFile && (await API.uploadImageToImgbb(formData));
-    setImageUploadStatus('Image uploaded!');
-    setImageUploadStatus('Updating profile details');
+    let image = userInfo?.avatar;
+    if (file?.name) {
+      image = await uploadFileToFirebase(file);
+    }
 
     const isValid = validateFullNameRegex.test(inputs.name);
 
     if (isValid) {
       dispatch(
         updateUserProfile({
-          id: user?._id,
+          id: userInfo?._id,
           name: inputs.name,
           volunteerTitle: inputs.volunteerTitle,
           profileCardTheme: inputs.profileCardTheme,
-          avatar: image?.data?.url,
+          avatar: image,
           location: inputs.location,
           bio: inputs.bio,
         })
@@ -128,25 +118,26 @@ const Profile = () => {
 
   const { inputs, handleInput, onSubmit } = useProfileForm(
     profileCallback,
-    user
+    userInfo
   );
 
   useEffect(() => {
-    if (successUpdate) {
+    if (success) {
       setFile('');
-
       setCheckmark(true);
       setTimeout(() => setCheckmark(false), 3000);
     }
-  }, [successUpdate, history, dispatch, user]);
+  }, [success]);
 
   const editPhotoHandler = (e: any) => setFile(e.target.files[0]);
+
+  const isAdmin = userInfo?.isAdmin;
 
   return (
     <Container>
       <AccordionWrapper>
-        <Accordion toggle={errorUpdate} maxheight='65px' className='w-100'>
-          <Message variant='danger'>{errorUpdate}</Message>
+        <Accordion toggle={error} maxheight='65px' className='w-100'>
+          <Message variant='danger'>{error}</Message>
         </Accordion>
       </AccordionWrapper>
       <SettingsTitleContainer className='d-flex justify-content-between align-items-center'>
@@ -166,7 +157,7 @@ const Profile = () => {
                 onChange={handleInput}
               />
             </Form.Group>
-            {user?.isAdmin && (
+            {isAdmin && (
               <>
                 <Form.Group
                   className='d-flex flex-column'
@@ -243,7 +234,7 @@ const Profile = () => {
               </>
             )}
           </FirstCol>
-          {user?.isAdmin && (
+          {isAdmin && (
             <ProfilePicCol className='d-flex pl-3 pr-0' xl={3} lg={12}>
               <Form.Group controlId='image' className='d-flex flex-column'>
                 <Label>Profile picture</Label>
@@ -258,16 +249,14 @@ const Profile = () => {
                   <FormFile
                     id='image-file'
                     label={
-                      user?.avatar === defaultImages.upload || file?.name ? (
+                      userInfo?.avatar === defaultImages.upload ||
+                      file?.name ? (
                         <UploadImageSquare className={uploading ? 'anim' : ''}>
-                          <PhotoUploadIcon
-                            ready={file}
-                            imgStatus={imgUploadStatus}
-                          />
+                          <PhotoUploadIcon ready={file} />
                         </UploadImageSquare>
                       ) : (
                         <Image
-                          src={user?.avatar}
+                          src={userInfo?.avatar}
                           width='200px'
                           height='200px'
                           style={{ objectFit: 'cover' }}
@@ -282,12 +271,11 @@ const Profile = () => {
             </ProfilePicCol>
           )}
         </div>
-
         <span className='d-flex '>
           <UpdateBtn className='mt-0 mr-3' onClick={onSubmit}>
             Update
           </UpdateBtn>
-          {loadingUpdate && <Spinner animation='grow' />}
+          {loading && <Spinner animation='grow' />}
         </span>
       </Form>
     </Container>

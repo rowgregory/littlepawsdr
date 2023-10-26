@@ -1,7 +1,6 @@
 import { FC } from 'react';
 import { Switch, Route, useRouteMatch } from 'react-router-dom';
 import Profile from './Profile';
-import Appearance from './Appearance';
 import Security from './Security';
 import SideBar from '../../components/settings/SideBar';
 import { SettingsLayoutWithSideBar } from '../../components/settings/SettingsLayoutWithSideBar';
@@ -12,7 +11,6 @@ const SettingsRoutes: FC = () => {
     <SettingsLayoutWithSideBar sideBar={<SideBar />}>
       <Switch>
         <Route path={`${path}/profile`} component={Profile} />
-        <Route path={`${path}/appearance`} component={Appearance} />
         <Route path={`${path}/security`} component={Security} />
       </Switch>
     </SettingsLayoutWithSideBar>

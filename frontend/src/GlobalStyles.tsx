@@ -173,9 +173,9 @@ textarea {
   border-radius: 0px  !important;
   box-shadow: 0 !important;
   color: ${({ theme }) => theme.text} !important;
-  border:0 !important;
   :focus {
     outline: none !important;
+    background: ${({ theme }) => theme.input.bg} !important;
   }
 }
 

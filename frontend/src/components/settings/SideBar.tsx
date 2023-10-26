@@ -12,10 +12,6 @@ const sidebarData = (): {
     linkKey: '/settings/profile',
   },
   {
-    textKey: 'Appearance',
-    linkKey: '/settings/appearance',
-  },
-  {
     textKey: ' Account security',
     linkKey: '/settings/security',
   },
