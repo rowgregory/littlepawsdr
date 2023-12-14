@@ -11,10 +11,11 @@ import { LoadingImg } from '../../components/LoadingImg';
 import ImageAndName from '../../components/dachshund-details/ImageAndName';
 import InfoSection from '../../components/dachshund-details/InfoSection';
 import BottomInfo from '../../components/dachshund-details/BottomInfo';
+import { useParams } from 'react-router-dom';
 
-const DachshundDetails = ({ match }: any) => {
+const DachshundDetails = () => {
   const dispatch = useDispatch();
-  const id = match.params.id;
+  const { id } = useParams() as any;
 
   const state = useSelector((state: any) => state);
   const loading = state.dachshundDetails.loading;

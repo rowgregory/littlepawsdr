@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useRouteMatch } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { updatedUserToConfirmed } from '../actions/userActions';
 import Message from '../components/Message';
@@ -68,7 +68,7 @@ const Circle = styled(Link)<{ bg: string }>`
 `;
 
 const EmailConfirmation = ({ history }: any) => {
-  const match = useRouteMatch() as any;
+  const match = useParams() as any;
   const dispatch = useDispatch();
   const userToken = match.params.to;
   const userEmail = match.params.em;
@@ -236,12 +236,10 @@ const EmailConfirmation = ({ history }: any) => {
           >
             <Message variant='danger'>{errorUserConfirmed || message}</Message>
             <Link
-              to={{
-                pathname: '/register',
-                state: {
-                  userInfo: { email: userEmail, name: userName },
-                  cameFrom: 'EMAIL_CONFIRMATION',
-                },
+              to='/register'
+              state={{
+                userInfo: { email: userEmail, name: userName },
+                cameFrom: 'EMAIL_CONFIRMATION',
               }}
             >
               Head back to the register page.

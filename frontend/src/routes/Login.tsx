@@ -24,7 +24,7 @@ import loginEffect from '../components/sounds/login.mp3';
 import failedLoginAttempt from '../components/sounds/thump02.wav';
 import Logo from '../components/assets/logo.png';
 import UIfx from 'uifx';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Accordion } from '../components/styles/place-order/Styles';
 import CryptoJS from 'crypto-js';
 
@@ -55,7 +55,8 @@ const useLoginForm = (cb: any, setErrors: any) => {
   return { inputs, handleInputChange, onSubmit, setInputs };
 };
 
-const Login = ({ history }: any) => {
+const Login = () => {
+  const history = useNavigate();
   const dispatch = useDispatch();
   const [capsLockOn, setCapsLocksOn] = useState(false);
   const [showPassword, setShowPassword] = useState({ password: false });
@@ -103,10 +104,10 @@ const Login = ({ history }: any) => {
     const loginFx = new UIfx(loginEffect);
     const failedLoginAttemptFx = new UIfx(failedLoginAttempt);
     if (userInfo?.isAdmin) {
-      history.push('/admin');
+      history('/admin');
       loginFx.play();
     } else if (userInfo) {
-      history.push('/');
+      history('/');
     } else if (error) {
       failedLoginAttemptFx.play();
     }

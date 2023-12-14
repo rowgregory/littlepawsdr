@@ -1,16 +1,15 @@
 import { FC } from 'react';
-import { Switch, Route, useRouteMatch } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import MerchDetails from './MerchDetails';
 import Merch from './Merch';
 
 const ShopRoutes: FC = () => {
-  const { path } = useRouteMatch();
-
   return (
-    <Switch>
-      <Route exact path={path} component={() => <Merch />} />
-      <Route exact path={`${path}/:id`} component={MerchDetails} />
-    </Switch>
+    <Routes>
+      <Route path='/' element={<Merch />} />
+      <Route path=':id' element={<MerchDetails />} />
+      <Route path='*' element={<Navigate to='/404' replace />} />
+    </Routes>
   );
 };
 

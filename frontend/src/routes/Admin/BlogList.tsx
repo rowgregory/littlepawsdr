@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Table, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { LinkContainer } from 'react-router-bootstrap';
 import { listBlogs } from '../../actions/blogActions';
 import DeleteModal from '../../components/DeleteModal';
 import { Text } from '../../components/styles/Styles';
@@ -24,6 +23,7 @@ import { WelcomeText } from '../../components/styles/DashboardStyles';
 import BreadCrumb from '../../components/common/BreadCrumb';
 import { AddIcon } from '../../components/svg/AddIcon';
 import { defaultImages } from '../../utils/defaultImages';
+import { NavLink } from 'react-router-dom';
 
 const BlogList = () => {
   const dispatch = useDispatch();
@@ -99,17 +99,12 @@ const BlogList = () => {
               <Spinner animation='border' size='sm' />
             </SpinnerContainer>
           ) : (
-            <LinkContainer
-              to={{
-                pathname: '/admin/blog/id/edit',
-                state: { blog },
-              }}
-            >
+            <NavLink to={'/admin/blog/id/edit'} state={{ blog }}>
               <CreateBtnV2>
                 <AddIcon />
                 Create
               </CreateBtnV2>
-            </LinkContainer>
+            </NavLink>
           )}
         </TopRow>
 
@@ -144,11 +139,9 @@ const BlogList = () => {
                     <Text>{blog?.article.substring(0, 200)}</Text>
                   </td>
                   <td>
-                    <LinkContainer
-                      to={{
-                        pathname: `/admin/blog/${blog?._id}/edit`,
-                        state: { blog, isEditMode: true },
-                      }}
+                    <NavLink
+                      to={`/admin/blog/${blog?._id}/edit`}
+                      state={{ blog, isEditMode: true }}
                     >
                       <StyledEditBtn>
                         <i
@@ -156,7 +149,7 @@ const BlogList = () => {
                           className='fas fa-edit'
                         ></i>
                       </StyledEditBtn>
-                    </LinkContainer>
+                    </NavLink>
                   </td>
                   <td>
                     <StyledEditBtn

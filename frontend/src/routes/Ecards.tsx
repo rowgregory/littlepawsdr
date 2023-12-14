@@ -2,7 +2,7 @@ import LeftArrow from '../components/svg/LeftArrow';
 import RightArrow from '../components/svg/RightArrow';
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { pastelColorRandomizer } from '../utils/pastelColorRandomizer';
 import { LoadingImg } from '../components/LoadingImg';
 import Message from '../components/Message';
@@ -78,7 +78,7 @@ const Choose = styled.h3`
 `;
 
 const Ecards = () => {
-  const history = useHistory();
+  const history = useNavigate();
   const state = useSelector((state: any) => state);
 
   let loading = state.ecardList.loading;
@@ -90,7 +90,7 @@ const Ecards = () => {
   ];
 
   const setFilterParam = (category: string) => {
-    history.push(`/ecards/filtered?category=${category}`);
+    history(`/ecards/filtered?category=${category}`);
   };
 
   return (

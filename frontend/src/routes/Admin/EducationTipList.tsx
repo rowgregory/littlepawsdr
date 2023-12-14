@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Table, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { LinkContainer } from 'react-router-bootstrap';
 import { listEducationTips } from '../../actions/educationTipActions';
 import DeleteModal from '../../components/DeleteModal';
 import { Text } from '../../components/styles/Styles';
@@ -24,6 +23,7 @@ import { WelcomeText } from '../../components/styles/DashboardStyles';
 import BreadCrumb from '../../components/common/BreadCrumb';
 import { AddIcon } from '../../components/svg/AddIcon';
 import { defaultImages } from '../../utils/defaultImages';
+import { Link } from 'react-router-dom';
 
 const EducationTipList = () => {
   const dispatch = useDispatch();
@@ -101,17 +101,12 @@ const EducationTipList = () => {
               <Spinner animation='border' size='sm' />
             </SpinnerContainer>
           ) : (
-            <LinkContainer
-              to={{
-                pathname: '/admin/education-tip/id/edit',
-                state: { eTip },
-              }}
-            >
+            <Link to={'/admin/education-tip/id/edit'} state={{ eTip }}>
               <CreateBtnV2>
                 <AddIcon />
                 Create
               </CreateBtnV2>
-            </LinkContainer>
+            </Link>
           )}
         </TopRow>
         <TableAndPaginationContainer>
@@ -146,11 +141,9 @@ const EducationTipList = () => {
                     </Text>
                   </td>
                   <td>
-                    <LinkContainer
-                      to={{
-                        pathname: `/admin/education-tip/${tip?._id}/edit`,
-                        state: { eTip: tip, isEditMode: true },
-                      }}
+                    <Link
+                      to={`/admin/education-tip/${tip?._id}/edit`}
+                      state={{ eTip: tip, isEditMode: true }}
                     >
                       <StyledEditBtn>
                         <i
@@ -158,7 +151,7 @@ const EducationTipList = () => {
                           className='fas fa-edit'
                         ></i>
                       </StyledEditBtn>
-                    </LinkContainer>
+                    </Link>
                   </td>
                   <td>
                     <StyledEditBtn

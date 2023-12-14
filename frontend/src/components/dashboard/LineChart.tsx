@@ -7,6 +7,8 @@ import {
   Title,
   Tooltip,
   Legend,
+  ArcElement,
+  Filler,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import { Text } from '../styles/Styles';
@@ -24,7 +26,9 @@ ChartJS.register(
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  ArcElement,
+  Filler
 );
 
 const LineChart = ({ lineChart, loading }: any) => {

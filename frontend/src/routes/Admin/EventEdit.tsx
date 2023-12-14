@@ -8,7 +8,7 @@ import {
 } from '../../constants/eventConstants';
 import styled from 'styled-components';
 import { UpdateBtn } from '../../components/styles/Styles';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Message from '../../components/Message';
 import {
   Container,
@@ -78,7 +78,7 @@ const EventEdit = () => {
   const {
     state: { event, isEditMode },
   } = useLocation() as any;
-  const history = useHistory();
+  const history = useNavigate();
   const dispatch = useDispatch();
   const [uploading, setUploading] = useState(false);
   const [file, setFile] = useState({}) as any;
@@ -135,7 +135,7 @@ const EventEdit = () => {
 
   useEffect(() => {
     if (successCreate || successUpdate) {
-      history.push('/admin/eventList');
+      history('/admin/eventList');
       dispatch({ type: EVENT_UPDATE_RESET });
       dispatch({ type: EVENT_CREATE_RESET });
     }

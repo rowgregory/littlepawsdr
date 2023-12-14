@@ -1,9 +1,8 @@
-import React from 'react';
 import { Image } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import Dog404 from '../../components/assets/404_dog01.png';
-import { Text } from '../styles/Styles';
+import Dog404 from '../components/assets/404_dog01.png';
+import { Text } from '../components/styles/Styles';
 
 const Container = styled.div`
   top: 0;

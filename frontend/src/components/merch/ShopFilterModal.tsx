@@ -24,7 +24,7 @@ const ShopFilterModal = ({
   return (
     <Modal show={show} onHide={close} centered>
       <Content>
-        <Header closeButton>
+        <Header closeButton placeholder={null}>
           <Title>Choose a filter below</Title>
         </Header>
         <Body>

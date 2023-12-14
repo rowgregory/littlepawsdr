@@ -10,7 +10,7 @@ import {
   EDUCATION_TIP_UPDATE_RESET,
 } from '../../constants/educationTipConstants';
 import { UpdateBtn } from '../../components/styles/Styles';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Message from '../../components/Message';
 import {
   Container,
@@ -62,7 +62,7 @@ const EducationTipEdit = () => {
   const {
     state: { eTip, isEditMode },
   } = useLocation() as any;
-  const history = useHistory();
+  const history = useNavigate();
   const dispatch = useDispatch();
   const [uploading, setUploading] = useState(false);
   const [file, setFile] = useState({}) as any;
@@ -114,7 +114,7 @@ const EducationTipEdit = () => {
 
   useEffect(() => {
     if (successCreate || successUpdate) {
-      history.push('/admin/education-tips');
+      history('/admin/education-tips');
       dispatch({ type: EDUCATION_TIP_UPDATE_RESET });
       dispatch({ type: EDUCATION_TIP_CREATE_RESET });
     }

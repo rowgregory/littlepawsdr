@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createProduct } from '../../actions/productActions';
 import { UpdateBtn } from '../../components/styles/Styles';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Message from '../../components/Message';
 import { Container, EditForm } from '../../components/styles/admin/Styles';
 import { WelcomeText } from '../../components/styles/DashboardStyles';
@@ -20,7 +20,7 @@ const ProductCreate = () => {
   const {
     state: { product },
   } = useLocation() as any;
-  const history = useHistory();
+  const history = useNavigate();
   const dispatch = useDispatch();
   const [uploading, setUploading] = useState(false);
   const [productSizes, setProductSizes] = useState([]) as any;
@@ -61,7 +61,7 @@ const ProductCreate = () => {
 
   useEffect(() => {
     if (success) {
-      history.push('/admin/product/list');
+      history('/admin/product/list');
       dispatch({ type: PRODUCT_CREATE_RESET });
     }
   }, [dispatch, history, success]);

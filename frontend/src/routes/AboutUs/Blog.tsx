@@ -115,10 +115,7 @@ const Blog = () => {
           </div>
         ) : (
           blogs?.map((blog: any, i: number) => (
-            <BlogCard
-              to={{ pathname: `/about/blog/${blog?._id}`, state: { blog } }}
-              key={i}
-            >
+            <BlogCard to={`/about/blog/${blog?._id}`} key={i} state={{ blog }}>
               <ArticleContainer>
                 {loading ? (
                   <LoadingImg w='100%' mw='150px' h='100%' />

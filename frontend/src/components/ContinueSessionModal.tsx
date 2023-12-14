@@ -126,7 +126,7 @@ const ContinueSessionModal = ({ show, handleClose }: any) => {
   return (
     <Modal show={show} centered onHide={() => shake()}>
       <Content shake={shakeModal.toString()}>
-        <Header>
+        <Header placeholder={null}>
           <Contdown>{countdown}</Contdown>
           <Title>
             You're being timed out due to inactivity.

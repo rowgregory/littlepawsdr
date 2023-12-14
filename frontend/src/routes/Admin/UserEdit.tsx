@@ -6,7 +6,7 @@ import {
   USER_DETAILS_RESET,
   USER_UPDATE_RESET,
 } from '../../constants/userConstants';
-import { useHistory, useRouteMatch } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Text, UpdateBtn } from '../../components/styles/Styles';
 import Message from '../../components/Message';
 import {
@@ -17,10 +17,10 @@ import { WelcomeText } from '../../components/styles/DashboardStyles';
 import BreadCrumb from '../../components/common/BreadCrumb';
 
 const UserEdit = () => {
-  const match = useRouteMatch<{ id: string }>();
-  const history = useHistory();
+  const { id } = useParams<{ id: string }>();
+  const history = useNavigate();
   const dispatch = useDispatch();
-  const userId = match.params.id;
+  const userId = id;
   const [isAdmin, setIsAdmin] = useState(false);
 
   const {
@@ -41,7 +41,7 @@ const UserEdit = () => {
   useEffect(() => {
     if (successUpdate) {
       dispatch({ type: USER_UPDATE_RESET });
-      history.push('/admin/userList');
+      history('/admin/userList');
     } else {
       setIsAdmin(user.isAdmin);
     }

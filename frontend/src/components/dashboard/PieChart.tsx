@@ -1,4 +1,3 @@
-import React from 'react';
 import { Doughnut } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -9,6 +8,8 @@ import {
   Title,
   Tooltip,
   Legend,
+  ArcElement,
+  Filler,
 } from 'chart.js';
 import { Text } from '../styles/Styles';
 import {
@@ -25,7 +26,9 @@ ChartJS.register(
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  ArcElement,
+  Filler
 );
 
 const PieChart = ({ details, loading }: any) => {

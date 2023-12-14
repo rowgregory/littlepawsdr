@@ -62,17 +62,14 @@ const Footer = () => {
           <LinkSection>
             <LinkCategory>Our Address</LinkCategory>
             <StyledText>Little Paws Dachshund Rescue</StyledText>
-            <StyledText>PO Box 232</StyledText>
-            <StyledText>College Park, MD 20741</StyledText>
+            <StyledText>P.O. Box 108</StyledText>
+            <StyledText>Brookfield, CT 06804</StyledText>
           </LinkSection>
           <LinkSection>
             <LinkCategory>Quick Links</LinkCategory>
             <div className='d-flex flex-column'>
               {quickLinks().map((l: any, i: number) => (
-                <StyledLink
-                  key={i}
-                  to={{ pathname: l.linkPath, state: l.path }}
-                >
+                <StyledLink key={i} to={l.linkPath} state={l.path}>
                   {l.linkKey}
                 </StyledLink>
               ))}

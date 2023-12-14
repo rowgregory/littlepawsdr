@@ -103,7 +103,7 @@ const EventCard = ({ event, history }: any) => {
   return (
     <EventsCard
       onClick={() =>
-        history.push({ pathname: `/events/${event?._id}`, state: { event } })
+        history({ pathname: `/events/${event?._id}`, state: { event } })
       }
       key={event?._id}
       className='d-flex align-items-center'

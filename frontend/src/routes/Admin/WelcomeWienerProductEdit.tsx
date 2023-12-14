@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Container } from '../../components/styles/admin/Styles';
 import { WelcomeText } from '../../components/styles/DashboardStyles';
 import BreadCrumb from '../../components/common/BreadCrumb';
@@ -14,7 +14,7 @@ import useWelcomeWienerProductForm from '../../utils/hooks/useWelcomeWienerProdu
 
 const WelcomeWienerProductEdit = () => {
   const { id } = useParams() as any;
-  const history = useHistory();
+  const history = useNavigate();
   const dispatch = useDispatch();
   const state = useSelector((state: any) => state);
 
@@ -38,7 +38,7 @@ const WelcomeWienerProductEdit = () => {
 
   useEffect(() => {
     if (successUpdate) {
-      history.push('/admin/welcome-wiener/product/list');
+      history('/admin/welcome-wiener/product/list');
       dispatch({ type: WELCOME_WIENER_PRODUCT_UPDATE_RESET });
     } else if (id) {
       dispatch(getWelcomeWienerProductDetails(id));

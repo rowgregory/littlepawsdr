@@ -143,8 +143,7 @@ const JumpingInput = ({
     <Group>
       {isSelect ? (
         <Select
-          error={error}
-          placeholder=' '
+          error={Error}
           name='state'
           value={value}
           as='select'

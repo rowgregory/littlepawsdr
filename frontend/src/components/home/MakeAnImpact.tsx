@@ -10,13 +10,14 @@ const MakeAnImpact = () => {
   return (
     <>
       <MobileImageSection>
-        <Image
+        <ParallaxImg2 />
+        {/* <Image
           src={ParallaxImg2}
           alt='LPDR'
           width='100%'
           loading='lazy'
           style={{ objectFit: 'cover', height: '100vh' }}
-        />
+        /> */}
         <ParallaxSectionContent
           style={{
             textAlign: 'center',

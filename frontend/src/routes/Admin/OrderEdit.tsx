@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Form, Image, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { useRouteMatch } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import BreadCrumb from '../../components/common/BreadCrumb';
 import {
   ItemsSummaryContainer,
@@ -23,8 +23,7 @@ import addDecimals from '../../utils/addDecimals';
 
 const OrderEdit = () => {
   const dispatch = useDispatch();
-  const { params } = useRouteMatch<{ id: string }>();
-  const id = params.id;
+  const { id } = useParams<{ id: string }>();
   const [enterTrackingNumber, setEnterTrackingNumber] = useState(false);
   const [trackingNumber, setTrackingNumber] = useState('');
   const state = useSelector((state: any) => state);

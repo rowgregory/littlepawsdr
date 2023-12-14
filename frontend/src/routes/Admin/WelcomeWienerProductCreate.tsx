@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Container } from '../../components/styles/admin/Styles';
 import { WelcomeText } from '../../components/styles/DashboardStyles';
 import BreadCrumb from '../../components/common/BreadCrumb';
@@ -10,7 +10,7 @@ import CreateEditWelcomeWienerProductForm from '../../components/forms/CreateEdi
 import useWelcomeWienerProductForm from '../../utils/hooks/useWelcomeWienerProductForm';
 
 const WelcomeWienerProductCreate = () => {
-  const history = useHistory();
+  const history = useNavigate();
   const dispatch = useDispatch();
   const state = useSelector((state: any) => state);
   const loading = state.welcomeWienerProductCreate.loading;
@@ -29,7 +29,7 @@ const WelcomeWienerProductCreate = () => {
 
   useEffect(() => {
     if (success) {
-      history.push('/admin/welcome-wiener/product/list');
+      history('/admin/welcome-wiener/product/list');
       dispatch({ type: WELCOME_WIENER_PRODUCT_CREATE_RESET });
     }
   }, [dispatch, history, success]);

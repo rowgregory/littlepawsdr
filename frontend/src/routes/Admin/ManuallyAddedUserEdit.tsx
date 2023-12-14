@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Form, Image } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { Text, UpdateBtn } from '../../components/styles/Styles';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { updateManuallyAddedUser } from '../../actions/manuallyAddUserActions';
 import {
   MANUALLY_ADD_USER_CREATE_RESET,
@@ -76,7 +76,7 @@ const ManuallyAddedUserEdit = () => {
   const {
     state: { manuallyAddedUser, isEditMode },
   } = useLocation() as any;
-  const history = useHistory();
+  const history = useNavigate();
   const dispatch = useDispatch();
   const [uploading, setUploading] = useState(false);
   const [file, setFile] = useState({}) as any;
@@ -132,7 +132,7 @@ const ManuallyAddedUserEdit = () => {
 
   useEffect(() => {
     if (successCreate || successUpdate) {
-      history.push('/admin/manuallyAddedUserList');
+      history('/admin/manuallyAddedUserList');
       dispatch({ type: MANUALLY_ADD_USER_CREATE_RESET });
       dispatch({ type: MANUALLY_ADD_USER_UPDATE_RESET });
     }

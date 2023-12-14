@@ -33,6 +33,7 @@ const RaffleWinnerModal = ({ show, handleClose, winner }: any) => {
   return (
     <StyledModal show={show} onHide={handleClose} centered>
       <Modal.Header
+        placeholder={null}
         closeButton
         className='d-flex flex-column'
         style={{ borderBottom: '0' }}

@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 
 const ArrowFixedAnim = keyframes`
@@ -66,12 +66,12 @@ const AnimatedBackArrow: FC<{ url?: string; setOpenMenu: Function }> = ({
   url,
   setOpenMenu,
 }) => {
-  const history = useHistory();
+  const history = useNavigate();
   return (
     <Wrapper
       onClick={() => {
         if (url) {
-          history.push(`${url}`);
+          history(`${url}`);
         } else {
           setOpenMenu(false);
         }

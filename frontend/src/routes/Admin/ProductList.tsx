@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { LinkContainer } from 'react-router-bootstrap';
 import { Table, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { listProducts } from '../../actions/productActions';
@@ -25,6 +24,7 @@ import { WelcomeText } from '../../components/styles/DashboardStyles';
 import BreadCrumb from '../../components/common/BreadCrumb';
 import { AddIcon } from '../../components/svg/AddIcon';
 import { defaultImages } from '../../utils/defaultImages';
+import { Link } from 'react-router-dom';
 
 const ProductCountTD = styled.td<{ isProductLow?: boolean }>`
   color: ${({ theme, isProductLow }) =>
@@ -106,17 +106,12 @@ const ProductList = () => {
               <Spinner animation='border' size='sm' />
             </SpinnerContainer>
           ) : (
-            <LinkContainer
-              to={{
-                pathname: '/admin/product/create',
-                state: { product },
-              }}
-            >
+            <Link to={'/admin/product/create'} state={{ product }}>
               <CreateBtnV2>
                 <AddIcon />
                 Create
               </CreateBtnV2>
-            </LinkContainer>
+            </Link>
           )}
         </TopRow>
         <TableAndPaginationContainer>
@@ -177,11 +172,9 @@ const ProductList = () => {
                         : product?.countInStock}
                     </ProductCountTD>
                     <td>
-                      <LinkContainer
-                        to={{
-                          pathname: `/admin/product/${product?._id}/edit`,
-                          state: { product, isEditMode: true },
-                        }}
+                      <Link
+                        to={`/admin/product/${product?._id}/edit`}
+                        state={{ product, isEditMode: true }}
                       >
                         <StyledEditBtn>
                           <i
@@ -189,7 +182,7 @@ const ProductList = () => {
                             className='fas fa-edit'
                           ></i>
                         </StyledEditBtn>
-                      </LinkContainer>
+                      </Link>
                     </td>
                     <td>
                       <StyledEditBtn
