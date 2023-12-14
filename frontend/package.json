@@ -98,5 +98,8 @@
   "volta": {
     "node": "16.20.2",
     "yarn": "1.22.10"
+  },
+  "overrides": {
+    "autoprefixer": "10.4.5"
   }
 }
