@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Spinner, Pagination } from 'react-bootstrap';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { LinkContainer } from 'react-router-bootstrap';
 import {
   createRaffleWinner,
   listRaffleWinners,
@@ -30,9 +29,10 @@ import { rangeV2 } from '../../components/common/Pagination';
 import Message from '../../components/Message';
 import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
 import { AddIcon } from '../../components/svg/AddIcon';
+import { Link } from 'react-router-dom';
 
 const RaffleWinnerList = () => {
-  const history = useHistory();
+  const history = useNavigate();
   const dispatch = useDispatch();
   const [show, setShow] = useState(false);
   const [id, setId] = useState('');
@@ -61,7 +61,7 @@ const RaffleWinnerList = () => {
   useEffect(() => {
     dispatch({ type: RAFFLE_WINNER_CREATE_RESET });
     if (successCreate) {
-      history.push(`/admin/raffleWinner/${createdRaffleWinner._id}/edit`);
+      history(`/admin/raffleWinner/${createdRaffleWinner._id}/edit`);
     } else {
       dispatch(listRaffleWinners());
     }
@@ -167,16 +167,14 @@ const RaffleWinnerList = () => {
                     <Text>{raffleWinner?.month}</Text>
                   </td>
                   <td>
-                    <LinkContainer
-                      to={`/admin/raffleWinner/${raffleWinner?._id}/edit`}
-                    >
+                    <Link to={`/admin/raffleWinner/${raffleWinner?._id}/edit`}>
                       <StyledEditBtn>
                         <i
                           style={{ color: '#9761aa' }}
                           className='fas fa-edit'
                         ></i>
                       </StyledEditBtn>
-                    </LinkContainer>
+                    </Link>
                   </td>
                   <td>
                     <StyledEditBtn

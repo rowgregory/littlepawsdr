@@ -1,15 +1,15 @@
 import { FC } from 'react';
-import { Switch, Route, useRouteMatch } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Event from './Event';
 import Events from './Events';
 
 const EventsRoutes: FC = () => {
-  const { path } = useRouteMatch();
   return (
-    <Switch>
-      <Route exact path={path} component={Events} />
-      <Route path={`${path}/:id`} component={Event} />
-    </Switch>
+    <Routes>
+      <Route path='/' element={<Events />} />
+      <Route path=':id' element={<Event />} />
+      <Route path='*' element={<Navigate to='/404' replace />} />
+    </Routes>
   );
 };
 

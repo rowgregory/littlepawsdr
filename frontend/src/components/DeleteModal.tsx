@@ -85,7 +85,7 @@ const DeleteModal = ({ actionFunc, show, handleClose, id }: any) => {
   return (
     <Modal show={show} onHide={handleClose} centered>
       <Content>
-        <Header closeButton>
+        <Header closeButton placeholder={null}>
           <Title>
             You are about to <span>DELETE</span> {checkForVowel(actionFunc)}
             {actionFunc}

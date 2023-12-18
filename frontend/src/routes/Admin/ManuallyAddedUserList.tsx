@@ -22,8 +22,8 @@ import Message from '../../components/Message';
 import { WelcomeText } from '../../components/styles/DashboardStyles';
 import BreadCrumb from '../../components/common/BreadCrumb';
 import { AddIcon } from '../../components/svg/AddIcon';
-import { LinkContainer } from 'react-router-bootstrap';
 import { defaultImages } from '../../utils/defaultImages';
+import { Link } from 'react-router-dom';
 
 const ManuallyAddedUserList = () => {
   const dispatch = useDispatch();
@@ -106,17 +106,15 @@ const ManuallyAddedUserList = () => {
               <Spinner animation='border' size='sm' />
             </SpinnerContainer>
           ) : (
-            <LinkContainer
-              to={{
-                pathname: '/admin/manuallyAddedUser/id/edit',
-                state: { manuallyAddedUser },
-              }}
+            <Link
+              to='/admin/manuallyAddedUser/id/edit'
+              state={{ manuallyAddedUser }}
             >
               <CreateBtnV2>
                 <AddIcon />
                 Create
               </CreateBtnV2>
-            </LinkContainer>
+            </Link>
           )}
         </TopRow>
         <TableAndPaginationContainer>
@@ -153,11 +151,9 @@ const ManuallyAddedUserList = () => {
                     <Text>{manuallyAddedUser?.email}</Text>
                   </td>
                   <td>
-                    <LinkContainer
-                      to={{
-                        pathname: `/admin/manuallyAddedUser/${manuallyAddedUser?._id}/edit`,
-                        state: { manuallyAddedUser, isEditMode: true },
-                      }}
+                    <Link
+                      to={`/admin/manuallyAddedUser/${manuallyAddedUser?._id}/edit`}
+                      state={{ manuallyAddedUser, isEditMode: true }}
                     >
                       <StyledEditBtn>
                         <i
@@ -165,7 +161,7 @@ const ManuallyAddedUserList = () => {
                           className='fas fa-edit'
                         ></i>
                       </StyledEditBtn>
-                    </LinkContainer>
+                    </Link>
                   </td>
                   <td>
                     <StyledEditBtn

@@ -1,7 +1,7 @@
-import React from 'react';
 import { Card } from 'react-bootstrap';
 import styled from 'styled-components';
 import { Text } from './styles/Styles';
+import { useNavigate } from 'react-router-dom';
 
 const EventsCard = styled.div`
   max-width: 1000px;
@@ -99,12 +99,11 @@ export const Ribbon = styled.div<{ status?: string }>`
   }
 `;
 
-const EventCard = ({ event, history }: any) => {
+const EventCard = ({ event }: any) => {
+  const history = useNavigate();
   return (
     <EventsCard
-      onClick={() =>
-        history.push({ pathname: `/events/${event?._id}`, state: { event } })
-      }
+      onClick={() => history(`/events/${event?._id}`)}
       key={event?._id}
       className='d-flex align-items-center'
       style={{

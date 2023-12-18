@@ -1,7 +1,6 @@
 import { FC } from 'react';
-import { Switch, Route, useRouteMatch } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import ListAvailableDogs from './ListAvailableDogs';
-import PageNotFound from '../../components/common/PageNotFound';
 import styled from 'styled-components';
 
 const Container = styled.div`
@@ -10,16 +9,12 @@ const Container = styled.div`
 `;
 
 const AvailableRoutes: FC = () => {
-  const { path } = useRouteMatch();
-
   return (
     <Container>
-      <Switch>
-        <Route exact path={`${path}`} component={ListAvailableDogs} />
-        <Route>
-          <PageNotFound />
-        </Route>
-      </Switch>
+      <Routes>
+        <Route path='/' element={<ListAvailableDogs />} />
+        <Route path='*' element={<Navigate to='/404' replace />} />
+      </Routes>
     </Container>
   );
 };

@@ -7,7 +7,7 @@ import {
   BLOG_UPDATE_RESET,
 } from '../../constants/blogConstants';
 import { UpdateBtn } from '../../components/styles/Styles';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Message from '../../components/Message';
 import {
   Container,
@@ -59,7 +59,7 @@ const BlogEdit = () => {
   const {
     state: { blog, isEditMode },
   } = useLocation() as any;
-  const history = useHistory();
+  const history = useNavigate();
   const dispatch = useDispatch();
   const [uploading, setUploading] = useState(false);
   const [file, setFile] = useState({}) as any;
@@ -108,7 +108,7 @@ const BlogEdit = () => {
 
   useEffect(() => {
     if (successCreate || successUpdate) {
-      history.push('/admin/blogs');
+      history('/admin/blogs');
       dispatch({ type: BLOG_UPDATE_RESET });
       dispatch({ type: BLOG_CREATE_RESET });
     }

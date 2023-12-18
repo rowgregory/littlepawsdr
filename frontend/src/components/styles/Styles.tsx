@@ -186,9 +186,6 @@ export const Container = styled.div`
   padding: 8px;
   min-height: 100vh;
   background: url(${LegacyWallpaper});
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    padding-block: 145px;
-  }
 `;
 
 export const FormWrapper = styled.div`
@@ -196,8 +193,18 @@ export const FormWrapper = styled.div`
   padding: 32px;
   width: 100%;
   min-height: calc(100vh - 16px);
-  background: ${({ theme }) => (theme.mode === 'night' ? '#161b22' : '#fff')};
   border-radius: 0;
+  &.register,
+  &.login,
+  &.forgot-password,
+  &.reset-password {
+    background: rgba(255, 255, 255, 0.32);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.57);
+  }
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
     border-radius: 0.4rem;
     max-width: 472px;
@@ -215,11 +222,44 @@ export const FormContainer = styled.div`
 export const CreateAccountContainer = styled.div`
   font-weight: 300;
   text-align: center;
-  border-radius: 0.4rem;
-  background: ${({ theme }) => theme.bg};
+  color: #fff;
 `;
 
 export const ErrorText = styled.div`
   color: red;
   font-size: 12px;
+`;
+
+export const AccordionWrapper = styled.div`
+  position: fixed;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 500px;
+  margin-inline: auto;
+`;
+
+export const GlassBtn = styled.button`
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.37);
+  width: 100%;
+  padding-block: 10px;
+  border-radius: 0;
+  color: #fff;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  :hover {
+    outline: none;
+    background: rgba(255, 255, 255, 0);
+    border: 1px solid rgba(255, 255, 255, 0.37);
+  }
 `;

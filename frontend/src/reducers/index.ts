@@ -118,6 +118,8 @@ import {
   welcomeWienerDachshundUpdateReducer,
 } from './welcomeWienerDachshundReducer';
 import { dashboardReducer } from './dashboardReducer';
+import { jwtCheckValidityReducer } from './jwtReducer';
+import passwordReducer from './passwordReducer';
 
 const allReducers = combineReducers({
   dachshunds: dachshundListReducer,
@@ -209,6 +211,8 @@ const allReducers = combineReducers({
   welcomeWienerDachshundDetails: welcomeWienerDachshundDetailsReducer,
   welcomeWienerDachshundToggle: welcomeWienerDachshundToggledReducer,
   searchBar: searchBarListReducer,
+  jwtCheckValidity: jwtCheckValidityReducer,
+  password: passwordReducer,
 });
 
 export default allReducers;

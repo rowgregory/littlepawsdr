@@ -12,7 +12,7 @@ import {
 import { Text, UpdateBtn } from '../../components/styles/Styles';
 import styled from 'styled-components';
 import { removePhoto } from '../../utils/removePhoto';
-import { useRouteMatch, useHistory } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Message from '../../components/Message';
 import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
 import {
@@ -54,10 +54,9 @@ export const EditBtn = styled.div<{ top?: string; left?: string }>`
 `;
 
 const RaffleWinnerEdit = () => {
-  const match = useRouteMatch<{ id: string }>();
-  const history = useHistory();
+  const { id } = useParams<{ id: string }>();
+  const history = useNavigate();
   const dispatch = useDispatch();
-  const raffleWinnerId = match.params.id;
   const [name, setName] = useState('');
   const [image, setImage] = useState('');
   const [message, setMessage] = useState('');
@@ -78,9 +77,9 @@ const RaffleWinnerEdit = () => {
 
   useEffect(() => {
     dispatch({ type: RAFFLE_WINNER_DETAILS_RESET });
-    dispatch(getRaffleWinnerDetails(raffleWinnerId));
+    dispatch(getRaffleWinnerDetails(id));
     dispatch({ type: RAFFLE_WINNER_UPDATE_RESET });
-  }, [dispatch, raffleWinnerId]);
+  }, [dispatch, id]);
 
   useEffect(() => {
     if (raffleWinner?.month === 'January') {
@@ -117,7 +116,7 @@ const RaffleWinnerEdit = () => {
   useEffect(() => {
     if (successUpdate && submittedForm) {
       setSubmittedForm(false);
-      history.push('/admin/raffleWinnerList');
+      history('/admin/raffleWinnerList');
     }
   }, [history, submittedForm, successUpdate]);
 
@@ -130,7 +129,7 @@ const RaffleWinnerEdit = () => {
 
     dispatch(
       updateRaffleWinner({
-        _id: raffleWinnerId,
+        _id: id,
         name,
         month: getMonth(month),
         message,
@@ -148,7 +147,7 @@ const RaffleWinnerEdit = () => {
       () => {},
       dispatch,
       updateRaffleWinner,
-      raffleWinnerId,
+      id,
       setErrorMsg
     );
   };

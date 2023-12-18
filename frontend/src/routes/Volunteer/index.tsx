@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from 'react';
-import { Switch, Route, useRouteMatch, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import FosterApplication from './FosterApplication';
 import VolunteerApplication from './VolunteerApplication';
@@ -10,7 +10,6 @@ const Container = styled.div`
 `;
 
 const VolunteerRoutes: FC = () => {
-  const { path } = useRouteMatch();
   const { pathname } = useLocation();
   const currentRoute = pathname.split('/')[2];
   const [tabCategory, setTabCategory] = useState('Volunteer Application');
@@ -21,17 +20,13 @@ const VolunteerRoutes: FC = () => {
 
   return (
     <Container>
-      <Switch>
+      <Routes>
         <Route
-          exact
-          path={`${path}/volunteer-application`}
-          component={VolunteerApplication}
+          path='volunteer-application'
+          element={<VolunteerApplication />}
         />
-        <Route
-          path={`${path}/foster-application`}
-          component={FosterApplication}
-        />
-      </Switch>
+        <Route path='foster-application' element={<FosterApplication />} />
+      </Routes>
     </Container>
   );
 };

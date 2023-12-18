@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { listBlogs } from '../../actions/blogActions';
@@ -115,10 +115,7 @@ const Blog = () => {
           </div>
         ) : (
           blogs?.map((blog: any, i: number) => (
-            <BlogCard
-              to={{ pathname: `/about/blog/${blog?._id}`, state: { blog } }}
-              key={i}
-            >
+            <BlogCard to={`/about/blog/${blog?._id}`} key={i}>
               <ArticleContainer>
                 {loading ? (
                   <LoadingImg w='100%' mw='150px' h='100%' />

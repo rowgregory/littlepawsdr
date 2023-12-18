@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Image, Spinner } from 'react-bootstrap';
 import { Accordion } from '../styles/place-order/Styles';
 import { Circles, UserInfoContainer, Wallet } from '../styles/DashboardStyles';
@@ -24,12 +24,12 @@ const RecentTransactions = ({
   dashboardDetails,
   loading,
 }: any) => {
-  const history = useHistory();
+  const history = useNavigate();
   const dispatch = useDispatch();
   const [revealMyLinks, setRevealMyLinks] = useState(false);
 
   const viewTransaction = (item: any) => {
-    history.push(`/admin/order/${item?._id}`);
+    history(`/admin/order/${item?._id}`);
   };
 
   return (

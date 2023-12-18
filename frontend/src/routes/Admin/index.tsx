@@ -1,6 +1,5 @@
 import { ComponentType, FC, lazy } from 'react';
-import { Switch, Route, useRouteMatch, Redirect } from 'react-router-dom';
-import PageNotFound from '../../components/common/PageNotFound';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { DashboardLayoutWithSideBar } from '../../components/layouts/DashboardLayoutWithSideBar';
 import SideBar from '../../components/dashboard/sidebar/SideBar';
 import Dashboard from './Dashboard';
@@ -19,7 +18,7 @@ import BlogList from './BlogList';
 import BlogEdit from './BlogEdit';
 import EducationTipList from './EducationTipList';
 import EducationTipEdit from './EducationTipEdit';
-import Private from '../../components/common/PrivateRoute';
+import PrivateRoute from '../../components/common/PrivateRoute';
 import ManuallyAddedUserList from './ManuallyAddedUserList';
 import ManuallyAddedUserEdit from './ManuallyAddedUserEdit';
 import EcardOrderList from './Orders/EcardOrderList';
@@ -38,86 +37,252 @@ type LazyModulePromise<T = {}> = Promise<{ default: ComponentType<T> }>;
 const Orders = lazy((): LazyModulePromise => import('./Orders'));
 
 const AdminRoutes: FC = () => {
-  const { path } = useRouteMatch();
-
   return (
     <DashboardLayoutWithSideBar sideBar={<SideBar />}>
-      <Switch>
-        <Private exact={true} path={path} component={Dashboard} />
-        <Private path={`${path}/userList`} component={UserList} />
-        <Private path={`${path}/user/:id/edit`} component={UserEdit} />
-        <Private path={`${path}/eventList`} component={EventList} />
-        <Private path={`${path}/event/:id/edit`} component={EventEdit} />
-        <Private path={`${path}/product/list`} component={ProductList} />
-        <Private path={`${path}/product/create`} component={ProductCreate} />
-        <Private path={`${path}/product/:id/edit`} component={ProductEdit} />
-        <Private exact path={`${path}/orders`} component={Orders} />
-        <Private exact path={`${path}/order/:id`} component={OrderEdit} />
-        <Private path={`${path}/eCardOrderList`} component={EcardOrderList} />
-        <Private
-          path={`${path}/newsletterEmailList`}
-          component={NewsletterEmailList}
+      <Routes>
+        <Route
+          path='/'
+          element={
+            <PrivateRoute>
+              <Dashboard />
+            </PrivateRoute>
+          }
         />
-        <Private path={`${path}/eCardList`} component={ECardList} />
-        <Private path={`${path}/eCard/:id/edit`} component={ECardEdit} />
-        <Private
-          path={`${path}/raffleWinnerList`}
-          component={RaffleWinnerList}
+        <Route
+          path='userList'
+          element={
+            <PrivateRoute>
+              <UserList />
+            </PrivateRoute>
+          }
         />
-        <Private
-          path={`${path}/raffleWinner/:id/edit`}
-          component={RaffleWinnerEdit}
+        <Route
+          path='user/:id/edit'
+          element={
+            <PrivateRoute>
+              <UserEdit />
+            </PrivateRoute>
+          }
         />
-        <Private path={`${path}/blogs`} component={BlogList} />
-        <Private path={`${path}/blog/:id/edit`} component={BlogEdit} />
-        <Private path={`${path}/education-tips`} component={EducationTipList} />
-        <Private
-          path={`${path}/education-tip/:id/edit`}
-          component={EducationTipEdit}
+        <Route
+          path='eventList'
+          element={
+            <PrivateRoute>
+              <EventList />
+            </PrivateRoute>
+          }
         />
-        <Private
-          path={`${path}/manuallyAddedUser/:id/edit`}
-          component={ManuallyAddedUserEdit}
+        <Route
+          path='event/:id/edit'
+          element={
+            <PrivateRoute>
+              <EventEdit />
+            </PrivateRoute>
+          }
         />
-        <Private
-          path={`${path}/manuallyAddedUserList`}
-          component={ManuallyAddedUserList}
+        <Route
+          path='product/list'
+          element={
+            <PrivateRoute>
+              <ProductList />
+            </PrivateRoute>
+          }
         />
-        <Private
-          path={`${path}/welcome-wiener/product/list`}
-          component={WelcomeWienerProductList}
+        <Route
+          path='product/create'
+          element={
+            <PrivateRoute>
+              <ProductCreate />
+            </PrivateRoute>
+          }
         />
-        <Private
-          path={`${path}/welcome-wiener/product/create`}
-          component={WelcomeWienerProductCreate}
+        <Route
+          path='product/:id/edit'
+          element={
+            <PrivateRoute>
+              <ProductEdit />
+            </PrivateRoute>
+          }
         />
-        <Private
-          path={`${path}/welcome-wiener/product/:id/edit`}
-          component={WelcomeWienerProductEdit}
+        <Route
+          path='orders/*'
+          element={
+            <PrivateRoute>
+              <Orders />
+            </PrivateRoute>
+          }
         />
-        <Private
-          path={`${path}/welcome-wiener/dachshund/list`}
-          component={WelcomeWienerDachshundList}
+        <Route
+          path='order/:id'
+          element={
+            <PrivateRoute>
+              <OrderEdit />
+            </PrivateRoute>
+          }
         />
-        <Private
-          path={`${path}/welcome-wiener/dachshund/create`}
-          component={WelcomeWienerDachshundCreate}
+        <Route
+          path='eCardOrderList'
+          element={
+            <PrivateRoute>
+              <EcardOrderList />
+            </PrivateRoute>
+          }
         />
-        <Private
-          path={`${path}/welcome-wiener/dachshund/:id/edit`}
-          component={WelcomeWienerDachshundEdit}
+
+        <Route
+          path='newsletterEmailList'
+          element={
+            <PrivateRoute>
+              <NewsletterEmailList />
+            </PrivateRoute>
+          }
         />
-        <Private
-          path={`${path}/welcome-wiener/order/list`}
-          component={WelcomeWienerOrderList}
+        <Route
+          path='eCardList'
+          element={
+            <PrivateRoute>
+              <ECardList />
+            </PrivateRoute>
+          }
         />
-        <Private
-          path={`${path}/product/order/list`}
-          component={ProductOrderList}
+        <Route
+          path='eCard/:id/edit'
+          element={
+            <PrivateRoute>
+              <ECardEdit />
+            </PrivateRoute>
+          }
         />
-        <Route path='/404' component={PageNotFound} />
-        <Redirect to='/404' />
-      </Switch>
+        <Route
+          path='raffleWinnerList'
+          element={
+            <PrivateRoute>
+              <RaffleWinnerList />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path='raffleWinner/:id/edit'
+          element={
+            <PrivateRoute>
+              <RaffleWinnerEdit />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path='blogs'
+          element={
+            <PrivateRoute>
+              <BlogList />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path='blog/:id/edit'
+          element={
+            <PrivateRoute>
+              <BlogEdit />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path='education-tips'
+          element={
+            <PrivateRoute>
+              <EducationTipList />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path='education-tip/:id/edit'
+          element={
+            <PrivateRoute>
+              <EducationTipEdit />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path='manuallyAddedUser/:id/edit'
+          element={
+            <PrivateRoute>
+              <ManuallyAddedUserEdit />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path='manuallyAddedUserList'
+          element={
+            <PrivateRoute>
+              <ManuallyAddedUserList />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path='welcome-wiener/product/list'
+          element={
+            <PrivateRoute>
+              <WelcomeWienerProductList />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path='welcome-wiener/product/create'
+          element={
+            <PrivateRoute>
+              <WelcomeWienerProductCreate />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path='welcome-wiener/product/:id/edit'
+          element={
+            <PrivateRoute>
+              <WelcomeWienerProductEdit />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path='welcome-wiener/dachshund/list'
+          element={
+            <PrivateRoute>
+              <WelcomeWienerDachshundList />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path='welcome-wiener/dachshund/create'
+          element={
+            <PrivateRoute>
+              <WelcomeWienerDachshundCreate />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path='welcome-wiener/dachshund/:id/edit'
+          element={
+            <PrivateRoute>
+              <WelcomeWienerDachshundEdit />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path='welcome-wiener/order/list'
+          element={
+            <PrivateRoute>
+              <WelcomeWienerOrderList />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path='product/order/list'
+          element={
+            <PrivateRoute>
+              <ProductOrderList />
+            </PrivateRoute>
+          }
+        />
+        <Route path='*' element={<Navigate to='/404' replace />} />
+      </Routes>
     </DashboardLayoutWithSideBar>
   );
 };

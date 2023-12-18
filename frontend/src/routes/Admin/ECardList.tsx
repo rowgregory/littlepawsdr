@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { LinkContainer } from 'react-router-bootstrap';
 import { Table, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import DeleteModal from '../../components/DeleteModal';
@@ -24,6 +23,7 @@ import { WelcomeText } from '../../components/styles/DashboardStyles';
 import BreadCrumb from '../../components/common/BreadCrumb';
 import { AddIcon } from '../../components/svg/AddIcon';
 import { defaultImages } from '../../utils/defaultImages';
+import { Link } from 'react-router-dom';
 
 const ECardList = () => {
   const dispatch = useDispatch();
@@ -99,17 +99,12 @@ const ECardList = () => {
               <Spinner animation='border' size='sm' />
             </SpinnerContainer>
           ) : (
-            <LinkContainer
-              to={{
-                pathname: '/admin/eCard/id/edit',
-                state: { eCard },
-              }}
-            >
+            <Link to={'/admin/eCard/id/edit'} state={{ eCard }}>
               <CreateBtnV2>
                 <AddIcon />
                 Create
               </CreateBtnV2>
-            </LinkContainer>
+            </Link>
           )}
         </TopRow>
         <TableAndPaginationContainer>
@@ -143,11 +138,9 @@ const ECardList = () => {
                     <Text>${eCard?.price?.toFixed(2)}</Text>
                   </td>
                   <td>
-                    <LinkContainer
-                      to={{
-                        pathname: `/admin/eCard/${eCard._id}/edit`,
-                        state: { eCard, isEditMode: true },
-                      }}
+                    <Link
+                      to={`/admin/eCard/${eCard._id}/edit`}
+                      state={{ eCard, isEditMode: true }}
                     >
                       <StyledEditBtn>
                         <i
@@ -155,7 +148,7 @@ const ECardList = () => {
                           className='fas fa-edit'
                         ></i>
                       </StyledEditBtn>
-                    </LinkContainer>
+                    </Link>
                   </td>
                   <td>
                     <StyledEditBtn

@@ -1,6 +1,6 @@
-import React, { Suspense } from 'react';
+import { Suspense } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { Routes } from './routes';
+import { MainRoutes } from './routes';
 import GlobalStyles from './GlobalStyles';
 import { ThemeProvider } from 'styled-components';
 import { themes } from './utils/theme';
@@ -26,7 +26,7 @@ const App = () => {
           <ScrollToTop />
           <GlobalStyles />
           <Suspense fallback={<></>}>
-            <Routes />
+            <MainRoutes />
           </Suspense>
         </ThemeProvider>
       </Router>

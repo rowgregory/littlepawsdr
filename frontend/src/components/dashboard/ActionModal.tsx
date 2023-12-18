@@ -24,7 +24,7 @@ const ActionModal = () => {
       centered
     >
       <Content className='p-0'>
-        <Header closeButton className='p-2'>
+        <Header closeButton className='p-2' placeholder={null}>
           <Link
             to='/'
             className='mx-auto'

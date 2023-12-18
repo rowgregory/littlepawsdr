@@ -4,19 +4,12 @@ import {
   ParallaxSectionContent,
   ParallaxWindow,
 } from './styles';
-import { Image } from 'react-bootstrap';
 
 const MakeAnImpact = () => {
   return (
     <>
       <MobileImageSection>
-        <Image
-          src={ParallaxImg2}
-          alt='LPDR'
-          width='100%'
-          loading='lazy'
-          style={{ objectFit: 'cover', height: '100vh' }}
-        />
+        <ParallaxImg2 />
         <ParallaxSectionContent
           style={{
             textAlign: 'center',

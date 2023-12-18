@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { LinkContainer } from 'react-router-bootstrap';
 import { Table, Spinner, Pagination } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import DeleteModal from '../../components/DeleteModal';
@@ -26,6 +25,7 @@ import { AddIcon } from '../../components/svg/AddIcon';
 import { defaultImages } from '../../utils/defaultImages';
 import { listWelcomeWienerProducts } from '../../actions/welcomeWienerProductActions';
 import shortenText from '../../utils/shortenText';
+import { Link } from 'react-router-dom';
 
 const WelcomeWienerProductList = () => {
   const dispatch = useDispatch();
@@ -116,17 +116,15 @@ const WelcomeWienerProductList = () => {
               <Spinner animation='border' size='sm' />
             </SpinnerContainer>
           ) : (
-            <LinkContainer
-              to={{
-                pathname: '/admin/welcome-wiener/product/create',
-                state: { welcomeWienerProduct },
-              }}
+            <Link
+              to='/admin/welcome-wiener/product/create'
+              state={{ welcomeWienerProduct }}
             >
               <CreateBtnV2>
                 <AddIcon />
                 Create
               </CreateBtnV2>
-            </LinkContainer>
+            </Link>
           )}
         </TopRow>
         <TableAndPaginationContainer>
@@ -157,11 +155,9 @@ const WelcomeWienerProductList = () => {
                     <Text>{product?.price}</Text>
                   </td>
                   <td>
-                    <LinkContainer
-                      to={{
-                        pathname: `/admin/welcome-wiener/product/${product?._id}/edit`,
-                        state: { isEditMode: true },
-                      }}
+                    <Link
+                      to={`/admin/welcome-wiener/product/${product?._id}/edit`}
+                      state={{ isEditMode: true }}
                     >
                       <StyledEditBtn>
                         <i
@@ -169,7 +165,7 @@ const WelcomeWienerProductList = () => {
                           className='fas fa-edit'
                         ></i>
                       </StyledEditBtn>
-                    </LinkContainer>
+                    </Link>
                   </td>
                   <td>
                     <StyledEditBtn

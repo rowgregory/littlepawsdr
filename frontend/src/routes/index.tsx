@@ -1,11 +1,5 @@
 import { ComponentType, FC, lazy, useEffect } from 'react';
-import {
-  Switch,
-  Route,
-  useLocation,
-  Redirect,
-  useHistory,
-} from 'react-router-dom';
+import { Route, useLocation, useNavigate, Routes } from 'react-router-dom';
 import Home from './Home';
 import Login from './Login';
 import Register from './Register';
@@ -17,7 +11,7 @@ import { Container } from 'react-bootstrap';
 import MyOrders from './MyOrders';
 import Surrender from './Surrender';
 import styled from 'styled-components';
-import PageNotFound from '../components/common/PageNotFound';
+import PageNotFound from './PageNotFound';
 import PopUp from '../components/common/PopUp';
 import GlobalStyles from '../GlobalStyles';
 import Footer from '../components/Footer';
@@ -61,6 +55,18 @@ import {
   DACHSHUND_PICS_VIDS_STASTUSES_SUCCESS,
   DACHSHUND_REQUEST,
 } from '../constants/dachshundConstants';
+import {
+  EVENT_LIST_REQUEST,
+  EVENT_LIST_SUCCESS,
+} from '../constants/eventConstants';
+import {
+  BLOG_LIST_REQUEST,
+  BLOG_LIST_SUCCESS,
+} from '../constants/blogConstants';
+import {
+  EDUCATION_TIP_LIST_REQUEST,
+  EDUCATION_TIP_LIST_SUCCESS,
+} from '../constants/educationTipConstants';
 
 const socket = io('/load-initial-data');
 
@@ -96,10 +102,10 @@ const Page = styled(Container)<{ url: string }>`
   }
 `;
 
-export const Routes: FC = () => {
+export const MainRoutes: FC = () => {
   const dispatch = useDispatch();
   const { pathname } = useLocation();
-  const history = useHistory();
+  const history = useNavigate();
 
   window.scrollTo(0, 0);
 
@@ -112,6 +118,9 @@ export const Routes: FC = () => {
       dispatch({ type: WELCOME_WIENER_DACHSHUND_LIST_REQUEST });
       dispatch({ type: USER_WHO_WE_ARE_LIST_REQUEST });
       dispatch({ type: DACHSHUND_PICS_VIDS_STASTUSES_REQUEST });
+      dispatch({ type: EVENT_LIST_REQUEST });
+      dispatch({ type: BLOG_LIST_REQUEST });
+      dispatch({ type: EDUCATION_TIP_LIST_REQUEST });
     });
     socket.on('load-initial-data', async (initialData) => {
       const dachshunds = await API.getDachshundDataForSearchBar();
@@ -152,6 +161,18 @@ export const Routes: FC = () => {
           type: DACHSHUND_PICS_VIDS_STASTUSES_SUCCESS,
           payload: dachshunds?.allDogs,
         });
+        dispatch({
+          type: EVENT_LIST_SUCCESS,
+          payload: initialData?.events,
+        });
+        dispatch({
+          type: BLOG_LIST_SUCCESS,
+          payload: initialData?.blogs,
+        });
+        dispatch({
+          type: EDUCATION_TIP_LIST_SUCCESS,
+          payload: initialData?.educationTips,
+        });
       });
     });
 
@@ -163,29 +184,29 @@ export const Routes: FC = () => {
   useEffect(() => {
     switch (pathname) {
       case '/what-can-i-do/':
-        return history.push('/volunteer/volunteer-application');
+        return history('/volunteer/volunteer-application');
       case '/about-us/':
-        return history.push('/about/team-members');
+        return history('/about/team-members');
       case '/about-us/rainbow-bridge/':
-        return history.push('/about/rainbow-bridge');
+        return history('/about/rainbow-bridge');
       case '/available/dachshunds/view-dog/':
-        return history.push('/available');
+        return history('/available');
       case '/house-training-a-dachshund/':
-        return history.push('/available');
+        return history('/available');
       case '/lpdr-barks-about-tom-linda-scott/':
-        return history.push('/available');
+        return history('/available');
       case '/happy-tails-pretzel/':
-        return history.push('/available');
+        return history('/available');
       case '/lpdr-barks-about-valerie-duke/':
-        return history.push('/available');
+        return history('/available');
       case '/november-is-adopt-a-senior-month/':
-        return history.push('/adopt/senior');
+        return history('/adopt/senior');
       case '/donate/shopping-to-help/':
-        return history.push('/ecards');
+        return history('/ecards');
       case '/donate/sponsor-a-sanctuary-dog/':
-        return history.push('/ecards');
+        return history('/ecards');
       case '/welcome-to-little-paws-dachshund-rescue/':
-        return history.push('/');
+        return history('/');
     }
   }, [pathname, history]);
 
@@ -196,48 +217,46 @@ export const Routes: FC = () => {
       <Navbar />
       <CookiePolicyPopUp />
       <Page url={pathname} fluid>
-        <Switch>
-          <Route path='/welcome-wieners' component={WelcomeWieners} />
+        <Routes>
+          <Route path='/welcome-wieners' element={<WelcomeWieners />} />
           <Route
-            exact
             path='/welcome-wiener/:id'
-            component={WelcomeWienerDetails}
+            element={<WelcomeWienerDetails />}
           />
-          <Route path='/cookie-policy' component={CookiePolicy} />
-          <Route path='/return-policy' component={ReturnPolicy} />
-          <Route path='/e-card/order/:id' component={ECardOrderReceipt} />
-          <Route path='/donate' component={Donate} />
-          <Route path='/volunteer' component={Volunteer} />
-          <Route path='/adopt' component={Adopt} />
-          <Route path='/surrender' component={Surrender} />
-          <Route path='/available' component={Available} />
-          <Route path='/about' component={AboutUs} />
-          <Route path='/events' component={Events} />
-          <Route path='/admin' component={Admin} />
-          <Route path='/forgot-password' component={ForgotPassword} />
-          <Route path='/login' component={Login} />
-          <Route path='/register' component={Register} />
-          <Route path='/profile' component={Profile} />
-          <Route path='/cart' component={Cart} />
-          <Route path='/merch' component={Merch} />
-          <Route exact path='/ecards' component={Ecards} />
-          <Route path='/ecards/filtered' component={FilteredEcards} />
-          <Route path='/ecard/personalize/:id' component={PersonalizeEcard} />
+          <Route path='/cookie-policy' element={<CookiePolicy />} />
+          <Route path='/return-policy' element={<ReturnPolicy />} />
+          <Route path='/e-card/order/:id' element={<ECardOrderReceipt />} />
+          <Route path='/donate/*' element={<Donate />} />
+          <Route path='/volunteer/*' element={<Volunteer />} />
+          <Route path='/adopt/*' element={<Adopt />} />
+          <Route path='/surrender' element={<Surrender />} />
+          <Route path='/available/*' element={<Available />} />
+          <Route path='/about/*' element={<AboutUs />} />
+          <Route path='/events/*' element={<Events />} />
+          <Route path='/admin/*' element={<Admin />} />
+          <Route path='/forgot-password' element={<ForgotPassword />} />
+          <Route path='/login' element={<Login />} />
+          <Route path='/register' element={<Register />} />
+          <Route path='/profile' element={<Profile />} />
+          <Route path='/cart/*' element={<Cart />} />
+          <Route path='/merch/*' element={<Merch />} />
+          <Route path='/ecards' element={<Ecards />} />
+          <Route path='/ecards/filtered' element={<FilteredEcards />} />
+          <Route path='/ecard/personalize/:id' element={<PersonalizeEcard />} />
           <Route
             path='/order/:id/:order?/:shippingAddress?/:email?/:items?'
-            component={OrderReceipt}
+            element={<OrderReceipt />}
           />
-          <Route path='/reset/:id' component={ResetPassword} />
-          <Route path='/settings' component={Settings} />
-          <Route exact path='/my-orders' component={MyOrders} />
+          <Route path='/reset/:id' element={<ResetPassword />} />
+          <Route path='/settings/*' element={<Settings />} />
+          <Route path='/my-orders' element={<MyOrders />} />
           <Route
             path='/email-confirmation/:to?/:em?/:na?/:id?'
-            component={EmailConfirmation}
+            element={<EmailConfirmation />}
           />
-          <Route exact path='/' component={Home} />
-          <Route path='/404' component={PageNotFound} />
-          <Redirect to='/404' />
-        </Switch>
+          <Route path='/' element={<Home />} />
+          <Route path='/404' element={<PageNotFound />} />
+        </Routes>
       </Page>
       <Footer />
     </>

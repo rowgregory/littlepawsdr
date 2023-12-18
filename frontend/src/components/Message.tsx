@@ -1,4 +1,4 @@
-import { FC, ReactNode, useState } from 'react';
+import { FC, ReactNode } from 'react';
 import { Alert } from 'react-bootstrap';
 import styled from 'styled-components';
 import { Text } from './styles/Styles';
@@ -7,7 +7,7 @@ import ExclamationPoint from './svg/ExclamationPoint';
 import InfoIcon from './svg/InfoIcon';
 import SuccessIcon from './svg/SuccessIcon';
 
-export const Container = styled(Alert)<{ color: string }>`
+const Container = styled(Alert)<{ color: string }>`
   max-width: ${({ theme }) => theme.breakpoints[1]};
   width: 100%;
   background: #fff;
@@ -18,12 +18,6 @@ export const Container = styled(Alert)<{ color: string }>`
   border-top: 1px solid ${({ color }) => color};
   border-bottom: 1px solid ${({ color }) => color};
   padding: 0;
-  button {
-    display: block;
-  }
-  div {
-    flex-direction: flex-column;
-  }
 `;
 
 const MsgType = styled.div<{ color: string }>`
@@ -47,8 +41,6 @@ interface MessageProps {
 }
 
 const Message: FC<MessageProps> = ({ variant, children }) => {
-  const [show] = useState(true);
-
   const text = {
     danger: {
       color: '#cc0000',
@@ -69,31 +61,22 @@ const Message: FC<MessageProps> = ({ variant, children }) => {
       icon: <ExclamationPoint />,
     },
     success: {
-      color: '#77b300',
+      color: '#267653',
       textKey: 'Success',
       type: 'success',
       icon: <SuccessIcon />,
     },
   } as any;
 
-  if (show) {
-    return (
-      <Container
-        show={show}
-        variant={text[variant].type}
-        // dismissible
-        // onClose={() => setShow(false)}
-        color={text[variant].color}
-      >
-        <IconType bg={text[variant].color}>{text[variant].icon}</IconType>
-        <div>
-          <MsgType color={text[variant].color}>{text[variant].textKey}</MsgType>
-          <Text fontSize='0.8rem'>{children}</Text>
-        </div>
-      </Container>
-    );
-  }
-  return <></>;
+  return (
+    <Container variant={text[variant].type} color={text[variant].color}>
+      <IconType bg={text[variant].color}>{text[variant].icon}</IconType>
+      <div className='flex-column'>
+        <MsgType color={text[variant].color}>{text[variant].textKey}</MsgType>
+        <Text fontSize='0.8rem'>{children}</Text>
+      </div>
+    </Container>
+  );
 };
 
 Message.defaultProps = {

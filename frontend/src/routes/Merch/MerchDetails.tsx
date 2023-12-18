@@ -11,9 +11,11 @@ import CartDrawer from '../../components/CartDrawer';
 import MerchImages from '../../components/merch-detail/MerchImages';
 import MerchNamePriceDescription from '../../components/merch-detail/MerchNamePriceDescription';
 import AddToCartSection from '../../components/merch-detail/AddToCartSection';
+import { useParams } from 'react-router-dom';
 
-const ProductDetails = ({ match }: any) => {
-  const productId = match.params.id;
+const ProductDetails = () => {
+  const { id } = useParams();
+  const productId = id;
   const dispatch = useDispatch();
   const [qty, setQty] = useState<number>(1);
   const [size, setSize] = useState('');

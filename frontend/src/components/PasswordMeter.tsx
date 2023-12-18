@@ -1,7 +1,7 @@
-import React from 'react';
 import styled from 'styled-components';
 import { Text } from '../components/styles/Styles';
 import { Accordion } from './styles/place-order/Styles';
+import { useLocation } from 'react-router-dom';
 
 const Strength = styled.div`
   display: flex;
@@ -49,10 +49,12 @@ const Strength = styled.div`
 `;
 
 export const PasswordRequirements = ({ validations, open }: any) => {
+  const color =
+    useLocation().pathname === '/settings/security' ? '#171919' : '#fff';
   return (
     <Accordion toggle={open} maxheight='110px' style={{ padding: '0 0.5rem' }}>
       <div className='d-flex align-items-start flex-column'>
-        <Text fontSize='0.75rem'>
+        <Text fontSize='0.75rem' color={color}>
           {validations[0] ? (
             <i className='fas fa-check' style={{ color: '#77b300' }}></i>
           ) : (
@@ -60,7 +62,7 @@ export const PasswordRequirements = ({ validations, open }: any) => {
           )}
           &nbsp; must be at least 9 characters
         </Text>
-        <Text fontSize='0.75rem'>
+        <Text fontSize='0.75rem' color={color}>
           {' '}
           {validations[1] ? (
             <i className='fas fa-check' style={{ color: '#77b300' }}></i>
@@ -69,7 +71,7 @@ export const PasswordRequirements = ({ validations, open }: any) => {
           )}
           &nbsp; must contain a capital letter
         </Text>
-        <Text fontSize='0.75rem'>
+        <Text fontSize='0.75rem' color={color}>
           {' '}
           {validations[2] ? (
             <i className='fas fa-check' style={{ color: '#77b300' }}></i>
@@ -78,7 +80,7 @@ export const PasswordRequirements = ({ validations, open }: any) => {
           )}
           &nbsp; must contain a number
         </Text>
-        <Text fontSize='0.75rem'>
+        <Text fontSize='0.75rem' color={color}>
           {' '}
           {validations[3] ? (
             <i className='fas fa-check' style={{ color: '#77b300' }}></i>
@@ -92,7 +94,7 @@ export const PasswordRequirements = ({ validations, open }: any) => {
   );
 };
 
-const PasswordMeter = ({ validations, strength }: any) => {
+const PasswordMeter = (strength: any) => {
   return (
     <>
       <Strength>

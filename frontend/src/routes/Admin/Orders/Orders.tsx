@@ -6,12 +6,12 @@ import {
 } from '../../../components/styles/admin/Styles';
 import { useEffect, useState } from 'react';
 import { Text } from '../../../components/styles/Styles';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { formatDateTime } from '../../../utils/formatDateTime';
 import addDecimals from '../../../utils/addDecimals';
 
 const Orders = ({ orders, text }: any) => {
-  const history = useHistory();
+  const history = useNavigate();
   const [fOrders, setFOrders] = useState([]) as any;
 
   useEffect(() => {
@@ -140,7 +140,7 @@ const Orders = ({ orders, text }: any) => {
 
                 <td>
                   <StyledEditBtn
-                    onClick={() => history.push(`/admin/order/${order?._id}`)}
+                    onClick={() => history(`/admin/order/${order?._id}`)}
                   >
                     <i
                       style={{ color: '#9761aa' }}

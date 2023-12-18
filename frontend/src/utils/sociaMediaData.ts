@@ -1,4 +1,4 @@
-const IconColor = { color: '#fff' };
+const IconColor = { color: '#918f98' };
 
 export const SMData = () => [
   {

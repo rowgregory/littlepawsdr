@@ -1,11 +1,6 @@
 import axios from 'axios';
-import { FC, useEffect, ComponentType } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { RouteProps, Route, RouteComponentProps } from 'react-router-dom';
-
-interface PrivateRouteProps extends RouteProps {
-  component: ComponentType<RouteComponentProps<any>> | ComponentType<any>;
-}
 
 export interface UserInfoProps {
   userLogin: {
@@ -40,10 +35,7 @@ const refreshAccessToken = async (id: any) => {
   }
 };
 
-const PrivateRoute: FC<PrivateRouteProps> = ({
-  component: Component,
-  ...rest
-}) => {
+const PrivateRoute = ({ children }: any) => {
   const dispatch = useDispatch();
   const userLogin = useSelector((state: UserInfoProps) => state.userLogin);
   const { userInfo } = userLogin;
@@ -72,7 +64,7 @@ const PrivateRoute: FC<PrivateRouteProps> = ({
     refreshToken();
   }, [dispatch, userInfo]);
 
-  return <Route {...rest} render={(props) => <Component {...props} />} />;
+  return children;
 };
 
 export default PrivateRoute;

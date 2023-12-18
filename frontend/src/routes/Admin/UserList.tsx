@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { LinkContainer } from 'react-router-bootstrap';
 import { Table, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { listUsers } from '../../actions/userActions';
@@ -22,6 +21,7 @@ import Message from '../../components/Message';
 import { WelcomeText } from '../../components/styles/DashboardStyles';
 import BreadCrumb from '../../components/common/BreadCrumb';
 import { formatDateTime } from '../../utils/formatDateTime';
+import { Link } from 'react-router-dom';
 
 const UserList = () => {
   const dispatch = useDispatch();
@@ -141,14 +141,14 @@ const UserList = () => {
                         </td>
                         <td>
                           {user?.email !== userInfo?.email && (
-                            <LinkContainer to={`/admin/user/${user?._id}/edit`}>
+                            <Link to={`/admin/user/${user?._id}/edit`}>
                               <StyledEditBtn>
                                 <i
                                   style={{ color: '#9761aa' }}
                                   className='fas fa-edit'
                                 ></i>
                               </StyledEditBtn>
-                            </LinkContainer>
+                            </Link>
                           )}
                         </td>
                         <td>

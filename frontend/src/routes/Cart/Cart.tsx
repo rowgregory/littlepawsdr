@@ -11,7 +11,7 @@ import {
   Divider,
   SecondSubTotal,
 } from '../../components/styles/cart/Styles';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import LogoDay from '../../components/assets/logo-transparent.png';
 import LeftArrow from '../../components/svg/LeftArrow';
 import CartItem from './CartItem';
@@ -19,7 +19,7 @@ import addDecimals from '../../utils/addDecimals';
 import SplitTextToChars from '../../utils/SplitTextToChars';
 
 const Cart = () => {
-  const history = useHistory();
+  const history = useNavigate();
   const state = useSelector((state: any) => state);
   const cartItems = state.cart.cartItems;
   const cartItemsAmount = state.cart.cartItemsAmount;
@@ -117,7 +117,7 @@ const Cart = () => {
 
           <CheckoutBtn
             disabled={cartItems?.length <= 0}
-            onClick={() => history.push({ pathname: '/cart/place-order' })}
+            onClick={() => history({ pathname: '/cart/place-order' })}
           >
             Checkout
           </CheckoutBtn>

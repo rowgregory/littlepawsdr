@@ -8,7 +8,7 @@ import {
 } from '../../constants/eCardConstants';
 import { UpdateBtn } from '../../components/styles/Styles';
 import { eCardCategories } from '../../utils/eCardCategories';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Message from '../../components/Message';
 import {
   Container,
@@ -62,7 +62,7 @@ const ECardEdit = () => {
   const {
     state: { eCard, isEditMode },
   } = useLocation() as any;
-  const history = useHistory();
+  const history = useNavigate();
   const dispatch = useDispatch();
   const [uploading, setUploading] = useState(false);
   const [file, setFile] = useState({}) as any;
@@ -114,7 +114,7 @@ const ECardEdit = () => {
 
   useEffect(() => {
     if (successCreate || successUpdate) {
-      history.push('/admin/eCardList');
+      history('/admin/eCardList');
       dispatch({ type: ECARD_UPDATE_RESET });
       dispatch({ type: ECARD_CREATE_RESET });
     }

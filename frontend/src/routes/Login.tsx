@@ -1,61 +1,29 @@
-import React, { useEffect, useState } from 'react';
-import { Form, Image } from 'react-bootstrap';
+import { useEffect, useState } from 'react';
+import { Image } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../actions/userActions';
 import {
+  AccordionWrapper,
   Container,
-  CreateAccountContainer,
   FormContainer,
   FormWrapper,
-  StyledButton,
-  StyledLink,
   Text,
 } from '../components/styles/Styles';
-import validateLoginForm, {
-  inputEmail,
-  inputPassword,
-} from '../utils/validateLoginForm';
 import Message from '../components/Message';
 import { USER_LOGIN_RESET } from '../constants/userConstants';
-import JumpingInput from '../components/common/JumpingInput';
-import { validateEmailRegex } from '../utils/regex';
-import HexagonLoader from '../components/Loaders/HexagonLoader/HexagonLoader';
 import loginEffect from '../components/sounds/login.mp3';
 import failedLoginAttempt from '../components/sounds/thump02.wav';
-import Logo from '../components/assets/logo.png';
+import Logo from '../components/assets/logo-white2.png';
 import UIfx from 'uifx';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Accordion } from '../components/styles/place-order/Styles';
 import CryptoJS from 'crypto-js';
+import useLoginForm from '../utils/hooks/useLoginForm';
+import LoginForm from '../components/forms/LoginForm';
+import validateLoginForm from '../utils/validateLoginForm';
 
-const useLoginForm = (cb: any, setErrors: any) => {
-  const values = {
-    email: '',
-    password: '',
-  };
-
-  const [inputs, setInputs] = useState(values) as any;
-
-  const handleInputChange = (e: any) => {
-    if (validateEmailRegex.test(inputs?.email)) {
-      setErrors((errors: any) => ({ ...errors, email: '' }));
-    }
-
-    setInputs((inputs: any) => ({
-      ...inputs,
-      [e.target.name]: e.target.value,
-    }));
-  };
-
-  const onSubmit = (e: any) => {
-    e.preventDefault();
-    cb();
-  };
-
-  return { inputs, handleInputChange, onSubmit, setInputs };
-};
-
-const Login = ({ history }: any) => {
+const Login = () => {
+  const history = useNavigate();
   const dispatch = useDispatch();
   const [capsLockOn, setCapsLocksOn] = useState(false);
   const [showPassword, setShowPassword] = useState({ password: false });
@@ -64,9 +32,10 @@ const Login = ({ history }: any) => {
 
   const secret: string = `${process.env.REACT_APP_REMEMBER_ME}`;
 
-  const {
-    userLogin: { loading, error, userInfo },
-  } = useSelector((state: any) => state);
+  const state = useSelector((state: any) => state);
+  const loading = state.userLogin.loading;
+  const error = state.userLogin.error;
+  const userInfo = state.userLogin.userInfo;
 
   let formIsValid = true;
 
@@ -103,10 +72,10 @@ const Login = ({ history }: any) => {
     const loginFx = new UIfx(loginEffect);
     const failedLoginAttemptFx = new UIfx(failedLoginAttempt);
     if (userInfo?.isAdmin) {
-      history.push('/admin');
+      history('/admin');
       loginFx.play();
     } else if (userInfo) {
-      history.push('/');
+      history('/');
     } else if (error) {
       failedLoginAttemptFx.play();
     }
@@ -149,8 +118,7 @@ const Login = ({ history }: any) => {
 
   return (
     <Container>
-      {loading && <HexagonLoader />}
-      <FormWrapper>
+      <FormWrapper className='login m-auto'>
         <FormContainer>
           <Link to='/'>
             <Image
@@ -164,7 +132,7 @@ const Login = ({ history }: any) => {
             />
           </Link>
           <Text
-            color='#22c2b7'
+            color='#fff'
             fontSize='33px'
             marginBottom='16px'
             fontWeight={400}
@@ -172,88 +140,39 @@ const Login = ({ history }: any) => {
             Sign In
           </Text>
           {capsLockOn && <Message variant='warning'>(Caps Lock is on)</Message>}
-          <Form onSubmit={onSubmit}>
-            <JumpingInput
-              name='email'
-              label='Email*'
-              value={inputs.email || ''}
-              handleInputChange={handleInputChange}
-              type='email'
-              error={errors?.email}
-              blur={() => inputEmail(inputs, formIsValid, setErrors)}
-            />
-            <JumpingInput
-              name='password'
-              label='Password*'
-              value={inputs.password || ''}
-              handleInputChange={handleInputChange}
-              type={showPassword.password ? 'text' : 'password'}
-              error={errors?.password}
-              blur={() => inputPassword(inputs, formIsValid, setErrors)}
-              showPassword={showPassword.password}
-              setShowPassword={setShowPassword}
-            />
-            <Form.Group
-              className='d-flex align-items-center'
-              controlId='rememberMe'
-            >
-              <Form.Check
-                type='switch'
-                checked={rememberMe || false}
-                onChange={(e: any) => setRememberMe(e.target.checked)}
-              ></Form.Check>
-              <Form.Label className='mb-0'>Remember Me</Form.Label>
-            </Form.Group>
-            <div className='mt-3'>
-              <StyledLink
-                to='/forgot-password'
-                onClick={() => {
-                  dispatch({ type: USER_LOGIN_RESET });
-                }}
-              >
-                Forgot password
-              </StyledLink>
-            </div>
-            <StyledButton
-              disabled={loading}
-              type='submit'
-              className='d-flex align-items-center border-0 w-100 justify-content-center mt-3'
-            >
-              <Text color='#fff'>
-                Sign{loading && 'ing'} In{loading && '...'}&nbsp;&nbsp;
-              </Text>
-            </StyledButton>
-          </Form>
-          <CreateAccountContainer className='pt-3 pb-2 mt-3'>
-            New to Little Paws Dachshund Rescue?
-          </CreateAccountContainer>
-          <StyledLink
-            className='d-flex justify-content-center'
-            to='/register'
-            onClick={() => dispatch({ type: USER_LOGIN_RESET })}
+          <LoginForm
+            inputs={inputs}
+            handleInputChange={handleInputChange}
+            onSubmit={onSubmit}
+            formIsValid={formIsValid}
+            setErrors={setErrors}
+            errors={errors}
+            showPassword={showPassword}
+            setShowPassword={setShowPassword}
+            rememberMe={rememberMe}
+            setRememberMe={setRememberMe}
+            loading={loading}
+          />
+          <Text
+            className='pb-3 pt-5 text-center text-white font-weight-light'
+            fontSize='14px'
           >
-            Join now
-          </StyledLink>
+            New to Little Paws Dachshund Rescue?
+            <Link
+              to='/register'
+              className='d-flex justify-content-center text-white mt-2 font-weight-bolder lead'
+              onClick={() => dispatch({ type: USER_LOGIN_RESET })}
+            >
+              Join now
+            </Link>
+          </Text>
         </FormContainer>
       </FormWrapper>
-      <div
-        style={{
-          position: 'fixed',
-          bottom: 20,
-          left: 0,
-          right: 0,
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          width: '100%',
-          maxWidth: '500px',
-          marginInline: 'auto',
-        }}
-      >
+      <AccordionWrapper>
         <Accordion toggle={error} maxheight='65px' className='w-100'>
           <Message variant='danger'>{error}</Message>
         </Accordion>
-      </div>
+      </AccordionWrapper>
     </Container>
   );
 };

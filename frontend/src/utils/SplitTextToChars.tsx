@@ -92,7 +92,7 @@ const SplitTextToChars: React.FC<SplitTextToCharsProps> = ({
       setCurrentCharIndex((prevIndex) =>
         prevIndex < splitText.length - 1 ? prevIndex + 1 : prevIndex
       );
-    }, 20);
+    }, 15);
 
     return () => clearTimeout(timer);
   }, [currentCharIndex, splitText.length]);

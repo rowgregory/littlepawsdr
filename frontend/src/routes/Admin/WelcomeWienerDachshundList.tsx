@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { LinkContainer } from 'react-router-bootstrap';
 import { Table, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import DeleteModal from '../../components/DeleteModal';
@@ -27,6 +26,7 @@ import {
   toggleWelcomeDachshund,
 } from '../../actions/welcomeWienerDachshundActions';
 import shortenText from '../../utils/shortenText';
+import { Link } from 'react-router-dom';
 
 const WelcomeWienerDachshundList = () => {
   const dispatch = useDispatch();
@@ -99,17 +99,15 @@ const WelcomeWienerDachshundList = () => {
             />
           </SearchBar>
 
-          <LinkContainer
-            to={{
-              pathname: '/admin/welcome-wiener/dachshund/create',
-              state: { welcomeWienerDachshund },
-            }}
+          <Link
+            to={'/admin/welcome-wiener/dachshund/create'}
+            state={{ welcomeWienerDachshund }}
           >
             <CreateBtnV2>
               <AddIcon />
               Create
             </CreateBtnV2>
-          </LinkContainer>
+          </Link>
         </TopRow>
         <TableAndPaginationContainer>
           <Table hover responsive>
@@ -192,11 +190,9 @@ const WelcomeWienerDachshundList = () => {
                     </Flex>
                   </td>
                   <td>
-                    <LinkContainer
-                      to={{
-                        pathname: `/admin/welcome-wiener/dachshund/${dachshund?._id}/edit`,
-                        state: { isEditMode: true },
-                      }}
+                    <Link
+                      to={`/admin/welcome-wiener/dachshund/${dachshund?._id}/edit`}
+                      state={{ isEditMode: true }}
                     >
                       <StyledEditBtn>
                         <i
@@ -204,7 +200,7 @@ const WelcomeWienerDachshundList = () => {
                           className='fas fa-edit'
                         ></i>
                       </StyledEditBtn>
-                    </LinkContainer>
+                    </Link>
                   </td>
                   <td>
                     <StyledEditBtn

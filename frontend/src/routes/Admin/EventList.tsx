@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { LinkContainer } from 'react-router-bootstrap';
 import { Table, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { listEvents } from '../../actions/eventActions';
@@ -25,6 +24,7 @@ import Message from '../../components/Message';
 import { AddIcon } from '../../components/svg/AddIcon';
 import { defaultImages } from '../../utils/defaultImages';
 import { formatDate } from '../../utils/formatDate';
+import { Link } from 'react-router-dom';
 
 const EventList = () => {
   const dispatch = useDispatch();
@@ -103,17 +103,12 @@ const EventList = () => {
               <Spinner animation='border' size='sm' />
             </SpinnerContainer>
           ) : (
-            <LinkContainer
-              to={{
-                pathname: '/admin/event/id/edit',
-                state: { event },
-              }}
-            >
+            <Link to={'/admin/event/id/edit'} state={{ event }}>
               <CreateBtnV2>
                 <AddIcon />
                 Create
               </CreateBtnV2>
-            </LinkContainer>
+            </Link>
           )}
         </TopRow>
         <TableAndPaginationContainer>
@@ -125,6 +120,7 @@ const EventList = () => {
                 <th>START DATE</th>
                 <th>END DATE</th>
                 <th>STATUS</th>
+                <th>VIEW</th>
                 <th>EDIT</th>
                 <th>DELETE</th>
               </tr>
@@ -151,11 +147,19 @@ const EventList = () => {
                     <Text>{event?.status}</Text>
                   </td>
                   <td>
-                    <LinkContainer
-                      to={{
-                        pathname: `/admin/event/${event?._id}/edit`,
-                        state: { event, isEditMode: true },
-                      }}
+                    <Link to={`/events/${event._id}`}>
+                      <StyledEditBtn>
+                        <i
+                          style={{ color: '#9761aa' }}
+                          className='fas fa-users-viewfinder'
+                        ></i>
+                      </StyledEditBtn>
+                    </Link>
+                  </td>
+                  <td>
+                    <Link
+                      to={`/admin/event/${event?._id}/edit`}
+                      state={{ event, isEditMode: true }}
                     >
                       <StyledEditBtn>
                         <i
@@ -163,7 +167,7 @@ const EventList = () => {
                           className='fas fa-edit'
                         ></i>
                       </StyledEditBtn>
-                    </LinkContainer>
+                    </Link>
                   </td>
                   <td>
                     <StyledEditBtn

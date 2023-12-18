@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Container } from '../../components/styles/admin/Styles';
 import { WelcomeText } from '../../components/styles/DashboardStyles';
 import BreadCrumb from '../../components/common/BreadCrumb';
@@ -11,7 +11,7 @@ import useWelcomeWienerDachshundForm from '../../utils/hooks/useWelcomeWienerDac
 import { uploadFileToFirebase } from '../../utils/uploadToFirebase';
 
 const WelcomeWienerDachshundCreate = () => {
-  const history = useHistory();
+  const history = useNavigate();
   const dispatch = useDispatch();
   const [uploading, setUploading] = useState(false);
   const [file, setFile] = useState({}) as any;
@@ -37,7 +37,7 @@ const WelcomeWienerDachshundCreate = () => {
 
   useEffect(() => {
     if (success) {
-      history.push('/admin/welcome-wiener/dachshund/list');
+      history('/admin/welcome-wiener/dachshund/list');
       dispatch({ type: WELCOME_WIENER_DACHSHUND_CREATE_RESET });
     }
   }, [dispatch, history, success]);

@@ -2,7 +2,6 @@ import nodemailer from 'nodemailer';
 import Email from 'email-templates';
 import fetch from 'node-fetch';
 import google from 'googleapis';
-import connectGmailOauth from '../config/oauth.js';
 import path from 'path';
 import registerConfirmation from './emails/registerConfirmation.js';
 import ecardPurchase from './emails/ecardPurchase.js';
@@ -12,17 +11,19 @@ import sendEcard from './emails/sendEcard.js';
 import welcomeWienerPurchase from './emails/welcomeWienerPurchase.js';
 import orderShippedConfirmation from './emails/orderShippedConfirmation.js';
 import orderNotification from './emails/orderNotification.js';
+import dotenv from 'dotenv'
+dotenv.config()
 
 const OAuth2 = google.google.auth.OAuth2;
 
 const Oauth2_client = new OAuth2(
-  connectGmailOauth().clientId,
-  connectGmailOauth().clientSecret,
-  connectGmailOauth().redirectURL
+  process.env.OAUTH_CLIENT_ID,
+  process.env.OAUTH_CLIENT_SECRET,
+  'https://developers.google.com/oauthplayground'
 );
 
 Oauth2_client.setCredentials({
-  refresh_token: connectGmailOauth().refreshToken,
+  refresh_token: process.env.OAUTH_REFRESH_TOKEN,
 });
 
 google.google.options({
@@ -38,9 +39,9 @@ export const sendEmail = async (body, res, type, token, hasEmailBeenSent) => {
     const response = await fetch('https://www.googleapis.com/oauth2/v4/token', {
       method: 'post',
       body: JSON.stringify({
-        client_id: connectGmailOauth().clientId,
-        client_secret: connectGmailOauth().clientSecret,
-        refresh_token: connectGmailOauth().refreshToken,
+        client_id: process.env.OAUTH_CLIENT_ID,
+        client_secret: process.env.OAUTH_CLIENT_SECRET,
+        refresh_token: process.env.OAUTH_REFRESH_TOKEN,
         grant_type: 'refresh_token',
       }),
       headers: { 'Content-Type': 'application/json' },
@@ -56,9 +57,9 @@ export const sendEmail = async (body, res, type, token, hasEmailBeenSent) => {
     auth: {
       type: 'OAuth2',
       user: process.env.EMAIL_ADDRESS,
-      clientId: connectGmailOauth().clientId,
-      clientSecret: connectGmailOauth().clientSecret,
-      refreshToken: connectGmailOauth().refreshToken,
+      clientId: process.env.OAUTH_CLIENT_ID,
+      clientSecret: process.env.OAUTH_CLIENT_SECRET,
+      refreshToken: process.env.OAUTH_REFRESH_TOKEN,
       accessToken: accessToken,
       expires: 1484314697598,
     },

@@ -1,6 +1,5 @@
 import { FC } from 'react';
-import { Switch, Route, useRouteMatch } from 'react-router-dom';
-import PageNotFound from '../../components/common/PageNotFound';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import AdoptionApplication from './AdoptionApplication';
 import AdoptionFees from './AdoptionFees';
 import AdoptionInformation from './AdoptionInformation';
@@ -15,24 +14,21 @@ const Container = styled.div`
 `;
 
 const AdoptRoutes: FC = () => {
-  const { path } = useRouteMatch();
   return (
     <Container>
-      <Switch>
-        <Route exact path={path} component={AdoptionApplication} />
-        <Route path={`${path}/application`} component={AdoptionApplication} />
-        <Route path={`${path}/info`} component={AdoptionInformation} />
-        <Route path={`${path}/fees`} component={AdoptionFees} />
-        <Route path={`${path}/faq`} component={AdoptionFAQ} />
+      <Routes>
+        <Route path='/' element={<AdoptionApplication />} />
+        <Route path='application' element={<AdoptionApplication />} />
+        <Route path='info' element={<AdoptionInformation />} />
+        <Route path='fees' element={<AdoptionFees />} />
+        <Route path='faq' element={<AdoptionFAQ />} />
         <Route
-          path={`${path}/transport-application`}
-          component={TransportApplication}
+          path='transport-application'
+          element={<TransportApplication />}
         />
-        <Route path={`${path}/senior`} component={SeniorDogs} />
-        <Route>
-          <PageNotFound />
-        </Route>
-      </Switch>
+        <Route path='senior' element={<SeniorDogs />} />
+        <Route path='*' element={<Navigate to='/404' replace />} />
+      </Routes>
     </Container>
   );
 };

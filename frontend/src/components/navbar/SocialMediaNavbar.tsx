@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Modal, Image } from 'react-bootstrap';
 import styled, { keyframes, useTheme } from 'styled-components';
 import { SMData } from '../../utils/sociaMediaData';

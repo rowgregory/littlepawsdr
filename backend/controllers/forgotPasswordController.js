@@ -35,9 +35,9 @@ const resetPassword = asyncHandler(async (req, res) => {
       user.resetPasswordToken = token;
       user.resetPasswordExpires = Date.now() + 360000;
 
-      await user.save();
+      const updatedUser = await user.save();
 
-      sendEmail(req.body, res, 'resetPassword', token);
+      sendEmail(req.body, res, 'resetPassword', updatedUser.resetPasswordToken);
     }
   } catch (err) {
     const createdError = new Error({

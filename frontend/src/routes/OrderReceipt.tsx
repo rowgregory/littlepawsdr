@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Image } from 'react-bootstrap';
 import { Text } from '../components/styles/Styles';
 import styled from 'styled-components';
 import { localizeDate } from '../utils/localizeDate';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import Logo from '../components/assets/logo-transparent.png';
 import { ORDER_CREATE_RESET } from '../constants/orderConstants';
 import { useDispatch, useSelector } from 'react-redux';
@@ -64,28 +64,12 @@ export const estimatedDelivery = (createdAt: any) => {
   return `${firstEstimatedDate} - ${secondEstimatedDate}`;
 };
 
-const OrderReceipt = ({ match }: any) => {
-  // const { state } = useLocation() as any;
+const OrderReceipt = () => {
   const dispatch = useDispatch();
-  const { params } = match;
-
-  const id = params?.id;
-  // const order = params?.order && JSON.parse(params?.order);
-  // const shippingAddress =
-  //   params?.shippingAddress && JSON.parse(params?.shippingAddress);
-  // const email = params?.email && params?.email;
+  const { id } = useParams();
 
   const state = useSelector((state: any) => state);
   const order = state.orderDetails.order;
-
-  // const items =
-  //   params?.items &&
-  //   JSON.parse(params?.items)?.map((obj: any) => ({
-  //     image: decodeURIComponent(obj?.image),
-  //     name: obj.name,
-  //     price: obj.price,
-  //     qty: obj.qty,
-  //   }));
 
   useEffect(() => {
     dispatch({ type: ORDER_CREATE_RESET });

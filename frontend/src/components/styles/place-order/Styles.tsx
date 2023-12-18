@@ -123,7 +123,6 @@ export const AccordionX = styled.div<{ toggle: boolean; maxwidth?: string }>`
 export const Name = styled.div`
   text-overflow: ellipsis;
   overflow: hidden;
-  /* width: 150px; */
   white-space: nowrap;
   font-size: 13px;
 `;
