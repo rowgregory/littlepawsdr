@@ -107,7 +107,7 @@ const deleteEvent = asyncHandler(async (req, res) => {
   try {
     const event = await Event.findById(req.params.id);
 
-    await event.remove();
+    await event.deleteOne();
     res.json({ message: 'Event removed' });
   } catch (err) {
     const createdError = new Error({

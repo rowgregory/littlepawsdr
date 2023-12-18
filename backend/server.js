@@ -97,4 +97,4 @@ if (process.env.NODE_ENV === 'production') {
   );
 }
 
-server.listen(PORT, console.log(`Server running on port ${PORT}`));
+server.listen(PORT, console.log(`⚡ Server running on port`.blue + `${PORT}`.yellow));

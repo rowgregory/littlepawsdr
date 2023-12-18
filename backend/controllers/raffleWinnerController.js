@@ -70,7 +70,7 @@ const deleteRaffleWinner = asyncHandler(async (req, res) => {
   const raffleWinner = await RaffleWinner.findOne({ _id: req.params.id });
 
   if (raffleWinner) {
-    await raffleWinner.remove();
+    await raffleWinner.deleteOne();
     res.json({ message: 'Raffle winner removed' });
   } else {
     res.status(404);

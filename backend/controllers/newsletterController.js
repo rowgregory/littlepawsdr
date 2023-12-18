@@ -72,7 +72,7 @@ const deleteNewsletterEmail = asyncHandler(async (req, res) => {
     });
 
     if (newsletterEmail) {
-      await newsletterEmail.remove();
+      await newsletterEmail.deleteOne();
       res.json({ msg: 'Newsletter email removed' });
     }
   } catch (err) {

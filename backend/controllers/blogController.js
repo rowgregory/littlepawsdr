@@ -126,7 +126,7 @@ const updateBlog = asyncHandler(async (req, res) => {
 const deleteBlog = asyncHandler(async (req, res) => {
   try {
     const blog = await Blog.findById(req.params.id);
-    await blog.remove();
+    await blog.deleteOne();
 
     res.json({ message: 'Blog removed' });
   } catch (err) {

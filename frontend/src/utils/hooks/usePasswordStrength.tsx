@@ -6,10 +6,10 @@ export const usePasswordStrength = ({ password, newPassword }: any) => {
 
   useEffect(() => {
     const newValidations = [
-      (password ?? newPassword).length >= 9 ? 1 : 0,
-      (password ?? newPassword).search(/[A-Z]/) > -1 ? 1 : 0,
-      (password ?? newPassword).search(/[0-9]/) > -1 ? 1 : 0,
-      (password ?? newPassword).search(/[~`!-@#$%^&*()_+={}|:;"',.?]/) > -1
+      (password ?? newPassword)?.length >= 9 ? 1 : 0,
+      (password ?? newPassword)?.search(/[A-Z]/) > -1 ? 1 : 0,
+      (password ?? newPassword)?.search(/[0-9]/) > -1 ? 1 : 0,
+      (password ?? newPassword)?.search(/[~`!-@#$%^&*()_+={}|:;"',.?]/) > -1
         ? 1
         : 0,
     ];

@@ -135,7 +135,7 @@ const deleteManuallyAddedUser = asyncHandler(async (req, res) => {
   try {
     const manuallyAddedUser = await ManuallyAddedUser.findById(req.params.id);
 
-    await manuallyAddedUser.remove();
+    await manuallyAddedUser.deleteOne();
     res.status(200).json({ message: 'Manually added user removed' });
   } catch (err) {
     const createdError = new Error({

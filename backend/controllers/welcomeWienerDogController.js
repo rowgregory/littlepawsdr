@@ -75,7 +75,7 @@ const deleteWelcomeWienerDog = async (req, res) => {
   const { id } = req.params;
 
   try {
-    await WelcomeWienerDog.findByIdAndRemove(id);
+    await WelcomeWienerDog.findByIdAndDelete(id)
     const welcomeWienerDogs = await WelcomeWienerDog.find();
     res.status(200).json({
       message: 'Welcome Wiener Dog deleted successfully.',

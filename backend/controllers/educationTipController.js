@@ -117,7 +117,7 @@ const updateEducationTip = asyncHandler(async (req, res) => {
 const deleteEducationTip = asyncHandler(async (req, res) => {
   try {
     const educationTip = await EducationTip.findById(req.params.id);
-    await educationTip.remove();
+    await educationTip.deleteOne();
 
     res.json({ message: 'Education tip removed' });
   } catch (error) {

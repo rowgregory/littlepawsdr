@@ -150,7 +150,7 @@ const deleteEcard = asyncHandler(async (req, res) => {
   const eCard = await ECard.findById(req.params.id);
 
   if (eCard) {
-    await eCard.remove();
+    await eCard.deleteOne();
     res.json({ message: 'ECard removed' });
   } else {
     const createdError = new Error({
