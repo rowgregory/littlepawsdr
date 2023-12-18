@@ -33,7 +33,9 @@ const AddToCartSection = ({
   const stock =
     product?.sizes?.filter((item: any) => item.size === size)[0]?.amount ||
     product?.countInStock;
-  const quantityOptions = stock === -1 ? [0] : [...Array(stock).keys()];
+
+  const quantityOptions =
+    stock < 0 ? [0] : [...Array(stock).keys()].map((num) => num + 1);
 
   return loading ? (
     <LoadingImg w='100%' h='272px' />
@@ -76,7 +78,7 @@ const AddToCartSection = ({
             >
               {quantityOptions.map((option: any, i: number) => (
                 <option key={i} value={option}>
-                  {option + 1}
+                  {option}
                 </option>
               ))}
             </SelectInput>

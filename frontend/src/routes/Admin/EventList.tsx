@@ -120,6 +120,7 @@ const EventList = () => {
                 <th>START DATE</th>
                 <th>END DATE</th>
                 <th>STATUS</th>
+                <th>VIEW</th>
                 <th>EDIT</th>
                 <th>DELETE</th>
               </tr>
@@ -144,6 +145,16 @@ const EventList = () => {
                   </td>
                   <td>
                     <Text>{event?.status}</Text>
+                  </td>
+                  <td>
+                    <Link to={`/events/${event._id}`}>
+                      <StyledEditBtn>
+                        <i
+                          style={{ color: '#9761aa' }}
+                          className='fas fa-users-viewfinder'
+                        ></i>
+                      </StyledEditBtn>
+                    </Link>
                   </td>
                   <td>
                     <Link

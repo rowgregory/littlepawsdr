@@ -52,7 +52,7 @@ const EventIcon = () => (
   </svg>
 );
 
-const Events = ({ history }: any) => {
+const Events = () => {
   const dispatch = useDispatch();
   const {
     eventList: { loading, error, events },
@@ -132,7 +132,7 @@ const Events = ({ history }: any) => {
                             borderRadius='0.5rem'
                           />
                         ) : (
-                          <EventCard event={event} history={history} />
+                          <EventCard event={event} />
                         )}
                       </div>
                     )

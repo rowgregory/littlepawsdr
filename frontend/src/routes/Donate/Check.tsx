@@ -1,4 +1,3 @@
-import React from 'react';
 import { Text } from '../../components/styles/Styles';
 
 const Check = () => (
@@ -7,7 +6,7 @@ const Check = () => (
     <br />
     P.O. Box 108
     <br />
-    Brookfield, CT 06804, MD 20741
+    Brookfield, CT 06804
     <br />
   </Text>
 );

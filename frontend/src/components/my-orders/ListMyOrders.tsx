@@ -51,11 +51,7 @@ const ListMyOrders = ({ order }: any) => {
                   </div>
                   <Link
                     style={{ fontSize: '13px' }}
-                    to={
-                      item?.isEcard
-                        ? `/e-card/order/${item?._id}`
-                        : `/order/${order?._id}`
-                    }
+                    to={`/order/${order?._id}`}
                     state={{ order, goBackTo: 'MY_ORDERS' }}
                   >
                     View order details

@@ -1,73 +1,52 @@
-import React, { useEffect, useState } from 'react';
-import { Form } from 'react-bootstrap';
+import { useEffect } from 'react';
+import { Form, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { sendResetEmail } from '../actions/forgotPasswordActions';
 import JumpingInput from '../components/common/JumpingInput';
-import HexagonLoader from '../components/Loaders/HexagonLoader/HexagonLoader';
 import Message from '../components/Message';
 import { Accordion } from '../components/styles/place-order/Styles';
 import {
   Text,
   Container,
-  CreateAccountContainer,
   FormContainer,
-  StyledLink,
   FormWrapper,
-  StyledButton,
+  AccordionWrapper,
+  GlassBtn,
 } from '../components/styles/Styles';
 import { RESET_EMAIL_SEND_RESET } from '../constants/resetPasswordContants';
-
-const useForgotPasswordForm = (cb: any) => {
-  const values = {
-    forgotPasswordEmail: '',
-  };
-
-  const [inputs, setInputs] = useState(values) as any;
-
-  const handleInputChange = (e: any) => {
-    setInputs((inputs: any) => ({
-      ...inputs,
-      [e.target.name]: e.target.value,
-    }));
-  };
-
-  const onSubmit = (e: any) => {
-    e.preventDefault();
-    cb();
-  };
-
-  return { inputs, handleInputChange, onSubmit, setInputs };
-};
+import useForgotPasswordForm from '../utils/hooks/useForgotPasswordForm';
+import { Link } from 'react-router-dom';
 
 const ForgotPassword = () => {
   const dispatch = useDispatch();
-  const {
-    sendEmail: { loading, success, error, message },
-  } = useSelector((state: any) => state);
+  const state = useSelector((state: any) => state);
+  const loading = state.sendEmail.loading;
+  const success = state.sendEmail.success;
+  const error = state.sendEmail.error;
+  const message = state.sendEmail.message;
 
   const forgotPasswordFormCallback = () => {
     dispatch(sendResetEmail(inputs.forgotPasswordEmail));
   };
 
-  const { inputs, handleInputChange, onSubmit } = useForgotPasswordForm(
-    forgotPasswordFormCallback
-  );
+  const { inputs, handleInputChange, onSubmit, setInputs } =
+    useForgotPasswordForm(forgotPasswordFormCallback);
 
   useEffect(() => {
     if (error || success) {
       setTimeout(() => dispatch({ type: RESET_EMAIL_SEND_RESET }), 5000);
+      setInputs({});
     }
-  }, [dispatch, error, success]);
+  }, [dispatch, error, success, setInputs]);
 
   return (
-    <Container className='align-items-center'>
-      {loading && <HexagonLoader />}
-      <FormWrapper className='mx-auto px-3'>
+    <Container>
+      <FormWrapper className='forgot-password m-auto'>
         <FormContainer>
-          <Text color='#22c2b7' fontSize='33px' fontWeight={400}>
+          <Text color='#fff' fontSize='33px' fontWeight={400}>
             Forgot Password
           </Text>
-          <Text marginBottom='16px' marginTop='16px'>
+          <Text marginBottom='16px' marginTop='16px' color='#fff'>
             Enter the email address you registered with.
           </Text>
           <Form onSubmit={onSubmit}>
@@ -80,46 +59,43 @@ const ForgotPassword = () => {
               error={''}
             />
 
-            <StyledButton
+            <GlassBtn
               disabled={loading || inputs.forgotPasswordEmail === ''}
               type='submit'
-              className='d-flex align-items-center border-0 w-100 justify-content-center'
             >
+              {loading && (
+                <Spinner
+                  animation='border'
+                  size='sm'
+                  style={{ color: '#fff' }}
+                  className='mr-2'
+                />
+              )}
               Send{loading && 'ing'} Email{loading && '...'}&nbsp;&nbsp;
-            </StyledButton>
+            </GlassBtn>
           </Form>
         </FormContainer>
-        <CreateAccountContainer className='py-3 mt-3'>
-          Remembered your password?{' '}
-          <StyledLink
-            className='d-flex justify-content-center'
-            onClick={() => dispatch({ type: RESET_EMAIL_SEND_RESET })}
+        <Text
+          className='py-3 text-center text-white font-weight-light'
+          fontSize='14px'
+        >
+          Remembered your password?
+          <Link
             to='/login'
+            className='d-flex justify-content-center text-white mt-2 font-weight-bolder lead'
+            onClick={() => dispatch({ type: RESET_EMAIL_SEND_RESET })}
           >
             Sign In
-          </StyledLink>
-        </CreateAccountContainer>
+          </Link>
+        </Text>
       </FormWrapper>
-      <div
-        style={{
-          position: 'fixed',
-          bottom: 20,
-          left: 0,
-          right: 0,
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          width: '100%',
-          maxWidth: '500px',
-          marginInline: 'auto',
-        }}
-      >
+      <AccordionWrapper>
         <Accordion toggle={error || success} maxheight='65px' className='w-100'>
           <Message variant={error ? 'danger' : 'success'}>
             {error || message?.message}
           </Message>
         </Accordion>
-      </div>
+      </AccordionWrapper>
     </Container>
   );
 };

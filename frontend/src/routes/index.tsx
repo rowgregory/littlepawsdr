@@ -1,12 +1,5 @@
 import { ComponentType, FC, lazy, useEffect } from 'react';
-import {
-  // Switch,
-  Route,
-  useLocation,
-  // Redirect,
-  useNavigate,
-  Routes,
-} from 'react-router-dom';
+import { Route, useLocation, useNavigate, Routes } from 'react-router-dom';
 import Home from './Home';
 import Login from './Login';
 import Register from './Register';
@@ -62,6 +55,18 @@ import {
   DACHSHUND_PICS_VIDS_STASTUSES_SUCCESS,
   DACHSHUND_REQUEST,
 } from '../constants/dachshundConstants';
+import {
+  EVENT_LIST_REQUEST,
+  EVENT_LIST_SUCCESS,
+} from '../constants/eventConstants';
+import {
+  BLOG_LIST_REQUEST,
+  BLOG_LIST_SUCCESS,
+} from '../constants/blogConstants';
+import {
+  EDUCATION_TIP_LIST_REQUEST,
+  EDUCATION_TIP_LIST_SUCCESS,
+} from '../constants/educationTipConstants';
 
 const socket = io('/load-initial-data');
 
@@ -113,6 +118,9 @@ export const MainRoutes: FC = () => {
       dispatch({ type: WELCOME_WIENER_DACHSHUND_LIST_REQUEST });
       dispatch({ type: USER_WHO_WE_ARE_LIST_REQUEST });
       dispatch({ type: DACHSHUND_PICS_VIDS_STASTUSES_REQUEST });
+      dispatch({ type: EVENT_LIST_REQUEST });
+      dispatch({ type: BLOG_LIST_REQUEST });
+      dispatch({ type: EDUCATION_TIP_LIST_REQUEST });
     });
     socket.on('load-initial-data', async (initialData) => {
       const dachshunds = await API.getDachshundDataForSearchBar();
@@ -152,6 +160,18 @@ export const MainRoutes: FC = () => {
         dispatch({
           type: DACHSHUND_PICS_VIDS_STASTUSES_SUCCESS,
           payload: dachshunds?.allDogs,
+        });
+        dispatch({
+          type: EVENT_LIST_SUCCESS,
+          payload: initialData?.events,
+        });
+        dispatch({
+          type: BLOG_LIST_SUCCESS,
+          payload: initialData?.blogs,
+        });
+        dispatch({
+          type: EDUCATION_TIP_LIST_SUCCESS,
+          payload: initialData?.educationTips,
         });
       });
     });

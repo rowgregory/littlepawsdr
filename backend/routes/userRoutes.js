@@ -13,7 +13,6 @@ import {
   userLogout,
   confirmOldPassword,
   sendRegisterConfirmationEmail,
-  userIsConfirmed,
   dashboardDetails,
   getRefreshToken,
 } from '../controllers/userController.js';
@@ -30,7 +29,6 @@ router
   .get(protect, getUserProfile)
   .put(protect, updateUserProfile);
 router.route('/oldpassword/:id').post(protect, confirmOldPassword);
-router.route('/confirmed').put(userIsConfirmed);
 router
   .route('/:id')
   .delete(deleteUser, protect, admin)

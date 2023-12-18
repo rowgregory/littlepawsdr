@@ -1,7 +1,5 @@
-import React from 'react';
 import { AvatarInitials } from '../styles/NavbarStyles';
 import { Text } from '../styles/Styles';
-// import { CSSTransition } from 'react-transition-group';
 import { Image } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../../actions/userActions';
@@ -42,19 +40,6 @@ const UserImg = styled(Image)`
   margin-right: 14px;
 `;
 
-// const MyOrdersBtn = styled.div`
-//   display: flex;
-//   align-items: flex-start;
-//   padding-left: 30px;
-//   cursor: pointer;
-//   border-right: 8px solid #f5f6fc;
-//   border-left: 8px solid #f5f6fc;
-//   background: #fff;
-//   :hover {
-//     background: #e3e7fb;
-//   }
-// `;
-
 const LogoutLink = styled.div`
   cursor: pointer;
   padding-left: 40px;
@@ -73,8 +58,6 @@ const UserDropdown = ({
   userInfo,
   dropDownRef,
   setIsVisible,
-  activeMenu,
-  setActiveMenu,
   firstNameInitial,
   lastNameInitial,
 }: any) => {
@@ -103,12 +86,6 @@ const UserDropdown = ({
           <Text fontSize='0.75rem'>{userInfo?.email}</Text>
         </div>
       </NavDropdownItem>
-      {/* <CSSTransition
-        unmountOnExit
-        timeout={500}
-        classNames='menu-primary'
-        in={activeMenu === 'main'}
-      > */}
       <div
         className='menu'
         style={{
@@ -174,60 +151,6 @@ const UserDropdown = ({
           <Text>Little Paws Dachshund Rescue</Text>
         </LogoutLink>
       </div>
-      {/* </CSSTransition> */}
-      {/* <CSSTransition
-        unmountOnExit
-        timeout={500}
-        classNames='menu-secondary'
-        in={activeMenu === 'secondary'}
-      >
-        <div
-          className='menu'
-          style={{
-            background: '#f5f6fc',
-          }}
-        >
-          <DropDownLink
-            onClick={() => setIsVisible(false)}
-            to={{ pathname: '/my-orders', state: 'products' }}
-            className='d-flex align-items-center py-3'
-          >
-            <div style={{ marginRight: '29px' }}>
-              <i
-                className='fas fa-box-open fa-2x'
-                style={{ color: '#434343' }}
-              ></i>
-            </div>
-            <Text>Welcome Wiener Donations</Text>
-          </DropDownLink>
-          <DropDownLink
-            onClick={() => setIsVisible(false)}
-            to={{ pathname: '/my-orders', state: 'ecards' }}
-            className='d-flex align-items-center py-3'
-          >
-            <div style={{ marginRight: '29px' }}>
-              <i
-                className='fas fa-id-card-alt fa-2x'
-                style={{ color: '#434343' }}
-              ></i>
-            </div>
-            <Text>Ecards</Text>
-          </DropDownLink>
-          <MyOrdersBtn
-            onClick={() => setActiveMenu('main')}
-            className='d-flex align-items-center  py-3'
-            style={{ borderRadius: '0 0 30px 30px' }}
-          >
-            <div style={{ marginRight: '35px' }}>
-              <i
-                className='fas fa-long-arrow-alt-left fa-2x'
-                style={{ color: '#434343' }}
-              ></i>
-            </div>
-            <Text>Back</Text>
-          </MyOrdersBtn>
-        </div>
-      </CSSTransition> */}
     </Container>
   );
 };

@@ -109,14 +109,14 @@ export const BottomFooter = styled.div`
   display: flex;
   max-width: ${({ theme }) => theme.breakpoints[4]};
   width: 100%;
-  align-items: start;
-  justify-content: space-between;
-  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  /* flex-direction: column;
   margin-top: 24px;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
     flex-direction: row;
     align-items: center;
-  }
+  } */
 `;
 
 export const Signature = styled.div`
@@ -137,17 +137,20 @@ export const LegalWrapper = styled.div`
 `;
 
 export const Developed = styled.div`
+  width: 100%;
   transition: 300ms;
-  color: #fff;
-  font-size: 14px;
+  color: #918f98;
+  font-size: 11px;
   cursor: pointer;
-  :hover {
-    color: #ccc;
-  }
   margin-top: 28px;
+  display: flex;
+  justify-content: center;
+  :hover {
+    color: #fff;
+  }
 
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    margin-right: 100px;
+    /* margin-right: 100px; */
     margin-top: 0px;
   }
 `;

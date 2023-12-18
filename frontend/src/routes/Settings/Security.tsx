@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Button, Col, Form, Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -8,7 +8,6 @@ import {
 import JumpingInput from '../../components/common/JumpingInput';
 import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
 import Message from '../../components/Message';
-import PasswordMeter from '../../components/PasswordMeter';
 import { SettingsTitleContainer } from '../../components/styles/profile/Styles';
 import { Text } from '../../components/styles/Styles';
 import Checkmark from '../../components/svg/Checkmark';
@@ -16,27 +15,12 @@ import {
   USER_OLD_PASSWORD_RESET,
   USER_UPDATE_PROFILE_RESET,
 } from '../../constants/userConstants';
-
-const useSecurityForm = (cb: any, values: any) => {
-  const [inputs, setInputs] = useState(values);
-
-  const handleInput = (e: any) => {
-    setInputs((inputs: any) => ({
-      ...inputs,
-      [e.target.name]: e.target.value,
-    }));
-  };
-
-  const onSubmit = (e: any) => {
-    e.preventDefault();
-    cb();
-  };
-
-  return { inputs, handleInput, onSubmit, setInputs };
-};
+import useSecurityForm from '../../utils/hooks/useSecurityForm';
+import PasswordValidationSection from '../../components/common/PasswordValidationSection';
 
 const Settings = () => {
   const dispatch = useDispatch();
+  const [show, setShow] = useState(true);
   const [showPassword, setShowPassword] = useState({
     oldPassword: false,
     newPassword: false,
@@ -54,6 +38,9 @@ const Settings = () => {
     },
     userUpdateProfile: { loading: loadingUpdateProfile, success },
   } = useSelector((state: any) => state);
+
+  const state = useSelector((state: any) => state);
+  const strength = state.password.strength;
 
   const securityFormCallback = () => {
     if (passwordConfirmation) {
@@ -89,15 +76,6 @@ const Settings = () => {
     securityFormCallback,
     values
   );
-
-  const validations = [
-    inputs?.newPassword?.length >= 9 ? 1 : 0,
-    inputs?.newPassword?.search(/[A-Z]/) > -1 ? 1 : 0,
-    inputs?.newPassword?.search(/[0-9]/) > -1 ? 1 : 0,
-    inputs?.newPassword?.search(/[~`!-@#$%^ &*()_+={}|:;"',.?]/) > -1 ? 1 : 0,
-  ];
-
-  const strength = validations.reduce((acc, cur) => acc + cur, 0);
 
   useEffect(() => {
     if (success) {
@@ -172,8 +150,11 @@ const Settings = () => {
                   showPassword={showPassword.newPassword}
                   setShowPassword={setShowPassword}
                 />
-                <PasswordMeter validations={validations} strength={strength} />
-
+                <PasswordValidationSection
+                  show={show}
+                  setShow={setShow}
+                  inputs={inputs}
+                />
                 <JumpingInput
                   name='confirmNewPassword'
                   label='Confirm new password'

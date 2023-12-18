@@ -1,4 +1,3 @@
-/* eslint-disable array-callback-return */
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { PayPalButtons, usePayPalScriptReducer } from '@paypal/react-paypal-js';
@@ -29,9 +28,11 @@ import JumpingInput from '../../components/common/JumpingInput';
 import { Button } from 'react-bootstrap';
 import ShippingForm from '../../components/forms/ShippingForm';
 import { createOrder } from '../../actions/orderActions';
+import { useNavigate } from 'react-router-dom';
 
-const PlaceOrder = ({ history }: any) => {
+const PlaceOrder = () => {
   const dispatch = useDispatch();
+  const history = useNavigate();
   const [orderLoader, setOrderLoader] = useState(false);
   const [revealShippingAddress, setRevealShippingAddress] = useState(false);
   const [revealPayment, setRevealPayment] = useState(false);
@@ -87,15 +88,13 @@ const PlaceOrder = ({ history }: any) => {
 
   useEffect(() => {
     if (success) {
-      history.push({
+      history({
         pathname: `/order/${order?._id}`,
       });
       setOrderLoader(false);
     } else if (error) {
       setOrderLoader(false);
-    }
-
-    if (cartItems?.length === 0) history.push('/cart');
+    } else if (cartItems?.length === 0) history('/cart');
   }, [order, success, error, history, cartItems]);
 
   const successPaymentHandler = (details: any) => {

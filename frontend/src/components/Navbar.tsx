@@ -1,39 +1,38 @@
 import { useEffect, useState } from 'react';
-import { Image } from 'react-bootstrap';
 import styled, { useTheme } from 'styled-components';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import RightSideNavbar from './navbar/RightSideNavbar';
 import LeftNavigation from './navbar/LeftNavigation';
-import Logo from '../components/assets/logo-white2.png';
+
 import { FAIcons } from './styles/NavbarStyles';
 import { Overlay } from './styles/left-navigation/styles';
+import Logo from './navbar/Logo';
 
-const Container = styled.div<{ show: any; p: string; mode: string }>`
+interface ContainerProps {
+  show: any;
+  p: string;
+  mode: string;
+}
+
+const Container = styled.div<ContainerProps>`
   position: fixed;
   z-index: 5000;
   width: 100%;
-  background: ${({ show, theme, p, mode }) =>
-    (show === 'true' || p !== '/') && mode === 'day'
-      ? 'rgba(33,30,47, .9)'
+  background: ${({ show, p, mode }) =>
+    show === 'true' || p !== '/'
+      ? 'rgba(33, 30, 47, .9)'
       : (show === 'true' || p !== '/') && mode === 'night'
-      ? 'rgb(22 27 35/ 0.9)'
+      ? 'rgb(22 27 35 / 0.9)'
       : ''};
   transition: 300ms;
-  border-bottom: ${({ show, theme, p }) =>
-    show === 'true' || p !== '/' ? '' : '1px solid rgb(255, 255, 255, 0.5)'};
+  border-bottom: ${({ show, p }) =>
+    show === 'true' || p !== '/' ? '' : '1px solid rgba(255, 255, 255, 0.5)'};
   height: 75px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   box-shadow: ${({ show }) =>
     show === 'true' ? '0 20px 25px 3px rgba(0, 0, 0, 0.5)' : ''};
-`;
-
-const StyledImage = styled(Image)<{ show: any; p: string }>`
-  height: 77px;
-  object-fit: cover;
-  margin-top: -9px;
-  object-fit: cover;
 `;
 
 const BurgerMenuBottomBorder = styled.div<{ show: any; p: string }>`
@@ -76,11 +75,12 @@ const Navbar = () => {
     '/e-card/place-order',
     '/order',
     '/reset',
-  ].some((a: string) => pathname.includes(a)) ? (
+    '/email-confirmation',
+  ].some((a: string) => pathname?.includes(a)) ? (
     <>
       <LeftNavigation openMenu={openMenu} setOpenMenu={setOpenMenu} />
       <Overlay open={openMenu} />
-      <Container show={show.toString()} p={pathname} mode={theme.mode}>
+      <Container show={show.toString()} p={pathname} mode={theme?.mode}>
         <div className='d-flex justify-content-center align-items-center'>
           <BurgerMenuBottomBorder show={show.toString()} p={pathname}>
             <FAIcons onClick={() => setOpenMenu(true)}>
@@ -90,15 +90,7 @@ const Navbar = () => {
             </FAIcons>
           </BurgerMenuBottomBorder>
           <LogoLeftBorder show={show.toString()} p={pathname}></LogoLeftBorder>
-          <Link to='/'>
-            <StyledImage
-              show={show.toString()}
-              p={pathname}
-              style={{}}
-              src={Logo}
-              alt={`Little Paws Dachshund Reschue ${new Date().getFullYear()}. Thanks for being here!`}
-            />
-          </Link>
+          <Logo pathname={pathname} show={show} />
         </div>
         <RightSideNavbar />
       </Container>

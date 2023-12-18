@@ -1,8 +1,9 @@
-import React from 'react';
-import { Card } from 'react-bootstrap';
+import { Card, Spinner } from 'react-bootstrap';
 import styled from 'styled-components';
 import { Text } from '../../components/styles/Styles';
 import LeftArrow from '../../components/svg/LeftArrow';
+import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const CardContainer = styled.div<{ event: any }>`
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
@@ -11,7 +12,7 @@ const CardContainer = styled.div<{ event: any }>`
   display: flex;
   justify-content: center;
   flex-direction: column;
-  min-height: calc(100vh - 476px);
+  min-height: calc(100vh - 426px);
   background-color: #e5e5f7;
   opacity: 0.8;
   background-image: ${({ event }) => `repeating-radial-gradient(
@@ -86,8 +87,13 @@ export const getOrdinalDate = (date: any) => {
   return { superscriptOrdinal, month };
 };
 
-const Event = ({ location }: any) => {
-  const { event } = location?.state;
+const Event = () => {
+  const { id } = useParams();
+  const state = useSelector((state: any) => state);
+  const loading = state.eventList.loading;
+  const event = state?.eventList?.events?.find(
+    (event: any) => event._id === id
+  );
 
   const start = event?.startDate?.split('-');
   const end = event?.endDate?.split('-');
@@ -99,40 +105,51 @@ const Event = ({ location }: any) => {
           style={{ maxWidth: '1100px', width: '100%', marginInline: 'auto' }}
           className='d-flex justify-content-center flex-column align-items-center'
         >
-          <div className='w-100 d-flex justify-content-start pt-4'>
-            <LeftArrow text='Events' url='/events' />
-          </div>
-          <CardImg src={event?.image} alt={`${event?.title}-${event?._id}`} />
-          <CardTitle color={event?.color} className='mb-0'>
-            {event?.title}
-          </CardTitle>
-          <div className='d-flex w-100 justify-content-center align-items-center'>
-            <Month color={event?.color}>
-              {start && getOrdinalDate(start).month}
-              <sup>{start && getOrdinalDate(start).superscriptOrdinal}</sup>
-            </Month>
-            <Month color={event?.color} className='mx-3'>
-              -
-            </Month>
-            <Month color={event?.color}>
-              {end && getOrdinalDate(end).month}
-              <sup>{end && getOrdinalDate(end).superscriptOrdinal}</sup>
-            </Month>
-          </div>
-          <Description color={event?.color}>{event?.description}</Description>
-          {event?.externalLink && (
-            <Text
-              p='4px 8px'
-              border={`1px solid ${event?.color}`}
-              cursor='pointer'
-              marginTop='48px'
-              fontSize='22px'
-              color={event?.color}
-              fontWeight={600}
-              onClick={() => window.open(event?.externalLink, '_blank')}
-            >
-              View the event here
-            </Text>
+          {loading ? (
+            <Spinner animation='border' />
+          ) : (
+            <>
+              <div className='w-100 d-flex justify-content-start pt-4'>
+                <LeftArrow text='Events' url='/events' />
+              </div>
+              <CardImg
+                src={event?.image}
+                alt={`${event?.title}-${event?._id}`}
+              />
+              <CardTitle color={event?.color} className='mb-0'>
+                {event?.title}
+              </CardTitle>
+              <div className='d-flex w-100 justify-content-center align-items-center'>
+                <Month color={event?.color}>
+                  {start && getOrdinalDate(start).month}
+                  <sup>{start && getOrdinalDate(start).superscriptOrdinal}</sup>
+                </Month>
+                <Month color={event?.color} className='mx-3'>
+                  -
+                </Month>
+                <Month color={event?.color}>
+                  {end && getOrdinalDate(end).month}
+                  <sup>{end && getOrdinalDate(end).superscriptOrdinal}</sup>
+                </Month>
+              </div>
+              <Description color={event?.color}>
+                {event?.description}
+              </Description>
+              {event?.externalLink && (
+                <Text
+                  p='4px 8px'
+                  border={`1px solid ${event?.color}`}
+                  cursor='pointer'
+                  marginTop='48px'
+                  fontSize='22px'
+                  color={event?.color}
+                  fontWeight={600}
+                  onClick={() => window.open(event?.externalLink, '_blank')}
+                >
+                  View the event here
+                </Text>
+              )}
+            </>
           )}
         </div>
       </CardContainer>

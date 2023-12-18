@@ -1,40 +1,38 @@
-import React, { useEffect, useState } from 'react';
-import { Form } from 'react-bootstrap';
+import { useEffect, useState } from 'react';
+import { Form, Image, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { verifyToken, resetPassword } from '../actions/forgotPasswordActions';
 import {
   Container,
-  CreateAccountContainer,
   FormContainer,
   FormWrapper,
-  StyledButton,
-  StyledLink,
+  GlassBtn,
   Text,
 } from '../components/styles/Styles';
-import PasswordMeter, {
-  PasswordRequirements,
-} from '../components/PasswordMeter';
-import Message from '../components/Message';
-import HexagonLoader from '../components/Loaders/HexagonLoader/HexagonLoader';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import JumpingInput from '../components/common/JumpingInput';
+import PasswordReset from '../components/assets/password-reset.png';
+import SessionExpired from '../components/assets/session-expired.png';
+import PasswordValidationSection from '../components/common/PasswordValidationSection';
 
-const ResetPassword = ({ match }: any) => {
-  const tokenId = match.params.id;
+const ResetPassword = () => {
+  const { id } = useParams();
+  const tokenId = id;
   const dispatch = useDispatch();
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState({ password: false });
   const [errorMsg, setMessage] = useState('');
   const [show, setShow] = useState(true);
 
-  let {
-    verifyToken: {
-      loading: loadingVerifyToken,
-      result: successVerifyToken,
-      error: errorVerifyToken,
-    },
-    resetPassword: { loading: loadingResetPassword, message },
-  } = useSelector((state: any) => state);
+  const state = useSelector((state: any) => state);
+  const loadingVerifyToken = state.verifyToken.loading;
+  const successVerifyToken = state.verifyToken.result;
+  const errorVerifyToken = state.verifyToken.error;
+
+  const loadingResetPassword = state.resetPassword.loading;
+  const message = state.resetPassword.message;
+
+  const strength = state.password.strength;
 
   useEffect(() => {
     dispatch(verifyToken(tokenId));
@@ -49,38 +47,41 @@ const ResetPassword = ({ match }: any) => {
     }
   };
 
-  const validations = [
-    password.length >= 9 ? 1 : 0,
-    password.search(/[A-Z]/) > -1 ? 1 : 0,
-    password.search(/[0-9]/) > -1 ? 1 : 0,
-    password.search(/[~`!-@#$%^ &*()_+={}|:;"',.?]/) > -1 ? 1 : 0,
-  ];
-
-  const strength = validations.reduce((acc, cur) => acc + cur, 0);
-
-  return errorVerifyToken ? (
-    <div className='m-3' style={{ marginTop: '75px' }}>
-      <Message variant='danger'>{errorVerifyToken}</Message>
-      <Link to='/forgot-password'>Forgot Password</Link>
-    </div>
-  ) : (
+  return (
     <Container className='align-items-center'>
-      {(loadingVerifyToken || loadingResetPassword) && <HexagonLoader />}
-      <FormWrapper>
+      <FormWrapper className='reset-password m-auto'>
         <FormContainer>
-          {errorMsg ? (
-            <Message variant='danger'>{errorMsg}</Message>
+          {loadingVerifyToken ? (
+            <div className='lead text-white text-center font-weight-normal'>
+              Verifying credentials...
+            </div>
+          ) : errorVerifyToken ? (
+            <div className='d-flex flex-column justify-content-center align-items-center'>
+              <Image src={SessionExpired} style={{ maxWidth: '200pt' }} />
+              <h1
+                className='text-center font-weight-normal text-white mt-4'
+                style={{ fontSize: '32px' }}
+              >
+                {errorVerifyToken}
+              </h1>
+              <Link to='/forgot-password' className='text-white mt-2'>
+                Forgot Password
+              </Link>
+            </div>
           ) : message ? (
-            <>
-              <Message variant='success'>{message}</Message>
-              <CreateAccountContainer className='py-3 mt-4'>
-                <StyledLink to='/login'>Sign In</StyledLink>
-              </CreateAccountContainer>
-            </>
+            <div className='d-flex flex-column align-items-center'>
+              <Image src={PasswordReset} style={{ maxWidth: '100pt' }} />
+              <h4 className='text-center text-white my-3 font-weight-normal'>
+                {message}
+              </h4>
+              <Link className='text-white text-center my-3 my-4' to='/login'>
+                Sign In
+              </Link>
+            </div>
           ) : (
             <>
               <Text
-                color='#22c2b7'
+                color='#fff'
                 fontSize='33px'
                 marginBottom='16px'
                 fontWeight={400}
@@ -89,41 +90,51 @@ const ResetPassword = ({ match }: any) => {
               </Text>
               <FormContainer>
                 <Form onSubmit={submitHandler}>
-                  <JumpingInput
-                    name='password'
-                    label='Password'
-                    value={password || ''}
-                    handleInputChange={(e: any) => setPassword(e.target.value)}
-                    type={showPassword.password ? 'text' : 'password'}
-                    error={''}
-                    blur={() => ({})}
-                    showPassword={showPassword.password}
-                    setShowPassword={setShowPassword}
+                  <div style={{ marginBottom: '-12px' }}>
+                    <JumpingInput
+                      name='password'
+                      label='Password'
+                      value={password || ''}
+                      handleInputChange={(e: any) =>
+                        setPassword(e.target.value)
+                      }
+                      type={showPassword.password ? 'text' : 'password'}
+                      error={''}
+                      blur={() => ({})}
+                      showPassword={showPassword.password}
+                      setShowPassword={setShowPassword}
+                    />
+                  </div>
+                  <PasswordValidationSection
+                    show={show}
+                    setShow={setShow}
+                    inputs={{ password }}
                   />
-                  <PasswordMeter
-                    validations={validations}
-                    strength={strength}
-                  />
-                  <Text
-                    onClick={() => setShow(!show)}
-                    fontWeight={400}
-                    className='d-flex align-items-center justify-content-between mb-2'
-                  >
-                    {show ? 'Hide ' : 'Show '}password requirements
-                    {
-                      <i
-                        className={`fas fa-chevron-${show ? 'up' : 'down'}`}
-                      ></i>
-                    }
-                  </Text>
-                  <PasswordRequirements validations={validations} open={show} />
-                  <StyledButton
+                  <GlassBtn
                     disabled={loadingResetPassword || password === ''}
                     type='submit'
-                    className='d-flex align-items-center border-0 w-100 justify-content-center mt-3'
+                    className='mt-3'
                   >
-                    Updat{loadingResetPassword ? 'ing' : 'e'}&nbsp;&nbsp;
-                  </StyledButton>
+                    {loadingResetPassword && (
+                      <Spinner
+                        animation='border'
+                        size='sm'
+                        style={{ color: '#fff' }}
+                      />
+                    )}
+                    Updat{loadingResetPassword ? 'ing' : 'e'}
+                  </GlassBtn>
+                  {errorMsg && (
+                    <Text
+                      fontSize='15px'
+                      color='#ff2a01'
+                      fontWeight={500}
+                      textAlign='center'
+                      marginTop='16px'
+                    >
+                      {errorMsg}
+                    </Text>
+                  )}
                 </Form>
               </FormContainer>
             </>

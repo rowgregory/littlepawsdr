@@ -11,6 +11,7 @@ import { Text } from '../components/styles/Styles';
 import { LoadingImg } from '../components/LoadingImg';
 import Message from '../components/Message';
 import CartDrawer from '../components/CartDrawer';
+import { useParams } from 'react-router-dom';
 
 const Container = styled.div`
   margin-top: 75px;
@@ -65,9 +66,9 @@ const EcardImage = styled(Image)`
   }
 `;
 
-const PersonalizeEcard = ({ match }: any) => {
+const PersonalizeEcard = () => {
   const dispatch = useDispatch();
-  const id = match.params.id;
+  const { id } = useParams();
   const [errors, setErrors] = useState({}) as any;
 
   const state = useSelector((state: any) => state);

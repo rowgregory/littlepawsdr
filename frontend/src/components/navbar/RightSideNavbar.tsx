@@ -2,75 +2,17 @@ import { useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
 import { NAVBAR_DATA } from '../../utils/navbarData';
-import { AvatarInitials, FAIcons } from '../styles/NavbarStyles';
+import {
+  AvatarInitials,
+  Container,
+  DropDownContainer,
+  FAIcons,
+  StyledAvatar,
+} from '../styles/NavbarStyles';
 import { UserDropdown } from './UserDropdown';
 import { useOutsideDetect } from '../../utils/useOutsideDetect';
-import styled from 'styled-components';
-import { Image } from 'react-bootstrap';
-
-const StyledAvatar = styled(Image)<{ isvisible?: string }>`
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  cursor: pointer;
-  object-fit: cover;
-  filter: ${({ isvisible }) => (isvisible === 'true' ? 'brightness(1.3)' : '')};
-  transition: 300ms;
-  :hover {
-    filter: brightness(1.3);
-  }
-`;
-
-interface ItemsProps {
-  active?: boolean;
-  isMobile?: boolean;
-}
-
-const Items = styled.span<ItemsProps>`
-  color: ${({ theme }) => theme.white};
-  font-size: 12.8px;
-  position: absolute;
-  top: -4px;
-  left: 26px;
-  z-index: 9;
-  text-align: center;
-  cursor: pointer;
-  font-weight: bold;
-  background: red;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-
-  div {
-    position: absolute;
-    right: -14px;
-    top: 1px;
-    width: 50px;
-    font-size: 14px;
-  }
-`;
-
-const DropDownContainer = styled.div<{ p?: string }>`
-  z-index: 500;
-  position: absolute;
-  top: 65px;
-  right: 8px;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  transition: height 500ms ease;
-  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
-  max-width: 350px;
-  width: 100%;
-  border-radius: 30px;
-  background: #f5f6fc;
-`;
-
-const Container = styled.nav`
-  display: flex;
-  align-items: center;
-  padding-inline: 16px;
-`;
+import DonateBtn from './DonateBtn';
+import CartBtn from './CartBtn';
 
 const RightSideNavbar = () => {
   const { pathname: p } = useLocation();
@@ -121,22 +63,9 @@ const RightSideNavbar = () => {
           </AvatarInitials>
         );
       case 'Donate':
-        return (
-          <FAIcons className='mr-2 hide'>
-            <Link to='/donate'>
-              <i className='fas fa-dollar'></i>
-            </Link>
-          </FAIcons>
-        );
+        return <DonateBtn />;
       case 'Cart':
-        return (
-          <FAIcons className='mr-2 hide'>
-            <Link to='/cart'>
-              <Items>{cartItemsAmount}</Items>
-              <i className='fas fa-shopping-cart'></i>
-            </Link>
-          </FAIcons>
-        );
+        return <CartBtn cartItemsAmount={cartItemsAmount} />;
       case 'Sign In':
         return (
           <FAIcons>
@@ -174,8 +103,6 @@ const RightSideNavbar = () => {
               userInfo={userInfo}
               dropDownRef={dropDownRef}
               setIsVisible={setIsVisible}
-              activeMenu={activeMenu}
-              setActiveMenu={setActiveMenu}
               firstNameInitial={firstNameInitial}
               lastNameInitial={lastNameInitial}
             />

@@ -1,10 +1,13 @@
-import React from 'react';
 import { Row, Col, Image } from 'react-bootstrap';
 import { Text } from '../../components/styles/Styles';
 import LeftArrow from '../../components/svg/LeftArrow';
+import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
-const BlogDetails = ({ location }: any) => {
-  const { blog } = location.state;
+const BlogDetails = () => {
+  const { id } = useParams();
+  const state = useSelector((state: any) => state);
+  const blog = state?.blogList?.blogs?.find((blog: any) => blog._id === id);
 
   return (
     <>

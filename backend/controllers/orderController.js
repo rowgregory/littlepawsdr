@@ -141,9 +141,11 @@ async function createProductOrders(createdOrder, res) {
       const createdProductOrder = new ProductOrder({
         ...item,
         price: item.price,
+        productName: item.productName,
         email: createdOrder.email,
         isPhysicalProduct: true,
         subtotal: item.quantity * item.price,
+        shippingPrice: item.shippingPrice,
         totalPrice:
           item.quantity * item.price +
           Number(item.shippingPrice) * item.quantity,
@@ -222,17 +224,16 @@ const getMyOrders = asyncHandler(async (req, res) => {
       email: req.user.email,
     });
 
-    const convertedEcardOrders = ecardOrders.map(order => {
+    const convertedEcardOrders = ecardOrders.flatMap(order => {
       // repair logic for converting legacy ecards to new order shape
       if (order?.firstName && order?.lastName) {
         const orderItems = [
           {
-            _id: order?._id,
             price: order?.totalPrice,
             subtotal: order?.subTotal,
             quantity: 1,
             email: order?.email,
-            isPhysicalProduct: order?.isPhysicalProduct,
+            isPhysicalProduct: false,
             recipientsFullName: order?.recipientsFirstName,
             recipientsEmail: order?.recipientsEmail,
             dateToSend: order?.dateToSend,
@@ -246,24 +247,21 @@ const getMyOrders = asyncHandler(async (req, res) => {
 
         return {
           _id: order?._id,
-          name: `${order?.firstName}${order?.lastName}`,
+          name: `${order?.firstName} ${order?.lastName}`,
           orderItems,
           totalPrice: order?.totalPrice,
           paypalOrderId: order?.orderId,
           email: order?.email,
-          requiresShipping: order?.isPhysicalProduct,
+          requiresShipping: false,
           subtotal: order?.totalPrice,
           totalItems: 1,
           createdAt: order?.createdAt,
         };
       }
-    });
+      return []
+    })
 
-    const ecardsAndOrders =
-      convertedEcardOrders?.length > 0
-        ? orders?.concat(convertedEcardOrders)
-        : orders;
-
+    const ecardsAndOrders = orders?.concat(convertedEcardOrders)
     res.status(200).json({ orders: ecardsAndOrders });
   } catch (err) {
     const createdError = new Error({

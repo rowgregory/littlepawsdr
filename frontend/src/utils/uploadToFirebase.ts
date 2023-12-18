@@ -1,5 +1,3 @@
-// import heic2any from 'heic2any';
-// import imageCompression from 'browser-image-compression';
 import { app } from '../config/firebase';
 import heic2any from 'heic2any';
 import imageCompression from 'browser-image-compression';

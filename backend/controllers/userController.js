@@ -3,8 +3,6 @@ import User from '../models/userModel.js';
 import Error from '../models/errorModel.js';
 import { generateToken } from '../utils/generateToken.js';
 import { v4 as uuidv4 } from 'uuid';
-import { decrypt } from '../utils/crypto.js';
-import GuestUser from '../models/guestUserModel.js';
 import ManuallyAddedUser from '../models/manuallyAddedUserModel.js';
 import { sendEmail } from '../utils/sendEmail.js';
 import ECardOrder from '../models/eCardOrderModel.js';
@@ -416,66 +414,6 @@ const sendRegisterConfirmationEmail = asyncHandler(async (req, res) => {
   sendEmail(req.body, res, 'sendRegisterConfirmationEmail');
 });
 
-// @desc    Update user to confirmed
-// @route   PUT /api/users/confirmed
-// @access  Private
-const userIsConfirmed = asyncHandler(async (req, res) => {
-  const { email, name, id } = req.body;
-
-  try {
-    const userExists = await User.findOne({ email });
-    if (userExists) return res.status(201).json(userExists);
-
-    const guestUserExists = await GuestUser.findOne({ email });
-    if (guestUserExists) guestUserExists.deleteOne();
-
-    if (userExists === null) {
-      const parsedPw = JSON.parse(id);
-      const decryptedPw = decrypt(parsedPw);
-
-      const user = new User({
-        name,
-        email,
-        password: decryptedPw,
-        isAdmin: false,
-        // avatar: '',
-        // volunteerTitle: '',
-        // volunteerEmail: '',
-        // profileCardTheme: '',
-        online: true,
-        theme: 'sync',
-        confirmed: true,
-      });
-
-      const createdUser = await user.save();
-
-      createdUser.token = generateToken(
-        {
-          id: createdUser._id,
-          name: createdUser.name,
-          email: createdUser.email,
-        },
-        '24h'
-      );
-      const updatedUser = await createdUser.save();
-
-      res.json(updatedUser);
-    }
-  } catch (error) {
-    const createdError = new Error({
-      functionName: 'UPDATE_USER_TO_CONFIRMED_PRIVATE',
-      detail: err.message,
-      status: 500,
-    });
-
-    await createdError.save();
-
-    res.status(404).json({
-      message: `500 - Server Error`,
-    });
-  }
-});
-
 // @desc    Get dashboard details
 // @route   GET /api/users/dashboard-details
 // @access  Private/Admin
@@ -518,7 +456,7 @@ const dashboardDetails = asyncHandler(async (req, res) => {
         const name = item?.productName || item?.dachshundName || item?.name;
         if (!acc[name]) {
           acc[name] = {
-            name: item?.productName || item?.name,
+            name,
             price: item?.price || item?.totalPrice,
             count: item?.quantity || 1,
             dachshundName: item?.dachshundName || null,
@@ -546,7 +484,7 @@ const dashboardDetails = asyncHandler(async (req, res) => {
           obj.count * obj.price + obj.count * Number(obj.shippingPrice),
         shippingTotal: obj.count * Number(obj.shippingPrice),
       }))
-      .sort((a, b) => (a.count > b.count ? -1 : 1));
+      .sort((a, b) => (a.totalAmount > b.totalAmount ? -1 : 1));
 
     const lineChart = getLineChartData(
       productOrders,
@@ -614,7 +552,6 @@ export {
   updateUser,
   userLogout,
   sendRegisterConfirmationEmail,
-  userIsConfirmed,
   dashboardDetails,
   getRefreshToken,
 };
