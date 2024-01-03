@@ -11,6 +11,7 @@ import sendEcard from './emails/sendEcard.js';
 import welcomeWienerPurchase from './emails/welcomeWienerPurchase.js';
 import orderShippedConfirmation from './emails/orderShippedConfirmation.js';
 import orderNotification from './emails/orderNotification.js';
+import adoptionFeeConfirmation from './emails/adoptionFeeConfirmation.js';
 import dotenv from 'dotenv'
 dotenv.config()
 
@@ -98,5 +99,7 @@ export const sendEmail = async (body, res, type, token, hasEmailBeenSent) => {
       return orderShippedConfirmation(pugEmail, body, hasEmailBeenSent);
     case 'sendOrderNotificationEmail':
       return orderNotification(pugEmail, body, hasEmailBeenSent);
+    case 'sendAdoptionFeeConfirmation':
+      return adoptionFeeConfirmation(pugEmail, body, hasEmailBeenSent)
   }
 };

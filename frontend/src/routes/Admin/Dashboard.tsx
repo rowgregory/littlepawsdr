@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { listDashboardDetails } from '../../actions/userActions';
 import LineChart from '../../components/dashboard/LineChart';
@@ -6,29 +6,31 @@ import PieChart from '../../components/dashboard/PieChart';
 import {
   BottomRow,
   DashboardContainer,
+  HomeIcon,
   Middle,
   MiddleRow,
+  NameText,
   Right,
   SubheaderText,
   TopRow,
-  WelcomeText,
   WelcomeTextWrapper,
 } from '../../components/styles/DashboardStyles';
-import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
 import DashboardTopRow from '../../components/dashboard/DashboardTopRow';
 import TopSellingProducts from '../../components/dashboard/TopSellingProducts';
 import RecentTransactions from '../../components/dashboard/RecentTransactions';
 import SplitTextToChars from '../../utils/SplitTextToChars';
+import UserNavigation, {
+  DashboardAdminAvatar,
+  MobileWrapper,
+} from '../../components/dashboard/UserNavigation';
 
 const Dashboard = () => {
   const dispatch = useDispatch();
   const state = useSelector((state: any) => state);
-
+  const [showAdminLinks, setShowAdminLinks] = useState(false);
   const userInfo = state.userLogin.userInfo;
   const loading = state.userDashboardDetails.loading;
   const dashboardDetails = state.userDashboardDetails.dashboardDetails;
-
-  const loadingUserLogout = state.userLogout.loading;
 
   useEffect(() => {
     dispatch(listDashboardDetails());
@@ -36,22 +38,32 @@ const Dashboard = () => {
 
   return (
     <DashboardContainer>
-      {loadingUserLogout && <HexagonLoader />}
       <Middle>
+        <MobileWrapper>
+          <HomeIcon>
+            <i className='fa-solid fa-house-chimney'></i>
+          </HomeIcon>
+          <DashboardAdminAvatar
+            className='mr-2'
+            onClick={() => setShowAdminLinks(!showAdminLinks)}
+            src={userInfo?.avatar}
+            alt={`Hey ${userInfo?.name}! We appreciate you! Love from LPDR`}
+          />
+        </MobileWrapper>
+        <MobileWrapper className='mt-3'>
+          <UserNavigation showAdminLinks={showAdminLinks} />
+        </MobileWrapper>
         <WelcomeTextWrapper>
-          <WelcomeText className='dashboard'>
+          <NameText>
             <SplitTextToChars
               text={`Hello ${userInfo?.name?.split(' ')[0]}`}
               page='dashboard'
               fontSize='26px'
             />
-          </WelcomeText>
-          <SubheaderText color='#c8cbcd'>
-            Here you can manage everything
-          </SubheaderText>
+          </NameText>
+          <SubheaderText>Here you can manage everything</SubheaderText>
         </WelcomeTextWrapper>
-
-        <div style={{ width: '100%' }}>
+        <div className='w-100 mt-3'>
           <TopRow className='mx-auto'>
             <DashboardTopRow
               dashboardDetails={dashboardDetails}
@@ -69,7 +81,6 @@ const Dashboard = () => {
               topSellingProducts={dashboardDetails?.topSellingProducts}
               loading={loading}
             />
-
             <PieChart details={dashboardDetails} loading={loading} />
           </BottomRow>
         </div>
@@ -77,9 +88,10 @@ const Dashboard = () => {
       <Right>
         <RecentTransactions
           userInfo={userInfo}
-          loadingUserLogout={loadingUserLogout}
           dashboardDetails={dashboardDetails}
           loading={loading}
+          setShowAdminLinks={setShowAdminLinks}
+          showAdminLinks={showAdminLinks}
         />
       </Right>
     </DashboardContainer>

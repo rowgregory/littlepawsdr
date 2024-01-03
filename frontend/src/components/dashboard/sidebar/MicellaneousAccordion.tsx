@@ -1,13 +1,9 @@
-import React from 'react';
 import { useLocation } from 'react-router-dom';
-import EventsIcon from '../../svg/EventsIcon';
-import NewsArticleIcon from '../../svg/NewsArticleIcon';
-import EducationTipIcon from '../../svg/EducationTipIcon';
 import { Accordion } from '../../styles/place-order/Styles';
 import { LinkContainer, SideBarAccordionBtn, SideBarLink } from './styles';
-import MicellaneousIcon from '../../svg/MicellaneousIcon';
 import { useDispatch } from 'react-redux';
 import { openCloseDashboardModal } from '../../../actions/dashboardActions';
+import { Text } from '../../styles/Styles';
 
 const miscellaneousLinks = [
   {
@@ -17,21 +13,27 @@ const miscellaneousLinks = [
     pathMatch: 'welcomeWiener',
   },
   {
+    textKey: 'Adoption Applicaion Fees',
+    linkKey: '/admin/adoption-application-fee/list',
+    icon: <i className='fa-solid fa-tag'></i>,
+    pathMatch: 'adoptionApplicationFee',
+  },
+  {
     textKey: 'Events',
     linkKey: '/admin/eventList',
-    icon: <EventsIcon />,
+    icon: <i className='fa-regular fa-calendar-check'></i>,
     pathMatch: 'event',
   },
   {
     textKey: 'Blog',
     linkKey: '/admin/blogs',
-    icon: <NewsArticleIcon />,
+    icon: <i className='fa-solid fa-blog'></i>,
     pathMatch: 'blogs',
   },
   {
     textKey: 'Education',
     linkKey: '/admin/education-tips',
-    icon: <EducationTipIcon />,
+    icon: <i className='fa-solid fa-graduation-cap'></i>,
     pathMatch: 'educationTips',
   },
 ];
@@ -51,36 +53,32 @@ const MicellaneousAccordion = ({
           setWhichSectionToReveal(reveal ? '--' : 'miscellaneous', setReveal)
         }
       >
-        <LinkContainer
-          active={reveal?.toString()}
-          className='d-flex align-items-center px-3 py-3 mb-2'
-        >
-          <div>
-            <MicellaneousIcon />
+        <LinkContainer active={reveal?.toString()}>
+          <div className='ml-2'>
+            <i className='fa-brands fa-discord'></i>
           </div>
-          <div className='ml-3'>Micellaneous</div>
+          <Text fontSize='15px' fontWeight={400}>
+            Micellaneous
+          </Text>
         </LinkContainer>
       </SideBarAccordionBtn>
-      <Accordion toggle={reveal} maxheight='300px'>
+      <Accordion toggle={reveal} maxheight='320px'>
         {miscellaneousLinks.map((obj: any, i: number) => (
           <SideBarLink
             key={i}
             to={obj?.linkKey}
             onClick={() => dispatch(openCloseDashboardModal(false))}
+            active={(
+              obj?.linkKey === pathname ||
+              obj?.pathMatch === pathname?.split('/')[2]
+            ).toString()}
           >
-            <LinkContainer
-              active={(
-                obj?.linkKey === pathname ||
-                obj?.pathMatch === pathname?.split('/')[2]
-              ).toString()}
-              className='d-flex align-items-center px-3 py-3 mb-2'
-            >
-              <div className='ml-3'>{obj?.icon}</div>
-              <div className='ml-3'>{obj?.textKey}</div>
-            </LinkContainer>
+            <div></div>
+            <div>{obj?.icon}</div>
+            <div className='text'>{obj?.textKey}</div>
           </SideBarLink>
         ))}
-      </Accordion>{' '}
+      </Accordion>
     </>
   );
 };

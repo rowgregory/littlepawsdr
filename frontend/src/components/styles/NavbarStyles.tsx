@@ -88,7 +88,7 @@ export const SlyledToolTip = styled(Tooltip)`
   }
 `;
 
-export const StyledAvatar = styled(Image)<{ isvisible?: string }>`
+export const StyledAvatar = styled(Image) <{ isvisible?: string }>`
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -152,9 +152,4 @@ export const Container = styled.nav`
   padding-inline: 16px;
 `;
 
-export const StyledImage = styled(Image)<{ show: any; p: string }>`
-  height: 77px;
-  object-fit: cover;
-  margin-top: -9px;
-  object-fit: cover;
-`;
+

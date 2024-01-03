@@ -28,10 +28,10 @@ const CreateEditWelcomeWienerDachshundForm = ({
   uploading,
   onSubmit,
   submitBtnText,
-  setInputs,
   errors,
   handleBlur,
   handleFileInputChange,
+  addToAssociatedProducts
 }: any) => {
   const dispatch = useDispatch();
 
@@ -135,10 +135,10 @@ const CreateEditWelcomeWienerDachshundForm = ({
           ) : (
             productList?.map((obj: any, i: number) => (
               <WelcomeWienerProduct
-                product={obj}
                 key={i}
-                setInputs={setInputs}
+                product={obj}
                 inputs={inputs}
+                addToAssociatedProducts={addToAssociatedProducts}
               />
             ))
           )}

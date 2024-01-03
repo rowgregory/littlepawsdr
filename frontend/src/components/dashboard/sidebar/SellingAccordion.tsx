@@ -1,7 +1,6 @@
 import { useLocation } from 'react-router-dom';
 import { Accordion } from '../../styles/place-order/Styles';
 import { LinkContainer, SideBarAccordionBtn, SideBarLink } from './styles';
-import SellingIcon from '../../svg/SellingIcon';
 import { Text } from '../../styles/Styles';
 import { openCloseDashboardModal } from '../../../actions/dashboardActions';
 import { useDispatch } from 'react-redux';
@@ -41,14 +40,13 @@ const SellingAccordion = ({
           setWhichSectionToReveal(reveal ? '--' : 'selling', setReveal)
         }
       >
-        <LinkContainer
-          active={reveal?.toString()}
-          className='d-flex align-items-center px-3 py-3 mb-2'
-        >
-          <div>
-            <SellingIcon />
+        <LinkContainer active={reveal?.toString()}>
+          <div className='ml-2'>
+            <i className='fa-solid fa-wand-magic'></i>
           </div>
-          <div className='ml-3'>Selling</div>
+          <Text fontSize='15px' fontWeight={400}>
+            Selling
+          </Text>
         </LinkContainer>
       </SideBarAccordionBtn>
       <Accordion toggle={reveal} maxheight='200px'>
@@ -57,19 +55,14 @@ const SellingAccordion = ({
             key={i}
             to={obj?.linkKey}
             onClick={() => dispatch(openCloseDashboardModal(false))}
+            active={(
+              obj?.linkKey === pathname ||
+              obj?.pathMatch === pathname.split('/')[2]
+            ).toString()}
           >
-            <LinkContainer
-              active={(
-                obj?.linkKey === pathname ||
-                obj?.pathMatch === pathname.split('/')[2]
-              ).toString()}
-              className='d-flex align-items-center py-3 mb-2'
-            >
-              <div className='ml-3'>{obj?.icon}</div>
-              <Text fontSize='14px' className='ml-2' fontWeight='400'>
-                {obj?.textKey}
-              </Text>
-            </LinkContainer>
+            <div></div>
+            <div>{obj?.icon}</div>
+            <div className='text'>{obj?.textKey}</div>
           </SideBarLink>
         ))}
       </Accordion>{' '}

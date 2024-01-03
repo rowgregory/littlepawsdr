@@ -118,8 +118,16 @@ import {
   welcomeWienerDachshundUpdateReducer,
 } from './welcomeWienerDachshundReducer';
 import { dashboardReducer } from './dashboardReducer';
-import { jwtCheckValidityReducer } from './jwtReducer';
+import {
+  jwtCheckValidityAdoptionFeeReducer,
+  jwtCheckValidityReducer,
+} from './jwtReducer';
 import passwordReducer from './passwordReducer';
+import {
+  adoptionFeeCheckActiveSessionReducer,
+  adoptionFeeCreateReducer,
+  adoptionFeeListReducer,
+} from './adoptionReducer';
 
 const allReducers = combineReducers({
   dachshunds: dachshundListReducer,
@@ -212,7 +220,11 @@ const allReducers = combineReducers({
   welcomeWienerDachshundToggle: welcomeWienerDachshundToggledReducer,
   searchBar: searchBarListReducer,
   jwtCheckValidity: jwtCheckValidityReducer,
+  jwtCheckValidityAdoptionFee: jwtCheckValidityAdoptionFeeReducer,
   password: passwordReducer,
+  adoptionFeeCreate: adoptionFeeCreateReducer,
+  adoptionFeeCheckActiveSession: adoptionFeeCheckActiveSessionReducer,
+  adoptionFeeList: adoptionFeeListReducer,
 });
 
 export default allReducers;

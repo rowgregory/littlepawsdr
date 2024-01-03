@@ -86,6 +86,31 @@ const useWelcomeWienerDachshundForm = (
     }
   };
 
+  const addToAssociatedProducts = (product: any) => {
+    const isSelected = inputs?.associatedProducts?.some(
+      (item: any) => item?._id === product?._id
+    );
+    if (isSelected) {
+      const updatedAssociatedProducts = inputs?.associatedProducts?.filter(
+        (p: any) => p?._id !== product?._id
+      );
+      setInputs((prevInputs: any) => ({
+        ...prevInputs,
+        associatedProducts: updatedAssociatedProducts,
+      }));
+      setErrors(validate(inputs));
+    } else {
+      setInputs((prevInputs: any) => ({
+        ...prevInputs,
+        associatedProducts: [
+          ...prevInputs?.associatedProducts,
+          { _id: product?._id, name: product?.name },
+        ],
+      }));
+      setErrors(validate(inputs));
+    }
+  };
+
   useEffect(() => {
     if (showErrors) {
       setErrors(validate(inputs));
@@ -145,10 +170,8 @@ const useWelcomeWienerDachshundForm = (
     handleBlur,
     inputs,
     errors,
-    showErrors,
-    setInputs,
     handleFileInputChange,
-    validate,
+    addToAssociatedProducts,
   };
 };
 

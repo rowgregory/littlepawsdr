@@ -1,28 +1,68 @@
-import {
-  DataSquareContainer,
-  DataSquareLink,
-  DataSquareTitle,
-} from '../styles/DashboardStyles';
 import { Text } from '../styles/Styles';
-import SolidPeople from '../../components/svg/SolidPeople';
 import { Spinner } from 'react-bootstrap';
-import ProductsIcon from '../svg/ProductsIcon';
+import styled from 'styled-components';
+import { Link } from 'react-router-dom';
+
+export const DataSquareContainer = styled.div`
+  display: grid;
+  grid-gap: 1rem;
+  padding: 0;
+  width: 100%;
+  grid-template-columns: 1fr;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+    grid-template-columns: 1fr 1fr;
+  }
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[5]}) {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+`;
+
+export const DataSquareLink = styled(Link)`
+  display: flex;
+  flex-direction: column;
+  background: ${({ theme }) => theme.input.bg};
+
+  justify-content: space-between;
+  height: 100%;
+  padding: 15.2px 21.6px;
+  min-width: 215px;
+  border-radius: 0;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
+    border-radius: 8px;
+  }
+
+
+  :hover {
+    text-decoration: none;
+    background: #ebf4ff;
+  }
+`;
+
+export const DataSquareTitle = styled.div`
+  font-size: 13.6px;
+  color: #bebebe;
+  margin-left: 1rem;
+`;
 
 const DashboardTopRow = ({ dashboardDetails, loading }: any) => {
   const dashboardSquareData = () => [
     {
       title: 'Orders',
       itemAmount: dashboardDetails?.totalAmounts?.orders,
-
       linkKey: '/admin/orders',
-      icon: <ProductsIcon />,
+      icon: <i className="fa-solid fa-people-carry-box"></i>
     },
     {
       title: 'Users',
       itemAmount: dashboardDetails?.totalAmounts?.users,
-
       linkKey: '/admin/userList',
-      icon: <SolidPeople />,
+      icon: <i className="fa-solid fa-people-group"></i>
+    },
+    {
+      title: 'Adoption Application Fees',
+      itemAmount: dashboardDetails?.totalAmounts?.adoptionFees,
+      linkKey: '/admin/adoption-application-fee/list',
+      icon: <i className="fa-solid fa-file-invoice-dollar"></i>
     },
   ];
 

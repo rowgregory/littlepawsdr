@@ -6,6 +6,7 @@ import Error from '../models/errorModel.js';
 import ECardOrder from '../models/eCardOrderModel.js';
 import WelcomeWienerOrder from '../models/welcomeWienerOrderModel.js';
 import ProductOrder from '../models/productOrderModel.js';
+import AdoptionFee from '../models/adoptionFeeModel.js';
 
 // @desc    Create new order
 // @route   POST /api/order
@@ -88,7 +89,7 @@ async function createEcardOrders(createdOrder) {
         quantity: 1,
         orderId: createdOrder._id,
       });
-  
+
       await createdEcardOrder.save();
     }
   }
@@ -161,7 +162,7 @@ async function updateProductStock(createdOrder) {
   for (const item of createdOrder?.orderItems) {
     if (item.shippingPrice > 0 && item.isPhysicalProduct) {
       const product = await Product.findById(item.productId);
-      if(product && product?.sizes) {
+      if (product && product?.sizes) {
         const objIndex = product?.sizes?.findIndex(obj => obj?.size === item?.size);
         if (product?.sizes?.length > 0) {
           const bulk = Product.collection.initializeOrderedBulkOp();
@@ -224,6 +225,8 @@ const getMyOrders = asyncHandler(async (req, res) => {
       email: req.user.email,
     });
 
+    const adoptionApplicationFees = await AdoptionFee.find({ emailAddress: req.user.email });
+
     const convertedEcardOrders = ecardOrders.flatMap(order => {
       // repair logic for converting legacy ecards to new order shape
       if (order?.firstName && order?.lastName) {
@@ -260,9 +263,9 @@ const getMyOrders = asyncHandler(async (req, res) => {
       }
       return []
     })
-
+    console.log('adoptionApplicationFees: ', adoptionApplicationFees)
     const ecardsAndOrders = orders?.concat(convertedEcardOrders)
-    res.status(200).json({ orders: ecardsAndOrders });
+    res.status(200).json({ orders: ecardsAndOrders, adoptionApplicationFees });
   } catch (err) {
     const createdError = new Error({
       functionName: 'GET_MY_ORDERS_PRIVATE',

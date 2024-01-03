@@ -195,7 +195,7 @@ export const TableAndPaginationContainer = styled.div`
   justify-content: space-between;
   flex-direction: column;
   border-radius: 1rem;
-  height: calc(100vh - 429px);
+  height: calc(100vh - 204px);
   padding-inline: 16px;
   background: #fff;
   min-height: 600px;

@@ -9,7 +9,7 @@ import styled from 'styled-components';
 import NothingHere from '../components/assets/404_dog01.png';
 import SessionExpired from '../components/assets/session-expired.png';
 
-const ExpiredContainer = styled.div`
+export const ExpiredContainer = styled.div`
   height: 100vh;
   width: 100%;
   margin-inline: auto;
@@ -119,9 +119,9 @@ const EmailConfirmation = () => {
             state={
               statusCode === 401
                 ? {
-                    userInfo: { email: em, name: na },
-                    cameFrom: 'EMAIL_CONFIRMATION',
-                  }
+                  userInfo: { email: em, name: na },
+                  cameFrom: 'EMAIL_CONFIRMATION',
+                }
                 : {}
             }
           >

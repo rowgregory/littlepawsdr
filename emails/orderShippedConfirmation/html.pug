@@ -212,10 +212,10 @@ html(xmlns='http://www.w3.org/1999/xhtml')
 
   body(itemscope='' itemtype='http://schema.org/EmailMessage')
     .container(width='800')
-      .content 
+      .content
         .header-section
           img.logo(src='https://i.ibb.co/GMWQxTM/logo.png' alt='little paws dachshund rescue')
-          h3 Your items have been shipped!                         
+          h3 Your items have been shipped!
           div USPS: <strong>#{trackingNumber}</strong>
         div.secondary-font Your donation is much appreciated by us at Little Paws and we thank
           you for your kind support.
@@ -224,19 +224,19 @@ html(xmlns='http://www.w3.org/1999/xhtml')
           tbody
             tr
               td
-                div.table-header Shipped Date                          
+                div.table-header Shipped Date
                 strong #{shippedOn}
               td
-                div.table-header Shipping Address                       
+                div.table-header Shipping Address
                 strong #{shippingAddress.address} #{shippingAddress.city}, #{shippingAddress.state} #{shippingAddress.zipPostalCode}
         .horizontal-line
         each val in orderItems
-          .order-item 
+          .order-item
             .picture-name-qty
               img.img(src=val.productImage, alt=val._id style='width:60px; height:60px')
               .qty-size
-                strong.product-name 
-                  | #{val.productName} 
+                strong.product-name
+                  | #{val.productName}
                   if val.dachshundName
                     |
                     div for #{val.dachshundName}
@@ -245,10 +245,10 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                   div Size: #{val.size}
         .horizontal-line
         .total-container
-        .clear 
+        .clear
           div.thank-you Thank you for shopping with us!
           div.lpdr Little Paws Dachsund Rescue
       .footer
-        -var contactLink = `<a href='https://littlepawsdr.herokuapp.com/about/contact-us')>Contact</a>`;
+        -var contactLink = `<a href='https://www.littlepawsdr.org/about/contact-us')>Contact</a>`;
         .help Need Help? Visit our <span>!{contactLink}</span> page.
         .rescue Little Paws Dachshund Rescue #{new Date().getFullYear()}

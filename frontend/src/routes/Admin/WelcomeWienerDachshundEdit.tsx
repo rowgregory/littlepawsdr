@@ -60,9 +60,8 @@ const WelcomeWienerDachshundEdit = () => {
     handleBlur,
     inputs,
     errors,
-    setInputs,
     handleFileInputChange,
-    validate,
+    addToAssociatedProducts
   } = useWelcomeWienerDachshundForm(
     updateWelcomeWienerDachshundCallback,
     setFile,
@@ -90,11 +89,10 @@ const WelcomeWienerDachshundEdit = () => {
         setFile={setFile}
         onSubmit={onSubmit}
         submitBtnText='Updat'
-        setInputs={setInputs}
         errors={errors}
         handleBlur={handleBlur}
         handleFileInputChange={handleFileInputChange}
-        validate={validate}
+        addToAssociatedProducts={addToAssociatedProducts}
       />
     </Container>
   );

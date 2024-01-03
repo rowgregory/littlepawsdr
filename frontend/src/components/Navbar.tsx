@@ -22,8 +22,8 @@ const Container = styled.div<ContainerProps>`
     show === 'true' || p !== '/'
       ? 'rgba(33, 30, 47, .9)'
       : (show === 'true' || p !== '/') && mode === 'night'
-      ? 'rgb(22 27 35 / 0.9)'
-      : ''};
+        ? 'rgb(22 27 35 / 0.9)'
+        : ''};
   transition: 300ms;
   border-bottom: ${({ show, p }) =>
     show === 'true' || p !== '/' ? '' : '1px solid rgba(255, 255, 255, 0.5)'};
@@ -39,11 +39,6 @@ const BurgerMenuBottomBorder = styled.div<{ show: any; p: string }>`
   padding: 0 0 0 16px;
   height: 56px;
   display: flex;
-`;
-
-const LogoLeftBorder = styled.div<{ show: any; p: string }>`
-  height: 30px;
-  width: 1px;
 `;
 
 const Navbar = () => {
@@ -89,7 +84,6 @@ const Navbar = () => {
               </div>
             </FAIcons>
           </BurgerMenuBottomBorder>
-          <LogoLeftBorder show={show.toString()} p={pathname}></LogoLeftBorder>
           <Logo pathname={pathname} show={show} />
         </div>
         <RightSideNavbar />

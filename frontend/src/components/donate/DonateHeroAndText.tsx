@@ -35,27 +35,27 @@ const DonateHeroAndText = () => {
               location?.pathname === '/donate/shop-to-help'
                 ? 'Donate One Time Or Monthly'
                 : location?.pathname === '/donate/venmo'
-                ? 'Shop To Help'
-                : location?.pathname === '/donate/check'
-                ? 'Venmo'
-                : location?.pathname === '/donate/long-dog'
-                ? 'Check'
-                : location?.pathname === '/donate/feed-a-foster'
-                ? 'Long Dog'
-                : 'Rainbow Bridge'
+                  ? 'Shop To Help'
+                  : location?.pathname === '/donate/check'
+                    ? 'Venmo'
+                    : location?.pathname === '/donate/long-dog'
+                      ? 'Check'
+                      : location?.pathname === '/donate/feed-a-foster'
+                        ? 'Long Dog'
+                        : 'Rainbow Bridge'
             }
             url2={
               location?.pathname === '/donate/shop-to-help'
                 ? '/donate'
                 : location?.pathname === '/donate/venmo'
-                ? '/donate/shop-to-help'
-                : location?.pathname === '/donate/check'
-                ? '/donate/venmo'
-                : location?.pathname === '/donate/long-dog'
-                ? '/donate/check'
-                : location?.pathname === '/donate/feed-a-foster'
-                ? '/donate/long-dog'
-                : '/about/rainbow-bridge'
+                  ? '/donate/shop-to-help'
+                  : location?.pathname === '/donate/check'
+                    ? '/donate/venmo'
+                    : location?.pathname === '/donate/long-dog'
+                      ? '/donate/check'
+                      : location?.pathname === '/donate/feed-a-foster'
+                        ? '/donate/long-dog'
+                        : '/about/rainbow-bridge'
             }
           />
           <RightArrow
@@ -63,27 +63,27 @@ const DonateHeroAndText = () => {
               location?.pathname === '/donate/shop-to-help'
                 ? 'Venmo'
                 : location?.pathname === '/donate/venmo'
-                ? 'Check'
-                : location?.pathname === '/donate/check'
-                ? 'Long Dog'
-                : location?.pathname === '/donate/long-dog'
-                ? 'Feed A Foster'
-                : location?.pathname === '/donate/feed-a-foster'
-                ? 'Adoption Application'
-                : 'Shop To Help'
+                  ? 'Check'
+                  : location?.pathname === '/donate/check'
+                    ? 'Long Dog'
+                    : location?.pathname === '/donate/long-dog'
+                      ? 'Feed A Foster'
+                      : location?.pathname === '/donate/feed-a-foster'
+                        ? 'Adoption Application'
+                        : 'Shop To Help'
             }
             url={
               location?.pathname === '/donate/shop-to-help'
                 ? '/donate/venmo'
                 : location?.pathname === '/donate/venmo'
-                ? '/donate/check'
-                : location?.pathname === '/donate/check'
-                ? '/donate/long-dog'
-                : location?.pathname === '/donate/long-dog'
-                ? '/donate/feed-a-foster'
-                : location?.pathname === '/donate/feed-a-foster'
-                ? '/adopt/application'
-                : '/donate/shop-to-help'
+                  ? '/donate/check'
+                  : location?.pathname === '/donate/check'
+                    ? '/donate/long-dog'
+                    : location?.pathname === '/donate/long-dog'
+                      ? '/donate/feed-a-foster'
+                      : location?.pathname === '/donate/feed-a-foster'
+                        ? '/adopt'
+                        : '/donate/shop-to-help'
             }
           />
         </div>
@@ -96,12 +96,12 @@ const DonateHeroAndText = () => {
           Interested in supporting Little Paws Dachshund Rescue?
         </Text>
         <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='16px'>
-          Right now, we are in need of monetary donations. Happy endings for our
-          dachshunds in need can only happen with your support. Please allow us
-          to continue to say “YES WE CAN” to those calls asking for assistance
-          with a dachshund left behind at an animal shelter, or a dog who has
-          been neglected and abused and deserves a warm bed and a kind hand to
-          rub his or her tummy.
+          Right now, we are in need of monetary donations. Happy endings for
+          our dachshunds in need can only happen with your support. Please
+          allow us to continue to say “YES WE CAN” to those calls asking for
+          assistance with a dachshund left behind at an animal shelter, or a
+          dog who has been neglected and abused and deserves a warm bed and a
+          kind hand to rub his or her tummy.
         </Text>
         <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='16px'>
           There are two easy ways to give monetary donations, electronically or

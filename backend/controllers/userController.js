@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import ManuallyAddedUser from '../models/manuallyAddedUserModel.js';
 import { sendEmail } from '../utils/sendEmail.js';
 import ECardOrder from '../models/eCardOrderModel.js';
+import AdoptionFee from '../models/adoptionFeeModel.js';
 import WelcomeWienerOrder from '../models/welcomeWienerOrderModel.js';
 import ProductOrder from '../models/productOrderModel.js';
 import Order from '../models/orderModel.js';
@@ -424,6 +425,7 @@ const dashboardDetails = asyncHandler(async (req, res) => {
     const productOrders = await ProductOrder.find({});
     const orders = await Order.find({});
     const users = await User.find({});
+    const adoptionFees = await AdoptionFee.find({});
 
     const welcomeWienerOrdersItemsTotal = welcomeWienerOrders?.reduce(
       (acc, item) => acc + item?.price * item?.quantity || 0,
@@ -439,10 +441,15 @@ const dashboardDetails = asyncHandler(async (req, res) => {
       0
     );
 
+    const adoptionFeesTotal = adoptionFees?.reduce(
+      (acc, item) => acc + item?.feeAmount || 0,
+      0
+    );
+
     const walletTotal = Number(
       welcomeWienerOrdersItemsTotal +
-        ecardOrdersItemsTotal +
-        productOrdersItemsTotal
+      ecardOrdersItemsTotal +
+      productOrdersItemsTotal + adoptionFeesTotal
     );
 
     const sortedOrders = [
@@ -503,12 +510,14 @@ const dashboardDetails = asyncHandler(async (req, res) => {
       ecardOrdersItemsTotal,
       welcomeWienerOrdersItemsTotal,
       walletTotal,
+      adoptionFeesTotal,
       totalAmounts: {
         welcomeWienerOrders: welcomeWienerOrders?.length,
         users: users?.length,
         ecardOrders: ecardOrders?.length,
         productOrders: productOrders?.length,
         orders: orders?.length,
+        adoptionFees: adoptionFees?.length
       },
       topSellingProducts: sortedTopSellingProducts,
       lineChart,

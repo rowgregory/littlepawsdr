@@ -21,6 +21,7 @@ import recaptchaRoutes from './routes/recaptchaRoutes.js';
 import welcomeWienerDog from './routes/welcomeWienerDogRoutes.js';
 import welcomeWienerProduct from './routes/welcomeWienerProductRoutes.js';
 import jwtRoutes from './routes/jwtRoutes.js';
+import adoptionFeeRoutes from './routes/adoptionFeeRoutes.js';
 import errorRoutes from './routes/errorRoutes.js';
 import cors from 'cors';
 import http from 'http';
@@ -38,7 +39,7 @@ const io = new Server(server, {
   },
 });
 
-const dataNamespace = io.of('/load-initial-data'); 
+const dataNamespace = io.of('/load-initial-data');
 
 // Attach namespace-specific event listeners
 dataNamespace.on('connection', async (socket) => {
@@ -85,6 +86,7 @@ app.use('/api/recaptcha', recaptchaRoutes);
 app.use('/api/welcome-wiener-dog', welcomeWienerDog);
 app.use('/api/welcome-wiener-product', welcomeWienerProduct);
 app.use('/api/jwt', jwtRoutes)
+app.use('/api/adoption-fee', adoptionFeeRoutes)
 app.use('/api/error', errorRoutes);
 
 const __dirname = path.resolve();

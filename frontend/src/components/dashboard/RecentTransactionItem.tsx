@@ -1,14 +1,49 @@
 import { Image } from 'react-bootstrap';
-import {
-  ItemName,
-  RecentTransactionItemContainer,
-} from '../styles/DashboardStyles';
 import { Flex, Text } from '../styles/Styles';
 import { formatDateTime } from '../../utils/formatDateTime';
 import { LoadingImg } from '../LoadingImg';
 import addDecimals from '../../utils/addDecimals';
+import styled from 'styled-components';
+import { FC } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-const RecentTransactionItem = ({ viewTransaction, item, loading }: any) => {
+export const RecentTransactionItemContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 8px;
+  :hover {
+    background: #f6f9fe;
+    cursor: pointer;
+  }
+`;
+
+export const ItemName = styled.div`
+  font-weight: 400;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: flex;
+  flex-direction: column;
+  span {
+    font-size: 13px;
+  }
+`;
+
+interface RecentTransactionItemProps {
+  item: any;
+  loading: boolean;
+}
+
+const RecentTransactionItem: FC<RecentTransactionItemProps> = ({
+  item,
+  loading,
+}: any) => {
+  const history = useNavigate();
+
+  const viewTransaction = (item: any) => {
+    history(`/admin/order/${item?._id}`);
+  };
   return (
     <RecentTransactionItemContainer onClick={() => viewTransaction(item)}>
       <Flex marginRight='16px'>

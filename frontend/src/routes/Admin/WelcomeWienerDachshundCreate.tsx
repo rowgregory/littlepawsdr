@@ -48,9 +48,8 @@ const WelcomeWienerDachshundCreate = () => {
     handleBlur,
     inputs,
     errors,
-    setInputs,
     handleFileInputChange,
-    validate,
+    addToAssociatedProducts,
   } = useWelcomeWienerDachshundForm(
     createWelcomeWienerDachshundCallback,
     setFile
@@ -78,11 +77,10 @@ const WelcomeWienerDachshundCreate = () => {
         uploading={uploading || loading}
         onSubmit={onSubmit}
         submitBtnText='Creat'
-        setInputs={setInputs}
         errors={errors}
         handleBlur={handleBlur}
         handleFileInputChange={handleFileInputChange}
-        validate={validate}
+        addToAssociatedProducts={addToAssociatedProducts}
       />
     </Container>
   );
