@@ -1,0 +1,268 @@
+doctype transitional
+html(xmlns='http://www.w3.org/1999/xhtml')
+  head
+    meta(name='viewport' content='width=device-width')
+    meta(http-equiv='Content-Type' content='text/html; charset=UTF-8')
+    title adoption-fee-confirmation
+    style(type='text/css').
+      * {
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      }
+      body {
+        -webkit-font-smoothing: antialiased;
+        -webkit-text-size-adjust: none;
+        align-items: center;
+        height: 100%;
+        width: 100%;
+        max-width: 550px !important;
+        padding: 24px;
+        display: flex;
+        justify-content: center;
+      }
+
+      .container {
+        display: block !important;
+        margin: 0 auto !important;
+        /* makes it centered */
+        clear: both !important;
+        background-color: #fff;
+        padding: 8px !important;
+        max-width: 720px !important;
+      }
+
+      .content {
+        margin: 0 auto;
+        display: block;
+      }
+      .footer {
+        height: 20px;
+      }
+
+      .header-section {
+        margin-bottom: 24px;
+      }
+
+      h3 {
+        margin-top: 0;
+        margin-bottom: 8px;
+      }
+
+      .secondary-font {
+        margin-bottom: 32px;
+      }
+
+      .horizontal-line {
+        border-bottom: 1px solid #f2f2f2;
+
+      }
+
+      table {
+        padding: 24px 0;
+      }
+
+      .table-header {
+        margin-bottom: 8px;
+        width: fit-content;
+      }
+
+      .order-item {
+        padding: 18px 0;
+        display: flex;
+        width: 100%;
+      }
+
+      .picture-name-qty {
+        display: flex;
+        align-items: center !important;
+        width: 89%;
+      }
+      img.img {
+        object-fit: cover;
+      }
+
+      .qty-size {
+        display: block;
+        margin-left: 10px;
+      }
+
+      .total-container {
+        width: 100%;
+        display: block;
+        margin-bottom: 32px;
+      }
+
+      .total-block {
+        float: right;
+        max-width: 250px;
+        width: 100%;
+        margin: 32px 0;
+      }
+
+      .flex {
+        display: flex;
+      }
+
+      .total {
+        display: flex;
+        font-weight: 400;
+        font-size: 16px;
+        padding: 8px 0;
+      }
+
+      .clear {
+        clear: both;
+        margin-bottom: 48px;
+      }
+
+      .thank-you {
+        color: #6c6f79;
+        font-size: 18px;
+        font-weight: 400;
+        text-align: center !important;
+      }
+
+      .lpdr {
+        font-weight: 400;
+         text-align: center !important;
+      }
+
+      .aligncenter {
+        text-align: center;
+      }
+
+      .manage-order-btn {
+        background: #9761aa;
+        color: #fff;
+        border-radius: 6px;
+        text-decoration: none;
+        text-align: center;
+        padding: 14px 22px;
+        width: fit-content;
+        font-size: 13px;
+      }
+
+      .float-right {
+        font-weight: 400;
+        float: right;
+        width: fit-content;
+      }
+
+      .float-left {
+        float: left;
+        width: 75%;
+      }
+
+      .total-price {
+        float: right;
+        width: fit-content;
+      }
+
+      .help {
+        text-align: center !important;
+      }
+
+      .rescue {
+        float: right;
+      }
+      span {
+        color: #9761aa;
+      }
+
+      .logo {
+        width:85px;
+        height:auto;
+        object-fit: cover;
+        margin-bottom: 24px;
+      }
+
+      div {
+        font-size: 11px;
+      }
+
+      .product-name {
+        font-size: 14px;
+      }
+
+      .price {
+        font-size: 16px;
+        width: fit-content;
+      }
+      .adoption-application-link {
+        margin-top: 32px !important;
+        background: #22c2b7;
+        padding: 12px 20px;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 18px !important;
+        font-weight: 500 !important;
+        font-size: 24px !important;
+      }
+      .adoption-application-link-container {
+        width: 100% !important;
+        display: flex !important;
+        justify-content: center !important;
+      }
+
+        /* -------------------------------------
+      RESPONSIVE AND MOBILE FRIENDLY STYLES
+      ------------------------------------- */
+      @media only screen and (max-width: 640px) {
+        body {
+          padding: 0 !important;
+        }
+        h3 {
+          font-size: 16px !important;
+        }
+        .container {
+          padding: 0 !important;
+          width: 100% !important;
+        }
+        .content {
+          padding: 0 !important;
+        }
+        .footer {
+          margin-top: 32px !important;
+          padding: 20px 0 !important;
+          background: #fff !important;
+        }
+      }
+
+
+  body(itemscope='' itemtype='http://schema.org/EmailMessage')
+    .container(width='800')
+      .content
+        .header-section
+          img.logo(src='https://i.ibb.co/GMWQxTM/logo.png' alt='little paws dachshund rescue')
+          h3 Adoption Application Fee Confirmation
+          div Order Id: <strong>#{id}</strong>
+        div.secondary-font Your payment for the adoption application fee is much appreciated by us at Little Paws and we thank you for your kind support.
+        .horizontal-line
+        table(width='100%' cellpadding='0' cellspacing='0')
+          tbody
+            tr
+              td
+                div.table-header Order Date
+                strong #{createdAt}
+              td
+                div.table-header State
+                strong #{state}
+              td
+                div.table-header Order Id
+                strong #{id}
+        .horizontal-line
+          .order-item
+            .picture-name-qty
+              img.img(src=image, alt='Adoption Fee' style='width:40px; height:40px')
+              .qty-size
+                strong.product-name #{productName}
+            strong.price $#{feeAmount}
+        .horizontal-line
+        .clear
+          div.adoption-application-link-container
+            a.adoption-application-link(href=`https://www.littlepawsdr.org/adopt/application/verified/${token}`) APPLICATION
+        .clear
+          div.thank-you Thank you for supporting us!
+          div.lpdr Little Paws Dachsund Rescue #{new Date().getFullYear()}
+      .footer
+        -var contactLink = `<a href='https://www.littlepawsdr.org/about/contact-us')>Contact</a>`;
+        .help Need Help? Visit our <span>!{contactLink}</span> page.

@@ -15,7 +15,7 @@ import { Text } from '../styles/Styles';
 const OurLovablePals = () => {
   const state = useSelector((state: any) => state);
   const dachshunds = state.dachshunds.dachshunds;
-  const loading = state.dachshunds.loading;
+  let loading = state.dachshunds.loading;
 
   return (
     <SectionContainer>
@@ -32,30 +32,30 @@ const OurLovablePals = () => {
           <DogContainer className='mx-0 mb-5'>
             {loading
               ? [1, 2, 3, 4].map((_: any, i: number) => (
-                  <LoadingImg w='100%' h='100%' key={i} />
-                ))
+                <LoadingImg w='100%' h='350px' key={i} />
+              ))
               : dachshunds
-                  ?.map((dachshund: any, i: number) => (
-                    <Link key={i} to={`/about/type/${dachshund?.id}`}>
-                      <ImageContainer>
-                        <Image
-                          src={dachshund?.attributes?.photos[1]}
-                          alt={`${dachshund?.attributes?.name}`}
-                          loading='lazy'
-                        />
-                      </ImageContainer>
-                      <Text
-                        fontSize='16px'
-                        className='text-center mt-2'
-                        textTransform='uppercase'
-                        fontWeight={500}
-                        color='#22c2b7'
-                      >
-                        {dachshund?.attributes?.name}
-                      </Text>
-                    </Link>
-                  ))
-                  .filter((_: any, i: number) => i < 4)}
+                ?.map((dachshund: any, i: number) => (
+                  <Link key={i} to={`/about/type/${dachshund?.id}`}>
+                    <ImageContainer>
+                      <Image
+                        src={dachshund?.attributes?.photos[1]}
+                        alt={`${dachshund?.attributes?.name}`}
+                        loading='lazy'
+                      />
+                    </ImageContainer>
+                    <Text
+                      fontSize='16px'
+                      className='text-center mt-2'
+                      textTransform='uppercase'
+                      fontWeight={500}
+                      color='#22c2b7'
+                    >
+                      {dachshund?.attributes?.name}
+                    </Text>
+                  </Link>
+                ))
+                .filter((_: any, i: number) => i < 4)}
           </DogContainer>
           <RightArrow text='See All Available Dachshunds' url='/available' />
         </>

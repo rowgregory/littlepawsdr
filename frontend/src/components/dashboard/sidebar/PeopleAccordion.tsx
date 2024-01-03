@@ -1,29 +1,26 @@
-import React from 'react';
-import NewsletterEmailIcon from '../../svg/NewsletterEmailIcon';
-import UsersIcon from '../../svg/UsersIcon';
 import { useLocation } from 'react-router-dom';
 import { Accordion } from '../../styles/place-order/Styles';
 import { LinkContainer, SideBarAccordionBtn, SideBarLink } from './styles';
-import PeopleIcon from '../../svg/PeopleIcon';
 import { useDispatch } from 'react-redux';
 import { openCloseDashboardModal } from '../../../actions/dashboardActions';
+import { Text } from '../../styles/Styles';
 
 const peopleLinks = [
   {
     textKey: ' Newsletter Emails',
     linkKey: '/admin/newsletterEmailList',
-    icon: <NewsletterEmailIcon />,
+    icon: <i className='fa-solid fa-newspaper'></i>,
   },
   {
     textKey: 'Users',
     linkKey: '/admin/userList',
-    icon: <UsersIcon />,
+    icon: <i className='fa-solid fa-users-gear'></i>,
     pathMatch: 'user',
   },
   {
     textKey: 'Board Members',
     linkKey: '/admin/manuallyAddedUserList',
-    icon: <UsersIcon />,
+    icon: <i className='fa-solid fa-chess-rook'></i>,
     pathMatch: 'manuallyAddedUser',
   },
 ];
@@ -43,14 +40,11 @@ const PeopleAccordion = ({
           setWhichSectionToReveal(reveal ? '--' : 'people', setReveal)
         }
       >
-        <LinkContainer
-          active={reveal?.toString()}
-          className='d-flex align-items-center px-3 py-3 mb-2'
-        >
-          <div>
-            <PeopleIcon />
+        <LinkContainer active={reveal?.toString()}>
+          <div className='ml-2'>
+            <i className='fa-solid fa-people-group'></i>
           </div>
-          <div className='ml-3'>People</div>
+          <Text fontSize='15px' fontWeight={400}>People</Text>
         </LinkContainer>
       </SideBarAccordionBtn>
       <Accordion toggle={reveal} maxheight='200px'>
@@ -59,19 +53,15 @@ const PeopleAccordion = ({
             key={i}
             to={obj?.linkKey}
             onClick={() => dispatch(openCloseDashboardModal(false))}
+            active={(
+              obj?.linkKey === pathname ||
+              obj?.pathMatch === pathname?.split('/')[2]
+            ).toString()}
           >
-            <LinkContainer
-              active={(
-                obj?.linkKey === pathname ||
-                obj?.pathMatch === pathname?.split('/')[2]
-              )
-                .toString()
-                .toString()}
-              className='d-flex align-items-center px-3 py-3 mb-2'
-            >
-              <div className='ml-3'>{obj?.icon}</div>
-              <div className='ml-3'>{obj?.textKey}</div>
-            </LinkContainer>
+            <div></div>
+            <div>{obj?.icon}</div>
+            <div className='text'>{obj?.textKey}</div>
+
           </SideBarLink>
         ))}
       </Accordion>{' '}

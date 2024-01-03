@@ -2,13 +2,12 @@ import styled from 'styled-components';
 import SellingAccordion from './sidebar/SellingAccordion';
 import PeopleAccordion from './sidebar/PeopleAccordion';
 import MicellaneousAccordion from './sidebar/MicellaneousAccordion';
-import OrdersIcon from '../svg/OrdersIcon';
-import { LinkContainer, SideBarLink } from './sidebar/styles';
+import { LinkContainer, SideBarAccordionLink } from './sidebar/styles';
 import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import DashboardIcon from '../svg/DashboardIcon';
 import { openCloseDashboardModal } from '../../actions/dashboardActions';
 import { useDispatch } from 'react-redux';
+import { Text } from '../styles/Styles';
 
 const Container = styled.div`
   background: ${({ theme }) => theme.bg};
@@ -35,45 +34,43 @@ const AdminActionModalBody = () => {
   });
   return (
     <Container>
-      <SideBarLink
+      <SideBarAccordionLink
         to='/admin'
         onClick={() => {
           dispatch(openCloseDashboardModal(false));
           setWhichSectionToReveal('--', setReveal);
         }}
       >
-        <LinkContainer
-          active={('/admin' === pathname).toString()}
-          className='d-flex align-items-center px-3 py-3 mb-2'
-        >
-          <div>
-            <DashboardIcon />
+        <LinkContainer active={('/admin' === pathname).toString()}>
+          <div className='ml-2'>
+            <i className='fa-solid fa-gauge-high'></i>
           </div>
-          <div className='ml-3'>Dashboard</div>
+          <Text fontSize='15px' fontWeight={400}>
+            Dashboard
+          </Text>
         </LinkContainer>
-      </SideBarLink>
-      <SellingAccordion
-        reveal={reveal?.selling}
-        setWhichSectionToReveal={setWhichSectionToReveal}
-        setReveal={setReveal}
-      />
-      <SideBarLink
+      </SideBarAccordionLink>
+      <SideBarAccordionLink
         to='/admin/orders'
         onClick={() => {
           dispatch(openCloseDashboardModal(false));
           setWhichSectionToReveal('--', setReveal);
         }}
       >
-        <LinkContainer
-          active={(pathname === '/admin/orders').toString()}
-          className='d-flex align-items-center px-3 py-3 mb-2'
-        >
-          <div>
-            <OrdersIcon />
+        <LinkContainer active={(pathname === '/admin/orders').toString()}>
+          <div className='ml-2'>
+            <i className='fa-solid fa-cube'></i>
           </div>
-          <div className='ml-3'>Orders</div>
+          <Text fontSize='15px' fontWeight={400}>
+            Orders
+          </Text>
         </LinkContainer>
-      </SideBarLink>
+      </SideBarAccordionLink>
+      <SellingAccordion
+        reveal={reveal?.selling}
+        setWhichSectionToReveal={setWhichSectionToReveal}
+        setReveal={setReveal}
+      />
       <PeopleAccordion
         reveal={reveal?.people}
         setWhichSectionToReveal={setWhichSectionToReveal}

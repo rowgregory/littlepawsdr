@@ -208,11 +208,11 @@ html(xmlns='http://www.w3.org/1999/xhtml')
 
   body(itemscope='' itemtype='http://schema.org/EmailMessage')
     .container(width='800')
-      .content 
+      .content
         .header-section
           a(href="https://www.littlepawsdr.org")
             img.logo(src='https://i.ibb.co/GMWQxTM/logo.png' alt='little paws dachshund rescue')
-          h2 Welcome Wiener Donation Confirmation                          
+          h2 Welcome Wiener Donation Confirmation
           div Order Id: <strong>#{id}</strong>
         div.secondary-font Your donation is much appreciated by us at Little Paws and we thank you for your kind support
         .horizontal-line
@@ -220,17 +220,17 @@ html(xmlns='http://www.w3.org/1999/xhtml')
           tbody
             tr
               td
-                div.table-header Created On                      
+                div.table-header Created On
                 strong #{createdAt}
               td
-                div.table-header Payment                        
+                div.table-header Payment
                 strong PayPal
               td
-                div.table-header Paypal Order Id                     
+                div.table-header Paypal Order Id
                 strong #{paypalOrderId}
         .horizontal-line
         each val in orderItems
-          .order-item 
+          .order-item
             .picture-name-qty
               img.img(src=val.dachshundImage, alt=val.dachshundName style='width:60px; height:60px; object-fit:cover;')
               .qty-size
@@ -238,19 +238,19 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                 div Quantity: #{val.quantity}
             strong.price $#{val.price}
         .horizontal-line
-        .total-container 
-          .total-block 
-            .flex 
-              .float-left Subtotal 
+        .total-container
+          .total-block
+            .flex
+              .float-left Subtotal
               .float-right  $#{totalPrice.toFixed(2)}
-            .horizontal-line 
-            .total 
-              strong.float-left Total 
+            .horizontal-line
+            .total
+              strong.float-left Total
               strong.total-price  $#{totalPrice.toFixed(2)}
-        .clear 
+        .clear
           div.thank-you Thank you for donating!
           div.lpdr Little Paws Dachsund Rescue
       .footer
-        -var contactLink = `<a href='https://littlepawsdr.herokuapp.com/about/contact-us')>Contact</a>`;
+        -var contactLink = `<a href='https://www.littlepawsdr.org/about/contact-us')>Contact</a>`;
         .help Need Help? Visit our <span>!{contactLink}</span> page.
         .rescue Little Paws Dachshund Rescue #{new Date().getFullYear()}

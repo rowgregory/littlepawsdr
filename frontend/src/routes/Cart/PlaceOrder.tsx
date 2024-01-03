@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { PayPalButtons, usePayPalScriptReducer } from '@paypal/react-paypal-js';
+import {
+  PayPalButtons,
+  usePayPalScriptReducer,
+} from '@paypal/react-paypal-js';
 import { Flex, Text } from '../../components/styles/Styles';
 import {
   Container,
@@ -22,13 +25,13 @@ import {
   validateShippingForm,
 } from '../../utils/validateShippingForm';
 import LogoDay from '../../components/assets/logo-transparent.png';
-import HexagonLoader from '../../components/Loaders/HexagonLoader/HexagonLoader';
 import RightRail from '../../components/place-order/RightRail';
 import JumpingInput from '../../components/common/JumpingInput';
 import { Button } from 'react-bootstrap';
 import ShippingForm from '../../components/forms/ShippingForm';
 import { createOrder } from '../../actions/orderActions';
 import { useNavigate } from 'react-router-dom';
+import ContactLoader from '../../components/Loaders/ContactLoader/ContactLoader';
 
 const PlaceOrder = () => {
   const dispatch = useDispatch();
@@ -43,7 +46,7 @@ const PlaceOrder = () => {
 
   const closeModal = () => setShowModal(false) as any;
 
-  const [{ isPending }] = usePayPalScriptReducer();
+  const [{ isPending, isRejected }] = usePayPalScriptReducer();
 
   const state = useSelector((state: any) => state);
   const cartItems = state.cart.cartItems;
@@ -151,7 +154,9 @@ const PlaceOrder = () => {
   return (
     <>
       <GoBackToCartModal show={showModal} close={closeModal} />
-      {(orderLoader || loading || isPending) && <HexagonLoader />}
+      {(orderLoader || loading || isPending) && (
+        <ContactLoader text='Your donation is greatly appreciated' />
+      )}
       <LogoCheckout
         src={LogoDay}
         onClick={() => setShowModal(true)}
@@ -209,7 +214,9 @@ const PlaceOrder = () => {
                   handleInputChange={handleInput}
                   type='text'
                   error={errors?.emailAddress}
-                  blur={() => inputEmailAddress(inputs, formIsValid, setErrors)}
+                  blur={() =>
+                    inputEmailAddress(inputs, formIsValid, setErrors)
+                  }
                 />
 
                 <Button
@@ -267,6 +274,11 @@ const PlaceOrder = () => {
                 </PaypalBtnContainer>
               </Accordion>
             </LeftRailContainer>
+            {isRejected && (
+              <Text>
+                Oops! Something went wrong with PayPal. Please refresh the page and try again.
+              </Text>
+            )}
           </LeftRail>
           <RightRail
             revealItems={revealItems}

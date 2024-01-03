@@ -102,8 +102,14 @@ interface FlexProps {
   justifyContent?: string;
   flex?: string;
   borderBottom?: string;
+  borderTop?: string;
   color?: string;
   position?: string;
+  top?: string;
+  right?: string;
+  bottom?: string;
+  left?: string;
+  borderRadius?: string;
 }
 
 export const Flex = styled.div<FlexProps>`
@@ -131,9 +137,16 @@ export const Flex = styled.div<FlexProps>`
   flex: ${({ flex }) => (flex ? flex : '1 0 0')};
   border-bottom: ${({ borderBottom }) =>
     borderBottom ? borderBottom : '1 0 0'};
+  border-top: ${({ borderTop }) =>
+    borderTop ? borderTop : ''};
   color: ${({ color }) => (color ? color : '')};
   font-size: ${({ fontSize }) => (fontSize ? fontSize : '13px')};
   position: ${({ position }) => (position ? position : 'relative')};
+  top: ${({ top }) => (top ? top : '')};
+  right: ${({ right }) => (right ? right : '')};
+  bottom: ${({ bottom }) => (bottom ? bottom : '')};
+  left: ${({ left }) => (left ? left : '')};
+  border-radius: ${({ borderRadius }) => (borderRadius ? borderRadius : '')};
 `;
 
 export const UpdateBtn = styled(Button)`

@@ -83,16 +83,21 @@ export const orderDetailsReducer = (
   }
 };
 
-export const orderListMyReducer = (state = { orders: [] }, action: any) => {
+export const orderListMyReducer = (
+  state = { orders: [], adoptionApplicationFees: [] },
+  action: any
+) => {
   switch (action.type) {
     case ORDER_LIST_MY_REQUEST:
       return {
         loading: true,
       };
     case ORDER_LIST_MY_SUCCESS:
+      console.log(action.payload);
       return {
         loading: false,
-        orders: action.payload,
+        orders: action.payload.orders,
+        adoptionApplicationFees: action.payload.adoptionApplicationFees,
       };
     case ORDER_LIST_MY_FAIL:
       return {

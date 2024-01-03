@@ -32,6 +32,7 @@ import WelcomeWienerDachshundEdit from './WelcomeWienerDachshundEdit';
 import WelcomeWienerOrderList from './Orders/WelcomeWienerOrderList';
 import ProductOrderList from './Orders/ProductOrderList';
 import ProductCreate from './ProductCreate';
+import AdoptionFeeList from './AdoptionFeeList';
 
 type LazyModulePromise<T = {}> = Promise<{ default: ComponentType<T> }>;
 const Orders = lazy((): LazyModulePromise => import('./Orders'));
@@ -278,6 +279,14 @@ const AdminRoutes: FC = () => {
           element={
             <PrivateRoute>
               <ProductOrderList />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path='adoption-application-fee/list'
+          element={
+            <PrivateRoute>
+              <AdoptionFeeList />
             </PrivateRoute>
           }
         />

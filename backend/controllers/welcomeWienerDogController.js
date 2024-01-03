@@ -35,7 +35,7 @@ const getWelcomeWienerDogById = async (req, res) => {
 const createWelcomeWienerDog = async (req, res) => {
   const { displayUrl, name, bio, age, associatedProducts } = req.body;
 
-  const objectIds = associatedProducts?.map(id => mongoose.Types.ObjectId(id));
+  const objectIds = associatedProducts?.map(id => new mongoose.Types.ObjectId(id));
 
   const newWelcomeWienerDog = new WelcomeWienerDog({
     displayUrl,

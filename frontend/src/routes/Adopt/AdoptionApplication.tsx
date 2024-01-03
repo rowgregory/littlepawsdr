@@ -1,74 +1,80 @@
-import React from 'react';
-import styled, { useTheme } from 'styled-components';
-import { Text } from '../../components/styles/Styles';
-import AdoptionAppHigh from '../../components/assets/adopt-app-high.jpeg';
-import AdoptionAppLow from '../../components/assets/adopt-app-low.jpg';
-import LeftArrow from '../../components/svg/LeftArrow';
-import RightArrow from '../../components/svg/RightArrow';
-import Hero from '../../components/Hero';
-import { Container } from '../../components/styles/GridDogStyles';
-import AboutLittlePaws from '../../components/adopt/application/AboutLittlePaws';
-import ThankYouForConsidering from '../../components/adopt/application/ThankYouForConsidering';
-
-const AdoptionApplicationIFrame = styled.iframe<{ pageKey?: string }>`
-  border: none;
-  height: 15000px;
-  max-width: ${({ theme }) => theme.breakpoints[3]};
-
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
-    height: 12000px;
-  }
-
-  @media screen and (orientation: landscape) and (max-width: 900px) {
-    height: 15500px;
-  }
-`;
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { jwtCheckValidityAdoptionFee } from '../../actions/jwtActions';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Image } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+import NothingHere from '../../components/assets/404_dog01.png';
+import SessionExpired from '../../components/assets/session-expired.png';
+import { ExpiredContainer } from '../EmailConfirmation';
+import { LoadingImg } from '../../components/LoadingImg';
+import ProgressTracker from '../../components/adopt/application/ProgressTracker';
+import {
+  AdoptionApplicationContainer,
+  AdoptionApplicationIFrame,
+  InnerContainer,
+} from '../../components/styles/adoption-application/styles';
+import CountdownTimer from '../../components/CountdownTImer';
 
 const AdoptionApplication = () => {
-  const theme = useTheme() as any;
-  const isDay: boolean = theme.mode === 'day';
+  const dispatch = useDispatch();
+  const history = useNavigate()
+  const params = useParams() as any;
+  const token = params.token;
+  const state = useSelector((state: any) => state);
+  const jwtCheck = state.jwtCheckValidityAdoptionFee;
+  const error = jwtCheck.error;
+  const loading = jwtCheck.loading;
+  const message = jwtCheck.message || error?.errorMsg;
+  const jwtIsExpired = jwtCheck.isExpired;
+  const statusCode = jwtCheck.statusCode || error?.statusCode;
+  const exp = jwtCheck.exp;
+
+  useEffect(() => {
+    if (token) {
+      dispatch(jwtCheckValidityAdoptionFee(token));
+    }
+  }, [dispatch, token]);
+
+  useEffect(() => {
+    window.addEventListener('focus', () => jwtIsExpired && history('/adopt'))
+  }, [jwtIsExpired, history])
+
+  if (loading) {
+    return (
+      <div style={{ position: 'relative' }}>
+        <LoadingImg w='100%' h='575px' />
+      </div>
+    );
+  }
+
+  if (jwtIsExpired) {
+    return (
+      <ExpiredContainer>
+        <div className='outer-container'>
+          <Image src={statusCode === 404 ? NothingHere : SessionExpired} />
+          <h1>{message}</h1>
+          <h6>Return to the adoptiuon terms and conditions.</h6>
+          <Link className='register' to='/adopt'>
+            Terms & Conditions
+          </Link>
+        </div>
+      </ExpiredContainer>
+    );
+  }
 
   return (
-    <>
-      <Hero
-        low={AdoptionAppLow}
-        high={AdoptionAppHigh}
-        title='Adoption Application'
-        link='https://unsplash.com/@erdaest?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText'
-        photographer='Erda Estremera'
-      />
-
-      <Container>
-        <div className='w-100 d-flex justify-content-between mt-3'>
-          <LeftArrow
-            text='Home'
-            url='/'
-            text2='Feed A Foster'
-            url2='/donate/feed-a-foster'
-          />
-          <RightArrow text='Adopt a Senior' url='/adopt/senior' />
-        </div>
-
-        <AboutLittlePaws />
-
-        <ThankYouForConsidering />
-        <Text maxWidth='722px' className='mb-3 mt-5 mx-auto'>
-          {isDay ? (
-            <AdoptionApplicationIFrame
-              title='Adoption Application'
-              width='100%'
-              src='https://toolkit.rescuegroups.org/of/f?c=WHMQCBRV'
-            ></AdoptionApplicationIFrame>
-          ) : (
-            <AdoptionApplicationIFrame
-              title='Adoption Application'
-              width='100%'
-              src='https://toolkit.rescuegroups.org/of/f?c=ZKCVRYSQ'
-            ></AdoptionApplicationIFrame>
-          )}
-        </Text>
-      </Container>
-    </>
+    <AdoptionApplicationContainer>
+      <CountdownTimer exp={exp} />
+      <ProgressTracker step={{ step1: true, step2: true, step3: true }} />
+      <InnerContainer>
+        <AdoptionApplicationIFrame
+          title='Adoption Application'
+          width='100%'
+          src='https://toolkit.rescuegroups.org/of/f?c=WHMQCBRV'
+        ></AdoptionApplicationIFrame>
+      </InnerContainer>
+    </AdoptionApplicationContainer>
   );
 };
 

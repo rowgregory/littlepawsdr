@@ -83,7 +83,10 @@ export const listMyOrders = () => async (dispatch: any, getState: any) => {
 
     dispatch({
       type: ORDER_LIST_MY_SUCCESS,
-      payload: data.orders,
+      payload: {
+        orders: data.orders,
+        adoptionApplicationFees: data.adoptionApplicationFees,
+      },
     });
   } catch (error: any) {
     dispatch({
@@ -181,7 +184,8 @@ export const sendOrderConfirmationEmail =
   };
 
 export const submitTrackingNumber =
-  (trackingNumber: string, id: any) => async (dispatch: any, getState: any) => {
+  (trackingNumber: string, id: any) =>
+  async (dispatch: any, getState: any) => {
     try {
       dispatch({ type: TRACKING_NUMBER_REQUEST });
 

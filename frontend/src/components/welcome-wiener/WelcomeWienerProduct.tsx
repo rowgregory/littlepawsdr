@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { Text } from '../styles/Styles';
+import { FC } from 'react';
 
 const Container = styled.div<{ selected: boolean }>`
   width: 100%;
@@ -28,33 +29,26 @@ const CheckMark = styled.div`
   top: -12px;
 `;
 
-const WelcomeWienerProduct = ({ product, setInputs, inputs }: any) => {
+interface WelcomeWienerProductProps {
+  product: {};
+  inputs: {};
+  addToAssociatedProducts: () => void;
+}
+
+const WelcomeWienerProduct: FC<WelcomeWienerProductProps> = ({
+  product,
+  inputs,
+  addToAssociatedProducts,
+}: any) => {
   const isSelected = inputs?.associatedProducts?.some(
     (item: any) => item?._id === product?._id
   );
 
-  const addToAssociatedProducts = () => {
-    if (isSelected) {
-      const updatedAssociatedProducts = inputs?.associatedProducts?.filter(
-        (p: any) => p?._id !== product?._id
-      );
-      setInputs((prevInputs: any) => ({
-        ...prevInputs,
-        associatedProducts: updatedAssociatedProducts,
-      }));
-    } else {
-      setInputs((prevInputs: any) => ({
-        ...prevInputs,
-        associatedProducts: [
-          ...prevInputs?.associatedProducts,
-          { _id: product?._id, name: product?.name },
-        ],
-      }));
-    }
-  };
-
   return (
-    <Container selected={isSelected} onClick={() => addToAssociatedProducts()}>
+    <Container
+      selected={isSelected}
+      onClick={() => addToAssociatedProducts(product)}
+    >
       {isSelected && (
         <CheckMark>
           <i className='fas fa-check' style={{ color: '#fff' }}></i>

@@ -1,6 +1,6 @@
-import React from 'react';
 import styled from 'styled-components';
 import './styles.css';
+import { Text } from '../../styles/Styles';
 
 const Container = styled.div`
   position: fixed;
@@ -12,10 +12,10 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
   z-index: 5000;
-  background: rgb(0 0 0/0.25);
+  background: rgb(0 0 0/0.75);
 `;
 
-const ContactLoader = () => {
+const ContactLoader = ({ text }: { text: string }) => {
   return (
     <Container>
       <div className='loader'>
@@ -23,6 +23,7 @@ const ContactLoader = () => {
         <div className='inner two'></div>
         <div className='inner three'></div>
       </div>
+      <Text color='#fff' marginTop='48px' fontWeight={400} fontStyle='16px'>{text}</Text>
     </Container>
   );
 };
