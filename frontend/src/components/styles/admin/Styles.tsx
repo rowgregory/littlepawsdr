@@ -337,12 +337,7 @@ export const OrderEditDataContainer = styled.div`
   width: 100%;
   background: #f6f9fe;
   padding: 0;
-  border-radius: 0px;
-
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
-    padding: 20px;
-    border-radius: 16px;
-  }
+  border-radius: 0px;}
 `;
 
 export const OrderNumber = styled.div`
@@ -350,7 +345,6 @@ export const OrderNumber = styled.div`
   font-size: 20px;
   margin-top: 22px;
   margin-bottom: 22px;
-  margin-left: 16px;
   span {
     font-size: 20px;
     font-weight: 600;
@@ -363,7 +357,6 @@ export const OrderNumber = styled.div`
       font-weight: 600;
       font-size: 26px;
     }
-    margin-left: 0px;
   }
 `;
 
@@ -371,7 +364,7 @@ export const ItemsSummaryContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
     flex-direction: row;
   }
 `;
@@ -382,7 +375,7 @@ export const OrderEditLeftSideContainer = styled.div`
   width: 100%;
   margin-right: 0px;
   margin-bottom: 20px;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
     width: 60%;
     margin-right: 20px;
     margin-bottom: 0px;
@@ -394,7 +387,7 @@ export const OrderEditRightSideContainer = styled.div`
   flex-direction: column;
   width: 100%;
   margin-bottom: 70px;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
     width: 40%;
   }
 `;

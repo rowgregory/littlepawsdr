@@ -117,6 +117,7 @@ export const TotalSalesContainer = styled.div`
   border-radius: 8px;
   width: 100%;
   padding: 12px;
+  overflow: hidden;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
     padding: 24px;
   }

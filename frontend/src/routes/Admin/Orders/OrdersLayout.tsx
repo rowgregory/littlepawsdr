@@ -84,6 +84,10 @@ const OrdersLayout = () => {
 
   useOutsideDetect(choicesRef, setRevealOrderChoices);
 
+  const filteredOrders = orders?.filter((order: any) => {
+    return order?._id?.toLowerCase().includes(text.toLowerCase());
+  });
+
   return (
     <Container>
       {revealOrderChoices && (
@@ -138,7 +142,7 @@ const OrdersLayout = () => {
       <TableWrapper>
         <TableAndPaginationContainer style={{ justifyContent: 'flex-start' }}>
           {productType === 'Orders' ? (
-            <Orders orders={orders} text={text} />
+            <Orders orders={filteredOrders} />
           ) : productType === 'Products' ? (
             <ProductOrderList productOrders={productOrders} text={text} />
           ) : productType === 'Ecards' ? (

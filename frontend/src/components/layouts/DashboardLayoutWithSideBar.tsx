@@ -1,8 +1,9 @@
-import { ReactNode, FC } from 'react';
+import { ReactNode, FC, useEffect } from 'react';
 import styled from 'styled-components';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { openCloseDashboardModal } from '../../actions/dashboardActions';
 import ActionModal from '../dashboard/ActionModal';
+import { useNavigate } from 'react-router-dom';
 
 export const ActionBtn = styled.div`
   cursor: pointer;
@@ -75,19 +76,29 @@ export const DashboardLayoutWithSideBar: FC<
   DashboardLayoutWithSideBarProps
 > = ({ sideBar, children }) => {
   const dispatch = useDispatch();
+  const state = useSelector((state: any) => state);
+  const userInfo = state.userLogin.userInfo;
+  const history = useNavigate();
 
+  useEffect(() => {
+    if (!userInfo?.isAdmin) {
+      history('/');
+    }
+  }, [userInfo?.isAdmin, history]);
   return (
-    <>
-      <ActionModal />
-      <AdminPageLayout>
-        <div className='d-flex'>
-          <Aside>{sideBar}</Aside>
-          <Main>{children}</Main>
-        </div>
-        <ActionBtn onClick={() => dispatch(openCloseDashboardModal(true))}>
-          <i className='fas fa-plus fa-2x'></i>
-        </ActionBtn>
-      </AdminPageLayout>
-    </>
+    userInfo?.isAdmin && (
+      <>
+        <ActionModal />
+        <AdminPageLayout>
+          <div className='d-flex'>
+            <Aside>{sideBar}</Aside>
+            <Main>{children}</Main>
+          </div>
+          <ActionBtn onClick={() => dispatch(openCloseDashboardModal(true))}>
+            <i className='fas fa-plus fa-2x'></i>
+          </ActionBtn>
+        </AdminPageLayout>
+      </>
+    )
   );
 };

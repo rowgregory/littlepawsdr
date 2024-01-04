@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import Product from './Product';
 import {
   Category,
@@ -20,8 +20,10 @@ import LeftArrow from '../../components/svg/LeftArrow';
 import RightArrow from '../../components/svg/RightArrow';
 import Hero from '../../components/Hero';
 import { LoadingImg } from '../../components/LoadingImg';
+import { listProducts } from '../../actions/productActions';
 
 const Merch = () => {
+  const dispatch = useDispatch();
   const [currentCategory, setCurrentCategory] = useState('');
 
   const state = useSelector((state: any) => state);
@@ -35,6 +37,10 @@ const Merch = () => {
   const filterProducts = products?.filter((product: any) =>
     product?.category.includes(currentCategory)
   );
+
+  useEffect(() => {
+    dispatch(listProducts())
+  }, [])
 
   return (
     <>

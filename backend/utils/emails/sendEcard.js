@@ -1,19 +1,23 @@
 import ECardOrder from '../../models/eCardOrderModel.js';
 import colors from 'colors';
 
-export const sendEcard = async pugEmail => {
-  const today = new Date().toLocaleDateString();
-
-  const t = today.split('/');
-  const y = t[2];
-  const d = t[0];
-  const m = t[1];
-
-  const dateToCheck = `${y}-0${d}-${m}T00:00:00.000+00:00`;
+export const sendEcard = async (pugEmail) => {
+  const today = new Date();
+  const dateToCheck = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate(),
+    0,
+    0,
+    0,
+    0
+  );
 
   const aggregatedECards = await ECardOrder.find({
-    dateToSend: dateToCheck,
-    isSent: false,
+    $or: [
+      { dateToSend: dateToCheck, isSent: false },
+      { dateToSend: { $lt: dateToCheck }, isSent: false },
+    ],
   });
 
   const eCardsToSend = Object.keys(aggregatedECards).length > 0;
@@ -42,7 +46,7 @@ export const sendEcard = async pugEmail => {
       .then(async () => {
         console.log(
           `E-Card has been sent to `.brightWhite +
-            `${eCard.recipientsEmail}`.rainbow
+          `${eCard.recipientsEmail}`.rainbow
         );
         try {
           const eCardOrder = await ECardOrder.findById(eCard._id);

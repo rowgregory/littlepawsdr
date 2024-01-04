@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import { Form, Image, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import BreadCrumb from '../../components/common/BreadCrumb';
 import {
+  Container,
   ItemsSummaryContainer,
   ItemsSummaryTable,
   OrderEditDataContainer,
@@ -11,7 +11,10 @@ import {
   OrderEditRightSideContainer,
   OrderNumber,
 } from '../../components/styles/admin/Styles';
-import { WelcomeText } from '../../components/styles/DashboardStyles';
+import {
+  GoBackAndTitleWrapper,
+  WelcomeText,
+} from '../../components/styles/DashboardStyles';
 import { Flex, Text } from '../../components/styles/Styles';
 import {
   getOrderDetails,
@@ -20,6 +23,7 @@ import {
 
 import { formatDateTime } from '../../utils/formatDateTime';
 import addDecimals from '../../utils/addDecimals';
+import GoBackBtn from '../../utils/GoBackBtn';
 
 const OrderEdit = () => {
   const dispatch = useDispatch();
@@ -27,7 +31,6 @@ const OrderEdit = () => {
   const [enterTrackingNumber, setEnterTrackingNumber] = useState(false);
   const [trackingNumber, setTrackingNumber] = useState('');
   const state = useSelector((state: any) => state);
-
   const order = state.orderDetails.order;
   const success = state.orderTrackingNumber.success;
   const loading = state.orderTrackingNumber.loading;
@@ -38,18 +41,11 @@ const OrderEdit = () => {
   }, [dispatch, id, success]);
 
   return (
-    <div style={{ padding: '32px 32px 28px' }}>
-      <WelcomeText>Order Edit</WelcomeText>
-      <BreadCrumb
-        step1='Home'
-        step2='Dashboard'
-        step3='Orders'
-        step4=''
-        url1='/'
-        url2='/admin'
-        url3='/admin/orders'
-      />
-
+    <Container>
+      <GoBackAndTitleWrapper>
+        <GoBackBtn to='/admin/orders' color='#121212' />
+        <WelcomeText>Order Edit</WelcomeText>
+      </GoBackAndTitleWrapper>
       <OrderEditDataContainer>
         <OrderNumber>
           Order Number <span>#{order?._id}</span>
@@ -225,7 +221,9 @@ const OrderEdit = () => {
                         name='trackingNumber'
                         type='text'
                         value={trackingNumber || ''}
-                        onChange={(e: any) => setTrackingNumber(e.target.value)}
+                        onChange={(e: any) =>
+                          setTrackingNumber(e.target.value)
+                        }
                         style={{ border: '1px solid #c4c4c4' }}
                       />
                     </Form.Group>
@@ -375,7 +373,7 @@ const OrderEdit = () => {
           </OrderEditRightSideContainer>
         </ItemsSummaryContainer>
       </OrderEditDataContainer>
-    </div>
+    </Container>
   );
 };
 

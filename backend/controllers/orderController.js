@@ -143,6 +143,8 @@ async function createProductOrders(createdOrder, res) {
         ...item,
         price: item.price,
         productName: item.productName,
+        productImage: item.productImage,
+        quantity: item.quantity,
         email: createdOrder.email,
         isPhysicalProduct: true,
         subtotal: item.quantity * item.price,
