@@ -1,11 +1,13 @@
 import LeftArrow from '../components/svg/LeftArrow';
 import RightArrow from '../components/svg/RightArrow';
 import styled from 'styled-components';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { pastelColorRandomizer } from '../utils/pastelColorRandomizer';
 import { LoadingImg } from '../components/LoadingImg';
 import Message from '../components/Message';
+import { listECards } from '../actions/eCardActions';
+import { useEffect } from 'react';
 
 const Container = styled.div`
   padding: 24px;
@@ -78,12 +80,17 @@ const Choose = styled.h3`
 `;
 
 const Ecards = () => {
+  const dispatch = useDispatch()
   const history = useNavigate();
   const state = useSelector((state: any) => state);
 
   let loading = state.ecardList.loading;
   const error = state.ecardList.error;
   const ecards = state.ecardList.ecards;
+
+  useEffect(() => {
+    dispatch(listECards())
+  }, [dispatch])
 
   const uniqueCategories = [
     ...new Set(ecards?.map((ecard: any) => ecard.category)),
@@ -117,19 +124,19 @@ const Ecards = () => {
           <CategoryContainer>
             {loading
               ? [
-                  ...Array.from({ length: 2 }).map((x: any, i: number) => (
-                    <LoadingImg w='100%' key={i} />
-                  )),
-                ]
+                ...Array.from({ length: 2 }).map((x: any, i: number) => (
+                  <LoadingImg w='100%' key={i} />
+                )),
+              ]
               : uniqueCategories.map((category: any, i: number) => (
-                  <CategorySquare
-                    key={i}
-                    onClick={() => setFilterParam(category)}
-                    bg={pastelColorRandomizer()}
-                  >
-                    {category}
-                  </CategorySquare>
-                ))}
+                <CategorySquare
+                  key={i}
+                  onClick={() => setFilterParam(category)}
+                  bg={pastelColorRandomizer()}
+                >
+                  {category}
+                </CategorySquare>
+              ))}
           </CategoryContainer>
         )}
       </EcardContainer>

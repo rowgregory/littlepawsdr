@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { Text } from './styles/Styles';
 import { useState } from 'react';
+import { LoadingImg } from './LoadingImg';
 
 const DachshundCard = styled(Link)`
   width: 100%;
@@ -64,18 +65,22 @@ const ShowMoreBtn = styled.div`
   margin-block: 16px;
 `;
 
-const Dachshund = ({ dachshund }: any) => {
+const Dachshund = ({ dachshund, loading }: any) => {
   const [nextPic, setNextPic] = useState(dachshund?.attributes?.photos[0]);
   return (
     <DachshundCard to={`/about/type/${dachshund?.id}`}>
-      <Image
-        onMouseEnter={() => setNextPic(dachshund?.attributes?.photos[1])}
-        onMouseLeave={() => setNextPic(dachshund?.attributes?.photos[0])}
-        className='dog'
-        src={nextPic}
-        alt={`Hi, my name is ${dachshund?.attributes?.name}`}
-        fluid
-      />
+      {loading ? (
+        <LoadingImg w='100%' />
+      ) : (
+        <Image
+          onMouseEnter={() => setNextPic(dachshund?.attributes?.photos[1])}
+          onMouseLeave={() => setNextPic(dachshund?.attributes?.photos[0])}
+          className='dog'
+          src={nextPic}
+          alt={`Hi, my name is ${dachshund?.attributes?.name}`}
+          fluid
+        />
+      )}
       <Card.Body className='d-flex flex-column justify-content-start p-0'>
         <CardHeader>
           <h5>{dachshund?.attributes?.name}</h5>

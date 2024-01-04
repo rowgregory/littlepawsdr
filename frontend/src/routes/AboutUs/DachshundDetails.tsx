@@ -12,6 +12,7 @@ import ImageAndName from '../../components/dachshund-details/ImageAndName';
 import InfoSection from '../../components/dachshund-details/InfoSection';
 import BottomInfo from '../../components/dachshund-details/BottomInfo';
 import { useParams } from 'react-router-dom';
+import { DACHSHUND_DETAILS_RESET } from '../../constants/dachshundConstants';
 
 const DachshundDetails = () => {
   const dispatch = useDispatch();
@@ -25,32 +26,35 @@ const DachshundDetails = () => {
 
   useEffect(() => {
     dispatch(getDachshundDetails(id));
+    return () => {
+      dispatch({ type: DACHSHUND_DETAILS_RESET })
+    }
   }, [id, dispatch]);
 
-  const info = dachshund?.data[0];
+  const info = loading ? null : dachshund?.data?.[0];
   const dogStatusId = info?.relationships?.statuses?.data[0]?.id;
 
   const leftArrowText =
     dogStatusId === '17'
       ? 'dogs on hold'
       : dogStatusId === '3'
-      ? 'successful adotions'
-      : dogStatusId === '7'
-      ? 'rainbow bridge'
-      : dogStatusId === '15'
-      ? 'sanctuary dogs'
-      : 'available dogs';
+        ? 'successful adotions'
+        : dogStatusId === '7'
+          ? 'rainbow bridge'
+          : dogStatusId === '15'
+            ? 'sanctuary dogs'
+            : 'available dogs';
 
   const leftArrowUrl =
     dogStatusId === '17'
       ? '/about/hold'
       : dogStatusId === '3'
-      ? '/about/successful-adoptions'
-      : dogStatusId === '7'
-      ? '/about/rainbow-bridge'
-      : dogStatusId === '15'
-      ? '/about/sanctuary'
-      : '/available';
+        ? '/about/successful-adoptions'
+        : dogStatusId === '7'
+          ? '/about/rainbow-bridge'
+          : dogStatusId === '15'
+            ? '/about/sanctuary'
+            : '/available';
 
   if (loading) {
     return (

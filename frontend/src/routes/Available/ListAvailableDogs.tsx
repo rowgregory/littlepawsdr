@@ -1,12 +1,12 @@
 import { useEffect, useRef } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Dachshund from '../../components/Dachshund';
 import styled from 'styled-components';
 import { Text } from '../../components/styles/Styles';
 import LeftArrow from '../../components/svg/LeftArrow';
 import RightArrow from '../../components/svg/RightArrow';
-import { LoadingImg } from '../../components/LoadingImg';
 import { useLocation } from 'react-router-dom';
+import { getAvailableDogs } from '../../actions/dachshundsActions';
 
 const Container = styled.div`
   display: flex;
@@ -86,16 +86,18 @@ const CardContainer = styled.div`
 const ListAvailableDogs = () => {
   const location = useLocation() as any;
   const myRef = useRef() as any;
+  const dispatch = useDispatch()
 
   const state = useSelector((state: any) => state);
   const dachshunds = state.dachshunds.dachshunds;
   const loading = state.dachshunds.loading;
 
   useEffect(() => {
+    dispatch(getAvailableDogs())
     if (location?.state?.scrollTo === 'dachshunds') {
       setTimeout(() => window.scrollTo(0, myRef.current.offsetTop), 0);
     }
-  }, [location]);
+  }, [dispatch, location]);
 
   return (
     <Container>
@@ -111,7 +113,7 @@ const ListAvailableDogs = () => {
           your lifestyle.  Please complete an adoption application for a dog
           whose needs you can meet, be it a securely fenced yard, a quiet home,
           a special diet, a medical need, on-going house training, on-going
-          leash training, etc. 
+          leash training, etc.
         </Text>
         <Text maxWidth='680px' className='mb-4 mx-auto' fontSize='16px'>
           When you adopt from LPDR, you are getting a dachshund who:
@@ -159,13 +161,9 @@ const ListAvailableDogs = () => {
         <RightArrow text='Sponsor a Sanctuary' url='/about/sanctuary' />
       </div>
       <CardContainer>
-        {loading
-          ? [1, 2, 3].map((_: any, i: number) => (
-              <LoadingImg w='100%' h='100%' key={i} />
-            ))
-          : dachshunds?.map((dachshund: any) => (
-              <Dachshund key={dachshund?.id} dachshund={dachshund} />
-            ))}
+        {dachshunds?.data?.map((dachshund: any) => (
+          <Dachshund key={dachshund?.id} dachshund={dachshund} loading={loading} />
+        ))}
       </CardContainer>
     </Container>
   );

@@ -38,7 +38,7 @@ const ProductOrderList = ({ productOrders, text }: any) => {
               <td>
                 <Image
                   src={order?.productImage}
-                  alt='ecard-order'
+                  alt='product-order'
                   width='30px'
                   height='30px'
                   style={{ borderRadius: '50%', objectFit: 'cover' }}

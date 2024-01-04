@@ -6,7 +6,7 @@ import { STATES } from '../../utils/states';
 export const Group = styled(Form.Group)`
   position: relative;
 `;
-export const Input = styled(Form.Control)<{
+export const Input = styled(Form.Control) <{
   error: any;
   greyout?: any;
   t?: any;
@@ -31,18 +31,20 @@ export const Input = styled(Form.Control)<{
   :focus {
     & ~ .label {
       color: ${({ theme, error }) =>
-        error ? '#d42825' : theme.colors.secondary} !important;
+    error ? '#d42825' : theme.colors.secondary} !important;
       background: #fff;
     }
   }
 `;
-export const Select = styled(Form.Control)<{
+export const Select = styled(Form.Control) <{
   error: any;
 }>`
   padding: 19px 5px 5px 0px !important;
   font-size: 13px;
   border: ${({ error, theme }) =>
-    error ? '1px solid #d42825' : `1px solid ${theme.input.border}`} !important;
+    error
+      ? '1px solid #d42825'
+      : `1px solid ${theme.input.border}`} !important;
   text-indent: ${({ t }) => (t === 'date' ? '9px' : '18px')};
   width: 100%;
   :focus,
@@ -60,7 +62,7 @@ export const Select = styled(Form.Control)<{
   :focus {
     & ~ .label {
       color: ${({ theme, error }) =>
-        error ? '#d42825' : theme.colors.secondary} !important;
+    error ? '#d42825' : theme.colors.secondary} !important;
       background: #fff;
     }
     box-shadow: none !important;
@@ -72,7 +74,9 @@ export const TextArea = styled.textarea<{ error: any }>`
   padding: 19px 15px 5px !important;
   font-size: 13px;
   border: ${({ error, theme }) =>
-    error ? '1px solid #d42825' : `1px solid ${theme.input.border}`} !important;
+    error
+      ? '1px solid #d42825'
+      : `1px solid ${theme.input.border}`} !important;
   width: 100%;
   :focus,
   :not(:placeholder-shown) {
@@ -89,7 +93,7 @@ export const TextArea = styled.textarea<{ error: any }>`
   :focus {
     & ~ .label {
       color: ${({ theme, error }) =>
-        error ? '#d42825' : theme.colors.secondary} !important;
+    error ? '#d42825' : theme.colors.secondary} !important;
       background: #fff;
     }
 
@@ -97,7 +101,7 @@ export const TextArea = styled.textarea<{ error: any }>`
     outline: none !important;
   }
 `;
-export const Label = styled(Form.Label)<{ error: any }>`
+export const Label = styled(Form.Label) <{ error: any }>`
   color: ${({ error }) => (error ? '#d42825' : '#929495')} !important;
   left: 18px;
   line-height: 14px;
@@ -191,19 +195,19 @@ const JumpingInput = ({
             name === 'oldPassword' ||
             name === 'newPassword' ||
             name === 'confirmNewPassword') && (
-            <div style={{ position: 'relative' }}>
-              <i
-                onClick={() =>
-                  setShowPassword((sp: any) => ({
-                    ...sp,
-                    [name]: !showPassword,
-                  }))
-                }
-                className={`fas fa-eye${!showPassword ? '-slash' : ''}`}
-                style={{ position: 'absolute', right: '10px', top: '-30px' }}
-              ></i>
-            </div>
-          )}
+              <div style={{ position: 'relative' }}>
+                <i
+                  onClick={() =>
+                    setShowPassword((sp: any) => ({
+                      ...sp,
+                      [name]: !showPassword,
+                    }))
+                  }
+                  className={`fas fa-eye${!showPassword ? '-slash' : ''}`}
+                  style={{ position: 'absolute', right: '10px', top: '-30px' }}
+                ></i>
+              </div>
+            )}
         </>
       )}
       <Label error={error} className='label'>

@@ -10,8 +10,9 @@ export const cronJobs = (io) => {
   });
 
   return {
-    sendEcard: cron.schedule('*/5 * * * *', () =>
+    sendEcard: cron.schedule('*/5 * * * *', () => {
       sendEmail({}, {}, 'ecard', '', false)
+    }
     ),
     updateEventStatus: cron.schedule('*/45 * * * *', async () =>
       updateEventStatus()
