@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Form, Image } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { createEvent, updateEvent } from '../../actions/eventActions';
 import {
@@ -13,17 +13,17 @@ import Message from '../../components/Message';
 import {
   Container,
   EditForm,
-  FormFile,
-  UploadImageSquare,
 } from '../../components/styles/admin/Styles';
-import { WelcomeText } from '../../components/styles/DashboardStyles';
-import PhotoUploadIcon from '../../components/svg/PhotoUploadIcon';
-import { defaultImages } from '../../utils/defaultImages';
-import BreadCrumb from '../../components/common/BreadCrumb';
+import {
+  GoBackAndTitleWrapper,
+  WelcomeText,
+} from '../../components/styles/DashboardStyles';
 import { fontColors, gradients } from '../../utils/eventUtils';
 import { uploadFileToFirebase } from '../../utils/uploadToFirebase';
+import GoBackBtn from '../../utils/GoBackBtn';
+import UploadSingleImage from '../../components/UploadSingleImage';
 
-const Gradient = styled(Form.Check)<{ selected?: boolean }>`
+const Gradient = styled(Form.Check) <{ selected?: boolean }>`
   border: ${({ selected }) =>
     selected ? '2px solid black' : '2px solid transparent'};
   padding: 0.2rem;
@@ -145,17 +145,10 @@ const EventEdit = () => {
 
   return (
     <Container>
-      <WelcomeText className='mb-1'>Event Edit</WelcomeText>
-      <BreadCrumb
-        step1='Home'
-        step2='Dashboard'
-        step3='Events'
-        step4={isEditMode ? 'Update' : 'Create'}
-        step5=''
-        url1='/'
-        url2='/admin'
-        url3='/admin/eventList'
-      />
+      <GoBackAndTitleWrapper>
+        <GoBackBtn to='/admin/eventList' color='#121212' />
+        <WelcomeText>Event Edit</WelcomeText>
+      </GoBackAndTitleWrapper>
       {(errorCreate || errorUpdate) && (
         <Message variant='danger'>{errorCreate || errorUpdate}</Message>
       )}
@@ -215,37 +208,14 @@ const EventEdit = () => {
             ></Form.Control>
           </Form.Group>
         </div>
-        <Form.Group controlId='image' className='d-flex flex-column'>
-          <Form.Label>Image</Form.Label>
-          <Form.Control
-            name='image'
-            className='img-link'
-            type='text'
-            value={inputs.image || ''}
-            onChange={handleInput}
-          ></Form.Control>
-          <div className='d-flex'>
-            <FormFile
-              id='image-file'
-              label={
-                event?.image === defaultImages.upload || file?.name ? (
-                  <UploadImageSquare className={uploading ? 'anim' : ''}>
-                    <PhotoUploadIcon ready={file} />
-                  </UploadImageSquare>
-                ) : (
-                  <Image
-                    src={event?.image}
-                    width='100px'
-                    height='100px'
-                    style={{ objectFit: 'cover', background: 'transparent' }}
-                    alt='Event Edit'
-                  />
-                )
-              }
-              onChange={(e: any) => editPhotoHandler(e)}
-            ></FormFile>
-          </div>
-        </Form.Group>
+        <UploadSingleImage
+          inputs={inputs}
+          handleInput={handleInput}
+          item={event}
+          file={file}
+          uploading={uploading}
+          editPhotoHandler={editPhotoHandler}
+        />
         <Form.Group
           controlId='backgroundColor'
           style={{

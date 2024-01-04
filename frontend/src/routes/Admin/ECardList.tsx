@@ -10,13 +10,12 @@ import {
   TableImg,
   TableRow,
   StyledEditBtn,
-  CreateBtnV2,
   TopRow,
   TableAndPaginationContainer,
   Container,
   SearchInput,
   TableWrapper,
-  SpinnerContainer,
+  CreateLink,
 } from '../../components/styles/admin/Styles';
 import Message from '../../components/Message';
 import { WelcomeText } from '../../components/styles/DashboardStyles';
@@ -24,6 +23,7 @@ import BreadCrumb from '../../components/common/BreadCrumb';
 import { AddIcon } from '../../components/svg/AddIcon';
 import { defaultImages } from '../../utils/defaultImages';
 import { Link } from 'react-router-dom';
+import { ECARD_LIST_RESET } from '../../constants/eCardConstants';
 
 const ECardList = () => {
   const dispatch = useDispatch();
@@ -46,6 +46,9 @@ const ECardList = () => {
 
   useEffect(() => {
     dispatch(listECards());
+    return () => {
+      dispatch({ type: ECARD_LIST_RESET })
+    }
   }, [dispatch, successDelete]);
 
   ecards?.sort((a: any, b: any) => -a?.createdAt?.localeCompare(b?.createdAt));
@@ -94,18 +97,10 @@ const ECardList = () => {
               onChange={(e: any) => setText(e.target.value)}
             />
           </SearchBar>
-          {loading ? (
-            <SpinnerContainer>
-              <Spinner animation='border' size='sm' />
-            </SpinnerContainer>
-          ) : (
-            <Link to={'/admin/eCard/id/edit'} state={{ eCard }}>
-              <CreateBtnV2>
-                <AddIcon />
-                Create
-              </CreateBtnV2>
-            </Link>
-          )}
+          <CreateLink to='/admin/eCard/id/edit' state={{ eCard }}>
+            <AddIcon loading={loading} />
+            Create
+          </CreateLink>
         </TopRow>
         <TableAndPaginationContainer>
           <Table hover responsive>
@@ -152,7 +147,6 @@ const ECardList = () => {
                   </td>
                   <td>
                     <StyledEditBtn
-                      className='border-0'
                       onClick={() => {
                         setId(eCard._id);
                         handleShow();

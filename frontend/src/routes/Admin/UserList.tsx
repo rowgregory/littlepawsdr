@@ -1,27 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Table, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { listUsers } from '../../actions/userActions';
 import DeleteModal from '../../components/DeleteModal';
-import { OnlineCircle } from '../../components/svg/circle';
-import { Text } from '../../components/styles/Styles';
 import {
   SearchBar,
   TableHead,
-  TableRow,
-  StyledEditBtn,
   TopRow,
   TableAndPaginationContainer,
   Container,
   SearchInput,
   TableWrapper,
-  SpinnerContainer,
 } from '../../components/styles/admin/Styles';
 import Message from '../../components/Message';
 import { WelcomeText } from '../../components/styles/DashboardStyles';
 import BreadCrumb from '../../components/common/BreadCrumb';
-import { formatDateTime } from '../../utils/formatDateTime';
-import { Link } from 'react-router-dom';
+import MemoizedTableRow from '../../components/admin/users/MemoizedTableRow';
+import { USER_LIST_RESET } from '../../constants/userConstants';
 
 const UserList = () => {
   const dispatch = useDispatch();
@@ -33,19 +28,18 @@ const UserList = () => {
   const handleShow = () => setShow(true);
 
   const state = useSelector((state: any) => state);
-
   const userListLoading = state.userList.loading;
   const userListError = state.userList.error;
   const users = state.userList.users;
-
   const userInfo = state.userLogin.userInfo;
-
   const userDeleteSuccess = state.userDelete.success;
-  const userDeleteLoading = state.userDelete.loading;
   const userDeleteError = state.userDelete.error;
 
   useEffect(() => {
     dispatch(listUsers());
+    return () => {
+      dispatch({ type: USER_LIST_RESET });
+    };
   }, [dispatch, userDeleteSuccess]);
 
   const filteredUsers = users?.filter((user: any) =>
@@ -54,12 +48,12 @@ const UserList = () => {
 
   return (
     <Container>
-      <WelcomeText className='mb-1'>Users</WelcomeText>
+      <WelcomeText>Users</WelcomeText>
       <BreadCrumb
         step1='Home'
         step2='Dashboard'
         step3='Users'
-        step4={users?.length}
+        step4={users?.length ?? 0}
         url1='/'
         url2='/admin'
         url3=''
@@ -74,7 +68,7 @@ const UserList = () => {
         <Message variant='danger'>{userListError || userDeleteError}</Message>
       )}
       <TableWrapper>
-        <TopRow className='mb-3'>
+        <TopRow>
           <SearchBar>
             <SearchInput
               as='input'
@@ -83,14 +77,15 @@ const UserList = () => {
               value={text || ''}
               onChange={(e: any) => setText(e.target.value)}
             />
+            {userListLoading && (
+              <Spinner
+                animation='border'
+                size='sm'
+                style={{ position: 'absolute', right: '10px', top: '15px' }}
+              />
+            )}
           </SearchBar>
-          {userListLoading && (
-            <SpinnerContainer>
-              <Spinner animation='border' size='sm' />
-            </SpinnerContainer>
-          )}
         </TopRow>
-
         <TableAndPaginationContainer>
           <Table hover responsive size='sm'>
             <TableHead>
@@ -105,75 +100,19 @@ const UserList = () => {
               </tr>
             </TableHead>
             <tbody>
-              {filteredUsers
-                ?.slice()
-                ?.reverse()
-                ?.map(
-                  (user: any) =>
-                    user.email !== 'it.little.paws@gmail.com' && (
-                      <TableRow key={user?._id}>
-                        <td>
-                          <OnlineCircle online={user.online} />
-                        </td>
-                        <td>
-                          <Text>{user?.name}</Text>
-                        </td>
-                        <td>
-                          <Text>
-                            <a href={`mailto: ${user?.email}`}>{user.email}</a>
-                          </Text>
-                        </td>
-                        <td>
-                          <Text>{formatDateTime(user?.createdAt)}</Text>
-                        </td>
-                        <td>
-                          {user?.isAdmin ? (
-                            <i
-                              className='fas fa-check'
-                              style={{ color: 'green' }}
-                            ></i>
-                          ) : (
-                            <i
-                              className='fas fa-times'
-                              style={{ color: 'red' }}
-                            ></i>
-                          )}{' '}
-                        </td>
-                        <td>
-                          {user?.email !== userInfo?.email && (
-                            <Link to={`/admin/user/${user?._id}/edit`}>
-                              <StyledEditBtn>
-                                <i
-                                  style={{ color: '#9761aa' }}
-                                  className='fas fa-edit'
-                                ></i>
-                              </StyledEditBtn>
-                            </Link>
-                          )}
-                        </td>
-                        <td>
-                          {user?.email !== userInfo?.email && (
-                            <StyledEditBtn
-                              className='border-0'
-                              onClick={() => {
-                                setId(user?._id);
-                                handleShow();
-                              }}
-                            >
-                              {userDeleteLoading && id === user?._id ? (
-                                <Spinner size='sm' animation='border' />
-                              ) : (
-                                <i
-                                  style={{ color: '#cc0000' }}
-                                  className='fas fa-trash'
-                                ></i>
-                              )}
-                            </StyledEditBtn>
-                          )}
-                        </td>
-                      </TableRow>
-                    )
-                )}
+              {filteredUsers?.map(
+                (user: any) =>
+                  user.email !== 'it.little.paws@gmail.com' && (
+                    <MemoizedTableRow
+                      user={user}
+                      userInfo={userInfo}
+                      handleShow={handleShow}
+                      setId={setId}
+                      id={id}
+                      key={user?._id}
+                    />
+                  )
+              )}
             </tbody>
           </Table>
         </TableAndPaginationContainer>

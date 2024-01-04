@@ -2,24 +2,21 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createProduct } from '../../actions/productActions';
 import { UpdateBtn } from '../../components/styles/Styles';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Message from '../../components/Message';
 import { Container, EditForm } from '../../components/styles/admin/Styles';
-import { WelcomeText } from '../../components/styles/DashboardStyles';
-import BreadCrumb from '../../components/common/BreadCrumb';
+import { GoBackAndTitleWrapper, WelcomeText } from '../../components/styles/DashboardStyles';
 import { PRODUCT_CREATE_RESET } from '../../constants/productContstants';
 import { sortProductSizes } from '../../utils/sortProductSizes';
 import { useProductCreateForm } from '../../utils/hooks/useProductCreateForm';
 import FirstFiveFields from '../../components/admin/products/FirstFiveFields';
 import ProductSizes from '../../components/admin/products/ProductSizes';
-import ImagesSection from '../../components/admin/products/ImagesSection';
+import ImagesSection from '../../components/admin/products/MultipleImages';
 import LastThreeFields from '../../components/admin/products/LastThreeFields';
 import { uploadMultipleFilesToFirebase } from '../../utils/uploadToFirebase';
+import GoBackBtn from '../../utils/GoBackBtn';
 
 const ProductCreate = () => {
-  const {
-    state: { product },
-  } = useLocation() as any;
   const history = useNavigate();
   const dispatch = useDispatch();
   const [uploading, setUploading] = useState(false);
@@ -68,17 +65,10 @@ const ProductCreate = () => {
 
   return (
     <Container>
-      <WelcomeText className='mb-1'>Product Create</WelcomeText>
-      <BreadCrumb
-        step1='Home'
-        step2='Dashboard'
-        step3='Products'
-        step4={product?.name}
-        step5='Create'
-        url1='/'
-        url2='/admin'
-        url3='/admin/product/list'
-      />
+      <GoBackAndTitleWrapper>
+        <GoBackBtn to='/admin/product/list' color='#121212' />
+        <WelcomeText>Product Create</WelcomeText>
+      </GoBackAndTitleWrapper>
       {error && <Message variant='danger'>{error}</Message>}
       <EditForm>
         <FirstFiveFields

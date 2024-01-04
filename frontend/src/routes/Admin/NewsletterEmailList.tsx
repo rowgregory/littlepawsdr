@@ -15,27 +15,26 @@ import {
   TableWrapper,
   StyledEditBtn,
   CreateBtnV2,
-  SpinnerContainer,
 } from '../../components/styles/admin/Styles';
 import Message from '../../components/Message';
 import { WelcomeText } from '../../components/styles/DashboardStyles';
 import BreadCrumb from '../../components/common/BreadCrumb';
 import CopyIcon from '../../components/svg/CopyIcon';
 import { formatDateTime } from '../../utils/formatDateTime';
+import { NEWSLETTER_EMAIL_LIST_RESET } from '../../constants/newsletterConstants';
 
 const NewsletterEmailList = () => {
   const dispatch = useDispatch();
   const [show, setShow] = useState(false);
   const [id, setId] = useState('');
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
   const [text, setText] = useState('');
-  const [paginatedPage] = useState(1);
-  const [paginatedItems, setPaginatedItems] = useState<{}[]>([]) as any;
   let [loadingCopy, setLoadingCopy] = useState({
     loading: false,
     message: '',
   });
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
   const {
     newsletterEmailList: { loading, error, newsletterEmails },
@@ -48,17 +47,10 @@ const NewsletterEmailList = () => {
 
   useEffect(() => {
     dispatch(listNewsletterEmail());
+    return () => {
+      dispatch({ type: NEWSLETTER_EMAIL_LIST_RESET })
+    }
   }, [dispatch, success]);
-
-  useEffect(() => {
-    const itemsPerPage = 50;
-    const indexOfLastItem = paginatedPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-
-    setPaginatedItems(
-      newsletterEmails?.reverse()?.slice(indexOfFirstItem, indexOfLastItem)
-    );
-  }, [newsletterEmails, paginatedPage]);
 
   const copyEmails = () => {
     setLoadingCopy({ loading: true, message: '' });
@@ -70,14 +62,9 @@ const NewsletterEmailList = () => {
     });
   };
 
-  const filteredEmails =
-    text !== ''
-      ? newsletterEmails?.filter((email: any) =>
-          email.newsletterEmail.toLowerCase().includes(text.toLowerCase())
-        )
-      : paginatedItems?.filter((email: any) =>
-          email?.newsletterEmail?.toLowerCase().includes(text.toLowerCase())
-        );
+  const filteredEmails = newsletterEmails?.filter((email: any) =>
+    email.newsletterEmail.toLowerCase().includes(text.toLowerCase())
+  );
 
   return (
     <Container>
@@ -86,7 +73,7 @@ const NewsletterEmailList = () => {
         step1='Home'
         step2='Dashboard'
         step3='Newsletter Emails'
-        step4={newsletterEmails?.length}
+        step4={newsletterEmails?.length ?? 0}
         url1='/'
         url2='/admin'
         url3=''
@@ -113,24 +100,11 @@ const NewsletterEmailList = () => {
               onChange={(e: any) => setText(e.target.value)}
             />
           </SearchBar>
-          {loading ? (
-            <SpinnerContainer>
-              <Spinner animation='border' size='sm' />
-            </SpinnerContainer>
-          ) : (
-            <CreateBtnV2 onClick={copyEmails}>
-              {loadingCopy.loading ? (
-                <Spinner animation='border' size='sm' />
-              ) : (
-                <>
-                  <CopyIcon />
-                  <Text>Copy</Text>
-                </>
-              )}
-            </CreateBtnV2>
-          )}
+          <CreateBtnV2 onClick={copyEmails}>
+            <CopyIcon loading={loading} />
+            <Text>Copy</Text>
+          </CreateBtnV2>
         </TopRow>
-
         <TableAndPaginationContainer>
           <Table hover responsive size='sm'>
             <TableHead>

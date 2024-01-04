@@ -1,8 +1,27 @@
-import React from 'react';
+import styled, { css, keyframes } from 'styled-components';
 
-const CopyIcon = () => {
+const rotate = keyframes`
+from {
+  transform: rotate(0deg);
+}
+to {
+  transform: rotate(360deg);
+}
+`;
+
+const Copy = styled.svg<{ loading: string }>`
+  animation: ${({ loading }) =>
+    loading === 'true'
+      ? css`
+          ${rotate} 2000ms linear infinite
+        `
+      : ``};
+`;
+
+const CopyIcon = ({ loading }: { loading?: any }) => {
   return (
-    <svg
+    <Copy
+      loading={loading?.toString()}
       xmlns='http://www.w3.org/2000/svg'
       x='0px'
       y='0px'
@@ -27,7 +46,7 @@ const CopyIcon = () => {
           </g>
         </g>
       </g>
-    </svg>
+    </Copy>
   );
 };
 

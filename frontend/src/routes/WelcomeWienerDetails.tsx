@@ -1,19 +1,18 @@
-import { memo, useEffect, useMemo, useState } from 'react';
+import { useEffect } from 'react';
 import {
   Description,
   DetailsGrid,
-  ImageContainer,
 } from '../components/styles/AvailableDog/Styles';
 import LeftArrow from '../components/svg/LeftArrow';
 import { LoadingImg } from '../components/LoadingImg';
 import { useDispatch, useSelector } from 'react-redux';
 import { getWelcomeWienerDachshundDetails } from '../actions/welcomeWienerDachshundActions';
 import { useParams } from 'react-router-dom';
-import { Image } from 'react-bootstrap';
 import { Flex, Text } from '../components/styles/Styles';
 import DonationItem from '../components/welcome-wiener/DonationItem';
 import CartDrawer from '../components/CartDrawer';
 import styled from 'styled-components';
+import MerchImages from '../components/merch-detail/MerchImages';
 
 const Container = styled.div`
   display: grid;
@@ -23,6 +22,7 @@ const Container = styled.div`
   margin-inline: auto;
   margin-top: 16px;
   margin-bottom: 128px;
+  width: 100%;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
     grid-template-columns: 55% 40%;
     max-width: 1200px;
@@ -32,13 +32,10 @@ const Container = styled.div`
 const WelcomeWienerDetails = () => {
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch();
-  const [objectFit, setObjectFit] = useState(true);
 
   const state = useSelector((state: any) => state);
-  const loadingDetails = state.welcomeWienerDachshundDetails.loading;
+  const loading = state.welcomeWienerDachshundDetails.loading;
   const dachshund = state.welcomeWienerDachshundDetails.dachshund;
-
-  const memoizedDachshund = useMemo(() => dachshund, [dachshund]);
 
   useEffect(() => {
     dispatch(getWelcomeWienerDachshundDetails(id));
@@ -53,37 +50,27 @@ const WelcomeWienerDetails = () => {
       marginRight='auto'
       paddingLeft='8px'
       paddingRight='8px'
+      width='100%'
     >
       <LeftArrow text='Back to welcome wieners' url='/welcome-wieners' />
       <Container>
         <CartDrawer />
         <div>
-          {loadingDetails ? (
+          {loading ? (
             <LoadingImg w='100%' />
           ) : (
-            <ImageContainer>
-              <Image
-                onClick={() => setObjectFit(!objectFit)}
-                src={memoizedDachshund?.displayUrl}
-                alt={`${memoizedDachshund?.name}`}
-                style={{
-                  width: '100%',
-                  objectFit: objectFit ? 'cover' : 'contain',
-                  aspectRatio: '1/1',
-                }}
-              />
-            </ImageContainer>
+            <MerchImages loading={loading} product={dachshund} />
           )}
           <div className='d-flex flex-column mr-4 mt-4'>
             <Text fontSize='1.5rem' fontWeight='600' marginBottom='16px'>
-              About {memoizedDachshund?.name}
+              About {dachshund?.name}
             </Text>
-            <Description>{memoizedDachshund?.bio}</Description>
+            <Description>{dachshund?.bio}</Description>
             <Text fontSize='1.5rem' fontWeight='600' marginBottom='16px'>
               Details
             </Text>
             <DetailsGrid>
-              {[{ key: 'Age', value: memoizedDachshund?.age }].map(
+              {[{ key: 'Age', value: dachshund?.age }].map(
                 (obj: any, i: number) => (
                   <div className='d-flex flex-column' key={i}>
                     <Text fontWeight='400'>{obj.key}</Text>
@@ -96,9 +83,9 @@ const WelcomeWienerDetails = () => {
         </div>
         <div>
           <Text fontSize='1.5rem' fontWeight='600' marginBottom='16px'>
-            Donation Items for {memoizedDachshund?.name}
+            Donation Items for {dachshund?.name}
           </Text>
-          {memoizedDachshund?.associatedProducts?.map((obj: any, i: number) => (
+          {dachshund?.associatedProducts?.map((obj: any, i: number) => (
             <DonationItem item={obj} key={i} />
           ))}
         </div>
@@ -107,4 +94,4 @@ const WelcomeWienerDetails = () => {
   );
 };
 
-export default memo(WelcomeWienerDetails);
+export default WelcomeWienerDetails;

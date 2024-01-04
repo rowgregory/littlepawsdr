@@ -120,7 +120,9 @@ export const userDetailsReducer = (state = { user: {} }, action) => {
     case USER_DETAILS_SUCCESS:
       return {
         loading: false,
-        user: action.payload,
+        isAdmin: action.payload.isAdmin,
+        name: action.payload.name,
+        email: action.payload.email,
         success: true,
       };
     case USER_DETAILS_FAIL:

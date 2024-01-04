@@ -6,10 +6,6 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   margin-bottom: 24px;
-  padding-inline: 16px;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    padding-inline: 0px;
-  }
 `;
 
 const StyledLink = styled(Link)`

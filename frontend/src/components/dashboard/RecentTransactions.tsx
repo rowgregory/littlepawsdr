@@ -7,6 +7,7 @@ import UserNavigation, {
   DesktopWrapper,
 } from './UserNavigation';
 import styled, { keyframes } from 'styled-components';
+import { HomeIcon } from '../styles/DashboardStyles';
 
 export const Wallet = styled.div`
   padding: 24px;
@@ -61,17 +62,45 @@ export const Circles = styled.div`
   .circle-1 {
     height: 190px;
     width: 190px;
-    top: -20px;
-    left: -20px;
+    top: -97px;
+    right: -21px;
     animation: ${float} 6s ease-in-out infinite;
   }
   .circle-2 {
     height: 150px;
     width: 150px;
-    top: 31px;
-    left: 160px;
+    top: -78px;
     animation: ${float} 6s ease-in-out infinite;
     animation-delay: 2000ms;
+  }
+
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
+    .circle-1 {
+      height: 190px;
+      width: 190px;
+      top: -4px;
+      right: -21px;
+      animation: ${float} 6s ease-in-out infinite;
+    }
+    .circle-2 {
+      height: 150px;
+      width: 150px;
+      top: 31px;
+      animation: ${float} 6s ease-in-out infinite;
+      animation-delay: 2000ms;
+    }
+  }
+`;
+
+export const WalletWrapper = styled.div`
+  margin-top: 32px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
+    justify-content: start;
   }
 `;
 
@@ -84,8 +113,11 @@ const RecentTransactions = ({
 }: any) => {
   return (
     <>
-      <DesktopWrapper className='mb-5'>
-        <div className='d-flex justify-content-end mb-2'>
+      <DesktopWrapper>
+        <div className='d-flex justify-content-between mb-2'>
+          <HomeIcon to='/'>
+            <i className='fa-solid fa-house-chimney'></i>
+          </HomeIcon>
           <DashboardAdminAvatar
             onClick={() => setShowAdminLinks(!showAdminLinks)}
             src={userInfo?.avatar}
@@ -94,28 +126,30 @@ const RecentTransactions = ({
         </div>
         <UserNavigation showAdminLinks={showAdminLinks} />
       </DesktopWrapper>
-      <Circles>
-        <div className='circle circle-1'></div>
-        <div className='circle circle-2'></div>
-      </Circles>
-      <Wallet>
-        <div className='ring'></div>
-        <Text color='#fff' marginBottom='0.5rem'>
-          Wallet
-        </Text>
-        <Text
-          color='#fff'
-          fontSize='32px'
-          fontWeight={400}
-          letterSpacing='2px'
-        >
-          {loading ? (
-            <Spinner animation='border' style={{ color: '#fff' }} />
-          ) : (
-            formatCurrency(Number(dashboardDetails?.walletTotal))
-          )}
-        </Text>
-      </Wallet>
+      <WalletWrapper>
+        <Circles>
+          <div className='circle circle-1'></div>
+          <div className='circle circle-2'></div>
+        </Circles>
+        <Wallet>
+          <div className='ring'></div>
+          <Text color='#fff' marginBottom='0.5rem'>
+            Wallet
+          </Text>
+          <Text
+            color='#fff'
+            fontSize='32px'
+            fontWeight={400}
+            letterSpacing='2px'
+          >
+            {loading ? (
+              <Spinner animation='border' style={{ color: '#fff' }} />
+            ) : (
+              formatCurrency(Number(dashboardDetails?.walletTotal))
+            )}
+          </Text>
+        </Wallet>
+      </WalletWrapper>
       <div className='d-flex align-items-baseline justify-content-between mb-4 mt-5'>
         <Text fontWeight={500} fontSize='14px' color='#373737'>
           10 MOST RECENT TRANSACTIONS

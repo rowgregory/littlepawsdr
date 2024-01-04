@@ -13,7 +13,7 @@ import {
   Container,
   SearchInput,
   TableWrapper,
-  CreateBtnV2,
+  CreateLink,
   TableImg,
 } from '../../components/styles/admin/Styles';
 import { WelcomeText } from '../../components/styles/DashboardStyles';
@@ -27,6 +27,7 @@ import {
 } from '../../actions/welcomeWienerDachshundActions';
 import shortenText from '../../utils/shortenText';
 import { Link } from 'react-router-dom';
+import { WELCOME_WIENER_DACHSHUND_LIST_RESET } from '../../constants/welcomeWienerDachshundConstants';
 
 const WelcomeWienerDachshundList = () => {
   const dispatch = useDispatch();
@@ -38,7 +39,6 @@ const WelcomeWienerDachshundList = () => {
   const handleShow = () => setShow(true);
 
   const state = useSelector((state: any) => state);
-
   let loadingLiveMode = state.welcomeWienerDachshundToggle.loading;
   let dachshundList = state.welcomeWienerDachshundList.dachshundList;
   let error = state.welcomeWienerDachshundList.error;
@@ -47,6 +47,7 @@ const WelcomeWienerDachshundList = () => {
 
   useEffect(() => {
     dispatch(listWelcomeWienerDachshunds());
+    return () => { dispatch({ type: WELCOME_WIENER_DACHSHUND_LIST_RESET }) }
   }, [dispatch, loadingLiveMode]);
 
   dachshundList?.sort(
@@ -98,16 +99,13 @@ const WelcomeWienerDachshundList = () => {
               onChange={(e: any) => setText(e.target.value)}
             />
           </SearchBar>
-
-          <Link
+          <CreateLink
             to={'/admin/welcome-wiener/dachshund/create'}
             state={{ welcomeWienerDachshund }}
           >
-            <CreateBtnV2>
-              <AddIcon />
-              Create
-            </CreateBtnV2>
-          </Link>
+            <AddIcon />
+            Create
+          </CreateLink>
         </TopRow>
         <TableAndPaginationContainer>
           <Table hover responsive>
@@ -119,6 +117,7 @@ const WelcomeWienerDachshundList = () => {
                 <th>BIO</th>
                 <th>AGE</th>
                 <th>ASSOCIATED PRODUCTS</th>
+                <th>VIEW</th>
                 <th>EDIT</th>
                 <th>DELETE</th>
               </tr>
@@ -191,6 +190,15 @@ const WelcomeWienerDachshundList = () => {
                   </td>
                   <td>
                     <Link
+                      to={{
+                        pathname: `/welcome-wiener/${dachshund._id}`,
+                      }}
+                    >
+                      <i className='fas fa-edit' style={{ color: '#9761aa' }}></i>
+                    </Link>
+                  </td>
+                  <td>
+                    <Link
                       to={`/admin/welcome-wiener/dachshund/${dachshund?._id}/edit`}
                       state={{ isEditMode: true }}
                     >
@@ -204,7 +212,6 @@ const WelcomeWienerDachshundList = () => {
                   </td>
                   <td>
                     <StyledEditBtn
-                      className='border-0'
                       onClick={() => {
                         setId(dachshund?._id);
 

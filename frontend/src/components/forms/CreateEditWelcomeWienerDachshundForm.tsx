@@ -1,19 +1,37 @@
 import { useEffect } from 'react';
-import {
-  FormFile,
-  FormInnerContainer,
-  FormLeftContainer,
-  FormRightContainer,
-  UploadImageSquare,
-} from '../styles/admin/Styles';
-import { Form, Image } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
 import { ErrorText, Text, UpdateBtn } from '../styles/Styles';
-import PhotoUploadIcon from '../svg/PhotoUploadIcon';
-import UploadImg from '../assets/upload.png';
 import WelcomeWienerProduct from '../welcome-wiener/WelcomeWienerProduct';
 import { useDispatch, useSelector } from 'react-redux';
 import { listWelcomeWienerProducts } from '../../actions/welcomeWienerProductActions';
 import styled from 'styled-components';
+import MultipleImages from '../admin/products/MultipleImages';
+
+const FormInnerContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
+    grid-template-columns: 1.25fr 1fr;
+  }
+`;
+const FormLeftContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-right: 0;
+
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
+    margin-right: 32px;
+  }
+`;
+
+const FormRightContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
 
 const AssociatedProductsContainer = styled.div`
   display: flex;
@@ -24,14 +42,15 @@ const AssociatedProductsContainer = styled.div`
 const CreateEditWelcomeWienerDachshundForm = ({
   inputs,
   handleInput,
-  file,
+  setFiles,
+  files,
   uploading,
   onSubmit,
   submitBtnText,
   errors,
   handleBlur,
-  handleFileInputChange,
-  addToAssociatedProducts
+  addToAssociatedProducts,
+  setInputs
 }: any) => {
   const dispatch = useDispatch();
 
@@ -44,12 +63,12 @@ const CreateEditWelcomeWienerDachshundForm = ({
   }, [dispatch]);
 
   return (
-    <Form className='px-3'>
+    <Form>
       <FormInnerContainer>
         <FormLeftContainer>
           <Form.Group controlId='name'>
             <Form.Label>Name</Form.Label>
-            <Form.Control
+            <Form.Control style={{ border: '1px solid #ededed' }}
               name='name'
               type='text'
               value={inputs.name || ''}
@@ -83,33 +102,18 @@ const CreateEditWelcomeWienerDachshundForm = ({
             ></Form.Control>
             <ErrorText>{errors?.bio}</ErrorText>
           </Form.Group>
-
-          <Form.Group controlId='displayUrl' className='d-flex flex-column'>
-            <Form.Label>Image</Form.Label>
-            <FormFile
-              name='displayUrl'
-              id='image-file'
-              label={
-                file?.name ? (
-                  <UploadImageSquare className={uploading ? 'anim' : ''}>
-                    <PhotoUploadIcon ready={file} />
-                  </UploadImageSquare>
-                ) : (
-                  <Image
-                    src={inputs?.displayUrl || UploadImg}
-                    width='100px'
-                    height='100px'
-                    style={{ objectFit: 'cover' }}
-                    alt='Welcome Wiener Dachshund'
-                  />
-                )
-              }
-              onChange={(e: any) => handleFileInputChange(e)}
-              onBlur={handleBlur}
-            ></FormFile>
-            <ErrorText>{errors?.displayUrl}</ErrorText>
-          </Form.Group>
-          <Form.Group controlId='associatedProducts' className='mt-3'>
+          <MultipleImages
+            handleInput={handleInput}
+            setFiles={setFiles}
+            files={files}
+            uploading={uploading}
+            inputs={inputs}
+            setInputs={setInputs}
+          />
+          <ErrorText>{errors?.images}</ErrorText>
+        </FormLeftContainer>
+        <FormRightContainer>
+          <Form.Group controlId='associatedProducts'>
             <Form.Label>Associated Products</Form.Label>
             <AssociatedProductsContainer>
               {inputs?.associatedProducts?.length === 0 ? (
@@ -127,8 +131,6 @@ const CreateEditWelcomeWienerDachshundForm = ({
             </AssociatedProductsContainer>
             <ErrorText>{errors?.associatedProducts}</ErrorText>
           </Form.Group>
-        </FormLeftContainer>
-        <FormRightContainer>
           <Form.Label>Welcome Wiener Products</Form.Label>
           {productList?.length === 0 ? (
             <Text>You need to create a welcome wiener product</Text>
@@ -145,8 +147,7 @@ const CreateEditWelcomeWienerDachshundForm = ({
         </FormRightContainer>
       </FormInnerContainer>
       <UpdateBtn onClick={onSubmit}>
-        {submitBtnText}
-        {uploading ? 'ing...' : 'e'}
+        {submitBtnText}{uploading ? 'ing...' : 'e'}
       </UpdateBtn>
     </Form>
   );

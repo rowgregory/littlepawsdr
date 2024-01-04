@@ -14,9 +14,8 @@ import {
   Container,
   SearchInput,
   TableWrapper,
-  CreateBtnV2,
   TableImg,
-  SpinnerContainer,
+  CreateLink,
 } from '../../components/styles/admin/Styles';
 import Message from '../../components/Message';
 import { WelcomeText } from '../../components/styles/DashboardStyles';
@@ -24,6 +23,7 @@ import BreadCrumb from '../../components/common/BreadCrumb';
 import { AddIcon } from '../../components/svg/AddIcon';
 import { defaultImages } from '../../utils/defaultImages';
 import { Link } from 'react-router-dom';
+import { MANUALLY_ADD_USER_LIST_RESET } from '../../constants/manuallyAddUserConstants';
 
 const ManuallyAddedUserList = () => {
   const dispatch = useDispatch();
@@ -36,17 +36,16 @@ const ManuallyAddedUserList = () => {
   const handleShow = () => setShow(true);
 
   const state = useSelector((state: any) => state);
-
   const loading = state.manuallyAddedUserList.loading;
   const error = state.manuallyAddedUserList.error;
   const manuallyAddedUsers = state.manuallyAddedUserList.manuallyAddedUsers;
-
   const loadingDelete = state.manuallyAddedUserDelete.loading;
   const errorDelete = state.manuallyAddedUserDelete.error;
   const successDelete = state.manuallyAddedUserDelete.success;
 
   useEffect(() => {
     dispatch(listManuallyAddedUsers());
+    return () => { dispatch({ type: MANUALLY_ADD_USER_LIST_RESET }) }
   }, [dispatch, successDelete]);
 
   manuallyAddedUsers?.sort(
@@ -70,12 +69,12 @@ const ManuallyAddedUserList = () => {
 
   return (
     <Container>
-      <WelcomeText className='mb-1'>Board Members</WelcomeText>
+      <WelcomeText>Board Members</WelcomeText>
       <BreadCrumb
         step1='Home'
         step2='Dashboard'
-        step3=''
-        step4='Board Members'
+        step3='Board Members'
+        step4={manuallyAddedUsers?.length ?? 0}
         url1='/'
         url2='/admin'
         url3='/admin/manuallyAddedUserList'
@@ -101,21 +100,13 @@ const ManuallyAddedUserList = () => {
               onChange={(e: any) => setText(e.target.value)}
             />
           </SearchBar>
-          {loading ? (
-            <SpinnerContainer>
-              <Spinner animation='border' size='sm' />
-            </SpinnerContainer>
-          ) : (
-            <Link
-              to='/admin/manuallyAddedUser/id/edit'
-              state={{ manuallyAddedUser }}
-            >
-              <CreateBtnV2>
-                <AddIcon />
-                Create
-              </CreateBtnV2>
-            </Link>
-          )}
+          <CreateLink
+            to='/admin/manuallyAddedUser/id/edit'
+            state={{ manuallyAddedUser }}
+          >
+            <AddIcon loading={loading} />
+            Create
+          </CreateLink>
         </TopRow>
         <TableAndPaginationContainer>
           <Table hover responsive>
@@ -165,7 +156,6 @@ const ManuallyAddedUserList = () => {
                   </td>
                   <td>
                     <StyledEditBtn
-                      className='border-0'
                       onClick={() => {
                         setId(manuallyAddedUser?._id);
                         setImagePath(manuallyAddedUser?.image);

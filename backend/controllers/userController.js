@@ -290,9 +290,9 @@ const deleteUser = asyncHandler(async (req, res) => {
 // @access  Private/Admin
 const getUserById = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.id).select('-password -token');
-
+  console.log(user)
   if (user) {
-    res.json(user);
+    res.json({ isAdmin: user.isAdmin, name: user.name, email: user.email });
   } else {
     const createdError = new Error({
       functionName: 'GET_USER_BY_ID_ADMIN',
@@ -342,19 +342,21 @@ const confirmOldPassword = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Update user
+// @desc    Update user admin role
 // @route   PUT /api/users/:id
 // @access  Private/Admin
 const updateUser = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id);
+  try {
+    const user = await User.findById(req.params.id);
 
-  if (user) {
-    user.isAdmin = req.body.isAdmin;
+    if (user) {
+      user.isAdmin = req.body.isAdmin;
 
-    const updatedUser = await user.save();
+      const updatedUser = await user.save();
 
-    res.json(updatedUser);
-  } else {
+      res.json({ isAdmin: updatedUser.isAdmin });
+    }
+  } catch (err) {
     const createdError = new Error({
       functionName: 'UPDATE_USER_ADMIN',
       detail: err.message,
@@ -371,6 +373,8 @@ const updateUser = asyncHandler(async (req, res) => {
       message: `500 - Server Error`,
     });
   }
+
+
 });
 
 // @desc    Update user to offline

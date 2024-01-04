@@ -51,7 +51,7 @@ const MerchImages = ({
       {loading ? (
         <LoadingImg maxw='700px' w='100%' ar='1/1' />
       ) : (
-        <MainImage src={scaleImage?.id || product?.image} />
+        <MainImage src={scaleImage?.id || product?.image || product?.displayUrl} />
       )}
       <SmallerImagesContainer
         morethanoneimage={(product?.images?.length >= 2).toString()}

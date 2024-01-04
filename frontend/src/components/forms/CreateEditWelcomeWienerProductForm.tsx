@@ -1,4 +1,3 @@
-import React from 'react';
 import { EditForm, EditFormAndPreviewContainer } from '../styles/admin/Styles';
 import { Form } from 'react-bootstrap';
 import { ErrorText, Flex, Text, UpdateBtn } from '../styles/Styles';

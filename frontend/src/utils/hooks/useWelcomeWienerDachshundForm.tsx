@@ -6,13 +6,15 @@ interface WWDachshundFormValues {
   bio: string;
   age: string;
   associatedProducts: { name: string; _id: string }[];
+  images: string[];
+  readyToBeUploaded: boolean;
 }
 
 interface WWDachshundFormErrors {
   name?: string;
-  displayUrl?: string;
   bio?: string;
   age?: string;
+  images?: string;
   associatedProducts?: string;
 }
 
@@ -26,9 +28,9 @@ const validationRules: Record<string, WWDachshundValidationRule> = {
     required: true,
     message: 'Enter name to continue',
   },
-  displayUrl: {
+  images: {
     required: true,
-    message: 'Choose image to continue',
+    message: 'Choose images to continue',
   },
   age: {
     required: true,
@@ -44,33 +46,43 @@ const validationRules: Record<string, WWDachshundValidationRule> = {
   },
 } as any;
 
-const useWelcomeWienerDachshundForm = (
-  callback: () => void,
-  setFile: any,
-  data?: any
-) => {
-  const values: WWDachshundFormValues = {
+const useWelcomeWienerDachshundForm = (callback: () => void, data?: any) => {
+  const values: any = {
     name: '',
     displayUrl: '',
     bio: '',
     age: '',
     associatedProducts: [],
+    images: [],
+    readyToBeUploaded: null,
   };
   const [inputs, setInputs] = useState<WWDachshundFormValues>(values);
   const [errors, setErrors] = useState<WWDachshundFormErrors>({});
   const [showErrors, setShowErrors] = useState<boolean>(false);
 
   const validate = useCallback((inputs: WWDachshundFormValues) => {
+    const isAssociatedProductsValid = inputs?.associatedProducts?.length > 0;
+    const isReadyToBeUploaded = inputs?.readyToBeUploaded;
     const validationErrors: WWDachshundFormErrors = {};
     Object.keys(validationRules).forEach((field) => {
       const { required, message } =
         validationRules[field as keyof typeof validationRules];
-      const value = inputs[field as keyof WWDachshundFormValues];
-
-      if (required && (!value || value.length === 0)) {
+      const value: any = inputs[field as keyof WWDachshundFormValues];
+      if (
+        required &&
+        (!value || value.length === 0)
+      ) {
         validationErrors[field as keyof WWDachshundFormErrors] = message;
       }
     });
+
+    // If associatedProducts is valid, clear its specific error message
+    if (isAssociatedProductsValid) {
+      delete validationErrors['associatedProducts'];
+    }
+    if (isReadyToBeUploaded) {
+      delete validationErrors['images'];
+    }
     return validationErrors;
   }, []);
 
@@ -98,7 +110,7 @@ const useWelcomeWienerDachshundForm = (
         ...prevInputs,
         associatedProducts: updatedAssociatedProducts,
       }));
-      setErrors(validate(inputs));
+
     } else {
       setInputs((prevInputs: any) => ({
         ...prevInputs,
@@ -107,7 +119,6 @@ const useWelcomeWienerDachshundForm = (
           { _id: product?._id, name: product?.name },
         ],
       }));
-      setErrors(validate(inputs));
     }
   };
 
@@ -126,26 +137,14 @@ const useWelcomeWienerDachshundForm = (
         bio: data.bio,
         age: data.age,
         associatedProducts: data.associatedProducts,
+        images: data.images,
       }));
     }
   }, [data]);
 
-  const handleFileInputChange = (event: any) => {
-    setFile(event.target.files[0]);
-    setInputs((prevInputs) => ({
-      ...prevInputs,
-      displayUrl: event.target.files[0]?.name,
-    }));
-    const validationErrors = validate({
-      ...inputs,
-      displayUrl: event.target.files[0]?.name,
-    });
-    setErrors(validationErrors);
-  };
 
   const onSubmit = (e: any) => {
     e.preventDefault();
-
     const validationErrors = validate(inputs);
     setErrors(validationErrors);
     setShowErrors(true);
@@ -170,8 +169,8 @@ const useWelcomeWienerDachshundForm = (
     handleBlur,
     inputs,
     errors,
-    handleFileInputChange,
     addToAssociatedProducts,
+    setInputs,
   };
 };
 

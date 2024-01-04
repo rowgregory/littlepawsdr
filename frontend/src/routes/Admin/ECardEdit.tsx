@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Form, Image } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { createECard, updateECard } from '../../actions/eCardActions';
 import {
@@ -10,17 +10,14 @@ import { UpdateBtn } from '../../components/styles/Styles';
 import { eCardCategories } from '../../utils/eCardCategories';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Message from '../../components/Message';
+import { Container, EditForm } from '../../components/styles/admin/Styles';
 import {
-  Container,
-  EditForm,
-  FormFile,
-  UploadImageSquare,
-} from '../../components/styles/admin/Styles';
-import { WelcomeText } from '../../components/styles/DashboardStyles';
-import PhotoUploadIcon from '../../components/svg/PhotoUploadIcon';
-import BreadCrumb from '../../components/common/BreadCrumb';
-import Error from '../../components/assets/404_dog01.png';
+  GoBackAndTitleWrapper,
+  WelcomeText,
+} from '../../components/styles/DashboardStyles';
 import { uploadFileToFirebase } from '../../utils/uploadToFirebase';
+import GoBackBtn from '../../utils/GoBackBtn';
+import UploadSingleImage from '../../components/UploadSingleImage';
 
 const useEcardEditForm = (callback?: any, data?: any) => {
   const values = {
@@ -124,19 +121,10 @@ const ECardEdit = () => {
 
   return (
     <Container>
-      <WelcomeText className='mb-1'>
-        Ecard {isEditMode ? 'Edit' : 'Create'}
-      </WelcomeText>
-      <BreadCrumb
-        step1='Home'
-        step2='Dashboard'
-        step3='Ecards'
-        step4={isEditMode ? 'Update' : 'Create'}
-        step5=''
-        url1='/'
-        url2='/admin'
-        url3='/admin/eCardList'
-      />
+      <GoBackAndTitleWrapper>
+        <GoBackBtn to='/admin/eCardList' color='#121212' />
+        <WelcomeText>Ecard {isEditMode ? 'Edit' : 'Create'}</WelcomeText>
+      </GoBackAndTitleWrapper>
       {(errorUpdate || errorCreate) && (
         <Message variant='danger'>{errorUpdate || errorCreate}</Message>
       )}
@@ -173,38 +161,14 @@ const ECardEdit = () => {
             onChange={handleInput}
           ></Form.Control>
         </Form.Group>
-        <Form.Group controlId='image' className='d-flex flex-column'>
-          <Form.Label>Image</Form.Label>
-          <Form.Control
-            name='image'
-            className='img-link'
-            type='text'
-            value={inputs.image || ''}
-            onChange={handleInput}
-          ></Form.Control>
-          <div className='d-flex'>
-            <FormFile
-              id='image-file'
-              label={
-                file?.name ? (
-                  <UploadImageSquare className={uploading ? 'anim' : ''}>
-                    <PhotoUploadIcon ready={file} />
-                  </UploadImageSquare>
-                ) : (
-                  <Image
-                    onError={(e: any) => (e.target.src = Error)}
-                    src={inputs?.image}
-                    width='100px'
-                    height='100px'
-                    style={{ objectFit: 'cover', background: 'transparent' }}
-                    alt='Ecard'
-                  />
-                )
-              }
-              onChange={(e: any) => editPhotoHandler(e)}
-            ></FormFile>
-          </div>
-        </Form.Group>
+        <UploadSingleImage
+          inputs={inputs}
+          handleInput={handleInput}
+          item={eCard}
+          file={file}
+          uploading={uploading}
+          editPhotoHandler={editPhotoHandler}
+        />
         <UpdateBtn onClick={onSubmit}>
           {isEditMode ? 'Updat' : 'Creat'}
           {loadingUpdate || loadingCreate ? 'ing...' : 'e'}
