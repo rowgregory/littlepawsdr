@@ -1,13 +1,13 @@
 import {
   NEWSLETTER_EMAIL_CREATE_FAIL,
   NEWSLETTER_EMAIL_CREATE_REQUEST,
-  // NEWSLETTER_EMAIL_CREATE_RESET,
   NEWSLETTER_EMAIL_CREATE_SUCCESS,
   NEWSLETTER_EMAIL_DELETE_FAIL,
   NEWSLETTER_EMAIL_DELETE_REQUEST,
   NEWSLETTER_EMAIL_DELETE_SUCCESS,
   NEWSLETTER_EMAIL_LIST_FAIL,
   NEWSLETTER_EMAIL_LIST_REQUEST,
+  NEWSLETTER_EMAIL_LIST_RESET,
   NEWSLETTER_EMAIL_LIST_SUCCESS,
 } from '../constants/newsletterConstants';
 
@@ -27,11 +27,6 @@ export const newsletterCreateReducer = (state = '', action: any) => {
         loading: false,
         error: action.payload,
       };
-    // case NEWSLETTER_EMAIL_CREATE_RESET:
-    //   return {
-    //     loading: false,
-    //     success: false,
-    //   };
     default:
       return state;
   }
@@ -55,6 +50,12 @@ export const newsletterEmailListReducer = (
       return {
         loading: false,
         error: action.payload,
+      };
+    case NEWSLETTER_EMAIL_LIST_RESET:
+      return {
+        loading: false,
+        error: '',
+        newsletterEmails: [],
       };
     default:
       return state;

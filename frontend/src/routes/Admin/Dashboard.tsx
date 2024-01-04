@@ -39,16 +39,18 @@ const Dashboard = () => {
   return (
     <DashboardContainer>
       <Middle>
-        <MobileWrapper>
-          <HomeIcon>
-            <i className='fa-solid fa-house-chimney'></i>
-          </HomeIcon>
-          <DashboardAdminAvatar
-            className='mr-2'
-            onClick={() => setShowAdminLinks(!showAdminLinks)}
-            src={userInfo?.avatar}
-            alt={`Hey ${userInfo?.name}! We appreciate you! Love from LPDR`}
-          />
+        <MobileWrapper >
+          <div className='d-flex justify-content-between w-100 pt-2 px-2'>
+            <HomeIcon to='/'>
+              <i className='fa-solid fa-house-chimney'></i>
+            </HomeIcon>
+            <DashboardAdminAvatar
+              className='mr-2'
+              onClick={() => setShowAdminLinks(!showAdminLinks)}
+              src={userInfo?.avatar}
+              alt={`Hey ${userInfo?.name}! We appreciate you! Love from LPDR`}
+            />
+          </div>
         </MobileWrapper>
         <MobileWrapper className='mt-3'>
           <UserNavigation showAdminLinks={showAdminLinks} />

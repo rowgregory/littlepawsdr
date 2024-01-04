@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Container } from '../../components/styles/admin/Styles';
-import { WelcomeText } from '../../components/styles/DashboardStyles';
-import BreadCrumb from '../../components/common/BreadCrumb';
+import {
+  GoBackAndTitleWrapper,
+  WelcomeText,
+} from '../../components/styles/DashboardStyles';
 import { WELCOME_WIENER_DACHSHUND_UPDATE_RESET } from '../../constants/welcomeWienerDachshundConstants';
 import {
   getWelcomeWienerDachshundDetails,
@@ -11,15 +13,15 @@ import {
 } from '../../actions/welcomeWienerDachshundActions';
 import CreateEditWelcomeWienerDachshundForm from '../../components/forms/CreateEditWelcomeWienerDachshundForm';
 import useWelcomeWienerDachshundForm from '../../utils/hooks/useWelcomeWienerDachshundForm';
-import { uploadFileToFirebase } from '../../utils/uploadToFirebase';
+import { uploadMultipleFilesToFirebase } from '../../utils/uploadToFirebase';
+import GoBackBtn from '../../utils/GoBackBtn';
 
 const WelcomeWienerDachshundEdit = () => {
   const { id } = useParams() as any;
   const history = useNavigate();
   const dispatch = useDispatch();
   const [uploading, setUploading] = useState(false);
-  const [file, setFile] = useState({}) as any;
-
+  const [files, setFiles] = useState([]) as any;
   const state = useSelector((state: any) => state);
   const loadingUpdate = state.welcomeWienerDachshundUpdate.loading;
   const successUpdate = state.welcomeWienerDachshundUpdate.success;
@@ -28,10 +30,10 @@ const WelcomeWienerDachshundEdit = () => {
 
   const updateWelcomeWienerDachshundCallback = async () => {
     setUploading(true);
-    let image = dachshund?.displayUrl;
-    if (file?.name) {
-      image = await uploadFileToFirebase(file);
-    }
+
+    const imageUrls = await uploadMultipleFilesToFirebase(files);
+
+    const updatedImages = [...inputs.images, ...imageUrls.filter(Boolean)];
 
     dispatch(
       updateWelcomeWienerDachshund({
@@ -39,8 +41,9 @@ const WelcomeWienerDachshundEdit = () => {
         name: inputs?.name,
         bio: inputs?.bio,
         age: inputs?.age,
-        displayUrl: image ?? inputs?.displayUrl,
+        displayUrl: updatedImages[0],
         associatedProducts: inputs?.associatedProducts,
+        images: updatedImages,
       })
     );
   };
@@ -60,39 +63,31 @@ const WelcomeWienerDachshundEdit = () => {
     handleBlur,
     inputs,
     errors,
-    handleFileInputChange,
-    addToAssociatedProducts
+    addToAssociatedProducts,
+    setInputs,
   } = useWelcomeWienerDachshundForm(
     updateWelcomeWienerDachshundCallback,
-    setFile,
     dachshund
   );
 
   return (
     <Container>
-      <WelcomeText className='mb-1'>Welcome Wiener Dachshund Edit</WelcomeText>
-      <BreadCrumb
-        step1='Home'
-        step2='Dashboard'
-        step3='Welcome Wiener Dachshunds'
-        step4='Edit'
-        step5=''
-        url1='/'
-        url2='/admin'
-        url3='/admin/welcome-wiener/dachshund/list'
-      />
+      <GoBackAndTitleWrapper>
+        <GoBackBtn to='/admin/welcome-wiener/dachshund/list' color='#121212' />
+        <WelcomeText>Welcome Wiener Dachshund Edit</WelcomeText>
+      </GoBackAndTitleWrapper>
       <CreateEditWelcomeWienerDachshundForm
         inputs={inputs}
         handleInput={handleInput}
-        file={file}
+        setFiles={setFiles}
+        files={files}
         uploading={uploading || loadingDetails || loadingUpdate}
-        setFile={setFile}
         onSubmit={onSubmit}
         submitBtnText='Updat'
         errors={errors}
         handleBlur={handleBlur}
-        handleFileInputChange={handleFileInputChange}
         addToAssociatedProducts={addToAssociatedProducts}
+        setInputs={setInputs}
       />
     </Container>
   );

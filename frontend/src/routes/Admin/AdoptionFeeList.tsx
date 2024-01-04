@@ -17,6 +17,7 @@ import { WelcomeText } from '../../components/styles/DashboardStyles';
 import BreadCrumb from '../../components/common/BreadCrumb';
 import { listAdoptionFees } from '../../actions/adoptionActions';
 import { formatDateTime } from '../../utils/formatDateTime';
+import { ADOPTION_FEE_LIST_RESET } from '../../constants/adoptionConstants';
 
 const AdoptionFeeList = () => {
   const dispatch = useDispatch();
@@ -29,6 +30,9 @@ const AdoptionFeeList = () => {
 
   useEffect(() => {
     dispatch(listAdoptionFees());
+    return () => {
+      dispatch({ type: ADOPTION_FEE_LIST_RESET });
+    };
   }, [dispatch]);
 
   adoptionFees?.sort(
@@ -62,8 +66,14 @@ const AdoptionFeeList = () => {
               value={text || ''}
               onChange={(e: any) => setText(e.target.value)}
             />
+            {loading && (
+              <Spinner
+                animation='border'
+                size='sm'
+                style={{ position: 'absolute', right: '10px', top: '15px' }}
+              />
+            )}
           </SearchBar>
-          {loading && <Spinner animation='border' size='sm' />}
         </TopRow>
         <TableAndPaginationContainer>
           <Table hover responsive>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Table, Spinner, Pagination } from 'react-bootstrap';
+import { Table, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import DeleteModal from '../../components/DeleteModal';
 import { Text } from '../../components/styles/Styles';
@@ -9,68 +9,52 @@ import {
   TableRow,
   StyledEditBtn,
   TopRow,
-  PaginationContainer,
   TableAndPaginationContainer,
   Container,
   SearchInput,
   TableWrapper,
-  CreateBtnV2,
-  SpinnerContainer,
+  CreateLink,
 } from '../../components/styles/admin/Styles';
 import { WelcomeText } from '../../components/styles/DashboardStyles';
 import BreadCrumb from '../../components/common/BreadCrumb';
-import { rangeV2 } from '../../components/common/Pagination';
 import Message from '../../components/Message';
 import { AddIcon } from '../../components/svg/AddIcon';
 import { defaultImages } from '../../utils/defaultImages';
 import { listWelcomeWienerProducts } from '../../actions/welcomeWienerProductActions';
 import shortenText from '../../utils/shortenText';
 import { Link } from 'react-router-dom';
+import { WELCOME_WIENER_PRODUCT_LIST_RESET } from '../../constants/welcomeWienerProductConstants';
 
 const WelcomeWienerProductList = () => {
   const dispatch = useDispatch();
   const [show, setShow] = useState(false);
   const [id, setId] = useState('');
   const [text, setText] = useState('');
-  const [paginatedPage, setPaginatedPage] = useState(1);
-  const [paginatedItems, setPaginatedItems] = useState<{}[]>([]) as any;
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
   const state = useSelector((state: any) => state);
-
   const loading = state.welcomeWienerProductList.loading;
   const error = state.welcomeWienerProductList.error;
   const productList = state.welcomeWienerProductList.productList;
-
   const loadingDelete = state.welcomeWienerProductDelete.loading;
   const errorDelete = state.welcomeWienerProductDelete.error;
 
   useEffect(() => {
     dispatch(listWelcomeWienerProducts());
+    return () => {
+      dispatch({ type: WELCOME_WIENER_PRODUCT_LIST_RESET })
+    }
   }, [dispatch]);
 
   productList?.sort(
     (a: any, b: any) => -a?.createdAt?.localeCompare(b?.createdAt)
   );
 
-  useEffect(() => {
-    const itemsPerPage = 10;
-    const indexOfLastItem = paginatedPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-
-    setPaginatedItems(productList?.slice(indexOfFirstItem, indexOfLastItem));
-  }, [productList, paginatedPage]);
-
-  const filteredWelcomeWienerProducts =
-    text !== ''
-      ? productList?.filter((product: any) =>
-          product?.name?.toLowerCase().includes(text.toLowerCase())
-        )
-      : paginatedItems?.filter((product: any) =>
-          product?.name?.toLowerCase().includes(text.toLowerCase())
-        );
+  const filteredWelcomeWienerProducts = productList?.filter((product: any) =>
+    product?.name?.toLowerCase().includes(text.toLowerCase())
+  );
 
   const welcomeWienerProduct = {
     name: '',
@@ -111,21 +95,13 @@ const WelcomeWienerProductList = () => {
               onChange={(e: any) => setText(e.target.value)}
             />
           </SearchBar>
-          {loading ? (
-            <SpinnerContainer>
-              <Spinner animation='border' size='sm' />
-            </SpinnerContainer>
-          ) : (
-            <Link
-              to='/admin/welcome-wiener/product/create'
-              state={{ welcomeWienerProduct }}
-            >
-              <CreateBtnV2>
-                <AddIcon />
-                Create
-              </CreateBtnV2>
-            </Link>
-          )}
+          <CreateLink
+            to='/admin/welcome-wiener/product/create'
+            state={{ welcomeWienerProduct }}
+          >
+            <AddIcon loading={loading} />
+            Create
+          </CreateLink>
         </TopRow>
         <TableAndPaginationContainer>
           <Table hover responsive>
@@ -190,11 +166,6 @@ const WelcomeWienerProductList = () => {
               ))}
             </tbody>
           </Table>
-          <PaginationContainer>
-            <Pagination className='my-3'>
-              {rangeV2(productList, paginatedPage, setPaginatedPage)}
-            </Pagination>
-          </PaginationContainer>
         </TableAndPaginationContainer>
       </TableWrapper>
     </Container>

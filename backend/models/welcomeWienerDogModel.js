@@ -27,6 +27,9 @@ const welcomeWienerDogSchema = mongoose.Schema(
       default: false,
     },
     isWelcomeWiener: { type: Boolean, default: true },
+    images: {
+      type: [String],
+    },
   },
   { timestamps: true }
 );

@@ -14,9 +14,8 @@ import {
   Container,
   SearchInput,
   TableWrapper,
-  CreateBtnV2,
   TableImg,
-  SpinnerContainer,
+  CreateLink,
 } from '../../components/styles/admin/Styles';
 import Message from '../../components/Message';
 import { WelcomeText } from '../../components/styles/DashboardStyles';
@@ -24,6 +23,7 @@ import BreadCrumb from '../../components/common/BreadCrumb';
 import { AddIcon } from '../../components/svg/AddIcon';
 import { defaultImages } from '../../utils/defaultImages';
 import { Link } from 'react-router-dom';
+import { EDUCATION_TIP_LIST_RESET } from '../../constants/educationTipConstants';
 
 const EducationTipList = () => {
   const dispatch = useDispatch();
@@ -36,17 +36,18 @@ const EducationTipList = () => {
   const handleShow = () => setShow(true);
 
   const state = useSelector((state: any) => state);
-
   const loading = state.educationTipList.loading;
   const error = state.educationTipList.error;
   const educationTips = state.educationTipList.educationTips;
-
   const loadingDelete = state.educationTipDelete.loading;
   const errorDelete = state.educationTipDelete.error;
   const successDelete = state.educationTipDelete.success;
 
   useEffect(() => {
     dispatch(listEducationTips());
+    return () => {
+      dispatch({ type: EDUCATION_TIP_LIST_RESET });
+    };
   }, [dispatch, successDelete]);
 
   educationTips?.sort(
@@ -65,7 +66,7 @@ const EducationTipList = () => {
 
   return (
     <Container>
-      <WelcomeText className='mb-1'>Eduaction Tips</WelcomeText>
+      <WelcomeText>Eduaction Tips</WelcomeText>
       <BreadCrumb
         step1='Home'
         step2='Dashboard'
@@ -96,18 +97,10 @@ const EducationTipList = () => {
               onChange={(e: any) => setText(e.target.value)}
             />
           </SearchBar>
-          {loading ? (
-            <SpinnerContainer>
-              <Spinner animation='border' size='sm' />
-            </SpinnerContainer>
-          ) : (
-            <Link to={'/admin/education-tip/id/edit'} state={{ eTip }}>
-              <CreateBtnV2>
-                <AddIcon />
-                Create
-              </CreateBtnV2>
-            </Link>
-          )}
+          <CreateLink to='/admin/education-tip/id/edit' state={{ eTip }}>
+            <AddIcon loading={loading} />
+            Create
+          </CreateLink>
         </TopRow>
         <TableAndPaginationContainer>
           <Table hover responsive>
@@ -155,7 +148,6 @@ const EducationTipList = () => {
                   </td>
                   <td>
                     <StyledEditBtn
-                      className='border-0'
                       onClick={() => {
                         setId(tip?._id);
                         setImagePath(tip?.image);

@@ -149,14 +149,21 @@ export const Flex = styled.div<FlexProps>`
   border-radius: ${({ borderRadius }) => (borderRadius ? borderRadius : '')};
 `;
 
-export const UpdateBtn = styled(Button)`
+export const UpdateBtn = styled.button`
   background: ${({ theme }) => theme.colors.quinary};
   border: 1px solid ${({ theme }) => theme.colors.quinary};
   margin-top: 32px;
   transition: 300ms;
-  font-size: 13px;
+  font-size: 16px;
+  width: 100%;
+  border-radius: 8px;
+  color: #fff;
+  padding: 8px 24px;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    width: fit-content;
+  }
   :hover {
-    filter: brightness(0.9);
+    filter: brightness(1.1);
     background: ${({ theme }) => theme.colors.quinary};
     border: 1px solid ${({ theme }) => theme.colors.quinary};
   }

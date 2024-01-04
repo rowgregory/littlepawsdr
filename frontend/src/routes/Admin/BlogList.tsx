@@ -14,9 +14,8 @@ import {
   Container,
   SearchInput,
   TableWrapper,
-  CreateBtnV2,
   TableImg,
-  SpinnerContainer,
+  CreateLink,
 } from '../../components/styles/admin/Styles';
 import Message from '../../components/Message';
 import { WelcomeText } from '../../components/styles/DashboardStyles';
@@ -24,6 +23,7 @@ import BreadCrumb from '../../components/common/BreadCrumb';
 import { AddIcon } from '../../components/svg/AddIcon';
 import { defaultImages } from '../../utils/defaultImages';
 import { NavLink } from 'react-router-dom';
+import { BLOG_LIST_RESET } from '../../constants/blogConstants';
 
 const BlogList = () => {
   const dispatch = useDispatch();
@@ -36,17 +36,18 @@ const BlogList = () => {
   const handleShow = () => setShow(true);
 
   const state = useSelector((state: any) => state);
-
   const loading = state.blogList.loading;
   const error = state.blogList.error;
   const blogs = state.blogList.blogs;
-
   const loadingDelete = state.blogDelete.loading;
   const errorDelete = state.blogDelete.error;
   const successDelete = state.blogDelete.success;
 
   useEffect(() => {
     dispatch(listBlogs());
+    return () => {
+      dispatch({ type: BLOG_LIST_RESET });
+    };
   }, [dispatch, successDelete]);
 
   blogs?.sort((a: any, b: any) => -a?.createdAt?.localeCompare(b?.createdAt));
@@ -63,7 +64,7 @@ const BlogList = () => {
 
   return (
     <Container>
-      <WelcomeText className='mb-1'>Blogs</WelcomeText>
+      <WelcomeText>Blogs</WelcomeText>
       <BreadCrumb
         step1='Home'
         step2='Dashboard'
@@ -94,20 +95,11 @@ const BlogList = () => {
               onChange={(e: any) => setText(e.target.value)}
             />
           </SearchBar>
-          {loading ? (
-            <SpinnerContainer>
-              <Spinner animation='border' size='sm' />
-            </SpinnerContainer>
-          ) : (
-            <NavLink to={'/admin/blog/id/edit'} state={{ blog }}>
-              <CreateBtnV2>
-                <AddIcon />
-                Create
-              </CreateBtnV2>
-            </NavLink>
-          )}
+          <CreateLink to={'/admin/blog/id/edit'} state={{ blog }}>
+            <AddIcon loading={loading} />
+            Create
+          </CreateLink>
         </TopRow>
-
         <TableAndPaginationContainer>
           <Table hover responsive>
             <TableHead>

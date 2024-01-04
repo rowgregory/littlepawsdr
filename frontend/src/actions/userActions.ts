@@ -247,34 +247,35 @@ export const listWhoWeAreUsers = () => async (dispatch: any) => {
   }
 };
 
-export const deleteUser = (id: any) => async (dispatch: any, getState: any) => {
-  try {
-    dispatch({ type: USER_DELETE_REQUEST });
+export const deleteUser =
+  (id: any) => async (dispatch: any, getState: any) => {
+    try {
+      dispatch({ type: USER_DELETE_REQUEST });
 
-    const {
-      userLogin: { userInfo },
-    } = getState();
+      const {
+        userLogin: { userInfo },
+      } = getState();
 
-    const config = {
-      headers: {
-        Authorization: `Bearer ${userInfo.token}`,
-      },
-    };
+      const config = {
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      };
 
-    await axios.delete(`/api/users/${id}`, config);
+      await axios.delete(`/api/users/${id}`, config);
 
-    dispatch({ type: USER_DELETE_SUCCESS });
-  } catch (error: any) {
-    const message =
-      error.response && error.response.data.message
-        ? error.response.data.message
-        : error.message;
-    dispatch({
-      type: USER_DELETE_FAIL,
-      payload: message,
-    });
-  }
-};
+      dispatch({ type: USER_DELETE_SUCCESS });
+    } catch (error: any) {
+      const message =
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message;
+      dispatch({
+        type: USER_DELETE_FAIL,
+        payload: message,
+      });
+    }
+  };
 
 export const updateUser =
   (user: any) => async (dispatch: any, getState: any) => {
@@ -296,7 +297,10 @@ export const updateUser =
 
       dispatch({ type: USER_UPDATE_SUCCESS });
 
-      dispatch({ type: USER_DETAILS_SUCCESS, payload: data });
+      dispatch({
+        type: USER_DETAILS_SUCCESS,
+        payload: { isAdmin: data.isAdmin, name: user.name, email: user.email },
+      });
 
       dispatch({ type: USER_DETAILS_RESET });
     } catch (error: any) {

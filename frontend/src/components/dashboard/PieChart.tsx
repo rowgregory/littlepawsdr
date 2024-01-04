@@ -70,7 +70,7 @@ const PieChart = ({ details, loading }: any) => {
 
   const noData = ordersTotal === 0;
   return (
-    <TotalSalesContainer>
+    <TotalSalesContainer className='mb-4'>
       <Text
         color='#373737'
         fontWeight={500}

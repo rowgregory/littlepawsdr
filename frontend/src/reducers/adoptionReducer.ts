@@ -6,6 +6,7 @@ import {
   ADOPTION_FEE_FAIL,
   ADOPTION_FEE_LIST_FAIL,
   ADOPTION_FEE_LIST_REQUEST,
+  ADOPTION_FEE_LIST_RESET,
   ADOPTION_FEE_LIST_SUCCESS,
   ADOPTION_FEE_REQUEST,
   ADOPTION_FEE_RESET,
@@ -97,6 +98,14 @@ export const adoptionFeeListReducer = (
         loading: false,
         success: false,
         error: action.payload,
+      };
+    case ADOPTION_FEE_LIST_RESET:
+      return {
+        ...state,
+        loading: false,
+        success: false,
+        error: '',
+        adoptionFees: [],
       };
     default:
       return state;

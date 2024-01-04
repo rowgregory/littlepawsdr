@@ -10,13 +10,12 @@ import {
   TableImg,
   TableRow,
   StyledEditBtn,
-  CreateBtnV2,
   TopRow,
   TableAndPaginationContainer,
   Container,
   SearchInput,
   TableWrapper,
-  SpinnerContainer,
+  CreateLink,
 } from '../../components/styles/admin/Styles';
 import styled from 'styled-components';
 import Message from '../../components/Message';
@@ -25,6 +24,7 @@ import BreadCrumb from '../../components/common/BreadCrumb';
 import { AddIcon } from '../../components/svg/AddIcon';
 import { defaultImages } from '../../utils/defaultImages';
 import { Link } from 'react-router-dom';
+import { PRODUCT_LIST_RESET } from '../../constants/productContstants';
 
 const ProductCountTD = styled.td<{ isProductLow?: boolean }>`
   color: ${({ theme, isProductLow }) =>
@@ -42,7 +42,7 @@ const ProductList = () => {
 
   const state = useSelector((state: any) => state);
 
-  const loading = state.productList.loading;
+  let loading = state.productList.loading;
   const error = state.productList.error;
   const products = state.productList.products;
 
@@ -52,6 +52,9 @@ const ProductList = () => {
 
   useEffect(() => {
     dispatch(listProducts());
+    return () => {
+      dispatch({ type: PRODUCT_LIST_RESET })
+    }
   }, [dispatch, successDelete]);
 
   const filteredProducts = products?.filter((product: any) =>
@@ -71,7 +74,7 @@ const ProductList = () => {
 
   return (
     <Container>
-      <WelcomeText className='mb-1'>Products</WelcomeText>
+      <WelcomeText>Products</WelcomeText>
       <BreadCrumb
         step1='Home'
         step2='Dashboard'
@@ -101,18 +104,10 @@ const ProductList = () => {
               onChange={(e: any) => setText(e.target.value)}
             />
           </SearchBar>
-          {loading ? (
-            <SpinnerContainer>
-              <Spinner animation='border' size='sm' />
-            </SpinnerContainer>
-          ) : (
-            <Link to={'/admin/product/create'} state={{ product }}>
-              <CreateBtnV2>
-                <AddIcon />
-                Create
-              </CreateBtnV2>
-            </Link>
-          )}
+          <CreateLink to={'/admin/product/create'} state={{ product }}>
+            <AddIcon loading={loading} />
+            Create
+          </CreateLink>
         </TopRow>
         <TableAndPaginationContainer>
           <Table hover responsive>
@@ -154,21 +149,21 @@ const ProductList = () => {
                       isProductLow={
                         product?.sizes?.length > 0
                           ? product?.sizes?.reduce(
-                              (acc: any, item: any) => acc + item.amount,
-                              0
-                            ) <= 3 &&
-                            product?.sizes?.reduce(
-                              (acc: any, item: any) => acc + item.amount,
-                              0
-                            )
+                            (acc: any, item: any) => acc + item.amount,
+                            0
+                          ) <= 3 &&
+                          product?.sizes?.reduce(
+                            (acc: any, item: any) => acc + item.amount,
+                            0
+                          )
                           : product?.countInStock <= 3
                       }
                     >
                       {product?.sizes?.length > 0
                         ? product?.sizes?.reduce(
-                            (acc: any, item: any) => acc + item.amount,
-                            0
-                          )
+                          (acc: any, item: any) => acc + item.amount,
+                          0
+                        )
                         : product?.countInStock}
                     </ProductCountTD>
                     <td>

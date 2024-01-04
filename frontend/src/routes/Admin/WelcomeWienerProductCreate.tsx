@@ -2,12 +2,12 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Container } from '../../components/styles/admin/Styles';
-import { WelcomeText } from '../../components/styles/DashboardStyles';
-import BreadCrumb from '../../components/common/BreadCrumb';
+import { GoBackAndTitleWrapper, WelcomeText } from '../../components/styles/DashboardStyles';
 import { createWelcomeWienerProduct } from '../../actions/welcomeWienerProductActions';
 import { WELCOME_WIENER_PRODUCT_CREATE_RESET } from '../../constants/welcomeWienerProductConstants';
 import CreateEditWelcomeWienerProductForm from '../../components/forms/CreateEditWelcomeWienerProductForm';
 import useWelcomeWienerProductForm from '../../utils/hooks/useWelcomeWienerProductForm';
+import GoBackBtn from '../../utils/GoBackBtn';
 
 const WelcomeWienerProductCreate = () => {
   const history = useNavigate();
@@ -46,17 +46,10 @@ const WelcomeWienerProductCreate = () => {
 
   return (
     <Container>
-      <WelcomeText className='mb-1'>Welcome Wiener Product Create</WelcomeText>
-      <BreadCrumb
-        step1='Home'
-        step2='Dashboard'
-        step3='Welcome Wiener Products'
-        step4='Create'
-        step5=''
-        url1='/'
-        url2='/admin'
-        url3='/admin/welcome-wiener/product/list'
-      />
+      <GoBackAndTitleWrapper>
+        <GoBackBtn to='/admin/welcome-wiener/product/list' color='#121212' />
+        <WelcomeText>Welcome Wiener Product Create</WelcomeText>
+      </GoBackAndTitleWrapper>
       <CreateEditWelcomeWienerProductForm
         inputs={inputs}
         handleInput={handleInput}

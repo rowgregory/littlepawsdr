@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 export const DashboardContainer = styled.div`
@@ -12,14 +13,20 @@ export const DashboardContainer = styled.div`
   }
 `;
 
-export const HomeIcon = styled.div`
+export const HomeIcon = styled(Link)`
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: #ccc;
+  background-color: ${({ theme }) => theme.header.link.avatarbg};
   display: flex;
-  justify-content: scenter;
+  justify-content: center;
   align-items: center;
+  cursor: pointer;
+  text-decoration: none;
+  color: #121212;
+  :hover {
+    color: #121212;
+  }
 `;
 
 export const TopRow = styled.div`
@@ -36,22 +43,21 @@ export const MiddleRow = styled.div`
 export const NameText = styled.div`
   color: #3b3b3c;
   font-size: 26px;
-  padding: 16px 0 0 8px;
+  padding: 0 0 0 8px;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
     padding: 16px 0 0 0;
   }
 `;
 
+export const GoBackAndTitleWrapper = styled.div`
+  display: flex;
+  align-itmes: center;
+  margin-bottom: 24px;
+`;
+
 export const WelcomeText = styled.div`
   color: #3b3b3c;
   font-size: 26px;
-  padding: 16px 16px 0;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
-    padding: 16px 0 0 16px;
-  }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    padding: 0;
-  }
 `;
 export const SubheaderText = styled.div`
   color: #3b3b3c;

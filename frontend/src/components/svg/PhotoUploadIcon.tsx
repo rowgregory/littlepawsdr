@@ -1,6 +1,6 @@
 import { Text } from '../styles/Styles';
 
-const PhotoUploadIcon = ({ ready, uploading }: any) => {
+const PhotoUploadIcon = ({ ready, uploading, isMultiple }: any) => {
   return (
     <div className='d-flex flex-column align-items-center'>
       <svg
@@ -26,8 +26,10 @@ const PhotoUploadIcon = ({ ready, uploading }: any) => {
         {uploading
           ? 'Uploading...'
           : ready?.name
-          ? 'Ready to Upload'
-          : 'Choose file to Upload'}
+            ? 'Ready to Upload'
+            : isMultiple
+              ? 'Choose files to upload'
+              : 'Choose file to Upload'}
       </Text>
       <Text
         fontSize='8px'

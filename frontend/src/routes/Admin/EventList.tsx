@@ -14,9 +14,8 @@ import {
   Container,
   SearchInput,
   TableWrapper,
-  CreateBtnV2,
   TableImg,
-  SpinnerContainer,
+  CreateLink,
 } from '../../components/styles/admin/Styles';
 import { WelcomeText } from '../../components/styles/DashboardStyles';
 import BreadCrumb from '../../components/common/BreadCrumb';
@@ -25,6 +24,7 @@ import { AddIcon } from '../../components/svg/AddIcon';
 import { defaultImages } from '../../utils/defaultImages';
 import { formatDate } from '../../utils/formatDate';
 import { Link } from 'react-router-dom';
+import { EVENT_LIST_RESET } from '../../constants/eventConstants';
 
 const EventList = () => {
   const dispatch = useDispatch();
@@ -37,17 +37,18 @@ const EventList = () => {
   const handleShow = () => setShow(true);
 
   const state = useSelector((state: any) => state);
-
   const loading = state.eventList.loading;
   const error = state.eventList.error;
   const events = state.eventList.events;
-
   const loadingDelete = state.eventDelete.loading;
   const errorDelete = state.eventDelete.error;
   const successDelete = state.eventDelete.success;
 
   useEffect(() => {
     dispatch(listEvents());
+    return () => {
+      dispatch({ type: EVENT_LIST_RESET })
+    }
   }, [dispatch, successDelete]);
 
   const filteredEvents = events?.filter((event: any) =>
@@ -67,7 +68,7 @@ const EventList = () => {
 
   return (
     <Container>
-      <WelcomeText className='mb-1'>Events</WelcomeText>
+      <WelcomeText>Events</WelcomeText>
       <BreadCrumb
         step1='Home'
         step2='Dashboard'
@@ -98,18 +99,10 @@ const EventList = () => {
               onChange={(e: any) => setText(e.target.value)}
             />
           </SearchBar>
-          {loading ? (
-            <SpinnerContainer>
-              <Spinner animation='border' size='sm' />
-            </SpinnerContainer>
-          ) : (
-            <Link to={'/admin/event/id/edit'} state={{ event }}>
-              <CreateBtnV2>
-                <AddIcon />
-                Create
-              </CreateBtnV2>
-            </Link>
-          )}
+          <CreateLink to={'/admin/event/id/edit'} state={{ event }}>
+            <AddIcon loading={loading} />
+            Create
+          </CreateLink>
         </TopRow>
         <TableAndPaginationContainer>
           <Table hover responsive>
@@ -171,7 +164,6 @@ const EventList = () => {
                   </td>
                   <td>
                     <StyledEditBtn
-                      className='border-0'
                       onClick={() => {
                         setId(event?._id);
                         setImagePath(event?.image);

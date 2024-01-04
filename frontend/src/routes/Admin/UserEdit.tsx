@@ -1,113 +1,85 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Form } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUserDetails, updateUser } from '../../actions/userActions';
-import {
-  USER_DETAILS_RESET,
-  USER_UPDATE_RESET,
-} from '../../constants/userConstants';
-import { useNavigate, useParams } from 'react-router-dom';
-import { Text, UpdateBtn } from '../../components/styles/Styles';
+import { USER_DETAILS_RESET } from '../../constants/userConstants';
+import { useParams } from 'react-router-dom';
+import { Text } from '../../components/styles/Styles';
 import Message from '../../components/Message';
 import {
   Container,
   TableAndPaginationContainer,
 } from '../../components/styles/admin/Styles';
-import { WelcomeText } from '../../components/styles/DashboardStyles';
-import BreadCrumb from '../../components/common/BreadCrumb';
+import {
+  GoBackAndTitleWrapper,
+  WelcomeText,
+} from '../../components/styles/DashboardStyles';
+import GoBackBtn from '../../utils/GoBackBtn';
 
 const UserEdit = () => {
   const { id } = useParams<{ id: string }>();
-  const history = useNavigate();
   const dispatch = useDispatch();
   const userId = id;
-  const [isAdmin, setIsAdmin] = useState(false);
 
   const {
-    userDetails: { loading, error, user },
-    userUpdate: {
-      loading: loadingUpdate,
-      error: errorUpdate,
-      success: successUpdate,
-    },
+    userDetails: { error, isAdmin, name, email },
+    userUpdate: { error: errorUpdate, success: successUpdate },
   } = useSelector((state: any) => state);
 
   useEffect(() => {
-    dispatch({ type: USER_DETAILS_RESET });
     dispatch(getUserDetails(userId));
-    dispatch({ type: USER_UPDATE_RESET });
-  }, [dispatch, userId]);
-
-  useEffect(() => {
-    if (successUpdate) {
-      dispatch({ type: USER_UPDATE_RESET });
-      history('/admin/userList');
-    } else {
-      setIsAdmin(user.isAdmin);
-    }
-  }, [dispatch, history, user, successUpdate]);
-
-  const submitHandler = (e: any) => {
-    e.preventDefault();
-    dispatch(
-      updateUser({
-        _id: userId,
-        isAdmin,
-      })
-    );
-  };
+    return () => {
+      dispatch({ type: USER_DETAILS_RESET });
+    };
+  }, [dispatch, userId, successUpdate]);
 
   return (
     <Container>
-      <WelcomeText className='mb-1'>User Edit</WelcomeText>
-      <BreadCrumb
-        step1='Home'
-        step2='Dashboard'
-        step3='Users'
-        step4={user?.name}
-        step5={user?.isAdmin ? 'Admin' : 'Not Admin'}
-        url1='/'
-        url2='/admin'
-        url3='/admin/userList'
-      />
+      <GoBackAndTitleWrapper>
+        <GoBackBtn to='/admin/userList' color='#121212' />
+        <WelcomeText>User Edit</WelcomeText>
+      </GoBackAndTitleWrapper>
       {(error || errorUpdate) && (
         <Message variant='danger'>{error || errorUpdate}</Message>
       )}
-      <TableAndPaginationContainer
-        style={{ justifyContent: 'flex-start', padding: '20px' }}
-      >
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr' }}>
+      <TableAndPaginationContainer className='justify-content-start p-4'>
+        <div>
           <Text className='d-flex'>
-            Name:{' '}
+            Name:
             <Text fontWeight={400} marginLeft='8px'>
-              {' '}
-              {user?.name}
+              {name}
             </Text>
           </Text>
           <Text className='d-flex'>
-            Email:{' '}
+            Email:
             <Text fontWeight={400} marginLeft='8px'>
-              {' '}
-              {user?.email}
+              {email}
             </Text>
           </Text>
         </div>
-        <Form onSubmit={submitHandler} className='mt-4'>
-          <Form.Group className='d-flex align-items-center' controlId='isAdmin'>
+        <Form className='mt-4'>
+          <Form.Group
+            className='d-flex align-items-center'
+            controlId='isAdmin'
+          >
             <Form.Check
               type='switch'
               checked={isAdmin || false}
-              onChange={(e: any) => setIsAdmin(e.target.checked)}
+              onChange={(e: any) => {
+                dispatch(
+                  updateUser({
+                    _id: userId,
+                    isAdmin: e.target.checked,
+                    name,
+                    email,
+                  })
+                );
+              }}
             ></Form.Check>
             <Form.Label className='mb-0'>
               <Text>Is Admin</Text>
             </Form.Label>
           </Form.Group>
-          <UpdateBtn type='submit'>
-            <Text className='text-white'>
-              Updat{loadingUpdate || loading ? 'ing...' : 'e'}
-            </Text>
-          </UpdateBtn>
         </Form>
       </TableAndPaginationContainer>
     </Container>

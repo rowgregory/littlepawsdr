@@ -1,19 +1,20 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { Text } from '../components/styles/Styles';
 
-const StyledLink = styled(Link)<{ color?: string }>`
+const StyledLink = styled(Link) <{ color?: string }>`
   cursor: pointer;
   color: ${({ color }) => (color ? color : '')};
-  background: tranparent;
-  width: 50px;
-  height: 50px;
+  background: ${({ theme }) => theme.header.link.avatarbg};
+  width: 35px;
+  height: 35px;
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
   transition: 300ms;
   position: relative;
+  margin-bottom: 4px;
   :hover {
     text-decoration: none;
     background: rgba(0, 0, 0, 0.3);
@@ -23,9 +24,12 @@ const StyledLink = styled(Link)<{ color?: string }>`
 
 const GoBackBtn = ({ to, color }: any) => {
   return (
-    <StyledLink to={to} color={color}>
-      <i className='fas fa-arrow-left'></i>
-    </StyledLink>
+    <div className='d-flex flex-column align-items-center mr-5'>
+      <StyledLink to={to} color={color}>
+        <i className='fa-solid fa-arrow-left-long'></i>
+      </StyledLink>
+      <Text fontSize='12px'>Go Back</Text>
+    </div>
   );
 };
 

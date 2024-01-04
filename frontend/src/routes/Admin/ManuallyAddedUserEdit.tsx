@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Form, Image } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { Text, UpdateBtn } from '../../components/styles/Styles';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -13,12 +13,8 @@ import {
   Container,
   EditForm,
   EditFormAndPreviewContainer,
-  FormFile,
-  UploadImageSquare,
 } from '../../components/styles/admin/Styles';
-import { WelcomeText } from '../../components/styles/DashboardStyles';
-import PhotoUploadIcon from '../../components/svg/PhotoUploadIcon';
-import BreadCrumb from '../../components/common/BreadCrumb';
+import { GoBackAndTitleWrapper, WelcomeText } from '../../components/styles/DashboardStyles';
 import {
   CardTheme,
   Label,
@@ -29,6 +25,8 @@ import { themes } from '../../utils/profileCardThemes';
 import { STATES } from '../../utils/states';
 import { manuallyAddUser } from '../../actions/manuallyAddUserActions';
 import { uploadFileToFirebase } from '../../utils/uploadToFirebase';
+import GoBackBtn from '../../utils/GoBackBtn';
+import UploadSingleImage from '../../components/UploadSingleImage';
 
 const useManuallyAddedUserEditForm = (callback?: any, data?: any) => {
   const values = {
@@ -142,22 +140,15 @@ const ManuallyAddedUserEdit = () => {
 
   return (
     <Container>
-      <WelcomeText className='mb-1'>Board Member Edit</WelcomeText>
-      <BreadCrumb
-        step1='Home'
-        step2='Dashboard'
-        step3='Board Members'
-        step4={isEditMode ? 'Update' : 'Create'}
-        step5=''
-        url1='/'
-        url2='/admin'
-        url3='/admin/manuallyAddedUserList'
-      />
+      <GoBackAndTitleWrapper>
+        <GoBackBtn to='/admin/manuallyAddedUserList' color='#121212' />
+        <WelcomeText>Board Member {isEditMode ? 'Edit' : 'Create'}</WelcomeText>
+      </GoBackAndTitleWrapper>
       {(errorCreate || errorUpdate) && (
         <Message variant='danger'>{errorCreate || errorUpdate}</Message>
       )}
       <EditFormAndPreviewContainer>
-        <EditForm style={{ maxWidth: '400px', width: '100%' }}>
+        <EditForm>
           <Form.Group controlId='name'>
             <Form.Label>Name</Form.Label>
             <Form.Control
@@ -167,37 +158,14 @@ const ManuallyAddedUserEdit = () => {
               onChange={handleInput}
             ></Form.Control>
           </Form.Group>
-          <Form.Group controlId='image' className='d-flex flex-column'>
-            <Form.Label>Image</Form.Label>
-            <Form.Control
-              name='image'
-              className='img-link'
-              type='text'
-              value={inputs.image || ''}
-              onChange={handleInput}
-            ></Form.Control>
-            <div className='d-flex'>
-              <FormFile
-                id='image-file'
-                label={
-                  file?.name ? (
-                    <UploadImageSquare className={uploading ? 'anim' : ''}>
-                      <PhotoUploadIcon ready={file} />
-                    </UploadImageSquare>
-                  ) : (
-                    <Image
-                      src={manuallyAddedUser?.image}
-                      width='200px'
-                      height='200px'
-                      style={{ objectFit: 'cover' }}
-                      alt='Board Member'
-                    />
-                  )
-                }
-                onChange={(e: any) => editPhotoHandler(e)}
-              ></FormFile>
-            </div>
-          </Form.Group>
+          <UploadSingleImage
+            inputs={inputs}
+            handleInput={handleInput}
+            item={manuallyAddedUser}
+            file={file}
+            uploading={uploading}
+            editPhotoHandler={editPhotoHandler}
+          />
           <Form.Group controlId='affiliation' className='mt-5'>
             <Form.Label>Affiliation</Form.Label>
             <Form.Control

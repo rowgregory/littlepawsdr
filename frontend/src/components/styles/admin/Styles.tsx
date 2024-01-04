@@ -1,4 +1,5 @@
 import { Form, Image, Table } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 
 export const Container = styled.div`
@@ -7,12 +8,8 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding-bottom: 24px;
+  padding: 16px;
   min-height: 100vh;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    padding: 32px 32px 28px;
-    width: calc(100vw - 285px);
-  }
 `;
 
 export const TableHead = styled.thead<{ bg?: string }>`
@@ -55,6 +52,7 @@ export const TableImg = styled(Image)`
 
 export const SearchBar = styled(Form.Group)`
   margin-bottom: 0;
+  position: relative;
 `;
 
 export const SpinnerContainer = styled.div`
@@ -69,6 +67,31 @@ export const SpinnerContainer = styled.div`
   border-radius: 0.75rem;
 `;
 
+export const CreateLink = styled(Link)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: ${({ theme }) => theme.white} !important;
+  border: none;
+  padding: 0 1.5rem;
+  height: 45px;
+  transition: 300ms;
+  color: #373737;
+  border-radius: 0.75rem;  text-decoration: none !important;
+  width: 100%;
+  :active {
+    background: #fff !important;
+    color: #373737 !important;
+  }
+  :hover {
+    text-decoration: none !important;
+    background: #ebf4ff !important;
+    color: #373737 !important;
+  }
+  :focus {
+    box-shadow: none !important;
+  }
+`;
 export const CreateBtnV2 = styled.button`
   display: flex;
   justify-content: center;
@@ -79,14 +102,16 @@ export const CreateBtnV2 = styled.button`
   height: 45px;
   transition: 300ms;
   color: #373737;
-  border-radius: 0.75rem;
+  border-radius: 0.75rem;  text-decoration: none !important;
+  width: 100%;
   :active {
     background: #fff !important;
     color: #373737 !important;
   }
   :hover {
-    background: #f9f9f9;
-    color: #373737;
+    text-decoration: none !important;
+    background: #ebf4ff !important;
+    color: #373737 !important;
   }
   :focus {
     box-shadow: none !important;
@@ -98,15 +123,9 @@ export const TopRow = styled.div`
   grid-gap: 10px;
   display: grid;
   grid-template-columns: 1fr;
-  padding-inline: 16px;
   margin-bottom: 16px;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
     grid-template-columns: 1fr 1fr;
-    width: 75%;
-  }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-    padding-inline: 0px;
-    width: 50%;
   }
 `;
 
@@ -195,11 +214,14 @@ export const TableAndPaginationContainer = styled.div`
   justify-content: space-between;
   flex-direction: column;
   border-radius: 1rem;
-  height: calc(100vh - 204px);
+  height: calc(100vh - 271px);
   padding-inline: 16px;
   background: #fff;
   min-height: 600px;
   margin-left: 0;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    height: calc(100vh - 216px);
+  }
 `;
 
 export const EditFormAndPreviewContainer = styled.div`
@@ -211,12 +233,10 @@ export const EditFormAndPreviewContainer = styled.div`
 `;
 
 export const EditForm = styled(Form)`
-  max-width: 400px;
   width: 100%;
-  padding-inline: 16px;
-  margin-top: 24px;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    padding: 0;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
+  padding: 0;
+  max-width: 400px;
   }
 `;
 
@@ -260,7 +280,6 @@ export const UploadImageSquare = styled.div<{ uploading?: any }>`
   background-size: 16px 3px, 16px 3px, 3px 16px, 3px 16px;
   background-position: 0px 0px, 100px 97px, 0px 100px, 97px 24px;
   transition: background-position 10s;
-  margin-right: 4px;
 
   &.anim {
     animation: ${BorderDance} 15s infinite linear;
@@ -286,29 +305,7 @@ export const RemovePhoto = styled.div`
   }
 `;
 
-export const FormInnerContainer = styled.div`
-  display: flex;
-  flex-direction: column;
 
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
-    flex-direction: row;
-  }
-`;
-export const FormLeftContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  max-width: 400px;
-  width: 100%;
-  margin-right: 0;
-
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
-    margin-right: 32px;
-  }
-`;
-export const FormRightContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
 
 export const ItemsSummaryTable = styled(Table)`
   width: 100%;
@@ -401,3 +398,4 @@ export const OrderEditRightSideContainer = styled.div`
     width: 40%;
   }
 `;
+

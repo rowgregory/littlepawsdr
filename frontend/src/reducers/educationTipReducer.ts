@@ -42,7 +42,7 @@ export const educationTipListReducer = (
       };
     case EDUCATION_TIP_LIST_RESET:
       return {
-        educationTips: {},
+        educationTips: [],
       };
     default:
       return state;

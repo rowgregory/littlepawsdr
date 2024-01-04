@@ -2,7 +2,7 @@ import {
   TopSection,
   WelcomeWienerGrid,
 } from '../components/welcome-wiener/styles';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Text } from '../components/styles/Styles';
 import { LoadingImg } from '../components/LoadingImg';
 import WelcomeWienerCard from '../components/welcome-wiener/WelcomeWienerCard';
@@ -13,6 +13,8 @@ import WWLow from '../components/assets/WWLow.jpg';
 import LeftArrow from '../components/svg/LeftArrow';
 import RightArrow from '../components/svg/RightArrow';
 import { Container } from '../components/styles/GridDogStyles';
+import { useEffect } from 'react';
+import { listWelcomeWienerDachshunds } from '../actions/welcomeWienerDachshundActions';
 
 const FirstLetter = styled.div`
   max-width: 680px;
@@ -26,10 +28,15 @@ const FirstLetter = styled.div`
 `;
 
 const WelcomeWieners = () => {
+  const dispatch = useDispatch();
   const state = useSelector((state: any) => state);
   const loading = state?.welcomeWienerDachshundList.loading;
   const dachshundList = state?.welcomeWienerDachshundList.dachshundList;
   const userInfo = state.userLogin.userInfo;
+
+  useEffect(() => {
+    dispatch(listWelcomeWienerDachshunds())
+  }, [dispatch])
 
   return (
     <>

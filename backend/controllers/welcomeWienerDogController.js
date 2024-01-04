@@ -33,7 +33,7 @@ const getWelcomeWienerDogById = async (req, res) => {
 
 // Create a new Welcome Wiener Dog
 const createWelcomeWienerDog = async (req, res) => {
-  const { displayUrl, name, bio, age, associatedProducts } = req.body;
+  const { displayUrl, name, bio, age, associatedProducts, images } = req.body;
 
   const objectIds = associatedProducts?.map(id => new mongoose.Types.ObjectId(id));
 
@@ -43,6 +43,7 @@ const createWelcomeWienerDog = async (req, res) => {
     bio,
     age,
     associatedProducts: objectIds,
+    images
   });
 
   try {
@@ -56,12 +57,12 @@ const createWelcomeWienerDog = async (req, res) => {
 // Update a Welcome Wiener Dog
 const updateWelcomeWienerDog = async (req, res) => {
   const { id } = req.params;
-  const { displayUrl, name, bio, age, associatedProducts } = req.body;
+  const { displayUrl, name, bio, age, associatedProducts, images } = req.body;
 
   try {
     const updatedWelcomeWienerDog = await WelcomeWienerDog.findByIdAndUpdate(
       id,
-      { displayUrl, name, bio, age, associatedProducts },
+      { displayUrl, name, bio, age, associatedProducts, images },
       { new: true }
     );
     res.status(200).json(updatedWelcomeWienerDog);

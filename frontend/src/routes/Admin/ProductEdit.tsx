@@ -5,16 +5,16 @@ import { UpdateBtn } from '../../components/styles/Styles';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Message from '../../components/Message';
 import { Container, EditForm } from '../../components/styles/admin/Styles';
-import { WelcomeText } from '../../components/styles/DashboardStyles';
-import BreadCrumb from '../../components/common/BreadCrumb';
+import { GoBackAndTitleWrapper, WelcomeText } from '../../components/styles/DashboardStyles';
 import { PRODUCT_UPDATE_RESET } from '../../constants/productContstants';
 import { sortProductSizes } from '../../utils/sortProductSizes';
 import { useProductEditForm } from '../../utils/hooks/useProductEditForm';
 import FirstFiveFields from '../../components/admin/products/FirstFiveFields';
 import ProductSizes from '../../components/admin/products/ProductSizes';
-import ImagesSection from '../../components/admin/products/ImagesSection';
+import ImagesSection from '../../components/admin/products/MultipleImages';
 import LastThreeFields from '../../components/admin/products/LastThreeFields';
 import { uploadMultipleFilesToFirebase } from '../../utils/uploadToFirebase';
+import GoBackBtn from '../../utils/GoBackBtn';
 
 const ProductEdit = () => {
   const {
@@ -74,17 +74,10 @@ const ProductEdit = () => {
 
   return (
     <Container>
-      <WelcomeText className='mb-1'>Product Edit</WelcomeText>
-      <BreadCrumb
-        step1='Home'
-        step2='Dashboard'
-        step3='Products'
-        step4={product?.name}
-        step5='Edit'
-        url1='/'
-        url2='/admin'
-        url3='/admin/product/list'
-      />
+      <GoBackAndTitleWrapper>
+        <GoBackBtn to='/admin/product/list' color='#121212' />
+        <WelcomeText className='mb-1'>Product Edit</WelcomeText>
+      </GoBackAndTitleWrapper>
       {error && <Message variant='danger'>{error}</Message>}
       <EditForm>
         <FirstFiveFields
@@ -94,13 +87,11 @@ const ProductEdit = () => {
           setDoesProductHaveSizes={setDoesProductHaveSizes}
           setProductSizes={setProductSizes}
         />
-
         <ProductSizes
           doesProductHaveSizes={doesProductHaveSizes}
           productSizes={productSizes}
           setProductSizes={setProductSizes}
         />
-
         <ImagesSection
           handleInput={handleInput}
           setFiles={setFiles}
@@ -110,7 +101,6 @@ const ProductEdit = () => {
           setInputs={setInputs}
         />
         <LastThreeFields inputs={inputs} handleInput={handleInput} />
-
         <UpdateBtn onClick={onSubmit}>
           Updat
           {loading ? 'ing...' : 'e'}

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Form, Image } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   createEducationTip,
@@ -15,14 +15,14 @@ import Message from '../../components/Message';
 import {
   Container,
   EditForm,
-  FormFile,
-  UploadImageSquare,
 } from '../../components/styles/admin/Styles';
-import { WelcomeText } from '../../components/styles/DashboardStyles';
-import PhotoUploadIcon from '../../components/svg/PhotoUploadIcon';
-import BreadCrumb from '../../components/common/BreadCrumb';
-import { defaultImages } from '../../utils/defaultImages';
+import {
+  GoBackAndTitleWrapper,
+  WelcomeText,
+} from '../../components/styles/DashboardStyles';
 import { uploadFileToFirebase } from '../../utils/uploadToFirebase';
+import GoBackBtn from '../../utils/GoBackBtn';
+import UploadSingleImage from '../../components/UploadSingleImage';
 
 const useEcardEditForm = (callback?: any, data?: any) => {
   const values = {
@@ -124,17 +124,10 @@ const EducationTipEdit = () => {
 
   return (
     <Container>
-      <WelcomeText className='mb-1'>Education Tip Edit</WelcomeText>
-      <BreadCrumb
-        step1='Home'
-        step2='Dashboard'
-        step3='Education Tips'
-        step4={eTip?.title}
-        step5='Edit'
-        url1='/'
-        url2='/admin'
-        url3='/admin/education-tips'
-      />
+      <GoBackAndTitleWrapper>
+        <GoBackBtn to='/admin/education-tips' color='#121212' />
+        <WelcomeText>Education Tip Edit</WelcomeText>
+      </GoBackAndTitleWrapper>
       {(errorCreate || errorUpdate) && (
         <Message variant='danger'>{errorCreate || errorUpdate}</Message>
       )}
@@ -148,37 +141,14 @@ const EducationTipEdit = () => {
             onChange={handleInput}
           ></Form.Control>
         </Form.Group>
-        <Form.Group controlId='image' className='d-flex flex-column'>
-          <Form.Label>Image</Form.Label>
-          <Form.Control
-            name='image'
-            className='img-link'
-            type='text'
-            value={inputs.image || ''}
-            onChange={handleInput}
-          ></Form.Control>
-          <div className='d-flex'>
-            <FormFile
-              id='image-file'
-              label={
-                eTip?.image === defaultImages.upload || file?.name ? (
-                  <UploadImageSquare className={uploading ? 'anim' : ''}>
-                    <PhotoUploadIcon ready={file} />
-                  </UploadImageSquare>
-                ) : (
-                  <Image
-                    src={eTip?.image}
-                    width='200px'
-                    height='200px'
-                    style={{ objectFit: 'cover' }}
-                    alt='Education Tip'
-                  />
-                )
-              }
-              onChange={(e: any) => editPhotoHandler(e)}
-            ></FormFile>
-          </div>
-        </Form.Group>
+        <UploadSingleImage
+          inputs={inputs}
+          handleInput={handleInput}
+          item={eTip}
+          file={file}
+          uploading={uploading}
+          editPhotoHandler={editPhotoHandler}
+        />
         <Form.Group controlId='externalLink' className='mt-5'>
           <Form.Label>Link</Form.Label>
           <Form.Control

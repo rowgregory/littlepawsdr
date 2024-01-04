@@ -93,7 +93,6 @@ export const orderListMyReducer = (
         loading: true,
       };
     case ORDER_LIST_MY_SUCCESS:
-      console.log(action.payload);
       return {
         loading: false,
         orders: action.payload.orders,

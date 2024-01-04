@@ -1,8 +1,3 @@
-const editPhotoHandler = (e: any, setFiles: any) => {
-  const newFiles = Array.from(e.target.files);
-  setFiles((prevFiles: any) => [...prevFiles, ...newFiles]);
-};
-
 const sizes_v2 = () => [
   { size: 'XS', amount: 1 },
   { size: 'S', amount: 1 },
@@ -24,4 +19,4 @@ const chooseSizes = (obj: any, productSizes: any, setProductSizes: any) => {
     ]);
 };
 
-export { editPhotoHandler, sizes_v2, chooseSizes };
+export { sizes_v2, chooseSizes };

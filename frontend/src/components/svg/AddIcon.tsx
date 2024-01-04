@@ -1,6 +1,23 @@
-export const AddIcon = () => {
+import styled, { css, keyframes } from 'styled-components';
+
+const rotate = keyframes`
+from {
+  transform: rotate(0deg);
+}
+to {
+  transform: rotate(360deg);
+}
+`;
+
+const Add = styled.svg<{ loading: string }>`
+  animation: ${({ loading }) =>
+    loading === 'true' ? css`${rotate} 2000ms linear infinite` : ``};
+`;
+
+export const AddIcon = ({ loading }: { loading?: any }) => {
   return (
-    <svg
+    <Add
+      loading={loading?.toString()}
       xmlns='http://www.w3.org/2000/svg'
       x='0px'
       y='0px'
@@ -17,6 +34,6 @@ export const AddIcon = () => {
           />
         </g>
       </g>
-    </svg>
+    </Add>
   );
 };
