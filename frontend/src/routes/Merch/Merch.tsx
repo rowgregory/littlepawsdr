@@ -40,7 +40,7 @@ const Merch = () => {
 
   useEffect(() => {
     dispatch(listProducts())
-  }, [])
+  }, [dispatch])
 
   return (
     <>
