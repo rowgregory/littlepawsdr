@@ -25,24 +25,10 @@ const getHistoricalDataFromJSONFiles = async (year) => {
       });
     const welcomeWieners = JSON.parse(welcomeWienerOrdersFromJSON());
 
-    const newsLetterEmailsFromJSON = () =>
-      fs.readFileSync(__dirname + `/backend/utils/historical-data/${year}/newsLetterEmails.json`, {
-        encoding: 'utf8',
-      });
-    const newsLetters = JSON.parse(newsLetterEmailsFromJSON());
-
-    const usersFromJSON = () =>
-      fs.readFileSync(__dirname + `/backend/utils/historical-data/${year}/users.json`, {
-        encoding: 'utf8',
-      });
-    const users = JSON.parse(usersFromJSON());
-
     return {
       ecards,
       products,
       welcomeWieners,
-      newsLetters,
-      users,
     };
   } catch (err) {
     const createdError = new Error({
@@ -196,7 +182,7 @@ function addDecimalEveryThreeDigits(number) {
 const getAnnualData = asyncHandler(async (req, res) => {
   try {
     const year = Number(req.params.year);
-    const { ecards, products, welcomeWieners, newsLetters, users } = await getHistoricalDataFromJSONFiles(
+    const { ecards, products, welcomeWieners } = await getHistoricalDataFromJSONFiles(
       year
     );
 
@@ -210,8 +196,8 @@ const getAnnualData = asyncHandler(async (req, res) => {
       welcomeWienerYearlyTotal,
       ecardYearlyTotal,
       productYearlyTotal,
-      newsLetterEmails: addDecimalEveryThreeDigits(newsLetters.length),
-      users: addDecimalEveryThreeDigits(users.length),
+      newsLetterEmails: addDecimalEveryThreeDigits(5053),
+      users: addDecimalEveryThreeDigits(123),
       mostSoldItem: findMostSoldItem(products),
       totalRevenue: `$${addDecimalEveryThreeDigits(await getTotalRevenue(year))}`,
     });
