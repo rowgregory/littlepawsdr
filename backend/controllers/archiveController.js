@@ -5,48 +5,57 @@ import path from 'path';
 
 const __dirname = path.resolve();
 
-const getHistoricalDataFromJSONFiles = (year) => {
-  const ecardOrdersFromJSON = () =>
-    fs.readFileSync(
-      __dirname + `/backend/utils/historical-data/${year}/ecardOrders.json`,
-      { endoding: 'utf8' }
-    );
-  const ecards = JSON.parse(ecardOrdersFromJSON());
+const getHistoricalDataFromJSONFiles = async (year) => {
+  try {
+    const ecardOrdersFromJSON = () =>
+      fs.readFileSync(__dirname + `/backend/utils/historical-data/${year}/ecardOrders.json`, {
+        encoding: 'utf8',
+      });
+    const ecards = JSON.parse(ecardOrdersFromJSON());
 
-  const productOrdersFromJSON = () =>
-    fs.readFileSync(
-      __dirname + `/backend/utils/historical-data/${year}/productOrders.json`,
-      { endoding: 'utf8' }
-    );
-  const products = JSON.parse(productOrdersFromJSON());
+    const productOrdersFromJSON = () =>
+      fs.readFileSync(__dirname + `/backend/utils/historical-data/${year}/productOrders.json`, {
+        encoding: 'utf8',
+      });
+    const products = JSON.parse(productOrdersFromJSON());
 
-  const welcomeWienerOrdersFromJSON = () =>
-    fs.readFileSync(
-      __dirname + `/backend/utils/historical-data/${year}/welcomeWienerOrders.json`,
-      { endoding: 'utf8' }
-    );
-  const welcomeWieners = JSON.parse(welcomeWienerOrdersFromJSON());
+    const welcomeWienerOrdersFromJSON = () =>
+      fs.readFileSync(__dirname + `/backend/utils/historical-data/${year}/welcomeWienerOrders.json`, {
+        encoding: 'utf8',
+      });
+    const welcomeWieners = JSON.parse(welcomeWienerOrdersFromJSON());
 
-  const newsLetterEmailsFromJSON = () =>
-    fs.readFileSync(
-      __dirname + `/backend/utils/historical-data/${year}/newsLetterEmails.json`,
-      { endoding: 'utf8' }
-    );
-  const newsLetters = JSON.parse(newsLetterEmailsFromJSON());
+    const newsLetterEmailsFromJSON = () =>
+      fs.readFileSync(__dirname + `/backend/utils/historical-data/${year}/newsLetterEmails.json`, {
+        encoding: 'utf8',
+      });
+    const newsLetters = JSON.parse(newsLetterEmailsFromJSON());
 
-  const usersFromJSON = () =>
-    fs.readFileSync(__dirname + `/backend/utils/historical-data/${year}/users.json`, {
-      endoding: 'utf8',
+    const usersFromJSON = () =>
+      fs.readFileSync(__dirname + `/backend/utils/historical-data/${year}/users.json`, {
+        encoding: 'utf8',
+      });
+    const users = JSON.parse(usersFromJSON());
+
+    return {
+      ecards,
+      products,
+      welcomeWieners,
+      newsLetters,
+      users,
+    };
+  } catch (err) {
+    const createdError = new Error({
+      functionName: 'READING_HISTORICAL_DATA_FROM_JSON_PRIVATE_ADMIN',
+      detail: err.message,
+      status: 500,
     });
-  const users = JSON.parse(usersFromJSON());
 
-  return {
-    ecards,
-    products,
-    welcomeWieners,
-    newsLetters,
-    users,
-  };
+    await createdError.save();
+    return res.status(500).send({
+      message: '500 - Server Error',
+    });
+  }
 };
 
 const getYearlyData = (data, year, amountField) => {
@@ -54,7 +63,7 @@ const getYearlyData = (data, year, amountField) => {
     const startDate = new Date(`${year}-01-01`);
     const endDate = new Date(`${year + 1}-01-01`);
 
-    const result = data.reduce(
+    const result = data?.reduce(
       (accumulator, order) => {
         const orderDate = new Date(order.createdAt.$date);
         if (orderDate >= startDate && orderDate < endDate) {
@@ -66,9 +75,7 @@ const getYearlyData = (data, year, amountField) => {
             const productName = order?.dachshundName || order.productName || order.name;
 
             // Check if the product is already in productQuantity, if not, initialize it
-            let existingProduct = accumulator.products.find(
-              (product) => product.productName === productName
-            );
+            let existingProduct = accumulator.products.find((product) => product.productName === productName);
 
             if (!existingProduct) {
               existingProduct = {
@@ -83,8 +90,7 @@ const getYearlyData = (data, year, amountField) => {
             existingProduct.quantity += Number(order.quantity) || 1;
 
             // Increment the revenue for the current product
-            existingProduct.revenue +=
-              Number(order.quantity ?? 1) * (order.price ?? 5) || 1;
+            existingProduct.revenue += Number(order.quantity ?? 1) * (order.price ?? 5) || 1;
 
             const quantity = order.quantity || 1;
             accumulator.productTotalQuantity += Number(quantity);
@@ -141,9 +147,7 @@ const findMostSoldItem = (products) => {
     mostSold.totalCalendarsSold = totalCalendarsSold;
     mostSold.percentageCalendarsSold =
       totalProductsSold > 0
-        ? `${Math.round(
-          (totalCalendarsSold / totalProductsSold) * 100
-        )}% of total product orders`
+        ? `${Math.round((totalCalendarsSold / totalProductsSold) * 100)}% of total product orders`
         : 0;
 
     return mostSold;
@@ -154,14 +158,12 @@ const findMostSoldItem = (products) => {
 
 const getTotalRevenue = async (year) => {
   try {
-    const { ecards, products, welcomeWieners } = getHistoricalDataFromJSONFiles(year);
+    const { ecards, products, welcomeWieners } = await getHistoricalDataFromJSONFiles(year);
 
     const totalRevenue =
       Number(ecards.reduce((acc, ecard) => acc + ecard.totalPrice, 0)) +
       Number(products.reduce((acc, product) => acc + product.totalPrice, 0)) +
-      Number(
-        welcomeWieners.reduce((acc, welcomeWiener) => acc + welcomeWiener.totalPrice, 0)
-      );
+      Number(welcomeWieners.reduce((acc, welcomeWiener) => acc + welcomeWiener.totalPrice, 0));
 
     return totalRevenue;
   } catch (error) {
@@ -194,14 +196,11 @@ function addDecimalEveryThreeDigits(number) {
 const getAnnualData = asyncHandler(async (req, res) => {
   try {
     const year = Number(req.params.year);
-    const { ecards, products, welcomeWieners, newsLetters, users } =
-      getHistoricalDataFromJSONFiles(year);
-
-    const welcomeWienerYearlyTotal = await getYearlyData(
-      welcomeWieners,
-      year,
-      'totalPrice'
+    const { ecards, products, welcomeWieners, newsLetters, users } = await getHistoricalDataFromJSONFiles(
+      year
     );
+
+    const welcomeWienerYearlyTotal = await getYearlyData(welcomeWieners, year, 'totalPrice');
 
     const ecardYearlyTotal = await getYearlyData(ecards, year, 'totalPrice');
 
