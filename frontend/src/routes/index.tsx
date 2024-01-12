@@ -101,7 +101,7 @@ const Page = styled(Container) <{ url: string }>`
   }
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
     min-height: ${({ url }) =>
-    url.split('/')[1] === 'admin' ? '100%' : 'calc(100vh - 389px)'};
+    url.split('/')[1] === 'admin' ? '100%' : 'calc(100vh - 405px)'};
   }
 `;
 
