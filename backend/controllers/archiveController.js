@@ -5,7 +5,7 @@ import path from 'path';
 
 const __dirname = path.resolve();
 
-const getHistoricalDataFromJSONFiles = async (year) => {
+const getHistoricalDataFromJSONFiles = async (year, res) => {
   try {
     const ecardOrdersFromJSON = () =>
       fs.readFileSync(__dirname + `/backend/utils/historical-data/${year}/ecardOrders.json`, {
@@ -142,9 +142,9 @@ const findMostSoldItem = (products) => {
   return { message: 'No products available' };
 };
 
-const getTotalRevenue = async (year) => {
+const getTotalRevenue = async (year, res) => {
   try {
-    const { ecards, products, welcomeWieners } = await getHistoricalDataFromJSONFiles(year);
+    const { ecards, products, welcomeWieners } = await getHistoricalDataFromJSONFiles(year, res);
 
     const totalRevenue =
       Number(ecards.reduce((acc, ecard) => acc + ecard.totalPrice, 0)) +
@@ -183,7 +183,8 @@ const getAnnualData = asyncHandler(async (req, res) => {
   try {
     const year = Number(req.params.year);
     const { ecards, products, welcomeWieners } = await getHistoricalDataFromJSONFiles(
-      year
+      year,
+      res
     );
 
     const welcomeWienerYearlyTotal = await getYearlyData(welcomeWieners, year, 'totalPrice');
@@ -199,7 +200,7 @@ const getAnnualData = asyncHandler(async (req, res) => {
       newsLetterEmails: addDecimalEveryThreeDigits(5053),
       users: addDecimalEveryThreeDigits(123),
       mostSoldItem: findMostSoldItem(products),
-      totalRevenue: `$${addDecimalEveryThreeDigits(await getTotalRevenue(year))}`,
+      totalRevenue: `$${addDecimalEveryThreeDigits(await getTotalRevenue(year, res))}`,
     });
   } catch (err) {
     const createdError = new Error({
