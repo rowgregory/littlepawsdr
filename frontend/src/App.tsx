@@ -6,7 +6,7 @@ import { ThemeProvider } from 'styled-components';
 import { themes } from './utils/theme';
 import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 import useTheme from './utils/hooks/useTheme';
-import ScrollToTop from './utils/ScrollToTop';
+import { ParallaxProvider } from 'react-scroll-parallax';
 
 const App = () => {
   const theme = useTheme();
@@ -21,15 +21,16 @@ const App = () => {
 
   return (
     <PayPalScriptProvider options={PayPalOptions}>
+      <ParallaxProvider>
       <Router>
         <ThemeProvider theme={themes[theme]}>
-          <ScrollToTop />
           <GlobalStyles />
           <Suspense fallback={<></>}>
             <MainRoutes />
           </Suspense>
         </ThemeProvider>
       </Router>
+      </ParallaxProvider>
     </PayPalScriptProvider>
   );
 };

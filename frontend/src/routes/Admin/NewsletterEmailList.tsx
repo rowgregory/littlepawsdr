@@ -38,25 +38,19 @@ const NewsletterEmailList = () => {
 
   const {
     newsletterEmailList: { loading, error, newsletterEmails },
-    newsletterEmailDelete: {
-      success,
-      loading: loadingDelete,
-      error: errorDelete,
-    },
+    newsletterEmailDelete: { success, loading: loadingDelete, error: errorDelete },
   } = useSelector((state: any) => state);
 
   useEffect(() => {
     dispatch(listNewsletterEmail());
     return () => {
-      dispatch({ type: NEWSLETTER_EMAIL_LIST_RESET })
-    }
+      dispatch({ type: NEWSLETTER_EMAIL_LIST_RESET });
+    };
   }, [dispatch, success]);
 
   const copyEmails = () => {
     setLoadingCopy({ loading: true, message: '' });
-    const emails = newsletterEmails
-      ?.map((obj: any) => obj.newsletterEmail)
-      .join(',');
+    const emails = newsletterEmails?.map((obj: any) => obj.newsletterEmail).join(',');
     navigator.clipboard.writeText(emails).then(() => {
       setLoadingCopy({ loading: false, message: 'Emails copied' });
     });
@@ -78,17 +72,11 @@ const NewsletterEmailList = () => {
         url2='/admin'
         url3=''
       />
-      <DeleteModal
-        actionFunc='Newsletter Email'
-        show={show}
-        handleClose={handleClose}
-        id={id}
+      <DeleteModal actionFunc='Newsletter Email' show={show} handleClose={handleClose} id={id} />
+      <Message
+        variant={loadingCopy.message ? 'success' : 'danger'}
+        message={error || errorDelete || loadingCopy.message}
       />
-      {(error || errorDelete || loadingCopy.message) && (
-        <Message variant={loadingCopy.message ? 'success' : 'danger'}>
-          {error || errorDelete || loadingCopy.message}
-        </Message>
-      )}
       <TableWrapper>
         <TopRow>
           <SearchBar>
@@ -101,7 +89,7 @@ const NewsletterEmailList = () => {
             />
           </SearchBar>
           <CreateBtnV2 onClick={copyEmails}>
-            <CopyIcon loading={loading} />
+            <CopyIcon loading={loading || loadingCopy.loading} />
             <Text>Copy</Text>
           </CreateBtnV2>
         </TopRow>
@@ -121,11 +109,7 @@ const NewsletterEmailList = () => {
                     <Text>{email.newsletterEmail}</Text>
                   </td>
                   <td style={{ minWidth: '175px' }}>
-                    <Text>
-                      {email?.createdAt === undefined
-                        ? '---'
-                        : formatDateTime(email?.createdAt)}
-                    </Text>
+                    <Text>{email?.createdAt === undefined ? '---' : formatDateTime(email?.createdAt)}</Text>
                   </td>
                   <td>
                     <StyledEditBtn
@@ -138,10 +122,7 @@ const NewsletterEmailList = () => {
                       {loadingDelete && id === email._id ? (
                         <Spinner size='sm' animation='border' />
                       ) : (
-                        <i
-                          style={{ color: '#cc0000' }}
-                          className='fas fa-trash'
-                        ></i>
+                        <i style={{ color: '#cc0000' }} className='fas fa-trash'></i>
                       )}
                     </StyledEditBtn>
                   </td>

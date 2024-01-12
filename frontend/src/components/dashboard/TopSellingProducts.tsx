@@ -24,7 +24,7 @@ export const TopSellingProductsContainer = styled.div`
   border-radius: 8px;
   margin-bottom: 1rem;
   @media screen and (min-width: 1408px) {
-    padding: 24px;
+    padding: 16px;
     margin-bottom: 0;
   }
 `;
@@ -54,10 +54,7 @@ const TopSellingProducts = ({ topSellingProducts, loading }: any) => {
             <TableHead>
               <tr className='topSellingProducts'>
                 <th>NAME</th>
-                <th>PRICE</th>
                 <th>QTY</th>
-                <th>SUBTOTAL</th>
-                <th>SHIPPING</th>
                 <th>TOTAL</th>
               </tr>
             </TableHead>
@@ -66,7 +63,7 @@ const TopSellingProducts = ({ topSellingProducts, loading }: any) => {
                 ?.map((product: any, i: number) => (
                   <tr key={i} className='hover'>
                     <td className='py-3 px-2'>
-                      {product?.name}
+                      {product?.productName}
                       {product?.dachshundName && (
                         <span
                           style={{
@@ -80,18 +77,9 @@ const TopSellingProducts = ({ topSellingProducts, loading }: any) => {
                         </span>
                       )}
                     </td>
+                    <td className='py-3 px-2'>{product?.totalQuantity}</td>
                     <td className='py-3 px-2'>
-                      {addDecimals(product?.price)}
-                    </td>
-                    <td className='py-3 px-2'>{product?.count}</td>
-                    <td className='py-3 px-2'>
-                      {addDecimals(product?.subtotal)}
-                    </td>
-                    <td className='py-3 px-2'>
-                      {addDecimals(product?.shippingTotal)}
-                    </td>
-                    <td className='py-3 px-2'>
-                      {addDecimals(product?.totalAmount)}
+                      {addDecimals(product?.totalRevenue)}
                     </td>
                   </tr>
                 ))

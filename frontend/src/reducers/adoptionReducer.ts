@@ -41,10 +41,7 @@ export const adoptionFeeCreateReducer = (state = {}, action: any) => {
   }
 };
 
-export const adoptionFeeCheckActiveSessionReducer = (
-  state = {},
-  action: any
-) => {
+export const adoptionFeeCheckActiveSessionReducer = (state = {}, action: any) => {
   switch (action.type) {
     case ADOPTION_FEE_ACTIVE_SESSION_REQUEST:
       return {
@@ -53,15 +50,16 @@ export const adoptionFeeCheckActiveSessionReducer = (
     case ADOPTION_FEE_ACTIVE_SESSION_SUCCESS:
       return {
         loading: false,
-        success: true,
+        success: action.payload.success,
         message: action.payload.message,
         isExpired: action.payload.isExpired,
+        activeSession: action.payload.activeSession,
+        token: action.payload.token,
       };
     case ADOPTION_FEE_ACTIVE_SESSION_FAIL:
       return {
         loading: false,
         error: action.payload.error,
-        isExpired: action.payload.isExpired,
       };
     case ADOPTION_FEE_ACTIVE_SESSION_RESET:
       return {
@@ -69,16 +67,15 @@ export const adoptionFeeCheckActiveSessionReducer = (
         success: false,
         loading: false,
         message: '',
+        token: null,
+        actionSession: null,
       };
     default:
       return state;
   }
 };
 
-export const adoptionFeeListReducer = (
-  state = { adoptionFees: [] },
-  action: any
-) => {
+export const adoptionFeeListReducer = (state = { adoptionFees: [] }, action: any) => {
   switch (action.type) {
     case ADOPTION_FEE_LIST_REQUEST:
       return {

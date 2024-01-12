@@ -9,6 +9,7 @@ import {
 import PopUp from './common/PopUp';
 import SocialMediaNavbar from './navbar/SocialMediaNavbar';
 import {
+  ChevronUp,
   BottomFooter,
   Developed,
   LegalWrapper,
@@ -16,7 +17,6 @@ import {
   LinkSection,
   LinkWrapper,
   LogoImage,
-  Photographer,
   StyledExternalLink,
   StyledFooter,
   StyledInternalLink,
@@ -40,20 +40,11 @@ const Footer = () => {
     'paypal/test',
     '/order',
     '/email-confirmation',
+    '/404'
   ].some((a: string) => pathname.includes(a)) ? (
     <StyledFooter>
+      <ChevronUp onClick={() => window.scrollTo(0, 0)} className="fa-solid fa-chevron-up"></ChevronUp>
       <PopUp openEmailModal={nl} setNl={setNl} />
-      <Photographer
-        style={{ display: pathname === '/' ? 'absolute' : 'none' }}
-        onClick={() =>
-          window.open(
-            'https://unsplash.com/@campfire_guy?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText',
-            '_blank'
-          )
-        }
-      >
-        Photo by Darren Richardson
-      </Photographer>
       <TopFooter>
         <LinkWrapper>
           <LinkSection>

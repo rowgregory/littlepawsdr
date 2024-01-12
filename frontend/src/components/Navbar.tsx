@@ -71,6 +71,7 @@ const Navbar = () => {
     '/order',
     '/reset',
     '/email-confirmation',
+    '/404'
   ].some((a: string) => pathname?.includes(a)) ? (
     <>
       <LeftNavigation openMenu={openMenu} setOpenMenu={setOpenMenu} />

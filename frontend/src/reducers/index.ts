@@ -15,7 +15,6 @@ import {
 } from './eventReducer';
 import {
   checkUsersConfirmationReducer,
-  dashboardDetailsReducer,
   generatTokenForNewSessionReducer,
   userConfirmedReducer,
   userDeleteReducer,
@@ -50,20 +49,13 @@ import {
   orderTrackingNumberReducer,
 } from './orderReducer';
 import { createPaymentIntentReducer } from './stripeReducer';
-import {
-  resetPasswordReducer,
-  sendEmailReducer,
-  verifyTokenReducer,
-} from './resetPasswordReducer';
+import { resetPasswordReducer, sendEmailReducer, verifyTokenReducer } from './resetPasswordReducer';
 import {
   newsletterCreateReducer,
   newsletterEmailDeleteReducer,
   newsletterEmailListReducer,
 } from './newsletterReducer';
-import {
-  eCardOrderCreateReducer,
-  eCardOrderDetailsReducer,
-} from './eCardOrderReducer';
+import { eCardOrderCreateReducer, eCardOrderDetailsReducer } from './eCardOrderReducer';
 import {
   ecardDeleteReducer,
   ecardCreateReducer,
@@ -117,17 +109,20 @@ import {
   welcomeWienerDachshundToggledReducer,
   welcomeWienerDachshundUpdateReducer,
 } from './welcomeWienerDachshundReducer';
-import { dashboardReducer } from './dashboardReducer';
 import {
-  jwtCheckValidityAdoptionFeeReducer,
-  jwtCheckValidityReducer,
-} from './jwtReducer';
+  adoptionApplicationFeeBypassCodeReducer,
+  dashboardCurrentYearDataReducer,
+  dashboardReducer,
+} from './dashboardReducer';
+import { jwtCheckValidityAdoptionFeeReducer, jwtCheckValidityReducer } from './jwtReducer';
 import passwordReducer from './passwordReducer';
 import {
   adoptionFeeCheckActiveSessionReducer,
   adoptionFeeCreateReducer,
   adoptionFeeListReducer,
 } from './adoptionReducer';
+import { archiveYearlyDataReducer } from './archiveReducer';
+import { actionHistoryListReducer } from './actionHistoryReducer';
 
 const allReducers = combineReducers({
   dachshunds: dachshundListReducer,
@@ -150,7 +145,6 @@ const allReducers = combineReducers({
   userConfirmed: userConfirmedReducer,
   userNewSession: generatTokenForNewSessionReducer,
   userCheckUsersConfirmation: checkUsersConfirmationReducer,
-  userDashboardDetails: dashboardDetailsReducer,
   eventList: eventListReducer,
   eventDelete: eventDeleteReducer,
   eventCreate: eventCreateReducer,
@@ -225,6 +219,10 @@ const allReducers = combineReducers({
   adoptionFeeCreate: adoptionFeeCreateReducer,
   adoptionFeeCheckActiveSession: adoptionFeeCheckActiveSessionReducer,
   adoptionFeeList: adoptionFeeListReducer,
+  adoptionApplicationFeeBypassCode: adoptionApplicationFeeBypassCodeReducer,
+  archiveYearlyData: archiveYearlyDataReducer,
+  dashboardCurrentYearData: dashboardCurrentYearDataReducer,
+  actionHistoryList: actionHistoryListReducer,
 });
 
 export default allReducers;

@@ -1,40 +1,26 @@
-import {
-  MobileImageSection,
-  ParallaxImg,
-  ParallaxSectionContent,
-  ParallaxWindow,
-} from './styles';
-import { Image } from 'react-bootstrap';
-import HomeDog from '../../components/assets/home_dog_11.jpeg';
+import { BannerLayer, ParallaxBanner } from 'react-scroll-parallax';
+import { StyledText, TextContainer } from './styles';
+import { HomeDog } from '../assets';
 
 const ChangingLives = () => {
+  const headline: BannerLayer = {
+    translateY: [0, 70],
+    shouldAlwaysCompleteAnimation: true,
+    expanded: false,
+    children: (
+      <TextContainer className='d-flex aligniitems-center justify-content-center'>
+        <StyledText>Changing lives four paws at a time</StyledText>
+      </TextContainer>
+    ),
+  };
   return (
-    <>
-      <MobileImageSection>
-        <Image
-          src={HomeDog}
-          alt='LPDR'
-          width='100%'
-          style={{ objectFit: 'cover', height: '100vh' }}
-          loading='lazy'
-        />
-        <ParallaxSectionContent
-          style={{
-            textAlign: 'center',
-            filter: 'drop-shadow(0px 20px 10px rgb(0 0 0/0.4))',
-            fontSize: '56px',
-          }}
-        >
-          Changing lives four paws at a time
-        </ParallaxSectionContent>
-      </MobileImageSection>
-      <ParallaxWindow>
-        <ParallaxSectionContent>
-          Changing lives four paws at a time
-        </ParallaxSectionContent>
-        <ParallaxImg />
-      </ParallaxWindow>
-    </>
+    <ParallaxBanner
+      style={{
+        minHeight: '550px',
+        position: 'relative',
+      }}
+      layers={[{ image: HomeDog, speed: -10 }, headline]}
+    ></ParallaxBanner>
   );
 };
 

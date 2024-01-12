@@ -134,7 +134,7 @@ const RecentTransactions = ({
         <Wallet>
           <div className='ring'></div>
           <Text color='#fff' marginBottom='0.5rem'>
-            Wallet
+            Wallet - {new Date().getFullYear()}
           </Text>
           <Text
             color='#fff'
@@ -145,7 +145,7 @@ const RecentTransactions = ({
             {loading ? (
               <Spinner animation='border' style={{ color: '#fff' }} />
             ) : (
-              formatCurrency(Number(dashboardDetails?.walletTotal))
+              formatCurrency(Number(dashboardDetails?.revenue?.currentYear))
             )}
           </Text>
         </Wallet>
@@ -155,13 +155,11 @@ const RecentTransactions = ({
           10 MOST RECENT TRANSACTIONS
         </Text>
       </div>
-      {dashboardDetails?.orders
-        ?.slice()
-        ?.reverse()
-        ?.map((item: any, i: number) => (
+      {dashboardDetails?.tenMostRecentOrders?.length === 0 ? <Text>No data to display</Text> :
+        dashboardDetails?.tenMostRecentOrders?.map((item: any, i: number) => (
           <RecentTransactionItem item={item} key={i} loading={loading} />
         ))
-        .filter((_: any, i: number) => i < 10)}
+      }
     </>
   );
 };

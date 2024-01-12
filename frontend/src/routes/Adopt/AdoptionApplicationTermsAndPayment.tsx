@@ -16,6 +16,7 @@ const AdoptionApplicationTermsAndPayment = () => {
     step1: true,
     step2: false,
     step3: false,
+    step4: false,
   });
 
   return (
@@ -43,8 +44,8 @@ const AdoptionApplicationTermsAndPayment = () => {
         {step.step1 && !step.step2 && !step.step3 && (
           <StepOne setStep={setStep} />
         )}
-        {step.step1 && step.step2 && !step.step3 && (
-          <StepTwo setOrderLoader={setOrderLoader} orderLoader={orderLoader} />
+        {step.step1 && (step.step2 || step.step3) && !step.step4 && (
+          <StepTwo setOrderLoader={setOrderLoader} orderLoader={orderLoader} setStep={setStep} />
         )}
       </AdoptionApplicationTermsAndPaymentInnerContainer>
     </AdoptionApplicationTermsAndPaymentContainer>

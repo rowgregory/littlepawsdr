@@ -1,9 +1,7 @@
-import { Row } from 'react-bootstrap';
+import { Image, Row } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import LegacyWallpaper from '../../components/assets/aqua_tile.jpg';
-import HomeDog from '../../components/assets/home_dog_11.jpeg';
-import Parallax2 from '../../components/assets/parallax-2.jpg';
 
 export const SectionContainer = styled.div`
   max-width: ${({ theme }) => theme.breakpoints[5]};
@@ -232,62 +230,6 @@ export const HomeContainer = styled.div`
   width: 100%;
 `;
 
-export const ParallaxWindow = styled.div`
-  display: none;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-    display: block;
-    position: relative;
-    width: 100%;
-    padding-bottom: 60%;
-    height: 100vh;
-  }
-`;
-export const ParallaxSectionContent = styled.h3`
-  top: 50%;
-  marign-left: auto;
-  margin-right: auto;
-  position: absolute;
-  padding: 0 20px;
-  z-index: 25;
-  color: #fff;
-  font-size: 28px;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  align-items: center;
-  font-weight: 400;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-    font-size: 60px;
-    transform: translate(-50%, -50%);
-    left: 50%;
-    top: 50%;
-    filter: drop-shadow(0px 20px 10px rgb(0 0 0/0.4));
-  }
-`;
-export const ParallaxImg = styled.div`
-  position: absolute;
-  z-index: 20;
-  width: 100%;
-  height: 100%;
-  background-size: cover;
-  background-attachment: fixed;
-  background-position: center center;
-  background-image: url(${HomeDog});
-  background-repeat: no-repeat;
-`;
-export const ParallaxImg2 = styled.div`
-  position: absolute;
-  z-index: 20;
-  width: 100%;
-  height: 100%;
-  background-size: cover;
-  background-attachment: fixed;
-  background-position: center center;
-  background-image: url(${Parallax2});
-  background-repeat: no-repeat;
-`;
-
 export const ImageGallery = styled.div`
   background: ${({ theme }) => theme.header.bg};
   padding: 20px;
@@ -302,11 +244,30 @@ export const ImageGallery = styled.div`
   }
 `;
 
-export const MobileImageSection = styled.div`
-  display: block;
-  position: relative;
+export const TextContainer = styled.div`
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   width: 100%;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-    display: none;
+  h1 {
+    color: #fff;
+    font-size: 28px;
+  }
+`;
+
+export const StyledImage = styled(Image)`
+  position: absolute;
+`;
+
+export const StyledText = styled.div`
+  text-align: center;
+  text-shadow: 2px 2px 4px #000000;
+  font-size: 30px;
+  color: #fff;
+  max-width: 350px;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    font-size: 50px;
   }
 `;

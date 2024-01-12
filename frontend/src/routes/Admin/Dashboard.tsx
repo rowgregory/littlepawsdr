@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { listDashboardDetails } from '../../actions/userActions';
+import { batch, useDispatch, useSelector } from 'react-redux';
 import LineChart from '../../components/dashboard/LineChart';
 import PieChart from '../../components/dashboard/PieChart';
 import {
@@ -19,27 +18,39 @@ import DashboardTopRow from '../../components/dashboard/DashboardTopRow';
 import TopSellingProducts from '../../components/dashboard/TopSellingProducts';
 import RecentTransactions from '../../components/dashboard/RecentTransactions';
 import SplitTextToChars from '../../utils/SplitTextToChars';
-import UserNavigation, {
-  DashboardAdminAvatar,
-  MobileWrapper,
-} from '../../components/dashboard/UserNavigation';
+import UserNavigation, { DashboardAdminAvatar, MobileWrapper } from '../../components/dashboard/UserNavigation';
+import { getCurrentYearData } from '../../actions/dashboardActions';
+import { getAdoptionApplicationBypassCode } from '../../actions/dashboardActions';
+import { updateUserProfile } from '../../actions/userActions';
 
 const Dashboard = () => {
   const dispatch = useDispatch();
   const state = useSelector((state: any) => state);
   const [showAdminLinks, setShowAdminLinks] = useState(false);
   const userInfo = state.userLogin.userInfo;
-  const loading = state.userDashboardDetails.loading;
-  const dashboardDetails = state.userDashboardDetails.dashboardDetails;
+  const loading = state.dashboardCurrentYearData.loading;
+  const dashboardDetails = state.dashboardCurrentYearData.currentYearData;
+
+  const byPassCode = state.adoptionApplicationFeeBypassCode.bypassCode;
+  let loadingBypassCode = state.adoptionApplicationFeeBypassCode.loading;
 
   useEffect(() => {
-    dispatch(listDashboardDetails());
+    batch(() => {
+      dispatch(getCurrentYearData());
+      dispatch(getAdoptionApplicationBypassCode());
+    });
   }, [dispatch]);
+
+  useEffect(() => {
+    if (!userInfo.introducedToSilverPaws) {
+      dispatch(updateUserProfile({ _id: userInfo?._id, introducedToSilverPaws: false }))
+    }
+  }, [dispatch, userInfo._id, userInfo.introducedToSilverPaws])
 
   return (
     <DashboardContainer>
       <Middle>
-        <MobileWrapper >
+        <MobileWrapper>
           <div className='d-flex justify-content-between w-100 pt-2 px-2'>
             <HomeIcon to='/'>
               <i className='fa-solid fa-house-chimney'></i>
@@ -57,11 +68,7 @@ const Dashboard = () => {
         </MobileWrapper>
         <WelcomeTextWrapper>
           <NameText>
-            <SplitTextToChars
-              text={`Hello ${userInfo?.name?.split(' ')[0]}`}
-              page='dashboard'
-              fontSize='26px'
-            />
+            <SplitTextToChars text={`Hello ${userInfo?.name?.split(' ')[0]}`} page='dashboard' fontSize='26px' />
           </NameText>
           <SubheaderText>Here you can manage everything</SubheaderText>
         </WelcomeTextWrapper>
@@ -70,20 +77,16 @@ const Dashboard = () => {
             <DashboardTopRow
               dashboardDetails={dashboardDetails}
               loading={loading}
+              byPassCode={byPassCode}
+              loadingBypassCode={loadingBypassCode}
             />
           </TopRow>
           <MiddleRow>
-            <LineChart
-              lineChart={dashboardDetails?.lineChart}
-              loading={loading}
-            />
+            <LineChart lineChart={dashboardDetails?.lineChart} loading={loading} />
           </MiddleRow>
           <BottomRow>
-            <TopSellingProducts
-              topSellingProducts={dashboardDetails?.topSellingProducts}
-              loading={loading}
-            />
-            <PieChart details={dashboardDetails} loading={loading} />
+            <TopSellingProducts topSellingProducts={dashboardDetails?.topSellingProducts} loading={loading} />
+            <PieChart pieChart={dashboardDetails?.pieChart} loading={loading} />
           </BottomRow>
         </div>
       </Middle>

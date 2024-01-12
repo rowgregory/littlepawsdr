@@ -88,7 +88,7 @@ export const Middle = styled.div`
   }
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
     padding: 32px;
-    width: calc(100vw - 620px) !important;
+    width: calc(100vw - 635px) !important;
   }
 `;
 
@@ -119,7 +119,7 @@ export const TotalSalesContainer = styled.div`
   padding: 12px;
   overflow: hidden;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    padding: 24px;
+    padding: 16px;
   }
 `;
 
@@ -132,7 +132,7 @@ export const SpinnerContainer = styled.div`
 export const Right = styled.div`
   background: #fff;
   right: 0;
-  padding: 32px 32px 24px;
+  padding: 32px 24px 24px;
   width: 100%;
   @media screen and (min-width: 875px) {
     width: 350px;

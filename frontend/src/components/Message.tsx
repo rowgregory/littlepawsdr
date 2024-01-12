@@ -1,4 +1,4 @@
-import { FC, ReactNode } from 'react';
+import { useEffect, useState } from 'react';
 import { Alert } from 'react-bootstrap';
 import styled from 'styled-components';
 import { Text } from './styles/Styles';
@@ -7,7 +7,7 @@ import ExclamationPoint from './svg/ExclamationPoint';
 import InfoIcon from './svg/InfoIcon';
 import SuccessIcon from './svg/SuccessIcon';
 
-const Container = styled(Alert)<{ color: string }>`
+const Container = styled(Alert) <{ color: string }>`
   max-width: ${({ theme }) => theme.breakpoints[1]};
   width: 100%;
   background: #fff;
@@ -35,12 +35,7 @@ const IconType = styled.div<{ bg?: string }>`
   align-items: center;
 `;
 
-interface MessageProps {
-  children: ReactNode;
-  variant: string;
-}
-
-const Message: FC<MessageProps> = ({ variant, children }) => {
+const Message = ({ variant, message, children }: any) => {
   const text = {
     danger: {
       color: '#cc0000',
@@ -68,15 +63,39 @@ const Message: FC<MessageProps> = ({ variant, children }) => {
     },
   } as any;
 
-  return (
-    <Container variant={text[variant].type} color={text[variant].color}>
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    let autoCloseTimeout: any;
+    if (message) {
+      setIsVisible(true);
+      autoCloseTimeout = setTimeout(() => {
+        setIsVisible(false);
+      }, 5000);
+    }
+    return () => {
+      clearTimeout(autoCloseTimeout);
+    };
+  }, [message]);
+
+
+  return isVisible ? (
+
+    <Container
+      variant={text[variant].type}
+      color={text[variant].color}
+      onClick={() => setIsVisible(false)}
+    >
       <IconType bg={text[variant].color}>{text[variant].icon}</IconType>
       <div className='flex-column'>
-        <MsgType color={text[variant].color}>{text[variant].textKey}</MsgType>
-        <Text fontSize='0.8rem'>{children}</Text>
+        <MsgType color={text[variant].color}>
+          {text[variant].textKey}
+        </MsgType>
+        <Text fontSize='0.8rem'>{message}</Text>
       </div>
     </Container>
-  );
+
+  ) : null
 };
 
 Message.defaultProps = {

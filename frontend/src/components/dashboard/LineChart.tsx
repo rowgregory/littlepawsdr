@@ -32,9 +32,6 @@ ChartJS.register(
 );
 
 const LineChart = ({ lineChart, loading }: any) => {
-  const noData = lineChart?.data?.datasets.every((obj: any) =>
-    obj.data?.every((month: any) => month === null)
-  );
 
   return (
     <TotalSalesContainer>
@@ -50,10 +47,10 @@ const LineChart = ({ lineChart, loading }: any) => {
         <SpinnerContainer>
           <Spinner animation='border' size='sm' />
         </SpinnerContainer>
-      ) : noData ? (
+      ) : lineChart?.noData ? (
         <Text>No data to display</Text>
       ) : (
-        !noData &&
+        !lineChart?.noData &&
         lineChart?.data?.labels?.length > 0 && (
           <LineChartContainer>
             <Line data={lineChart?.data} options={lineChart?.options} />

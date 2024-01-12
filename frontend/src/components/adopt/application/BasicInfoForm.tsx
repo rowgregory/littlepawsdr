@@ -4,7 +4,7 @@ import { STATES } from '../../../utils/states';
 import { Button } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 
-const Input = styled(Field)`
+export const Input = styled(Field)`
   border: 1px solid #e8e8e8;
   border-radius: 12px;
   margin-bottom: 2px;
@@ -29,7 +29,7 @@ const Input = styled(Field)`
   }
 `;
 
-const Error = styled(ErrorMessage)`
+export const Error = styled(ErrorMessage)`
   font-size: 12px;
   color: red;
 `;
@@ -39,6 +39,7 @@ const initialValues = {
   lastName: '',
   email: '',
   state: '',
+  bypassCode: '',
 };
 
 const validate = (values: any) => {
@@ -72,15 +73,10 @@ const validate = (values: any) => {
 const BasicInfoForm = ({ onSubmit }: any) => {
   const state = useSelector((state: any) => state);
   const loadingAdoptionFeeCreate = state?.adoptionFeeCreate?.loading;
-  const loadingAdoptionFeeCheckActiveSession =
-    state?.adoptionFeeCheckActiveSession?.loading;
+  const loadingAdoptionFeeCheckActiveSession = state?.adoptionFeeCheckActiveSession?.loading;
 
   return (
-    <Formik
-      initialValues={initialValues}
-      validate={validate}
-      onSubmit={onSubmit}
-    >
+    <Formik initialValues={initialValues} validate={validate} onSubmit={onSubmit}>
       {({ handleSubmit, isValid }) => (
         <form onSubmit={handleSubmit} className='d-flex flex-column'>
           <div className='mb-3'>
@@ -96,12 +92,7 @@ const BasicInfoForm = ({ onSubmit }: any) => {
             <Error name='email' component='div' />
           </div>
           <div className='mb-3'>
-            <Input
-              component='select'
-              id='state'
-              name='state'
-              className='adoption-fee-state-select'
-            >
+            <Input component='select' id='state' name='state' className='adoption-fee-state-select'>
               {STATES.map((obj, i) => (
                 <option key={i} value={obj.value}>
                   {obj.text}
@@ -110,14 +101,13 @@ const BasicInfoForm = ({ onSubmit }: any) => {
             </Input>
             <Error name='state' component='div' />
           </div>
+          <div className='mb-3'>
+            <Input type='text' name='bypassCode' placeholder='Bypass Code' />
+          </div>
           <Button
             variant='success'
             type='submit'
-            disabled={
-              !isValid ||
-              loadingAdoptionFeeCreate ||
-              loadingAdoptionFeeCheckActiveSession
-            }
+            disabled={!isValid || loadingAdoptionFeeCreate || loadingAdoptionFeeCheckActiveSession}
           >
             {loadingAdoptionFeeCreate ? 'Initializing Form' : 'Continue'}
           </Button>

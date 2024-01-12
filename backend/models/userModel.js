@@ -60,7 +60,8 @@ const userSchema = mongoose.Schema(
     bio: { type: String },
     lastLoginTime: { type: String },
     resetPasswordToken: { type: String },
-    resetPasswordExpires: { type: Number }
+    resetPasswordExpires: { type: Number },
+    introducedToSilverPaws: { type: Boolean, default: false }
   },
   {
     timestamps: true,

@@ -17,7 +17,6 @@ export const Header = styled(Modal.Header)`
   padding: 48px 32px 32px 32px;
   border: 0;
   position: relative;
-  border-bottom: 0.5px solid ${({ theme }) => theme.colors.quinary};
 `;
 
 export const Title = styled(Modal.Title)`

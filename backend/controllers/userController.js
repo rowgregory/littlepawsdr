@@ -5,12 +5,6 @@ import { generateToken } from '../utils/generateToken.js';
 import { v4 as uuidv4 } from 'uuid';
 import ManuallyAddedUser from '../models/manuallyAddedUserModel.js';
 import { sendEmail } from '../utils/sendEmail.js';
-import ECardOrder from '../models/eCardOrderModel.js';
-import AdoptionFee from '../models/adoptionFeeModel.js';
-import WelcomeWienerOrder from '../models/welcomeWienerOrderModel.js';
-import ProductOrder from '../models/productOrderModel.js';
-import Order from '../models/orderModel.js';
-import { getLineChartData } from '../utils/getLineChartData.js';
 
 // @desc    Auth user & get token
 // @route   POST /api/users/login
@@ -158,7 +152,9 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     bio,
     password,
     newPassword,
+    introducedToSilverPaws
   } = req.body;
+
   try {
     const user = await User.findById(req.user._id);
     if (!user) return res.status(404).json({ message: 'User not found' });
@@ -172,6 +168,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     user.theme = theme ?? user.theme;
     user.location = location ?? user.location;
     user.bio = bio ?? user.bio;
+    user.introducedToSilverPaws = introducedToSilverPaws ?? user.introducedToSilverPaws;
 
     if (password) {
       user.password = password;
@@ -194,6 +191,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
       token: updatedUser.token,
       location: updatedUser.location,
       bio: updatedUser.bio,
+      introducedToSilverPaws: updatedUser.introducedToSilverPaws
     });
   } catch (err) {
     const createdError = new Error({
@@ -290,9 +288,15 @@ const deleteUser = asyncHandler(async (req, res) => {
 // @access  Private/Admin
 const getUserById = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.id).select('-password -token');
-  console.log(user)
+
   if (user) {
-    res.json({ isAdmin: user.isAdmin, name: user.name, email: user.email });
+    res.json({
+      isAdmin: user.isAdmin,
+      name: user.name,
+      email: user.email,
+      updatedAt: user.updatedAt,
+      createdAt: user.createdAt,
+    });
   } else {
     const createdError = new Error({
       functionName: 'GET_USER_BY_ID_ADMIN',
@@ -373,8 +377,6 @@ const updateUser = asyncHandler(async (req, res) => {
       message: `500 - Server Error`,
     });
   }
-
-
 });
 
 // @desc    Update user to offline
@@ -419,130 +421,6 @@ const sendRegisterConfirmationEmail = asyncHandler(async (req, res) => {
   sendEmail(req.body, res, 'sendRegisterConfirmationEmail');
 });
 
-// @desc    Get dashboard details
-// @route   GET /api/users/dashboard-details
-// @access  Private/Admin
-const dashboardDetails = asyncHandler(async (req, res) => {
-  try {
-    const welcomeWienerOrders = await WelcomeWienerOrder.find({});
-    const ecardOrders = await ECardOrder.find({});
-    const productOrders = await ProductOrder.find({});
-    const orders = await Order.find({});
-    const users = await User.find({});
-    const adoptionFees = await AdoptionFee.find({});
-
-    const welcomeWienerOrdersItemsTotal = welcomeWienerOrders?.reduce(
-      (acc, item) => acc + item?.price * item?.quantity || 0,
-      0
-    );
-
-    const ecardOrdersItemsTotal = ecardOrders?.reduce(
-      (acc, item) => acc + item?.totalPrice || 0,
-      0
-    );
-    const productOrdersItemsTotal = productOrders?.reduce(
-      (acc, item) => acc + item?.totalPrice || 0,
-      0
-    );
-
-    const adoptionFeesTotal = adoptionFees?.reduce(
-      (acc, item) => acc + item?.feeAmount || 0,
-      0
-    );
-
-    const walletTotal = Number(
-      welcomeWienerOrdersItemsTotal +
-      ecardOrdersItemsTotal +
-      productOrdersItemsTotal + adoptionFeesTotal
-    );
-
-    const sortedOrders = [
-      ...welcomeWienerOrders,
-      ...ecardOrders,
-      ...productOrders,
-    ].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
-    const result = Object.values(
-      sortedOrders.reduce((acc, item) => {
-        const name = item?.productName || item?.dachshundName || item?.name;
-        if (!acc[name]) {
-          acc[name] = {
-            name,
-            price: item?.price || item?.totalPrice,
-            count: item?.quantity || 1,
-            dachshundName: item?.dachshundName || null,
-            shippingPrice: item?.shippingPrice || 0,
-          };
-        } else {
-          acc[name].price = item?.price || item?.totalPrice;
-          acc[name].count++;
-        }
-        return acc;
-      }, {})
-    ).map(({ name, price, count, dachshundName, shippingPrice }) => ({
-      name,
-      price,
-      count,
-      dachshundName,
-      shippingPrice,
-    }));
-
-    const sortedTopSellingProducts = result
-      .map(obj => ({
-        ...obj,
-        subtotal: obj.count * obj.price,
-        totalAmount:
-          obj.count * obj.price + obj.count * Number(obj.shippingPrice),
-        shippingTotal: obj.count * Number(obj.shippingPrice),
-      }))
-      .sort((a, b) => (a.totalAmount > b.totalAmount ? -1 : 1));
-
-    const lineChart = getLineChartData(
-      productOrders,
-      ecardOrders,
-      welcomeWienerOrders
-    );
-
-    res.json({
-      orders,
-      ecardOrders,
-      productOrders,
-      welcomeWienerOrders,
-      users,
-      total: sortedOrders,
-      productOrdersItemsTotal,
-      ecardOrdersItemsTotal,
-      welcomeWienerOrdersItemsTotal,
-      walletTotal,
-      adoptionFeesTotal,
-      totalAmounts: {
-        welcomeWienerOrders: welcomeWienerOrders?.length,
-        users: users?.length,
-        ecardOrders: ecardOrders?.length,
-        productOrders: productOrders?.length,
-        orders: orders?.length,
-        adoptionFees: adoptionFees?.length
-      },
-      topSellingProducts: sortedTopSellingProducts,
-      lineChart,
-    });
-  } catch (err) {
-    const createdError = new Error({
-      functionName: 'DASHBOARD_DETAILS_ADMIN',
-      detail: err.message,
-      user: {
-        id: req?.user?._id,
-        name: req?.user?.name,
-      },
-    });
-
-    await createdError.save();
-    res.status(404).json({
-      message: `500 - Server Error - ${err.message}`,
-    });
-  }
-});
-
 // @desc    Get new refresh token
 // @route   POST /api/users/refresh-token
 // @access  Private
@@ -565,6 +443,5 @@ export {
   updateUser,
   userLogout,
   sendRegisterConfirmationEmail,
-  dashboardDetails,
   getRefreshToken,
 };

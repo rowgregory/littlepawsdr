@@ -219,8 +219,10 @@ export const TableAndPaginationContainer = styled.div`
   background: #fff;
   min-height: 600px;
   margin-left: 0;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    height: calc(100vh - 216px);
+  width: calc(100vw - 32px);
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
+    height: calc(100vh - 176px);
+    width: calc(100vw - 302px);
   }
 `;
 

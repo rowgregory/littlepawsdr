@@ -6,8 +6,8 @@ import AdminActionModalBody from '../AdminActionModalBody';
 
 const SideBar = () => {
   return (
-    <Container className='d-flex flex-column'>
-      <Link to='/' style={{ marginInline: 'auto', marginBottom: '2rem' }}>
+    <Container>
+      <Link to='/' className='mx-auto mb-4'>
         <Image
           src={LogoDay}
           alt='LPDR'
