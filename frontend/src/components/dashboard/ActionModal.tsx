@@ -1,16 +1,16 @@
-import { Image, Modal } from 'react-bootstrap';
-import {
-  Body,
-  Content,
-  Footer,
-  Header,
-  LeftBtn,
-} from '../../components/ContinueSessionModal';
+import { Modal } from 'react-bootstrap';
+import { Body, Footer, LeftBtn } from '../../components/ContinueSessionModal';
 import AdminActionModalBody from '../../components/dashboard/AdminActionModalBody';
-import Logo from '../../components/assets/logo-transparent.png';
-import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { openCloseDashboardModal } from '../../actions/dashboardActions';
+import styled from 'styled-components';
+
+export const Content = styled.div<{ shake?: any }>`
+  background: ${({ theme }) => theme.bg};
+  padding: 16px;
+  transform: translate3d(0, 0, 0);
+  perspective: 1000px;
+`;
 
 const ActionModal = () => {
   const dispatch = useDispatch();
@@ -24,17 +24,10 @@ const ActionModal = () => {
       centered
     >
       <Content className='p-0'>
-        <Header closeButton className='p-2' placeholder={null}>
-          <Link
-            to='/'
-            className='mx-auto'
-            onClick={() => dispatch(openCloseDashboardModal(false))}
-          >
-            <Image src={Logo} alt='LPDR' height='48px' width='auto' />
-          </Link>
-        </Header>
         <Body>
-          <AdminActionModalBody />
+          <div className='pt-5'>
+            <AdminActionModalBody />
+          </div>
         </Body>
         <Footer>
           <LeftBtn onClick={() => dispatch(openCloseDashboardModal(false))}>

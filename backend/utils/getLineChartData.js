@@ -1,4 +1,4 @@
-export const getLineChartData = (
+export const getLineChartData = async (
   productOrders,
   ecardOrders,
   welcomeWienerOrders
@@ -10,8 +10,7 @@ export const getLineChartData = (
   const processData = orders => {
     const currentMonth = new Date().getMonth();
     const monthlyData = Array(12).fill(null);
-
-    orders.forEach(item => {
+    orders?.forEach(item => {
       const createdAt = new Date(item.createdAt);
       const month = createdAt.getMonth();
       const totalPrice =
@@ -116,5 +115,9 @@ export const getLineChartData = (
     },
   };
 
-  return { data, options };
+  const noData = data?.datasets.every((obj) =>
+    obj.data?.every((month) => month === null)
+  );
+
+  return { data, options, noData };
 };

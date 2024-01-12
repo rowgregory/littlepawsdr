@@ -143,6 +143,7 @@ async function createProductOrders(createdOrder, res) {
         ...item,
         price: item.price,
         productName: item.productName,
+        productId: item.productId,
         productImage: item.productImage,
         quantity: item.quantity,
         email: createdOrder.email,
@@ -265,7 +266,7 @@ const getMyOrders = asyncHandler(async (req, res) => {
       }
       return []
     })
-    console.log('adoptionApplicationFees: ', adoptionApplicationFees)
+
     const ecardsAndOrders = orders?.concat(convertedEcardOrders)
     res.status(200).json({ orders: ecardsAndOrders, adoptionApplicationFees });
   } catch (err) {

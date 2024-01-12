@@ -33,6 +33,8 @@ import WelcomeWienerOrderList from './Orders/WelcomeWienerOrderList';
 import ProductOrderList from './Orders/ProductOrderList';
 import ProductCreate from './ProductCreate';
 import AdoptionFeeList from './AdoptionFeeList';
+import Archive from './Archive';
+import ActionHistoryList from './ActionHistoryList';
 
 type LazyModulePromise<T = {}> = Promise<{ default: ComponentType<T> }>;
 const Orders = lazy((): LazyModulePromise => import('./Orders'));
@@ -287,6 +289,22 @@ const AdminRoutes: FC = () => {
           element={
             <PrivateRoute>
               <AdoptionFeeList />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path='archive'
+          element={
+            <PrivateRoute>
+              <Archive />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path='action-history'
+          element={
+            <PrivateRoute>
+              <ActionHistoryList />
             </PrivateRoute>
           }
         />

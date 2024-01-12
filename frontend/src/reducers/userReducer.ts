@@ -4,9 +4,6 @@ import {
   USER_CONFIRMED_REQUEST,
   USER_CONFIRMED_RESET,
   USER_CONFIRMED_SUCCESS,
-  USER_DASHBOARD_DETAILS_FAIL,
-  USER_DASHBOARD_DETAILS_REQUEST,
-  USER_DASHBOARD_DETAILS_SUCCESS,
   USER_DELETE_FAIL,
   USER_DELETE_REQUEST,
   USER_DELETE_RESET,
@@ -124,6 +121,8 @@ export const userDetailsReducer = (state = { user: {} }, action) => {
         name: action.payload.name,
         email: action.payload.email,
         success: true,
+        updatedAt: action.payload.updatedAt,
+        createdAt: action.payload.createdAt,
       };
     case USER_DETAILS_FAIL:
       return {
@@ -225,7 +224,7 @@ export const userWhoWeAreListReducer = (state = { users: [] }, action) => {
     case USER_WHO_WE_ARE_LIST_SUCCESS:
       return {
         loading: false,
-        users: action.payload,
+        boardMembers: action.payload.boardMembers,
       };
     case USER_WHO_WE_ARE_LIST_FAIL:
       return {
@@ -418,44 +417,6 @@ export const checkUsersConfirmationReducer = (state = {}, action) => {
       return {
         loading: false,
         success: false,
-      };
-    default:
-      return state;
-  }
-};
-
-// @ts-ignore
-export const dashboardDetailsReducer = (
-  state = {
-    eCardOrderItemsTotal: '',
-    orders: [],
-    ecardOrders: [],
-    users: [],
-    total: [],
-    orderItemsTotal: '',
-    walletTotal: '',
-    totalAmounts: {
-      orders: 0,
-      users: 0,
-      ecardOrders: 0,
-    },
-  },
-  action: any
-) => {
-  switch (action.type) {
-    case USER_DASHBOARD_DETAILS_REQUEST:
-      return {
-        loading: true,
-      };
-    case USER_DASHBOARD_DETAILS_SUCCESS:
-      return {
-        loading: false,
-        dashboardDetails: action.payload,
-      };
-    case USER_DASHBOARD_DETAILS_FAIL:
-      return {
-        loading: false,
-        error: action.payload,
       };
     default:
       return state;

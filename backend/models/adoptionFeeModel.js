@@ -26,6 +26,9 @@ const adoptionFeeSchema = mongoose.Schema(
     },
     confirmationEmailHasBeenSent: {
       type: Boolean
+    },
+    bypassCode: {
+      type: String
     }
   },
   {

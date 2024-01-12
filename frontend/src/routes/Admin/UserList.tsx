@@ -42,6 +42,10 @@ const UserList = () => {
     };
   }, [dispatch, userDeleteSuccess]);
 
+  users?.sort(
+    (a: any, b: any) => -a?.createdAt?.localeCompare(b?.createdAt)
+  );
+
   const filteredUsers = users?.filter((user: any) =>
     user.email.toLowerCase().includes(text.toLowerCase())
   );

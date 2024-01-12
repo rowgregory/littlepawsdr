@@ -10,16 +10,22 @@ import {
 import RightArrow from '../svg/RightArrow';
 import { LoadingImg } from '../LoadingImg';
 import GradientText from '../GradientText';
-import { Text } from '../styles/Styles';
+import { Flex, Text } from '../styles/Styles';
 
 const OurLovablePals = () => {
   const state = useSelector((state: any) => state);
-  const dachshunds = state.dachshunds.dachshunds;
-  let loading = state.dachshunds.loading;
+  const dachshunds = state.dachshunds?.dachshunds;
+  const error = state.dachshunds?.error;
+  const loading = state.dachshunds?.loading;
 
   return (
     <SectionContainer>
-      {[undefined, null].includes(dachshunds) ? (
+      {error ? (
+        <Flex alignItems='center'>
+          Oops! Something happened. Please refresh the page &nbsp;
+          <i className="fa-solid fa-rotate"></i>
+        </Flex>
+      ) : [undefined, null].includes(dachshunds) ? (
         <div className='d-flex flex-column w-100 align-items-center my-5'>
           <GradientText
             text='DACHSHUNDS COMING SOON'
@@ -32,7 +38,7 @@ const OurLovablePals = () => {
           <DogContainer className='mx-0 mb-5'>
             {loading
               ? [1, 2, 3, 4].map((_: any, i: number) => (
-                <LoadingImg w='100%' h='350px' key={i} />
+                <LoadingImg w='100%' h='100%' maxw='500px' key={i} />
               ))
               : dachshunds
                 ?.map((dachshund: any, i: number) => (

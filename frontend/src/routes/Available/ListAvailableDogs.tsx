@@ -156,7 +156,7 @@ const ListAvailableDogs = () => {
           text='Home'
           url='/'
           text2='Contact Us'
-          url2='about/contact-us'
+          url2='/about/contact-us'
         />
         <RightArrow text='Sponsor a Sanctuary' url='/about/sanctuary' />
       </div>

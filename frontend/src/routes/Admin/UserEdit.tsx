@@ -6,15 +6,10 @@ import { USER_DETAILS_RESET } from '../../constants/userConstants';
 import { useParams } from 'react-router-dom';
 import { Text } from '../../components/styles/Styles';
 import Message from '../../components/Message';
-import {
-  Container,
-  TableAndPaginationContainer,
-} from '../../components/styles/admin/Styles';
-import {
-  GoBackAndTitleWrapper,
-  WelcomeText,
-} from '../../components/styles/DashboardStyles';
+import { Container, TableAndPaginationContainer } from '../../components/styles/admin/Styles';
+import { GoBackAndTitleWrapper, WelcomeText } from '../../components/styles/DashboardStyles';
 import GoBackBtn from '../../utils/GoBackBtn';
+import { formatDateTime } from '../../utils/formatDateTime';
 
 const UserEdit = () => {
   const { id } = useParams<{ id: string }>();
@@ -22,7 +17,7 @@ const UserEdit = () => {
   const userId = id;
 
   const {
-    userDetails: { error, isAdmin, name, email },
+    userDetails: { error, isAdmin, name, email, updatedAt, createdAt },
     userUpdate: { error: errorUpdate, success: successUpdate },
   } = useSelector((state: any) => state);
 
@@ -39,9 +34,7 @@ const UserEdit = () => {
         <GoBackBtn to='/admin/userList' color='#121212' />
         <WelcomeText>User Edit</WelcomeText>
       </GoBackAndTitleWrapper>
-      {(error || errorUpdate) && (
-        <Message variant='danger'>{error || errorUpdate}</Message>
-      )}
+      {(error || errorUpdate) && <Message variant='danger'>{error || errorUpdate}</Message>}
       <TableAndPaginationContainer className='justify-content-start p-4'>
         <div>
           <Text className='d-flex'>
@@ -56,12 +49,21 @@ const UserEdit = () => {
               {email}
             </Text>
           </Text>
+          <Text className='d-flex'>
+            Created At:
+            <Text fontWeight={400} marginLeft='8px'>
+              {formatDateTime(createdAt)}
+            </Text>
+          </Text>
+          <Text className='d-flex'>
+            Updated At:
+            <Text fontWeight={400} marginLeft='8px'>
+              {formatDateTime(updatedAt)}
+            </Text>
+          </Text>
         </div>
         <Form className='mt-4'>
-          <Form.Group
-            className='d-flex align-items-center'
-            controlId='isAdmin'
-          >
+          <Form.Group className='d-flex align-items-center' controlId='isAdmin'>
             <Form.Check
               type='switch'
               checked={isAdmin || false}

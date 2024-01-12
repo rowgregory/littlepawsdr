@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { jwtCheckValidityAdoptionFee } from '../../actions/jwtActions';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -15,6 +15,7 @@ import {
   InnerContainer,
 } from '../../components/styles/adoption-application/styles';
 import CountdownTimer from '../../components/CountdownTImer';
+import ContactLoader from '../../components/Loaders/ContactLoader/ContactLoader';
 
 const AdoptionApplication = () => {
   const dispatch = useDispatch();
@@ -29,6 +30,7 @@ const AdoptionApplication = () => {
   const jwtIsExpired = jwtCheck.isExpired;
   const statusCode = jwtCheck.statusCode || error?.statusCode;
   const exp = jwtCheck.exp;
+  const [iFrameLoaded, setIFrameLoaded] = useState(true);
 
   useEffect(() => {
     if (token) {
@@ -65,10 +67,11 @@ const AdoptionApplication = () => {
 
   return (
     <AdoptionApplicationContainer>
+      {iFrameLoaded && <ContactLoader text='Loading your application' />}
       <CountdownTimer exp={exp} />
-      <ProgressTracker step={{ step1: true, step2: true, step3: true }} />
+      <ProgressTracker step={{ step1: true, step2: true, step3: true, step4: true }} />
       <InnerContainer>
-        <AdoptionApplicationIFrame
+        <AdoptionApplicationIFrame onLoad={() => setIFrameLoaded(false)}
           title='Adoption Application'
           width='100%'
           src='https://toolkit.rescuegroups.org/of/f?c=WHMQCBRV'

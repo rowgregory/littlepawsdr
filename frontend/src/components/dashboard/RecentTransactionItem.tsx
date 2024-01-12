@@ -8,17 +8,18 @@ import { FC } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export const RecentTransactionItemContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
   padding: 8px;
+  gap: 2px;
+  border-radius: 8px;
   :hover {
     background: #f6f9fe;
     cursor: pointer;
   }
 `;
 
-export const ItemName = styled.div`
+export const ItemAmount = styled.div`
   font-weight: 400;
   white-space: nowrap;
   overflow: hidden;
@@ -30,75 +31,78 @@ export const ItemName = styled.div`
   }
 `;
 
+const ProductImg = styled(Image)`
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+`;
+
 interface RecentTransactionItemProps {
   item: any;
   loading: boolean;
 }
+
+const EmailText = styled.div`
+font-weight: 300;
+color: #c1c1c1;
+font-size: 12px;
+max-width: 140px;
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+`
 
 const RecentTransactionItem: FC<RecentTransactionItemProps> = ({
   item,
   loading,
 }: any) => {
   const history = useNavigate();
-
   const viewTransaction = (item: any) => {
     history(`/admin/order/${item?._id}`);
   };
+  const imgSrc =
+    item?.orderItems[0]?.dachshundImage ?? item?.orderItems[0]?.productImage;
   return (
     <RecentTransactionItemContainer onClick={() => viewTransaction(item)}>
-      <Flex marginRight='16px'>
-        {loading ? (
-          <div className='mr-3'>
-            <LoadingImg w='50px' h='50px' />
-          </div>
-        ) : (
-          <Image
-            src={
-              item?.orderItems[0]?.dachshundImage ??
-              item?.orderItems[0]?.productImage
-            }
-            alt='Donation Item'
-            width='50px'
-            height='50px'
-            className='mr-3'
-            style={{ objectFit: 'cover' }}
-          />
-        )}
-
-        <div className='d-flex flex-column align-items-start'>
-          <ItemName>
-            {loading ? (
-              <LoadingImg w='120px' h='20px' />
-            ) : (
-              `${item?.totalItems} item${item?.totalItems > 1 ? 's' : ''}`
-            )}
-          </ItemName>
-          {!loading && (
-            <Flex flexDirection='column'>
-              <Text
-                fontWeight={300}
-                color='#c1c1c1'
-                className='d-flex justify-content-end'
-                fontSize='12px'
-              >
-                {item?.email}
-              </Text>
-              <Text
-                fontWeight={300}
-                color='#6a6a6a'
-                className='d-flex justify-content-end'
-                fontSize='10px'
-              >
-                {formatDateTime(item?.createdAt)}
-              </Text>
-            </Flex>
+      {loading ? (
+        <LoadingImg w='60px' h='60px' />
+      ) : (
+        <ProductImg src={imgSrc} alt='Donation Item' />
+      )}
+      <Flex className='flex-column align-items-start'>
+        <ItemAmount>
+          {loading ? (
+            <LoadingImg w='100%' h='20px' />
+          ) : (
+            `${item?.totalItems} item${item?.totalItems > 1 ? 's' : ''}`
           )}
-        </div>
+        </ItemAmount>
+        {!loading && (
+          <Flex flexDirection='column'>
+            <EmailText>
+              {item?.email}
+            </EmailText>
+            <Text
+              fontWeight={300}
+              color='#6a6a6a'
+              className='d-flex justify-content-end'
+              fontSize='10px'
+            >
+              {formatDateTime(item?.createdAt)}
+            </Text>
+          </Flex>
+        )}
       </Flex>
       {!loading && (
-        <Text color='#9761aa' fontWeight={600}>
+        <Flex
+          justifyContent='center'
+          alignItems='center'
+          color='#9761aa'
+          className='font-weight-bold'
+        >
           + {addDecimals(item?.totalPrice)}
-        </Text>
+        </Flex>
       )}
     </RecentTransactionItemContainer>
   );

@@ -5,7 +5,6 @@ import { Text } from '../../components/styles/Styles';
 import {
   SearchBar,
   TableHead,
-  TableRow,
   TopRow,
   TableAndPaginationContainer,
   Container,
@@ -18,6 +17,20 @@ import BreadCrumb from '../../components/common/BreadCrumb';
 import { listAdoptionFees } from '../../actions/adoptionActions';
 import { formatDateTime } from '../../utils/formatDateTime';
 import { ADOPTION_FEE_LIST_RESET } from '../../constants/adoptionConstants';
+import styled from 'styled-components';
+
+const TableRow = styled.tr<{ usedcode: string }>`
+background: ${({ usedcode }) => usedcode ? '#d1d8e9' : ''};
+  font-size: 12px;
+  td {
+    border-top: none !important;
+    vertical-align: inherit;
+    color: #373737;
+  }
+  :hover {
+    background: #f6f9fe !important;
+  }
+`;
 
 const AdoptionFeeList = () => {
   const dispatch = useDispatch();
@@ -83,13 +96,14 @@ const AdoptionFeeList = () => {
                 <th>LAST NAME</th>
                 <th>EMAIL</th>
                 <th>STATE</th>
+                <th>Bypass Code</th>
                 <th>FEE</th>
                 <th>CREATED ON</th>
               </tr>
             </TableHead>
             <tbody>
               {filteredAdoptionFees?.map((fee: any) => (
-                <TableRow key={fee._id}>
+                <TableRow key={fee._id} usedcode={fee?.bypassCode}>
                   <td>
                     <Text>{fee?.firstName}</Text>
                   </td>
@@ -101,6 +115,9 @@ const AdoptionFeeList = () => {
                   </td>
                   <td>
                     <Text>{fee?.state}</Text>
+                  </td>
+                  <td>
+                    <Text>{fee?.bypassCode}</Text>
                   </td>
                   <td>
                     <Text>${fee?.feeAmount}</Text>

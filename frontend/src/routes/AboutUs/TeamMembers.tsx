@@ -1,5 +1,5 @@
 import { Row, Card, Col } from 'react-bootstrap';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Text } from '../../components/styles/Styles';
 import styled from 'styled-components';
 import LeftArrow from '../../components/svg/LeftArrow';
@@ -9,6 +9,8 @@ import AboutUsLow from '../../components/assets/about-us-low.jpg';
 import CardFlip from '../../components/boardmember-card/CardFlip';
 import Hero from '../../components/Hero';
 import { LoadingImg } from '../../components/LoadingImg';
+import { useEffect } from 'react';
+import { listWhoWeAreUsers } from '../../actions/userActions';
 
 const Container = styled.div`
   max-width: 1280px;
@@ -90,9 +92,14 @@ const ArrowContainer = styled.div`
 `;
 
 const TeamMembers = () => {
+  const dispatch = useDispatch()
   const state = useSelector((state: any) => state);
-  const users = state.userWhoWeAreList.users;
-  const loading = state.userWhoWeAreList.loading;
+  const boardMembers = state.userWhoWeAreList?.boardMembers;
+  const loading = state.userWhoWeAreList?.loading;
+
+  useEffect(() => {
+    dispatch(listWhoWeAreUsers())
+  }, [dispatch])
 
   return (
     <>
@@ -163,7 +170,7 @@ const TeamMembers = () => {
             {loading ? (
               <LoadingImg w='100%' h='380px' borderRadius='16px' />
             ) : (
-              users?.map(
+              boardMembers?.map(
                 (user: any) =>
                   (user?.isAdmin || user?.affiliation) &&
                   user?.email !== 'it.little.paws@gmail.com' && (

@@ -17,12 +17,6 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": [
-    "src",
-    "../backend/utils/crypto.js",
-    "audio.d.ts",
-    "crypto.d.ts",
-    "index.d.ts"
-  ],
+  "include": ["src", "../backend/utils/crypto.js", "audio.d.ts", "crypto.d.ts", "index.d.ts"],
   "exclude": ["node_modules"]
 }

@@ -21,6 +21,7 @@ const EcardOrderList = ({ ecardOrders, text }: any) => {
             <th>DATE TO SEND</th>
             <th>SENT</th>
             <th>EMAIL</th>
+            <th>RECIPIENTS EMAIL</th>
             <th>PRICE</th>
             <th>VIEW</th>
           </tr>
@@ -49,6 +50,7 @@ const EcardOrderList = ({ ecardOrders, text }: any) => {
                 )}
               </td>
               <td>{order?.email}</td>
+              <td>{order?.recipientsEmail}</td>
               <td>{order?.totalPrice}</td>
               <td>
                 {!order?.firstName ? (

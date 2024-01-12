@@ -12,6 +12,11 @@ export const StyledFooter = styled.footer`
   position: relative;
 `;
 
+export const ChevronUp = styled.i`
+  color: #fff;
+  cursor: pointer;
+`;
+
 export const TopFooter = styled.div`
   display: flex;
   flex-direction: column;

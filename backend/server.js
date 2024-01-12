@@ -22,7 +22,10 @@ import welcomeWienerDog from './routes/welcomeWienerDogRoutes.js';
 import welcomeWienerProduct from './routes/welcomeWienerProductRoutes.js';
 import jwtRoutes from './routes/jwtRoutes.js';
 import adoptionFeeRoutes from './routes/adoptionFeeRoutes.js';
+import archiveRoutes from './routes/archiveRoutes.js';
+import dashboardRoutes from './routes/dashboardRoutes.js';
 import errorRoutes from './routes/errorRoutes.js';
+import actionHistoryRoutes from './routes/actionHistoryRoutes.js';
 import cors from 'cors';
 import http from 'http';
 import { Server } from 'socket.io';
@@ -70,6 +73,15 @@ if (process.env.NODE_ENV === 'development') {
 
 app.use(cors());
 
+// Middleware to retrieve user-agent information
+const userAgentMiddleware = (req, res, next) => {
+  // Retrieve the user's user-agent information from the request headers
+  req.userAgent = req.get('User-Agent');
+  next();
+};
+
+app.use(userAgentMiddleware);
+
 app.use('/api/users', userRoutes);
 app.use('/api/order', orderRoutes);
 app.use('/api/education-tips', educationTipRoutes);
@@ -87,7 +99,10 @@ app.use('/api/welcome-wiener-dog', welcomeWienerDog);
 app.use('/api/welcome-wiener-product', welcomeWienerProduct);
 app.use('/api/jwt', jwtRoutes)
 app.use('/api/adoption-fee', adoptionFeeRoutes)
+app.use('/api/archive', archiveRoutes)
+app.use('/api/dashboard', dashboardRoutes)
 app.use('/api/error', errorRoutes);
+app.use('/api/action-history', actionHistoryRoutes);
 
 const __dirname = path.resolve();
 

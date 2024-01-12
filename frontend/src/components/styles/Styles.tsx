@@ -49,6 +49,7 @@ interface TextProps {
   textTransform?: string;
   position?: string;
   top?: string;
+  left?: string;
 }
 
 export const Text = styled.div<TextProps>`
@@ -78,6 +79,7 @@ export const Text = styled.div<TextProps>`
     textTransform ? textTransform : ''};
   position: ${({ position }) => (position ? position : 'relative')};
   top: ${({ top }) => (top ? top : '')};
+  left: ${({ left }) => (left ? left : '')};
 `;
 
 interface FlexProps {

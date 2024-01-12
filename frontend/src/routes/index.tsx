@@ -1,5 +1,11 @@
 import { ComponentType, FC, lazy, useEffect } from 'react';
-import { Route, useLocation, useNavigate, Routes } from 'react-router-dom';
+import {
+  Route,
+  useLocation,
+  useNavigate,
+  Routes,
+  Navigate,
+} from 'react-router-dom';
 import Home from './Home';
 import Login from './Login';
 import Register from './Register';
@@ -46,10 +52,6 @@ import {
   WELCOME_WIENER_DACHSHUND_LIST_SUCCESS,
 } from '../constants/welcomeWienerDachshundConstants';
 import {
-  USER_WHO_WE_ARE_LIST_REQUEST,
-  USER_WHO_WE_ARE_LIST_SUCCESS,
-} from '../constants/userConstants';
-import {
   DACHSHUNDS_SUCCESS,
   DACHSHUND_PICS_VIDS_STASTUSES_REQUEST,
   DACHSHUND_PICS_VIDS_STASTUSES_SUCCESS,
@@ -67,6 +69,7 @@ import {
   EDUCATION_TIP_LIST_REQUEST,
   EDUCATION_TIP_LIST_SUCCESS,
 } from '../constants/educationTipConstants';
+import { ADOPTION_APPLICATION_FEE_BYPASS_CODE_SUCCESS } from '../constants/adoptionConstants';
 
 const socket = io('/load-initial-data');
 
@@ -83,7 +86,7 @@ const Settings = lazy((): LazyModulePromise => import('./Settings'));
 const Donate = lazy((): LazyModulePromise => import('./Donate'));
 const Merch = lazy((): LazyModulePromise => import('./Merch'));
 
-const Page = styled(Container)<{ url: string }>`
+const Page = styled(Container) <{ url: string }>`
   width: 100%;
   min-height: ${({ url }) =>
     url.split('/')[1] === 'admin' ? '100%' : 'calc(100vh - 822.59px)'};
@@ -94,11 +97,11 @@ const Page = styled(Container)<{ url: string }>`
 
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
     min-height: ${({ url }) =>
-      url.split('/')[1] === 'admin' ? '100%' : 'calc(100vh - 773.59px)'};
+    url.split('/')[1] === 'admin' ? '100%' : 'calc(100vh - 773.59px)'};
   }
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
     min-height: ${({ url }) =>
-      url.split('/')[1] === 'admin' ? '100%' : 'calc(100vh - 389px)'};
+    url.split('/')[1] === 'admin' ? '100%' : 'calc(100vh - 389px)'};
   }
 `;
 
@@ -116,7 +119,6 @@ export const MainRoutes: FC = () => {
       dispatch({ type: PRODUCT_LIST_REQUEST });
       dispatch({ type: ECARD_LIST_REQUEST });
       dispatch({ type: WELCOME_WIENER_DACHSHUND_LIST_REQUEST });
-      dispatch({ type: USER_WHO_WE_ARE_LIST_REQUEST });
       dispatch({ type: DACHSHUND_PICS_VIDS_STASTUSES_REQUEST });
       dispatch({ type: EVENT_LIST_REQUEST });
       dispatch({ type: BLOG_LIST_REQUEST });
@@ -153,11 +155,6 @@ export const MainRoutes: FC = () => {
         });
 
         dispatch({
-          type: USER_WHO_WE_ARE_LIST_SUCCESS,
-          payload: initialData?.boardMembers,
-        });
-
-        dispatch({
           type: DACHSHUND_PICS_VIDS_STASTUSES_SUCCESS,
           payload: dachshunds?.allDogs,
         });
@@ -178,6 +175,19 @@ export const MainRoutes: FC = () => {
 
     return () => {
       socket.disconnect();
+    };
+  }, [dispatch]);
+
+  useEffect(() => {
+    // Listen for 'new-code' event
+    socket.on('adoption-application-fee-bypass-code', (bypassCode) => {
+      // Handle the new code, you can dispatch an action or perform any other updates
+      dispatch({ type: ADOPTION_APPLICATION_FEE_BYPASS_CODE_SUCCESS, payload: bypassCode })
+    });
+
+    // Clean up the event listener when the component unmounts
+    return () => {
+      socket.off('adoption-application-fee-bypass-code');
     };
   }, [dispatch]);
 
@@ -242,7 +252,10 @@ export const MainRoutes: FC = () => {
           <Route path='/merch/*' element={<Merch />} />
           <Route path='/ecards' element={<Ecards />} />
           <Route path='/ecards/filtered' element={<FilteredEcards />} />
-          <Route path='/ecard/personalize/:id' element={<PersonalizeEcard />} />
+          <Route
+            path='/ecard/personalize/:id'
+            element={<PersonalizeEcard />}
+          />
           <Route
             path='/order/:id/:order?/:shippingAddress?/:email?/:items?'
             element={<OrderReceipt />}
@@ -255,6 +268,7 @@ export const MainRoutes: FC = () => {
             element={<EmailConfirmation />}
           />
           <Route path='/' element={<Home />} />
+          <Route path='*' element={<Navigate to='/404' replace />} />
           <Route path='/404' element={<PageNotFound />} />
         </Routes>
       </Page>

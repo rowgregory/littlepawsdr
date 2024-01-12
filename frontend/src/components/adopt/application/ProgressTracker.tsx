@@ -5,10 +5,10 @@ import { useSelector } from 'react-redux';
 import GearLoader from '../../Loaders/Gear';
 
 const Container = styled.div`
-  max-width: 400px;
+  max-width: 500px;
   width: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
   align-items: center;
   position: relative;
   margin-inline: auto;
@@ -31,19 +31,26 @@ const Step = styled.div<{ step: string }>`
 
 const Line = styled.div<{ step: string }>`
   height: 3px;
-  width: 124px;
+  width: 89px;
   max-width: 150px;
   margin-inline: 16px;
   background: ${({ step }) => (step === 'true' ? '#4cb71a' : '#eeeeee')};
   position: absolute;
   top: 13px;
   &.line-1 {
-    left: 45px;
+    left: 74px;
   }
   &.line-2 {
-    left: 211px;
+    left: 190px;
+  }
+  &.line-3 {
+   left: 305px;
   }
 `;
+
+const StepAndTitleContainer = styled.div`
+width: 79px;
+`
 
 
 
@@ -52,6 +59,7 @@ interface ProgressTrackerProps extends React.HTMLAttributes<HTMLDivElement> {
     step1: boolean;
     step2: boolean;
     step3: boolean;
+    step4: boolean;
   };
   orderLoader?: boolean;
 }
@@ -65,16 +73,16 @@ const ProgressTracker = (props: ProgressTrackerProps) => {
 
   return (
     <Container>
-      <div className='d-flex flex-column align-items-center'>
-        <Step step={step.step1.toString()}>
-          {step.step2 ? <i className='fas fa-check text-white'></i> : 1}
+      <StepAndTitleContainer className='d-flex flex-column align-items-center'>
+        <Step step={step?.step1?.toString()}>
+          {step?.step2 ? <i className='fas fa-check text-white'></i> : 1}
         </Step>
         <Text>Accept Terms</Text>
-      </div>
-      <Line step={step.step2.toString()} className='line-1'></Line>
-      <div className='d-flex flex-column align-items-center'>
-        <Step step={step.step2.toString()}>
-          {step.step3 ? (
+      </StepAndTitleContainer>
+      <Line step={step?.step2?.toString()} className='line-1'></Line>
+      <StepAndTitleContainer className='d-flex flex-column align-items-center'>
+        <Step step={step?.step2?.toString()}>
+          {step?.step3 ? (
             <i className='fas fa-check text-white'></i>
           ) : loadingAdoptionFeeCheckActiveSession ? (
             <GearLoader color='#fff' size='fa-xl' />
@@ -82,22 +90,34 @@ const ProgressTracker = (props: ProgressTrackerProps) => {
             2
           )}
         </Step>
-        <Text>Payment</Text>
-      </div>
-      <Line step={step.step3.toString()} className='line-2'></Line>
-      <div className='d-flex flex-column align-items-center'>
-        <Step step={step.step3.toString()}>
-          {step.step3 ? (
+        <Text>Applicant Info</Text>
+      </StepAndTitleContainer>
+      <Line step={step?.step3?.toString()} className='line-2'></Line>
+      <StepAndTitleContainer className='d-flex flex-column align-items-center'>
+        <Step step={step?.step3?.toString()}>
+          {step?.step4 ? (
             <i className='fas fa-check text-white'></i>
-          ) : (loadingAdoptionFeeCreate || orderLoader) ? (
-            <GearLoader color='#1a1a1a' size='fa-xl' />
+          ) : loadingAdoptionFeeCheckActiveSession ? (
+            <GearLoader color='#fff' size='fa-xl' />
           ) : (
             3
           )}
         </Step>
-
+        <Text>Payment</Text>
+      </StepAndTitleContainer>
+      <Line step={step?.step4?.toString()} className='line-3'></Line>
+      <StepAndTitleContainer className='d-flex flex-column align-items-center'>
+        <Step step={step?.step4?.toString()}>
+          {step?.step4 ? (
+            <i className='fas fa-check text-white'></i>
+          ) : (loadingAdoptionFeeCreate || orderLoader) ? (
+            <GearLoader color='#1a1a1a' size='fa-xl' />
+          ) : (
+            4
+          )}
+        </Step>
         <Text>Application</Text>
-      </div>
+      </StepAndTitleContainer>
     </Container>
   );
 };

@@ -4,6 +4,11 @@ import styled from 'styled-components';
 export const Container = styled.div`
   background-color: ${({ theme }) => theme.input.bg};
   padding: 40px 0 20px;
+  position: fixed;
+  width: 100%;
+  max-width: 270px;
+  display: flex;
+  flex-direction: column;
 `;
 
 export const LinkContainer = styled.div<{ active?: string }>`

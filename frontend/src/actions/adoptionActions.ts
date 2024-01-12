@@ -22,33 +22,28 @@ export const createAdoptionFee = (fee: any) => async (dispatch: any) => {
     dispatch({
       type: ADOPTION_FEE_FAIL,
       payload:
-        error?.response && error.response.data.message
-          ? error.response.data.message
-          : '404 - Not found',
+        error?.response && error.response.data.message ? error.response.data.message : '404 - Not found',
     });
   }
 };
 
-export const checkIfUserHasActiveAdoptionFeeSession =
-  (email: string) => async (dispatch: any) => {
-    try {
-      dispatch({ type: ADOPTION_FEE_ACTIVE_SESSION_REQUEST });
+export const checkIfUserHasActiveAdoptionFeeSession = (values: any) => async (dispatch: any) => {
+  try {
+    dispatch({ type: ADOPTION_FEE_ACTIVE_SESSION_REQUEST });
 
-      const { data } = await axios.get(
-        `/api/adoption-fee/active-session/${email}`
-      );
+    const { data } = await axios.post(`/api/adoption-fee/active-session`, values);
 
-      dispatch({ type: ADOPTION_FEE_ACTIVE_SESSION_SUCCESS, payload: data });
-    } catch (error: any) {
-      dispatch({
-        type: ADOPTION_FEE_ACTIVE_SESSION_FAIL,
-        payload: {
-          error: error.response.data.message,
-          isExpired: error.response.data.isExpired,
-        },
-      });
-    }
-  };
+    dispatch({ type: ADOPTION_FEE_ACTIVE_SESSION_SUCCESS, payload: data });
+  } catch (error: any) {
+    dispatch({
+      type: ADOPTION_FEE_ACTIVE_SESSION_FAIL,
+      payload: {
+        error: error.response.data.message,
+        isExpired: error.response.data.isExpired,
+      },
+    });
+  }
+};
 
 export const listAdoptionFees = () => async (dispatch: any, getState: any) => {
   try {
@@ -70,10 +65,7 @@ export const listAdoptionFees = () => async (dispatch: any, getState: any) => {
   } catch (error: any) {
     dispatch({
       type: ADOPTION_FEE_LIST_FAIL,
-      payload: {
-        error: error.response.data.message,
-        isExpired: error.response.data.isExpired,
-      },
+      payload: error.response.data.message,
     });
   }
 };

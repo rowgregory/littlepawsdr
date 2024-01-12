@@ -69,12 +69,22 @@ interface SplitTextToCharsProps {
   text: string;
   page?: string;
   fontSize?: string;
+  fontFamily?: string;
+  color?: string;
+  mt?: string;
+  width?: string;
+  justifyContent?: string;
 }
 
 const SplitTextToChars: React.FC<SplitTextToCharsProps> = ({
   text,
   page,
   fontSize,
+  fontFamily,
+  color,
+  mt,
+  width,
+  justifyContent
 }) => {
   const [splitText, setSplitText] = useState<string[]>([]);
   const [currentCharIndex, setCurrentCharIndex] = useState<number>(-1);
@@ -105,7 +115,7 @@ const SplitTextToChars: React.FC<SplitTextToCharsProps> = ({
 
   return (
     <div className='d-flex flex-column'>
-      <div className='d-flex flex-wrap'>
+      <div className='d-flex flex-wrap' style={{ marginTop: mt, width, justifyContent }}>
         {splitText.map((char, index) => (
           <div key={index}>
             <span
@@ -114,6 +124,9 @@ const SplitTextToChars: React.FC<SplitTextToCharsProps> = ({
                 position: 'relative',
                 display: 'inline-block',
                 minWidth: char === ' ' ? '6px' : 'auto',
+                fontFamily,
+                color,
+                whiteSpace: 'nowrap'
               }}
             ></span>
             <span
@@ -121,6 +134,8 @@ const SplitTextToChars: React.FC<SplitTextToCharsProps> = ({
                 display: 'inline-block',
                 position: 'relative',
                 fontSize,
+                fontFamily,
+                color
               }}
             >
               {index <= currentCharIndex ? char : ''}

@@ -3,7 +3,10 @@ import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import { openCloseDashboardModal } from '../../actions/dashboardActions';
 import ActionModal from '../dashboard/ActionModal';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import Archive2023Modal from '../dashboard/Archive2023Modal';
+import { Image } from 'react-bootstrap';
+import { SilverPawsImg, SilverPawsImg2 } from '../assets';
 
 export const ActionBtn = styled.div`
   cursor: pointer;
@@ -37,8 +40,8 @@ export const ActionBtn = styled.div`
     display: none;
   }
 
-  box-shadow: 0px 6px 10px 0px rgba(0, 0, 0, 0.14),
-    0px 1px 18px 0px rgba(0, 0, 0, 0.12), 0px 3px 5px -1px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 6px 10px 0px rgba(0, 0, 0, 0.14), 0px 1px 18px 0px rgba(0, 0, 0, 0.12),
+    0px 3px 5px -1px rgba(0, 0, 0, 0.2);
 `;
 
 const AdminPageLayout = styled.div`
@@ -72,13 +75,24 @@ const Aside = styled.aside`
   }
 `;
 
-export const DashboardLayoutWithSideBar: FC<
-  DashboardLayoutWithSideBarProps
-> = ({ sideBar, children }) => {
+const SilverPaws = styled(Image)`
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  width: 60px;
+  cursor: pointer;
+`;
+
+export const DashboardLayoutWithSideBar: FC<DashboardLayoutWithSideBarProps> = ({
+  sideBar,
+  children,
+}) => {
   const dispatch = useDispatch();
   const state = useSelector((state: any) => state);
   const userInfo = state.userLogin.userInfo;
   const history = useNavigate();
+  const { pathname } = useLocation();
+  const openOrClose = state.dashboard.modal.openOrClose;
 
   useEffect(() => {
     if (!userInfo?.isAdmin) {
@@ -88,15 +102,24 @@ export const DashboardLayoutWithSideBar: FC<
   return (
     userInfo?.isAdmin && (
       <>
+        {!userInfo?.introducedToSilverPaws && <Archive2023Modal />}
         <ActionModal />
         <AdminPageLayout>
           <div className='d-flex'>
             <Aside>{sideBar}</Aside>
             <Main>{children}</Main>
           </div>
-          <ActionBtn onClick={() => dispatch(openCloseDashboardModal(true))}>
-            <i className='fas fa-plus fa-2x'></i>
-          </ActionBtn>
+          {userInfo.introducedToSilverPaws && pathname !== '/admin/archive' ? (
+            <SilverPaws
+              onClick={() => dispatch(openCloseDashboardModal(true))}
+              src={openOrClose ? SilverPawsImg2 : SilverPawsImg}
+              alt='Silver-Paws-Hello'
+            />
+          ) : !userInfo.introducedToSilverPaws && (
+            <ActionBtn onClick={() => dispatch(openCloseDashboardModal(true))}>
+              <i className='fas fa-plus fa-2x'></i>
+            </ActionBtn>
+          )}
         </AdminPageLayout>
       </>
     )
