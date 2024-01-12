@@ -1,48 +1,9 @@
 import asyncHandler from 'express-async-handler';
 import Error from '../models/errorModel.js';
-import fs from 'fs';
-import path from 'path';
+import ECardOrder from '../models/eCardOrderModel.js';
+import WelcomeWienerOrder from '../models/welcomeWienerOrderModel.js';
+import ProductOrder from '../models/productOrderModel.js';
 
-const __dirname = path.resolve();
-
-const getHistoricalDataFromJSONFiles = async (year, res) => {
-  try {
-    const ecardOrdersFromJSON = () =>
-      fs.readFileSync(__dirname + `/backend/utils/historical-data/${year}/ecardOrders.json`, {
-        encoding: 'utf8',
-      });
-    const ecards = JSON.parse(ecardOrdersFromJSON());
-
-    const productOrdersFromJSON = () =>
-      fs.readFileSync(__dirname + `/backend/utils/historical-data/${year}/productOrders.json`, {
-        encoding: 'utf8',
-      });
-    const products = JSON.parse(productOrdersFromJSON());
-
-    const welcomeWienerOrdersFromJSON = () =>
-      fs.readFileSync(__dirname + `/backend/utils/historical-data/${year}/welcomeWienerOrders.json`, {
-        encoding: 'utf8',
-      });
-    const welcomeWieners = JSON.parse(welcomeWienerOrdersFromJSON());
-
-    return {
-      ecards,
-      products,
-      welcomeWieners,
-    };
-  } catch (err) {
-    const createdError = new Error({
-      functionName: 'READING_HISTORICAL_DATA_FROM_JSON_PRIVATE_ADMIN',
-      detail: err.message,
-      status: 500,
-    });
-
-    await createdError.save();
-    return res.status(500).send({
-      message: '500 - Server Error',
-    });
-  }
-};
 
 const getYearlyData = (data, year, amountField) => {
   try {
@@ -51,7 +12,7 @@ const getYearlyData = (data, year, amountField) => {
 
     const result = data?.reduce(
       (accumulator, order) => {
-        const orderDate = new Date(order.createdAt.$date);
+        const orderDate = new Date(order.createdAt);
         if (orderDate >= startDate && orderDate < endDate) {
           accumulator.revenue = accumulator.revenue || 0;
           const orderAmount = order[amountField];
@@ -142,9 +103,8 @@ const findMostSoldItem = (products) => {
   return { message: 'No products available' };
 };
 
-const getTotalRevenue = async (year, res) => {
+const getTotalRevenue = async (ecards, products, welcomeWieners) => {
   try {
-    const { ecards, products, welcomeWieners } = await getHistoricalDataFromJSONFiles(year, res);
 
     const totalRevenue =
       Number(ecards.reduce((acc, ecard) => acc + ecard.totalPrice, 0)) +
@@ -182,15 +142,40 @@ function addDecimalEveryThreeDigits(number) {
 const getAnnualData = asyncHandler(async (req, res) => {
   try {
     const year = Number(req.params.year);
-    const { ecards, products, welcomeWieners } = await getHistoricalDataFromJSONFiles(
-      year,
-      res
-    );
 
+    const ecards = await ECardOrder.aggregate([
+      {
+        $match: {
+          createdAt: {
+            $gte: new Date(`${year}-01-01`),
+            $lt: new Date(`${year + 1}-01-01`),
+          },
+        },
+      },
+    ]);
+    const welcomeWieners = await WelcomeWienerOrder.aggregate([
+      {
+        $match: {
+          createdAt: {
+            $gte: new Date(`${year}-01-01`),
+            $lt: new Date(`${year + 1}-01-01`),
+          },
+        },
+      },
+    ]);
+
+    const products = await ProductOrder.aggregate([
+      {
+        $match: {
+          createdAt: {
+            $gte: new Date(`${year}-01-01`),
+            $lt: new Date(`${year + 1}-01-01`),
+          },
+        },
+      },
+    ]);
     const welcomeWienerYearlyTotal = await getYearlyData(welcomeWieners, year, 'totalPrice');
-
     const ecardYearlyTotal = await getYearlyData(ecards, year, 'totalPrice');
-
     const productYearlyTotal = await getYearlyData(products, year, 'totalPrice');
 
     res.json({
@@ -200,7 +185,7 @@ const getAnnualData = asyncHandler(async (req, res) => {
       newsLetterEmails: addDecimalEveryThreeDigits(5053),
       users: addDecimalEveryThreeDigits(123),
       mostSoldItem: findMostSoldItem(products),
-      totalRevenue: `$${addDecimalEveryThreeDigits(await getTotalRevenue(year, res))}`,
+      totalRevenue: `$${addDecimalEveryThreeDigits(await getTotalRevenue(ecards, products, welcomeWieners))}`,
     });
   } catch (err) {
     const createdError = new Error({

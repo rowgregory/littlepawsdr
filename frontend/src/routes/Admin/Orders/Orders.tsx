@@ -57,7 +57,7 @@ const Orders = ({ orders }: any) => {
           <h6 className='mb-0'>Order does not require shipping</h6>
         </div>
       </section>
-      <Table striped hover responsive size='sm'>
+      <Table striped hover responsive size='sm' style={{ width: '2000px' }}>
         <TableHead>
           <tr>
             <th>ID</th>
