@@ -1,7 +1,6 @@
 import { ComponentType, FC, lazy } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { DashboardLayoutWithSideBar } from '../../components/layouts/DashboardLayoutWithSideBar';
-import SideBar from '../../components/dashboard/sidebar/SideBar';
 import Dashboard from './Dashboard';
 import ECardEdit from './ECardEdit';
 import ECardList from './ECardList';
@@ -12,8 +11,6 @@ import ProductEdit from './ProductEdit';
 import ProductList from './ProductList';
 import UserEdit from './UserEdit';
 import UserList from './UserList';
-import RaffleWinnerList from './RaffleWinnerList';
-import RaffleWinnerEdit from './RaffleWinnerEdit';
 import BlogList from './BlogList';
 import BlogEdit from './BlogEdit';
 import EducationTipList from './EducationTipList';
@@ -24,24 +21,23 @@ import ManuallyAddedUserEdit from './ManuallyAddedUserEdit';
 import EcardOrderList from './Orders/EcardOrderList';
 import OrderEdit from './OrderEdit';
 import WelcomeWienerProductList from './WelcomeWienerProductList';
-import WelcomeWienerProductCreate from './WelcomeWienerProductCreate';
 import WelcomeWienerProductEdit from './WelcomeWienerProductEdit';
 import WelcomeWienerDachshundList from './WelcomeWienerDachshundList';
-import WelcomeWienerDachshundCreate from './WelcomeWienerDachshundCreate';
 import WelcomeWienerDachshundEdit from './WelcomeWienerDachshundEdit';
 import WelcomeWienerOrderList from './Orders/WelcomeWienerOrderList';
 import ProductOrderList from './Orders/ProductOrderList';
-import ProductCreate from './ProductCreate';
 import AdoptionFeeList from './AdoptionFeeList';
 import Archive from './Archive';
 import ActionHistoryList from './ActionHistoryList';
+import Sidebar from '../../components/dashboard/dashboard2024/Sidebar';
+import Selling from './Selling';
 
 type LazyModulePromise<T = {}> = Promise<{ default: ComponentType<T> }>;
 const Orders = lazy((): LazyModulePromise => import('./Orders'));
 
 const AdminRoutes: FC = () => {
   return (
-    <DashboardLayoutWithSideBar sideBar={<SideBar />}>
+    <DashboardLayoutWithSideBar sideBar={<Sidebar />}>
       <Routes>
         <Route
           path='/'
@@ -88,14 +84,6 @@ const AdminRoutes: FC = () => {
           element={
             <PrivateRoute>
               <ProductList />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path='product/create'
-          element={
-            <PrivateRoute>
-              <ProductCreate />
             </PrivateRoute>
           }
         />
@@ -157,22 +145,6 @@ const AdminRoutes: FC = () => {
           }
         />
         <Route
-          path='raffleWinnerList'
-          element={
-            <PrivateRoute>
-              <RaffleWinnerList />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path='raffleWinner/:id/edit'
-          element={
-            <PrivateRoute>
-              <RaffleWinnerEdit />
-            </PrivateRoute>
-          }
-        />
-        <Route
           path='blogs'
           element={
             <PrivateRoute>
@@ -229,14 +201,6 @@ const AdminRoutes: FC = () => {
           }
         />
         <Route
-          path='welcome-wiener/product/create'
-          element={
-            <PrivateRoute>
-              <WelcomeWienerProductCreate />
-            </PrivateRoute>
-          }
-        />
-        <Route
           path='welcome-wiener/product/:id/edit'
           element={
             <PrivateRoute>
@@ -249,14 +213,6 @@ const AdminRoutes: FC = () => {
           element={
             <PrivateRoute>
               <WelcomeWienerDachshundList />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path='welcome-wiener/dachshund/create'
-          element={
-            <PrivateRoute>
-              <WelcomeWienerDachshundCreate />
             </PrivateRoute>
           }
         />
@@ -305,6 +261,14 @@ const AdminRoutes: FC = () => {
           element={
             <PrivateRoute>
               <ActionHistoryList />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path='selling'
+          element={
+            <PrivateRoute>
+              <Selling />
             </PrivateRoute>
           }
         />

@@ -1,28 +1,18 @@
 import { useEffect, useState } from 'react';
-import { Form } from 'react-bootstrap';
+import { Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  createEducationTip,
-  updateEducationTip,
-} from '../../actions/educationTipActions';
+import { createEducationTip, updateEducationTip } from '../../actions/educationTipActions';
 import {
   EDUCATION_TIP_CREATE_RESET,
   EDUCATION_TIP_UPDATE_RESET,
 } from '../../constants/educationTipConstants';
-import { UpdateBtn } from '../../components/styles/Styles';
+import { Text, UpdateBtn } from '../../components/styles/Styles';
 import { useNavigate, useLocation } from 'react-router-dom';
-import Message from '../../components/Message';
-import {
-  Container,
-  EditForm,
-} from '../../components/styles/admin/Styles';
-import {
-  GoBackAndTitleWrapper,
-  WelcomeText,
-} from '../../components/styles/DashboardStyles';
 import { uploadFileToFirebase } from '../../utils/uploadToFirebase';
 import GoBackBtn from '../../utils/GoBackBtn';
 import UploadSingleImage from '../../components/UploadSingleImage';
+import EducationTipEditCreateLayout from '../../components/dashboard/dashboard2024/layouts/EducationTipEditCreateLayout';
+import { FormControl, FormGroup, FormLabel } from '../../components/styles/admin/Styles';
 
 const useEcardEditForm = (callback?: any, data?: any) => {
   const values = {
@@ -67,18 +57,14 @@ const EducationTipEdit = () => {
   const [uploading, setUploading] = useState(false);
   const [file, setFile] = useState({}) as any;
 
-  const {
-    educationTipCreate: {
-      loading: loadingCreate,
-      error: errorCreate,
-      success: successCreate,
-    },
-    educationTipUpdate: {
-      loading: loadingUpdate,
-      error: errorUpdate,
-      success: successUpdate,
-    },
-  } = useSelector((state: any) => state);
+  const state = useSelector((state: any) => state);
+  const loadingUpdate = state.educationTipUpdate.loading;
+  const successUpdate = state.educationTipUpdate.success;
+  const errorUpdate = state.educationTipUpdate.error;
+
+  const loadingCreate = state.educationTipCreate.loading;
+  const successCreate = state.educationTipCreate.success;
+  const errorCreate = state.educationTipCreate.error;
 
   const editETipCallback = async () => {
     setUploading(true);
@@ -107,10 +93,7 @@ const EducationTipEdit = () => {
     }
   };
 
-  const { inputs, handleInput, onSubmit } = useEcardEditForm(
-    editETipCallback,
-    eTip
-  );
+  const { inputs, handleInput, onSubmit } = useEcardEditForm(editETipCallback, eTip);
 
   useEffect(() => {
     if (successCreate || successUpdate) {
@@ -123,24 +106,27 @@ const EducationTipEdit = () => {
   const editPhotoHandler = (e: any) => setFile(e.target.files[0]);
 
   return (
-    <Container>
-      <GoBackAndTitleWrapper>
-        <GoBackBtn to='/admin/education-tips' color='#121212' />
-        <WelcomeText>Education Tip Edit</WelcomeText>
-      </GoBackAndTitleWrapper>
-      {(errorCreate || errorUpdate) && (
-        <Message variant='danger'>{errorCreate || errorUpdate}</Message>
-      )}
-      <EditForm>
-        <Form.Group controlId='name'>
-          <Form.Label>Title</Form.Label>
-          <Form.Control
-            name='title'
-            type='text'
-            value={inputs.title || ''}
-            onChange={handleInput}
-          ></Form.Control>
-        </Form.Group>
+    <EducationTipEditCreateLayout
+      error={errorUpdate || errorCreate}
+      box1={
+        <Text fontFamily='Rust' fontSize='24px' color='#fc5b82' textAlign='center' width='100%'>
+          Education Tip {isEditMode ? 'Edit' : 'Create'}
+        </Text>
+      }
+      box2={<GoBackBtn to='/admin/education-tips' color='#121212' />}
+      box3={
+        loadingUpdate || loadingCreate ? (
+          <Spinner animation='border' size='sm' />
+        ) : (
+          errorUpdate ||
+          (errorCreate && (
+            <Text fontFamily='Rust' fontSize='20px'>
+              {errorUpdate || errorCreate}
+            </Text>
+          ))
+        )
+      }
+      box4={
         <UploadSingleImage
           inputs={inputs}
           handleInput={handleInput}
@@ -149,21 +135,36 @@ const EducationTipEdit = () => {
           uploading={uploading}
           editPhotoHandler={editPhotoHandler}
         />
-        <Form.Group controlId='externalLink' className='mt-5'>
-          <Form.Label>Link</Form.Label>
-          <Form.Control
+      }
+      box5={
+        <FormGroup controlId='title'>
+          <FormLabel>Title</FormLabel>
+          <FormControl
+            name='title'
+            type='text'
+            value={inputs.title || ''}
+            onChange={handleInput}
+          ></FormControl>
+        </FormGroup>
+      }
+      box6={
+        <FormGroup controlId='externalLink'>
+          <FormLabel>Link</FormLabel>
+          <FormControl
             name='externalLink'
             type='text'
             value={inputs.externalLink || ''}
             onChange={handleInput}
-          ></Form.Control>
-        </Form.Group>
+          ></FormControl>
+        </FormGroup>
+      }
+      box7={
         <UpdateBtn onClick={onSubmit}>
           {isEditMode ? 'Updat' : 'Creat'}
           {loadingUpdate || loadingCreate ? 'ing...' : 'e'}
         </UpdateBtn>
-      </EditForm>
-    </Container>
+      }
+    />
   );
 };
 

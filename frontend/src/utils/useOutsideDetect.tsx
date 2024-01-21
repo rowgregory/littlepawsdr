@@ -1,26 +1,22 @@
-import { useEffect } from 'react';
+import { useEffect, useCallback, RefObject } from 'react';
 
-export const useOutsideDetect = (
-  ref: any,
-  setActiveMenu: any,
-  setIsVisible?: any,
-  type?: string
-) => {
-  useEffect(() => {
-    const handleClickOutside = (e: any) => {
-      if (ref?.current && !ref.current.contains(e.target)) {
-        if (type === 'USER_DROP_DOWN') {
-          setActiveMenu('main');
-          setIsVisible && setIsVisible(false);
-        } else {
-          setActiveMenu(false);
-        }
+const useOutsideDetect = <T extends HTMLElement>(ref: RefObject<T>, callback: () => void) => {
+  const handleClickOutside = useCallback(
+    (event: MouseEvent) => {
+      if (ref.current && !ref.current.contains(event.target as Node)) {
+        callback();
       }
-    };
+    },
+    [ref, callback]
+  );
 
-    document.addEventListener('mousedown', handleClickOutside, false);
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside, false);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [ref, setActiveMenu, setIsVisible, type]);
+  }, [handleClickOutside]);
 };
+
+export default useOutsideDetect;

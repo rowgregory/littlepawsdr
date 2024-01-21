@@ -48,15 +48,15 @@ h1, h2, h3, h4, h5, h6 {
 ::-webkit-scrollbar-thumb {
   -webkit-border-radius:auto;
   border-radius:auto;
-  background:auto; 
+  background:auto;
   -webkit-box-shadow:auto;
 }
 
 ::-webkit-scrollbar-track {
-  -webkit-box-shadow: auto; 
+  -webkit-box-shadow: auto;
   -webkit-border-radius: auto;
   border-radius: auto;
-  background: auto;    
+  background: auto;
 }
 
 /* calendar */
@@ -139,7 +139,7 @@ input {
   padding: 6px 0px !important;
   color: ${({ theme }) => theme.text} !important;
   text-indent: 18px;
-  
+
   &.popup { border-right: none !important;}
 }
 
@@ -175,7 +175,6 @@ textarea {
   color: ${({ theme }) => theme.text} !important;
   :focus {
     outline: none !important;
-    background: ${({ theme }) => theme.input.bg} !important;
   }
 }
 
@@ -189,7 +188,7 @@ select {
   padding: 6px 0px !important;
   color: ${({ theme }) => theme.text} !important;
   text-indent: 18px;
-  
+
   &.popup { border-right: none !important;}
 }
 
@@ -197,8 +196,7 @@ select {
   cursor: pointer;
   appearance: none;
   background-image: ${({ theme }) =>
-    `url("data:image/svg+xml;utf8,<svg fill='${
-      theme.mode === 'day' ? 'black' : 'yellow'
+    `url("data:image/svg+xml;utf8,<svg fill='${theme.mode === 'day' ? 'black' : 'yellow'
     }' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>")`} !important;
   background-repeat: no-repeat !important;
   background-position-x: 95% !important;
@@ -238,7 +236,7 @@ input:-webkit-autofill:active
 select:-webkit-autofill,
 select:-webkit-autofill:hover,
 select:-webkit-autofill:focus,
-select:-webkit-autofill:active 
+select:-webkit-autofill:active
 {
   transition: background-color 5000s ease-in-out 0s;
   -webkit-box-shadow:${({ theme }) =>

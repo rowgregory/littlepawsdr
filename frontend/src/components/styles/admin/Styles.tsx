@@ -1,244 +1,156 @@
-import { Form, Image, Table } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import styled, { keyframes } from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 
 export const Container = styled.div`
-  background: #f6f9fe;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
   width: 100%;
-  padding: 16px;
+  background: #e8e8e5;
   min-height: 100vh;
+  padding: 0px 24px 24px;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 62px 62px 150px 150px auto;
+  gap: 18px;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 62px 150px auto;
+  }
+`;
+
+export const GridItem = styled.div`
+  background: #e8e8e5;
+  min-height: 100vh;
+  padding: 0px 24px 24px;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 62px 150px 150px 150px 150px 150px;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 62px 150px 150px 150px 150px 150px;
+  }
 `;
 
 export const TableHead = styled.thead<{ bg?: string }>`
-  font-size: 12px;
-
+  font-size: 16px;
   tr {
-    &.topSellingProducts {
-      height: 2rem;
-      text-indent: 0.75rem;
-      @media (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-      }
-    }
-
+    width: 100%;
+    height: 45px;
+    padding: 12px 30px;
+    display: table-row;
+    background: #d6d6d6;
     th {
-      border: 0 !important;
-      color: #373737;
-      background: #fff;
+      border: none !important;
+      text-align: center;
+      color: #888888;
+      font-family: Rust;
     }
   }
-`;
-
-export const TableRow = styled.tr`
-  font-size: 12px;
-  td {
-    border-top: none !important;
-    vertical-align: inherit;
-    color: #373737;
-  }
-  :hover {
-    background: #f6f9fe !important;
-  }
-`;
-
-export const TableImg = styled(Image)`
-  border-radius: 50%;
-  object-fit: cover;
-  width: 2.875rem;
-  height: 2.875rem;
-`;
-
-export const SearchBar = styled(Form.Group)`
-  margin-bottom: 0;
-  position: relative;
-`;
-
-export const SpinnerContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: ${({ theme }) => theme.white} !important;
-  margin-bottom: 1rem;
-  padding: 0 1.5rem;
-  height: 45px;
-  color: #373737;
-  border-radius: 0.75rem;
 `;
 
 export const CreateLink = styled(Link)`
   display: flex;
   justify-content: center;
   align-items: center;
-  background: ${({ theme }) => theme.white} !important;
+  font-family: Rust;
+  font-size: 20px;
   border: none;
-  padding: 0 1.5rem;
-  height: 45px;
-  transition: 300ms;
-  color: #373737;
-  border-radius: 0.75rem;  text-decoration: none !important;
+  height: 100%;
   width: 100%;
+  transition: 300ms;
+  color: #fff;
+  border-radius: 0.75rem;
+  text-decoration: none;
   :active {
-    background: #fff !important;
-    color: #373737 !important;
+    color: #fff;
   }
   :hover {
-    text-decoration: none !important;
-    background: #ebf4ff !important;
-    color: #373737 !important;
+    color: #fff;
+    text-decoration: none;
+    svg {
+      transform: rotate(360deg);
+      transition: 4000ms;
+    }
   }
   :focus {
-    box-shadow: none !important;
+    box-shadow: none;
   }
 `;
-export const CreateBtnV2 = styled.button`
+
+const rotate = keyframes`
+from {
+  transform: rotate(0deg);
+}
+to {
+  transform: rotate(360deg);
+}
+`;
+
+export const CreateBtnV2 = styled.button<{ loading?: string }>`
   display: flex;
-  justify-content: center;
-  align-items: center;
-  background: ${({ theme }) => theme.white} !important;
-  border: none;
-  padding: 0 1.5rem;
-  height: 45px;
-  transition: 300ms;
-  color: #373737;
-  border-radius: 0.75rem;  text-decoration: none !important;
-  width: 100%;
-  :active {
-    background: #fff !important;
-    color: #373737 !important;
-  }
-  :hover {
-    text-decoration: none !important;
-    background: #ebf4ff !important;
-    color: #373737 !important;
-  }
-  :focus {
-    box-shadow: none !important;
-  }
-`;
-
-export const TopRow = styled.div`
-  width: 100%;
-  grid-gap: 10px;
-  display: grid;
-  grid-template-columns: 1fr;
-  margin-bottom: 16px;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    grid-template-columns: 1fr 1fr;
-  }
-`;
-
-export const StyledEditBtn = styled.button`
+  flex-direction: column;
   background: transparent;
-  border-radius: 50%;
-  border: none;
-  width: 3rem;
-  height: 3rem;
-  display: flex;
   justify-content: center;
   align-items: center;
-  :hover,
-  :active,
-  :focus {
-    background: ${({ theme }) => theme.separator} !important;
-    border: none !important;
-    box-shadow: none !important;
-  }
-  :disabled {
-    background-color: #fff !important;
-    border: 2px solid #cc0000;
-    :hover {
-      border: 2px solid #cc0000 !important;
-    }
-    :before {
-      content: '';
-      position: absolute;
-      width: 2px;
-      height: 48px;
-      transform: rotate(45deg);
-      background: #cc0000;
-    }
-  }
-`;
-
-export const PaginationContainer = styled.div`
-  display: flex;
-  justify-content: center;
+  font-family: Rust;
+  font-size: 20px;
+  border: none;
+  height: 100%;
   width: 100%;
-  ul {
-    .active {
-      span,
-      a {
-        :hover {
-          color: #fff !important;
-        }
-        background-color: ${({ theme }) => theme.colors.quinary} !important;
-        border-color: ${({ theme }) => theme.colors.quinary} !important;
-      }
+  transition: 300ms;
+  color: #fff;
+  text-decoration: none;
+  i {
+    animation: ${({ loading }) =>
+    loading === 'true'
+      ? css`
+            ${rotate} 2000ms linear infinite
+          `
+      : ``};
+  }
+  :active {
+    color: #fff;
+  }
+  :hover {
+    color: #fff;
+    text-decoration: none;
+    svg {
+      transform: rotate(360deg);
+      transition: 4000ms;
     }
-    li {
-      span,
-      a {
-        :hover {
-          color: ${({ theme }) => theme.colors.quinary} !important;
-        }
-        :focus {
-          box-shadow: none !important;
-        }
-      }
-    }
+  }
+  :focus {
+    box-shadow: none;
   }
 `;
 
 export const SearchInput = styled(Form.Control)`
-  ::placeholder,
-  ::-webkit-input-placeholder {
-    color: #d3d3d3;
-  }
-  border-radius: 0.5rem !important;
-  border: none;
+  background: #eaeaea !important;
+  border-radius: 20px !important;
+  height: 37px !important;
+  border: none !important;
+  color: #a9a9a9 !important;
+  font-family: Rust !important;
+  z-index: 2;
   width: 100%;
+  caret-color: ${({ theme }) => theme.colors.secondary};
+  ::placeholder {
+    color: #a9a9a9;
+    font-family: Rust;
+  }
   :focus {
-    box-shadow: none;
     outline: none;
   }
-`;
 
-export const TableWrapper = styled.div`
-  width: 100%;
-`;
-
-export const TableAndPaginationContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  flex-direction: column;
-  border-radius: 1rem;
-  height: calc(100vh - 271px);
-  padding-inline: 16px;
-  background: #fff;
-  min-height: 600px;
-  margin-left: 0;
-  width: calc(100vw - 32px);
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    height: calc(100vh - 176px);
-    width: calc(100vw - 302px);
-  }
-`;
-
-export const EditFormAndPreviewContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    flex-direction: row;
-  }
-`;
-
-export const EditForm = styled(Form)`
-  width: 100%;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
-  padding: 0;
-  max-width: 400px;
+  &:focus,
+  &:active {
+    &:-webkit-autofill {
+      transition: background-color 5000s ease-in-out 0s;
+      -webkit-box-shadow: 0 0 0px 1000px transparent inset !important;
+      box-shadow: 0 0 0px 1000px transparent inset !important;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: #cbd7db;
+    }
   }
 `;
 
@@ -249,7 +161,7 @@ export const FormFile = styled(Form.File)`
   background: #fff;
   font-weight: 300;
   transition: 300ms;
-  margin-right: 8px;
+  padding-right: 8px;
   label {
     cursor: pointer;
     display: flex;
@@ -275,8 +187,7 @@ export const UploadImageSquare = styled.div<{ uploading?: any }>`
   align-items: center;
   justify-content: center;
   background: linear-gradient(90deg, #c4c4c4 50%, transparent 50%),
-    linear-gradient(90deg, #c4c4c4 50%, transparent 50%),
-    linear-gradient(0deg, #c4c4c4 50%, transparent 50%),
+    linear-gradient(90deg, #c4c4c4 50%, transparent 50%), linear-gradient(0deg, #c4c4c4 50%, transparent 50%),
     linear-gradient(0deg, #c4c4c4 50%, transparent 50%);
   background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
   background-size: 16px 3px, 16px 3px, 3px 16px, 3px 16px;
@@ -288,109 +199,175 @@ export const UploadImageSquare = styled.div<{ uploading?: any }>`
   }
 `;
 
-export const RemovePhoto = styled.div`
-  padding-inline: 1rem;
-  height: 45px;
+export const FormLabel = styled(Form.Label)`
+  font-family: Rust;
+  margin-bottom: 4px;
+`;
+export const FormGroup = styled(Form.Group)`
+  font-family: Rust;
+  width: 100%;
+`;
+
+export const FormControl = styled(Form.Control)`
+  font-family: Rust !important;
+  width: 100%;
+  background: #d6d6d6 !important;
+  border: none !important;
+  margin-top: 0 !important;
+  &:focus,
+  &:active {
+    outline: none;
+  }
+`;
+
+
+export const TableContainer = styled.div`
+  table {
+    thead {
+      tr {
+        width: 100%;
+        height: 45px;
+        // padding: 12px 30px;
+        display: table-row;
+        background: #d6d6d6;
+        th {
+          text-align: center;
+          border: none !important;
+          color: #757575;
+          font-family: Rust;
+          vertical-align: middle !important;
+        }
+      }
+    }
+  }
+  width: calc(100vw - 48px);
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
+    width: calc(100vw - 298px);
+  }
+`;
+
+export const fadein = keyframes`
+0% {  opacity: 0; border-bottom: 0;}
+100% {  opacity: 1;  border-bottom: 1px solid #d6d6d6}
+`;
+
+export const Row = styled.tr<{ i: number }>`
+  height: 60px;
+  opacity: 0;
+  animation: ${fadein} 300ms forwards ease-out;
+  animation-delay: ${({ i }) => `${i * 90}ms`};
+
+  :last-child {
+    border-bottom: 0 !important;
+  }
+
+  td {
+    // padding-block: 12px;
+    color: #121212;
+    text-align: center;
+    border-top: none !important;
+    vertical-align: middle;
+
+    font-family: Rust !important;
+    font-size: 16px;
+
+    img {
+      width: 30px;
+      height: 30px;
+    object-fit: cover;
+    }
+  }
+`;
+
+export const OrangeEditPen = styled.i`
+  cursor: pointer;
+  color: #fec723;
+`;
+
+export const RedDeleteTrash = styled.i`
+  cursor: pointer;
+  color: #cc0000;
+`;
+
+export const GreenViewBinoculars = styled.i`
+  background: -webkit-gradient(linear, left top, left bottom, from(#a7d82f), to(#e8d830));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  cursor: pointer;
+`;
+
+export const BluePurpleGradientBtn = styled.i`
+  background: -webkit-gradient(linear, left top, left bottom, from(#84c1e8), to(#ebc3ff));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  cursor: pointer;
+  transition: all 300ms;
+  position: relative;
+  color: black;
   display: flex;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  max-width: 200px;
-  width: 100%;
-  background: #fff;
-  color: #c4c4c4;
-  border: none;
-  margin: 0 !important;
-  font-weight: 300;
-  transition: 300ms;
-  :hover {
-    cursor: pointer;
-    background: #ededed;
-  }
 `;
 
-
-
-export const ItemsSummaryTable = styled(Table)`
-  width: 100%;
-  margin-bottom: 0;
-  thead {
-    tr {
-      th {
-        border-top: 0px !important;
-        border-bottom: 0px !important;
-        padding-left: 0px !important;
-      }
-    }
-  }
-  tbody {
-    tr {
-      td {
-        vertical-align: inherit;
-        padding-left: 0 !important;
-        border-top: 1px solid #d8d9dc !important;
-        padding: 12px;
-      }
-    }
-  }
+export const slideright = keyframes`
+0% {  transform: translate(0px)}
+100% {  transform: translate(10px) }
 `;
 
-export const OrderEditDataContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  background: #f6f9fe;
-  padding: 0;
-  border-radius: 0px;}
-`;
+export const WelcomeWienerLink = styled(Link)`
+font-size: 14px;
+color: #504f4a;
+font-family: Rust;
+padding: 6px 0px;
+width: 100%;
+display: flex;
+justify-content: center;
+align-items: center;
+background: linear-gradient(263deg, rgba(157,253,255,1) 18%, rgba(233,198,253,1) 100%);
+position: relative;
+transition: 300ms;
+:hover {
+  text-decoration: none;
+  color: #504f4a;
+  i {
+   animation: ${slideright} 300ms ease-out forwards;
 
-export const OrderNumber = styled.div`
-  font-weight: 600;
-  font-size: 20px;
-  margin-top: 22px;
-  margin-bottom: 22px;
-  span {
-    font-size: 20px;
-    font-weight: 600;
-    color: #ad85bd;
   }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
-    font-size: 26px;
-    span {
-      color: #ad85bd;
-      font-weight: 600;
-      font-size: 26px;
-    }
-  }
-`;
+}
+&:after {
+  content: '';
+  position: absolute;
+  width: 33px;
+  height: 33px;
+  right: 0;
+  top: 0;
+  clip-path: polygon(100% 100%, 0% 100%, 100% 0%);
+  background-image: linear-gradient(129deg, rgba(193, 224, 255, 1) 35%, rgba(224, 205, 245, 1) 100%);
+}
+`
 
-export const ItemsSummaryContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    flex-direction: row;
+export const StyledGoBackLink = styled.div`
+display: flex;
+align-items: center;
+font-size: 14px;
+padding-top: 16px;
+padding-bottom: 8px;
+a {
+  color: #121212;
+}
+:hover {
+  a {
+    text-decoration: none;
   }
-`;
+}
+`
 
-export const OrderEditLeftSideContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  margin-right: 0px;
-  margin-bottom: 20px;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    width: 60%;
-    margin-right: 20px;
-    margin-bottom: 0px;
-  }
-`;
-
-export const OrderEditRightSideContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  margin-bottom: 70px;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    width: 40%;
-  }
-`;
-
+export const GoBackLink = ({ to, text }: { to: string; text: string }) => {
+  return (
+    <StyledGoBackLink>
+      <i className='fa-solid fa-angles-left mr-2'></i>
+      <Link to={to}>{text}</Link>
+    </StyledGoBackLink>
+  );
+};

@@ -46,24 +46,18 @@ export const cartReducer = (
         cartDrawer: action.payload,
       };
     case UPDATE_CART:
-      const { shippingPrice, cartItemsAmount, subtotal } =
-        action.payload.reduce(
-          (acc: any, item: any) => {
-            return {
-              shippingPrice:
-                acc.shippingPrice +
-                Number(item.shippingPrice) * Number(item.quantity),
-              cartItemsAmount: (acc.cartItemsAmount += Number(item.quantity)),
-              subtotal:
-                acc.subtotal + Number(item.price) * Number(item.quantity),
-            };
-          },
-          { shippingPrice: 0, cartItemsAmount: 0, subtotal: 0 }
-        );
-
-      const isPhysicalProduct = action.payload.some(
-        (item: any) => item.isPhysicalProduct
+      const { shippingPrice, cartItemsAmount, subtotal } = action.payload.reduce(
+        (acc: any, item: any) => {
+          return {
+            shippingPrice: acc.shippingPrice + Number(item.shippingPrice) * Number(item.quantity),
+            cartItemsAmount: (acc.cartItemsAmount += Number(item.quantity)),
+            subtotal: acc.subtotal + Number(item.price) * Number(item.quantity),
+          };
+        },
+        { shippingPrice: 0, cartItemsAmount: 0, subtotal: 0 }
       );
+
+      const isPhysicalProduct = action.payload.some((item: any) => item.isPhysicalProduct);
 
       const totalPrice = shippingPrice + subtotal;
 

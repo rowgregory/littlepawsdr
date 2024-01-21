@@ -10,7 +10,6 @@ import { Image } from 'react-bootstrap';
 import { Text } from '../components/styles/Styles';
 import { LoadingImg } from '../components/LoadingImg';
 import Message from '../components/Message';
-import CartDrawer from '../components/CartDrawer';
 import { useParams } from 'react-router-dom';
 
 const Container = styled.div`
@@ -118,7 +117,6 @@ const PersonalizeEcard = () => {
 
   return (
     <Container>
-      <CartDrawer />
       {error ? (
         <Message variant='danger'>{error}</Message>
       ) : (

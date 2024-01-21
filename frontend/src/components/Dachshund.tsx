@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { Text } from './styles/Styles';
 import { useState } from 'react';
 import { LoadingImg } from './LoadingImg';
+import { SorryNoImg } from './assets';
 
 const DachshundCard = styled(Link)`
   width: 100%;
@@ -70,7 +71,9 @@ const Dachshund = ({ dachshund, loading }: any) => {
   return (
     <DachshundCard to={`/about/type/${dachshund?.id}`}>
       {loading ? (
-        <LoadingImg w='100%' />
+        <LoadingImg w='100%' maxw='448px' />
+      ) : dachshund?.attributes?.photos?.length === 0 ? (
+        <Image src={SorryNoImg} alt={`Hi, my name is ${dachshund?.attributes?.name}`} />
       ) : (
         <Image
           onMouseEnter={() => setNextPic(dachshund?.attributes?.photos[1])}

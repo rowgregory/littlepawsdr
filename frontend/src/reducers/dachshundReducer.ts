@@ -15,6 +15,9 @@ import {
   DACHSHUND_PICS_VIDS_STASTUSES_SUCCESS,
   DACHSHUND_PICS_VIDS_STASTUSES_FAIL,
   DACHSHUND_DETAILS_RESET,
+  TOTAL_DACHSHUND_COUNT_REQUEST,
+  TOTAL_DACHSHUND_COUNT_SUCCESS,
+  TOTAL_DACHSHUND_COUNT_FAIL,
 } from '../constants/dachshundConstants';
 
 const initialState = {
@@ -120,10 +123,7 @@ export const dachshundSanctuaryOrPassedAwayReducer = (state = [], action) => {
 };
 
 // @ts-ignore
-export const dachshundPicturesVideosStatusReducer = (
-  state = { dachshunds: [] },
-  action: any
-) => {
+export const dachshundPicturesVideosStatusReducer = (state = { dachshunds: [] }, action: any) => {
   switch (action.type) {
     case DACHSHUND_PICS_VIDS_STASTUSES_REQUEST:
       return {
@@ -136,6 +136,28 @@ export const dachshundPicturesVideosStatusReducer = (
         loading: false,
       };
     case DACHSHUND_PICS_VIDS_STASTUSES_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      };
+    default:
+      return state;
+  }
+};
+
+export const totalDachshundCountReducer = (state = { dachshundCount: 0 }, action: any) => {
+  switch (action.type) {
+    case TOTAL_DACHSHUND_COUNT_REQUEST:
+      return {
+        loading: true,
+      };
+    case TOTAL_DACHSHUND_COUNT_SUCCESS:
+      return {
+        ...state,
+        dachshundCount: action.payload,
+        loading: false,
+      };
+    case TOTAL_DACHSHUND_COUNT_FAIL:
       return {
         loading: false,
         error: action.payload,

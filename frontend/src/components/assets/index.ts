@@ -16,8 +16,15 @@ import WindowWholeAlpha from './window_whole_alpha.png';
 import MainBtn03 from './main_button_3.png';
 import Background404 from './404-bg.png';
 import Parallax2 from './parallax-2.jpg';
-import Background02Parallax from './background_02_parallax_03.png';
+import Background03Parallax from './background_02_parallax_03.png';
 import HomeDog from './home_dog_11.jpeg';
+import Background02Static from './background_02_static.png';
+import Background02Parallax02 from './background_02_parallax_02.png';
+import Background04Parallax02 from './background_04_parallax_02.png';
+import Background01Parallax03 from './background_01_parallax_03.png';
+import DashboardBg from './dashboard-gradient-bg.webp';
+import Jelly from './jelly.webp';
+import SorryNoImg from './no_image_dog.jpg';
 
 export {
   Icon1,
@@ -38,6 +45,13 @@ export {
   MainBtn03,
   Background404,
   Parallax2,
-  Background02Parallax,
+  Background03Parallax,
   HomeDog,
+  Background02Static,
+  Background02Parallax02,
+  Background04Parallax02,
+  Background01Parallax03,
+  DashboardBg,
+  Jelly,
+  SorryNoImg,
 };

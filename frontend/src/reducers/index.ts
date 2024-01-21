@@ -5,6 +5,7 @@ import {
   dachshundPicturesVideosStatusReducer,
   dachshundSanctuaryOrPassedAwayReducer,
   dachshundSuccessfulAdoptionsReducer,
+  totalDachshundCountReducer,
 } from './dachshundReducer';
 import {
   eventCreateReducer,
@@ -223,6 +224,7 @@ const allReducers = combineReducers({
   archiveYearlyData: archiveYearlyDataReducer,
   dashboardCurrentYearData: dashboardCurrentYearDataReducer,
   actionHistoryList: actionHistoryListReducer,
+  totalDachshundCount: totalDachshundCountReducer,
 });
 
 export default allReducers;

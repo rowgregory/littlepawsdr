@@ -1,75 +1,110 @@
 import styled from 'styled-components';
-import BreadCrumb from '../../../components/common/BreadCrumb';
-import { WelcomeText } from '../../../components/styles/DashboardStyles';
-import {
-  Container,
-  SearchBar,
-  SearchInput,
-  SpinnerContainer,
-  TableAndPaginationContainer,
-  TableWrapper,
-  TopRow,
-} from '../../../components/styles/admin/Styles';
-import { useEffect, useRef, useState } from 'react';
+import { Container, SearchInput } from '../../../components/styles/admin/Styles';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { listOrders } from '../../../actions/orderActions';
 import Orders from './Orders';
 import ProductOrderList from './ProductOrderList';
 import EcardOrderList from './EcardOrderList';
 import WelcomeWienerOrderList from './WelcomeWienerOrderList';
-import { Spinner } from 'react-bootstrap';
-import { useOutsideDetect } from '../../../utils/useOutsideDetect';
+import { Text } from '../../../components/styles/Styles';
+import OrderKey from '../../../components/admin/orders/OrderKey';
+import JumpingRumpLoader from '../../../components/Loaders/JumpingRopLoader';
 
-const Filter = styled.span`
-  cursor: pointer;
-  position: relative;
-`;
-
-const FilterContainer = styled.div`
+const GridItem = styled.div`
   background: #fff;
-  padding: 10px 20px;
-  cursor: pointer;
-  position: absolute;
-  right: 19px;
-  top: 40px;
-  z-index: 10;
+  height: 100%;
+  padding: 6px 12px;
   display: flex;
-  flex-direction: column;
-  box-shadow: 0px 6px 10px 0px rgba(0, 0, 0, 0.14),
-    0px 1px 18px 0px rgba(0, 0, 0, 0.12), 0px 3px 5px -1px rgba(0, 0, 0, 0.2);
-  border-radius: 12px;
-  div {
-    margin-bottom: 8px;
-    transition: 300ms;
-    padding: 8px 14px;
-    border-radius: 8px;
-    color: #c8c8c8;
-    :hover {
-      color: ${({ theme }) => theme.colors.quinary};
-      background: #f7f9ff;
+  align-items: center;
+
+  &.box-1 {
+    grid-area: 1 / 1 / 1 / 1;
+    @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+      grid-area: 1 / 1 / 1 / 1;
+    }
+  }
+  &.box-2 {
+    grid-area: 2 / 1 / 3 / 1;
+
+    @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+      grid-area: 1 / 2 / 2 / 2;
+    }
+  }
+  &.box-3 {
+    background: linear-gradient(129deg, rgba(167, 216, 47, 1) 66%, rgba(237, 216, 48, 1) 100%);
+    grid-area: 3 / 1 / 4 / 1;
+    @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+      grid-area: 1 / 3 / 3 / 3;
+    }
+  }
+  &.box-4 {
+    grid-area: 4 / 1 / 5 / 1;
+    @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+      grid-area: 2 / 1 / 3 / 3;
+    }
+  }
+  &.box-5 {
+    align-items: start;
+    padding: 0;
+    grid-area: 5 / 1 / 6 / 1;
+    @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+      grid-area: 3 / 1 / 4 / 4;
     }
   }
 `;
-const FilterIcon = styled.i`
-  cursor: pointer;
-  height: 40px;
-  width: 40px;
-  border-radius: 50%;
+
+const Filter = styled.button<{ active: string }>`
+  background: #fff;
+  box-shadow: ${({ active }) => (active === 'true' ? 'none' : '0px 1px 2px rgba(0, 0, 0, 0.5)')};
+  font-family: Rust;
+  border: none;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  :hover {
-    background: #e6edff;
+  width: 100%;
+  transition: all 300ms;
+  position: relative;
+  div {
+    z-index: 2;
+  }
+  &:after {
+    content: ${({ active }) => (active === 'true' ? "''" : 'none')};
+    position: absolute;
+    z-index: 1;
+    width: 62px;
+    height: 62px;
+    right: 0;
+    clip-path: polygon(100% 100%, 0% 100%, 100% 0%);
+    background: linear-gradient(86deg, rgba(183, 217, 43, 1) 66%, rgba(183, 214, 49, 1) 100%);
   }
 `;
+
+const FilterBtnContainer = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 6px;
+  width: 100%;
+  background: #eaeaea;
+  padding: 6px;
+  height: 75px;
+`;
+
+const FilterBtn = ({ text, icon, active, setProductType, productType }: any) => {
+  return (
+    <Filter active={active?.toString()} onClick={() => setProductType(productType)}>
+      <i className={icon}></i>
+      <Text>{text}</Text>
+    </Filter>
+  );
+};
 
 const OrdersLayout = () => {
   const dispatch = useDispatch();
   const state = useSelector((state: any) => state);
   const [productType, setProductType] = useState('Orders');
   const [text, setText] = useState('');
-  const [revealOrderChoices, setRevealOrderChoices] = useState(false);
-  const choicesRef = useRef(null) as any;
 
   const allOrders = state.orderList.orders;
   const loading = allOrders?.loading;
@@ -82,79 +117,85 @@ const OrdersLayout = () => {
     dispatch(listOrders());
   }, [dispatch]);
 
-  useOutsideDetect(choicesRef, setRevealOrderChoices);
-
   const filteredOrders = orders?.filter((order: any) => {
     return order?._id?.toLowerCase().includes(text.toLowerCase());
   });
 
   return (
     <Container>
-      {revealOrderChoices && (
-        <Filter ref={choicesRef}>
-          <FilterContainer>
-            <div onClick={() => setProductType('Products')}>Products</div>
-            <div onClick={() => setProductType('Ecards')}>Ecards</div>
-            <div onClick={() => setProductType('Welcome-Wieners')}>
-              Welcome Wieners
-            </div>
-          </FilterContainer>
-        </Filter>
-      )}
-      <div className='d-flex justify-content-between align-items-center w-100'>
-        <div className='d-flex flex-column'>
-          <WelcomeText>Orders</WelcomeText>
-          <BreadCrumb
-            step1='Home'
-            step2='Dashboard'
-            step3='Orders'
-            step4={productType}
-            url1='/'
-            url2='/admin'
-            url3='/admin/orders'
-            setProductType={setProductType}
-            productType={productType}
-          />
-        </div>
-        <FilterIcon
-          style={{ background: revealOrderChoices ? '#e6edff' : '' }}
-          onClick={() => setRevealOrderChoices(!revealOrderChoices)}
-          className='fas fa-filter'
-        ></FilterIcon>
-      </div>
-      <TopRow className='d-flex align-items-center'>
-        <SearchBar>
-          <SearchInput
-            as='input'
-            type='text'
-            placeholder='Search by ID'
-            value={text || ''}
-            onChange={(e: any) => setText(e.target.value)}
-          />
-        </SearchBar>
-        {loading && (
-          <SpinnerContainer>
-            <Spinner animation='border' size='sm' />
-          </SpinnerContainer>
-        )}
-      </TopRow>
-
-      <TableWrapper>
-        <TableAndPaginationContainer style={{ justifyContent: 'flex-start' }}>
-          {productType === 'Orders' ? (
-            <Orders orders={filteredOrders} />
-          ) : productType === 'Products' ? (
-            <ProductOrderList productOrders={productOrders} text={text} />
-          ) : productType === 'Ecards' ? (
-            <EcardOrderList ecardOrders={ecardOrders} text={text} />
-          ) : (
-            <WelcomeWienerOrderList
-              welcomeWienerOrders={welcomeWienerOrders}
-              text={text}
+      <GridItem className='box-1'>
+        <Text fontFamily='Rust' fontSize='24px' textAlign='center' width='100%' color='#fc5b82'>
+          Orders
+        </Text>
+      </GridItem>
+      <GridItem className='box-2'>
+        <SearchInput
+          as='input'
+          type='text'
+          placeholder='Search by ID'
+          value={text || ''}
+          onChange={(e: any) => setText(e.target.value)}
+        />
+      </GridItem>
+      <GridItem className='box-3 flex-column align-items-start'>
+        <Text fontFamily='Rust' fontSize='30px' color='#fff'>
+          Filter Orders
+        </Text>
+        <div style={{ height: 'inherit' }} className='w-100 d-flex align-items-center'>
+          <FilterBtnContainer>
+            <FilterBtn
+              text='Orders'
+              icon='fa-solid fa-cube'
+              active={productType === 'Orders'}
+              setProductType={setProductType}
+              productType='Orders'
             />
-          )}
-        </TableAndPaginationContainer>
-      </TableWrapper>
+            <FilterBtn
+              text='WW'
+              icon='fa-solid fa-dog'
+              active={productType === 'Welcome-Wieners'}
+              setProductType={setProductType}
+              productType='Welcome-Wieners'
+            />
+            <FilterBtn
+              text='Products'
+              icon='fa-solid fa-box'
+              active={productType === 'Products'}
+              setProductType={setProductType}
+              productType='Products'
+            />
+            <FilterBtn
+              text='Ecards'
+              icon='fas fa-envelope'
+              active={productType === 'Ecards'}
+              setProductType={setProductType}
+              productType='Ecards'
+            />
+          </FilterBtnContainer>
+        </div>
+      </GridItem>
+      <GridItem className='box-4'>
+        <OrderKey />
+      </GridItem>
+      <GridItem className='box-5'>
+        {loading ? (
+          <div style={{ minHeight: 'calc(100vh - 480px)' }} className='w-100 d-flex align-items-center'>
+            <JumpingRumpLoader color='#e7ff46' />
+          </div>
+        ) : (
+          <>
+            {productType === 'Orders' ? (
+              <Orders orders={filteredOrders} />
+            ) : productType === 'Products' ? (
+              <ProductOrderList productOrders={productOrders} text={text} />
+            ) : productType === 'Ecards' ? (
+              <EcardOrderList ecardOrders={ecardOrders} text={text} />
+            ) : (
+              <WelcomeWienerOrderList welcomeWienerOrders={welcomeWienerOrders} text={text} />
+            )}
+          </>
+        )}
+      </GridItem>
     </Container>
   );
 };

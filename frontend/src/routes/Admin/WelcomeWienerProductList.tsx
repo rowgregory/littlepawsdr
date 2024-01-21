@@ -4,26 +4,21 @@ import { useDispatch, useSelector } from 'react-redux';
 import DeleteModal from '../../components/DeleteModal';
 import { Text } from '../../components/styles/Styles';
 import {
-  SearchBar,
-  TableHead,
-  TableRow,
-  StyledEditBtn,
-  TopRow,
-  TableAndPaginationContainer,
-  Container,
   SearchInput,
-  TableWrapper,
   CreateLink,
+  TableContainer,
+  Row,
+  OrangeEditPen,
+  RedDeleteTrash,
+  WelcomeWienerLink,
 } from '../../components/styles/admin/Styles';
-import { WelcomeText } from '../../components/styles/DashboardStyles';
-import BreadCrumb from '../../components/common/BreadCrumb';
-import Message from '../../components/Message';
 import { AddIcon } from '../../components/svg/AddIcon';
 import { defaultImages } from '../../utils/defaultImages';
 import { listWelcomeWienerProducts } from '../../actions/welcomeWienerProductActions';
 import shortenText from '../../utils/shortenText';
 import { Link } from 'react-router-dom';
 import { WELCOME_WIENER_PRODUCT_LIST_RESET } from '../../constants/welcomeWienerProductConstants';
+import DashboardLayout2024 from '../../components/dashboard/dashboard2024/layouts/DashboardLayout2024';
 
 const WelcomeWienerProductList = () => {
   const dispatch = useDispatch();
@@ -44,13 +39,9 @@ const WelcomeWienerProductList = () => {
   useEffect(() => {
     dispatch(listWelcomeWienerProducts());
     return () => {
-      dispatch({ type: WELCOME_WIENER_PRODUCT_LIST_RESET })
-    }
+      dispatch({ type: WELCOME_WIENER_PRODUCT_LIST_RESET });
+    };
   }, [dispatch]);
-
-  productList?.sort(
-    (a: any, b: any) => -a?.createdAt?.localeCompare(b?.createdAt)
-  );
 
   const filteredWelcomeWienerProducts = productList?.filter((product: any) =>
     product?.name?.toLowerCase().includes(text.toLowerCase())
@@ -64,111 +55,88 @@ const WelcomeWienerProductList = () => {
   };
 
   return (
-    <Container>
-      <WelcomeText>Welcome Wiener Products</WelcomeText>
-      <BreadCrumb
-        step1='Home'
-        step2='Dashboard'
-        step3=''
-        step4='Welcome Wiener Products'
-        url1='/'
-        url2='/admin'
-        url3='/admin/welcomeWeinerProductList'
-      />
-      <DeleteModal
-        actionFunc='Welcome Wiener Product'
-        show={show}
-        handleClose={handleClose}
-        id={id}
-      />
-      {(error || errorDelete) && (
-        <Message variant='danger'>{error || errorDelete}</Message>
-      )}
-      <TableWrapper>
-        <TopRow>
-          <SearchBar>
-            <SearchInput
-              as='input'
-              type='text'
-              placeholder='Search by name'
-              value={text || ''}
-              onChange={(e: any) => setText(e.target.value)}
-            />
-          </SearchBar>
-          <CreateLink
-            to='/admin/welcome-wiener/product/create'
-            state={{ welcomeWienerProduct }}
-          >
+    <DashboardLayout2024
+      error={error || errorDelete}
+      box1='Welcome Wiener Products'
+      box2={
+        <SearchInput
+          as='input'
+          type='text'
+          placeholder='Search by Name'
+          value={text || ''}
+          onChange={(e: any) => setText(e.target.value)}
+        />
+      }
+      box3={
+        loading ? (
+          <Spinner animation='border' size='sm' style={{ color: '#fff' }} />
+        ) : error || errorDelete ? (
+          <Text fontFamily='Rust' fontSize='20px'>
+            {error || errorDelete}
+          </Text>
+        ) : (
+          <CreateLink to='/admin/welcome-wiener/product/id/edit' state={{ welcomeWienerProduct }}>
             <AddIcon loading={loading} />
             Create
           </CreateLink>
-        </TopRow>
-        <TableAndPaginationContainer>
-          <Table hover responsive>
-            <TableHead>
-              <tr>
-                <th>NAME</th>
-                <th>ICON</th>
-                <th>DESCRIPTION</th>
-                <th>PRICE</th>
-                <th>EDIT</th>
-                <th>DELETE</th>
-              </tr>
-            </TableHead>
-            <tbody>
-              {filteredWelcomeWienerProducts?.map((product: any) => (
-                <TableRow key={product?._id}>
-                  <td>
-                    <Text>{product?.name}</Text>
-                  </td>
-                  <td>
-                    <i className={`${product?.icon} fa-2x`}></i>
-                  </td>
-                  <td>
-                    <Text>{shortenText(product?.description)}</Text>
-                  </td>
-                  <td>
-                    <Text>{product?.price}</Text>
-                  </td>
-                  <td>
-                    <Link
-                      to={`/admin/welcome-wiener/product/${product?._id}/edit`}
-                      state={{ isEditMode: true }}
-                    >
-                      <StyledEditBtn>
-                        <i
-                          style={{ color: '#9761aa' }}
-                          className='fas fa-edit'
-                        ></i>
-                      </StyledEditBtn>
-                    </Link>
-                  </td>
-                  <td>
-                    <StyledEditBtn
-                      className='border-0'
-                      onClick={() => {
-                        setId(product?._id);
-
-                        handleShow();
-                      }}
-                    >
+        )
+      }
+      box4={
+        <>
+          <DeleteModal actionFunc='Welcome Wiener Product' show={show} handleClose={handleClose} id={id} />
+          <TableContainer>
+            <WelcomeWienerLink to='/admin/welcome-wiener/dachshund/list'>
+              Welcome Wiener Dachshund List <i className='fa-solid fa-angles-right ml-2'></i>
+            </WelcomeWienerLink>
+            <Table hover responsive size='sm'>
+              <thead>
+                <tr>
+                  <th>NAME</th>
+                  <th>ICON</th>
+                  <th>DESCRIPTION</th>
+                  <th>PRICE</th>
+                  <th>EDIT</th>
+                  <th>DELETE</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredWelcomeWienerProducts?.map((product: any, i: number) => (
+                  <Row key={product?._id} i={i}>
+                    <td>{product?.name}</td>
+                    <td>
+                      <i className={`${product?.icon} fa-lg`}></i>
+                    </td>
+                    <td>{shortenText(product?.description)}</td>
+                    <td>{product?.price}</td>
+                    <td>
+                      <Link
+                        to={`/admin/welcome-wiener/product/${product?._id}/edit`}
+                        state={{ product, isEditMode: true }}
+                      >
+                        <OrangeEditPen className='fa-solid fa-pen'></OrangeEditPen>
+                      </Link>
+                    </td>
+                    <td>
                       {loadingDelete && id === product?._id ? (
-                        <Spinner size='sm' animation='border' />
+                        <Spinner size='sm' animation='border' style={{ color: 'red' }} />
                       ) : (
-                        <i
-                          style={{ color: '#cc0000' }}
+                        <RedDeleteTrash
+                          onClick={() => {
+                            setId(product?._id);
+                            handleShow();
+                          }}
                           className='fas fa-trash'
-                        ></i>
+                        ></RedDeleteTrash>
                       )}
-                    </StyledEditBtn>
-                  </td>
-                </TableRow>
-              ))}
-            </tbody>
-          </Table>
-        </TableAndPaginationContainer>
-      </TableWrapper>
-    </Container>
+                    </td>
+                  </Row>
+                ))}
+              </tbody>
+            </Table>
+          </TableContainer>
+        </>
+      }
+    />
   );
 };
 

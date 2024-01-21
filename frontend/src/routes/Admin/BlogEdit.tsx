@@ -1,25 +1,15 @@
 import { useEffect, useState } from 'react';
-import { Form } from 'react-bootstrap';
+import { Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { createBlog, updateBlog } from '../../actions/blogActions';
-import {
-  BLOG_CREATE_RESET,
-  BLOG_UPDATE_RESET,
-} from '../../constants/blogConstants';
-import { UpdateBtn } from '../../components/styles/Styles';
+import { BLOG_CREATE_RESET, BLOG_UPDATE_RESET } from '../../constants/blogConstants';
+import { Text, UpdateBtn } from '../../components/styles/Styles';
 import { useNavigate, useLocation } from 'react-router-dom';
-import Message from '../../components/Message';
-import {
-  Container,
-  EditForm,
-} from '../../components/styles/admin/Styles';
-import {
-  GoBackAndTitleWrapper,
-  WelcomeText,
-} from '../../components/styles/DashboardStyles';
+import { FormControl, FormGroup, FormLabel } from '../../components/styles/admin/Styles';
 import { uploadFileToFirebase } from '../../utils/uploadToFirebase';
 import GoBackBtn from '../../utils/GoBackBtn';
 import UploadSingleImage from '../../components/UploadSingleImage';
+import BlogEditCreateLayout from '../../components/dashboard/dashboard2024/layouts/BlogEditCreateLayout';
 
 const useBlogEditForm = (callback?: any, data?: any) => {
   const values = {
@@ -99,10 +89,7 @@ const BlogEdit = () => {
     }
   };
 
-  const { inputs, handleInput, onSubmit } = useBlogEditForm(
-    editBlogCallback,
-    blog
-  );
+  const { inputs, handleInput, onSubmit } = useBlogEditForm(editBlogCallback, blog);
 
   useEffect(() => {
     if (successCreate || successUpdate) {
@@ -115,26 +102,27 @@ const BlogEdit = () => {
   const editPhotoHandler = (e: any) => setFile(e.target.files[0]);
 
   return (
-    <Container>
-      <GoBackAndTitleWrapper>
-        <GoBackBtn to='/admin/blogs' color='#121212' />
-        <WelcomeText>
+    <BlogEditCreateLayout
+      error={errorUpdate || errorCreate}
+      box1={
+        <Text fontFamily='Rust' fontSize='24px' color='#fc5b82' textAlign='center' width='100%'>
           Blog {isEditMode ? 'Edit' : 'Create'}
-        </WelcomeText>
-      </GoBackAndTitleWrapper>
-      {(errorCreate || errorUpdate) && (
-        <Message variant='danger'>{errorCreate || errorUpdate}</Message>
-      )}
-      <EditForm>
-        <Form.Group controlId='name'>
-          <Form.Label>Title</Form.Label>
-          <Form.Control
-            name='title'
-            type='text'
-            value={inputs?.title || ''}
-            onChange={handleInput}
-          ></Form.Control>
-        </Form.Group>
+        </Text>
+      }
+      box2={<GoBackBtn to='/admin/blogs' color='#121212' />}
+      box3={
+        loadingUpdate || loadingCreate ? (
+          <Spinner animation='border' size='sm' />
+        ) : (
+          errorUpdate ||
+          (errorCreate && (
+            <Text fontFamily='Rust' fontSize='20px'>
+              {errorUpdate || errorCreate}
+            </Text>
+          ))
+        )
+      }
+      box4={
         <UploadSingleImage
           inputs={inputs}
           handleInput={handleInput}
@@ -143,22 +131,38 @@ const BlogEdit = () => {
           uploading={uploading}
           editPhotoHandler={editPhotoHandler}
         />
-        <Form.Group controlId='message'>
-          <Form.Label>Article</Form.Label>
-          <Form.Control
+      }
+      box5={
+        <FormGroup controlId='title'>
+          <FormLabel>Title</FormLabel>
+          <FormControl
+            name='title'
+            type='text'
+            value={inputs?.title || ''}
+            onChange={handleInput}
+          ></FormControl>
+        </FormGroup>
+      }
+      box6={
+        <FormGroup controlId='message' className=''>
+          <FormLabel>Article</FormLabel>
+          <FormControl
+            className='p-3'
             name='article'
             rows={5}
             as='textarea'
             value={inputs?.article || ''}
             onChange={handleInput}
-          ></Form.Control>
-        </Form.Group>
+          ></FormControl>
+        </FormGroup>
+      }
+      box7={
         <UpdateBtn onClick={onSubmit}>
           {isEditMode ? 'Updat' : 'Creat'}
           {loadingUpdate || loadingCreate ? 'ing...' : 'e'}
         </UpdateBtn>
-      </EditForm>
-    </Container>
+      }
+    />
   );
 };
 

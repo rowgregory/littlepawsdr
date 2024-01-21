@@ -32,7 +32,7 @@ const CheckMark = styled.div`
 interface WelcomeWienerProductProps {
   product: {};
   inputs: {};
-  addToAssociatedProducts: () => void;
+  addToAssociatedProducts: any;
 }
 
 const WelcomeWienerProduct: FC<WelcomeWienerProductProps> = ({

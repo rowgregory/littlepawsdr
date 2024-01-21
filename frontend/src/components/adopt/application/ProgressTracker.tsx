@@ -19,7 +19,7 @@ const Step = styled.div<{ step: string }>`
   height: 27px;
   width: 27px;
   border-radius: 50%;
-  background: ${({ step }) => (step === 'true' ? '#4cb71a' : '#dddddd')};
+  background: ${({ step }) => (step === 'true' ? '#4cb71a' : '#eeeeee')};
   margin-bottom: 4px;
   display: flex;
   justify-content: center;
@@ -31,20 +31,35 @@ const Step = styled.div<{ step: string }>`
 
 const Line = styled.div<{ step: string }>`
   height: 3px;
-  width: 89px;
+
   max-width: 150px;
   margin-inline: 16px;
   background: ${({ step }) => (step === 'true' ? '#4cb71a' : '#eeeeee')};
   position: absolute;
   top: 13px;
   &.line-1 {
-    left: 74px;
+    left: 50px;
+    width: 80px;
+    @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
+      left: 74px;
+      width: 89px;
+    }
   }
   &.line-2 {
-    left: 190px;
+    left: 155px;
+    width: 73px;
+    @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
+      left: 190px;
+      width: 89px;
+    }
   }
   &.line-3 {
-   left: 305px;
+    left: 253px;
+    width: 73px;
+    @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
+      left: 305px;
+      width: 89px;
+    }
   }
 `;
 

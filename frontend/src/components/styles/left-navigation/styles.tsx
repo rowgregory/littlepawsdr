@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
 export const Container = styled.div<{ open: boolean }>`
   min-height: 100vh;
@@ -41,7 +41,6 @@ export const SearchBarWrapper = styled.div`
   display: flex;
   margin-block: 28px;
   margin-inline: 22px;
-  display: flex;
   align-items: center;
   position: relative;
   i {
@@ -128,6 +127,15 @@ export const ResultCategory = styled.div<{ show: boolean }>`
   }
 `;
 
+const fadeIn = keyframes`
+0% {
+  opacity: 0;
+}
+100% {
+  opacity: 1;
+}
+`
+
 export const Overlay = styled.div<{ open: boolean }>`
   position: fixed;
   display: ${({ open }) => (open ? 'block' : 'none')};
@@ -137,6 +145,7 @@ export const Overlay = styled.div<{ open: boolean }>`
   width: 100vw;
   background: rgb(0 0 0/0.8);
   z-index: 3000;
+  animation: ${fadeIn} 300ms linear forwards;
 `;
 
 export const Menu = styled.div`
@@ -189,7 +198,7 @@ export const LinkContainer = styled.div`
   }
 `;
 
-export const StyledLink = styled(Link)<{ highlight: any }>`
+export const StyledLink = styled(Link) <{ highlight: any }>`
   transition: 300ms;
   color: #cbd7db;
   font-family: Montserrat, sans-serif;
@@ -206,7 +215,7 @@ export const StyledLink = styled(Link)<{ highlight: any }>`
     text-decoration: none;
   }
 `;
-export const SingleLink = styled(Link)<{ highlight: any }>`
+export const SingleLink = styled(Link) <{ highlight: any }>`
   transition: 300ms;
   color: #cbd7db;
   font-family: Montserrat, sans-serif;

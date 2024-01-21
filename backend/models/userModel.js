@@ -61,7 +61,8 @@ const userSchema = mongoose.Schema(
     lastLoginTime: { type: String },
     resetPasswordToken: { type: String },
     resetPasswordExpires: { type: Number },
-    introducedToSilverPaws: { type: Boolean, default: false }
+    introducedToSilverPaws: { type: Boolean, default: false },
+    onlineStatus: { type: String }
   },
   {
     timestamps: true,

@@ -1,123 +1,128 @@
-export const getLineChartData = async (
-  productOrders,
-  ecardOrders,
-  welcomeWienerOrders
-) => {
-  const productOrderRods = '#9761aa';
-  const ecardOrderRods = '#22c2b7';
-  const welcomeWienerOrderRods = '#8BBF9F';
+import AdoptionFee from '../models/adoptionFeeModel.js';
+import ECardOrder from '../models/eCardOrderModel.js';
+import ProductOrder from '../models/productOrderModel.js';
+import WelcomeWienerOrder from '../models/welcomeWienerOrderModel.js';
 
-  const processData = orders => {
-    const currentMonth = new Date().getMonth();
-    const monthlyData = Array(12).fill(null);
-    orders?.forEach(item => {
-      const createdAt = new Date(item.createdAt);
-      const month = createdAt.getMonth();
-      const totalPrice =
-        item.subtotal + (item.shippingPrice ?? 0) * item.quantity ||
-        item.totalPrice;
+const calculateMonthlyRevenue = async (year) => {
+  try {
+    const monthlyRevenue = [];
+    const totalCurrentMonthlySales = [{ name: 'Total Monthly Sales', data: Array(12).fill(0) }];
+    for (let month = 1; month <= 12; month++) {
+      const monthName = new Date(year, month - 1, 1).toLocaleString('en-US', { month: 'long' });
 
-      if (month <= currentMonth) {
-        monthlyData[month] =
-          monthlyData[month] !== null
-            ? monthlyData[month] + totalPrice
-            : totalPrice;
-      }
-    });
+      const productOrderTotal = await ProductOrder.aggregate([
+        {
+          $match: {
+            $expr: {
+              $and: [{ $eq: [{ $month: '$createdAt' }, month] }, { $eq: [{ $year: '$createdAt' }, year] }],
+            },
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            total: { $sum: '$totalPrice' },
+          },
+        },
+      ]);
 
-    for (let i = 0; i < currentMonth; i++) {
-      if (monthlyData[i] === null) {
-        monthlyData[i] = 0;
-      }
+      const welcomeWienerTotal = await WelcomeWienerOrder.aggregate([
+        {
+          $match: {
+            $expr: {
+              $and: [{ $eq: [{ $month: '$createdAt' }, month] }, { $eq: [{ $year: '$createdAt' }, year] }],
+            },
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            total: { $sum: '$totalPrice' },
+          },
+        },
+      ]);
+
+      const eCardOrderTotal = await ECardOrder.aggregate([
+        {
+          $match: {
+            $expr: {
+              $and: [{ $eq: [{ $month: '$createdAt' }, month] }, { $eq: [{ $year: '$createdAt' }, year] }],
+            },
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            total: { $sum: '$totalPrice' },
+          },
+        },
+      ]);
+
+      const adoptionFeeTotal = await AdoptionFee.aggregate([
+        {
+          $match: {
+            $expr: {
+              $and: [{ $eq: [{ $month: '$createdAt' }, month] }, { $eq: [{ $year: '$createdAt' }, year] }],
+            },
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            total: { $sum: '$feeAmount' },
+          },
+        },
+      ]);
+
+      const totalRevenue =
+        (productOrderTotal[0]?.total || 0) +
+        (welcomeWienerTotal[0]?.total || 0) +
+        (eCardOrderTotal[0]?.total || 0) +
+        (adoptionFeeTotal[0]?.total || 0);
+
+      totalCurrentMonthlySales[0].data[month - 1] = totalRevenue;
+
+      const monthlyObject = {
+        productTotal: productOrderTotal[0]?.total || 0,
+        welcomeWienerTotal: welcomeWienerTotal[0]?.total || 0,
+        eCardOrderTotal: eCardOrderTotal[0]?.total || 0,
+        adoptionFeeTotal: adoptionFeeTotal[0]?.total || 0,
+        totalRevenue,
+        monthName
+      };
+
+      monthlyRevenue.push(monthlyObject);
     }
 
-    return monthlyData;
-  };
-
-  const productData = processData(productOrders);
-  const ecardData = processData(ecardOrders);
-  const welcomeWienerData = processData(welcomeWienerOrders);
-
-  const data = {
-    labels: [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-    ],
-    datasets: [
+    const series = [
       {
-        label: 'Products',
-        data: productData,
-        fill: true,
-        backgroundColor: 'transparent',
-        borderColor: productOrderRods,
-        tension: 0.1,
-        spanGaps: true,
+        name: 'Product',
+        data: monthlyRevenue.map((item) => item.productTotal),
       },
       {
-        label: 'Ecards',
-        data: ecardData,
-        fill: true,
-        backgroundColor: 'transparent',
-        borderColor: ecardOrderRods,
-        tension: 0.1,
-        spanGaps: true,
+        name: 'Welcome Wieners',
+        data: monthlyRevenue.map((item) => item.welcomeWienerTotal),
       },
       {
-        label: 'Welcome Wieners',
-        data: welcomeWienerData,
-        fill: true,
-        backgroundColor: 'transparent',
-        borderColor: welcomeWienerOrderRods,
-        tension: 0.1,
-        spanGaps: true,
+        name: 'Ecards',
+        data: monthlyRevenue.map((item) => item.eCardOrderTotal),
       },
-    ],
-  };
+      {
+        name: 'Adoption Fees',
+        data: monthlyRevenue.map((item) => item.adoptionFeeTotal),
+      },
+    ];
 
-  const options = {
-    maintainAspectRatio: false,
-    responsive: true,
-    scales: {
-      y: {
-        beginAtZero: true,
-        grid: {
-          drawBorder: false,
-          color: '#fff',
-        },
-        ticks: {
-          color: '#c4c4c4',
-        },
-      },
-      x: {
-        grid: {
-          drawBorder: false,
-          color: '#fff',
-        },
-        ticks: {
-          color: '#c4c4c4',
-        },
-      },
-    },
-    plugins: {
-      legend: {
-        display: false,
-      },
-    },
-  };
+    const updatedTotalCurrentMonthlySales = totalCurrentMonthlySales.map((item, index) => ({
+      ...item,
+      name: `${monthlyRevenue[index].monthName} Monthly Sales`,
+    }));
 
-  const noData = data?.datasets.every((obj) =>
-    obj.data?.every((month) => month === null)
-  );
-
-  return { data, options, noData };
+    return { series, totalCurrentMonthlySales: updatedTotalCurrentMonthlySales };
+  } catch (error) {
+    console.error('Error calculating monthly revenue:', error);
+    throw error;
+  }
 };
+
+export default calculateMonthlyRevenue;

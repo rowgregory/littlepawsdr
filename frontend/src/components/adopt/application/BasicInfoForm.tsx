@@ -102,7 +102,7 @@ const BasicInfoForm = ({ onSubmit }: any) => {
             <Error name='state' component='div' />
           </div>
           <div className='mb-3'>
-            <Input type='text' name='bypassCode' placeholder='Bypass Code' />
+            <Input type='text' name='bypassCode' placeholder='Volunteer Bypass Code' />
           </div>
           <Button
             variant='success'

@@ -50,10 +50,6 @@ export const sideLinkData = [
         linkText: 'Check',
       },
       {
-        linkKey: '/donate/long-dog',
-        linkText: 'Long Dog',
-      },
-      {
         linkKey: '/donate/feed-a-foster',
         linkText: 'Feed a Foster',
       },

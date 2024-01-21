@@ -7,7 +7,6 @@ import {
   InnerContainer,
 } from '../../components/styles/product-details/Styles';
 import LeftArrow from '../../components/svg/LeftArrow';
-import CartDrawer from '../../components/CartDrawer';
 import MerchImages from '../../components/merch-detail/MerchImages';
 import MerchNamePriceDescription from '../../components/merch-detail/MerchNamePriceDescription';
 import AddToCartSection from '../../components/merch-detail/AddToCartSection';
@@ -73,7 +72,6 @@ const ProductDetails = () => {
 
   return (
     <Container>
-      <CartDrawer />
       <LeftArrow text='Back To Merch' url='/merch' />
       <InnerContainer>
         <MerchImages loading={loading} product={product} />

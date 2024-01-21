@@ -1,23 +1,16 @@
 import { useEffect, useState } from 'react';
-import { Form } from 'react-bootstrap';
+import { Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { createECard, updateECard } from '../../actions/eCardActions';
-import {
-  ECARD_CREATE_RESET,
-  ECARD_UPDATE_RESET,
-} from '../../constants/eCardConstants';
-import { UpdateBtn } from '../../components/styles/Styles';
+import { ECARD_CREATE_RESET, ECARD_UPDATE_RESET } from '../../constants/eCardConstants';
+import { Text, UpdateBtn } from '../../components/styles/Styles';
 import { eCardCategories } from '../../utils/eCardCategories';
 import { useNavigate, useLocation } from 'react-router-dom';
-import Message from '../../components/Message';
-import { Container, EditForm } from '../../components/styles/admin/Styles';
-import {
-  GoBackAndTitleWrapper,
-  WelcomeText,
-} from '../../components/styles/DashboardStyles';
+import { FormControl, FormGroup, FormLabel } from '../../components/styles/admin/Styles';
 import { uploadFileToFirebase } from '../../utils/uploadToFirebase';
 import GoBackBtn from '../../utils/GoBackBtn';
 import UploadSingleImage from '../../components/UploadSingleImage';
+import EcardEditCreateLayout from '../../components/dashboard/dashboard2024/layouts/EcardEditCreateLayout';
 
 const useEcardEditForm = (callback?: any, data?: any) => {
   const values = {
@@ -104,10 +97,7 @@ const ECardEdit = () => {
     }
   };
 
-  const { inputs, handleInput, onSubmit } = useEcardEditForm(
-    editEcardCallback,
-    eCard
-  );
+  const { inputs, handleInput, onSubmit } = useEcardEditForm(editEcardCallback, eCard);
 
   useEffect(() => {
     if (successCreate || successUpdate) {
@@ -120,47 +110,27 @@ const ECardEdit = () => {
   const editPhotoHandler = (e: any) => setFile(e.target.files[0]);
 
   return (
-    <Container>
-      <GoBackAndTitleWrapper>
-        <GoBackBtn to='/admin/eCardList' color='#121212' />
-        <WelcomeText>Ecard {isEditMode ? 'Edit' : 'Create'}</WelcomeText>
-      </GoBackAndTitleWrapper>
-      {(errorUpdate || errorCreate) && (
-        <Message variant='danger'>{errorUpdate || errorCreate}</Message>
-      )}
-      <EditForm>
-        <Form.Group controlId='name'>
-          <Form.Label>Name</Form.Label>
-          <Form.Control
-            name='name'
-            type='text'
-            value={inputs?.name || ''}
-            onChange={handleInput}
-          ></Form.Control>
-        </Form.Group>
-        <Form.Group controlId='category'>
-          <Form.Label>Category</Form.Label>
-          <Form.Control
-            name='category'
-            as='select'
-            value={inputs?.category || 'Choose One'}
-            onChange={handleInput}
-          >
-            {eCardCategories?.map((category, i) => (
-              <option key={i}>{category}</option>
-            ))}
-          </Form.Control>
-        </Form.Group>
-        <Form.Group controlId='price'>
-          <Form.Label>Price</Form.Label>
-          <Form.Control
-            name='price'
-            min={1}
-            type='number'
-            value={inputs?.price || ''}
-            onChange={handleInput}
-          ></Form.Control>
-        </Form.Group>
+    <EcardEditCreateLayout
+      error={errorUpdate || errorCreate}
+      box1={<GoBackBtn to='/admin/eCardList' color='#121212' />}
+      box2={
+        <Text fontFamily='Rust' fontSize='24px' color='#fc5b82' textAlign='center' width='100%'>
+          Ecard {isEditMode ? 'Edit' : 'Create'}
+        </Text>
+      }
+      box3={
+        loadingUpdate || loadingCreate ? (
+          <Spinner animation='border' size='sm' />
+        ) : (
+          errorUpdate ||
+          (errorCreate && (
+            <Text fontFamily='Rust' fontSize='20px'>
+              {errorUpdate || errorCreate}
+            </Text>
+          ))
+        )
+      }
+      box4={
         <UploadSingleImage
           inputs={inputs}
           handleInput={handleInput}
@@ -169,12 +139,52 @@ const ECardEdit = () => {
           uploading={uploading}
           editPhotoHandler={editPhotoHandler}
         />
+      }
+      box5={
+        <FormGroup controlId='name'>
+          <FormLabel>Name</FormLabel>
+          <FormControl
+            name='name'
+            type='text'
+            value={inputs?.name || ''}
+            onChange={handleInput}
+          ></FormControl>
+        </FormGroup>
+      }
+      box6={
+        <FormGroup controlId='category'>
+          <FormLabel>Category</FormLabel>
+          <FormControl
+            name='category'
+            as='select'
+            value={inputs?.category || 'Choose One'}
+            onChange={handleInput}
+          >
+            {eCardCategories?.map((category, i) => (
+              <option key={i}>{category}</option>
+            ))}
+          </FormControl>
+        </FormGroup>
+      }
+      box7={
+        <FormGroup controlId='price'>
+          <FormLabel>Price</FormLabel>
+          <FormControl
+            name='price'
+            min={1}
+            type='number'
+            value={inputs?.price || ''}
+            onChange={handleInput}
+          ></FormControl>
+        </FormGroup>
+      }
+      box8={
         <UpdateBtn onClick={onSubmit}>
           {isEditMode ? 'Updat' : 'Creat'}
           {loadingUpdate || loadingCreate ? 'ing...' : 'e'}
         </UpdateBtn>
-      </EditForm>
-    </Container>
+      }
+    />
   );
 };
 

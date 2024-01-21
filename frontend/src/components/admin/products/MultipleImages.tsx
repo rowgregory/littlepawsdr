@@ -34,7 +34,7 @@ const MultipleImages = ({
   };
 
   return (
-    <div className='my-4'>
+    <div className='w-100'>
       <Form.Group controlId='image' className='d-flex flex-column'>
         <Form.Label>Images</Form.Label>
         <Form.Control
@@ -66,7 +66,7 @@ const MultipleImages = ({
         </Flex>
       </Form.Group>
       <ImageContainer>
-        {Array.from(inputs.images)?.map((img: any, i: number) => (
+        {Array.from(inputs?.images)?.map((img: any, i: number) => (
           <StyledImage
             onClick={() =>
               setInputs((inputs: any) => ({

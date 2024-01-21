@@ -1,9 +1,8 @@
 import { Flex, Text } from '../styles/Styles';
 import styled from 'styled-components';
-import { Button, Spinner } from 'react-bootstrap';
 import { addProductToCart, openCartDrawer } from '../../actions/cartActions';
 import { useDispatch, useSelector } from 'react-redux';
-import { LoadingImg } from '../LoadingImg';
+import JumpingRumpLoader from '../Loaders/JumpingRopLoader';
 
 interface DonationItemProps {
   item: {
@@ -17,23 +16,40 @@ interface DonationItemProps {
 
 const Container = styled.div`
   display: flex;
-  padding: 8px;
-  margin-bottom: 10px;
+  padding: 22px 16px;
   transition: 300ms;
-  margin-bottom: 44px;
-  border-bottom: 1px solid #ededed;
+  background: #444;
+  margin-inline: auto;
+  width: 100%;
+`;
+
+const AddToCart = styled.button`
+  background: #e7ff46;
+  width: 150px;
+  height: 40px;
+  border-radius: 4px;
+  border: none;
+  font-size: 16px;
+  font-weight: 400;
+  color: #404434;
+  box-shadow: none;
+  position: relative;
+  display: block;
+  transition: 300ms;
+  :focus {
+    outline: none;
+  }
+  :hover {
+    letter-spacing: 2px;
+  }
 `;
 
 const DonationItem = ({ item }: DonationItemProps) => {
   const dispatch = useDispatch();
   const cartLoading = useSelector((state: any) => state.cart.loading);
-  const dachshundDetailsLoading = useSelector(
-    (state: any) => state.welcomeWienerDachshundDetails.loading
-  );
+  const dachshundDetailsLoading = useSelector((state: any) => state.welcomeWienerDachshundDetails.loading);
 
-  const dachshund = useSelector(
-    (state: any) => state.welcomeWienerDachshundDetails.dachshund
-  );
+  const dachshund = useSelector((state: any) => state.welcomeWienerDachshundDetails.dachshund);
 
   const addToCartHandler = () => {
     const cartItem = {
@@ -55,54 +71,24 @@ const DonationItem = ({ item }: DonationItemProps) => {
 
   return (
     <Container>
-      {dachshundDetailsLoading ? (
-        <LoadingImg w='55px' h='55px' mr='16px' />
-      ) : (
-        <i
-          className={`${item?.icon} fa-2x d-flexjustify-content-center`}
-          style={{ width: '55px', height: '55px' }}
-        ></i>
-      )}
-      <Flex flexDirection='column'>
-        {dachshundDetailsLoading ? (
-          <LoadingImg h='27px' w={item?.name?.length * 15 + 'px'} />
-        ) : (
-          <Text fontWeight='400' fontSize='18px'>
+      <i className={`${item?.icon} fa-2x text-white`}></i>
+      <Flex flexDirection='column' justifyContent='space-between' marginLeft='20px'>
+        <div>
+          <Text fontWeight='400' fontSize='18px' color='#ccc' marginBottom='10px'>
             {item?.name}
           </Text>
-        )}
-        {dachshundDetailsLoading ? (
-          <div className='mt-2 w-100'>
-            <LoadingImg
-              w='100%'
-              h={(item?.description?.length / 66) * 21 + 'px'}
-            />
-          </div>
-        ) : (
-          <Text>{item?.description}</Text>
-        )}
-        {dachshundDetailsLoading ? (
-          <div className='mt-2'>
-            <LoadingImg h='33px' w={item?.name?.length * 15 + 'px'} />
-          </div>
-        ) : (
-          <Text
-            className='mr-3'
-            fontSize='22px'
-            fontWeight='500'
-            marginTop='12px'
-          >
+          <Text color='#ccc' marginBottom='18px'>
+            {item?.description}
+          </Text>
+        </div>
+        <div className='d-flex flex-column justify-self-end'>
+          <Text color='#fff' marginBottom='12px' fontSize='30px' fontWeight='500'>
             ${item?.price}
           </Text>
-        )}
-        <Button
-          disabled={dachshundDetailsLoading || cartLoading}
-          variant='success'
-          className='my-3'
-          onClick={() => addToCartHandler()}
-        >
-          {cartLoading ? <Spinner animation='border' /> : 'Add to cart'}
-        </Button>
+          <AddToCart disabled={dachshundDetailsLoading || cartLoading} onClick={() => addToCartHandler()}>
+            {cartLoading ? <JumpingRumpLoader color='#121212' /> : 'Add to Cart'}
+          </AddToCart>
+        </div>
       </Flex>
     </Container>
   );

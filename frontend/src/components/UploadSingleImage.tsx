@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
-import { Form, Image } from 'react-bootstrap';
-import { FormFile, UploadImageSquare } from './styles/admin/Styles';
+import { Image } from 'react-bootstrap';
+import { FormControl, FormFile, FormGroup, FormLabel, UploadImageSquare } from './styles/admin/Styles';
 import { defaultImages } from '../utils/defaultImages';
 import PhotoUploadIcon from './svg/PhotoUploadIcon';
 import { Flex } from './styles/Styles';
@@ -16,9 +16,13 @@ interface UploadSingleImageProps {
 }
 
 const StyledImage = styled(Image)`
-  width: 100px;
-  height: 100px;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
+  max-width: 160px;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+    max-height: 160px;
+  }
 `;
 
 const UploadSingleImage: FC<UploadSingleImageProps> = ({
@@ -40,23 +44,23 @@ const UploadSingleImage: FC<UploadSingleImageProps> = ({
   };
 
   return (
-    <Form.Group controlId='image' className='d-flex flex-column my-4'>
-      <Form.Label>Image</Form.Label>
-      <Form.Control
+    <FormGroup controlId='image' className='d-flex flex-column'>
+      <FormLabel>Image</FormLabel>
+      <FormControl
         name='image'
         className='img-link'
         type='text'
         value={inputs.image || ''}
         onChange={handleInput}
-      ></Form.Control>
-      <Flex>
+      ></FormControl>
+      <Flex marginRight='0' alignItems='center' flex='0'>
         <FormFile
           id='image-file'
           label={label()}
           onChange={editPhotoHandler}
         ></FormFile>
       </Flex>
-    </Form.Group>
+    </FormGroup>
   );
 };
 

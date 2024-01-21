@@ -89,7 +89,7 @@ const ListAvailableDogs = () => {
   const dispatch = useDispatch()
 
   const state = useSelector((state: any) => state);
-  const dachshunds = state.dachshunds.dachshunds;
+  const dachshunds = state.dachshunds?.dachshunds;
   const loading = state.dachshunds.loading;
 
   useEffect(() => {
@@ -161,7 +161,7 @@ const ListAvailableDogs = () => {
         <RightArrow text='Sponsor a Sanctuary' url='/about/sanctuary' />
       </div>
       <CardContainer>
-        {dachshunds?.data?.map((dachshund: any) => (
+        {dachshunds?.map((dachshund: any) => (
           <Dachshund key={dachshund?.id} dachshund={dachshund} loading={loading} />
         ))}
       </CardContainer>

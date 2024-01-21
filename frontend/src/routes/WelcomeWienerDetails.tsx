@@ -1,33 +1,75 @@
 import { useEffect } from 'react';
-import {
-  Description,
-  DetailsGrid,
-} from '../components/styles/AvailableDog/Styles';
-import LeftArrow from '../components/svg/LeftArrow';
-import { LoadingImg } from '../components/LoadingImg';
 import { useDispatch, useSelector } from 'react-redux';
 import { getWelcomeWienerDachshundDetails } from '../actions/welcomeWienerDachshundActions';
 import { useParams } from 'react-router-dom';
 import { Flex, Text } from '../components/styles/Styles';
 import DonationItem from '../components/welcome-wiener/DonationItem';
-import CartDrawer from '../components/CartDrawer';
 import styled from 'styled-components';
-import MerchImages from '../components/merch-detail/MerchImages';
+import ImageGallery from 'react-image-gallery';
+import JumpingRumpLoader from '../components/Loaders/JumpingRopLoader';
+import { GoBackLink } from '../components/styles/admin/Styles';
 
 const Container = styled.div`
   display: grid;
   gap: 20px;
   grid-template-columns: 1fr;
-  max-width: ${({ theme }) => theme.breakpoints[3]};
   margin-inline: auto;
   margin-top: 16px;
-  margin-bottom: 128px;
   width: 100%;
+  margin-top: 75px;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    grid-template-columns: 55% 40%;
-    max-width: 1200px;
+    grid-template-columns: 1fr 1fr;
   }
 `;
+
+const DonationItemContainer = styled.div`
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+`;
+
+
+
+const WelcomeWienerProductSideBar = ({ data, loading }: { data: any; loading: boolean }) => {
+  return (
+    <Flex
+      background='#333'
+      width='100%'
+      style={{ minHeight: 'calc(100vh - 480px)' }}
+      justifyContent='start'
+      flexDirection='column'
+      flex='0'
+      padding='24px 16px 75px'
+    >
+      {loading ? (
+        <div style={{ minHeight: 'calc(100vh - 480px)' }} className='w-100 d-flex align-items-center'>
+          <JumpingRumpLoader color='#e7ff46' />
+        </div>
+      ) : (
+        <>
+          <Text color='#e7ff46' fontSize='48px' fontWeight={800}>
+            {data?.name}
+          </Text>
+          <Text fontWeight='400' fontSize='18px' color='#ccc' marginBottom='30px'>
+            Age {data?.age}
+          </Text>
+          <Text color='#fff' fontSize='18px' fontWeight={500} marginBottom='42px' maxWidth='600px'>
+            {data?.bio}
+          </Text>
+          <Text color='#6f6d6c' fontSize='30px' fontWeight={500} marginBottom='32px'>
+            Ways to Make an Impact
+          </Text>
+          <DonationItemContainer>
+            {data?.associatedProducts?.map((obj: any, i: number) => (
+              <DonationItem item={obj} key={i} />
+            ))}
+          </DonationItemContainer>
+        </>
+      )}
+    </Flex>
+  );
+};
 
 const WelcomeWienerDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -41,56 +83,31 @@ const WelcomeWienerDetails = () => {
     dispatch(getWelcomeWienerDachshundDetails(id));
   }, [dispatch, id]);
 
+  const reactImageGalleryDataShape = dachshund?.images?.map((image: string) => ({
+    original: image,
+    thumbnail: image,
+  }));
+
   return (
-    <Flex
-      flexDirection='column'
-      marginTop='96px'
-      maxWidth='1200px'
-      marginLeft='auto'
-      marginRight='auto'
-      paddingLeft='8px'
-      paddingRight='8px'
-      width='100%'
-    >
-      <LeftArrow text='Back to welcome wieners' url='/welcome-wieners' />
-      <Container>
-        <CartDrawer />
-        <div>
+    <Container>
+      <Flex flexDirection='column' maxWidth='787px' marginLeft='auto' marginRight='auto' width='100%' marginBottom='75px'>
+        <Flex className='px-2 flex-column'>
+          <GoBackLink to='/welcome-wieners' text='Back to Welcome Wieners' />
           {loading ? (
-            <LoadingImg w='100%' />
+            <JumpingRumpLoader color='#333' />
           ) : (
-            <MerchImages loading={loading} product={dachshund} />
+            <Flex alignItems='center' justifyContent='center' width='100%' border='1px solid #ededed' height='100%' >
+              <ImageGallery
+                items={reactImageGalleryDataShape ?? [{ original: '', thumbnail: '' }]}
+                showIndex={true}
+                showBullets={true}
+              />
+            </Flex>
           )}
-          <div className='d-flex flex-column mr-4 mt-4'>
-            <Text fontSize='1.5rem' fontWeight='600' marginBottom='16px'>
-              About {dachshund?.name}
-            </Text>
-            <Description>{dachshund?.bio}</Description>
-            <Text fontSize='1.5rem' fontWeight='600' marginBottom='16px'>
-              Details
-            </Text>
-            <DetailsGrid>
-              {[{ key: 'Age', value: dachshund?.age }].map(
-                (obj: any, i: number) => (
-                  <div className='d-flex flex-column' key={i}>
-                    <Text fontWeight='400'>{obj.key}</Text>
-                    <Text fontSize='0.875rem'>{obj.value}</Text>
-                  </div>
-                )
-              )}
-            </DetailsGrid>
-          </div>
-        </div>
-        <div>
-          <Text fontSize='1.5rem' fontWeight='600' marginBottom='16px'>
-            Donation Items for {dachshund?.name}
-          </Text>
-          {dachshund?.associatedProducts?.map((obj: any, i: number) => (
-            <DonationItem item={obj} key={i} />
-          ))}
-        </div>
-      </Container>
-    </Flex>
+        </Flex>
+      </Flex>
+      <WelcomeWienerProductSideBar data={dachshund} loading={loading} />
+    </Container>
   );
 };
 

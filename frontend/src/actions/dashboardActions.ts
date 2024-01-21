@@ -4,6 +4,7 @@ import {
   DASHBOARD_CURRENT_YEAR_DATA_REQUEST,
   DASHBOARD_CURRENT_YEAR_DATA_SUCCESS,
   DASHBOARD_CURRENT_YEAR_DATA_FAIL,
+  SET_BUBBLE_LINKS,
 } from '../constants/dashboardConstants';
 import {
   ADOPTION_APPLICATION_FEE_BYPASS_CODE_FAIL,
@@ -68,4 +69,8 @@ export const getAdoptionApplicationBypassCode = () => async (dispatch: any, getS
       payload: error.response && error.response.data.message ? error.response.data.message : error.message,
     });
   }
+};
+
+export const closeBubbleLinks = () => async (dispatch: any) => {
+  dispatch({ type: SET_BUBBLE_LINKS, payload: '' });
 };

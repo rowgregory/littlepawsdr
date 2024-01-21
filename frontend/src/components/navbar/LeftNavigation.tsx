@@ -1,10 +1,10 @@
-import { FC, useRef, useState } from 'react';
-import { useOutsideDetect } from '../../utils/useOutsideDetect';
+import { FC, useCallback, useRef, useState } from 'react';
 import { CloseSideBarBtn, Container } from '../styles/left-navigation/styles';
 import { useSelector } from 'react-redux';
 import SearchBar from '../left-navigation/SearchBar';
 import Results from '../left-navigation/Results';
 import LinkContent from '../left-navigation/LinkContent';
+import useOutsideDetect from '../../utils/useOutsideDetect';
 
 interface LeftNavigationProps {
   openMenu: boolean;
@@ -23,7 +23,12 @@ const LeftNavigation: FC<LeftNavigationProps> = ({ openMenu, setOpenMenu }) => {
   const error = state.searchBar.error;
   const data = state.searchBar.list;
 
-  useOutsideDetect(overlayRef, setOpenMenu);
+
+  const handleClose = useCallback(() => {
+    setOpenMenu(false)
+  }, [setOpenMenu]);
+
+  useOutsideDetect(overlayRef, handleClose);
 
   return (
     <Container ref={overlayRef} open={openMenu}>

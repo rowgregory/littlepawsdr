@@ -50,6 +50,7 @@ interface TextProps {
   position?: string;
   top?: string;
   left?: string;
+  paddingTop?: string;
 }
 
 export const Text = styled.div<TextProps>`
@@ -80,6 +81,7 @@ export const Text = styled.div<TextProps>`
   position: ${({ position }) => (position ? position : 'relative')};
   top: ${({ top }) => (top ? top : '')};
   left: ${({ left }) => (left ? left : '')};
+  padding-top: ${({ paddingTop }) => (paddingTop ? paddingTop : '')};
 `;
 
 interface FlexProps {
@@ -88,6 +90,7 @@ interface FlexProps {
   paddingLeft?: string;
   paddingRight?: string;
   paddingTop?: string;
+  padding?: string;
   marginBottom?: string;
   marginLeft?: string;
   marginRight?: string;
@@ -112,6 +115,9 @@ interface FlexProps {
   bottom?: string;
   left?: string;
   borderRadius?: string;
+  gap?: number;
+  flexWrap?: string;
+  fontFamily?: string;
 }
 
 export const Flex = styled.div<FlexProps>`
@@ -120,6 +126,7 @@ export const Flex = styled.div<FlexProps>`
   padding-left: ${({ paddingLeft }) => (paddingLeft ? paddingLeft : '0')};
   padding-right: ${({ paddingRight }) => (paddingRight ? paddingRight : '0')};
   padding-top: ${({ paddingTop }) => (paddingTop ? paddingTop : '0')};
+  padding: ${({ padding }) => (padding ? padding : '0')};
   margin-bottom: ${({ marginBottom }) => (marginBottom ? marginBottom : '0')};
   margin-left: ${({ marginLeft }) => (marginLeft ? marginLeft : '0')};
   margin-right: ${({ marginRight }) => (marginRight ? marginRight : '0')};
@@ -149,26 +156,19 @@ export const Flex = styled.div<FlexProps>`
   bottom: ${({ bottom }) => (bottom ? bottom : '')};
   left: ${({ left }) => (left ? left : '')};
   border-radius: ${({ borderRadius }) => (borderRadius ? borderRadius : '')};
+  gap: ${({ gap }) => gap ? gap : ''};
+  flex-wrap: ${({ flexWrap }) => flexWrap ? flexWrap : ''};
+  font-family: ${({ fontFamily }) => fontFamily ? fontFamily : ''};
 `;
 
 export const UpdateBtn = styled.button`
-  background: ${({ theme }) => theme.colors.quinary};
-  border: 1px solid ${({ theme }) => theme.colors.quinary};
-  margin-top: 32px;
+  background: linear-gradient(263deg, rgba(157,253,255,1) 18%, rgba(233,198,253,1) 100%);
+  border: none;
   transition: 300ms;
   font-size: 16px;
   width: 100%;
-  border-radius: 8px;
-  color: #fff;
-  padding: 8px 24px;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    width: fit-content;
-  }
-  :hover {
-    filter: brightness(1.1);
-    background: ${({ theme }) => theme.colors.quinary};
-    border: 1px solid ${({ theme }) => theme.colors.quinary};
-  }
+  color: #504e4d;
+  padding: 10px 24px;
 `;
 
 export const StyledButton = styled(Button)`

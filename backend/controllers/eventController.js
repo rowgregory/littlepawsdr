@@ -7,16 +7,7 @@ import { getEventStatus } from '../utils/getEventStatus.js';
 //@route  POST api/events
 //@access Private/Admin
 const createEvent = asyncHandler(async (req, res) => {
-  const {
-    title,
-    description,
-    image,
-    startDate,
-    endDate,
-    background,
-    color,
-    externalLink,
-  } = req.body;
+  const { title, description, image, startDate, endDate, background, color, externalLink } = req.body;
 
   try {
     const updatedStatus = getEventStatus(startDate, endDate);
@@ -61,7 +52,9 @@ const createEvent = asyncHandler(async (req, res) => {
 // @access  Public
 const getEvents = asyncHandler(async (req, res) => {
   try {
-    const events = await Event.find();
+    const events = await Event.find()
+      .sort({ updatedAt: -1 }) // Sort by updatedAt in descending order
+      .exec();
 
     res.json(events);
   } catch (err) {
@@ -133,16 +126,7 @@ const deleteEvent = asyncHandler(async (req, res) => {
 //@access Private/Admin
 const updateEvent = asyncHandler(async (req, res) => {
   try {
-    const {
-      title,
-      description,
-      image,
-      startDate,
-      endDate,
-      background,
-      color,
-      externalLink,
-    } = req.body;
+    const { title, description, image, startDate, endDate, background, color, externalLink } = req.body;
 
     const event = await Event.findById(req.params.id);
 

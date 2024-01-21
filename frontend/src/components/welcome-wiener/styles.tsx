@@ -26,7 +26,9 @@ export const WelcomeWienerGrid = styled.div`
   }
 
   @media screen and (min-width: 600px) {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: 100%;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
     margin: 0 auto;
   }
 `;
@@ -65,8 +67,7 @@ export const WelcomeWienerCardContainer = styled(Link)`
   width: 100%;
 
   @media screen and (min-width: 600px) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    max-width: 300px;
+    grid-template-columns: repeat(2, minmax(320px, 1fr));
     margin: 0 auto;
   }
 `;

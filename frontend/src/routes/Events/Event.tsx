@@ -3,7 +3,9 @@ import styled from 'styled-components';
 import { Text } from '../../components/styles/Styles';
 import LeftArrow from '../../components/svg/LeftArrow';
 import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { listEventDetails } from '../../actions/eventActions';
 
 const CardContainer = styled.div<{ event: any }>`
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
@@ -20,12 +22,11 @@ const CardContainer = styled.div<{ event: any }>`
       transparent 0,
       #e5e5f7 10px
     ),
-    repeating-linear-gradient(${
-      event?.background?.split(',')[1]?.split(' ')[1]
+    repeating-linear-gradient(${event?.background?.split(',')[1]?.split(' ')[1]
     }, ${event?.background?.split(',')[2]?.split(' ')[1]})`};
 `;
 
-const CardTitle = styled(Card.Title)<{ color?: string }>`
+const CardTitle = styled(Card.Title) <{ color?: string }>`
   font-size: 56px;
   text-transform: uppercase;
   text-align: center;
@@ -39,7 +40,7 @@ const CardTitle = styled(Card.Title)<{ color?: string }>`
   }
 `;
 
-const Month = styled(Card.Text)<{ color?: string }>`
+const Month = styled(Card.Text) <{ color?: string }>`
   font-size: 3em;
   margin-bottom: 0;
   margin-top: 96px;
@@ -48,7 +49,7 @@ const Month = styled(Card.Text)<{ color?: string }>`
   color: ${({ color }) => color};
 `;
 
-const Description = styled(Card.Text)<{ color?: string }>`
+const Description = styled(Card.Text) <{ color?: string }>`
   font-size: 1rem;
   color: ${({ color }) => color};
 `;
@@ -76,9 +77,8 @@ export const getOrdinalDate = (date: any) => {
         return 'th';
     }
   };
-  const superscriptOrdinal = `${
-    date[2] < '10' ? `${date[2].slice(1)}` : date[2]
-  }${getOrdinal(date[2])}`;
+  const superscriptOrdinal = `${date[2] < '10' ? `${date[2].slice(1)}` : date[2]
+    }${getOrdinal(date[2])}`;
 
   const month = new Date(date[0], date[1] - 1, date[2])
     .toLocaleString('default', { month: 'short' })
@@ -88,15 +88,19 @@ export const getOrdinalDate = (date: any) => {
 };
 
 const Event = () => {
+  const dispatch = useDispatch()
   const { id } = useParams();
   const state = useSelector((state: any) => state);
-  const loading = state.eventList.loading;
-  const event = state?.eventList?.events?.find(
-    (event: any) => event._id === id
-  );
+  const loading = state.eventDetails.loading;
+  const event = state.eventDetails.event;
+
 
   const start = event?.startDate?.split('-');
   const end = event?.endDate?.split('-');
+
+  useEffect(() => {
+    dispatch(listEventDetails(id))
+  }, [dispatch, id])
 
   return (
     <>

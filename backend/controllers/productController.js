@@ -8,7 +8,9 @@ import Ecard from '../models/eCardModel.js';
 // @access  Public
 const getProducts = asyncHandler(async (req, res) => {
   try {
-    const products = await Product.find({});
+    const products = await Product.find({})
+      .sort({ updatedAt: -1 }) // Sort by updatedAt in descending order
+      .exec();
 
     res.json(products);
   } catch (err) {
@@ -117,7 +119,7 @@ const createProduct = asyncHandler(async (req, res) => {
     countInStock,
     sizes,
     images,
-    hasSizes
+    hasSizes,
   } = req.body;
   try {
     const product = new Product({
@@ -134,7 +136,7 @@ const createProduct = asyncHandler(async (req, res) => {
       sizes,
       isPhysicalProduct: true,
       images,
-      hasSizes
+      hasSizes,
     });
 
     const createdProduct = await product.save();
@@ -175,7 +177,7 @@ const updateProduct = asyncHandler(async (req, res) => {
       sizes,
       shippingPrice,
       images,
-      hasSizes
+      hasSizes,
     } = req.body;
 
     const product = await Product.findById(req.params.id);

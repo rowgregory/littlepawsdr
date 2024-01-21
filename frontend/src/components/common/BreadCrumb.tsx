@@ -9,8 +9,9 @@ const Container = styled.div`
 `;
 
 const StyledLink = styled(Link)`
-  font-size: 13px;
+  font-size: 16px;
   margin-right: 4px;
+  font-family: Rust;
   color: ${({ theme }) => theme.colors.quinary};
   :hover {
     color: ${({ theme }) => theme.colors.quinary};
@@ -46,8 +47,8 @@ const BreadCrumb = ({
         <Text
           fontWeight={400}
           color='#9761aa'
-          fontSize='13px'
-          marginRight='4px'
+          fontSize='16px'
+          marginRight='4px' fontFamily='Rust'
         >
           {step3}
         </Text>
@@ -59,8 +60,9 @@ const BreadCrumb = ({
         <Text
           fontWeight={400}
           color='#9761aa'
-          fontSize='13px'
+          fontSize='16px'
           marginRight='4px'
+          fontFamily='Rust'
         >
           {step4}
         </Text>

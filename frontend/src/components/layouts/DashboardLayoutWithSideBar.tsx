@@ -7,6 +7,14 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Archive2023Modal from '../dashboard/Archive2023Modal';
 import { Image } from 'react-bootstrap';
 import { SilverPawsImg, SilverPawsImg2 } from '../assets';
+import { Overlay } from '../styles/left-navigation/styles';
+import MiscBubbleLinks from '../dashboard/dashboard2024/MiscBubbleLinks';
+import PeopleBubbleLinks from '../dashboard/dashboard2024/PeopleBubbleLinks';
+
+interface DashboardLayoutWithSideBarProps {
+  sideBar: ReactNode;
+  children: ReactNode;
+}
 
 export const ActionBtn = styled.div`
   cursor: pointer;
@@ -48,28 +56,25 @@ const AdminPageLayout = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
+  background-size: cover;
+  min-height: 100vh;
   @media (min-width: ${({ theme }) => theme.breakpoints[1]}) {
     padding: 0;
     flex-direction: column;
   }
 `;
 
-interface DashboardLayoutWithSideBarProps {
-  sideBar: ReactNode;
-  children: ReactNode;
-}
-
 const Main = styled.main`
   width: 100%;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-  }
+  overflow: hidden;
 `;
 
-const Aside = styled.aside`
+const Aside2024 = styled.aside`
   display: none;
   position: absolute;
+  z-index: 3001;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    min-width: 270px !important;
+    min-width: 250px;
     display: block;
     position: relative;
   }
@@ -83,10 +88,8 @@ const SilverPaws = styled(Image)`
   cursor: pointer;
 `;
 
-export const DashboardLayoutWithSideBar: FC<DashboardLayoutWithSideBarProps> = ({
-  sideBar,
-  children,
-}) => {
+
+export const DashboardLayoutWithSideBar: FC<DashboardLayoutWithSideBarProps> = ({ sideBar, children }) => {
   const dispatch = useDispatch();
   const state = useSelector((state: any) => state);
   const userInfo = state.userLogin.userInfo;
@@ -94,11 +97,14 @@ export const DashboardLayoutWithSideBar: FC<DashboardLayoutWithSideBarProps> = (
   const { pathname } = useLocation();
   const openOrClose = state.dashboard.modal.openOrClose;
 
+  const bubbleLink = state.dashboard.bubbleLink;
+
   useEffect(() => {
     if (!userInfo?.isAdmin) {
       history('/');
     }
   }, [userInfo?.isAdmin, history]);
+
   return (
     userInfo?.isAdmin && (
       <>
@@ -106,7 +112,10 @@ export const DashboardLayoutWithSideBar: FC<DashboardLayoutWithSideBarProps> = (
         <ActionModal />
         <AdminPageLayout>
           <div className='d-flex'>
-            <Aside>{sideBar}</Aside>
+            <Aside2024>{sideBar}</Aside2024>
+            {bubbleLink === 'people' && <PeopleBubbleLinks />}
+            {bubbleLink === 'misc' && <MiscBubbleLinks />}
+            <Overlay open={bubbleLink === 'people' || bubbleLink === 'misc'} />
             <Main>{children}</Main>
           </div>
           {userInfo.introducedToSilverPaws && pathname !== '/admin/archive' ? (
@@ -115,10 +124,12 @@ export const DashboardLayoutWithSideBar: FC<DashboardLayoutWithSideBarProps> = (
               src={openOrClose ? SilverPawsImg2 : SilverPawsImg}
               alt='Silver-Paws-Hello'
             />
-          ) : !userInfo.introducedToSilverPaws && (
-            <ActionBtn onClick={() => dispatch(openCloseDashboardModal(true))}>
-              <i className='fas fa-plus fa-2x'></i>
-            </ActionBtn>
+          ) : (
+            !userInfo.introducedToSilverPaws && (
+              <ActionBtn onClick={() => dispatch(openCloseDashboardModal(true))}>
+                <i className='fas fa-plus fa-2x'></i>
+              </ActionBtn>
+            )
           )}
         </AdminPageLayout>
       </>

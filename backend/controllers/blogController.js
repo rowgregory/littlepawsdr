@@ -7,7 +7,10 @@ import Error from '../models/errorModel.js';
 // @access  Public
 const getBlogs = asyncHandler(async (req, res) => {
   try {
-    const blogs = await Blog.find({}).populate('user', '_id name avatar');
+    const blogs = await Blog.find({})
+      .populate('user', '_id name avatar')
+      .sort({ updatedAt: -1 }) // Sort by updatedAt in descending order
+      .exec();
 
     res.json(blogs);
   } catch (err) {
@@ -29,10 +32,7 @@ const getBlogs = asyncHandler(async (req, res) => {
 // @access  Public
 const getBlogDetails = asyncHandler(async (req, res) => {
   try {
-    const blog = await Blog.findById(req.params.id).populate(
-      'user',
-      '_id name avatar'
-    );
+    const blog = await Blog.findById(req.params.id).populate('user', '_id name avatar');
 
     res.json(blog);
   } catch (err) {
