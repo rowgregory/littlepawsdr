@@ -1,29 +1,22 @@
 import { useEffect, useState } from 'react';
-import { Table, Spinner } from 'react-bootstrap';
+import { Table, Spinner, Image } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { listEducationTips } from '../../actions/educationTipActions';
 import DeleteModal from '../../components/DeleteModal';
 import { Text } from '../../components/styles/Styles';
 import {
-  SearchBar,
-  TableHead,
-  TableRow,
-  StyledEditBtn,
-  TopRow,
-  TableAndPaginationContainer,
-  Container,
   SearchInput,
-  TableWrapper,
-  TableImg,
   CreateLink,
+  TableContainer,
+  Row,
+  OrangeEditPen,
+  RedDeleteTrash,
 } from '../../components/styles/admin/Styles';
-import Message from '../../components/Message';
-import { WelcomeText } from '../../components/styles/DashboardStyles';
-import BreadCrumb from '../../components/common/BreadCrumb';
 import { AddIcon } from '../../components/svg/AddIcon';
 import { defaultImages } from '../../utils/defaultImages';
 import { Link } from 'react-router-dom';
 import { EDUCATION_TIP_LIST_RESET } from '../../constants/educationTipConstants';
+import DashboardLayout2024 from '../../components/dashboard/dashboard2024/layouts/DashboardLayout2024';
 
 const EducationTipList = () => {
   const dispatch = useDispatch();
@@ -50,10 +43,6 @@ const EducationTipList = () => {
     };
   }, [dispatch, successDelete]);
 
-  educationTips?.sort(
-    (a: any, b: any) => -a?.createdAt?.localeCompare(b?.createdAt)
-  );
-
   const filteredEducationTips = educationTips?.filter((tip: any) =>
     tip?.title.toLowerCase().includes(text.toLowerCase())
   );
@@ -65,112 +54,95 @@ const EducationTipList = () => {
   };
 
   return (
-    <Container>
-      <WelcomeText>Eduaction Tips</WelcomeText>
-      <BreadCrumb
-        step1='Home'
-        step2='Dashboard'
-        step3=''
-        step4='Education Tips'
-        url1='/'
-        url2='/admin'
-        url3=''
-      />
-      <DeleteModal
-        actionFunc='Education Tip'
-        show={show}
-        handleClose={handleClose}
-        id={id}
-        publicId={imagePath}
-      />
-      {(error || errorDelete) && (
-        <Message variant='danger'>{error || errorDelete}</Message>
-      )}
-      <TableWrapper>
-        <TopRow>
-          <SearchBar>
-            <SearchInput
-              as='input'
-              type='text'
-              placeholder='Search by Title'
-              value={text || ''}
-              onChange={(e: any) => setText(e.target.value)}
-            />
-          </SearchBar>
+    <DashboardLayout2024
+      error={error || errorDelete}
+      box1='Education Tips'
+      box2={
+        <SearchInput
+          as='input'
+          type='text'
+          placeholder='Search by Title'
+          value={text || ''}
+          onChange={(e: any) => setText(e.target.value)}
+        />
+      }
+      box3={
+        loading ? (
+          <Spinner animation='border' size='sm' />
+        ) : error || errorDelete ? (
+          <Text fontFamily='Rust' fontSize='20px'>
+            {error || errorDelete}
+          </Text>
+        ) : (
           <CreateLink to='/admin/education-tip/id/edit' state={{ eTip }}>
             <AddIcon loading={loading} />
             Create
           </CreateLink>
-        </TopRow>
-        <TableAndPaginationContainer>
-          <Table hover responsive>
-            <TableHead>
-              <tr>
-                <th>TITLE</th>
-                <th>IMAGE</th>
-                <th>LINK</th>
-                <th>EDIT</th>
-                <th>DELETE</th>
-              </tr>
-            </TableHead>
-            <tbody>
-              {filteredEducationTips?.map((tip: any) => (
-                <TableRow key={tip._id}>
-                  <td>
-                    <Text>{tip?.title}</Text>
-                  </td>
-                  <td>
-                    <TableImg
-                      src={tip?.image ?? defaultImages.upload}
-                      alt={tip?.title}
-                    />
-                  </td>
-                  <td>
-                    <Text
+        )
+      }
+      box4={
+        <>
+          <DeleteModal
+            actionFunc='Education Tip'
+            show={show}
+            handleClose={handleClose}
+            id={id}
+            publicId={imagePath}
+          />
+          <TableContainer>
+            <Table hover responsive size='sm'>
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Image</th>
+                  <th>Link</th>
+                  <th>Edit</th>
+                  <th>Delete</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredEducationTips?.map((tip: any, i: number) => (
+                  <Row key={tip._id} i={i}>
+                    <td>{tip?.title}</td>
+                    <td>
+                      <Image src={tip?.image ?? defaultImages.upload} alt={tip?.title} />
+                    </td>
+                    <td
                       style={{ cursor: 'pointer' }}
                       onClick={() => window.open(tip?.externalLink, '_target')}
                     >
                       {tip?.externalLink}
-                    </Text>
-                  </td>
-                  <td>
-                    <Link
-                      to={`/admin/education-tip/${tip?._id}/edit`}
-                      state={{ eTip: tip, isEditMode: true }}
-                    >
-                      <StyledEditBtn>
-                        <i
-                          style={{ color: '#9761aa' }}
-                          className='fas fa-edit'
-                        ></i>
-                      </StyledEditBtn>
-                    </Link>
-                  </td>
-                  <td>
-                    <StyledEditBtn
-                      onClick={() => {
-                        setId(tip?._id);
-                        setImagePath(tip?.image);
-                        handleShow();
-                      }}
-                    >
+                    </td>
+                    <td>
+                      <Link
+                        to={`/admin/education-tip/${tip?._id}/edit`}
+                        state={{ eTip: tip, isEditMode: true }}
+                      >
+                        <OrangeEditPen className='fa-solid fa-pen'></OrangeEditPen>
+                      </Link>
+                    </td>
+                    <td>
                       {loadingDelete && id === tip._id ? (
                         <Spinner size='sm' animation='border' />
                       ) : (
-                        <i
-                          style={{ color: '#cc0000' }}
+                        <RedDeleteTrash
+                          onClick={() => {
+                            setId(tip?._id);
+                            setImagePath(tip?.image);
+                            handleShow();
+                          }}
                           className='fas fa-trash'
-                        ></i>
+                        ></RedDeleteTrash>
                       )}
-                    </StyledEditBtn>
-                  </td>
-                </TableRow>
-              ))}
-            </tbody>
-          </Table>
-        </TableAndPaginationContainer>
-      </TableWrapper>
-    </Container>
+                    </td>
+                  </Row>
+                ))}
+              </tbody>
+            </Table>
+          </TableContainer>
+        </>
+      }
+    />
   );
 };
 

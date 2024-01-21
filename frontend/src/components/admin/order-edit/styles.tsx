@@ -3,14 +3,16 @@ import styled from 'styled-components';
 export const Container = styled.div`
   background: #fff;
   width: 100%;
-  padding: 20px;
-  border-radius: 12px;
-  margin-bottom: 20px;
 `;
 
 export const DetailBox = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-block: 6px;
+  padding: 6px 12px;
+  width: 100%;
+   div {
+    font-family: Rust;
+    font-size: 16px;
+  }
 `;

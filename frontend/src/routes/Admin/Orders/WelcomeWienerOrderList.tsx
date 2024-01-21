@@ -1,76 +1,63 @@
 import { Table, Image } from 'react-bootstrap';
-import { Text } from '../../../components/styles/Styles';
-import { TableHead, TableRow } from '../../../components/styles/admin/Styles';
+import { GreenViewBinoculars, Row, TableContainer } from '../../../components/styles/admin/Styles';
 import { Link } from 'react-router-dom';
 
+export const formatDateWithTimezone = (dateCreated: any): string => {
+  return new Date(dateCreated)?.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true,
+    timeZone: 'America/New_York',
+  })
+}
+
 const WelcomeWienerOrderList = ({ welcomeWienerOrders, text }: any) => {
-  welcomeWienerOrders?.sort(
-    (a: any, b: any) => -a?.createdAt?.localeCompare(b?.createdAt)
+  welcomeWienerOrders?.sort((a: any, b: any) => -a?.createdAt?.localeCompare(b?.createdAt));
+
+  const filteredWelcomeWienerOrders = welcomeWienerOrders?.filter((order: any) =>
+    order?._id?.toLowerCase().includes(text.toLowerCase())
   );
 
-  const filteredWelcomeWienerOrders = welcomeWienerOrders?.filter(
-    (order: any) => order?._id?.toLowerCase().includes(text.toLowerCase())
-  );
+
 
   return (
-    <>
+    <TableContainer>
       <Table hover responsive size='sm'>
-        <TableHead>
+        <thead>
           <tr>
-            <th>WELCOME WIENER NAME</th>
-            <th>WELCOME WIENER IMAGE</th>
-            <th>DATE CREATED</th>
-            <th>DONATION AMOUNT</th>
-            <th>VIEW</th>
+            <th>Name</th>
+            <th>Image</th>
+            <th>Date Created</th>
+            <th>Donation Amount</th>
+            <th>View</th>
           </tr>
-        </TableHead>
+        </thead>
         <tbody>
-          {filteredWelcomeWienerOrders?.map((order: any) => (
-            <TableRow key={order?._id}>
+          {filteredWelcomeWienerOrders?.map((order: any, i: number) => (
+            <Row key={order?._id} i={i}>
               <td>
-                <Text>
-                  {order?.dachshundName} - {order?.productName}
-                </Text>
+                {order?.dachshundName} - {order?.productName}
               </td>
               <td>
-                <Image
-                  src={order?.dachshundImage}
-                  alt='ecard-order'
-                  width='30px'
-                  height='30px'
-                  style={{ borderRadius: '50%', objectFit: 'cover' }}
-                />
+                <Image src={order?.dachshundImage} alt='ecard-order' />
               </td>
               <td>
-                <Text>
-                  {new Date(order?.createdAt)?.toLocaleDateString('en-US', {
-                    month: 'short',
-                    day: 'numeric',
-                    year: 'numeric',
-                    hour: 'numeric',
-                    minute: 'numeric',
-                    hour12: true,
-                    timeZone: 'America/New_York',
-                  })}
-                </Text>
+                {formatDateWithTimezone(order?.createdAt)}
               </td>
+              <td>${Number(order?.totalPrice)?.toFixed(2)}</td>
               <td>
-                <Text>${Number(order?.totalPrice)?.toFixed(2)}</Text>
-              </td>
-              <td>
-                <Link
-                  to={{
-                    pathname: `/admin/order/${order?.orderId}`,
-                  }}
-                >
-                  <i className='fas fa-edit' style={{ color: '#9761aa' }}></i>
+                <Link to={`/admin/order/${order?.orderId}`}>
+                  <GreenViewBinoculars className='fa-solid fa-binoculars'></GreenViewBinoculars>
                 </Link>
               </td>
-            </TableRow>
+            </Row>
           ))}
         </tbody>
       </Table>
-    </>
+    </TableContainer>
   );
 };
 

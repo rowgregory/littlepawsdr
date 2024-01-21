@@ -1,11 +1,5 @@
 import { ComponentType, FC, lazy, useEffect } from 'react';
-import {
-  Route,
-  useLocation,
-  useNavigate,
-  Routes,
-  Navigate,
-} from 'react-router-dom';
+import { Route, useLocation, Routes, Navigate } from 'react-router-dom';
 import Home from './Home';
 import Login from './Login';
 import Register from './Register';
@@ -28,48 +22,22 @@ import CookiePolicyPopUp from '../components/CookiePolicyPopUp';
 import CookiePolicy from './CookiePolicy';
 import WelcomeWieners from './WelcomeWieners';
 import WelcomeWienerDetails from './WelcomeWienerDetails';
-import ECardOrderReceipt from './ECardOrderReceipt';
 import Ecards from './Ecards';
 import FilteredEcards from './FilteredEcards';
 import PersonalizeEcard from './PersonalizeEcard';
 import { batch, useDispatch } from 'react-redux';
 import { io } from 'socket.io-client';
 import API from '../utils/api';
-import {
-  SEARCH_BAR_LIST_REQUEST,
-  SEARCH_BAR_LIST_SUCCESS,
-} from '../constants/searchBarConstants';
-import {
-  PRODUCT_LIST_REQUEST,
-  PRODUCT_LIST_SUCCESS,
-} from '../constants/productContstants';
-import {
-  ECARD_LIST_REQUEST,
-  ECARD_LIST_SUCCESS,
-} from '../constants/eCardConstants';
-import {
-  WELCOME_WIENER_DACHSHUND_LIST_REQUEST,
-  WELCOME_WIENER_DACHSHUND_LIST_SUCCESS,
-} from '../constants/welcomeWienerDachshundConstants';
+import { SEARCH_BAR_LIST_REQUEST, SEARCH_BAR_LIST_SUCCESS } from '../constants/searchBarConstants';
 import {
   DACHSHUNDS_SUCCESS,
   DACHSHUND_PICS_VIDS_STASTUSES_REQUEST,
   DACHSHUND_PICS_VIDS_STASTUSES_SUCCESS,
   DACHSHUND_REQUEST,
 } from '../constants/dachshundConstants';
-import {
-  EVENT_LIST_REQUEST,
-  EVENT_LIST_SUCCESS,
-} from '../constants/eventConstants';
-import {
-  BLOG_LIST_REQUEST,
-  BLOG_LIST_SUCCESS,
-} from '../constants/blogConstants';
-import {
-  EDUCATION_TIP_LIST_REQUEST,
-  EDUCATION_TIP_LIST_SUCCESS,
-} from '../constants/educationTipConstants';
 import { ADOPTION_APPLICATION_FEE_BYPASS_CODE_SUCCESS } from '../constants/adoptionConstants';
+import SignOut from './SignOut';
+import CartDrawer from '../components/CartDrawer';
 
 const socket = io('/load-initial-data');
 
@@ -88,27 +56,23 @@ const Merch = lazy((): LazyModulePromise => import('./Merch'));
 
 const Page = styled(Container) <{ url: string }>`
   width: 100%;
-  min-height: ${({ url }) =>
-    url.split('/')[1] === 'admin' ? '100%' : 'calc(100vh - 822.59px)'};
+  min-height: ${({ url }) => (url.split('/')[1] === 'admin' ? '100%' : 'calc(100vh - 822.59px)')};
   display: flex;
   flex-direction: column;
   padding: 0;
   margin: 0;
 
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    min-height: ${({ url }) =>
-    url.split('/')[1] === 'admin' ? '100%' : 'calc(100vh - 773.59px)'};
+    min-height: ${({ url }) => (url.split('/')[1] === 'admin' ? '100%' : 'calc(100vh - 773.59px)')};
   }
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-    min-height: ${({ url }) =>
-    url.split('/')[1] === 'admin' ? '100%' : 'calc(100vh - 405px)'};
+    min-height: ${({ url }) => (url.split('/')[1] === 'admin' ? '100%' : 'calc(100vh - 405px)')};
   }
 `;
 
 export const MainRoutes: FC = () => {
   const dispatch = useDispatch();
   const { pathname } = useLocation();
-  const history = useNavigate();
 
   window.scrollTo(0, 0);
 
@@ -116,18 +80,12 @@ export const MainRoutes: FC = () => {
     batch(() => {
       dispatch({ type: SEARCH_BAR_LIST_REQUEST });
       dispatch({ type: DACHSHUND_REQUEST });
-      dispatch({ type: PRODUCT_LIST_REQUEST });
-      dispatch({ type: ECARD_LIST_REQUEST });
-      dispatch({ type: WELCOME_WIENER_DACHSHUND_LIST_REQUEST });
       dispatch({ type: DACHSHUND_PICS_VIDS_STASTUSES_REQUEST });
-      dispatch({ type: EVENT_LIST_REQUEST });
-      dispatch({ type: BLOG_LIST_REQUEST });
-      dispatch({ type: EDUCATION_TIP_LIST_REQUEST });
     });
     socket.on('load-initial-data', async (initialData) => {
       const dachshunds = await API.getDachshundDataForSearchBar();
 
-      const { boardMembers, ...searchBar } = initialData;
+      const { ...searchBar } = initialData;
       batch(() => {
         dispatch({
           type: SEARCH_BAR_LIST_SUCCESS,
@@ -140,35 +98,8 @@ export const MainRoutes: FC = () => {
         });
 
         dispatch({
-          type: PRODUCT_LIST_SUCCESS,
-          payload: initialData?.products,
-        });
-
-        dispatch({
-          type: ECARD_LIST_SUCCESS,
-          payload: initialData?.ecards,
-        });
-
-        dispatch({
-          type: WELCOME_WIENER_DACHSHUND_LIST_SUCCESS,
-          payload: initialData?.welcomeWieners,
-        });
-
-        dispatch({
           type: DACHSHUND_PICS_VIDS_STASTUSES_SUCCESS,
           payload: dachshunds?.allDogs,
-        });
-        dispatch({
-          type: EVENT_LIST_SUCCESS,
-          payload: initialData?.events,
-        });
-        dispatch({
-          type: BLOG_LIST_SUCCESS,
-          payload: initialData?.blogs,
-        });
-        dispatch({
-          type: EDUCATION_TIP_LIST_SUCCESS,
-          payload: initialData?.educationTips,
         });
       });
     });
@@ -182,7 +113,7 @@ export const MainRoutes: FC = () => {
     // Listen for 'new-code' event
     socket.on('adoption-application-fee-bypass-code', (bypassCode) => {
       // Handle the new code, you can dispatch an action or perform any other updates
-      dispatch({ type: ADOPTION_APPLICATION_FEE_BYPASS_CODE_SUCCESS, payload: bypassCode })
+      dispatch({ type: ADOPTION_APPLICATION_FEE_BYPASS_CODE_SUCCESS, payload: bypassCode });
     });
 
     // Clean up the event listener when the component unmounts
@@ -191,51 +122,19 @@ export const MainRoutes: FC = () => {
     };
   }, [dispatch]);
 
-  useEffect(() => {
-    switch (pathname) {
-      case '/what-can-i-do/':
-        return history('/volunteer/volunteer-application');
-      case '/about-us/':
-        return history('/about/team-members');
-      case '/about-us/rainbow-bridge/':
-        return history('/about/rainbow-bridge');
-      case '/available/dachshunds/view-dog/':
-        return history('/available');
-      case '/house-training-a-dachshund/':
-        return history('/available');
-      case '/lpdr-barks-about-tom-linda-scott/':
-        return history('/available');
-      case '/happy-tails-pretzel/':
-        return history('/available');
-      case '/lpdr-barks-about-valerie-duke/':
-        return history('/available');
-      case '/november-is-adopt-a-senior-month/':
-        return history('/adopt/senior');
-      case '/donate/shopping-to-help/':
-        return history('/ecards');
-      case '/donate/sponsor-a-sanctuary-dog/':
-        return history('/ecards');
-      case '/welcome-to-little-paws-dachshund-rescue/':
-        return history('/');
-    }
-  }, [pathname, history]);
-
   return (
     <>
       <PopUp />
       <GlobalStyles />
       <Navbar />
       <CookiePolicyPopUp />
+      <CartDrawer />
       <Page url={pathname} fluid>
         <Routes>
           <Route path='/welcome-wieners' element={<WelcomeWieners />} />
-          <Route
-            path='/welcome-wiener/:id'
-            element={<WelcomeWienerDetails />}
-          />
+          <Route path='/welcome-wiener/:id' element={<WelcomeWienerDetails />} />
           <Route path='/cookie-policy' element={<CookiePolicy />} />
           <Route path='/return-policy' element={<ReturnPolicy />} />
-          <Route path='/e-card/order/:id' element={<ECardOrderReceipt />} />
           <Route path='/donate/*' element={<Donate />} />
           <Route path='/volunteer/*' element={<Volunteer />} />
           <Route path='/adopt/*' element={<Adopt />} />
@@ -252,22 +151,14 @@ export const MainRoutes: FC = () => {
           <Route path='/merch/*' element={<Merch />} />
           <Route path='/ecards' element={<Ecards />} />
           <Route path='/ecards/filtered' element={<FilteredEcards />} />
-          <Route
-            path='/ecard/personalize/:id'
-            element={<PersonalizeEcard />}
-          />
-          <Route
-            path='/order/:id/:order?/:shippingAddress?/:email?/:items?'
-            element={<OrderReceipt />}
-          />
+          <Route path='/ecard/personalize/:id' element={<PersonalizeEcard />} />
+          <Route path='/order/:id/:order?/:shippingAddress?/:email?/:items?' element={<OrderReceipt />} />
           <Route path='/reset/:id' element={<ResetPassword />} />
           <Route path='/settings/*' element={<Settings />} />
           <Route path='/my-orders' element={<MyOrders />} />
-          <Route
-            path='/email-confirmation/:to?/:em?/:na?/:id?'
-            element={<EmailConfirmation />}
-          />
+          <Route path='/email-confirmation/:to?/:em?/:na?/:id?' element={<EmailConfirmation />} />
           <Route path='/' element={<Home />} />
+          <Route path='/sign-out' element={<SignOut />} />
           <Route path='*' element={<Navigate to='/404' replace />} />
           <Route path='/404' element={<PageNotFound />} />
         </Routes>

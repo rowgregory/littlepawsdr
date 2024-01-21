@@ -1,91 +1,55 @@
 import { Table, Image } from 'react-bootstrap';
-import { Text } from '../../../components/styles/Styles';
-import { TableHead, TableRow } from '../../../components/styles/admin/Styles';
+import { GreenViewBinoculars, Row, TableContainer } from '../../../components/styles/admin/Styles';
 import { Link } from 'react-router-dom';
 import addDecimals from '../../../utils/addDecimals';
+import { formatDateWithTimezone } from './WelcomeWienerOrderList';
 
 const ProductOrderList = ({ productOrders, text }: any) => {
-  productOrders?.sort(
-    (a: any, b: any) => -a?.createdAt?.localeCompare(b?.createdAt)
-  );
+  productOrders?.sort((a: any, b: any) => -a?.createdAt?.localeCompare(b?.createdAt));
 
   const filteredProductOrders = productOrders?.filter((order: any) =>
     order?._id?.toLowerCase().includes(text.toLowerCase())
   );
 
   return (
-    <>
+    <TableContainer>
       <Table hover responsive size='sm'>
-        <TableHead>
+        <thead>
           <tr>
-            <th>PRODUCT NAME</th>
-            <th>PRODUCT IMAGE</th>
-            <th>DATE CREATED</th>
-            <th>QUANTITY</th>
-            <th>PRICE</th>
-            <th>SUBTOTAL</th>
-            <th>SHIPPING PRICE</th>
-            <th>TOTAL</th>
-            <th>VIEW</th>
+            <th>Product Name</th>
+            <th>Product Image</th>
+            <th>Date Created</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Subtotal</th>
+            <th>Shipping Price</th>
+            <th>Total</th>
+            <th>View</th>
           </tr>
-        </TableHead>
+        </thead>
         <tbody>
           {filteredProductOrders?.map((order: any, i: number) => (
-            <TableRow key={order?._id}>
+            <Row key={order?._id} i={i}>
+              <td>{order?.productName}</td>
               <td>
-                <Text>{order?.productName}</Text>
+                <Image src={order?.productImage} alt='product-order' />
               </td>
+              <td>{formatDateWithTimezone(order?.createdAt)}</td>
+              <td>{order?.quantity}</td>
+              <td>{addDecimals(order?.price)}</td>
+              <td>{addDecimals(order.subtotal)}</td>
+              <td>{addDecimals(order.shippingPrice)}</td>
+              <td>{addDecimals(order.totalPrice)}</td>
               <td>
-                <Image
-                  src={order?.productImage}
-                  alt='product-order'
-                  width='30px'
-                  height='30px'
-                  style={{ borderRadius: '50%', objectFit: 'cover' }}
-                />
-              </td>
-              <td>
-                <Text>
-                  {new Date(order?.createdAt)?.toLocaleDateString('en-US', {
-                    month: 'short',
-                    day: 'numeric',
-                    year: 'numeric',
-                    hour: 'numeric',
-                    minute: 'numeric',
-                    hour12: true,
-                    timeZone: 'America/New_York',
-                  })}
-                </Text>
-              </td>
-              <td>
-                <Text>{order?.quantity}</Text>
-              </td>
-              <td>
-                <Text>{addDecimals(order?.price)}</Text>
-              </td>
-              <td>
-                <Text>{addDecimals(order.subtotal)}</Text>
-              </td>
-              <td>
-                <Text>{addDecimals(order.shippingPrice)}</Text>
-              </td>
-              <td>
-                <Text>{addDecimals(order.totalPrice)}</Text>
-              </td>
-              <td>
-                <Link
-                  to={{
-                    pathname: `/admin/order/${order?.orderId}`,
-                  }}
-                >
-                  <i className='fas fa-edit' style={{ color: '#9761aa' }}></i>
+                <Link to={`/admin/order/${order?.orderId}`}>
+                  <GreenViewBinoculars className='fa-solid fa-binoculars'></GreenViewBinoculars>
                 </Link>
               </td>
-            </TableRow>
+            </Row>
           ))}
         </tbody>
       </Table>
-    </>
+    </TableContainer>
   );
 };
 

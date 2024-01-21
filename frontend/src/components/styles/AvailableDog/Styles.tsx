@@ -45,6 +45,7 @@ export interface InfoSectionProps {
     attributes: {
       name: string;
       descriptionHtml: string;
+      adoptionFeeString: string;
     };
   };
 }

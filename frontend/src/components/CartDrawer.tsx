@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   CheckoutNowBtn,
@@ -8,18 +8,17 @@ import {
   InnerWrapper,
   ItemWrapper,
 } from './styles/welcome-wiener/Styles';
-import useHandleOutsideClick from '../utils/hooks/useOutsideHandleClick';
 import { Flex, Text } from './styles/Styles';
 import { Image } from 'react-bootstrap';
 import { openCartDrawer } from '../actions/cartActions';
 import addDecimals from '../utils/addDecimals';
+import useOutsideDetect from '../utils/useOutsideDetect';
 
 const CartDrawer = () => {
   const dispatch = useDispatch();
   const cartRef = useRef(null) as any;
 
   const state = useSelector((state: any) => state);
-
   const cartDrawer = state.cart.cartDrawer;
   const cartItemsAmount = state.cart.cartItemsAmount;
   const cartItem = state.cart.cartItem;
@@ -27,15 +26,8 @@ const CartDrawer = () => {
 
   const animation = cartDrawer ? 'move-down' : '';
 
-  useHandleOutsideClick(() => {
-    dispatch(openCartDrawer(false));
-  }, cartRef);
-
-  useEffect(() => {
-    return () => {
-      cartRef.current = null;
-    };
-  }, []);
+  const handleClose = () => dispatch(openCartDrawer(false));
+  useOutsideDetect(cartRef, handleClose)
 
   return (
     <Container ref={cartRef} className={animation} h={window.innerHeight}>
@@ -111,12 +103,12 @@ const CartDrawer = () => {
           <Flex width='100%' justifyContent='space-between' marginTop='16px'>
             <ContineShoppingBtn
               to={cartItem?.dachshundId ? '/welcome-wieners' : '/merch'}
-              onClick={() => openCartDrawer(false)}
+              onClick={() => dispatch(openCartDrawer(false))}
             >
               EXPLORE MORE
             </ContineShoppingBtn>
             <CheckoutNowBtn
-              onClick={() => openCartDrawer(false)}
+              onClick={() => dispatch(openCartDrawer(false))}
               to='/cart/place-order'
             >
               CHECKOUT NOW

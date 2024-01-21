@@ -1,46 +1,37 @@
 import { Table, Image } from 'react-bootstrap';
-import { Text } from '../../../components/styles/Styles';
-import { TableHead, TableRow } from '../../../components/styles/admin/Styles';
+import { GreenViewBinoculars, Row, TableContainer } from '../../../components/styles/admin/Styles';
 import { Link } from 'react-router-dom';
 
 const EcardOrderList = ({ ecardOrders, text }: any) => {
-  ecardOrders?.sort(
-    (a: any, b: any) => -a?.createdAt?.localeCompare(b?.createdAt)
-  );
+  ecardOrders?.sort((a: any, b: any) => -a?.createdAt?.localeCompare(b?.createdAt));
   const filteredEcardOrders = ecardOrders?.filter((ecard: any) =>
     ecard?.email?.toLowerCase().includes(text.toLowerCase())
   );
 
   return (
-    <>
+    <TableContainer>
       <Table hover responsive size='sm'>
-        <TableHead>
+        <thead>
           <tr>
-            <th>ECARD NAME</th>
-            <th>ECARD IMAGE</th>
-            <th>DATE TO SEND</th>
-            <th>SENT</th>
-            <th>EMAIL</th>
-            <th>RECIPIENTS EMAIL</th>
-            <th>PRICE</th>
-            <th>VIEW</th>
+            <th>Ecard Name</th>
+            <th>Ecard Image</th>
+            <th>Date to Send</th>
+            <th>Sent</th>
+            <th>Email</th>
+            <th>Recipients Email</th>
+            <th>Price</th>
+            <th>View</th>
           </tr>
-        </TableHead>
+        </thead>
         <tbody>
-          {filteredEcardOrders?.map((order: any) => (
-            <TableRow key={order?._id}>
+          {filteredEcardOrders?.map((order: any, i: number) => (
+            <Row key={order?._id} i={i}>
               <td>{order?.name || order?.productName}</td>
               <td>
-                <Image
-                  src={order?.image}
-                  alt='ecard-order'
-                  width='30px'
-                  height='30px'
-                  style={{ borderRadius: '50%', objectFit: 'cover' }}
-                />
+                <Image src={order?.image} alt='ecard-order' />
               </td>
               <td>
-                <Text>{order?.dateToSend?.split('T')[0]}</Text>
+                {order?.dateToSend?.split('T')[0]}
               </td>
               <td>
                 {order?.isSent ? (
@@ -53,21 +44,15 @@ const EcardOrderList = ({ ecardOrders, text }: any) => {
               <td>{order?.recipientsEmail}</td>
               <td>{order?.totalPrice}</td>
               <td>
-                {!order?.firstName ? (
-                  <Link to={`/admin/order/${order?.orderId}`}>
-                    <i className='fas fa-edit' style={{ color: '#9761aa' }}></i>
-                  </Link>
-                ) : (
-                  <Link to={`/e-card/order/${order?._id}`}>
-                    <i className='fas fa-edit' style={{ color: '#9761aa' }}></i>
-                  </Link>
-                )}
+                <Link to={`/admin/order/${order?.orderId}`}>
+                  <GreenViewBinoculars className='fa-solid fa-binoculars'></GreenViewBinoculars>
+                </Link>
               </td>
-            </TableRow>
+            </Row>
           ))}
         </tbody>
       </Table>
-    </>
+    </TableContainer>
   );
 };
 

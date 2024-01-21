@@ -6,8 +6,7 @@ import Error from '../models/errorModel.js';
 // @route   POST /api/users/manually-add-user
 // @access  Private
 const manuallyAddUser = asyncHandler(async (req, res) => {
-  const { name, affiliation, email, image, profileCardTheme, location, bio } =
-    req.body;
+  const { name, affiliation, email, image, profileCardTheme, location, bio } = req.body;
   try {
     const createdUser = await ManuallyAddedUser.create({
       name,
@@ -69,7 +68,9 @@ const getManuallyAddedUserDetails = asyncHandler(async (req, res) => {
 // @access  Public
 const getManuallyAddedUsers = asyncHandler(async (req, res) => {
   try {
-    const manuallyAddedUsers = await ManuallyAddedUser.find({});
+    const manuallyAddedUsers = await ManuallyAddedUser.find({})
+      .sort({ updatedAt: -1 }) // Sort by updatedAt in descending order
+      .exec();
 
     res.status(200).json(manuallyAddedUsers);
   } catch (err) {
@@ -91,18 +92,15 @@ const getManuallyAddedUsers = asyncHandler(async (req, res) => {
 //@access Private/Admin
 const updateManuallyAddedUser = asyncHandler(async (req, res) => {
   try {
-    const { name, affiliation, email, image, profileCardTheme, location, bio } =
-      req.body;
+    const { name, affiliation, email, image, profileCardTheme, location, bio } = req.body;
 
     const manuallyAddedUser = await ManuallyAddedUser.findById(req.params.id);
 
     manuallyAddedUser.name = name ?? manuallyAddedUser.name;
-    manuallyAddedUser.affiliation =
-      affiliation ?? manuallyAddedUser.affiliation;
+    manuallyAddedUser.affiliation = affiliation ?? manuallyAddedUser.affiliation;
     manuallyAddedUser.email = email ?? manuallyAddedUser.email;
     manuallyAddedUser.image = image ?? manuallyAddedUser.image;
-    manuallyAddedUser.profileCardTheme =
-      profileCardTheme ?? manuallyAddedUser.profileCardTheme;
+    manuallyAddedUser.profileCardTheme = profileCardTheme ?? manuallyAddedUser.profileCardTheme;
     manuallyAddedUser.location = location ?? manuallyAddedUser.location;
     manuallyAddedUser.bio = bio ?? manuallyAddedUser.bio;
 

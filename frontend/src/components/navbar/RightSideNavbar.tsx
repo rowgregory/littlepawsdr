@@ -1,24 +1,17 @@
-import { useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
 import { NAVBAR_DATA } from '../../utils/navbarData';
-import {
-  AvatarInitials,
-  Container,
-  DropDownContainer,
-  FAIcons,
-  StyledAvatar,
-} from '../styles/NavbarStyles';
+import { AvatarInitials, Container, DropDownContainer, FAIcons, StyledAvatar } from '../styles/NavbarStyles';
 import { UserDropdown } from './UserDropdown';
-import { useOutsideDetect } from '../../utils/useOutsideDetect';
 import DonateBtn from './DonateBtn';
 import CartBtn from './CartBtn';
+import useOutsideDetect from '../../utils/useOutsideDetect';
 
 const RightSideNavbar = () => {
   const { pathname: p } = useLocation();
   const dropDownRef = useRef(null) as any;
   const [isVisible, setIsVisible] = useState(false);
-  const [activeMenu, setActiveMenu] = useState('main');
 
   const state = useSelector((state: any) => state);
 
@@ -29,11 +22,13 @@ const RightSideNavbar = () => {
 
   const firstNameInitial = userInfo ? userInfo?.name[0]?.trim() : '';
   const lastNameInitial =
-    userInfo && userInfo?.name?.split(' ')[1]
-      ? userInfo?.name?.split(' ')[1][0].toUpperCase().trim()
-      : '';
+    userInfo && userInfo?.name?.split(' ')[1] ? userInfo?.name?.split(' ')[1][0].toUpperCase().trim() : '';
 
-  useOutsideDetect(dropDownRef, setActiveMenu, setIsVisible, 'USER_DROP_DOWN');
+  const handleClose = useCallback(() => {
+    setIsVisible(false)
+  }, []);
+
+  useOutsideDetect(dropDownRef, handleClose);
 
   const filteredUserNavItem = (obj: any) => {
     switch (obj?.title) {
@@ -43,7 +38,6 @@ const RightSideNavbar = () => {
             isvisible={isVisible.toString()}
             onClick={() => {
               setIsVisible(true);
-              setActiveMenu('main');
             }}
             src={userInfo?.avatar}
             alt={`Hey ${userInfo?.name}! We appreciate you! Love from LPDR`}
@@ -87,27 +81,15 @@ const RightSideNavbar = () => {
         </div>
       ))}
       {isVisible && (
-        <>
-          <DropDownContainer
-            p={p}
-            style={{
-              height:
-                activeMenu === 'secondary'
-                  ? 306
-                  : !userInfo?.isAdmin
-                  ? 350
-                  : 417,
-            }}
-          >
-            <UserDropdown
-              userInfo={userInfo}
-              dropDownRef={dropDownRef}
-              setIsVisible={setIsVisible}
-              firstNameInitial={firstNameInitial}
-              lastNameInitial={lastNameInitial}
-            />
-          </DropDownContainer>
-        </>
+        <DropDownContainer>
+          <UserDropdown
+            userInfo={userInfo}
+            dropDownRef={dropDownRef}
+            setIsVisible={setIsVisible}
+            firstNameInitial={firstNameInitial}
+            lastNameInitial={lastNameInitial}
+          />
+        </DropDownContainer>
       )}
     </Container>
   );

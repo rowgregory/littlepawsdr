@@ -12,7 +12,6 @@ import {
 import Message from '../../components/Message';
 import { defaultImages } from '../../utils/defaultImages';
 import PhotoUploadIcon from '../../components/svg/PhotoUploadIcon';
-import { WelcomeText } from '../../components/styles/DashboardStyles';
 import { Accordion } from '../../components/styles/place-order/Styles';
 import {
   AccordionWrapper,
@@ -141,7 +140,7 @@ const Profile = () => {
         </Accordion>
       </AccordionWrapper>
       <SettingsTitleContainer className='d-flex justify-content-between align-items-center'>
-        <WelcomeText>Profile</WelcomeText>
+        <Text fontSize='26px'>Profile</Text >
         {checkmark && <Checkmark />}
       </SettingsTitleContainer>
       <Form className='mt-4'>
@@ -250,7 +249,7 @@ const Profile = () => {
                     id='image-file'
                     label={
                       userInfo?.avatar === defaultImages.upload ||
-                      file?.name ? (
+                        file?.name ? (
                         <UploadImageSquare className={uploading ? 'anim' : ''}>
                           <PhotoUploadIcon ready={file} />
                         </UploadImageSquare>

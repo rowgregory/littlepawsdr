@@ -8,6 +8,7 @@ import {
   DASHBOARD_CURRENT_YEAR_DATA_REQUEST,
   DASHBOARD_CURRENT_YEAR_DATA_SUCCESS,
   OPEN_CLOSE_DASHBOARD_MODAL,
+  SET_BUBBLE_LINKS,
 } from '../constants/dashboardConstants';
 
 export const dashboardReducer = (
@@ -23,6 +24,11 @@ export const dashboardReducer = (
         modal: {
           openOrClose: action.payload,
         },
+      };
+    case SET_BUBBLE_LINKS:
+      return {
+        ...state,
+        bubbleLink: action.payload,
       };
     default:
       return state;
@@ -50,8 +56,13 @@ export const dashboardCurrentYearDataReducer = (
       orders: 0,
       adoptionFees: 0,
     },
-    lineChart: {},
+    lineChart: {
+      series: [],
+      totalCurrentMonthlySales: [],
+    },
     pieChart: {},
+    productTracker: {},
+    welcomeWienerStats: [],
   },
   action: any
 ) => {

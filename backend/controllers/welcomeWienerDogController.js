@@ -8,7 +8,8 @@ const getAllWelcomeWienerDogs = async (req, res) => {
       path: 'associatedProducts',
       select: 'name',
       model: 'WelcomeWienerProduct', // this should match the ref option in associatedProducts field definition
-    });
+    }).sort({ updatedAt: -1 }) // Sort by updatedAt in descending order
+      .exec();
 
     res.status(200).json(welcomeWienerDogs);
   } catch (error) {

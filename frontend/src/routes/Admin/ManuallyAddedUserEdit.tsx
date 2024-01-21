@@ -1,32 +1,22 @@
 import { useEffect, useState } from 'react';
-import { Form } from 'react-bootstrap';
+import { Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { Text, UpdateBtn } from '../../components/styles/Styles';
+import { Flex, Text, UpdateBtn } from '../../components/styles/Styles';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { updateManuallyAddedUser } from '../../actions/manuallyAddUserActions';
 import {
   MANUALLY_ADD_USER_CREATE_RESET,
   MANUALLY_ADD_USER_UPDATE_RESET,
 } from '../../constants/manuallyAddUserConstants';
-import Message from '../../components/Message';
-import {
-  Container,
-  EditForm,
-  EditFormAndPreviewContainer,
-} from '../../components/styles/admin/Styles';
-import { GoBackAndTitleWrapper, WelcomeText } from '../../components/styles/DashboardStyles';
-import {
-  CardTheme,
-  Label,
-  ProfileCardImg,
-} from '../../components/styles/profile/Styles';
-import { Accordion } from '../../components/styles/place-order/Styles';
+import { FormControl, FormGroup, FormLabel } from '../../components/styles/admin/Styles';
+import { CardTheme, ProfileCardImg } from '../../components/styles/profile/Styles';
 import { themes } from '../../utils/profileCardThemes';
 import { STATES } from '../../utils/states';
 import { manuallyAddUser } from '../../actions/manuallyAddUserActions';
 import { uploadFileToFirebase } from '../../utils/uploadToFirebase';
 import GoBackBtn from '../../utils/GoBackBtn';
 import UploadSingleImage from '../../components/UploadSingleImage';
+import BoardMemberEditCreateLayout from '../../components/dashboard/dashboard2024/layouts/BoardMemberEditCreateLayout';
 
 const useManuallyAddedUserEditForm = (callback?: any, data?: any) => {
   const values = {
@@ -78,7 +68,6 @@ const ManuallyAddedUserEdit = () => {
   const dispatch = useDispatch();
   const [uploading, setUploading] = useState(false);
   const [file, setFile] = useState({}) as any;
-  const [showCardThemes, setShowCardThemes] = useState(false);
   const state = useSelector((state: any) => state);
   const loadingUpdate = state.manuallyAddedUserUpdate.loading;
   const errorUpdate = state.manuallyAddedUserUpdate.error;
@@ -139,116 +128,117 @@ const ManuallyAddedUserEdit = () => {
   const editPhotoHandler = (e: any) => setFile(e.target.files[0]);
 
   return (
-    <Container>
-      <GoBackAndTitleWrapper>
-        <GoBackBtn to='/admin/manuallyAddedUserList' color='#121212' />
-        <WelcomeText>Board Member {isEditMode ? 'Edit' : 'Create'}</WelcomeText>
-      </GoBackAndTitleWrapper>
-      {(errorCreate || errorUpdate) && (
-        <Message variant='danger'>{errorCreate || errorUpdate}</Message>
-      )}
-      <EditFormAndPreviewContainer>
-        <EditForm>
-          <Form.Group controlId='name'>
-            <Form.Label>Name</Form.Label>
-            <Form.Control
-              name='name'
-              type='text'
-              value={inputs.name || ''}
-              onChange={handleInput}
-            ></Form.Control>
-          </Form.Group>
-          <UploadSingleImage
-            inputs={inputs}
-            handleInput={handleInput}
-            item={manuallyAddedUser}
-            file={file}
-            uploading={uploading}
-            editPhotoHandler={editPhotoHandler}
-          />
-          <Form.Group controlId='affiliation' className='mt-5'>
-            <Form.Label>Affiliation</Form.Label>
-            <Form.Control
-              name='affiliation'
-              type='text'
-              value={inputs.affiliation || ''}
-              onChange={handleInput}
-            ></Form.Control>
-          </Form.Group>
-          <Form.Group controlId='email' className='mt-5'>
-            <Form.Label>Email</Form.Label>
-            <Form.Control
-              name='email'
-              type='text'
-              value={inputs.email || ''}
-              onChange={handleInput}
-            ></Form.Control>
-          </Form.Group>
-          <Form.Group controlId='state' className='mt-5'>
-            <Form.Label>State</Form.Label>
-            <Form.Control
-              name='location'
-              value={inputs.location || ''}
-              as='select'
-              onChange={handleInput}
-            >
-              {STATES.map((state: any, i: number) => (
-                <option style={{ color: '#777' }} key={i}>
-                  {state.text}
-                </option>
-              ))}
-            </Form.Control>
-          </Form.Group>
-          <Form.Group controlId='message' className='mt-5'>
-            <Form.Label>Bio</Form.Label>
-            <Form.Control
-              name='bio'
-              rows={5}
-              as='textarea'
-              value={inputs.bio || ''}
-              onChange={handleInput}
-            ></Form.Control>
-          </Form.Group>
-          <Form.Group
-            className='d-flex flex-column mt-5'
-            controlId='profileCardTheme'
-          >
-            <Label>Profile card theme</Label>
-            <Accordion
-              toggle={showCardThemes}
-              maxheight='1015px'
-              style={{ minHeight: '225px' }}
-            >
-              {themes.map((theme: string, i: number) => (
-                <CardTheme
-                  name='profileCardTheme'
-                  key={i}
-                  selected={theme === inputs.profileCardTheme}
-                  inline
-                  label={<ProfileCardImg src={theme} alt={`${theme}-${i}`} />}
-                  type='radio'
-                  id={`inline-radio-${i} bgColor`}
-                  value={theme || ''}
-                  checked={inputs.profileCardTheme === theme}
-                  onChange={handleInput}
-                />
-              ))}
-            </Accordion>
-            <Text
-              onClick={() => setShowCardThemes(!showCardThemes)}
-              cursor='pointer'
-              marginTop='8px'
-            >
-              {showCardThemes ? 'See Less...' : 'See More...'}
+    <BoardMemberEditCreateLayout
+      error={errorUpdate || errorCreate}
+      box1={
+        <Text fontFamily='Rust' fontSize='24px' color='#fc5b82' textAlign='center' width='100%'>
+          Board Member {isEditMode ? 'Edit' : 'Create'}
+        </Text>
+      }
+      box2={<GoBackBtn to='/admin/manuallyAddedUserList' color='#121212' />}
+      box3={
+        loadingUpdate || loadingCreate ? (
+          <Spinner animation='border' size='sm' />
+        ) : (
+          errorUpdate ||
+          (errorCreate && (
+            <Text fontFamily='Rust' fontSize='20px'>
+              {errorUpdate || errorCreate}
             </Text>
-          </Form.Group>
-          <UpdateBtn onClick={onSubmit}>
-            {isEditMode ? 'Updat' : 'Creat'}
-            {loadingUpdate || loadingCreate ? 'ing...' : 'e'}
-          </UpdateBtn>
-        </EditForm>
-      </EditFormAndPreviewContainer>
-    </Container>
+          ))
+        )
+      }
+      box4={
+        <UploadSingleImage
+          inputs={inputs}
+          handleInput={handleInput}
+          item={manuallyAddedUser}
+          file={file}
+          uploading={uploading}
+          editPhotoHandler={editPhotoHandler}
+        />
+      }
+      box5={
+        <FormGroup controlId='name'>
+          <FormLabel>Name</FormLabel>
+          <FormControl name='name' type='text' value={inputs.name || ''} onChange={handleInput}></FormControl>
+        </FormGroup>
+      }
+      box6={
+        <FormGroup controlId='email'>
+          <FormLabel>Email</FormLabel>
+          <FormControl
+            name='email'
+            type='text'
+            value={inputs.email || ''}
+            onChange={handleInput}
+          ></FormControl>
+        </FormGroup>
+      }
+      box7={
+        <FormGroup controlId='state'>
+          <FormLabel>State</FormLabel>
+          <FormControl name='location' value={inputs.location || ''} as='select' onChange={handleInput}>
+            {STATES.map((state: any, i: number) => (
+              <option style={{ color: '#777' }} key={i}>
+                {state.text}
+              </option>
+            ))}
+          </FormControl>
+        </FormGroup>
+      }
+      box8={
+        <FormGroup controlId='affiliation'>
+          <FormLabel>Affiliation</FormLabel>
+          <FormControl
+            name='affiliation'
+            type='text'
+            value={inputs.affiliation || ''}
+            onChange={handleInput}
+          ></FormControl>
+        </FormGroup>
+      }
+      box9={
+        <FormGroup controlId='message'>
+          <FormLabel>Bio</FormLabel>
+          <FormControl
+            name='bio'
+            rows={5}
+            as='textarea'
+            value={inputs.bio || ''}
+            onChange={handleInput}
+            className='pt-3 px-3'
+          ></FormControl>
+        </FormGroup>
+      }
+      box10={
+        <FormGroup controlId='profileCardTheme'>
+          <FormLabel>Profile card theme</FormLabel>
+          <Flex flexWrap='wrap' height='300px' style={{ overflowY: 'scroll' }}>
+            {themes.map((theme: string, i: number) => (
+              <CardTheme
+                name='profileCardTheme'
+                key={i}
+                selected={theme === inputs.profileCardTheme}
+                inline
+                label={<ProfileCardImg src={theme} alt={`${theme}-${i}`} />}
+                type='radio'
+                id={`inline-radio-${i} bgColor`}
+                value={theme || ''}
+                checked={inputs.profileCardTheme === theme}
+                onChange={handleInput}
+              />
+            ))}
+          </Flex>
+        </FormGroup>
+      }
+      box11={
+        <UpdateBtn onClick={onSubmit}>
+          {isEditMode ? 'Updat' : 'Creat'}
+          {loadingUpdate || loadingCreate ? 'ing...' : 'e'}
+        </UpdateBtn>
+      }
+    />
   );
 };
 

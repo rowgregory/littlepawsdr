@@ -1,29 +1,22 @@
 import { useEffect, useState } from 'react';
-import { Table, Spinner } from 'react-bootstrap';
+import { Table, Spinner, Image } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { listBlogs } from '../../actions/blogActions';
 import DeleteModal from '../../components/DeleteModal';
 import { Text } from '../../components/styles/Styles';
 import {
-  SearchBar,
-  TableHead,
-  TableRow,
-  StyledEditBtn,
-  TopRow,
-  TableAndPaginationContainer,
-  Container,
   SearchInput,
-  TableWrapper,
-  TableImg,
   CreateLink,
+  TableContainer,
+  Row,
+  OrangeEditPen,
+  RedDeleteTrash,
 } from '../../components/styles/admin/Styles';
-import Message from '../../components/Message';
-import { WelcomeText } from '../../components/styles/DashboardStyles';
-import BreadCrumb from '../../components/common/BreadCrumb';
 import { AddIcon } from '../../components/svg/AddIcon';
 import { defaultImages } from '../../utils/defaultImages';
 import { NavLink } from 'react-router-dom';
 import { BLOG_LIST_RESET } from '../../constants/blogConstants';
+import DashboardLayout2024 from '../../components/dashboard/dashboard2024/layouts/DashboardLayout2024';
 
 const BlogList = () => {
   const dispatch = useDispatch();
@@ -50,11 +43,7 @@ const BlogList = () => {
     };
   }, [dispatch, successDelete]);
 
-  blogs?.sort((a: any, b: any) => -a?.createdAt?.localeCompare(b?.createdAt));
-
-  const filteredBlogs = blogs?.filter((blog: any) =>
-    blog._id.toLowerCase().includes(text.toLowerCase())
-  );
+  const filteredBlogs = blogs?.filter((blog: any) => blog.title.toLowerCase().includes(text.toLowerCase()));
 
   const blog = {
     title: '',
@@ -63,112 +52,81 @@ const BlogList = () => {
   };
 
   return (
-    <Container>
-      <WelcomeText>Blogs</WelcomeText>
-      <BreadCrumb
-        step1='Home'
-        step2='Dashboard'
-        step3=''
-        step4='Blogs'
-        url1='/'
-        url2='/admin'
-        url3='/admin/blogList'
-      />
-      {(error || errorDelete) && (
-        <Message variant='danger'>{error || errorDelete}</Message>
-      )}
-      <DeleteModal
-        actionFunc='Blog'
-        show={show}
-        handleClose={handleClose}
-        id={id}
-        publicId={imagePath}
-      />
-      <TableWrapper>
-        <TopRow>
-          <SearchBar>
-            <SearchInput
-              as='input'
-              type='text'
-              placeholder='Search by Category'
-              value={text || ''}
-              onChange={(e: any) => setText(e.target.value)}
-            />
-          </SearchBar>
+    <DashboardLayout2024
+      error={error || errorDelete}
+      box1='Blogs'
+      box2={
+        <SearchInput
+          as='input'
+          type='text'
+          placeholder='Search by Title'
+          value={text || ''}
+          onChange={(e: any) => setText(e.target.value)}
+        />
+      }
+      box3={
+        loading ? (
+          <Spinner animation='border' size='sm' />
+        ) : error || errorDelete ? (
+          <Text fontFamily='Rust' fontSize='20px'>
+            {error || errorDelete}
+          </Text>
+        ) : (
           <CreateLink to={'/admin/blog/id/edit'} state={{ blog }}>
             <AddIcon loading={loading} />
             Create
           </CreateLink>
-        </TopRow>
-        <TableAndPaginationContainer>
-          <Table hover responsive>
-            <TableHead>
-              <tr>
-                <th>ID</th>
-                <th>TITLE</th>
-                <th>IMAGE</th>
-                <th>ARTICLE</th>
-                <th>EDIT</th>
-                <th>DELETE</th>
-              </tr>
-            </TableHead>
-            <tbody>
-              {filteredBlogs?.map((blog: any) => (
-                <TableRow key={blog?._id}>
-                  <td>
-                    <Text>{blog?._id}</Text>
-                  </td>
-                  <td>
-                    <Text>{blog?.title}</Text>
-                  </td>
-                  <td>
-                    <TableImg
-                      src={blog?.image ?? defaultImages.upload}
-                      alt={blog?.title}
-                    />
-                  </td>
-                  <td>
-                    <Text>{blog?.article.substring(0, 200)}</Text>
-                  </td>
-                  <td>
-                    <NavLink
-                      to={`/admin/blog/${blog?._id}/edit`}
-                      state={{ blog, isEditMode: true }}
-                    >
-                      <StyledEditBtn>
-                        <i
-                          style={{ color: '#9761aa' }}
-                          className='fas fa-edit'
-                        ></i>
-                      </StyledEditBtn>
-                    </NavLink>
-                  </td>
-                  <td>
-                    <StyledEditBtn
-                      className='border-0'
-                      onClick={() => {
-                        setId(blog?._id);
-                        setImagePath(blog?.image);
-                        handleShow();
-                      }}
-                    >
+        )
+      }
+      box4={
+        <>
+          <DeleteModal actionFunc='Blog' show={show} handleClose={handleClose} id={id} publicId={imagePath} />
+          <TableContainer>
+            <Table hover responsive size='sm'>
+              <thead>
+                <tr>
+                  <th>TITLE</th>
+                  <th>IMAGE</th>
+                  <th>ARTICLE</th>
+                  <th>EDIT</th>
+                  <th>DELETE</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredBlogs?.map((blog: any, i: number) => (
+                  <Row key={blog?._id} i={i}>
+                    <td>{blog?.title}</td>
+                    <td>
+                      <Image src={blog?.image ?? defaultImages.upload} alt={blog?.title} />
+                    </td>
+                    <td>{blog?.article.substring(0, 200)}</td>
+                    <td>
+                      <NavLink to={`/admin/blog/${blog?._id}/edit`} state={{ blog, isEditMode: true }}>
+                        <OrangeEditPen className='fa-solid fa-pen'></OrangeEditPen>
+                      </NavLink>
+                    </td>
+                    <td>
                       {loadingDelete && id === blog?._id ? (
                         <Spinner size='sm' animation='border' />
                       ) : (
-                        <i
-                          style={{ color: '#cc0000' }}
+                        <RedDeleteTrash
+                          onClick={() => {
+                            setId(blog?._id);
+                            setImagePath(blog?.image);
+                            handleShow();
+                          }}
                           className='fas fa-trash'
-                        ></i>
+                        ></RedDeleteTrash>
                       )}
-                    </StyledEditBtn>
-                  </td>
-                </TableRow>
-              ))}
-            </tbody>
-          </Table>
-        </TableAndPaginationContainer>
-      </TableWrapper>
-    </Container>
+                    </td>
+                  </Row>
+                ))}
+              </tbody>
+            </Table>
+          </TableContainer>
+        </>
+      }
+    />
   );
 };
 

@@ -27,9 +27,11 @@ const decryptToken = (token) => {
   }
 };
 
-// @desc    Create adoption application fee
-// @route   POST /api/adoption-fee
-// @access  Public
+/**
+ @desc    Create adoption application fee
+ @route   POST /api/adoption-fee
+ @access  Public
+*/
 const createAdoptionFee = asyncHandler(async (req, res) => {
   await createAdoptionApplicationFee(res, req);
 });
@@ -146,9 +148,12 @@ const createAdoptionApplicationFee = async (res, req) => {
     });
   }
 };
-// @desc    Check if user has an active adotion application fee session
-// @route   POST /api/adoption-fee/active-session
-// @access  Public
+
+/**
+ @desc    Check if user has an active adotion application fee session
+ @route   POST /api/adoption-fee/active-session
+ @access  Public
+*/
 const checkUserAdoptionFeeTokenValidity = asyncHandler(async (req, res) => {
   const { bypassCode, firstName, lastName, email, state } = req.body;
 
@@ -197,9 +202,11 @@ const checkUserAdoptionFeeTokenValidity = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Get all adoption application fees
-// @route   GET /api/adoption-fee
-// @access  Private/Admin
+/**
+ @desc    Get all adoption application fees
+ @route   GET /api/adoption-fee
+ @access  Private/Admin
+*/
 const getAdoptionFees = asyncHandler(async (req, res) => {
   try {
     const adoptionFees = await AdoptionFee.find({});
@@ -207,7 +214,7 @@ const getAdoptionFees = asyncHandler(async (req, res) => {
     res.json(adoptionFees);
   } catch (err) {
     const createdError = new Error({
-      functionName: 'GET_ADOPTION_FEE_LIST_PUBLIC',
+      functionName: 'GET_ADOPTION_APPLICATION_FEE_LIST_PRIVATE',
       detail: err.message,
       status: 500,
     });
@@ -219,4 +226,10 @@ const getAdoptionFees = asyncHandler(async (req, res) => {
   }
 });
 
-export { createAdoptionFee, checkUserAdoptionFeeTokenValidity, getAdoptionFees };
+export {
+  createAdoptionFee,
+  checkUserAdoptionFeeTokenValidity,
+  getAdoptionFees,
+};
+
+

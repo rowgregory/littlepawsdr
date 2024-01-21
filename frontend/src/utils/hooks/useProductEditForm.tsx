@@ -11,12 +11,13 @@ export const useProductEditForm = (
     price: 0,
     shippingPrice: 0,
     image: '',
-    images: [],
     brand: '',
-    category: '',
+    category: 'Clothing',
     countInStock: 0,
     description: '',
     sizes: [],
+    images: [],
+    hasSizes: false,
   };
   const [inputs, setInputs] = useState(values);
 

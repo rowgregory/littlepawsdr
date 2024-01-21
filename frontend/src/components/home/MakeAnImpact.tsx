@@ -1,4 +1,4 @@
-import { Background02Parallax, Background404 } from '../../components/assets/index';
+import { Background03Parallax, Background404 } from '../../components/assets/index';
 import { Image } from 'react-bootstrap';
 import { BannerLayer, ParallaxBanner } from 'react-scroll-parallax';
 import styled from 'styled-components';
@@ -27,7 +27,7 @@ const MakeAnImpact = () => {
     expanded: false,
     children: (
       <TextContainer className='d-flex aligniitems-center justify-content-center'>
-        <StyledImage src={Background02Parallax} />
+        <StyledImage src={Background03Parallax} />
       </TextContainer>
     ),
   };

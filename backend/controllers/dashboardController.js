@@ -1,12 +1,14 @@
 import AdoptionFee from '../models/adoptionFeeModel.js';
 import ECardOrder from '../models/eCardOrderModel.js';
-import Order from '../models/orderModel.js';
 import ProductOrder from '../models/productOrderModel.js';
-import User from '../models/userModel.js';
 import WelcomeWienerOrder from '../models/welcomeWienerOrderModel.js';
+import Order from '../models/orderModel.js';
+import User from '../models/userModel.js';
+import Error from '../models/errorModel.js';
 import asyncHandler from 'express-async-handler';
-import { getLineChartData } from '../utils/getLineChartData.js';
+import calculateMonthlyRevenue from '../utils/getLineChartData.js';
 import AdoptionApplicationBypassCode from '../models/adoptionApplicationBypassCodeModel.js';
+import { aggregateProductData, calculateCurrentAndPreviousYearMonthlyRevenue, getWelcomeWienerStats } from '../utils/dashboardUtils.js';
 
 const currentYearRevenue = async (model, amountField) => {
   try {
@@ -110,14 +112,14 @@ const getTotalRevenuePreviousYear = async (year) => {
   }
 };
 
-const calculateTenMostRecentOrders = async () => {
+const calculateTenMostRecentOrders = async (year) => {
   try {
     const tenMostRecentOrders = await Order.aggregate([
       {
         $match: {
           createdAt: {
-            $gte: new Date(`${new Date().getFullYear()}-01-01`),
-            $lt: new Date(`${new Date().getFullYear() + 1}-01-01`),
+            $gte: new Date(`${year}-01-01`),
+            $lt: new Date(`${year + 1}-01-01`),
           },
         },
       },
@@ -170,6 +172,39 @@ const getPieChartData = async (productRevenue, ecardRevenue, welcomeWienerRevenu
   return { data, options, noData };
 };
 
+const compareSalesWithPreviousYear = async (currentYear) => {
+  try {
+    const currentMonth = new Date().getMonth() + 1; // Get the current month
+
+    // Calculate total sales for the current month
+    const currentYearTotal = await calculateCurrentAndPreviousYearMonthlyRevenue(currentMonth, currentYear);
+
+    // Calculate total sales for the same month from the previous year
+    const previousYearTotal = await calculateCurrentAndPreviousYearMonthlyRevenue(currentMonth, currentYear - 1);
+
+    let percentageChange;
+
+    if (previousYearTotal !== 0) {
+      percentageChange = ((currentYearTotal - previousYearTotal) / previousYearTotal) * 100;
+    } else {
+      // Special case: Previous year had zero sales
+      percentageChange = 100; // or any other meaningful representation
+    }
+
+    return {
+      currentYearTotal,
+      previousYearTotal,
+      percentageChange,
+    };
+  } catch (error) {
+    console.error('Error comparing sales with the previous year:', error);
+    throw error;
+  }
+};
+
+
+
+
 // @desc    Get dashboard details
 // @route   GET /api/dashboard
 // @access  Private/Admin
@@ -181,6 +216,8 @@ const getCurrentYearData = asyncHandler(async (req, res) => {
         $lt: new Date(`${new Date().getFullYear() + 1}-01-01`),
       },
     };
+
+    const year = 2024;
 
     const welcomeWienerOrders = await WelcomeWienerOrder.find(thisYearsData);
     const ecardOrders = await ECardOrder.find(thisYearsData);
@@ -194,13 +231,16 @@ const getCurrentYearData = asyncHandler(async (req, res) => {
     const productRevenue = await currentYearRevenue(ProductOrder, 'totalPrice');
     const adoptionFeesRevenue = await currentYearRevenue(AdoptionFee, 'feeAmount');
 
-    const lineChart = await getLineChartData(productOrders, ecardOrders, welcomeWienerOrders);
+    const currentMonthlyRevenue = await calculateMonthlyRevenue(year);
     const pieChart = await getPieChartData(productRevenue, ecardRevenue, welcomeWienerRevenue);
 
-    const tenMostRecentOrders = await calculateTenMostRecentOrders()
-    const previousYear = await getTotalRevenuePreviousYear(new Date().getFullYear())
+    const tenMostRecentOrders = await calculateTenMostRecentOrders(year)
+
+    const previousYear = await getTotalRevenuePreviousYear(year)
     const currentYear = welcomeWienerRevenue + ecardRevenue + productRevenue + adoptionFeesRevenue;
     const topSellingProducts = await calculateTopSellingProducts();
+
+    const comparisonResult = await compareSalesWithPreviousYear(2024);
 
     res.json({
       tenMostRecentOrders,
@@ -221,8 +261,14 @@ const getCurrentYearData = asyncHandler(async (req, res) => {
         orders: orders?.length,
         adoptionFees: adoptionFees?.length,
       },
-      lineChart,
+      lineChart: {
+        series: currentMonthlyRevenue.series,
+        totalCurrentMonthlySales: currentMonthlyRevenue.totalCurrentMonthlySales
+      },
       pieChart,
+      salesComparison: comparisonResult,
+      productTracker: await aggregateProductData(thisYearsData),
+      welcomeWienerStats: await getWelcomeWienerStats(thisYearsData)
     });
   } catch (err) {
     const createdError = new Error({

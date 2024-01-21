@@ -230,7 +230,7 @@ const getMyOrders = asyncHandler(async (req, res) => {
 
     const adoptionApplicationFees = await AdoptionFee.find({ emailAddress: req.user.email });
 
-    const convertedEcardOrders = ecardOrders.flatMap(order => {
+    const convertedEcardOrders = ecardOrders?.flatMap(order => {
       // repair logic for converting legacy ecards to new order shape
       if (order?.firstName && order?.lastName) {
         const orderItems = [

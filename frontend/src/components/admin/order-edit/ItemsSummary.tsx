@@ -1,64 +1,62 @@
-import { ItemsSummaryTable } from '../../styles/admin/Styles';
-import { Text } from '../../styles/Styles';
+import { Flex, Text } from '../../styles/Styles';
 import { Image } from 'react-bootstrap';
 import addDecimals from '../../../utils/addDecimals';
 import styled from 'styled-components';
 import { formatDate } from '../../../utils/formatDate';
-import { Container } from './styles';
+import { Row } from '../../styles/admin/Styles';
 
-const ProductImg = styled(Image)`
-  obnject-fit: cover;
-  margin-right: 30px;
-  height: 50px;
-  width: 50px;
+const Table = styled.table`
+  width: 100%;
+  table-layout: fixed;
+  thead {
+    tr {
+      width: 100%;
+      height: 45px;
+
+      th {
+        text-align: center;
+        font-family: Rust;
+        font-size: 16px;
+        color: #121212;
+      }
+    }
+  }
 `;
 
 const ItemsSummary = ({ order }: any) => {
   return (
-    <Container>
-      <ItemsSummaryTable>
+    <Flex flexDirection='column'>
+      <Text p='6px 12px' width='100%' fontSize='22px' fontWeight={500} fontFamily='Rust' background='#d6d6d6'>
+        Items summary
+      </Text>
+      <Table>
         <thead>
           <tr>
-            <th>
-              <Text fontSize='18px' fontWeight={500}>
-                Items summary
-              </Text>
-            </th>
-            <th>
-              <Text fontWeight={500}>QTY</Text>
-            </th>
-            <th>
-              <Text fontWeight={500}>Price</Text>
-            </th>
+            <th>Product Name</th>
+            <th>Image</th>
+            <th>QTY</th>
+            <th>Price</th>
           </tr>
         </thead>
         <tbody>
-          {order?.orderItems?.map((order: any) => (
-            <tr key={order?._id}>
-              <td className='d-flex align-items-center'>
-                <ProductImg
-                  src={order?.productImage || order?.dachshundImage}
-                />
-                <Text fontWeight={400}>
-                  {order?.productName}
-                  {order.recipientsEmail &&
-                    ` was sent to ${order.recipientsEmail} on ${formatDate(
-                      order?.dateToSend
-                    )}`}
-                  {order?.dachshundName && ` for ${order?.dachshundName}`}
-                </Text>
+          {order?.orderItems?.map((order: any, i: number) => (
+            <Row key={order?._id} i={i}>
+              <td>
+                {order?.productName}
+                {order.recipientsEmail &&
+                  ` was sent to ${order.recipientsEmail} on ${formatDate(order?.dateToSend)}`}
+                {order?.dachshundName && ` for ${order?.dachshundName}`}
               </td>
               <td>
-                <Text fontWeight={400}> x {order?.quantity}</Text>
+                <Image src={order?.productImage || order?.dachshundImage} />
               </td>
-              <td>
-                <Text fontWeight={400}>{addDecimals(order?.price)}</Text>
-              </td>
-            </tr>
+              <td>x {order?.quantity}</td>
+              <td>{addDecimals(order?.price)}</td>
+            </Row>
           ))}
         </tbody>
-      </ItemsSummaryTable>
-    </Container>
+      </Table>
+    </Flex>
   );
 };
 

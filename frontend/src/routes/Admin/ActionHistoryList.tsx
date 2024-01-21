@@ -2,34 +2,11 @@ import { useEffect, useState } from 'react';
 import { Table, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { Text } from '../../components/styles/Styles';
-import {
-  SearchBar,
-  TableHead,
-  TopRow,
-  TableAndPaginationContainer,
-  Container,
-  SearchInput,
-  TableWrapper,
-} from '../../components/styles/admin/Styles';
-import Message from '../../components/Message';
-import { WelcomeText } from '../../components/styles/DashboardStyles';
-import BreadCrumb from '../../components/common/BreadCrumb';
-import styled from 'styled-components';
+import { SearchInput, Row, TableContainer } from '../../components/styles/admin/Styles';
 import { listActionHistories } from '../../actions/actionHistoryActions';
 import { ACTION_HISTORY_LIST_RESET } from '../../constants/actionHistoryConstants';
 import { formatDateTime } from '../../utils/formatDateTime';
-
-const TableRow = styled.tr<{ usedcode?: string }>`
-  font-size: 12px;
-  td {
-    border-top: none !important;
-    vertical-align: inherit;
-    color: #373737;
-  }
-  :hover {
-    background: #f6f9fe !important;
-  }
-`;
+import DashboardLayout2024 from '../../components/dashboard/dashboard2024/layouts/DashboardLayout2024';
 
 const ActionHistoryList = () => {
   const dispatch = useDispatch();
@@ -37,7 +14,7 @@ const ActionHistoryList = () => {
 
   const state = useSelector((state: any) => state);
   const loading = state.actionHistoryList.loading;
-  const error = state.actionHistoryList.error;
+  let error = state.actionHistoryList.error;
   const actionHistories = state.actionHistoryList.actionHistories;
 
   useEffect(() => {
@@ -54,40 +31,31 @@ const ActionHistoryList = () => {
   );
 
   return (
-    <Container>
-      <WelcomeText>Action History</WelcomeText>
-      <BreadCrumb
-        step1='Home'
-        step2='Dashboard'
-        step3=''
-        step4='Action History'
-        url1='/'
-        url2='/admin'
-        url3=''
-      />
-      {error && <Message variant='danger'>{error}</Message>}
-      <TableWrapper>
-        <TopRow>
-          <SearchBar>
-            <SearchInput
-              as='input'
-              type='text'
-              placeholder='Search by Email'
-              value={text || ''}
-              onChange={(e: any) => setText(e.target.value)}
-            />
-            {loading && (
-              <Spinner
-                animation='border'
-                size='sm'
-                style={{ position: 'absolute', right: '10px', top: '15px' }}
-              />
-            )}
-          </SearchBar>
-        </TopRow>
-        <TableAndPaginationContainer>
+    <DashboardLayout2024
+      error={error}
+      box1='Action History'
+      box2={
+        <SearchInput
+          as='input'
+          type='text'
+          placeholder='Search by Email'
+          value={text || ''}
+          onChange={(e: any) => setText(e.target.value)}
+        />
+      }
+      box3={
+        loading ? (
+          <Spinner animation='border' size='sm' />
+        ) : (
+          <Text fontFamily='Rust' fontSize='20px'>
+            {error}
+          </Text>
+        )
+      }
+      box4={
+        <TableContainer>
           <Table hover responsive size='sm' style={{ width: '2000px' }}>
-            <TableHead>
+            <thead>
               <tr>
                 <th>NAME</th>
                 <th>EMAIL</th>
@@ -97,38 +65,38 @@ const ActionHistoryList = () => {
                 <th>DEVICE INFO</th>
                 <th>CREATED AT</th>
               </tr>
-            </TableHead>
+            </thead>
             <tbody>
-              {filteredActionHistories?.map((actionHistory: any) => (
-                <TableRow key={actionHistory._id}>
+              {filteredActionHistories?.map((actionHistory: any, i: number) => (
+                <Row key={actionHistory._id} i={i}>
                   <td>
-                    <Text>{actionHistory?.user?.name}</Text>
+                    {actionHistory?.user?.name}
                   </td>
                   <td>
-                    <Text>{actionHistory?.user?.email}</Text>
+                    {actionHistory?.user?.email}
                   </td>
                   <td>
-                    <Text>{actionHistory?.actionType}</Text>
+                    {actionHistory?.actionType}
                   </td>
                   <td>
-                    <Text>{actionHistory?.details}</Text>
+                    {actionHistory?.details}
                   </td>
                   <td>
-                    <Text>{actionHistory?.ip}</Text>
+                    {actionHistory?.ip}
                   </td>
                   <td>
-                    <Text>{actionHistory?.deviceInfo}</Text>
+                    {actionHistory?.deviceInfo}
                   </td>
                   <td>
-                    <Text>{formatDateTime(actionHistory?.createdAt)}</Text>
+                    {formatDateTime(actionHistory?.createdAt)}
                   </td>
-                </TableRow>
+                </Row>
               ))}
             </tbody>
           </Table>
-        </TableAndPaginationContainer>
-      </TableWrapper>
-    </Container>
+        </TableContainer>
+      }
+    />
   );
 };
 

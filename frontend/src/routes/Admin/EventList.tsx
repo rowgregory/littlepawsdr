@@ -1,30 +1,24 @@
 import { useEffect, useState } from 'react';
-import { Table, Spinner } from 'react-bootstrap';
+import { Table, Spinner, Image } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { listEvents } from '../../actions/eventActions';
 import DeleteModal from '../../components/DeleteModal';
 import { Text } from '../../components/styles/Styles';
 import {
-  SearchBar,
-  TableHead,
-  TableRow,
-  StyledEditBtn,
-  TopRow,
-  TableAndPaginationContainer,
-  Container,
   SearchInput,
-  TableWrapper,
-  TableImg,
   CreateLink,
+  TableContainer,
+  Row,
+  OrangeEditPen,
+  RedDeleteTrash,
+  GreenViewBinoculars,
 } from '../../components/styles/admin/Styles';
-import { WelcomeText } from '../../components/styles/DashboardStyles';
-import BreadCrumb from '../../components/common/BreadCrumb';
-import Message from '../../components/Message';
 import { AddIcon } from '../../components/svg/AddIcon';
 import { defaultImages } from '../../utils/defaultImages';
 import { formatDate } from '../../utils/formatDate';
 import { Link } from 'react-router-dom';
 import { EVENT_LIST_RESET } from '../../constants/eventConstants';
+import DashboardLayout2024 from '../../components/dashboard/dashboard2024/layouts/DashboardLayout2024';
 
 const EventList = () => {
   const dispatch = useDispatch();
@@ -47,8 +41,8 @@ const EventList = () => {
   useEffect(() => {
     dispatch(listEvents());
     return () => {
-      dispatch({ type: EVENT_LIST_RESET })
-    }
+      dispatch({ type: EVENT_LIST_RESET });
+    };
   }, [dispatch, successDelete]);
 
   const filteredEvents = events?.filter((event: any) =>
@@ -67,126 +61,97 @@ const EventList = () => {
   };
 
   return (
-    <Container>
-      <WelcomeText>Events</WelcomeText>
-      <BreadCrumb
-        step1='Home'
-        step2='Dashboard'
-        step3=''
-        step4='Events'
-        url1='/'
-        url2='/admin'
-        url3='/admin/eventList'
-      />
-      <DeleteModal
-        actionFunc='Event'
-        show={show}
-        handleClose={handleClose}
-        id={id}
-        publicId={imagePath}
-      />
-      {(error || errorDelete) && (
-        <Message variant='danger'>{error || errorDelete}</Message>
-      )}
-      <TableWrapper>
-        <TopRow>
-          <SearchBar>
-            <SearchInput
-              as='input'
-              type='text'
-              placeholder='Search by Category'
-              value={text || ''}
-              onChange={(e: any) => setText(e.target.value)}
-            />
-          </SearchBar>
-          <CreateLink to={'/admin/event/id/edit'} state={{ event }}>
+    <DashboardLayout2024
+      error={error || errorDelete}
+      box1='Events'
+      box2={
+        <SearchInput
+          as='input'
+          type='text'
+          placeholder='Search by Category'
+          value={text || ''}
+          onChange={(e: any) => setText(e.target.value)}
+        />
+      }
+      box3={
+        loading ? (
+          <Spinner animation='border' size='sm' />
+        ) : error || errorDelete ? (
+          <Text fontFamily='Rust' fontSize='20px'>
+            {error || errorDelete}
+          </Text>
+        ) : (
+          <CreateLink to='/admin/event/id/edit' state={{ event }}>
             <AddIcon loading={loading} />
             Create
           </CreateLink>
-        </TopRow>
-        <TableAndPaginationContainer>
-          <Table hover responsive>
-            <TableHead>
-              <tr>
-                <th>TITLE</th>
-                <th>IMAGE</th>
-                <th>START DATE</th>
-                <th>END DATE</th>
-                <th>STATUS</th>
-                <th>VIEW</th>
-                <th>EDIT</th>
-                <th>DELETE</th>
-              </tr>
-            </TableHead>
-            <tbody>
-              {filteredEvents?.map((event: any) => (
-                <TableRow key={event?._id}>
-                  <td>
-                    <Text>{event?.title}</Text>
-                  </td>
-                  <td>
-                    <TableImg
-                      src={event?.image ?? defaultImages.upload}
-                      alt={event?.name}
-                    />
-                  </td>
-                  <td>
-                    <Text>{formatDate(event?.startDate)}</Text>
-                  </td>
-                  <td>
-                    <Text>{formatDate(event?.endDate)}</Text>
-                  </td>
-                  <td>
-                    <Text>{event?.status}</Text>
-                  </td>
-                  <td>
-                    <Link to={`/events/${event._id}`}>
-                      <StyledEditBtn>
-                        <i
-                          style={{ color: '#9761aa' }}
-                          className='fas fa-users-viewfinder'
-                        ></i>
-                      </StyledEditBtn>
-                    </Link>
-                  </td>
-                  <td>
-                    <Link
-                      to={`/admin/event/${event?._id}/edit`}
-                      state={{ event, isEditMode: true }}
-                    >
-                      <StyledEditBtn>
-                        <i
-                          style={{ color: '#9761aa' }}
-                          className='fas fa-edit'
-                        ></i>
-                      </StyledEditBtn>
-                    </Link>
-                  </td>
-                  <td>
-                    <StyledEditBtn
-                      onClick={() => {
-                        setId(event?._id);
-                        setImagePath(event?.image);
-                        handleShow();
-                      }}
-                    >
+        )
+      }
+      box4={
+        <>
+          <DeleteModal
+            actionFunc='Event'
+            show={show}
+            handleClose={handleClose}
+            id={id}
+            publicId={imagePath}
+          />
+          <TableContainer>
+            <Table hover responsive size='sm'>
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Image</th>
+                  <th>Start Date</th>
+                  <th>End Date</th>
+                  <th>Status</th>
+                  <th>View</th>
+                  <th>Edit</th>
+                  <th>DEelete</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredEvents?.map((event: any, i: number) => (
+                  <Row key={event?._id} i={i}>
+                    <td>{event?.title}</td>
+                    <td>
+                      <Image src={event?.image ?? defaultImages.upload} alt={event?.name} />
+                    </td>
+                    <td>{formatDate(event?.startDate)}</td>
+                    <td>{formatDate(event?.endDate)}</td>
+                    <td>{event?.status}</td>
+                    <td>
+                      <Link to={`/events/${event._id}`}>
+                        <GreenViewBinoculars className='fa-solid fa-binoculars'></GreenViewBinoculars>
+                      </Link>
+                    </td>
+                    <td>
+                      <Link to={`/admin/event/${event?._id}/edit`} state={{ event, isEditMode: true }}>
+                        <OrangeEditPen className='fa-solid fa-pen'></OrangeEditPen>
+                      </Link>
+                    </td>
+                    <td>
                       {loadingDelete && id === event?._id ? (
                         <Spinner size='sm' animation='border' />
                       ) : (
-                        <i
-                          style={{ color: '#cc0000' }}
+                        <RedDeleteTrash
+                          onClick={() => {
+                            setId(event?._id);
+                            setImagePath(event?.image);
+                            handleShow();
+                          }}
                           className='fas fa-trash'
-                        ></i>
+                        ></RedDeleteTrash>
                       )}
-                    </StyledEditBtn>
-                  </td>
-                </TableRow>
-              ))}
-            </tbody>
-          </Table>
-        </TableAndPaginationContainer>
-      </TableWrapper>
-    </Container>
+                    </td>
+                  </Row>
+                ))}
+              </tbody>
+            </Table>
+          </TableContainer>
+        </>
+      }
+    />
   );
 };
 

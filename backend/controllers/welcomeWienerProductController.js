@@ -3,7 +3,9 @@ import WelcomeWienerProduct from '../models/welcomeWienerProductModel.js';
 // Function to retrieve all welcomeWienerProducts
 const getAllWelcomeWienerProducts = async (req, res) => {
   try {
-    const welcomeWienerProducts = await WelcomeWienerProduct.find();
+    const welcomeWienerProducts = await WelcomeWienerProduct.find()
+      .sort({ updatedAt: -1 }) // Sort by updatedAt in descending order
+      .exec();
     res.status(200).json(welcomeWienerProducts);
   } catch (error) {
     res.status(404).json({ message: error.message });
@@ -16,12 +18,11 @@ const updateWelcomeWienerProduct = async (req, res) => {
   const { icon, name, price, description } = req.body;
 
   try {
-    const updatedWelcomeWienerProduct =
-      await WelcomeWienerProduct.findByIdAndUpdate(
-        id,
-        { icon, name, price, description },
-        { new: true }
-      );
+    const updatedWelcomeWienerProduct = await WelcomeWienerProduct.findByIdAndUpdate(
+      id,
+      { icon, name, price, description },
+      { new: true }
+    );
 
     res.status(200).json(updatedWelcomeWienerProduct);
   } catch (error) {
@@ -67,9 +68,7 @@ const deleteWelcomeWienerProduct = async (req, res) => {
 // Function to get a welcomeWienerProduct by Id
 const getWelcomeWienerProductById = async (req, res) => {
   try {
-    const welcomeWienerProduct = await WelcomeWienerProduct.findById(
-      req.params.id
-    );
+    const welcomeWienerProduct = await WelcomeWienerProduct.findById(req.params.id);
     res.json(welcomeWienerProduct);
   } catch (err) {
     res.status(404).json({ message: 'Product not found' });

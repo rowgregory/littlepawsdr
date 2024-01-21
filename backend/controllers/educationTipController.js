@@ -7,7 +7,9 @@ import Error from '../models/errorModel.js';
 // @access  Public
 const getEducationTips = asyncHandler(async (req, res) => {
   try {
-    const educationTips = await EducationTip.find({});
+    const educationTips = await EducationTip.find({})
+      .sort({ updatedAt: -1 }) // Sort by updatedAt in descending order
+      .exec();
 
     res.json(educationTips);
   } catch (err) {

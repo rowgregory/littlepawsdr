@@ -6,9 +6,52 @@ import CanOfWetFood from '../../components/assets/can-of-wet-food.png';
 import BagOfDryFood from '../../components/assets/bag-of-dry-food.jpeg';
 import CaseOfWetFood from '../../components/assets/case-of-wet-food.png';
 import styled from 'styled-components';
-import { Colon, ContestTitle, CountDownContainer, Timer } from './LongDog';
 import useCountDown from '../../utils/hooks/useCountDown';
 import FloatingWords from '../../components/Loaders/floating-words/FloatingWords';
+
+const CountDownContainer = styled.section`
+  background: linear-gradient(
+    90deg,
+    hsla(284, 30%, 52%, 1) 0%,
+    hsla(284, 33%, 73%, 1) 100%
+  );
+  background: -moz-linear-gradient(
+    90deg,
+    hsla(284, 30%, 52%, 1) 0%,
+    hsla(284, 33%, 73%, 1) 100%
+  );
+  background: -webkit-linear-gradient(
+    90deg,
+    hsla(284, 30%, 52%, 1) 0%,
+    hsla(284, 33%, 73%, 1) 100%
+  );
+
+  padding-block: 200px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const ContestTitle = styled.h3`
+  text-transform: uppercase;
+  font-family: 'Paytone One';
+  text-align: center;
+  font-size: 80px;
+  line-height: 80px;
+  color: #5a2b6b;
+  text-shadow: 0 20px 15px #6f3b82, 0 -2px 1px #5a2b6b;
+  letter-spacing: -4px;
+`;
+
+const Timer = styled.h1`
+  font-size: calc(60px + 16 * ((100vw - 700px) / 700));
+`;
+
+const Colon = styled.div`
+  font-size: calc(60px + 16 * ((100vw - 700px) / 700));
+  color: #fff;
+`;
 
 const Container = styled.div`
   padding: 128px 16px;

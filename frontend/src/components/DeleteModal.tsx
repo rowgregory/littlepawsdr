@@ -17,7 +17,7 @@ import {
   LeftBtn,
   RightBtn,
   Title,
-} from './ContinueSessionModal';
+} from './styles/modal-styles';
 import { deleteManuallyAddedUser } from '../actions/manuallyAddUserActions';
 import { deleteWelcomeWienerProduct } from '../actions/welcomeWienerProductActions';
 import { deleteWelcomeWienerDachshund } from '../actions/welcomeWienerDachshundActions';

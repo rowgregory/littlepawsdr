@@ -39,6 +39,8 @@ const authUser = asyncHandler(async (req, res) => {
           confirmed: updatedUser.confirmed,
           lastLoginTime: updatedUser.lastLoginTime,
           location: updatedUser.location,
+          introducedToSilverPaws: updatedUser.introducedToSilverPaws,
+          onlineStatus: 'ONLINE'
         });
       } else {
         res.status(401);
@@ -296,6 +298,8 @@ const getUserById = asyncHandler(async (req, res) => {
       email: user.email,
       updatedAt: user.updatedAt,
       createdAt: user.createdAt,
+      onlineStatus: user?.onlineStatus,
+      online: user?.online
     });
   } else {
     const createdError = new Error({
@@ -390,6 +394,7 @@ const userLogout = asyncHandler(async (req, res) => {
     user.token = null;
     user.resetPasswordToken = null;
     user.lastLoginTime = new Date();
+    user.onlineStatus = 'OFFLINE'
 
     await user.save();
 

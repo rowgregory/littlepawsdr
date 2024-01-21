@@ -8,6 +8,7 @@ import {
   WienerThumbnail,
 } from './styles';
 import { useEffect, useRef, useState } from 'react';
+import { LoadingImg } from '../LoadingImg';
 
 const useImageVisibility = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -43,13 +44,13 @@ const useImageVisibility = () => {
   return { isVisible, imageRef };
 };
 
-const WelcomeWienerCard = ({ dachshund }: any) => {
+const WelcomeWienerCard = ({ dachshund, loading }: { dachshund: any; loading: boolean }) => {
   const dispatch = useDispatch();
   const userInfo = useSelector((state: any) => state.userLogin.userInfo);
 
   const { isVisible, imageRef } = useImageVisibility();
 
-  return (
+  return loading ? <LoadingImg w='100%' h='100%' maxw='462px' /> : (
     <div style={{ position: 'relative' }} ref={imageRef}>
       <IsLiveIndicator
         style={{

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Modal, Image } from 'react-bootstrap';
 import styled, { keyframes, useTheme } from 'styled-components';
 import { SMData } from '../../utils/sociaMediaData';
-import { Content } from '../ContinueSessionModal';
+import { Content } from '../styles/modal-styles';
 import NightGram from '../../components/assets/littlepawsdr_qr 2.png';
 import DayGram from '../../components/assets/littlepawsdr_qr 3.png';
 import { Text } from '../../components/styles/Styles';
@@ -103,8 +103,8 @@ const SocialMediaNavbar = ({ nl, setNl }: any) => {
               obj.popTag === 'Instagram'
                 ? handleShow()
                 : obj.linkKey
-                ? window.open(obj.linkKey, '_blank')
-                : setNl(!nl)
+                  ? window.open(obj.linkKey, '_blank')
+                  : setNl(!nl)
             }
           >
             <i className={obj.className} style={obj.color}></i>

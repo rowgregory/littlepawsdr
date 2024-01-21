@@ -60,38 +60,31 @@ export const login = (email: any, password: any) => async (dispatch: any) => {
   } catch (error: any) {
     dispatch({
       type: USER_LOGIN_FAIL,
-      payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message,
+      payload: error.response && error.response.data.message ? error.response.data.message : error.message,
     });
   }
 };
 
-export const register =
-  (name: string, email: any, password: any) => async (dispatch: any) => {
-    try {
-      dispatch({ type: USER_REGISTER_REQUEST });
+export const register = (name: string, email: any, password: any) => async (dispatch: any) => {
+  try {
+    dispatch({ type: USER_REGISTER_REQUEST });
 
-      const config = {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      };
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
 
-      const { data } = await axios.post('/api/users', { name, email, password }, config);
+    const { data } = await axios.post('/api/users', { name, email, password }, config);
 
-      dispatch({ type: USER_REGISTER_SUCCESS, payload: data });
-    } catch (error: any) {
-      dispatch({
-        type: USER_REGISTER_FAIL,
-        payload:
-          error.response && error.response.data.message
-            ? error.response.data.message
-            : error.message,
-      });
-    }
-  };
+    dispatch({ type: USER_REGISTER_SUCCESS, payload: data });
+  } catch (error: any) {
+    dispatch({
+      type: USER_REGISTER_FAIL,
+      payload: error.response && error.response.data.message ? error.response.data.message : error.message,
+    });
+  }
+};
 
 export const getUserDetails = (id: any) => async (dispatch: any, getState: any) => {
   try {
@@ -114,10 +107,7 @@ export const getUserDetails = (id: any) => async (dispatch: any, getState: any) 
   } catch (error: any) {
     dispatch({
       type: USER_DETAILS_FAIL,
-      payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message,
+      payload: error.response && error.response.data.message ? error.response.data.message : error.message,
     });
   }
 };
@@ -137,11 +127,7 @@ export const getConfirmationOfOldPassword =
         },
       };
 
-      const { data } = await axios.post(
-        `/api/users/oldpassword/${id}`,
-        { oldpassword },
-        config
-      );
+      const { data } = await axios.post(`/api/users/oldpassword/${id}`, { oldpassword }, config);
 
       if (data.message === 'Password is incorrect') {
         dispatch({ type: USER_OLD_PASSWORD_FAIL, payload: data });
@@ -151,10 +137,7 @@ export const getConfirmationOfOldPassword =
     } catch (error: any) {
       dispatch({
         type: USER_OLD_PASSWORD_FAIL,
-        payload:
-          error.response && error.response.data.message
-            ? error.response.data.message
-            : error.message,
+        payload: error.response && error.response.data.message ? error.response.data.message : error.message,
       });
     }
   };
@@ -184,10 +167,7 @@ export const updateUserProfile = (user: any) => async (dispatch: any, getState: 
   } catch (error: any) {
     dispatch({
       type: USER_UPDATE_PROFILE_FAIL,
-      payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message,
+      payload: error.response && error.response.data.message ? error.response.data.message : error.message,
     });
   }
 };
@@ -212,10 +192,7 @@ export const listUsers = () => async (dispatch: any, getState: any) => {
   } catch (error: any) {
     dispatch({
       type: USER_LIST_FAIL,
-      payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message,
+      payload: error.response && error.response.data.message ? error.response.data.message : error.message,
     });
   }
 };
@@ -231,9 +208,7 @@ export const listWhoWeAreUsers = () => async (dispatch: any) => {
     dispatch({
       type: USER_WHO_WE_ARE_LIST_FAIL,
       payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : '404 - Not Found',
+        error.response && error.response.data.message ? error.response.data.message : '404 - Not Found',
     });
   }
 };
@@ -257,9 +232,7 @@ export const deleteUser = (id: any) => async (dispatch: any, getState: any) => {
     dispatch({ type: USER_DELETE_SUCCESS });
   } catch (error: any) {
     const message =
-      error.response && error.response.data.message
-        ? error.response.data.message
-        : error.message;
+      error.response && error.response.data.message ? error.response.data.message : error.message;
     dispatch({
       type: USER_DELETE_FAIL,
       payload: message,
@@ -295,10 +268,7 @@ export const updateUser = (user: any) => async (dispatch: any, getState: any) =>
   } catch (error: any) {
     dispatch({
       type: USER_UPDATE_FAIL,
-      payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message,
+      payload: error.response && error.response.data.message ? error.response.data.message : error.message,
     });
   }
 };
@@ -348,10 +318,7 @@ export const logout = (user: any) => async (dispatch: any, getState: any) => {
   } catch (error: any) {
     dispatch({
       type: USER_LOGOUT_FAIL,
-      payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message,
+      payload: error.response && error.response.data.message ? error.response.data.message : error.message,
     });
   }
 };
@@ -377,10 +344,7 @@ export const sendRegisterConfirmationEmail =
     } catch (error: any) {
       dispatch({
         type: USER_VERIFY_EMAIL_FAIL,
-        payload:
-          error.response && error.response.data.message
-            ? error.response.data.message
-            : error.message,
+        payload: error.response && error.response.data.message ? error.response.data.message : error.message,
       });
     }
   };
@@ -398,11 +362,7 @@ export const updatedUserToConfirmed =
         },
       };
 
-      const { data } = await axios.put(
-        `/api/users/confirmed`,
-        { email, name, id },
-        config
-      );
+      const { data } = await axios.put(`/api/users/confirmed`, { email, name, id }, config);
 
       dispatch({ type: USER_CONFIRMED_SUCCESS, payload: data });
       dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
@@ -411,10 +371,7 @@ export const updatedUserToConfirmed =
     } catch (error: any) {
       dispatch({
         type: USER_CONFIRMED_FAIL,
-        payload:
-          error.response && error.response.data.message
-            ? error.response.data.message
-            : error.message,
+        payload: error.response && error.response.data.message ? error.response.data.message : error.message,
       });
     }
   };

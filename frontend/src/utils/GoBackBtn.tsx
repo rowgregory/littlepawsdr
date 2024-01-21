@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { Text } from '../components/styles/Styles';
 
 const StyledLink = styled(Link) <{ color?: string }>`
   cursor: pointer;
@@ -22,13 +21,12 @@ const StyledLink = styled(Link) <{ color?: string }>`
   }
 `;
 
-const GoBackBtn = ({ to, color }: any) => {
+const GoBackBtn = ({ to, color }: { to: string; color: string }) => {
   return (
-    <div className='d-flex flex-column align-items-center mr-5'>
+    <div className='d-flex flex-column'>
       <StyledLink to={to} color={color}>
         <i className='fa-solid fa-arrow-left-long'></i>
       </StyledLink>
-      <Text fontSize='12px'>Go Back</Text>
     </div>
   );
 };

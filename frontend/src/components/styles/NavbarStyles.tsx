@@ -130,7 +130,7 @@ export const Items = styled.span<ItemsProps>`
   }
 `;
 
-export const DropDownContainer = styled.div<{ p?: string }>`
+export const DropDownContainer = styled.div`
   z-index: 500;
   position: absolute;
   top: 65px;

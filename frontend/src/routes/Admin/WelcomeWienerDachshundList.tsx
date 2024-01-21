@@ -1,24 +1,18 @@
 import { useEffect, useState } from 'react';
-import { Table, Spinner } from 'react-bootstrap';
+import { Table, Spinner, Image } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import DeleteModal from '../../components/DeleteModal';
 import { Flex, Text } from '../../components/styles/Styles';
 import {
-  SearchBar,
-  TableHead,
-  TableRow,
-  StyledEditBtn,
-  TopRow,
-  TableAndPaginationContainer,
-  Container,
   SearchInput,
-  TableWrapper,
   CreateLink,
-  TableImg,
+  TableContainer,
+  Row,
+  OrangeEditPen,
+  RedDeleteTrash,
+  GreenViewBinoculars,
+  WelcomeWienerLink,
 } from '../../components/styles/admin/Styles';
-import { WelcomeText } from '../../components/styles/DashboardStyles';
-import BreadCrumb from '../../components/common/BreadCrumb';
-import Message from '../../components/Message';
 import { AddIcon } from '../../components/svg/AddIcon';
 import { defaultImages } from '../../utils/defaultImages';
 import {
@@ -28,6 +22,7 @@ import {
 import shortenText from '../../utils/shortenText';
 import { Link } from 'react-router-dom';
 import { WELCOME_WIENER_DACHSHUND_LIST_RESET } from '../../constants/welcomeWienerDachshundConstants';
+import DashboardLayout2024 from '../../components/dashboard/dashboard2024/layouts/DashboardLayout2024';
 
 const WelcomeWienerDachshundList = () => {
   const dispatch = useDispatch();
@@ -39,24 +34,22 @@ const WelcomeWienerDachshundList = () => {
   const handleShow = () => setShow(true);
 
   const state = useSelector((state: any) => state);
-  let loadingLiveMode = state.welcomeWienerDachshundToggle.loading;
-  let dachshundList = state.welcomeWienerDachshundList.dachshundList;
-  let error = state.welcomeWienerDachshundList.error;
-  let loadingDelete = state.welcomeWienerDachshundDelete.loadingDelete;
-  let errorDelete = state.welcomeWienerDachshundDelete.errorDelete;
+  const loadingLiveMode = state.welcomeWienerDachshundToggle.loading;
+  const dachshundList = state.welcomeWienerDachshundList.dachshundList;
+  const error = state.welcomeWienerDachshundList.error;
+  const loading = state.welcomeWienerDachshundList.loading;
+  const loadingDelete = state.welcomeWienerDachshundDelete.loadingDelete;
+  const errorDelete = state.welcomeWienerDachshundDelete.errorDelete;
 
   useEffect(() => {
     dispatch(listWelcomeWienerDachshunds());
-    return () => { dispatch({ type: WELCOME_WIENER_DACHSHUND_LIST_RESET }) }
+    return () => {
+      dispatch({ type: WELCOME_WIENER_DACHSHUND_LIST_RESET });
+    };
   }, [dispatch, loadingLiveMode]);
 
-  dachshundList?.sort(
-    (a: any, b: any) => -a?.createdAt?.localeCompare(b?.createdAt)
-  );
-
-  const filteredWelcomeWienerDachshunds = dachshundList?.filter(
-    (dachshund: any) =>
-      dachshund?.name?.toLowerCase().includes(text.toLowerCase())
+  const filteredWelcomeWienerDachshunds = dachshundList?.filter((dachshund: any) =>
+    dachshund?.name?.toLowerCase().includes(text.toLowerCase())
   );
 
   const welcomeWienerDachshund = {
@@ -68,83 +61,65 @@ const WelcomeWienerDachshundList = () => {
   };
 
   return (
-    <Container>
-      <WelcomeText>Welcome Wiener Dachshunds</WelcomeText>
-      <BreadCrumb
-        step1='Home'
-        step2='Dashboard'
-        step3=''
-        step4='Welcome Wiener Dachshunds'
-        url1='/'
-        url2='/admin'
-        url3='/admin/welcome-wiener/dachshund/list'
-      />
-      <DeleteModal
-        actionFunc='Welcome Wiener Dachshund'
-        show={show}
-        handleClose={handleClose}
-        id={id}
-      />
-      {(error || errorDelete) && (
-        <Message variant='danger'>{error || errorDelete}</Message>
-      )}
-      <TableWrapper>
-        <TopRow>
-          <SearchBar>
-            <SearchInput
-              as='input'
-              type='text'
-              placeholder='Search by name'
-              value={text || ''}
-              onChange={(e: any) => setText(e.target.value)}
-            />
-          </SearchBar>
-          <CreateLink
-            to={'/admin/welcome-wiener/dachshund/create'}
-            state={{ welcomeWienerDachshund }}
-          >
+    <DashboardLayout2024
+      error={error || errorDelete}
+      box1='Welcome Wiener Dachshunds'
+      box2={
+        <SearchInput
+          as='input'
+          type='text'
+          placeholder='Search by Name'
+          value={text || ''}
+          onChange={(e: any) => setText(e.target.value)}
+        />
+      }
+      box3={
+        loading ? (
+          <Spinner animation='border' size='sm' style={{ color: '#fff' }} />
+        ) : error || errorDelete ? (
+          <Text fontFamily='Rust' fontSize='20px'>
+            {error || errorDelete}
+          </Text>
+        ) : (
+          <CreateLink to={'/admin/welcome-wiener/dachshund/id/edit'} state={{ welcomeWienerDachshund }}>
             <AddIcon />
             Create
           </CreateLink>
-        </TopRow>
-        <TableAndPaginationContainer>
-          <Table hover responsive>
-            <TableHead>
-              <tr>
-                <th>NAME</th>
-                <th>IS LIVE</th>
-                <th>IMAGE</th>
-                <th>BIO</th>
-                <th>AGE</th>
-                <th>ASSOCIATED PRODUCTS</th>
-                <th>VIEW</th>
-                <th>EDIT</th>
-                <th>DELETE</th>
-              </tr>
-            </TableHead>
-            <tbody>
-              {filteredWelcomeWienerDachshunds?.map((dachshund: any) => (
-                <TableRow key={dachshund?._id}>
-                  <td>
-                    <Text>{dachshund?.name}</Text>
-                  </td>
-                  <td style={{ width: '75px' }}>
-                    <Text
+        )
+      }
+      box4={
+        <>
+          <DeleteModal actionFunc='Welcome Wiener Dachshund' show={show} handleClose={handleClose} id={id} />
+          <TableContainer>
+            <WelcomeWienerLink to='/admin/welcome-wiener/product/list'>
+              Welcome Wiener Product List <i className='fa-solid fa-angles-right ml-2'></i>
+            </WelcomeWienerLink>
+            <Table hover responsive size='sm'>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Live</th>
+                  <th>Image</th>
+                  <th>Bio</th>
+                  <th>Age</th>
+                  <th>Associated Products</th>
+                  <th>View</th>
+                  <th>Edit</th>
+                  <th>Delete</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredWelcomeWienerDachshunds?.map((dachshund: any, i: number) => (
+                  <Row key={dachshund?._id} i={i}>
+                    <td>{dachshund?.name}</td>
+                    <td
                       onClick={() => {
-                        dispatch(
-                          toggleWelcomeDachshund(
-                            dachshund?.isLive,
-                            dachshund?._id
-                          )
-                        );
+                        dispatch(toggleWelcomeDachshund(dachshund?.isLive, dachshund?._id));
                         setId(dachshund?._id);
                       }}
                       style={{
                         color: dachshund?.isLive ? '#00a40e' : '#c6c6c6',
-                        fontWeight: dachshund?.isLive ? 600 : '',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        justifyContent: 'center',
+                        cursor: 'pointer'
                       }}
                     >
                       {loadingLiveMode && dachshund?._id === id ? (
@@ -154,87 +129,62 @@ const WelcomeWienerDachshundList = () => {
                       ) : (
                         'OFFLINE'
                       )}
-                    </Text>
-                  </td>
-                  <td>
-                    <TableImg
-                      src={dachshund?.displayUrl ?? defaultImages.upload}
-                      alt={dachshund?.name}
-                    />
-                  </td>
-                  <td>
-                    <Text>{shortenText(dachshund?.bio)}</Text>
-                  </td>
-                  <td>
-                    <Text>{dachshund?.age}</Text>
-                  </td>
-                  <td>
-                    <Flex flexDirection='column'>
-                      <ol className='mb-0'>
-                        {dachshund?.associatedProducts?.map(
-                          (obj: any, i: number) => (
+                    </td>
+                    <td>
+                      <Image src={dachshund?.displayUrl ?? defaultImages.upload} alt={dachshund?.name} />
+                    </td>
+                    <td>{shortenText(dachshund?.bio)}</td>
+                    <td>{dachshund?.age}</td>
+                    <td>
+                      <Flex flexDirection='column'>
+                        <ol className='mb-0'>
+                          {dachshund?.associatedProducts?.map((obj: any, i: number) => (
                             <li
                               key={i}
                               style={{
-                                fontSize: '13px',
-                                fontFamily: 'Roboto',
-                                fontWeight: 300,
+                                fontFamily: 'Rust',
                               }}
                             >
-                              <Text>{obj?.name}</Text>
+                              {obj?.name}
                             </li>
-                          )
-                        )}
-                      </ol>
-                    </Flex>
-                  </td>
-                  <td>
-                    <Link
-                      to={{
-                        pathname: `/welcome-wiener/${dachshund._id}`,
-                      }}
-                    >
-                      <i className='fas fa-edit' style={{ color: '#9761aa' }}></i>
-                    </Link>
-                  </td>
-                  <td>
-                    <Link
-                      to={`/admin/welcome-wiener/dachshund/${dachshund?._id}/edit`}
-                      state={{ isEditMode: true }}
-                    >
-                      <StyledEditBtn>
-                        <i
-                          style={{ color: '#9761aa' }}
-                          className='fas fa-edit'
-                        ></i>
-                      </StyledEditBtn>
-                    </Link>
-                  </td>
-                  <td>
-                    <StyledEditBtn
-                      onClick={() => {
-                        setId(dachshund?._id);
-
-                        handleShow();
-                      }}
-                    >
+                          ))}
+                        </ol>
+                      </Flex>
+                    </td>
+                    <td>
+                      <Link to={`/welcome-wiener/${dachshund._id}`}>
+                        <GreenViewBinoculars className='fa-solid fa-binoculars'></GreenViewBinoculars>
+                      </Link>
+                    </td>
+                    <td>
+                      <Link
+                        to={`/admin/welcome-wiener/dachshund/${dachshund?._id}/edit`}
+                        state={{ dachshund, isEditMode: true }}
+                      >
+                        <OrangeEditPen className='fa-solid fa-pen'></OrangeEditPen>
+                      </Link>
+                    </td>
+                    <td>
                       {loadingDelete && id === dachshund?._id ? (
                         <Spinner size='sm' animation='border' />
                       ) : (
-                        <i
-                          style={{ color: '#cc0000' }}
+                        <RedDeleteTrash
+                          onClick={() => {
+                            setId(dachshund?._id);
+                            handleShow();
+                          }}
                           className='fas fa-trash'
-                        ></i>
+                        ></RedDeleteTrash>
                       )}
-                    </StyledEditBtn>
-                  </td>
-                </TableRow>
-              ))}
-            </tbody>
-          </Table>
-        </TableAndPaginationContainer>
-      </TableWrapper>
-    </Container>
+                    </td>
+                  </Row>
+                ))}
+              </tbody>
+            </Table>
+          </TableContainer>
+        </>
+      }
+    />
   );
 };
 

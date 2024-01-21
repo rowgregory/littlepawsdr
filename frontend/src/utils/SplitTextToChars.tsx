@@ -74,6 +74,7 @@ interface SplitTextToCharsProps {
   mt?: string;
   width?: string;
   justifyContent?: string;
+  fontWeight?: number;
 }
 
 const SplitTextToChars: React.FC<SplitTextToCharsProps> = ({
@@ -84,7 +85,8 @@ const SplitTextToChars: React.FC<SplitTextToCharsProps> = ({
   color,
   mt,
   width,
-  justifyContent
+  justifyContent,
+  fontWeight,
 }) => {
   const [splitText, setSplitText] = useState<string[]>([]);
   const [currentCharIndex, setCurrentCharIndex] = useState<number>(-1);
@@ -99,9 +101,7 @@ const SplitTextToChars: React.FC<SplitTextToCharsProps> = ({
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setCurrentCharIndex((prevIndex) =>
-        prevIndex < splitText.length - 1 ? prevIndex + 1 : prevIndex
-      );
+      setCurrentCharIndex((prevIndex) => (prevIndex < splitText.length - 1 ? prevIndex + 1 : prevIndex));
     }, 15);
 
     return () => clearTimeout(timer);
@@ -126,7 +126,7 @@ const SplitTextToChars: React.FC<SplitTextToCharsProps> = ({
                 minWidth: char === ' ' ? '6px' : 'auto',
                 fontFamily,
                 color,
-                whiteSpace: 'nowrap'
+                whiteSpace: 'nowrap',
               }}
             ></span>
             <span
@@ -135,7 +135,8 @@ const SplitTextToChars: React.FC<SplitTextToCharsProps> = ({
                 position: 'relative',
                 fontSize,
                 fontFamily,
-                color
+                color,
+                fontWeight,
               }}
             >
               {index <= currentCharIndex ? char : ''}
