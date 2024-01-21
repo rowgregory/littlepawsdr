@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import { closeBubbleLinks } from '../../../actions/dashboardActions';
 import { useDispatch } from 'react-redux';
-import { useRef } from 'react';
+import { useCallback, useRef } from 'react';
 import useOutsideDetect from '../../../utils/useOutsideDetect';
 
 const rotateAnimation = keyframes`
@@ -154,7 +154,10 @@ const RotatingItem3 = styled(Link)`
 const PeopleBubbleLinks = () => {
   const dispatch = useDispatch();
   const peopleBubbleLinksRef = useRef<HTMLDivElement>(null);
-  const handleCloseBubbleLinks = () => dispatch(closeBubbleLinks())
+
+  const handleCloseBubbleLinks = useCallback(() => {
+    dispatch(closeBubbleLinks())
+  }, [dispatch])
 
   useOutsideDetect(peopleBubbleLinksRef, handleCloseBubbleLinks)
 
