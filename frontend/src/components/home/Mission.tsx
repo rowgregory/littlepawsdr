@@ -1,71 +1,42 @@
-import React from 'react';
-import styled from 'styled-components';
 import MaskBtn from './MaskBtn';
 import Logo from '../../components/assets/logo.png';
-import { Image } from 'react-bootstrap';
-import { Text } from '../styles/Styles';
-
-export const MissionContainer = styled.div`
-  display: flex;
-  width: 100%;
-  margin: 0 auto;
-  padding: 128px 16px;
-  flex-direction: column;
-`;
-
-const StatementAndLinkContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  max-width: 980px;
-  width: 100%;
-  margin-inline: auto;
-  margin-bottom: 96px;
-`;
-
-export const MissionStatement = styled.div`
-  font-size: 16px;
-  color: ${({ theme }) => theme.text};
-  margin-bottom: 32px;
-`;
 
 const Mission = () => {
   return (
-    <MissionContainer>
-      <StatementAndLinkContainer>
-        <Image
+    <div className='flex flex-col w-full mx-auto py-32 px-3'>
+      <div className='flex flex-col max-w-screen-md w-full mx-auto mb-24'>
+        <img
           src={Logo}
-          width='100%'
-          style={{ maxWidth: '400px', objectFit: 'cover', margin: '0 auto' }}
           alt='LPDR Logo'
-          loading='lazy'
+          className='max-w-lg w-full object-cover mx-auto'
         />
-        <h4 className='text-center mt-5 font-weight-normal'>
+        <h4 className='max-w-screen-sm mb-3 mt-5 mx-auto text-lg font-Matter-Regular'>
           LITTLE PAWS DACHSHUND RESCUE is an east coast based 501(c)3 exempt
           nonprofit dedicated to the rescue and re-homing of our favorite short
           legged breed
         </h4>
-        <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='18px'>
+        <p className='max-w-screen-sm mb-3 mt-4 mx-auto text-lg font-Matter-Regular'>
           We specialize in finding permanent homes for dachshund and dachshund
           mixes. We strive to make the lives of all dogs better through action,
           advocacy, awareness and education.
-        </Text>
-        <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='18px'>
+        </p>
+        <p className='max-w-screen-sm mb-3 mt-4 mx-auto text-lg font-Matter-Regular'>
           It is LPDR’s goal to identify abandoned, mistreated, or homeless dogs
           and oversee their treatment and wellbeing while working to find loving
           owners for those in our care.
-        </Text>
-        <Text maxWidth='680px' className='mb-3 mt-4 mx-auto' fontSize='18px'>
+        </p>
+        <p className='max-w-screen-sm mb-3 mt-4 mx-auto text-lg font-Matter-Regular'>
           If you are looking for a new family member take a look at our
           available dachshund and dachshund mixes.
-        </Text>
-        <div style={{ marginInline: 'auto', marginTop: '64px' }}>
+        </p>
+        <div className='mx-auto mt-16'>
           <MaskBtn
             linkKey='/about/successful-adoptions'
             textKey='VIEW SUCCESSFUL ADOPTIONS'
           />
         </div>
-      </StatementAndLinkContainer>
-    </MissionContainer>
+      </div>
+    </div>
   );
 };
 

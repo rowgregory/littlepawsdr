@@ -1,7 +1,6 @@
 import { Image } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { ProceedBtn } from '../../components/forms/ShippingForm';
 import { Text } from '../../components/styles/Styles';
 import { formatDateTime } from '../../utils/formatDateTime';
 
@@ -73,7 +72,7 @@ const Product = ({ product }: any) => {
           <Price style={{ color: '#22c2b7' }}>FREE</Price> product with a{' '}
           <Price>${product?.price}</Price> donation!
         </Text>
-        <ProceedBtn className='w-100'>View Product</ProceedBtn>
+        <button className='bg-teal-500 px-4 py-1.5 rounded-sm w-full'>View Product</button>
       </div>
     </Container>
   );

@@ -7,6 +7,8 @@ import {
   updateWelcomeWienerProduct,
   deleteWelcomeWienerProduct,
 } from '../controllers/welcomeWienerProductController.js';
+import { protect, admin } from '../middleware/authMiddleware.js';
+
 // GET all welcomeWienerProducts
 router.get('/', getAllWelcomeWienerProducts);
 
@@ -14,12 +16,12 @@ router.get('/', getAllWelcomeWienerProducts);
 router.get('/:id', getWelcomeWienerProductById);
 
 // POST a new welcomeWienerProduct
-router.post('/', createWelcomeWienerProduct);
+router.post('/', protect, admin, createWelcomeWienerProduct);
 
 // PUT update a welcomeWienerProduct by id
 router.put('/:id', updateWelcomeWienerProduct);
 
 // DELETE a welcomeWienerProduct by id
-router.delete('/:id', deleteWelcomeWienerProduct);
+router.delete('/:id', protect, admin, deleteWelcomeWienerProduct);
 
 export default router;

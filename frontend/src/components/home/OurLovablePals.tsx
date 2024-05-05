@@ -1,72 +1,101 @@
 import { Link } from 'react-router-dom';
-import { Image } from 'react-bootstrap';
-import { useSelector } from 'react-redux';
-import {
-  DogContainer,
-  ImageContainer,
-  SectionContainer,
-  SectionTitle,
-} from './styles';
 import RightArrow from '../svg/RightArrow';
 import { LoadingImg } from '../LoadingImg';
-import GradientText from '../GradientText';
-import { Flex, Text } from '../styles/Styles';
+import { useGetDachshundsByStatusMutation } from '../../redux/services/rescueGroupsApi';
+import styled from 'styled-components';
+import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../redux/toolkitStore';
+
+const DogContainer = styled.div`
+  display: grid;
+  grid-gap: 10px;
+  grid-template-columns: 1fr;
+  width: 100%;
+  @media screen and (min-width: 520px) {
+    grid-template-columns: 1fr 1fr;
+  }
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  a {
+    overflow: hidden;
+    text-decoration: none;
+    position: relative;
+
+    :hover {
+      div {
+        img {
+          transform: rotate(20deg) scale(1.5);
+        }
+      }
+    }
+    div {
+      img {
+        transition: transform 300ms ease-out;
+        object-fit: cover;
+        aspect-ratio: 1/1;
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+`;
+
+const ImageContainer = styled.div`
+  transition: 1300ms;
+  position: relative;
+  overflow: hidden;
+  :hover {
+    &::after {
+      content: '';
+      position: absolute;
+      top: 6px;
+      left: 6px;
+      right: 6px;
+      bottom: 6px;
+      z-index: 20px;
+      border: 5px solid #fff;
+      opacity: 0.6;
+    }
+  }
+`;
 
 const OurLovablePals = () => {
-  const state = useSelector((state: any) => state);
-  const dachshunds = state.dachshunds?.dachshunds;
-  const error = state.dachshunds?.error;
-  const loading = state.dachshunds?.loading;
+  const dachshund = useSelector((state: RootState) => state.dachshund);
+  const [getDachshunds, { isLoading }] = useGetDachshundsByStatusMutation({
+    selectFromResult: () => ({}),
+  });
+
+  useEffect(() => {
+    getDachshunds({ status: 'Available' });
+  }, [getDachshunds]);
 
   return (
-    <SectionContainer>
-      {error ? (
-        <Flex alignItems='center'>
-          Oops! Something happened. Please refresh the page &nbsp;
-          <i className="fa-solid fa-rotate"></i>
-        </Flex>
-      ) : [undefined, null].includes(dachshunds) ? (
-        <div className='d-flex flex-column w-100 align-items-center my-5'>
-          <GradientText
-            text='DACHSHUNDS COMING SOON'
-            gradient='#2e3192,#2d459d,#268fc4,#1ed4e8,#1bffff,#1ed4e8,#268fc4,#2d459d,#2e3192'
-          />
-        </div>
-      ) : (
-        <>
-          <SectionTitle to='/available'>Meet our dachshunds</SectionTitle>
-          <DogContainer className='mx-0 mb-5'>
-            {loading
-              ? [1, 2, 3, 4].map((_: any, i: number) => (
-                <LoadingImg w='100%' h='100%' maxw='500px' key={i} />
-              ))
-              : dachshunds
-                ?.map((dachshund: any, i: number) => (
-                  <Link key={i} to={`/about/type/${dachshund?.id}`}>
-                    <ImageContainer>
-                      <Image
-                        src={dachshund?.attributes?.photos[1]}
-                        alt={`${dachshund?.attributes?.name}`}
-                        loading='lazy'
-                      />
-                    </ImageContainer>
-                    <Text
-                      fontSize='16px'
-                      className='text-center mt-2'
-                      textTransform='uppercase'
-                      fontWeight={500}
-                      color='#22c2b7'
-                    >
-                      {dachshund?.attributes?.name}
-                    </Text>
-                  </Link>
-                ))
-                .filter((_: any, i: number) => i < 4)}
-          </DogContainer>
-          <RightArrow text='See All Available Dachshunds' url='/available' />
-        </>
-      )}
-    </SectionContainer>
+    <section className='max-w-screen-xl w-full mb-60 mx-auto px-3 flex flex-col items-center'>
+      <Link className='text-3xl font-Matter-Medium flex justify-center mb-8 cursor-pointer duration-300 text-teal-500 :hover:no-underline hover:text-teal-500' to='/available'>Meet our dachshunds</Link>
+      <DogContainer className='mx-0 mb-5'>
+        {isLoading
+          ? [1, 2, 3].map((_: any, i: number) => (
+            <LoadingImg w='100%' h='100%' maxw='500px' key={i} />
+          ))
+          : dachshund?.dachshunds
+            ?.map((dachshund: any, i: number) => (
+              <Link key={i} to={`/about/type/${dachshund?.id}`}>
+                <ImageContainer>
+                  <img
+                    src={dachshund?.attributes?.photos[1]}
+                    alt={`${dachshund?.attributes?.name}`}
+                    loading='lazy'
+                  />
+                </ImageContainer>
+              </Link>
+            ))
+            .filter((_: any, i: number) => i < 9)}
+      </DogContainer>
+      <RightArrow text='See All Available Dachshunds' url='/available' />
+    </section>
   );
 };
 

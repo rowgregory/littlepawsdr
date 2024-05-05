@@ -66,7 +66,7 @@ const LinkContainer = styled.div`
 `;
 
 interface SplitTextToCharsProps {
-  text: string;
+  text?: string;
   page?: string;
   fontSize?: string;
   fontFamily?: string;
@@ -88,12 +88,12 @@ const SplitTextToChars: React.FC<SplitTextToCharsProps> = ({
   justifyContent,
   fontWeight,
 }) => {
-  const [splitText, setSplitText] = useState<string[]>([]);
+  const [splitText, setSplitText] = useState<any>([]);
   const [currentCharIndex, setCurrentCharIndex] = useState<number>(-1);
   const [isComplete, setIsComplete] = useState<boolean>(false);
 
   useEffect(() => {
-    const splitChars = text.split('');
+    const splitChars = text?.split('');
     setSplitText(splitChars);
     setCurrentCharIndex(-1);
     setIsComplete(false);
@@ -116,7 +116,7 @@ const SplitTextToChars: React.FC<SplitTextToCharsProps> = ({
   return (
     <div className='d-flex flex-column'>
       <div className='d-flex flex-wrap' style={{ marginTop: mt, width, justifyContent }}>
-        {splitText.map((char, index) => (
+        {splitText.map((char: string, index: number) => (
           <div key={index}>
             <span
               style={{

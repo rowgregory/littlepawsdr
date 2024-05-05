@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { BluePurpleGradientBtn } from '../../styles/admin/Styles';
 import { Link } from 'react-router-dom';
 
 const SearchWrapper = styled.div`
@@ -17,10 +16,10 @@ const SearchBar = () => {
   return (
     <SearchWrapper>
       <Link to='/my-orders'>
-        <BluePurpleGradientBtn content='My Purchases' className="fa-solid fa-bag-shopping fa-2x"></BluePurpleGradientBtn>
+        {/* <BluePurpleGradientBtn content='My Purchases' className="fa-solid fa-bag-shopping fa-2x"></BluePurpleGradientBtn> */}
       </Link>
       <Link to='/'>
-        <BluePurpleGradientBtn content='Home' className="fa-solid fa-house-chimney fa-2x"></BluePurpleGradientBtn>
+        {/* <BluePurpleGradientBtn content='Home' className="fa-solid fa-house-chimney fa-2x"></BluePurpleGradientBtn> */}
       </Link>
     </SearchWrapper>
   );

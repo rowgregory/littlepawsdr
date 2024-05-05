@@ -30,10 +30,10 @@ const Results = ({ searchResults, closeMenu }: any) => {
     return key === 'dachshunds'
       ? `/about/type/${item.id}`
       : key === 'products'
-      ? `/merch/${item._id}`
-      : key === 'ecards'
-      ? `/ecard/personalize/${item._id}`
-      : `/welcome-wiener/${item._id}`;
+        ? `/merch/${item._id}`
+        : key === 'ecards'
+          ? `/ecard/personalize/${item._id}`
+          : `/welcome-wiener/${item._id}`;
   };
 
   return (

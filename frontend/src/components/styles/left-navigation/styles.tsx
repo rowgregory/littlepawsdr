@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 
 export const Container = styled.div<{ open: boolean }>`
+  padding-top: 52px;
   min-height: 100vh;
   height: 100vh;
   overflow-y: scroll;
@@ -125,27 +126,6 @@ export const ResultCategory = styled.div<{ show: boolean }>`
       background: #1b2a39;
     }
   }
-`;
-
-const fadeIn = keyframes`
-0% {
-  opacity: 0;
-}
-100% {
-  opacity: 1;
-}
-`
-
-export const Overlay = styled.div<{ open: boolean }>`
-  position: fixed;
-  display: ${({ open }) => (open ? 'block' : 'none')};
-  top: 0;
-  left: 0;
-  height: 100vh;
-  width: 100vw;
-  background: rgb(0 0 0/0.8);
-  z-index: 3000;
-  animation: ${fadeIn} 300ms linear forwards;
 `;
 
 export const Menu = styled.div`

@@ -1,28 +1,18 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import Donate from './Donate';
-import ShopToHelp from '../../components/donate/ShopToHelp';
+import ShopToHelp from './ShopToHelp'
 import FeedAFoster from './FeedAFoster';
-import DonateLayoutWithSideBar from '../../components/layouts/DonateLayoutWithSideBar';
-import SideBar from '../../components/donate/Sidebar';
-import Venmo from './Venmo';
-import Check from './Check';
-import DonateHeroAndText from '../../components/donate/DonateHeroAndText';
 
 const DonateRoutes = () => {
   return (
-    <DonateLayoutWithSideBar
-      jumbotron={<DonateHeroAndText />}
-      sideBar={<SideBar />}
-    >
+    <div className='min-h-[calc(100vh-540px)] mt-[65px]'>
       <Routes>
         <Route path='/' element={<Donate />} />
         <Route path='shop-to-help' element={<ShopToHelp />} />
-        <Route path='venmo' element={<Venmo />} />
-        <Route path='check' element={<Check />} />
         <Route path='feed-a-foster' element={<FeedAFoster />} />
         <Route path='*' element={<Navigate to='/404' replace />} />
       </Routes>
-    </DonateLayoutWithSideBar>
+    </div>
   );
 };
 

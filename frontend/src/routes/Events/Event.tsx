@@ -3,9 +3,7 @@ import styled from 'styled-components';
 import { Text } from '../../components/styles/Styles';
 import LeftArrow from '../../components/svg/LeftArrow';
 import { useParams } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
-import { listEventDetails } from '../../actions/eventActions';
+import { useGetEventQuery } from '../../redux/services/eventApi';
 
 const CardContainer = styled.div<{ event: any }>`
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
@@ -88,19 +86,15 @@ export const getOrdinalDate = (date: any) => {
 };
 
 const Event = () => {
-  const dispatch = useDispatch()
   const { id } = useParams();
-  const state = useSelector((state: any) => state);
-  const loading = state.eventDetails.loading;
-  const event = state.eventDetails.event;
 
+  const { data, isLoading } = useGetEventQuery({ id })
+  const event = data?.event;
 
   const start = event?.startDate?.split('-');
   const end = event?.endDate?.split('-');
 
-  useEffect(() => {
-    dispatch(listEventDetails(id))
-  }, [dispatch, id])
+
 
   return (
     <>
@@ -109,7 +103,7 @@ const Event = () => {
           style={{ maxWidth: '1100px', width: '100%', marginInline: 'auto' }}
           className='d-flex justify-content-center flex-column align-items-center'
         >
-          {loading ? (
+          {isLoading ? (
             <Spinner animation='border' />
           ) : (
             <>

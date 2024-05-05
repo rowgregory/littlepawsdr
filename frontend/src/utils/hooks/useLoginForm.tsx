@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import { validateEmailRegex } from '../regex';
 
-const useLoginForm = (cb: any, setErrors: any) => {
+const useLoginForm = (cb: any) => {
   const values = {
     email: '',
     password: '',
@@ -10,10 +9,6 @@ const useLoginForm = (cb: any, setErrors: any) => {
   const [inputs, setInputs] = useState(values) as any;
 
   const handleInputChange = (e: any) => {
-    if (validateEmailRegex.test(inputs?.email)) {
-      setErrors((errors: any) => ({ ...errors, email: '' }));
-    }
-
     setInputs((inputs: any) => ({
       ...inputs,
       [e.target.name]: e.target.value,

@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Card, Button, Accordion } from 'react-bootstrap';
-import { CardTitle, Text } from '../../components/styles/Styles';
+import { Text } from '../../components/styles/Styles';
 import { faq } from '../../utils/faq';
 import styled from 'styled-components';
 import AdoptFaqHigh from '../../components/assets/adopt-faq-high.jpeg';
@@ -9,14 +9,14 @@ import LeftArrow from '../../components/svg/LeftArrow';
 import RightArrow from '../../components/svg/RightArrow';
 import Hero from '../../components/Hero';
 
-const StyledAccordion = styled(Accordion)<{ isopen?: string }>`
+const StyledAccordion = styled(Accordion) <{ isopen?: string }>`
   border: 1px solid ${({ theme }) => theme.text};
   button {
     background: ${({ theme, isopen }) =>
-      isopen === 'true' ? theme.colors.quinary : theme.input.bg};
+    isopen === 'true' ? theme.colors.quinary : theme.input.bg};
     div {
       color: ${({ theme, isopen }) =>
-        isopen === 'true' ? theme.input.bg : ''};
+    isopen === 'true' ? theme.input.bg : ''};
     }
   }
   :hover {
@@ -72,12 +72,11 @@ const AdoptionFAQ = () => {
                 else setIdx([...idx, index]);
               }}
             >
-              <CardTitle className='mr-3 mx-auto'>{obj.q}</CardTitle>
+              <p className='mr-3 font-Matter-Medium uppercase tracking-wide max-w-2xl mx-auto'>{obj.q}</p>
               <Text className='p-3'>
                 <i
-                  className={`fas fa-chevron-${
-                    !idx.includes(index) ? 'down' : 'up'
-                  }`}
+                  className={`fas fa-chevron-${!idx.includes(index) ? 'down' : 'up'
+                    }`}
                 ></i>
               </Text>
             </Accordion.Toggle>

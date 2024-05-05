@@ -1,264 +1,128 @@
-import { useEffect } from 'react';
-import { Image } from 'react-bootstrap';
-import { Text } from '../components/styles/Styles';
 import styled from 'styled-components';
-import { localizeDate } from '../utils/localizeDate';
 import { Link, useParams } from 'react-router-dom';
-import Logo from '../components/assets/logo-transparent.png';
-import { ORDER_CREATE_RESET } from '../constants/orderConstants';
-import { useDispatch, useSelector } from 'react-redux';
 import { formatDate } from '../utils/formatDate';
-import LeftArrow from '../components/svg/LeftArrow';
-import { getOrderDetails } from '../actions/orderActions';
-import { formatDateTime } from '../utils/formatDateTime';
+import { useGetOrderQuery } from '../redux/services/orderApi';
+import { Logo2024 } from '../components/assets';
+import toFixed from '../utils/toFixed';
 
-const Container = styled.div`
-  background: ${({ theme }) => theme.secondaryBg};
-  min-height: 100vh;
-  min-width: 768px;
+const Ticket = styled.div`
+width: 403px;
+background: #fff;
+position: relative;
+display: inline-block;
+box-shadow:0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+:after {
+  position: absolute;
+  content: "";
+  width: 15px;
+  height: 15px;
+  transform: rotate(45deg);
+  transform-origin: 0% 100%;
+  background: #f5f5f5;
+  left: 0;
+  top:-15px;
+  box-shadow: 15px -15px 0 0 #f5f5f5, 30px -30px 0 0 #f5f5f5, 45px -45px 0 0 #f5f5f5, 60px -60px 0 0 #f5f5f5, 75px -75px 0 0 #f5f5f5, 90px -90px 0 0 #f5f5f5, 105px -105px 0 0 #f5f5f5, 120px -120px 0 0 #f5f5f5, 135px -135px 0 0 #f5f5f5, 150px -150px 0 0 #f5f5f5, 165px -165px 0 0 #f5f5f5, 180px -180px 0 0 #f5f5f5, 195px -195px 0 0 #f5f5f5, 210px -210px 0 0 #f5f5f5, 225px -225px 0 0 #f5f5f5, 240px -240px 0 0 #f5f5f5, 255px -255px 0 0 #f5f5f5, 270px -270px 0 0 #f5f5f5;
+
 `;
-
-export const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  background: ${({ theme }) => theme.bg};
-  margin: 0 auto;
-  max-width: ${({ theme }) => theme.breakpoints[2]};
-  width: 100%;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-    display: flex;
-    flex-direction: column;
-  }
-`;
-
-export const OrderId = styled.div`
-  margin-bottom: 1rem;
-  color: ${({ theme }) => theme.text};
-`;
-
-export const EmailAndShippingDetailsContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-export const CategoryTitles = styled.div`
-  margin-bottom: 2rem;
-  background: ${({ theme }) => theme.bg};
-  padding: 0.875rem 1.125rem;
-`;
-
-export const estimatedDelivery = (createdAt: any) => {
-  const firstEstimatedDate =
-    createdAt &&
-    localizeDate(
-      new Date(new Date(createdAt).getTime() + 7 * 24 * 60 * 60 * 1000),
-      'order'
-    );
-  const secondEstimatedDate =
-    createdAt &&
-    localizeDate(
-      new Date(new Date(createdAt).getTime() + 12 * 24 * 60 * 60 * 1000),
-      'order'
-    );
-
-  return `${firstEstimatedDate} - ${secondEstimatedDate}`;
-};
 
 const OrderReceipt = () => {
-  const dispatch = useDispatch();
   const { id } = useParams();
-
-  const state = useSelector((state: any) => state);
-  const order = state.orderDetails.order;
-
-  useEffect(() => {
-    dispatch({ type: ORDER_CREATE_RESET });
-    dispatch(getOrderDetails(id));
-  }, [dispatch, id]);
+  const { data } = useGetOrderQuery(id);
+  const order = data?.order;
 
   return (
-    <Container>
-      <Wrapper>
-        <div style={{ background: '#fcfbfe', padding: '20px 32px' }}>
-          <Link to='/' style={{ marginBottom: '64px' }}>
-            <Image
-              style={{
-                width: '130px',
-                marginLeft: '-16px',
-              }}
-              src={Logo}
-              alt={`Little Paws Dachshund Reschue ${new Date().getFullYear()}`}
+    <div className='min-h-screen bg-g-receipt w-full flex justify-center mx-auto py-20'>
+      <Ticket className={`${order?.shippingAddress ? 'h-[600px]' : 'h-[532px]'}`}>
+        <div className='flex items-center justify-between w-full px-2.5 py-1.5 bg-[#f5f5f5]'>
+          <Link to='/'>
+            <img
+              src={Logo2024}
+              alt='Little Paws Dachshund Rescue order confirmation'
+              className='w-fit h-10 object-contain'
             />
           </Link>
+          <p className='font-Matter-Regulat text-xs'>
+            Order No. <span className='font-Matter-Medium text-xs'>{order?._id}</span>
+          </p>
         </div>
-        <div style={{ padding: '32px' }}>
-          {state?.goBackTo === 'MY_ORDERS' && (
-            <LeftArrow text='Back To Orders' url='/my-orders' />
-          )}
-          <Text
-            fontSize='24px'
-            fontWeight={600}
-            color='#404450'
-            marginBottom='24px'
-            marginTop='12px'
-          >
-            Your order is confirmed!
-          </Text>
-          <Text
-            color='#4e515b'
-            fontSize='17px'
-            marginBottom='10px'
-            fontWeight={600}
-          >
-            Hello {order?.name},
-          </Text>
-          <Text
-            color='#a5a7ab'
-            fontSize='14.5px'
-            p='0 0 32px 0'
-            borderBottom='1px solid #f2f2f2'
-            marginBottom='22px'
-          >
-            Your donation is much appreciated by us at Little Paws and we thank
-            you for your kind support.
-          </Text>
-          <table style={{ borderBottom: '1px solid #f2f2f2', width: '100%' }}>
-            <thead>
-              <tr>
-                <td>
-                  <Text fontWeight={200}>Order Date</Text>
-                </td>
-                <td>
-                  <Text fontWeight={200}>Order No</Text>
-                </td>
-                {order?.shippingAddress && (
-                  <td>
-                    <Text fontWeight={200}>Shipping Address</Text>
-                  </td>
-                )}
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>
-                  <Text fontWeight={400} p='10px 0 32px'>
-                    {formatDateTime(order?.createdAt)}
-                  </Text>
-                </td>
-                <td>
-                  <Text fontWeight={400} p='10px 0 32px'>
-                    {order?._id}
-                  </Text>
-                </td>
-
-                {order?.shippingAddress && (
-                  <td>
-                    <Text
-                      fontWeight={400}
-                      p='10px 0 32px'
-                    >{`${order?.shippingAddress?.address}, ${order?.shippingAddress?.city} ${order?.shippingAddress?.state}`}</Text>
-                  </td>
-                )}
-              </tr>
-            </tbody>
-          </table>
-          {order?.orderItems?.map((item: any, index: number) => (
-            <div
-              key={index}
-              className='d-flex justify-content-between py-4 w-100 mb-4'
-              style={{ borderBottom: '1px solid #f2f2f2' }}
-            >
-              <div className='d-flex'>
-                <Image
+        <div className='flex flex-col p-2.5'>
+          <p className='font-Matter-Medium text-xl mb-2.5'>Yay! Your Order is Confirmed</p>
+          <p className='font-Matter-Regular mb-2.5'>Hi {order?.name?.split(' ')[0]}</p>
+          <p className='font-Matter-Light text-xs mb-4'>
+            Thank you for your order. We will send you a confirmation when your order ships. Please
+            find below the receipt of your purchase.
+          </p>
+        </div>
+        <div className='h-24 pl-2.5 pb-2.5 no-scrollbar overflow-y-scroll'>
+          {order?.orderItems?.map((item: any, i: number) => (
+            <div key={i} className='flex justify-between items-center w-full mb-2'>
+              <div className='flex'>
+                <img
                   src={item?.productImage || item?.dachshundImage}
-                  alt='product-img'
-                  width='100px'
-                  className='pr-3'
-                  style={{ objectFit: 'contain', aspectRatio: '1/1' }}
+                  alt='Little Paws Dachshund Rescue Order Item'
+                  className='w-20 aspect-square object-cover mr-1.5 bg-gray-100'
                 />
-                <div className='d-flex flex-column'>
-                  <Text fontWeight='400' fontSize='14px' marginBottom='10px'>
+                <div className='flex flex-col w-28'>
+                  <p className='font-Matter-Regular text-xs mb-1'>
                     {item?.recipientsEmail
-                      ? `Ecard sending to ${
-                          item.recipientsEmail
-                        } on ${formatDate(item.dateToSend)}`
+                      ? `Ecard sending to ${item.recipientsEmail} on ${formatDate(
+                        item.dateToSend
+                      )}`
                       : item?.productName}
-                  </Text>
-                  {item?.size && (
-                    <Text fontWeight='200'>Size: {item?.size}</Text>
-                  )}
-                  {!item?.dateToSend && (
-                    <Text fontWeight='200'>Quantity: {item?.quantity}</Text>
-                  )}
+                  </p>
+                  <p className='font-Matter-Light text-xs'>Quantity: {item?.quantity}</p>
+                  {item?.size && <p className='font-Matter-Light text-xs'>Size: {item?.size}</p>}
                 </div>
               </div>
-              <Text fontWeight='600' fontSize='18px'>
-                ${item?.price}
-              </Text>
+              <p className='text-xs font-Matter-Medium pr-2.5'>${toFixed(item?.price)}</p>
             </div>
           ))}
-          <div className='d-flex flex-column align-items-end mb-4'>
-            <div className='d-flex justify-content-between w-25 mb-1'>
-              <Text>Subtotal</Text>
-              <Text fontWeight={400}>
-                $
-                {order?.orderItems
-                  ?.reduce(
-                    (acc: any, item: any) => acc + item?.quantity * item?.price,
-                    0
-                  )
-                  .toFixed(2)}
-              </Text>
-            </div>
-            {order?.shippingPrice > 0 && (
-              <div className='d-flex justify-content-between w-25 mb-1'>
-                <Text>Shipping Fee</Text>
-                <Text fontWeight={400}>
-                  ${order?.shippingPrice?.toFixed(2)}
-                </Text>
-              </div>
-            )}
+        </div>
 
-            <div
-              className='d-flex mt-2 pb-2 justify-content-between w-25'
-              style={{ borderBottom: '1px solid #f2f2f2' }}
-            >
-              <Text fontSize='14px' fontWeight={600}>
-                Total
-              </Text>
-              <Text fontSize='14px' fontWeight={600}>
-                ${Number(order?.totalPrice)?.toFixed(2)}
-              </Text>
+        <div className='px-4 border-b-[1px] border-gray-100 w-full mb-4'></div>
+        <div className='flex flex-col items-end w-full p-2.5'>
+          <div className='grid grid-cols-12 mb-1.5 gap-4'>
+            <div className='col-span-6 font-Matter-Regular text-xs text-right'>Total:</div>
+            <div className='col-span-6 font-Matter-Regular text-xs text-right'>
+              ${toFixed(order?.subtotal)}
             </div>
           </div>
-
-          <Text fontSize='14px' marginBottom='24px'>
-            An email confirmation has been sent to{' '}
-            <strong className='mr-2'>{order?.email}</strong>
-            {order?.confirmationEmailHasBeenSent && (
-              <i className='fas fa-check' style={{ color: 'green' }}></i>
-            )}
-          </Text>
-
-          <Text color='#494c59' fontSize='17px' fontWeight={600}>
-            Thank you for shopping with us!
-          </Text>
-          <Text fontWeight={400} marginBottom='32px'>
-            Little Paws Dachshund Rescue
-          </Text>
+          <div className='grid grid-cols-12 mb-1.5 gap-4 '>
+            <div className='col-span-6 font-Matter-Regular text-xs text-right'>Shipping Fee:</div>
+            <div className='col-span-6 font-Matter-Regular text-xs text-right'>
+              ${toFixed(order?.shippingPrice)}
+            </div>
+          </div>
+          <div className='grid grid-cols-12 mb-1.5 gap-4'>
+            <div className='col-span-6 font-Matter-Medium text-xs text-right'>Grand Total: </div>
+            <div className='col-span-6 font-Matter-Medium text-xs text-right'>
+              ${toFixed(order?.totalPrice)}
+            </div>
+          </div>
         </div>
-        <div
-          className='d-flex justify-content-between align-items-center'
-          style={{ background: '#fcfbfe', padding: '24px 32px', margin: 0 }}
-        >
-          <Text>
-            Need Help? Visit our <Link to='/about/contact-us'>Contact </Link>
-            page.
-          </Text>
-          <Text>Little Paws Dachshund Rescue {new Date().getFullYear()}</Text>
+        <div className='p-2.5 mb-5'>
+          {order?.shippingAddress && <div className='bg-[#f5f5f5] rounded-xl p-2 w-1/2 mb-4'>
+            <p className='font-Matter-Medium text-xs'>Shipping Address</p>
+            <p className='font-Matter-Light text-xs'>
+              {order?.shippingAddress?.address} {order?.shippingAddress?.city}{' '}
+              {order?.shippingAddress?.state} {order?.shippingAddress?.zipPostalCode}
+            </p>
+          </div>}
+          <p className='font-Matter-Light mb-1 text-xs'>Hope to see you soon</p>
+          <p className='font-Matter-Medium text-xs'>Little Paws Dachshund Rescue Team</p>
         </div>
-      </Wrapper>
-    </Container>
+        <div className='bg-[#f5f5f5] w-full p-2.5'>
+          <p className='font-Matter-Light text-xs'>
+            Need help? Contact us{' '}
+            <span>
+              <Link className='font-Matter-Light text-xs text-teal-600' to='/contact-us'>
+                here
+              </Link>
+            </span>
+          </p>
+        </div>
+      </Ticket>
+    </div>
   );
 };
 

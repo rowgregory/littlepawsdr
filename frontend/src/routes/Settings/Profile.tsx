@@ -1,283 +1,385 @@
-import { useEffect, useState } from 'react';
-import { Form, Image, Spinner } from 'react-bootstrap';
-import { useDispatch, useSelector } from 'react-redux';
-import { updateUserProfile } from '../../actions/userActions';
-import { Text, UpdateBtn } from '../../components/styles/Styles';
-import Checkmark from '../../components/svg/Checkmark';
+import { Fragment, useState } from 'react';
+import { Form, Modal } from 'react-bootstrap';
+import { useSelector } from 'react-redux';
 import { themes } from '../../utils/profileCardThemes';
-import {
-  FormFile,
-  UploadImageSquare,
-} from '../../components/styles/admin/Styles';
-import Message from '../../components/Message';
-import { defaultImages } from '../../utils/defaultImages';
-import PhotoUploadIcon from '../../components/svg/PhotoUploadIcon';
-import { Accordion } from '../../components/styles/place-order/Styles';
-import {
-  AccordionWrapper,
-  CardTheme,
-  Container,
-  FirstCol,
-  Input,
-  Label,
-  ProfileCardImg,
-  ProfilePicCol,
-  SettingsTitleContainer,
-} from '../../components/styles/profile/Styles';
-import { validateFullNameRegex } from '../../utils/regex';
+import { CardTheme } from '../../components/styles/admin/Styles';
 import { STATES } from '../../utils/states';
 import { uploadFileToFirebase } from '../../utils/uploadToFirebase';
-
-const useProfileForm = (callback?: any, data?: any) => {
-  const values = {
-    name: '',
-    avatar: '',
-    volunteerTitle: '',
-    profileCardTheme: '',
-    location: '',
-    bio: '',
-  };
-  const [inputs, setInputs] = useState(values);
-
-  useEffect(() => {
-    if (data) {
-      setInputs((inputs: any) => ({
-        ...inputs,
-        name: data?.name,
-        avatar: data?.image,
-        volunteerTitle: data.volunteerTitle,
-        profileCardTheme: data.profileCardTheme,
-        location: data.location,
-        bio: data.bio,
-      }));
-    }
-
-    return () => {
-      setInputs(() => ({
-        name: '',
-        avatar: '',
-        volunteerTitle: '',
-        profileCardTheme: '',
-        location: '',
-        bio: '',
-      }));
-    };
-  }, [data]);
-
-  const handleInput = (e: any) => {
-    setInputs((inputs: any) => ({
-      ...inputs,
-      [e.target.name]: e.target.value,
-    }));
-  };
-
-  const onSubmit = (e: any) => {
-    e.preventDefault();
-    callback();
-  };
-
-  return { inputs, handleInput, setInputs, onSubmit };
-};
+import { RootState, useAppDispatch } from '../../redux/toolkitStore';
+import { useUpdateUserMutation } from '../../redux/services/userApi';
+import { resetUserSuccess } from '../../redux/features/user/userSlice';
+import TailwindSpinner from '../../components/Loaders/TailwindSpinner';
+import useProfileForm, {
+  sectionLoadingStates,
+  validateProfileForm,
+} from '../../utils/hooks/useProfileForm';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const Profile = () => {
-  const dispatch = useDispatch();
-  const [uploading, setUploading] = useState(false);
-  const [checkmark, setCheckmark] = useState(false);
-  const [file, setFile] = useState({}) as any;
-  const [showCardThemes, setShowCardThemes] = useState(false);
-  const state = useSelector((state: any) => state);
-  const userInfo = state.userLogin.userInfo;
-  const success = state.userUpdateProfile.success;
-  const loading = state.userUpdateProfile.loading;
-  const error = state.userUpdateProfile.error;
+  const dispatch = useAppDispatch();
+  const user = useSelector((state: RootState) => state.user);
+  const [loading, setLoading] = useState(sectionLoadingStates);
+  const [modal, setModal] = useState({ toggle: false, text: '' });
+  const isAdmin = user.user?.isAdmin || false;
+  const openModal = (text: string) => setModal({ toggle: true, text });
+  const closeModal = () => setModal({ toggle: false, text: '' });
+  const location = useLocation();
+  const userJustCreatedAnAccount = location?.state?.accountWasJustCreated;
+  const navigate = useNavigate();
 
-  const profileCallback = async () => {
-    setUploading(true);
-    let image = userInfo?.avatar;
-    if (file?.name) {
-      image = await uploadFileToFirebase(file);
-    }
+  const [updateUser] = useUpdateUserMutation();
 
-    const isValid = validateFullNameRegex.test(inputs.name);
+  const handleUpdateUser = async (e: any, section: string, data: any) => {
+    e.preventDefault();
+    setLoading({ ...sectionLoadingStates, [section]: true });
 
-    if (isValid) {
-      dispatch(
-        updateUserProfile({
-          id: userInfo?._id,
-          name: inputs.name,
-          volunteerTitle: inputs.volunteerTitle,
-          profileCardTheme: inputs.profileCardTheme,
-          avatar: image,
-          location: inputs.location,
-          bio: inputs.bio,
+    const valid = validateProfileForm({
+      firstName: inputs.firstName,
+      lastName: inputs.lastName,
+    });
+
+    if (valid) {
+      await updateUser({
+        id: user.user?._id,
+        type: section,
+        data,
+      })
+        .unwrap()
+        .then(() => {
+          setTimeout(() => {
+            dispatch(resetUserSuccess());
+            setLoading({ ...sectionLoadingStates });
+          }, 3000);
         })
-      );
+        .catch(() => setLoading({ ...sectionLoadingStates }));
+    } else {
+      openModal('error');
+      setLoading({ ...sectionLoadingStates });
     }
   };
 
-  const { inputs, handleInput, onSubmit } = useProfileForm(
-    profileCallback,
-    userInfo
-  );
+  const { inputs, handleInput, setInputs } = useProfileForm(user.user);
 
-  useEffect(() => {
-    if (success) {
-      setFile('');
-      setCheckmark(true);
-      setTimeout(() => setCheckmark(false), 3000);
-    }
-  }, [success]);
-
-  const editPhotoHandler = (e: any) => setFile(e.target.files[0]);
-
-  const isAdmin = userInfo?.isAdmin;
+  const editPhotoHandler = async (e: any) => {
+    const downloadUrl: any = await uploadFileToFirebase(e.target.files[0], false);
+    setInputs((prev: any) => ({ ...prev, avatar: downloadUrl }));
+    e.target.value = '';
+  };
 
   return (
-    <Container>
-      <AccordionWrapper>
-        <Accordion toggle={error} maxheight='65px' className='w-100'>
-          <Message variant='danger'>{error}</Message>
-        </Accordion>
-      </AccordionWrapper>
-      <SettingsTitleContainer className='d-flex justify-content-between align-items-center'>
-        <Text fontSize='26px'>Profile</Text >
-        {checkmark && <Checkmark />}
-      </SettingsTitleContainer>
-      <Form className='mt-4'>
-        <div className='d-flex flex-wrap'>
-          <FirstCol xl={6} lg={8} className='pl-0'>
-            <Form.Group controlId='name'>
-              <Label>Name</Label>
-              <Input
-                name='name'
-                type='name'
-                placeholder='Enter name'
-                value={inputs.name || ''}
-                onChange={handleInput}
-              />
-            </Form.Group>
-            {isAdmin && (
-              <>
-                <Form.Group
-                  className='d-flex flex-column'
-                  controlId='profileCardTheme'
-                >
-                  <Label>Profile card theme</Label>
-                  <Accordion
-                    toggle={showCardThemes}
-                    maxheight='1015px'
-                    style={{ minHeight: '225px' }}
-                  >
-                    {themes.map((theme: string, i: number) => (
-                      <CardTheme
-                        name='profileCardTheme'
-                        key={i}
-                        selected={theme === inputs.profileCardTheme}
-                        inline
-                        label={
-                          <ProfileCardImg src={theme} alt={`${theme}-${i}`} />
-                        }
-                        type='radio'
-                        id={`inline-radio-${i} bgColor`}
-                        value={theme || ''}
-                        checked={inputs.profileCardTheme === theme}
-                        onChange={handleInput}
-                      />
-                    ))}
-                  </Accordion>
-                  <Text
-                    onClick={() => setShowCardThemes(!showCardThemes)}
-                    cursor='pointer'
-                    marginTop='8px'
-                  >
-                    {showCardThemes ? 'See Less...' : 'See More...'}
-                  </Text>
-                </Form.Group>
-                <Form.Group controlId='volunteerTitle'>
-                  <Label>Position at Little Paws</Label>
-                  <Input
-                    name='volunteerTitle'
-                    type='text'
-                    placeholder='Enter position'
-                    value={inputs.volunteerTitle || ''}
-                    onChange={handleInput}
-                  />
-                </Form.Group>
-                <Form.Group controlId='location' className='d-flex flex-column'>
-                  <Label>State</Label>
-                  <Input
-                    name='location'
-                    value={inputs.location || ''}
-                    as='select'
-                    onChange={handleInput}
-                    style={{ fontSize: '0.875rem' }}
-                  >
-                    {STATES.map((state: any, i: number) => (
-                      <option style={{ color: '#777' }} key={i}>
-                        {state.text}
-                      </option>
-                    ))}
-                  </Input>
-                </Form.Group>
-                <Form.Group controlId='bio' className='d-flex flex-column'>
-                  <Label>Bio</Label>
-                  <Input
-                    name='bio'
-                    rows={5}
-                    as='textarea'
-                    value={inputs.bio || ''}
-                    onChange={handleInput}
-                    style={{ fontSize: '0.875rem' }}
-                  ></Input>
-                </Form.Group>
-              </>
-            )}
-          </FirstCol>
-          {isAdmin && (
-            <ProfilePicCol className='d-flex pl-3 pr-0' xl={3} lg={12}>
-              <Form.Group controlId='image' className='d-flex flex-column'>
-                <Label>Profile picture</Label>
-                <Input
-                  name='avatar'
-                  className='img-link'
-                  type='text'
-                  value={inputs.avatar || ''}
-                  onChange={handleInput}
-                />
-                <div className='d-flex'>
-                  <FormFile
-                    id='image-file'
-                    label={
-                      userInfo?.avatar === defaultImages.upload ||
-                        file?.name ? (
-                        <UploadImageSquare className={uploading ? 'anim' : ''}>
-                          <PhotoUploadIcon ready={file} />
-                        </UploadImageSquare>
-                      ) : (
-                        <Image
-                          src={userInfo?.avatar}
-                          width='200px'
-                          height='200px'
-                          style={{ objectFit: 'cover' }}
-                          alt='Profile'
-                        />
-                      )
-                    }
-                    onChange={(e: any) => editPhotoHandler(e)}
-                  ></FormFile>
-                </div>
-              </Form.Group>
-            </ProfilePicCol>
+    <Fragment>
+      <Modal show={modal.toggle || userJustCreatedAnAccount} onHide={closeModal} centered>
+        <div className='bg-white rounded-xl p-8 w-full'>
+          <i
+            onClick={closeModal}
+            className='fa-solid fa-xmark fa-sm text-gray-500 flex justify-end mb-4 cursor-pointer'
+          ></i>
+          {modal.text === 'error' && (
+            <>
+              <i className='fa-solid fa-circle-exclamation text-red-500 fa-2x flex justify-center mb-3'></i>
+              <p className='text-red-500 text-sm font-Matter-Medium text-center mb-2'>
+                Incorrect credentials
+              </p>
+            </>
           )}
         </div>
-        <span className='d-flex '>
-          <UpdateBtn className='mt-0 mr-3' onClick={onSubmit}>
-            Update
-          </UpdateBtn>
-          {loading && <Spinner animation='grow' />}
-        </span>
-      </Form>
-    </Container>
+      </Modal>
+      <Modal show={userJustCreatedAnAccount} onHide={closeModal} centered>
+        <div className='bg-white rounded-xl p-8 w-full'>
+          <i
+            onClick={closeModal}
+            className='fa-solid fa-xmark fa-sm text-gray-500 flex justify-end mb-4 cursor-pointer'
+          ></i>
+          {userJustCreatedAnAccount && (
+            <div className='flex flex-col justify-center items-center'>
+              <i className='fa-solid fa-envelope-circle-check text-teal-500 fa-2x flex justify-center'></i>
+              <p className='font-Matter-Medium text-xl text-center mb-3 mt-2'>
+                Email confirmed!
+              </p>
+              <p className='font-Matter-Regular text-center'>
+                Your account has been successfully created. Welcome to your profile, where
+                you can access all your purchases and manage your account details.
+              </p>
+              <button
+                onClick={() => {
+                  navigate(location.pathname, { state: null });
+                  closeModal();
+                }}
+                className='mt-5 px-4 py-2 rounded-lg bg-teal-400 text-[#fff] font-matter-Medium text-lg duration-200 hover:bg-teal-500 hover:shadow-xl'
+              >
+                Lets go see
+              </button>
+            </div>
+          )}
+        </div>
+      </Modal>
+      <div className='pb-3'>
+        <div className='w-full mx-auto'>
+          <div className='bg-[#fff]  border-[1px] border-gray-200 rounded-xl p-3 md:p-8'>
+            <div className='grid grid-cols-12 gap-3'>
+              <div className='col-span-12 md:col-span-4'>
+                <p className='text-lg font-Matter-Medium text-slate-900 '>
+                  Profile details
+                </p>
+                <p className='font-Matter-Light text-sm tracking-wid text-slate-900 '>
+                  Update your information
+                </p>
+              </div>
+              <div className='col-span-12 md:col-span-8 md:col-start-6'>
+                <form className='flex flex-col gap-3'>
+                  <div className='flex flex-col gap-3 md:flex-row'>
+                    <div className='flex flex-col w-full'>
+                      <label
+                        className='font-Matter-Medium text-sm mb-0'
+                        htmlFor='firstName'
+                      >
+                        First name
+                      </label>
+                      <input
+                        className='user-input bg-[#fff] border-[1px] border-gray-200 rounded-md  py-2.5 px-4 font-Matter-Regular focus:outline-none'
+                        name='firstName'
+                        onChange={handleInput}
+                        type='text'
+                        alt='First Name'
+                        value={inputs.firstName || ''}
+                      />
+                    </div>
+                    <div className='flex flex-col w-full'>
+                      <label
+                        className='font-Matter-Medium text-sm mb-0'
+                        htmlFor='lastName'
+                      >
+                        Last name
+                      </label>
+                      <input
+                        className='user-input bg-[#fff] border-[1px] border-gray-200 rounded-md  py-2.5 px-4 font-Matter-Regular focus:outline-none'
+                        name='lastName'
+                        onChange={handleInput}
+                        type='text'
+                        alt='Last Name'
+                        value={inputs.lastName || ''}
+                      />
+                    </div>
+                  </div>
+                  {isAdmin && (
+                    <Fragment>
+                      <div className='flex flex-col gap-3 md:flex-row'>
+                        <div className='flex flex-col w-full'>
+                          <label
+                            className='font-Matter-Medium text-sm mb-0'
+                            htmlFor='volunteerTitle'
+                          >
+                            Volunteer Position
+                          </label>
+                          <input
+                            className='user-input bg-[#fff] border-[1px] border-gray-200 rounded-md  py-2.5 px-4 font-Matter-Regular focus:outline-none'
+                            name='volunteerTitle'
+                            onChange={handleInput}
+                            type='text'
+                            alt='Volunteer Position'
+                            value={inputs.volunteerTitle || ''}
+                          />
+                        </div>
+                        <div className='flex flex-col w-full'>
+                          <label
+                            className='font-Matter-Medium text-sm mb-1'
+                            htmlFor='location'
+                          >
+                            State
+                          </label>
+                          <select
+                            className='user-input bg-[#fff] border-[1px] h-[46px] border-gray-200 rounded-md py-2.5 px-4 font-Matter-Regular focus:outline-none text-sm cursor-pointer campaign-input'
+                            id='location'
+                            name='location'
+                            value={inputs.location || ''}
+                            onChange={handleInput}
+                            aria-label='Select state'
+                          >
+                            {STATES.map((state: any, i: number) => (
+                              <option
+                                className='text-zinc-300'
+                                key={i}
+                                value={state.value}
+                              >
+                                {state.text}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+                      <div className='flex flex-col w-full'>
+                        <label htmlFor='bio' className='font-Matter-Medium text-sm mb-0'>
+                          Bio
+                        </label>
+                        <textarea
+                          className='user-input bg-white border-[1px] border-gray-200 rounded-md py-2.5 px-4 font-Matter-Regular focus:outline-none'
+                          id='bio'
+                          name='bio'
+                          rows={5}
+                          value={inputs.bio || ''}
+                          onChange={handleInput}
+                          aria-label='Enter bio'
+                        ></textarea>
+                      </div>
+                    </Fragment>
+                  )}
+                  <button
+                    className='mt-4 flex justify-center items-center px-3 py-2 bg-yellow-to-green text-white w-16 h-10 rounded-lg font-Matter-Regular'
+                    onClick={(e: any) =>
+                      handleUpdateUser(
+                        e,
+                        'details',
+                        isAdmin
+                          ? {
+                            firstName: inputs.firstName,
+                            lastName: inputs.lastName,
+                            volunteerTitle: isAdmin ? inputs.volunteerTitle : '',
+                            location: isAdmin ? inputs.location : '',
+                            bio: isAdmin ? inputs.bio : '',
+                          }
+                          : { firstName: inputs.firstName, lastName: inputs.lastName }
+                      )
+                    }
+                  >
+                    {user?.success && user?.type === 'details' ? (
+                      <i className='fas fa-check text-white'></i>
+                    ) : loading.details ? (
+                      <TailwindSpinner color='fill-white' />
+                    ) : (
+                      'Save'
+                    )}
+                  </button>
+                </form>
+              </div>
+            </div>
+            {isAdmin && (
+              <Fragment>
+                <div className='border-b border-[1px] border-gray-50 w-full my-10'></div>
+                <div className='grid grid-cols-12 gap-3'>
+                  <div className='col-span-12 md:col-span-4'>
+                    <p className='text-lg font-Matter-Medium text-slate-900 '>
+                      Profile picture
+                    </p>
+                    <p className='font-Matter-Light text-sm tracking-wid text-slate-900 '>
+                      This image will be visible to the public
+                    </p>
+                  </div>
+                  <div className='col-span-12 md:col-span-8 md:col-start-6'>
+                    <form className='flex flex-col'>
+                      <Form.File
+                        id='image-file'
+                        label={
+                          <div className='w-64 h-64 aspect-square rounded-sm border-[1px] border-gray-200 flex flex-col items-center justify-center p-3 cursor-pointer'>
+                            {inputs.avatar ? (
+                              <img
+                                src={inputs.avatar}
+                                alt=''
+                                className={`object-contain cursor-pointer h-full w-full bg-gray-100 rounded-lg`}
+                              />
+                            ) : (
+                              <>
+                                <i className='fa-solid fa-cloud-arrow-up fa-xl mb-2 rounded-full bg-gray-200 text-gray-700 flex items-center justify-center h-12 w-12'></i>
+                                <p className='font-Matter-Regular underline text-blue-400'>
+                                  Click to add photo
+                                </p>
+                              </>
+                            )}
+                          </div>
+                        }
+                        onChange={editPhotoHandler}
+                      ></Form.File>
+                      {inputs.avatar && (
+                        <button
+                          onClick={(e: any) =>
+                            handleUpdateUser(e, 'photo', {
+                              avatar: '',
+                            })
+                          }
+                          className='bg-red-500 text-white font-Matter-Medium w-fit rounded-md px-3.5 py-1.5'
+                        >
+                          Remove profile photo
+                        </button>
+                      )}
+                      <button
+                        className='mt-4 flex justify-center items-center px-3 py-2 bg-yellow-to-green text-white w-16 h-10 rounded-lg font-Matter-Regular cursor-pointer'
+                        onClick={(e: any) =>
+                          handleUpdateUser(e, 'photo', {
+                            avatar: inputs.avatar,
+                          })
+                        }
+                      >
+                        {user?.success && user?.type === 'photo' ? (
+                          <i className='fas fa-check text-white'></i>
+                        ) : loading.photo ? (
+                          <TailwindSpinner color='fill-white' />
+                        ) : (
+                          'Save'
+                        )}
+                      </button>
+                    </form>
+                  </div>
+                </div>
+                <div className='border-b border-[1px] border-gray-50 w-full my-10'></div>
+                <div className='grid grid-cols-12 gap-3'>
+                  <div className='col-span-12 md:col-span-4'>
+                    <p className='text-lg font-Matter-Medium text-slate-900 '>
+                      Card theme
+                    </p>
+                    <p className='font-Matter-Light text-sm tracking-wid text-slate-900'>
+                      Choose image to display as board member card background
+                    </p>
+                  </div>
+                  <div className='col-span-12 md:col-span-8 md:col-start-6'>
+                    <form className='flex flex-col'>
+                      <Form.Group controlId='profileCardTheme'>
+                        <div className='flex flex-wrap overflow-y-scroll h-[300px]'>
+                          {themes.map((theme: string, i: number) => (
+                            <CardTheme
+                              name='profileCardTheme'
+                              key={i}
+                              selected={theme === inputs.profileCardTheme}
+                              inline
+                              label={
+                                <img
+                                  className='h-16 w-16 md:h-20 md:w-20 object-cover cursor-pointer'
+                                  src={theme}
+                                  alt={`${theme}-${i}`}
+                                />
+                              }
+                              type='radio'
+                              id={`inline-radio-${i} bgColor`}
+                              value={theme || ''}
+                              checked={inputs.profileCardTheme === theme}
+                              onChange={handleInput}
+                            />
+                          ))}
+                        </div>
+                      </Form.Group>
+                      <button
+                        className='mt-4 flex justify-center items-center px-3 py-2 bg-yellow-to-green text-white w-16 h-10 rounded-lg font-Matter-Regular cursor-pointer'
+                        onClick={(e: any) =>
+                          handleUpdateUser(e, 'theme', {
+                            profileCardTheme: inputs.profileCardTheme,
+                          })
+                        }
+                      >
+                        {user?.success && user?.type === 'theme' ? (
+                          <i className='fas fa-check text-white'></i>
+                        ) : loading.theme ? (
+                          <TailwindSpinner color='fill-white' />
+                        ) : (
+                          'Save'
+                        )}
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </Fragment>
+            )}
+          </div>
+        </div>
+      </div>
+    </Fragment>
   );
 };
 

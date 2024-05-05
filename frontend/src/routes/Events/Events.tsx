@@ -1,18 +1,112 @@
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { listEvents } from '../../actions/eventActions';
 import EventCard from '../../components/EventCard';
-import { Text } from '../../components/styles/Styles';
-import { Month, timeLineData } from '../../components/raffle-winners/Timeline';
-import { LoadingImg } from '../../components/LoadingImg';
 import EventHigh from '../../components/assets/events-high.jpg';
 import EventHLow from '../../components/assets/events-low.jpg';
 import LeftArrow from '../../components/svg/LeftArrow';
 import RightArrow from '../../components/svg/RightArrow';
-import Message from '../../components/Message';
-import { Container } from '../../components/styles/shop/Styles';
 import Hero from '../../components/Hero';
+import { useGetEventsQuery } from '../../redux/services/eventApi';
+import { Fragment } from 'react';
+import GreenRotatingTransparentCircle from '../../components/Loaders/GreenRotatingTransparentCircle';
+
+const timeLineData = () => [
+  {
+    month: 'January',
+    abbrv: 'JAN',
+    bg: '#fdc90b',
+    digits: '01',
+  },
+  {
+    month: 'February',
+    abbrv: 'FEB',
+    bg: '#f79121',
+    flip: true,
+    digits: '02',
+  },
+  {
+    month: 'March',
+    abbrv: 'MAR',
+    bg: '#f1633d',
+    digits: '03',
+  },
+  {
+    month: 'April',
+    abbrv: 'APR',
+    bg: '#ef3c40',
+    flip: true,
+    digits: '04',
+  },
+  {
+    month: 'May',
+    abbrv: 'MAY',
+    bg: '#c3549e',
+    digits: '05',
+  },
+  {
+    month: 'June',
+    abbrv: 'JUN',
+    bg: '#7756a3',
+    flip: true,
+    digits: '06',
+  },
+  {
+    month: 'July',
+    abbrv: 'JUL',
+    bg: '#4d69b2',
+    digits: '07',
+  },
+  {
+    month: 'August',
+    abbrv: 'AUG',
+    bg: '#137abe',
+    flip: true,
+    digits: '08',
+  },
+  {
+    month: 'September',
+    abbrv: 'SEP',
+    bg: '#12a6e0',
+    digits: '09',
+  },
+  {
+    month: 'October',
+    abbrv: 'OCT',
+    bg: '#0db7b2',
+    flip: true,
+    digits: '10',
+  },
+  {
+    month: 'November',
+    abbrv: 'NOV',
+    bg: '#a9cf3d',
+    digits: '11',
+  },
+  {
+    month: 'December',
+    abbrv: 'DEC',
+    bg: '#d7de5a',
+    flip: true,
+    digits: '12',
+  },
+];
+
+const Month = styled.div<{ bg?: string; donothover?: boolean }>`
+  background-color: ${({ bg }) => bg ?? bg};
+  height: 3rem;
+  width: 5rem;
+  border-radius: 0.5rem;
+  margin: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  font-size: 1.45rem;
+  font-weight: bold;
+  cursor: ${({ donothover }) => (donothover ? '' : 'pointer')};
+  :hover {
+    filter: ${({ donothover }) => (donothover ? '' : 'brightness(0.8)')};
+  }
+`;
 
 const EventsContainer = styled.div`
   display: flex;
@@ -53,17 +147,13 @@ const EventIcon = () => (
 );
 
 const Events = () => {
-  const dispatch = useDispatch();
-  const {
-    eventList: { loading, error, events },
-  } = useSelector((state: any) => state);
+  const { data, isLoading } = useGetEventsQuery();
+  const events = data?.events;
 
-  useEffect(() => {
-    dispatch(listEvents());
-  }, [dispatch]);
+  if (isLoading) return <GreenRotatingTransparentCircle />;
 
   return (
-    <>
+    <Fragment>
       <Hero
         low={EventHLow}
         high={EventHigh}
@@ -71,70 +161,35 @@ const Events = () => {
         link={`https://pixabay.com/users/ilonaburschl-3558510/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=2059668`}
         photographer='Ilona Ilyés'
       />
-
-      <Container>
+      <div className='max-w-screen-[980px] w-full mx-auto mb-16 px-3'>
         <div className='w-100 d-flex justify-content-between mt-3'>
-          <LeftArrow
-            text='Home'
-            url='/'
-            text2='Welcome Wieners'
-            url2='/welcome-wieners'
-          />
-          <RightArrow text='Blog' url='/about/blog' />
+          <LeftArrow text='Home' url='/' text2='Welcome Wieners' url2='/welcome-wieners' />
+          <RightArrow text='Blog' url='/blog' />
         </div>
-        <Text
-          marginBottom='48px'
-          marginTop='56px'
-          fontSize='32px'
-          textAlign='center'
-          fontWeight={400}
-        >
-          Little Paws Dachshund Rescue host a number of fund raising events
-          throughout the year. We hope to see you at some in{' '}
-          {new Date().getFullYear()}!
-        </Text>
-      </Container>
-      <div
-        style={{
-          maxWidth: '1450px',
-          width: '100%',
-          marginInline: 'auto',
-          paddingBottom: '64px',
-        }}
-      >
-        {error ? (
-          <div className='d-flex flex-column align-items-center'>
-            <Message variant='danger'>{error}</Message>
-          </div>
-        ) : events?.length === 0 || events === undefined ? (
-          <div className='d-flex flex-column align-items-center'>
-            <div className='mb-3'>
-              <EventIcon />
-            </div>
-            <Text>Sorry, no events at the moment. Check back soon!</Text>
+        <p className='mb-12 mt-14 text-3xl text-center font-Matter-Medium'>
+          Little Paws Dachshund Rescue host a number of fund raising events throughout the year. We
+          hope to see you at some in {new Date().getFullYear()}!
+        </p>
+      </div>
+      <div className='max-w-screen-xl w-full pb-16 mx-auto'>
+        {events?.length === 0 || events === undefined ? (
+          <div className='flex flex-col items-center'>
+            <EventIcon />
+            <p className='font-Matter-Regular mt-3'>
+              Sorry, no events at the moment. Check back soon!
+            </p>
           </div>
         ) : (
           <EventsContainer>
             {timeLineData()?.map((obj, i) => (
-              <div key={i} className='my-1 w-100'>
+              <div key={i} className='my-1 w-full'>
                 <Month bg={obj?.bg} className='ml-0' donothover={true}>
                   {obj?.abbrv}
                 </Month>
-
                 {events?.map(
                   (event: any) =>
                     event?.startDate?.split('-')[1] === obj?.digits && (
-                      <div key={event?._id} className='my-3'>
-                        {loading ? (
-                          <LoadingImg
-                            w='100%'
-                            h='10rem'
-                            borderRadius='0.5rem'
-                          />
-                        ) : (
-                          <EventCard event={event} />
-                        )}
-                      </div>
+                      <EventCard key={event?._id} event={event} />
                     )
                 )}
               </div>
@@ -142,7 +197,7 @@ const Events = () => {
           </EventsContainer>
         )}
       </div>
-    </>
+    </Fragment>
   );
 };
 

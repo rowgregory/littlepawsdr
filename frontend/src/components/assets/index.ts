@@ -25,6 +25,32 @@ import Background01Parallax03 from './background_01_parallax_03.png';
 import DashboardBg from './dashboard-gradient-bg.webp';
 import Jelly from './jelly.webp';
 import SorryNoImg from './no_image_dog.jpg';
+import TransparentPurpleLogo from './logo-transparent.png';
+import Logo2024 from './logo2024.png';
+import NoImgDog from './no_image_dog.jpg';
+import NothingHere from './404_dog01.png';
+import SessionExpired from './session-expired.png';
+import PasswordReset from './password-reset.png';
+import UnderConstruction from './dachshund-construction.webp';
+import One from './dog-row-home-1.png';
+import Two from './dog-row-home-2.webp';
+import Three from './dog-row-home-3.webp';
+import Four from './dog-row-home-4.webp';
+import Five from './dog-row-home-5.webp';
+import AquaTile from './aqua_tile.jpg';
+import Senior2 from './senior-2.webp';
+import Senior3 from './senior-3.webp';
+import Donate1 from './donate-1.png';
+import VenmoQRCode from './venmo_qr_code.png';
+import Sanctuary1 from './sanctuary-1.png';
+import Sanctuary2 from './sanctuary-2.webp';
+import BlackThread from './black-thread.png';
+import CarbonFibreBig from './carbon-fibre-big.png';
+import DarkMosaic from './dark-mosaic.png';
+import WhiteLogo from './logo-white2.png';
+import EscheresqueDark from './escheresque-dark.png';
+import Tile from './3px-tile.png';
+import Arches from './arches.png';
 
 export {
   Icon1,
@@ -54,4 +80,30 @@ export {
   DashboardBg,
   Jelly,
   SorryNoImg,
+  TransparentPurpleLogo,
+  Logo2024,
+  NoImgDog,
+  NothingHere,
+  SessionExpired,
+  PasswordReset,
+  UnderConstruction,
+  One,
+  Two,
+  Three,
+  Four,
+  Five,
+  AquaTile,
+  Senior2,
+  Senior3,
+  Donate1,
+  VenmoQRCode,
+  Sanctuary1,
+  Sanctuary2,
+  BlackThread,
+  CarbonFibreBig,
+  DarkMosaic,
+  WhiteLogo,
+  EscheresqueDark,
+  Tile,
+  Arches,
 };

@@ -3,6 +3,12 @@ import bcrypt from 'bcryptjs';
 
 const userSchema = mongoose.Schema(
   {
+    campaigns: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Campaign',
+      },
+    ],
     name: {
       type: String,
       required: true,
@@ -23,15 +29,12 @@ const userSchema = mongoose.Schema(
     },
     avatar: {
       type: String,
-      default: '',
     },
     volunteerTitle: {
       type: String,
-      default: '',
     },
     profileCardTheme: {
       type: String,
-      default: '',
     },
     online: {
       type: Boolean,
@@ -39,7 +42,6 @@ const userSchema = mongoose.Schema(
     },
     theme: {
       type: String,
-      default: '',
     },
     confirmed: {
       type: Boolean,
@@ -61,8 +63,14 @@ const userSchema = mongoose.Schema(
     lastLoginTime: { type: String },
     resetPasswordToken: { type: String },
     resetPasswordExpires: { type: Number },
-    introducedToSilverPaws: { type: Boolean, default: false },
-    onlineStatus: { type: String }
+    onlineStatus: { type: String },
+    affiliation: { type: String },
+    firstNameFirstInitial: { type: String },
+    lastNameFirstInitial: { type: String },
+    firstName: { type: String },
+    lastName: { type: String },
+    anonymousBidding: { type: Boolean, default: false },
+    registrationConfirmationEmailSent: { type: Boolean, default: false },
   },
   {
     timestamps: true,

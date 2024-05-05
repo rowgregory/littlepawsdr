@@ -1,6 +1,5 @@
-import { Image, Spinner } from 'react-bootstrap';
+import { Spinner } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
-import Message from '../../components/Message';
 import { Flex, Text } from '../../components/styles/Styles';
 import {
   CartContainer,
@@ -8,7 +7,6 @@ import {
   CheckoutBtn,
   CheckoutBtnColumn,
   Container,
-  Divider,
   SecondSubTotal,
 } from '../../components/styles/cart/Styles';
 import { Link, useNavigate } from 'react-router-dom';
@@ -17,38 +15,37 @@ import LeftArrow from '../../components/svg/LeftArrow';
 import CartItem from './CartItem';
 import addDecimals from '../../utils/addDecimals';
 import SplitTextToChars from '../../utils/SplitTextToChars';
+import { RootState } from '../../redux/toolkitStore';
+import { Fragment } from 'react';
 
 const Cart = () => {
-  const history = useNavigate();
-  const state = useSelector((state: any) => state);
-  const cartItems = state.cart.cartItems;
-  const cartItemsAmount = state.cart.cartItemsAmount;
-  const subtotal = state.cart.subtotal;
-  const error = state.cart.error;
-  const loading = state.cart.loading;
+  const navigate = useNavigate();
+  const cart = useSelector((state: RootState) => state.cart);
+  const cartItems = cart.cartItems;
+  const cartItemsAmount = cart.cartItemsAmount;
+  const subtotal = cart.subtotal;
+  const error = cart.error;
+  const loading = cart.loading;
 
   return (
     <CartContainer>
       <Container>
-        <div
-          className='d-flex align-items-center'
-          style={{ marginBottom: '64px' }}
-        >
+        <div className='flex items-center mb-16'>
           <Link to='/'>
-            <Image src={LogoDay} height='48px' alt=' Cart Logo' />
+            <img src={LogoDay} className='h-24 object-cover' alt='Cart Logo' />
           </Link>
-          <Divider />
-          <Text fontSize='28px' fontWeight={400} color='#464342'>
+          <div className='w-[1px] h-14 bg-gray-400 mx-3 sm:mx-4'></div>
+          <p className='font-Matter-Regular text-gray-800 text-lg md:text-xl'>
             {cartItemsAmount === 0 ? 'Empty Shopping Cart' : 'Shopping Cart'}
-          </Text>
+          </p>
         </div>
         {error ? (
-          <>
-            <Message variant='danger'>{error}</Message>
+          <Fragment>
+            <p className='font-Matter-Medium bg-red-600 text-[#fff] px-4 py-1.5 my-2.5'>{error}</p>
             <Link to='/welcome-wieners'>Go to Welcome Wieners</Link>
             <Link to='/merch'>Go to Merch</Link>
             <Link to='/ecards'>Go to Ecards</Link>
-          </>
+          </Fragment>
         ) : cartItemsAmount > 0 ? (
           <CartItemContainer>
             <tbody>
@@ -83,24 +80,14 @@ const Cart = () => {
       </Container>
       <CheckoutBtnColumn>
         <SecondSubTotal>
-          <Text
-            fontSize='28px'
-            fontWeight={400}
-            color='#9761aa'
-            marginBottom='48px'
-          >
+          <Text fontSize='28px' fontWeight={400} color='#9761aa' marginBottom='48px'>
             Order Summary
           </Text>
           <div className='d-flex align-items-baseline justify-content-between w-100'>
             <Text fontSize='14px' color='#fff'>
               Subtotal ({cartItemsAmount}&nbsp;items):&nbsp;
             </Text>
-            <Text
-              color='#fff'
-              fontWeight='bold'
-              fontSize='14px'
-              marginBottom='0'
-            >
+            <Text color='#fff' fontWeight='bold' fontSize='14px' marginBottom='0'>
               {addDecimals(subtotal)}
             </Text>
           </div>
@@ -117,7 +104,7 @@ const Cart = () => {
 
           <CheckoutBtn
             disabled={cartItems?.length <= 0}
-            onClick={() => history({ pathname: '/cart/place-order' })}
+            onClick={() => navigate({ pathname: '/cart/place-order' })}
           >
             Checkout
           </CheckoutBtn>

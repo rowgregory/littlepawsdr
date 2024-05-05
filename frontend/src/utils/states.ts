@@ -1,5 +1,5 @@
 export const STATES = [
-  { value: '', text: 'Choose State', taxRate: 0 },
+  { value: '', text: '', taxRate: 0 },
   { value: 'AL', text: 'Alabama', taxRate: 4.0 },
   { value: 'AK', text: 'Alaska', taxRate: 0.0 },
   { value: 'AZ', text: 'Arizona', taxRate: 5.6 },

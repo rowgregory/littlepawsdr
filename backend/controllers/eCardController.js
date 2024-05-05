@@ -2,172 +2,199 @@ import asyncHandler from 'express-async-handler';
 import ECard from '../models/eCardModel.js';
 import Error from '../models/errorModel.js';
 
-//@desc   Create an eCard
-//@route  POST api/ecard
-//@access Private/Admin
+/**
+ @desc   Create an eCard
+ @route  POST api/ecard
+ @access Private/Admin
+*/
 const createECard = asyncHandler(async (req, res) => {
   const { category, price, image, name, thumb } = req.body;
   try {
-    const eCard = new ECard({
+    await ECard.create({
       category,
       price,
       image,
       name,
-      thumb
+      thumb,
     });
 
-    const createdECard = await eCard.save();
-
-    res.status(201).json(createdECard);
+    res.status(201).json({ message: 'Ecard created', sliceName: 'ecardApi' });
   } catch (err) {
-    const createdError = new Error({
+    await Error.create({
       functionName: 'CREATE_ECARD_ADMIN',
-      detail: err.message,
-      user: {
-        id: req.user._id,
-        name: req.user.name,
-      },
-      status: 500,
+      name: err.name,
+      message: err.message,
+      user: { id: req?.user?._id, email: req?.user?.email },
     });
 
-    await createdError.save();
-    res.status(500).send({
-      message: '500 - Server Error',
+    res.status(500).json({
+      message: 'Error creating ecard',
+      sliceName: 'ecardApi',
     });
   }
 });
 
-// @desc    Get all eCards
-// @route   GET /api/ecard/filtered/:category
-// @access  Public
+/**
+ @desc    Get filtered ecards
+ @route   GET /api/ecard/filtered/:category
+ @access  Public
+*/
 const getFilteredEcards = asyncHandler(async (req, res) => {
   try {
-    const eCards = await ECard.find({ category: req.params.category});
+    const ecards = await ECard.find({ category: req.params.category });
 
-    res.json(eCards);
+    res.json({ ecards });
   } catch (err) {
-    const createdError = new Error({
+    await Error.create({
       functionName: 'GET_FILTERED_ECARDS_LIST_PUBLIC',
-      detail: err.message,
-      status: 500,
+      name: err.name,
+      message: err.message,
+      user: { id: req?.user?._id, email: req?.user?.email },
     });
 
-    await createdError.save();
-    res.status(500).send({
-      message: '500 - Server Error',
+    res.status(500).json({
+      message: 'Error fetching filtered ecards',
+      sliceName: 'ecardApi',
     });
   }
 });
 
-// @desc    Get all eCards
-// @route   GET /api/ecards
-// @access  Public
+/**
+ @desc    Get ecard categories
+ @route   GET /api/ecard/categories
+ @access  Public
+*/
+const getEcardCategories = asyncHandler(async (req, res) => {
+  try {
+    const ecards = await ECard.find();
+
+    const categories = [...new Set(ecards?.map((ecard) => ecard.category))];
+
+    res.json({ categories });
+  } catch (err) {
+    await Error.create({
+      functionName: 'GET_FILTERED_ECARDS_LIST_PUBLIC',
+      name: err.name,
+      message: err.message,
+      user: { id: req?.user?._id, email: req?.user?.email },
+    });
+
+    res.status(500).json({
+      message: 'Error fetching ecard categories',
+      sliceName: 'ecardApi',
+    });
+  }
+});
+
+/**
+ @desc    Get all eCards
+ @route   GET /api/ecards
+ @access  Public
+*/
 const getECards = asyncHandler(async (req, res) => {
   try {
-    const eCards = await ECard.find({});
+    const ecards = await ECard.find({}).sort({ updated: -1 });
 
-    res.json(eCards);
+    res.json({ ecards });
   } catch (err) {
-    const createdError = new Error({
+    await Error.create({
       functionName: 'GET_ECARDS_LIST_PUBLIC',
-      detail: err.message,
-      status: 500,
+      name: err.name,
+      message: err.message,
+      user: { id: req?.user?._id, email: req?.user?.email },
     });
 
-    await createdError.save();
-    res.status(500).send({
-      message: '500 - Server Error',
+    res.status(500).json({
+      message: 'Error fetching ecards',
+      sliceName: 'ecardApi',
     });
   }
 });
 
-// @desc    Get eCard details
-// @route   GET /api/ecard/:id
-// @access  Private/Admin
+/**
+ @desc    Get eCard details
+ @route   GET /api/ecard/:id
+ @access  Private/Admin
+*/
 const getECardDetails = asyncHandler(async (req, res) => {
-  const eCard = await ECard.findById(req.params.id);
+  const { id } = req.params;
+  try {
+    const ecard = await ECard.findById(id);
 
-  if (eCard) {
-    res.json(eCard);
-  } else {
-    const createdError = new Error({
+    res.json({ ecard });
+  } catch (err) {
+    await Error.create({
       functionName: 'GET_ECARD_DETAILS_ADMIN',
-      detail: err.message,
-      user: {
-        id: req.user._id,
-        name: req.user.name,
-      },
-      status: 500,
+      name: err.name,
+      message: err.message,
+      user: { id: req?.user?._id, email: req?.user?.email },
     });
 
-    await createdError.save();
-    res.status(500).send({
-      message: '500 - Server Error',
+    res.status(500).json({
+      message: 'Error fetching ecard',
+      sliceName: 'ecardApi',
     });
   }
 });
-
-//@desc   Update an eCard
-//@route  PUT api/ecard/:id
-//@access Private/Admin
+/**
+ @desc   Update an eCard
+@route  PUT api/ecard/:id
+@access Private/Admin
+*/
 const updateECard = asyncHandler(async (req, res) => {
-  const { category, price, image, name, thumb } = req.body;
+  try {
+    await ECard.findByIdAndUpdate(req.params.id, req.body, { new: true });
 
-  const eCard = await ECard.findById(req.params.id);
-
-  if (eCard) {
-    eCard.category = category ?? eCard.category;
-    eCard.price = price ?? eCard.price;
-    eCard.image = image ?? eCard.image;
-    eCard.name = name ?? eCard.name;
-    eCard.thumb = thumb ?? eCard.thumb;
-
-    const updatedECard = await eCard.save();
-
-    res.json(updatedECard);
-  } else {
-    const createdError = new Error({
+    res.json({ message: 'Ecard updated', sliceName: 'ecardApi' });
+  } catch (err) {
+    await Error.create({
       functionName: 'UPDATE_ECARD_ADMIN',
-      detail: err.message,
-      user: {
-        id: req.user._id,
-        name: req.user.name,
-      },
-      status: 500,
+      name: err.name,
+      message: err.message,
+      user: { id: req?.user?._id, email: req?.user?.email },
     });
 
-    await createdError.save();
-    res.status(500).send({
-      message: '500 - Server Error',
+    res.status(500).json({
+      message: 'Error updating ecard',
+      sliceName: 'ecardApi',
     });
   }
 });
 
-// @desc    Delete an eCard
-// @route   DELETE /api/ecard/:id
-// @access  Private/Admin
+/**
+ @desc    Delete an eCard
+ @route   DELETE /api/ecard/:id
+ @access  Private/Admin
+*/
 const deleteEcard = asyncHandler(async (req, res) => {
-  const eCard = await ECard.findById(req.params.id);
+  const { id } = req.params;
 
-  if (eCard) {
-    await eCard.deleteOne();
-    res.json({ message: 'ECard removed' });
-  } else {
-    const createdError = new Error({
+  try {
+    const ecard = await ECard.findById(id);
+    await ecard.deleteOne();
+
+    res.json({ message: 'Ecard removed', sliceName: 'ecardApi' });
+  } catch (err) {
+    await Error.create({
       functionName: 'DELETE_ECARD_ADMIN',
-      detail: err.message,
-      user: {
-        id: req.user._id,
-        name: req.user.name,
-      },
-      status: 500,
+      name: err.name,
+      message: err.message,
+      user: { id: req?.user?._id, email: req?.user?.email },
     });
 
-    await createdError.save();
-    res.status(500).send({
-      message: '500 - Server Error',
+    res.status(500).json({
+      message: 'Error deleting ecard',
+      sliceName: 'ecardApi',
     });
   }
 });
 
-export { createECard, getECards, getFilteredEcards, getECardDetails, updateECard, deleteEcard };
+export {
+  createECard,
+  getFilteredEcards,
+  getEcardCategories,
+  getECards,
+  getECardDetails,
+  updateECard,
+  deleteEcard,
+};

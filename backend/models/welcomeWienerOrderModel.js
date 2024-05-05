@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 const welcomeWienerOrderSchema = mongoose.Schema(
   {
     dachshundId: { type: String, required: true },
-    dachshundImage: { type: String, required: true },
+    productImage: { type: String, required: true },
     dachshundName: { type: String, required: true },
     price: { type: Number, required: true },
     productId: { type: String, required: true },
@@ -14,7 +14,7 @@ const welcomeWienerOrderSchema = mongoose.Schema(
     isPhysicalProduct: { type: Boolean, default: false },
     subtotal: { type: Number },
     totalPrice: { type: Number },
-    orderId: { type: String },
+    orderId: { type: mongoose.Schema.Types.ObjectId, ref: 'Order' },
   },
   {
     timestamps: true,

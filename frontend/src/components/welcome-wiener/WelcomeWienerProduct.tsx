@@ -1,41 +1,12 @@
-import styled from 'styled-components';
-import { Text } from '../styles/Styles';
 import { FC } from 'react';
 
-const Container = styled.div<{ selected: boolean }>`
-  width: 100%;
-  display: flex;
-  padding: 8px;
-  cursor: pointer;
-  background: ${({ selected }) => (selected ? 'rgb(0 0 0/0.095)' : '#fff')};
-  border-radius: 8px;
-  position: relative;
-  margin-bottom: 28px;
-  :hover {
-    background: rgb(0 0 0/0.095);
-  }
-`;
-
-const CheckMark = styled.div`
-  position: absolute;
-  width: 25px;
-  height: 25px;
-  border-radius: 50%;
-  background: #05a532;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  right: -6px;
-  top: -12px;
-`;
-
-interface WelcomeWienerProductProps {
+interface ProductProps {
   product: {};
   inputs: {};
   addToAssociatedProducts: any;
 }
 
-const WelcomeWienerProduct: FC<WelcomeWienerProductProps> = ({
+const WelcomeWienerProduct: FC<ProductProps> = ({
   product,
   inputs,
   addToAssociatedProducts,
@@ -45,29 +16,19 @@ const WelcomeWienerProduct: FC<WelcomeWienerProductProps> = ({
   );
 
   return (
-    <Container
-      selected={isSelected}
+    <div
+      className={`${isSelected ? 'bg-gray-200' : 'bg-[#fff] border-dashed border-2 border-gray-100'
+        } w-28 h-28 flex justify-center items-center flex-col p-2 cursor-pointer rounded-md relative hover:bg-gray-100`}
       onClick={() => addToAssociatedProducts(product)}
     >
       {isSelected && (
-        <CheckMark>
-          <i className='fas fa-check' style={{ color: '#fff' }}></i>
-        </CheckMark>
+        <div className='absolute w-5 h-5 rounded-full bg-green-500 flex items-center justify-center right-2 top-2'>
+          <i className='fas fa-check fa-xs text-[#fff]'></i>
+        </div>
       )}
-      <i className={`${product?.icon} fa-2x`}></i>
-      <div className='d-flex flex-column ml-3'>
-        <Text
-          fontSize='14px'
-          fontWeight='500'
-          style={{ textTransform: 'uppercase' }}
-        >
-          {product.name}
-        </Text>
-        <Text fontSize='14px' fontWeight='400'>
-          Donation Amount: {product.price}
-        </Text>
-      </div>
-    </Container>
+      <i className={`${product?.icon} fa-sm mb-2`}></i>
+      <p className='text-sm font-Matter-Regular text-center'>{product.name}</p>
+    </div>
   );
 };
 

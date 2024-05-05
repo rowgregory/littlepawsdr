@@ -1,5 +1,20 @@
-import { BottomSection } from '../styles/AvailableDog/Styles';
+import styled from 'styled-components';
 import { Text } from '../styles/Styles';
+
+
+export const BottomSection = styled.div`
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+  margin: 5rem 0rem;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+  div {
+    color: #fff;
+    background: ${({ theme }) => theme.colors.secondary};
+  }
+`;
 
 const BottomInfo = () => {
   return (

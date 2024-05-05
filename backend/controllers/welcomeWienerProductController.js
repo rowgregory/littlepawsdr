@@ -1,77 +1,150 @@
+import Error from '../models/errorModel.js';
 import WelcomeWienerProduct from '../models/welcomeWienerProductModel.js';
 
-// Function to retrieve all welcomeWienerProducts
+/**
+ @desc    Get welcome wiener products
+ @route   GET /api/welcome-wiener-product
+ @access  Public
+*/
 const getAllWelcomeWienerProducts = async (req, res) => {
   try {
     const welcomeWienerProducts = await WelcomeWienerProduct.find()
-      .sort({ updatedAt: -1 }) // Sort by updatedAt in descending order
-      .exec();
-    res.status(200).json(welcomeWienerProducts);
-  } catch (error) {
-    res.status(404).json({ message: error.message });
+
+    res.status(200).json({ welcomeWienerProducts });
+  } catch (err) {
+    await Error.create({
+      functionName: 'GET_WELCOME_WIENER_PRODUCTS_PUBLIC',
+      name: err.name,
+      message: err.message,
+      user: { id: req?.user?._id, email: req?.user?.email },
+    });
+
+    res.status(500).json({
+      message: 'Error fetching welcome wiener products',
+      sliceName: 'welcomeWienerApi',
+    });
   }
 };
 
-// Function to update a welcomeWienerProduct
+/**
+ @desc    Get welcome wiener product
+ @route   GET /api/welcome-wiener-product/:id
+ @access  Public
+*/
+const getWelcomeWienerProductById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const welcomeWienerProduct = await WelcomeWienerProduct.findById(id);
+
+    res.json({ welcomeWienerProduct });
+  } catch (err) {
+    await Error.create({
+      functionName: 'GET_WELCOME_WIENER_PRODUCT_PUBLIC',
+      name: err.name,
+      message: err.message,
+      user: { id: req?.user?._id, email: req?.user?.email },
+    });
+
+    res.status(500).json({
+      message: 'Error fetching welcome wiener product',
+      sliceName: 'welcomeWienerApi',
+    });
+  }
+};
+
+/**
+ @desc    Update wiener product
+ @route   PUT /api/welcome-wiener-product/:id
+ @access  Private Admin
+*/
 const updateWelcomeWienerProduct = async (req, res) => {
   const { id } = req.params;
   const { icon, name, price, description } = req.body;
 
   try {
-    const updatedWelcomeWienerProduct = await WelcomeWienerProduct.findByIdAndUpdate(
+    await WelcomeWienerProduct.findByIdAndUpdate(
       id,
       { icon, name, price, description },
       { new: true }
     );
 
-    res.status(200).json(updatedWelcomeWienerProduct);
-  } catch (error) {
-    res.status(404).json({ message: error.message });
+    res.status(200).json({ message: 'Welcome wiener product updated', sliceName: 'welcomeWienerApi' });
+  } catch (err) {
+    await Error.create({
+      functionName: 'UPDATE_WELCOME_WIENER_PRODUCT_PRIVATE_ADMIN',
+      name: err.name,
+      message: err.message,
+      user: { id: req?.user?._id, email: req?.user?.email },
+    });
+
+    res.status(500).json({
+      message: 'Error updating welcome wiener product',
+      sliceName: 'welcomeWienerApi',
+    });
   }
 };
 
-// Function to create a new welcomeWienerProduct
+/**
+ @desc    Create welcome wiener product
+ @route   GET /api/welcome-wiener-product
+ @access  Private Admin
+*/
 const createWelcomeWienerProduct = async (req, res) => {
   const { icon, name, price, description } = req.body;
 
-  const newWelcomeWienerProduct = new WelcomeWienerProduct({
-    icon,
-    name,
-    price,
-    description,
-  });
-
   try {
+    const newWelcomeWienerProduct = new WelcomeWienerProduct({
+      icon,
+      name,
+      price,
+      description,
+    });
     await newWelcomeWienerProduct.save();
-    res.status(201).json(newWelcomeWienerProduct);
-  } catch (error) {
-    res.status(409).json({ message: error.message });
+
+    res.status(201).json({ message: 'Welcome wiener product created', sliceName: 'welcomeWienerApi' });
+  } catch (err) {
+    await Error.create({
+      functionName: 'CREATE_WELCOME_WIENER_PRODUCT_PRIVATE_ADMIN',
+      name: err.name,
+      message: err.message,
+      user: { id: req?.user?._id, email: req?.user?.email },
+    });
+
+    res.status(500).json({
+      message: 'Error creating welcome wiener product',
+      sliceName: 'welcomeWienerApi',
+    });
   }
 };
 
-// Function to delete a welcomeWienerProduct
+/**
+ @desc    Delete welcome wiener product
+ @route   DELETE /api/welcome-wiener-product/:id
+ @access  Private Admin
+*/
 const deleteWelcomeWienerProduct = async (req, res) => {
   const { id } = req.params;
 
   try {
-    await WelcomeWienerProduct.findByIdAndRemove(id);
-    const welcomeWienerProducts = await WelcomeWienerProduct.find();
-    res.status(200).json({
-      message: 'Welcome Wiener Product deleted successfully.',
-      productList: welcomeWienerProducts,
-    });
-  } catch (error) {
-    res.status(404).json({ message: error.message });
-  }
-};
+    const welcomeWienerProduct = await WelcomeWienerProduct.findById(id);
+    await welcomeWienerProduct.deleteOne();
 
-// Function to get a welcomeWienerProduct by Id
-const getWelcomeWienerProductById = async (req, res) => {
-  try {
-    const welcomeWienerProduct = await WelcomeWienerProduct.findById(req.params.id);
-    res.json(welcomeWienerProduct);
+    res.status(200).json({
+      message: 'Welcome Wiener Product deleted',
+      sliceName: 'welcomeWienerApi'
+    });
   } catch (err) {
-    res.status(404).json({ message: 'Product not found' });
+    await Error.create({
+      functionName: 'DELETE_WELCOME_WIENER_PRODUCT_PRIVATE_ADMIN',
+      name: err.name,
+      message: err.message,
+      user: { id: req?.user?._id, email: req?.user?.email },
+    });
+
+    res.status(500).json({
+      message: 'Error deleting welcome wiener product',
+      sliceName: 'welcomeWienerApi',
+    });
   }
 };
 

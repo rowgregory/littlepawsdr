@@ -13,7 +13,11 @@ const productOrderSchema = mongoose.Schema(
     isPhysicalProduct: { type: Boolean, default: true },
     subtotal: { type: Number },
     totalPrice: { type: Number },
-    orderId: { type: String },
+    orderId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Order'
+    },
+    status: { type: String, default: 'Pending Fulfillment' }
   },
   {
     timestamps: true,

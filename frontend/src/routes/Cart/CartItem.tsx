@@ -1,16 +1,10 @@
-import {
-  openCartDrawer,
-  removeProductFromCart,
-  deleteProductFromCart,
-  addProductToCart,
-} from '../../actions/cartActions';
 import UIFx from 'uifx';
 import Add from '../../components/sounds/click02.wav';
 import Thump from '../../components/sounds/thump01.mp3';
-import { Image } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
 import { CartBtn, ProductName } from '../../components/styles/cart/Styles';
 import { Text } from '../../components/styles/Styles';
+import { addToCart, deleteProductFromCart, removeFromCart, toggleCartDrawer } from '../../redux/features/cart/cartSlice';
 
 const CartItem = ({ item }: any) => {
   const dispatch = useDispatch();
@@ -28,7 +22,7 @@ const CartItem = ({ item }: any) => {
       item.dachshundId ||
       item.quantity + 1 <= item.countInStock
     ) {
-      dispatch(addProductToCart(item));
+      dispatch(addToCart({ item }));
     }
   };
 
@@ -40,19 +34,16 @@ const CartItem = ({ item }: any) => {
     }
 
     productAmountChanged.play();
-    dispatch(deleteProductFromCart(item));
+    dispatch(deleteProductFromCart({ item }));
   };
 
   return (
     <tr>
-      <td style={{ padding: '10px 13px 10px 13px', width: '75px' }}>
-        <Image
+      <td >
+        <img
           src={item?.dachshundImage ?? item?.productImage}
           alt={item?.name}
-          roundedCircle
-          width='85px'
-          height='85px'
-          style={{ objectFit: 'cover', background: '#fff' }}
+          className='w-20 aspect-square mx-auto rounded-full object-cover bg-white'
         />
       </td>
 
@@ -60,12 +51,12 @@ const CartItem = ({ item }: any) => {
         <ProductName
           to={
             item?.dachshundId
-              ? `/welcome-wiener/${item?.dachshundId}`
+              ? `/welcome-wieners/${item?.dachshundId}`
               : item?.isEcard
-              ? `/ecards/filtered?category=${item.category}`
-              : `/merch/${item?.productId}`
+                ? `/ecards/personalize/${item?.ecardId}`
+                : `/merch/${item?.productId}`
           }
-          onClick={() => dispatch(openCartDrawer(false))}
+          onClick={() => dispatch(toggleCartDrawer(false))}
         >
           {item.isEcard
             ? `Sending ecard to ${item?.recipientsEmail}`
@@ -112,7 +103,7 @@ const CartItem = ({ item }: any) => {
       <td className='remove-cart-item'>
         <i
           className='fas fa-times fa-sm ml-3'
-          onClick={() => dispatch(removeProductFromCart(item))}
+          onClick={() => dispatch(removeFromCart({ item }))}
         ></i>
       </td>
     </tr>

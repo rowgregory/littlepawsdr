@@ -2,6 +2,7 @@ import styled, { keyframes } from 'styled-components';
 import { Flex, Text } from '../../styles/Styles';
 import { useSelector } from 'react-redux';
 import JumpingRumpLoader from '../../Loaders/JumpingRopLoader';
+import { RootState } from '../../../redux/toolkitStore';
 
 const BarContainer = styled.div`
   width: 100%;
@@ -40,9 +41,9 @@ const Bar = styled.div<{ lineargradient: string; width: string }>`
 `;
 
 const ProductTracker = () => {
-  const state = useSelector((state: any) => state);
-  const productTracker = state.dashboardCurrentYearData?.currentYearData?.productTracker;
-  const loading = state.dashboardCurrentYearData?.loading;
+  const dashboard = useSelector((state: RootState) => state.dashboard);
+  const productTracker = dashboard?.currentYearData?.productTracker;
+  const loading = dashboard?.loading;
 
   return (
     <Flex justifyContent='space-between' flexDirection='column' height='100%' alignItems='center'>
@@ -71,8 +72,8 @@ const ProductTracker = () => {
             </Flex>
             <BarContainer>
               <Bar
-                width={String(productTracker?.product?.percentage ?? 0)}
                 lineargradient='linear-gradient(263deg, rgba(157,253,255,1) 18%, rgba(233,198,253,1) 100%)'
+                width={String(productTracker?.product?.percentage ?? 0)}
               />
             </BarContainer>
           </div>

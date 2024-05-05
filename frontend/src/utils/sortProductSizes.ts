@@ -8,5 +8,5 @@ export const sortProductSizes = (sizes: any) => {
     XXL: 6,
   } as any;
 
-  return sizes?.sort((a: any, b: any) => weights[a?.size] - weights[b?.size]);
+  return sizes ? sizes?.sort((a: any, b: any) => weights[a?.size] - weights[b?.size]) : [];
 };

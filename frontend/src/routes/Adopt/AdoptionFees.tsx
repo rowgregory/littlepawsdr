@@ -5,7 +5,7 @@ import AdoptFeesLow from '../../components/assets/adopt-fees-low.jpg';
 import LeftArrow from '../../components/svg/LeftArrow';
 import RightArrow from '../../components/svg/RightArrow';
 import Hero from '../../components/Hero';
-import { Container } from '../../components/styles/GridDogStyles';
+import { Fragment } from 'react';
 
 const UnorderedList = styled.ul`
   margin-top: 20px;
@@ -29,14 +29,14 @@ const adoptionFeeData = [
 
 const AdoptionFeeInfoContainer = styled.div`
   padding: 256px 0;
-  clip-path: polygon(100% 100%, 0% 100%, 0 15%, 100% 0%);
+  clip-path: polygon(100% 100%, 0% 85%, 0 15%, 100% 0%);
   background-image: linear-gradient(129deg, rgba(193, 224, 255, 1) 35%, rgba(224, 205, 245, 1) 100%);
   padding-inline: 16px;
 `;
 
 const AdoptionFees = () => {
   return (
-    <>
+    <Fragment>
       <Hero
         low={AdoptFeesLow}
         high={AdoptFeesHigh}
@@ -44,7 +44,7 @@ const AdoptionFees = () => {
         link='https://unsplash.com/@erdaest?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText'
         photographer='Erda Estremera'
       />
-      <Container className='mb-0'>
+      <div className='max-w-screen-xl w-full mx-auto mb-24 px-3'>
         <div className='w-100 d-flex justify-content-between mt-3'>
           <LeftArrow text='Home' url='/' text2='Adoption Information' url2='/adopt/info' />
           <RightArrow text='Adoption FAQ' url='/adopt/faq' />
@@ -67,7 +67,7 @@ const AdoptionFees = () => {
             ))}
           </UnorderedList>
         </Flex>
-      </Container>
+      </div>
       <AdoptionFeeInfoContainer>
         <Flex maxWidth='680px' className='mb-4 mx-auto flex-column'>
           <i className='fa-solid fa-triangle-exclamation mx-auto text-white fa-3x mb-4'></i>
@@ -84,7 +84,7 @@ const AdoptionFees = () => {
           </Text>
         </Flex>
       </AdoptionFeeInfoContainer>
-    </>
+    </Fragment>
   );
 };
 

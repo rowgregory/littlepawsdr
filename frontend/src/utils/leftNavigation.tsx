@@ -1,7 +1,7 @@
 export const sideLinkData = [
   {
     title: 'Dachshunds',
-    icon: 'fas fa-dog mr-2',
+    icon: 'fas fa-bone mr-2',
     links: [
       {
         linkKey: '/available',
@@ -40,14 +40,6 @@ export const sideLinkData = [
       {
         linkKey: '/donate/shop-to-help',
         linkText: 'Shop To Help',
-      },
-      {
-        linkKey: '/donate/venmo',
-        linkText: 'Venmo',
-      },
-      {
-        linkKey: '/donate/check',
-        linkText: 'Check',
       },
       {
         linkKey: '/donate/feed-a-foster',
@@ -103,6 +95,11 @@ export const sideLinkData = [
 
 export const singleLinkData = [
   {
+    linkKey: '/campaigns',
+    linkText: 'Campaigns',
+    icon: 'fa-solid fa-gavel mr-2',
+  },
+  {
     linkKey: '/merch',
     linkText: 'Merch',
     icon: 'fas fa-gift mr-2',
@@ -123,22 +120,22 @@ export const singleLinkData = [
     icon: 'fa-solid fa-calendar mr-2',
   },
   {
-    linkKey: '/about/blog',
+    linkKey: '/blog',
     linkText: 'Blog',
     icon: 'fa-brands fa-microblog mr-2',
   },
   {
-    linkKey: '/about/education',
+    linkKey: '/education',
     linkText: 'Education Tips',
     icon: 'fa-solid fa-school mr-2',
   },
   {
-    linkKey: '/about/team-members',
+    linkKey: '/team-members',
     linkText: 'Little Paws Crew',
     icon: 'fa-solid fa-people-group mr-2',
   },
   {
-    linkKey: '/about/contact-us',
+    linkKey: '/contact-us',
     linkText: 'Contact',
     icon: 'fa-solid fa-file-signature mr-2',
   },

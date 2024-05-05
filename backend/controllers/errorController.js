@@ -6,15 +6,13 @@ import Error from '../models/errorModel.js';
 // @access  Public
 const createError = asyncHandler(async (req, res) => {
   const { functionName, detail, user, state, status } = req.body;
-  const error = new Error({
+  await Error.create({
     functionName,
     detail,
     user,
     state,
     status,
   });
-
-  await error.save();
 });
 
 export { createError };

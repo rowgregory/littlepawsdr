@@ -1,97 +1,92 @@
-import { useEffect, useState } from 'react';
-import styled, { useTheme } from 'styled-components';
 import { useLocation } from 'react-router-dom';
-import RightSideNavbar from './navbar/RightSideNavbar';
-import LeftNavigation from './navbar/LeftNavigation';
-
-import { FAIcons } from './styles/NavbarStyles';
-import { Overlay } from './styles/left-navigation/styles';
-import Logo from './navbar/Logo';
-
-interface ContainerProps {
-  show: any;
-  p: string;
-  mode: string;
-}
-
-const Container = styled.div<ContainerProps>`
-  position: fixed;
-  z-index: 5000;
-  width: 100%;
-  background: ${({ show, p, mode }) =>
-    show === 'true' || p !== '/'
-      ? 'rgba(33, 30, 47, .9)'
-      : (show === 'true' || p !== '/') && mode === 'night'
-        ? 'rgb(22 27 35 / 0.9)'
-        : ''};
-  transition: 300ms;
-  border-bottom: ${({ show, p }) =>
-    show === 'true' || p !== '/' ? '' : '1px solid rgba(255, 255, 255, 0.5)'};
-  height: 75px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  box-shadow: ${({ show }) =>
-    show === 'true' ? '0 20px 25px 3px rgba(0, 0, 0, 0.5)' : ''};
-`;
-
-const BurgerMenuBottomBorder = styled.div<{ show: any; p: string }>`
-  padding: 0 0 0 16px;
-  height: 56px;
-  display: flex;
-`;
+import LPDRLogo from '../components/assets/logo-white2.png';
+import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { useAppDispatch } from '../redux/toolkitStore';
+import { toggleLeftDrawer, toggleUserDropdown } from '../redux/features/navbar/navbarSlice';
+import { NoImgDog, TransparentPurpleLogo } from './assets';
+import { navbarBtnStyles, useSetShowNavbarBackground } from './navbar/navbarHelpers';
 
 const Navbar = () => {
+  const dispatch = useAppDispatch();
   const { pathname } = useLocation();
-  const [show, setShow] = useState(false);
-  const [openMenu, setOpenMenu] = useState(false);
-  const theme = useTheme() as any;
+  const state = useSelector((state: any) => state);
+  const user = state.auth?.user;
+  const cart = state.cart;
+  const navbar = state.navbar;
 
-  useEffect(() => {
-    const listener = () => {
-      if (window.scrollY > 25) setShow(true);
-      else setShow(false);
-    };
+  useSetShowNavbarBackground();
 
-    window.addEventListener('scroll', listener);
-    return () => {
-      window.removeEventListener('scroll', listener);
-    };
-  }, []);
-
-  return ![
+  const urlsToExclude = ![
     'admin',
     'login',
     'forgot-password',
     'register',
     'place-order',
-    'place-order-guest',
     'cart',
-    '/e-card/place-order',
-    '/order',
-    '/reset',
-    '/email-confirmation',
-    '/404'
-  ].some((a: string) => pathname?.includes(a)) ? (
-    <>
-      <LeftNavigation openMenu={openMenu} setOpenMenu={setOpenMenu} />
-      <Overlay open={openMenu} />
-      <Container show={show.toString()} p={pathname} mode={theme?.mode}>
-        <div className='d-flex justify-content-center align-items-center'>
-          <BurgerMenuBottomBorder show={show.toString()} p={pathname}>
-            <FAIcons onClick={() => setOpenMenu(true)}>
-              <div className='mr-2'>
-                <i className='fas fa-bars'></i>
-              </div>
-            </FAIcons>
-          </BurgerMenuBottomBorder>
-          <Logo pathname={pathname} show={show} />
+    'order',
+    'reset',
+    'email-confirmation',
+    '404',
+    'auction',
+    'campaigns',
+  ].some((a: string) => pathname?.includes(a));
+
+  return (
+    <nav
+      className={`${navbar.toggle.bgColor || pathname !== '/'
+        ? `bg-clip-padding backdrop-filter backdrop-blur-sm border-transparent bg-white border-b-gray-300 `
+        : 'bg-none border-b-white/50'
+        } ${urlsToExclude ? 'block' : 'hidden'
+        } border-b-[0.5px] fixed z-[1000] w-full duration-200 h-[65px] top-0 flex items-center justify-between px-3.5`}
+    >
+      <div className='d-flex justify-content-center align-items-center'>
+        <div onClick={() => dispatch(toggleLeftDrawer({ leftDrawer: true }))} className={navbarBtnStyles}>
+          <i className='fas fa-bars text-gray-800'></i>
         </div>
-        <RightSideNavbar />
-      </Container>
-    </>
-  ) : (
-    <></>
+        <Link to='/' className='cursor-pointer'>
+          <img
+            src={navbar.toggle.bgColor || pathname !== '/' ? TransparentPurpleLogo : LPDRLogo}
+            className='h-16 pb-1'
+            alt='Little Paws Dachshund Rescue'
+          />
+        </Link>
+      </div>
+      <div className='flex items-center'>
+        <Link to='/donate' className={navbarBtnStyles}>
+          <i className='fas fa-dollar text-gray-800'></i>
+        </Link>
+        <Link to='/cart' className={`${navbarBtnStyles} mx-1.5 relative`}>
+          <span className='text-white text-xs absolute -top-1 left-6 flex items-center text-center justify-center z-10 cursor-pointer bg-red-500 font-Matter-Medium w-5 h-5 rounded-full'>
+            {cart?.cartItemsAmount}
+          </span>
+          <i className='fas fa-shopping-cart text-gray-800'></i>
+        </Link>
+        <div className='flex items-center'>
+          {user?.isAdmin ? (
+            <img
+              className='w-10 h-10 rounded-full cursor-pointer object-cover duration-200'
+              onClick={() => dispatch(toggleUserDropdown({ userDropdown: true }))}
+              src={user?.avatar || NoImgDog}
+              alt={`Hey ${user?.name}! We appreciate you! Love from LPDR`}
+            />
+          ) : user?._id ? (
+            <div
+              style={{ background: user?.initialsBgColor }}
+              className={`uppercase cursor-pointer h-10 w-10 rounded-full flex items-center justify-center`}
+              onClick={() => dispatch(toggleUserDropdown({ userDropdown: true }))}
+            >
+              {user?.firstNameFirstInitial}
+              {user?.lastNameFirstInitial}
+            </div>
+          ) : (
+            <Link to='/auth/login' className={navbarBtnStyles}>
+              <i className='fas fa-user text-gray-800'></i>
+            </Link>
+          )}
+        </div>
+      </div>
+    </nav>
   );
 };
 

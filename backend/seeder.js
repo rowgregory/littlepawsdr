@@ -4,17 +4,18 @@ import colors from 'colors';
 import User from './models/userModel.js';
 import Event from './models/eventModel.js';
 import users from './data/users.js';
-// import events from './data/events.js';
-// import products from './data/products.js';
 import connectDB from './config/db.js';
 import Product from './models/productModel.js';
 import Order from './models/orderModel.js';
-import Donation from './models/donationModel.js';
 import Newsletter from './models/newsLetterModel.js';
+import { AuctionWinningBidder } from './models/campaignModel.js';
+import auctionWinningBidders from './data/auctionWinningBidders.js';
 
 dotenv.config();
 
 connectDB();
+
+const onlyWinningBidders = true
 
 const importData = async () => {
   try {
@@ -22,12 +23,9 @@ const importData = async () => {
     await Event.deleteMany();
     await Product.deleteMany();
     await Order.deleteMany();
-    await Donation.deleteMany();
     await Newsletter.deleteMany();
 
     await User.insertMany(users);
-    // await Event.insertMany(events);
-    // await Product.insertMany(products);
 
     console.log('Data Imported!'.green.inverse);
     process.exit();
@@ -36,6 +34,21 @@ const importData = async () => {
     process.exit(1);
   }
 };
+
+const importAuctionWinningBidders = async () => {
+  try {
+    await AuctionWinningBidder.deleteMany()
+
+    await AuctionWinningBidder.insertMany(auctionWinningBidders)
+
+    console.log(`Auction winning bidders imported`.white)
+    process.exit();
+  } catch (error) {
+    console.error(`${error}`.red.inverse);
+    process.exit(1);
+  }
+}
+
 const destroyData = async () => {
   try {
     await User.deleteMany();
@@ -53,5 +66,9 @@ const destroyData = async () => {
 if (process.argv[2] === '-d') {
   destroyData();
 } else {
-  importData();
+  if (onlyWinningBidders) {
+    importAuctionWinningBidders()
+  } else {
+    importData();
+  }
 }

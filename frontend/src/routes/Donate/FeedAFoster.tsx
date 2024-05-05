@@ -1,7 +1,5 @@
-import React from 'react';
 import { Image } from 'react-bootstrap';
 import { Text } from '../../components/styles/Styles';
-import { HorizontalLine } from '../../components/styles/product-details/Styles';
 import CanOfWetFood from '../../components/assets/can-of-wet-food.png';
 import BagOfDryFood from '../../components/assets/bag-of-dry-food.jpeg';
 import CaseOfWetFood from '../../components/assets/case-of-wet-food.png';
@@ -227,7 +225,6 @@ const FeedAFoster = () => {
           </div>
         </ItemContainer>
       </div>
-      <HorizontalLine width='100%' />
       <div className='d-flex-flex-column'>
         <ItemContainer className='align-items-center'>
           <Image
@@ -265,7 +262,6 @@ const FeedAFoster = () => {
           </div>
         </ItemContainer>
       </div>
-      <HorizontalLine width='100%' />
       <div className='d-flex-flex-column'>
         <ItemContainer className='align-items-center'>
           <Image

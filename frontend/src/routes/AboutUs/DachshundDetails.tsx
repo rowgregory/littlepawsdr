@@ -1,81 +1,115 @@
-import { useEffect } from 'react';
 import LeftArrow from '../../components/svg/LeftArrow';
-import {
-  Container,
-  FlexContainer,
-  LoadingContainer,
-} from '../../components/styles/AvailableDog/Styles';
-import { getDachshundDetails } from '../../actions/dachshundsActions';
-import { useDispatch, useSelector } from 'react-redux';
-import { LoadingImg } from '../../components/LoadingImg';
-import ImageAndName from '../../components/dachshund-details/ImageAndName';
-import InfoSection from '../../components/dachshund-details/InfoSection';
 import BottomInfo from '../../components/dachshund-details/BottomInfo';
 import { useParams } from 'react-router-dom';
-import { DACHSHUND_DETAILS_RESET } from '../../constants/dachshundConstants';
+import { NoImgDog } from '../../components/assets';
+import { Carousel, Image } from 'react-bootstrap';
+import { dachshundDetailsGridData } from '../../utils/dachchsundDetailsGridData';
+import { Link } from 'react-router-dom';
+import { rescueGroupsApi } from '../../redux/services/rescueGroupsApi';
+import { useEffect } from 'react';
+import { scrollToTop } from '../../utils/scrollToTop';
+import GreenRotatingTransparentCircle from '../../components/Loaders/GreenRotatingTransparentCircle';
+
+interface Status {
+  text: string;
+  url: string;
+}
 
 const DachshundDetails = () => {
-  const dispatch = useDispatch();
   const { id } = useParams() as any;
-
-  const state = useSelector((state: any) => state);
-  const loading = state.dachshundDetails.loading;
-  const dachshund = state.dachshundDetails.dachshund;
-
-  window.scrollTo(0, 0);
+  const { useGetDachshundByIdQuery } = rescueGroupsApi;
+  const { data, isLoading } = useGetDachshundByIdQuery(id);
+  const dachshund = data && data?.data[0];
 
   useEffect(() => {
-    dispatch(getDachshundDetails(id));
-    return () => {
-      dispatch({ type: DACHSHUND_DETAILS_RESET })
-    }
-  }, [id, dispatch]);
+    scrollToTop();
+  }, []);
 
-  const info = loading ? null : dachshund?.data?.[0];
-  const dogStatusId = info?.relationships?.statuses?.data[0]?.id;
+  const dogStatusId: string = dachshund?.relationships?.statuses?.data[0]?.id;
 
-  const leftArrowText =
-    dogStatusId === '17'
-      ? 'dogs on hold'
-      : dogStatusId === '3'
-        ? 'successful adotions'
-        : dogStatusId === '7'
-          ? 'rainbow bridge'
-          : dogStatusId === '15'
-            ? 'sanctuary dogs'
-            : 'available dogs';
+  const statusMap: Record<string, Status> = {
+    '17': { text: 'dogs on hold', url: '/about/hold' },
+    '3': { text: 'successful adoptions', url: '/about/successful-adoptions' },
+    '7': { text: 'rainbow bridge', url: '/about/rainbow-bridge' },
+    '15': { text: 'sanctuary dogs', url: '/about/sanctuary' },
+  };
 
-  const leftArrowUrl =
-    dogStatusId === '17'
-      ? '/about/hold'
-      : dogStatusId === '3'
-        ? '/about/successful-adoptions'
-        : dogStatusId === '7'
-          ? '/about/rainbow-bridge'
-          : dogStatusId === '15'
-            ? '/about/sanctuary'
-            : '/available';
+  const defaultStatus: Status = { text: 'available dogs', url: '/available' };
 
-  if (loading) {
-    return (
-      <Container className='w-100'>
-        <LeftArrow text={`Back to ${leftArrowText}`} url={leftArrowUrl} />
-        <FlexContainer>
-          <LoadingContainer>
-            <LoadingImg w='100%' />
-          </LoadingContainer>
-        </FlexContainer>
-      </Container>
-    );
-  }
+  const selectedStatus: Status = statusMap[dogStatusId] || defaultStatus;
+
+  const { text: leftArrowText, url: leftArrowUrl } = selectedStatus;
+
+  if (isLoading) return <GreenRotatingTransparentCircle />;
+
+  console.log('data: ', data);
 
   return (
-    <Container>
+    <div className='max-w-screen-lg w-full mx-auto mt-28 px-3.5 lg:px-0'>
       <LeftArrow text={`Back to ${leftArrowText}`} url={leftArrowUrl} />
-      <ImageAndName info={info} />
-      <InfoSection info={info} />
+      <div className='grid grid-cols-12 gap-6 mt-4'>
+        <div className='col-span-12 sm:col-span-6 md:col-span-8 w-full'>
+          {dachshund?.attributes?.photos?.length === 0 ? (
+            <Image
+              className='aspect-square max-w-[425px] w-full object-cover'
+              src={NoImgDog}
+              alt={`Sorry, there currently is no image of ${dachshund?.attributes?.name}`}
+            />
+          ) : (
+            <Carousel
+              className='bg-white border-[1px] border-gray-100 rounded-md w-full h-full aspect-sqaure'
+              pause='hover'
+            >
+              {dachshund?.attributes?.photos?.map((photo: string, i: number) => (
+                <Carousel.Item key={i} interval={4000}>
+                  <Image src={photo} alt={`${photo}-${i}`} className='aspect-square' />
+                </Carousel.Item>
+              ))}
+            </Carousel>
+          )}
+        </div>
+        <div className='col-span-12 sm:col-span-6 md:col-span-4'>
+          <p className='text-3xl font-Matter-Bold'>{dachshund?.attributes?.name}</p>
+          <p className='mb-6 font-Matter-Regular'>
+            {dachshund?.attributes?.ageGroup} {dachshund?.attributes?.sex}{' '}
+            {dachshund?.attributes?.breedString}
+          </p>
+          {dogStatusId === '1' && (
+            <Link
+              className='text-[#fff] border-none text-3xl w-full flex justify-center items-center border-[2.5px] bg-teal-400 rounded-md py-2.5 duration-300 cursor-pointer hover:bg-teal-500 hover:text-white hover:no-underline font-Matter-Bold tracking-wider'
+              to='/adopt'
+              type='button'
+            >
+              ADOPT
+            </Link>
+          )}
+        </div>
+      </div>
+      <div className='my-12 w-full h-[0.5px] bg-gray-200'></div>
+      <div className='flex flex-col mt-8 mb-ml-16 gap-4 md:gap-12 md:flex-row'>
+        <div className='flex flex-col  w-full lg:w-1/2'>
+          <p className='font-Matter-Bold text-2xl mb-10'>About {dachshund?.attributes?.name}</p>
+          <p
+            className='mb-12 font-Matter-Regular'
+            dangerouslySetInnerHTML={{
+              __html: dachshund?.attributes?.descriptionHtml,
+            }}
+          ></p>
+        </div>
+        <div className='flex flex-col w-full lg:w-1/2'>
+          <p className='font-Matter-Bold text-2xl mb-10'>Details</p>
+          <div className='grid grid-cols-3 gap-6'>
+            {dachshundDetailsGridData(data?.data).map((obj: any, i: number) => (
+              <div className='d-flex flex-column' key={i}>
+                <p className='text-sm font-Matter-Regular'>{obj.title}</p>
+                <p className='text-sm font-Matter-Medium'>{obj.textKey}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
       <BottomInfo />
-    </Container>
+    </div>
   );
 };
 

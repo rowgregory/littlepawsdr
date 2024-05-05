@@ -1,55 +1,33 @@
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { addProductToCart, openCartDrawer } from '../../actions/cartActions';
-import { getPublicProductDetails } from '../../actions/productActions';
-import {
-  Container,
-  InnerContainer,
-} from '../../components/styles/product-details/Styles';
 import LeftArrow from '../../components/svg/LeftArrow';
 import MerchImages from '../../components/merch-detail/MerchImages';
 import MerchNamePriceDescription from '../../components/merch-detail/MerchNamePriceDescription';
 import AddToCartSection from '../../components/merch-detail/AddToCartSection';
 import { useParams } from 'react-router-dom';
+import { useGetProductQuery } from '../../redux/services/productApi';
+import { addToCart, toggleCartDrawer } from '../../redux/features/cart/cartSlice';
+import { useAppDispatch } from '../../redux/toolkitStore';
+import { scrollToTop } from '../../utils/scrollToTop';
 
 const ProductDetails = () => {
   const { id } = useParams();
-  const productId = id;
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [qty, setQty] = useState<number>(1);
   const [size, setSize] = useState('');
-  const [outOfStock, setOutOfStock] = useState(false);
 
-  const state = useSelector((state: any) => state);
-  const loading = state.productPublicDetails.loading;
-  const productDetails = state.productPublicDetails.product;
-  const product = productDetails?.product;
+  const { data, isLoading } = useGetProductQuery(id);
+  const product = data?.product;
 
-  useEffect(() => {
-    dispatch(getPublicProductDetails(productId));
-    dispatch(openCartDrawer(false));
-  }, [dispatch, productId]);
+  console.log(product)
 
   useEffect(() => {
+    scrollToTop()
     if (!product) return;
 
-    const objIndex = product?.sizes?.findIndex(
-      (obj: any) => obj?.size === size
-    );
+    const objIndex = product?.sizes?.findIndex((obj: any) => obj?.size === size);
     const selectedSize = product?.sizes?.[objIndex >= 0 ? objIndex : 0];
-    const productAmount = selectedSize?.amount;
 
     setSize(selectedSize?.size);
-
-    if (
-      productAmount === 0 ||
-      product?.countInStock === 0 ||
-      product?.countInStock === null
-    ) {
-      setOutOfStock(true);
-    } else {
-      setOutOfStock(false);
-    }
   }, [product, size]);
 
   const addToCartHandler = (item?: any) => {
@@ -61,37 +39,32 @@ const ProductDetails = () => {
       quantity: Number(qty),
       size,
       sizes: product?.sizes,
-      isEcard: false,
       countInStock: product?.countInStock,
-      isPhysicalProduct: true,
+      isEcard: false,
+      isProduct: true,
+      isWelcomeWiener: false,
       shippingPrice: product?.shippingPrice,
     };
-    dispatch(addProductToCart(productCartItem));
-    dispatch(openCartDrawer(true));
+    dispatch(addToCart({ item: productCartItem }));
+    dispatch(toggleCartDrawer(true));
   };
 
   return (
-    <Container>
+    <div className='py-32 min-h-[calc(100vh-475px)] px-3 max-w-screen-xl w-full mx-auto'>
       <LeftArrow text='Back To Merch' url='/merch' />
-      <InnerContainer>
-        <MerchImages loading={loading} product={product} />
-        <MerchNamePriceDescription
-          product={product}
-          size={size}
-          setSize={setSize}
-          loading={loading}
-        />
+      <div className='grid grid-cols-12 gap-8 mt-3'>
+        <MerchImages loading={isLoading} product={product} />
+        <MerchNamePriceDescription product={product} size={size} setSize={setSize} loading={isLoading} />
         <AddToCartSection
           product={product}
-          outOfStock={outOfStock}
           qty={qty}
           setQty={setQty}
-          size={size}
           addToCartHandler={addToCartHandler}
-          loading={loading}
+          loading={isLoading}
+          size={size}
         />
-      </InnerContainer>
-    </Container>
+      </div>
+    </div>
   );
 };
 

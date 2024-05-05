@@ -42,13 +42,6 @@ export const ProductName = styled(Link)`
   }
 `;
 
-export const Divider = styled.div`
-  height: 30px;
-  width: 1px;
-  background: #c4c4c4;
-  margin: 0 30px 0 20px;
-`;
-
 export const CartItemContainer = styled.table`
   margin-bottom: 16px;
   tr {

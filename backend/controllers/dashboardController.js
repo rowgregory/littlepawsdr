@@ -8,7 +8,11 @@ import Error from '../models/errorModel.js';
 import asyncHandler from 'express-async-handler';
 import calculateMonthlyRevenue from '../utils/getLineChartData.js';
 import AdoptionApplicationBypassCode from '../models/adoptionApplicationBypassCodeModel.js';
-import { aggregateProductData, calculateCurrentAndPreviousYearMonthlyRevenue, getWelcomeWienerStats } from '../utils/dashboardUtils.js';
+import {
+  aggregateProductData,
+  calculateCurrentAndPreviousYearMonthlyRevenue,
+  getWelcomeWienerStats,
+} from '../utils/dashboardUtils.js';
 
 const currentYearRevenue = async (model, amountField) => {
   try {
@@ -180,7 +184,10 @@ const compareSalesWithPreviousYear = async (currentYear) => {
     const currentYearTotal = await calculateCurrentAndPreviousYearMonthlyRevenue(currentMonth, currentYear);
 
     // Calculate total sales for the same month from the previous year
-    const previousYearTotal = await calculateCurrentAndPreviousYearMonthlyRevenue(currentMonth, currentYear - 1);
+    const previousYearTotal = await calculateCurrentAndPreviousYearMonthlyRevenue(
+      currentMonth,
+      currentYear - 1
+    );
 
     let percentageChange;
 
@@ -201,9 +208,6 @@ const compareSalesWithPreviousYear = async (currentYear) => {
     throw error;
   }
 };
-
-
-
 
 // @desc    Get dashboard details
 // @route   GET /api/dashboard
@@ -234,41 +238,43 @@ const getCurrentYearData = asyncHandler(async (req, res) => {
     const currentMonthlyRevenue = await calculateMonthlyRevenue(year);
     const pieChart = await getPieChartData(productRevenue, ecardRevenue, welcomeWienerRevenue);
 
-    const tenMostRecentOrders = await calculateTenMostRecentOrders(year)
+    const tenMostRecentOrders = await calculateTenMostRecentOrders(year);
 
-    const previousYear = await getTotalRevenuePreviousYear(year)
+    const previousYear = await getTotalRevenuePreviousYear(year);
     const currentYear = welcomeWienerRevenue + ecardRevenue + productRevenue + adoptionFeesRevenue;
     const topSellingProducts = await calculateTopSellingProducts();
 
     const comparisonResult = await compareSalesWithPreviousYear(2024);
 
     res.json({
-      tenMostRecentOrders,
-      revenue: {
-        previousYear,
-        currentYear,
-        welcomeWienerRevenue,
-        ecardRevenue,
-        productRevenue,
-        adoptionFeesRevenue,
+      currentYearData: {
+        tenMostRecentOrders,
+        revenue: {
+          previousYear,
+          currentYear,
+          welcomeWienerRevenue,
+          ecardRevenue,
+          productRevenue,
+          adoptionFeesRevenue,
+        },
+        topSellingProducts,
+        totalAmounts: {
+          welcomeWienerOrders: welcomeWienerOrders?.length,
+          users: users?.length,
+          ecardOrders: ecardOrders?.length,
+          productOrders: productOrders?.length,
+          orders: orders?.length,
+          adoptionFees: adoptionFees?.length,
+        },
+        lineChart: {
+          series: currentMonthlyRevenue.series,
+          totalCurrentMonthlySales: currentMonthlyRevenue.totalCurrentMonthlySales,
+        },
+        pieChart,
+        salesComparison: comparisonResult,
+        productTracker: await aggregateProductData(thisYearsData),
+        welcomeWienerStats: await getWelcomeWienerStats(thisYearsData),
       },
-      topSellingProducts,
-      totalAmounts: {
-        welcomeWienerOrders: welcomeWienerOrders?.length,
-        users: users?.length,
-        ecardOrders: ecardOrders?.length,
-        productOrders: productOrders?.length,
-        orders: orders?.length,
-        adoptionFees: adoptionFees?.length,
-      },
-      lineChart: {
-        series: currentMonthlyRevenue.series,
-        totalCurrentMonthlySales: currentMonthlyRevenue.totalCurrentMonthlySales
-      },
-      pieChart,
-      salesComparison: comparisonResult,
-      productTracker: await aggregateProductData(thisYearsData),
-      welcomeWienerStats: await getWelcomeWienerStats(thisYearsData)
     });
   } catch (err) {
     const createdError = new Error({
@@ -293,10 +299,12 @@ const getCurrentYearData = asyncHandler(async (req, res) => {
 const getAdoptionApplicationBypassCode = asyncHandler(async (req, res) => {
   try {
     const adoptionApplicationFeeBypassCode = await AdoptionApplicationBypassCode.findOne();
-    const code = adoptionApplicationFeeBypassCode.bypassCode;
+    if (!adoptionApplicationFeeBypassCode) return res.status(404).json({ message: 'Bypass code could not be found' })
 
-    res.json(code);
-  } catch (error) {
+    const bypassCode = adoptionApplicationFeeBypassCode.bypassCode;
+
+    res.status(200).json({ bypassCode });
+  } catch (err) {
     const createdError = new Error({
       functionName: 'DASHBOARD_ADOPTION_APPLICATION_FEE_BYPASS_CODE_ADMIN',
       detail: err.message,

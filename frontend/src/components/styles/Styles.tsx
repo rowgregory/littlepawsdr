@@ -1,24 +1,4 @@
 import styled from 'styled-components';
-import { Button } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-import LegacyWallpaper from '../../components/assets/aqua_tile.jpg';
-
-export const StyledCard = styled.div`
-  border-radius: 0;
-  margin: 0 0.25rem;
-  box-shadow: 0 12px 35px 0 rgba(16, 39, 112, 0.07);
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    margin: 0;
-  }
-`;
-
-export const CardTitle = styled.div`
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 2.8px;
-  max-width: 680px;
-  margin-inline: auto;
-`;
 
 export const Path = styled.path`
   fill: ${({ theme }) => theme.text};
@@ -51,6 +31,7 @@ interface TextProps {
   top?: string;
   left?: string;
   paddingTop?: string;
+  textDecoration?: string;
 }
 
 export const Text = styled.div<TextProps>`
@@ -82,6 +63,7 @@ export const Text = styled.div<TextProps>`
   top: ${({ top }) => (top ? top : '')};
   left: ${({ left }) => (left ? left : '')};
   padding-top: ${({ paddingTop }) => (paddingTop ? paddingTop : '')};
+  text-decoration: ${({ textDecoration }) => (textDecoration ? textDecoration : '')};
 `;
 
 interface FlexProps {
@@ -159,129 +141,4 @@ export const Flex = styled.div<FlexProps>`
   gap: ${({ gap }) => gap ? gap : ''};
   flex-wrap: ${({ flexWrap }) => flexWrap ? flexWrap : ''};
   font-family: ${({ fontFamily }) => fontFamily ? fontFamily : ''};
-`;
-
-export const UpdateBtn = styled.button`
-  background: linear-gradient(263deg, rgba(157,253,255,1) 18%, rgba(233,198,253,1) 100%);
-  border: none;
-  transition: 300ms;
-  font-size: 16px;
-  width: 100%;
-  color: #504e4d;
-  padding: 10px 24px;
-`;
-
-export const StyledButton = styled(Button)`
-  background: ${({ theme }) => theme.colors.secondary};
-  transition: 300ms;
-  :hover,
-  :active,
-  :disabled,
-  :focus,
-  :focus-within {
-    background: ${({ theme }) => theme.colors.secondary} !important;
-    filter: brightness(0.9);
-  }
-  box-shadow: none !important;
-  padding: 16px 24px;
-  border-radius: 0.76rem;
-  font-weight: 400;
-  font-size: 16px;
-`;
-
-export const StyledLink = styled(Link)`
-  color: ${({ theme }) => theme.colors.secondary};
-  :hover {
-    color: ${({ theme }) => theme.colors.secondary};
-    filter: brightness(0.9);
-  }
-  text-align: center;
-  font-weight: 400;
-`;
-
-export const Container = styled.div`
-  display: flex;
-  justify-content: flex-start;
-  flex-direction: column;
-  background: ${({ theme }) => theme.input.bg};
-  background: ${({ theme }) => theme.secondaryBg};
-  padding: 8px;
-  min-height: 100vh;
-  background: url(${LegacyWallpaper});
-`;
-
-export const FormWrapper = styled.div`
-  margin-inline: auto;
-  padding: 32px;
-  width: 100%;
-  min-height: calc(100vh - 16px);
-  border-radius: 0;
-  &.register,
-  &.login,
-  &.forgot-password,
-  &.reset-password {
-    background: rgba(255, 255, 255, 0.32);
-    border-radius: 16px;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
-    border: 1px solid rgba(255, 255, 255, 0.57);
-  }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    border-radius: 0.4rem;
-    max-width: 472px;
-    min-height: fit-content;
-  }
-`;
-
-export const FormContainer = styled.div`
-  max-width: 330px;
-  width: 100%;
-  margin-inline: auto;
-  padding-block: 32px;
-`;
-
-export const CreateAccountContainer = styled.div`
-  font-weight: 300;
-  text-align: center;
-  color: #fff;
-`;
-
-export const ErrorText = styled.div`
-  color: red;
-  font-size: 12px;
-`;
-
-export const AccordionWrapper = styled.div`
-  position: fixed;
-  bottom: 20px;
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  max-width: 500px;
-  margin-inline: auto;
-`;
-
-export const GlassBtn = styled.button`
-  background: rgba(255, 255, 255, 0.05);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-  border: 1px solid rgba(255, 255, 255, 0.37);
-  width: 100%;
-  padding-block: 10px;
-  border-radius: 0;
-  color: #fff;
-  font-size: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  :hover {
-    outline: none;
-    background: rgba(255, 255, 255, 0);
-    border: 1px solid rgba(255, 255, 255, 0.37);
-  }
 `;

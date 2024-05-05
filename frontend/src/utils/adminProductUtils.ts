@@ -1,4 +1,4 @@
-const sizes_v2 = () => [
+const sizes_v2 = [
   { size: 'XS', amount: 1 },
   { size: 'S', amount: 1 },
   { size: 'M', amount: 1 },
@@ -7,16 +7,15 @@ const sizes_v2 = () => [
   { size: 'XXL', amount: 1 },
 ];
 
-const chooseSizes = (obj: any, productSizes: any, setProductSizes: any) => {
-  const hasSize = productSizes.some((sizes: any) => sizes.size === obj.size);
+const chooseSizes = (obj: any, productSizes: any, setInputs: any, e: any) => {
+  e.preventDefault();
+  const hasSize = productSizes?.some((sizes: any) => sizes?.size === obj?.size);
 
   if (hasSize) {
-    setProductSizes(productSizes?.filter((s: any) => s?.size !== obj?.size));
-  } else
-    setProductSizes((prev: any) => [
-      ...prev,
-      { size: obj.size, amount: obj?.amount },
-    ]);
+    setInputs((prev: any) => ({ ...prev, sizes: productSizes?.filter((s: any) => s?.size !== obj?.size) }));
+  } else {
+    setInputs((prev: any) => ({ ...prev, sizes: [...prev.sizes, { size: obj.size, amount: obj?.amount }] }));
+  }
 };
 
 export { sizes_v2, chooseSizes };

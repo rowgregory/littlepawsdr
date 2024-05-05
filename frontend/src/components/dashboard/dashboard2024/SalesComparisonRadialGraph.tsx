@@ -3,12 +3,13 @@ import Chart from 'react-apexcharts';
 import { Flex, Text } from '../../styles/Styles';
 import { useSelector } from 'react-redux';
 import JumpingRumpLoader from '../../Loaders/JumpingRopLoader';
+import { RootState } from '../../../redux/toolkitStore';
 
 const SalesComparisonRadialGraph = () => {
-  const state = useSelector((state: any) => state);
-  const salesComparison = state.dashboardCurrentYearData.currentYearData?.salesComparison;
+  const dashboard = useSelector((state: RootState) => state.dashboard);
+  const salesComparison = dashboard?.currentYearData?.salesComparison;
   const percentageChange = salesComparison?.percentageChange;
-  let loading = state.dashboardCurrentYearData.loading;
+  const loading = dashboard?.loading;
 
   const [chartData, setChartData] = useState({
     series: [Number(percentageChange)],
