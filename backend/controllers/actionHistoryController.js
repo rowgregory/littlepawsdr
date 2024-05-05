@@ -1,35 +1,37 @@
 import asyncHandler from 'express-async-handler';
 import ActionHistory from '../models/actionHistoryModel.js';
+import Error from '../models/errorModel.js'
 
 const createActionHistoryLog = async (values) => {
-  const actionHistory = new ActionHistory({
+  return await ActionHistory.create({
     actionType: values.actionType,
     user: values.user,
     details: values.details,
     ip: values.ip,
     deviceInfo: values.deviceInfo
   })
-  await actionHistory.save()
 }
-
-// @desc    Get all action histories
-// @route   GET /api/action-history
-// @access  Private/Admin
+/**
+ @desc    Get all action histories
+ @route   GET /api/action-history
+ @access  Private/Admin
+ */
 const getactionHistories = asyncHandler(async (req, res) => {
   try {
-    const actionHistories = await ActionHistory.find({});
+    const actionHistories = await ActionHistory.find({}).sort({ updatedAt: -1 })
 
-    res.json(actionHistories);
+    res.json({ actionHistories });
   } catch (err) {
-    const createdError = new Error({
-      functionName: 'GET_ACTION_HISTORY_LIST_PUBLIC',
-      detail: err.message,
-      status: 500,
+    await Error.create({
+      functionName: 'GET_ACTION_HISTORY_LIST',
+      name: err.name,
+      message: err.message,
+      user: { id: req?.user?._id, email: req?.user?.email },
     });
 
-    await createdError.save();
-    res.status(500).send({
-      message: '500 - Server Error',
+    res.status(500).json({
+      message: 'Error fetching action history list',
+      sliceName: 'actionHistoryApi'
     });
   }
 });

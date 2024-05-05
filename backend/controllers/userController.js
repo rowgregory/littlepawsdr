@@ -1,297 +1,50 @@
 import asyncHandler from 'express-async-handler';
 import User from '../models/userModel.js';
 import Error from '../models/errorModel.js';
-import { generateToken } from '../utils/generateToken.js';
-import { v4 as uuidv4 } from 'uuid';
-import ManuallyAddedUser from '../models/manuallyAddedUserModel.js';
-import { sendEmail } from '../utils/sendEmail.js';
+import {
+  AuctionDonation,
+  AuctionItemInstantBuyer,
+  AuctionWinningBidder,
+  Bid,
+} from '../models/campaignModel.js';
+import AdoptionFee from '../models/adoptionFeeModel.js';
+import Order from '../models/orderModel.js';
+import Donation from '../models/donationModel.js';
 
-// @desc    Auth user & get token
-// @route   POST /api/users/login
-// @access  Public
-const authUser = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
-
-  try {
-    const user = await User.findOne({ email });
-
-    if (user && (await user.matchPassword(password))) {
-      user.online = true;
-      user.token = generateToken(
-        { id: user._id, name: user.name, email: user.email },
-        '1h'
-      );
-
-      const updatedUser = await user.save();
-
-      if (updatedUser.confirmed) {
-        res.json({
-          _id: updatedUser._id,
-          name: updatedUser.name,
-          email: updatedUser.email,
-          isAdmin: updatedUser.isAdmin,
-          avatar: updatedUser.avatar,
-          volunteerTitle: updatedUser.volunteerTitle,
-          profileCardTheme: updatedUser.profileCardTheme,
-          online: updatedUser.online,
-          theme: updatedUser.theme,
-          token: updatedUser.token,
-          confirmed: updatedUser.confirmed,
-          lastLoginTime: updatedUser.lastLoginTime,
-          location: updatedUser.location,
-          introducedToSilverPaws: updatedUser.introducedToSilverPaws,
-          onlineStatus: 'ONLINE'
-        });
-      } else {
-        res.status(401);
-        throw new Error('Please verify your account!');
-      }
-    } else {
-      res.status(401).send({
-        message: 'Invalid email or password',
-      });
-    }
-  } catch (err) {
-    const createdError = new Error({
-      functionName: 'USER_LOGIN_PUBLIC',
-      detail: err.message,
-      status: 500,
-    });
-
-    await createdError.save();
-
-    res.status(404).json({
-      message: `500 - Server Error`,
-    });
-  }
-});
-
-// @desc    Register a new user
-// @route   POST /api/users
-// @access  Public
-const registerUser = asyncHandler(async (req, res) => {
-  const { name, email, password } = req.body;
-
-  try {
-    const userExists = await User.findOne({ email });
-
-    if (userExists) {
-      return res
-        .status(400)
-        .json({ message: 'An account with this email already exists' });
-    }
-
-    const user = {
-      name,
-      email,
-      password,
-      token: generateToken({ id: uuidv4(), name, email }, '6h'),
-    };
-
-    if (user) {
-      sendEmail(user, res, 'sendRegisterConfirmationEmail');
-    }
-  } catch (err) {
-    const createdError = new Error({
-      functionName: 'USER_REGISTER_PUBLIC',
-      detail: err.message,
-      status: 500,
-    });
-
-    await createdError.save();
-
-    res.status(404).json({
-      message: `500 - Server Error`,
-    });
-  }
-});
-
-// @desc    Get user profile
-// @route   GET /api/users/profile
-// @access  Private
-const getUserProfile = asyncHandler(async (req, res) => {
-  try {
-    const user = await User.findById(req.user._id);
-    if (!user) return res.status(404).json({ message: 'User not found' });
-
-    res.json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      isAdmin: user.isAdmin,
-      avatar: user.avatar,
-      volunteerTitle: user.volunteerTitle,
-      profileCardTheme: user.profileCardTheme,
-      theme: user.theme,
-      location: user?.location,
-      bio: user?.bio,
-    });
-  } catch (err) {
-    const createdError = new Error({
-      functionName: 'GET_USER_PROFILE_PRIVATE',
-      detail: err.message,
-    });
-
-    await createdError.save();
-
-    res.status(500).json({ message: err.message });
-  }
-});
-
-// @desc    Update user profile
-// @route   PUT /api/users/profile
-// @access  Private
-const updateUserProfile = asyncHandler(async (req, res) => {
-  const {
-    name,
-    email,
-    avatar,
-    isAdmin,
-    volunteerTitle,
-    profileCardTheme,
-    theme,
-    location,
-    bio,
-    password,
-    newPassword,
-    introducedToSilverPaws
-  } = req.body;
-
-  try {
-    const user = await User.findById(req.user._id);
-    if (!user) return res.status(404).json({ message: 'User not found' });
-
-    user.name = name ?? user.name;
-    user.email = email ?? user.email;
-    user.avatar = avatar ?? user.avatar;
-    user.isAdmin = isAdmin ?? user.isAdmin;
-    user.volunteerTitle = volunteerTitle ?? user.volunteerTitle;
-    user.profileCardTheme = profileCardTheme ?? user.profileCardTheme;
-    user.theme = theme ?? user.theme;
-    user.location = location ?? user.location;
-    user.bio = bio ?? user.bio;
-    user.introducedToSilverPaws = introducedToSilverPaws ?? user.introducedToSilverPaws;
-
-    if (password) {
-      user.password = password;
-    }
-    if (newPassword) {
-      user.password = newPassword;
-    }
-
-    const updatedUser = await user.save();
-
-    res.json({
-      _id: updatedUser._id,
-      name: updatedUser.name,
-      email: updatedUser.email,
-      avatar: updatedUser.avatar,
-      isAdmin: updatedUser.isAdmin,
-      volunteerTitle: updatedUser.volunteerTitle,
-      profileCardTheme: updatedUser.profileCardTheme,
-      theme: updatedUser.theme,
-      token: updatedUser.token,
-      location: updatedUser.location,
-      bio: updatedUser.bio,
-      introducedToSilverPaws: updatedUser.introducedToSilverPaws
-    });
-  } catch (err) {
-    const createdError = new Error({
-      functionName: 'UPDATE_USER_PROFILE_PRIVATE',
-      detail: err.message,
-      user: {
-        id: req?.user?._id,
-        name: req?.user?.name,
-      },
-    });
-
-    await createdError.save();
-
-    res.status(500).json({ message: err.message });
-  }
-});
-
-// @desc    Get all users
-// @route   GET /api/users
-// @access  Private/Admin
+/**
+ @desc    Get all users
+ @route   GET /api/users
+ @access  Private/Admin
+*/
 const getUsers = asyncHandler(async (req, res) => {
   try {
     const users = await User.find({});
-    res.json(users);
-  } catch (error) {
-    const createdError = new Error({
+
+    res.json({ users });
+  } catch (err) {
+    await Error.create({
       functionName: 'GET_ALL_USERS_ADMIN',
-      detail: err.message,
-      user: {
-        id: req?.user?._id,
-        name: req?.user?.name,
-      },
-      status: 500,
+      name: err.name,
+      message: err.message,
+      user: { id: req?.user?._id, email: req?.user?.email },
     });
 
-    await createdError.save();
-    res.status(404).json({
-      message: `500 - Server Error`,
+    res.status(500).json({
+      message: `Error fetching users`,
+      sliceName: 'userApi',
     });
   }
 });
 
-// @desc    Get all users for "Who We Are"
-// @route   GET /api/users/who-we-are
-// @access  Public
-const getWhoWeAreUsers = asyncHandler(async (req, res) => {
+/**
+ @desc    Get user by id
+ @route   GET /api/users/:id
+ @access  Private/Admin
+*/
+const getUser = asyncHandler(async (req, res) => {
   try {
-    const users = await User.find({ isAdmin: true });
-    const manuallyAddedUsers = await ManuallyAddedUser.find({});
+    const user = await User.findById(req.params.id).select('-password -token');
 
-    res.json({ boardMembers: users.concat(manuallyAddedUsers) });
-  } catch (err) {
-    const createdError = new Error({
-      functionName: 'GET_TEAM_MEMBER_LIST',
-      detail: err.message,
-      status: 500,
-    });
-
-    await createdError.save();
-    res.status(500).send({
-      message: '500 - Server Error',
-    });
-  }
-});
-
-// @desc    Delete user
-// @route   DELETE /api/users/:id
-// @access  Private/Admin
-const deleteUser = asyncHandler(async (req, res) => {
-  try {
-    const user = await User.findById(req.params.id);
-
-    await user.deleteOne();
-    res.json({ message: 'User removed' });
-  } catch (err) {
-    const createdError = new Error({
-      functionName: 'DELETE_USER_ADMIN',
-      detail: err.message,
-      user: {
-        id: req?.user?._id,
-        name: req?.user?.name,
-      },
-    });
-
-    await createdError.save();
-    res.status(404).json({
-      message: `500 - Server Error`,
-    });
-  }
-});
-
-// @desc    Get user by id
-// @route   GET /api/users/:id
-// @access  Private/Admin
-const getUserById = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id).select('-password -token');
-
-  if (user) {
     res.json({
       isAdmin: user.isAdmin,
       name: user.name,
@@ -299,154 +52,206 @@ const getUserById = asyncHandler(async (req, res) => {
       updatedAt: user.updatedAt,
       createdAt: user.createdAt,
       onlineStatus: user?.onlineStatus,
-      online: user?.online
+      online: user?.online,
     });
-  } else {
-    const createdError = new Error({
+  } catch (err) {
+    await Error.create({
       functionName: 'GET_USER_BY_ID_ADMIN',
-      detail: err.message,
-      user: {
-        id: req?.user?._id,
-        name: req?.user?.name,
-      },
+      name: err.name,
+      message: err.message,
+      user: { id: req?.user?._id, email: req?.user?.email },
     });
 
-    await createdError.save();
-
-    res.status(404).json({
-      message: `500 - Server Error`,
+    res.status(500).json({
+      message: `Error fetching user`,
+      sliceName: 'userApi',
     });
   }
 });
 
-// @desc    Confirm entry of old password
-// @route   POST /api/users/oldpassword/:id
-// @access  Private
-const confirmOldPassword = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id);
-
-  try {
-    if (user && (await user.matchPassword(req.body.oldpassword))) {
-      res.json(true);
-    } else {
-      res.send({ message: 'Password is incorrect' });
-    }
-  } catch (error) {
-    const createdError = new Error({
-      functionName: 'CONFIRM_OLD_PASSWORD_PRIVATE',
-      detail: err.message,
-      user: {
-        id: req?.user?._id,
-        name: req?.user?.name,
-      },
-      status: 500,
-    });
-
-    await createdError.save();
-
-    res.status(404).json({
-      message: `500 - Server Error`,
-    });
-  }
-});
-
-// @desc    Update user admin role
-// @route   PUT /api/users/:id
-// @access  Private/Admin
+/**
+ @desc    Update User private
+ @route   GET /api/users/:id
+ @access  Private
+*/
 const updateUser = asyncHandler(async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
+    const { type, ...rest } = req.body;
 
-    if (user) {
-      user.isAdmin = req.body.isAdmin;
-
-      const updatedUser = await user.save();
-
-      res.json({ isAdmin: updatedUser.isAdmin });
+    let objToUpdate = {};
+    if (req.body.data.firstName || req.body.data.lastName) {
+      objToUpdate = {
+        ...rest.data,
+        firstNameFirstInitial: req.body.data.firstName.charAt(0),
+        lastNameFirstInitial: req.body.data.lastName.charAt(0),
+        name: `${req.body.data.firstName} ${req.body.data.lastName}`,
+      };
+    } else {
+      objToUpdate = { ...rest.data };
     }
+
+    const user = await User.findByIdAndUpdate(req.params.id, objToUpdate, { new: true });
+
+    await AuctionDonation.updateMany(
+      { email: user.email },
+      { donor: user.anonymousBidding ? 'Anonymous' : user.name }
+    );
+
+    await Bid.updateMany(
+      { email: user.email },
+      { bidder: user.anonymousBidding ? 'Anonymous' : user.name }
+    );
+
+    res.status(200).json({ message: 'User updated', type, user, sliceName: 'userApi' });
   } catch (err) {
-    const createdError = new Error({
-      functionName: 'UPDATE_USER_ADMIN',
-      detail: err.message,
-      user: {
-        id: req?.user?._id,
-        name: req?.user?.name,
-      },
-      status: 500,
+    await Error.create({
+      functionName: 'UPDATE USER',
+      name: err.name,
+      message: err.message,
+      user: { id: req?.user?._id, email: req?.user?.email },
     });
 
-    await createdError.save();
-
-    res.status(404).json({
-      message: `500 - Server Error`,
+    res.status(500).json({
+      message: `Error updating user`,
+      sliceName: 'userApi',
     });
   }
 });
 
-// @desc    Update user to offline
-// @route   PUT /api/users/logout
-// @access  Private
-const userLogout = asyncHandler(async (req, res) => {
+
+/**
+ @desc    Update user role
+ @route   PUT /api/users/role/:id
+ @access  Private/Admin
+*/
+const updateUserRole = asyncHandler(async (req, res) => {
   try {
-    const user = await User.findById(req.body._id);
+    await User.findByIdAndUpdate(
+      req.params.id,
+      { isAdmin: req.body.isAdmin },
+      { new: true }
+    );
 
-    user.online = false;
-    user.token = null;
-    user.resetPasswordToken = null;
-    user.lastLoginTime = new Date();
-    user.onlineStatus = 'OFFLINE'
-
-    await user.save();
-
-    res.status(200).json('LOGOUT_SUCCESS');
+    res.status(200).json({ message: 'User updated', sliceName: 'userApi' });
   } catch (err) {
-    const createdError = new Error({
-      functionName: 'USER_LOGOUT_PRIVATE',
-      detail: err.message,
-      user: {
-        id: req?.body?._id,
-        name: req?.body?.name,
-        email: req?.body?.email,
-      },
-      status: 500,
+    await Error.create({
+      functionName: 'UPDATE_USER_ADMIN',
+      name: err.name,
+      message: err.message,
+      user: { id: req?.user?._id, email: req?.user?.email },
     });
 
-    await createdError.save();
-
     res.status(404).json({
-      message: `500 - Server Error`,
+      message: 'Error updating user role',
+      sliceName: 'userApi',
     });
   }
 });
 
-// @desc    Send register confirmation email
-// @route   POST /api/users/register-confirmation
-// @access  Public
-const sendRegisterConfirmationEmail = asyncHandler(async (req, res) => {
-  sendEmail(req.body, res, 'sendRegisterConfirmationEmail');
+/**
+ @desc    Delete user
+ @route   DELETE /api/users/:id
+ @access  Private/Admin
+*/
+const deleteUser = asyncHandler(async (req, res) => {
+  try {
+    const user = await Userrrr.findById(req.params.id);
+
+    await user.deleteOne();
+    res.json({ message: 'User removed', sliceName: 'userApi' });
+  } catch (err) {
+    await Error.create({
+      functionName: 'DELETE_USER_ADMIN',
+      name: err.name,
+      message: err.message,
+      user: { id: req?.user?._id, email: req?.user?.email },
+    });
+
+    res.status(404).json({
+      message: `Error deleting user`,
+      sliceName: 'userApi'
+    });
+  }
 });
 
-// @desc    Get new refresh token
-// @route   POST /api/users/refresh-token
-// @access  Private
-const getRefreshToken = asyncHandler(async (req, res) => {
-  const refreshToken = generateToken({ id: req.body.id }, '1h');
+/**
+ @desc    Get my campaigns
+ @route   GET /api/users/personal-data
+ @access  Private
+*/
+const fetchPersonalData = asyncHandler(async (req, res) => {
+  try {
+    const bids = await Bid.find({ user: req.user._id }).populate([
+      { path: 'user' },
+      { path: 'auctionItem' },
+      {
+        path: 'auction',
+        select: '-bidders -donations -items -winningBids',
+        populate: { path: 'campaign', select: 'title' },
+      },
+    ]);
+    const auctionDonations = await AuctionDonation.find({ email: req.user.email }).populate([
+      {
+        path: 'auctionId',
+        select: '-bidders -donations -items -winningBids',
+        populate: { path: 'campaign', select: 'title' },
+      },
+    ]);
+    const instantBuys = await AuctionItemInstantBuyer.find({
+      email: req.user.email,
+    }).populate([
+      {
+        path: 'auctionItem',
+        populate: [
+          { path: 'auction', populate: [{ path: 'campaign', select: 'title' }] },
+          { path: 'photos' },
+        ],
+      },
+    ]);
 
-  res.status(201).json({ refreshToken });
+    const winningBids = await AuctionWinningBidder.find({ user: req.user._id }).populate([
+      { path: 'auctionItem', populate: [{ path: 'photos' }] },
+      { path: 'auction', populate: [{ path: 'campaign', select: 'title customCampaignLink' }] },
+    ]);
+
+    const adoptionApplicationFees = await AdoptionFee.find({
+      emailAddress: req.user.email,
+    });
+    const orders = await Order.find({ email: req.user.email })
+
+    const user = await User.findById(req.user._id);
+    const donations = await Donation.find({ email: req.user.email })
+
+    res.status(200).json({
+      bids,
+      auctionDonations,
+      instantBuys,
+      orders,
+      winningBids,
+      adoptionApplicationFees,
+      user,
+      donations
+    });
+  } catch (err) {
+    await Error.create({
+      functionName: 'GET_MY_DATA_PRIVATE',
+      name: err.name,
+      message: err.message,
+      user: { id: req?.user?._id, email: req?.user?.email },
+    });
+
+    res.status(500).json({
+      message: `Failed to fetch personal data`,
+      sliceName: 'userApi'
+    });
+  }
 });
 
 export {
-  authUser,
-  registerUser,
-  getUserProfile,
-  updateUserProfile,
   getUsers,
-  getWhoWeAreUsers,
-  deleteUser,
-  getUserById,
-  confirmOldPassword,
+  getUser,
   updateUser,
-  userLogout,
-  sendRegisterConfirmationEmail,
-  getRefreshToken,
+  deleteUser,
+  updateUserRole,
+  fetchPersonalData,
 };

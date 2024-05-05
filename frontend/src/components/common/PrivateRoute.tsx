@@ -1,68 +1,31 @@
-import axios from 'axios';
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-
-export interface UserInfoProps {
-  userLogin: {
-    userInfo: {
-      _id: string;
-      name: string;
-      email: string;
-      isAdmin: boolean;
-      isVolunteer: boolean;
-      avatar: string;
-      volunteerTitle: string;
-      volunteerEmail: string;
-      profileCardTheme: string;
-      online: boolean;
-      theme: string;
-      token: string;
-      confirmed: boolean;
-      publicId: string;
-    };
-  };
-}
-
-const refreshAccessToken = async (id: any) => {
-  try {
-    // Make a request to the server to generate a new token
-    const { data } = await axios.post('/api/users/refresh-token', { id });
-    const { refreshToken } = data;
-
-    return refreshToken;
-  } catch (error) {
-    return Promise.reject(error);
-  }
-};
+import { useSelector } from 'react-redux';
+import { RootState } from '../../redux/toolkitStore';
+import { useRefreshTokenMutation } from '../../redux/services/authApi';
+import { useNavigate } from 'react-router-dom';
 
 const PrivateRoute = ({ children }: any) => {
-  const dispatch = useDispatch();
-  const userLogin = useSelector((state: UserInfoProps) => state.userLogin);
-  const { userInfo } = userLogin;
+  const { user } = useSelector((state: RootState) => state.auth);
+  const [getRefreshToken] = useRefreshTokenMutation()
+  const navigate = useNavigate()
 
   useEffect(() => {
-    const refreshToken = async () => {
+    const runRefreshToken = () => {
+      if (!user?.isAdmin) return navigate('/')
+
       try {
-        // Check if the access token has expired
-        const expirationTime =
-          JSON.parse(atob(userInfo?.token.split('.')[1])).exp * 1000;
-        if (expirationTime <= Date.now()) {
-          // Access token has expired, refresh it
-          const newToken = await refreshAccessToken(userInfo._id);
+        const decoded = user?.token && JSON.parse(atob(user.token.split('.')[1])).exp;
+        if (Date.now() < decoded.exp * 1000) {
 
-          // Update the userInfo object in the Redux store with the new token
-          const updatedUserInfo = { ...userInfo, token: newToken };
-
-          localStorage.setItem('userInfo', JSON.stringify(updatedUserInfo));
+          getRefreshToken({ id: user?._id });
         }
       } catch (error) {
-        // Handle error refreshing token
         console.error('Error refreshing token:', error);
       }
     };
 
-    refreshToken();
-  }, [dispatch, userInfo]);
+    runRefreshToken();
+  }, [user, getRefreshToken, navigate]);
 
   return children;
 };

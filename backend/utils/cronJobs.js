@@ -1,63 +1,125 @@
 import cron from 'node-cron';
 import { sendEmail } from './sendEmail.js';
 import { updateEventStatus } from './updateEventStatus.js';
-import { getInitialData } from './getInitialData.js';
-import AdoptionApplicationBypassCode from '../models/adoptionApplicationBypassCodeModel.js'
-
-function generateCode() {
-  // Function to generate a random string of specified length
-  function generateRandomString(length) {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_=+';
-    let randomString = '';
-    for (let i = 0; i < length; i++) {
-      const randomIndex = Math.floor(Math.random() * characters.length);
-      randomString += characters.charAt(randomIndex);
-    }
-    return randomString;
-  }
-
-  // Function to generate a random 2-character code
-  function generateRandomCode() {
-    return generateRandomString(2).toUpperCase();
-  }
-
-  // Function to generate a random 3-digit number
-  function generateRandomNumber() {
-    return Math.floor(Math.random() * 10);
-  }
-
-  // Generate the final code
-  const prefix = 'DOXIE-';
-  const middlePart = `${generateRandomCode()}${generateRandomNumber()}`;
-  const randomChars = generateRandomString(5);
-
-  return `${prefix}${middlePart}${randomChars}`;
-}
+import AdoptionApplicationBypassCode from '../models/adoptionApplicationBypassCodeModel.js';
+import { AuctionWinningBidder } from '../models/campaignModel.js';
+import { logEvent, prepareLog } from './logHelpers.js';
+import {
+  findOneAndUpdateAuctionEnd,
+  findOneAndUpdateAuctionStart,
+  generateCode,
+  handleTopBids,
+  updateAuctionItemStatuses,
+} from './cronHelpers.js';
 
 export const cronJobs = (io) => {
-  const initialDataJob = cron.schedule('*/5 * * * *', async () => {
-    const data = await getInitialData();
-    io.of('/load-initial-data').emit('load-initial-data', data);
-  });
-
   return {
-    sendEcard: cron.schedule('*/5 * * * *', () => {
-      sendEmail({}, {}, 'ecard', '', false);
+    // Every hour
+    sendEcard: cron.schedule('0 * * * *', () => sendEmail({}, {}, 'ecard'), {
+      scheduled: true,
+      timezone: 'America/New_York',
     }),
-    updateEventStatus: cron.schedule('*/45 * * * *', async () => updateEventStatus()),
-    getInitialData: initialDataJob,
-    generateAdoptionApplicationFeeBypassCode: cron.schedule('0 0 */30 * *', async () => {
-      const generatedCode = generateCode();
-      let existingDocument = await AdoptionApplicationBypassCode.findOne();
+    // Every day at 9:00AM
+    updateEventStatus: cron.schedule('0 9 * * *', async () => updateEventStatus(), {
+      scheduled: true,
+      timezone: 'America/New_York',
+    }),
+    // Every 30 days
+    generateAdoptionApplicationFeeBypassCode: cron.schedule(
+      '0 0 */30 * *',
+      async () => {
+        const generatedCode = generateCode();
+        let existingDocument = await AdoptionApplicationBypassCode.findOne();
 
-      if (!existingDocument) {
-        existingDocument = new AdoptionApplicationBypassCode({ bypassCode: generatedCode });
-      } else {
-        existingDocument.bypassCode = generatedCode;
+        if (!existingDocument) {
+          existingDocument = new AdoptionApplicationBypassCode({
+            bypassCode: generatedCode,
+          });
+        } else {
+          existingDocument.bypassCode = generatedCode;
+        }
+
+        await existingDocument.save();
+        io.emit('adoption-application-fee-bypass-code', generatedCode);
+      },
+      {
+        scheduled: true,
+        timezone: 'America/New_York',
       }
+    ),
+    // Every day at 9:00 9:01 & 9:02AM
+    updateAuctionToBegin: cron.schedule(
+      '0-2 9 * * *',
+      async () => {
+        const log = await prepareLog('UPDATE_ACUTION_TO_BEGIN');
+        logEvent(log, 'AUCTION ATTEMPTING TO BEGIN');
 
-      await existingDocument.save();
-      io.of('/load-initial-data').emit('adoption-application-fee-bypass-code', generatedCode);
-    }),
+        const auction = await findOneAndUpdateAuctionStart();
+
+        if (auction) {
+          logEvent(log, 'AUCTION UPDATED', auction);
+          await log.save();
+
+          io.emit('auction-updated');
+        } else {
+          logEvent(log, 'NO AUCTION FOUND');
+          await log.save();
+        }
+        await log.save();
+      },
+      {
+        scheduled: true,
+        timezone: 'America/New_York',
+      }
+    ),
+    // Every day at 5:00, 5:01, and 5:02PM
+    sendOutAuctionItemWinnerEmails: cron.schedule(
+      '0-2 17 * * *',
+      async () => {
+        const log = await prepareLog('UPDATE_AUCTION_TO_END');
+
+        logEvent(log, 'AUCTION ATTEMPTING TO END');
+
+        const auction = await findOneAndUpdateAuctionEnd();
+
+        if (auction) {
+          await handleTopBids(auction, log);
+
+          await updateAuctionItemStatuses(log);
+        } else {
+          logEvent(log, 'NO AUCTION FOUND');
+
+          await log.save();
+        }
+      },
+      {
+        scheduled: true,
+        timezone: 'America/New_York',
+      }
+    ),
+    // Every day at 5:00, 5:01, and 5:02PM
+    sendOutPaymentReminderEmailForWinningBidAuctionItem: cron.schedule(
+      '0-2 17 * * *',
+      async () => {
+        const twoDaysAgo = new Date();
+        twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+
+        const auctionWinningBidders = await AuctionWinningBidder.find({
+          auctionPaymentNotificationEmailHasBeenSent: true,
+          emailNotificationCount: 1,
+          winningBidPaymentStatus: 'Awaiting Payment',
+          auctionItemPaymentStatus: 'Pending',
+          createdAt: { $lte: twoDaysAgo },
+        }).populate([{ path: 'auctionItem', populate: [[{ path: 'photos' }]] }]);
+
+        if (auctionWinningBidders.length > 0) {
+          sendEmail(auctionWinningBidders, {}, 'REMINDER_PAYMENT_EMAIL_AUCTION_ITEM_WINNER');
+        }
+      },
+      {
+        scheduled: true,
+        timezone: 'America/New_York',
+      }
+    ),
   };
 };

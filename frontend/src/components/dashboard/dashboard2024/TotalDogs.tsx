@@ -1,7 +1,7 @@
-import { useSelector } from 'react-redux';
 import { Flex, Text } from '../../styles/Styles';
 import { WhiteIcon } from './styles';
 import JumpingRumpLoader from '../../Loaders/JumpingRopLoader';
+import { useGetTotalDachshundCountQuery } from '../../../redux/services/rescueGroupsApi';
 
 const addCommaToNumber = (number: number) => {
   if (Number.isInteger(number) && number >= 1000 && number <= 9999) {
@@ -10,10 +10,8 @@ const addCommaToNumber = (number: number) => {
 };
 
 const TotalDogs = () => {
-  const state = useSelector((state: any) => state);
-  const dachshundCount = state?.totalDachshundCount?.dachshundCount;
-  const loading = state?.totalDachshundCount?.loading;
-  const dachshundsRehabilitaed = addCommaToNumber(dachshundCount);;
+  const { data, isLoading } = useGetTotalDachshundCountQuery();
+  const dachshundsRehabilitaed = addCommaToNumber(data?.dachshundCount);
 
   return (
     <Flex flexDirection='column' width='100%' flex='0' style={{ gap: 0 }}>
@@ -37,7 +35,7 @@ const TotalDogs = () => {
         marginRight='auto'
         cursor='pointer'
       >
-        {loading ? <JumpingRumpLoader color='#fff' /> : dachshundsRehabilitaed}
+        {isLoading ? <JumpingRumpLoader color='#fff' /> : dachshundsRehabilitaed}
       </Text>
     </Flex>
   );

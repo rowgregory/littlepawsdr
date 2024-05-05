@@ -27,7 +27,7 @@ const protect = asyncHandler(async (req, res, next) => {
   }
 
   if (!token) {
-    res.status(401).json({ message: 'NOT_AUTHORIZED_NO_TOKEN' });
+    res.status(401).json({ message: 'NOT_AUTHORIZED_NO_TOKEN', sliceName: 'authApi' });
   }
 });
 

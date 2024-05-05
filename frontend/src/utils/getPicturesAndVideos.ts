@@ -34,7 +34,6 @@ export const getPicturesAndVideos = (response: any) => {
       });
     });
 
-    // Map pictures and videos to objects
     response.data.forEach((obj: any) => {
       obj.attributes.photos = pictures
         .filter((p: any) => p.objId === obj.id)
@@ -44,12 +43,9 @@ export const getPicturesAndVideos = (response: any) => {
         .filter((v: any) => v.objId === obj.id)
         .map((v: any) => v.video);
     });
-  } else {
-    console.error(
-      'Error: No response data from Rescue Groups: ',
-      response?.data
-    );
-  }
 
-  return response;
+    return response.data;
+  } else {
+    console.error('Error: No response data from Rescue Groups: ', response?.data);
+  }
 };

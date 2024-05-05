@@ -9,27 +9,24 @@ import userRoutes from './routes/userRoutes.js';
 import eventRoutes from './routes/eventRoutes.js';
 import productRoutes from './routes/productRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
-import forgotPasswordRoutes from './routes/forgotPasswordRoutes.js';
 import newsletterRoutes from './routes/newsletterRoutes.js';
 import eCardRoutes from './routes/eCardRoutes.js';
-import eCardOrderRoutes from './routes/eCardOrderRoutes.js';
-import raffleWinnerRoutes from './routes/raffleWinnerRoutes.js';
-import blogRoutes from './routes/BlogRoutes.js';
+import blogRoutes from './routes/blogRoutes.js';
 import educationTipRoutes from './routes/educationTipRoutes.js';
-import manuallyAddedUserRoutes from './routes/manuallyAddedUserRoutes.js';
-import recaptchaRoutes from './routes/recaptchaRoutes.js';
+import boardMemberRoutes from './routes/boardMemberRoutes.js';
 import welcomeWienerDog from './routes/welcomeWienerDogRoutes.js';
 import welcomeWienerProduct from './routes/welcomeWienerProductRoutes.js';
-import jwtRoutes from './routes/jwtRoutes.js';
 import adoptionFeeRoutes from './routes/adoptionFeeRoutes.js';
 import archiveRoutes from './routes/archiveRoutes.js';
 import dashboardRoutes from './routes/dashboardRoutes.js';
 import errorRoutes from './routes/errorRoutes.js';
 import actionHistoryRoutes from './routes/actionHistoryRoutes.js';
+import campaignRoutes from './routes/campaignRoutes.js';
+import authRoutes from './routes/authRoutes.js';
+import donationRoutes from './routes/donationRoutes.js';
 import cors from 'cors';
 import http from 'http';
 import { Server } from 'socket.io';
-import { getInitialData } from './utils/getInitialData.js';
 
 const app = express();
 app.use(express.json());
@@ -42,23 +39,19 @@ const io = new Server(server, {
   },
 });
 
-const dataNamespace = io.of('/load-initial-data');
+io.on('connection', (socket) => {
+  console.log('A user connected');
 
-// Attach namespace-specific event listeners
-dataNamespace.on('connection', async (socket) => {
-  console.log(`Client connected to '/load-initial-data' namespace`);
+  socket.on('disconnect', () => {
+    console.log('User disconnected');
+  });
 
-  try {
-    const initialData = await getInitialData();
-
-    // Emit the data to the client immediately
-    socket.emit('load-initial-data', initialData);
-  } catch (error) {
-    console.error('Error loading initial data:', error);
-  }
+  socket.on('message', (data) => {
+    console.log('Message received:', data);
+    // Broadcast message to all connected clients
+    io.emit('message', data);
+  });
 });
-
-
 
 dotenv.config();
 
@@ -82,27 +75,25 @@ const userAgentMiddleware = (req, res, next) => {
 
 app.use(userAgentMiddleware);
 
+app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/order', orderRoutes);
 app.use('/api/education-tips', educationTipRoutes);
 app.use('/api/events', eventRoutes);
+app.use('/api/donation', donationRoutes);
 app.use('/api/products', productRoutes);
-app.use('/api/forgotpassword', forgotPasswordRoutes);
 app.use('/api/newsletter', newsletterRoutes);
 app.use('/api/ecard', eCardRoutes);
-app.use('/api/ecard-order', eCardOrderRoutes);
-app.use('/api/raffle-winner', raffleWinnerRoutes);
 app.use('/api/blog', blogRoutes);
-app.use('/api/manually-add-user', manuallyAddedUserRoutes);
-app.use('/api/recaptcha', recaptchaRoutes);
+app.use('/api/board-member', boardMemberRoutes);
 app.use('/api/welcome-wiener-dog', welcomeWienerDog);
 app.use('/api/welcome-wiener-product', welcomeWienerProduct);
-app.use('/api/jwt', jwtRoutes)
 app.use('/api/adoption-fee', adoptionFeeRoutes)
 app.use('/api/archive', archiveRoutes)
 app.use('/api/dashboard', dashboardRoutes)
 app.use('/api/error', errorRoutes);
 app.use('/api/action-history', actionHistoryRoutes);
+app.use('/api/campaign', campaignRoutes);
 
 const __dirname = path.resolve();
 
@@ -114,4 +105,6 @@ if (process.env.NODE_ENV === 'production') {
   );
 }
 
-server.listen(PORT, console.log(`⚡ Server running on port`.blue + `${PORT}`.yellow));
+server.listen(PORT, console.log(`⚡ Server running on port`.gray + `${PORT}`.white));
+
+export { io }

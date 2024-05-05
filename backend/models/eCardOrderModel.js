@@ -16,13 +16,17 @@ const eCardOrderSchema = mongoose.Schema(
     isPhysicalProduct: { type: Boolean, default: false },
     productName: { type: String },
     name: { type: String },
-    orderId: { type: String },
+    orderId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Order'
+    },
 
     // legacy attributes
     firstName: { type: String },
     lastName: { type: String },
     recipientsFirstName: { type: String },
     subTotal: { type: Number },
+    status: { type: String, default: 'Not sent' }
   },
   {
     timestamps: true,

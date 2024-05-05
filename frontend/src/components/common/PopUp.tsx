@@ -1,83 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { Col, Row, Form, Button, Modal, Image } from 'react-bootstrap';
-import { useDispatch, useSelector } from 'react-redux';
-import { createNewsletterEmail } from '../../actions/newsletterActions';
+import { useState } from 'react';
+import { Modal } from 'react-bootstrap';
 import styled from 'styled-components';
-import { Text } from '../../components/styles/Styles';
-import Checkmark from '../svg/Checkmark';
-import HorizontalLoader from '../HorizontalLoader';
-import { NEWSLETTER_EMAIL_CREATE_RESET } from '../../constants/newsletterConstants';
-import Message from '../Message';
 import P1 from '../../components/assets/popup1.jpg';
 import P2 from '../../components/assets/popup2.jpg';
-
-const StyledModal = styled(Modal)`
-  background: rgba(0, 0, 0, 0.7) !important;
-  z-index: 5000;
-  .modal-dialog {
-    box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, 0.22);
-    max-width: 1000px;
-
-    .modal-content {
-      border: 0;
-
-      .modal-body {
-        .modal-header {
-          border: 0;
-        }
-        display: flex;
-        flex-direction: column;
-        @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-          flex-direction: row;
-        }
-      }
-    }
-  }
-`;
-
-const Title = styled.div`
-  font-size: 32px;
-  color: ${({ theme }) => theme.colors.quinary};
-  position: relative;
-`;
-
-const RightSideModal = styled.div`
-  background: ${({ theme }) => theme.bg};
-  padding: 0 1.5rem 1rem;
-  border-radius: 0 0 0.75rem 0.75rem;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    padding: 0 3rem 1.5rem;
-  }
-`;
-
-const ContinueBtn = styled.button`
-  border-radius: 25px;
-  background: ${({ theme }) => theme.white};
-  color: ${({ theme }) => theme.colors.quinary};
-  border: 0;
-  transition: 300ms;
-`;
-
-export const SubscribeBtn = styled(Button)`
-  height: 45px;
-  border-radius: 0 25px 25px 0;
-  border: 0;
-  width: 40%;
-  padding: 0;
-  background: ${({ theme }) => theme.colors.quinary};
-  transition: 300ms;
-  :hover {
-    background: ${({ theme }) => theme.colors.quinary};
-  }
-`;
-
-export const CheckmarkContainer = styled.div`
-  background: ${({ theme }) => theme.input.bg};
-  border-radius: 0px 25px 25px 0;
-  border-top: 1px solid ${({ theme }) => theme.separator};
-  border-right: 1px solid ${({ theme }) => theme.separator};
-  border-bottom: 1px solid ${({ theme }) => theme.separator};
-`;
+import { useCreateNewsletterEmailMutation } from '../../redux/services/newsletterEmailApi';
+import TailwindSpinner from '../Loaders/TailwindSpinner';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../redux/toolkitStore';
 
 const Convex = styled.div`
   background: #fff;
@@ -89,21 +18,8 @@ const Convex = styled.div`
   box-shadow: 0px -27px 26px 6px rgba(0, 0, 0, 0.35);
 `;
 
-const PopUp = ({
-  openEmailModal,
-  setNl,
-}: {
-  openEmailModal?: boolean;
-  setNl?: any;
-}) => {
-  const [show, setShow] = useState(true);
-  const handleClose = () => setShow(false);
-  const [email, setNewsletterEmail] = useState('');
-  const dispatch = useDispatch();
-  const {
-    newsletterCreate: { loading, error, success },
-  } = useSelector((state: any) => state);
-
+const PopUp = () => {
+  const newsletterEmail = useSelector((state: RootState) => state.newsletterEmail);
   const continuedSession = sessionStorage.getItem('continuedToSite')
     ? JSON.parse(sessionStorage.getItem('continuedToSite') || '')
     : false;
@@ -112,126 +28,89 @@ const PopUp = ({
     ? JSON.parse(localStorage.getItem('newsletterEmail') || '')
     : false;
 
-  const submitHandler = (e: any) => {
+  const showPopup = ![continuedSession, hasSubmittedNewsletterEmail].includes(true);
+
+  const [show, setShow] = useState(showPopup);
+  const handleClose = () => setShow(false);
+
+  const [email, setNewsletterEmail] = useState('');
+
+  const [createNewsletterEmail, { isLoading }] = useCreateNewsletterEmailMutation();
+
+  const onSubmit = async (e: any) => {
     e.preventDefault();
-    dispatch(createNewsletterEmail(email));
+    await createNewsletterEmail({ email });
   };
 
-  useEffect(() => {
-    if (success) {
-      setTimeout(() => {
-        handleClose();
-        dispatch({ type: NEWSLETTER_EMAIL_CREATE_RESET });
-      }, 2500);
-    }
-  }, [dispatch, success]);
-
-  const showPopup =
-    ![continuedSession, hasSubmittedNewsletterEmail].includes(true) ||
-    openEmailModal;
+  const handleCloseModal = () => {
+    handleClose();
+    sessionStorage.setItem('continuedToSite', JSON.stringify(true));
+  };
 
   return (
-    <>
-      {showPopup && (
-        <StyledModal
-          show={show || openEmailModal}
-          className='d-flex justify-content-center align-items-center popup'
-          onEscapeKeyDown={() => handleClose()}
-        >
-          <Modal.Body className='p-0 d-flex flex-column'>
+    <Modal
+      show={show}
+      onEscapeKeyDown={handleCloseModal}
+      onHide={handleCloseModal}
+      centered
+    >
+      <div className='bg-white rounded-xl'>
+        <div className='rounded-tl-2 rounded-tr-2 max-w-screen-sm w-full grid grid-cols-2'>
+          <img
+            className='aspect-square object-cover rounded-tl-xl w-full'
+            src={P1}
+            alt='LPDR Pop Up Rescue Dachshund'
+          />
+          <img
+            className='aspect-square object-cover rounded-tr-xl w-full '
+            src={P2}
+            alt='LPDR Pop Up Rescue Dachshund'
+          />
+        </div>
+        <div className='relative'>
+          <Convex />
+        </div>
+        <div className='flex justify-center items-center flex-col px-5 pb-5'>
+          <h1 className='font-Matter-Medium text-3xl my-2 h-11 relative'>Subscribe!</h1>
+          <p className='text-center mb-8 font-Matter-Regular'>
+            Get weekly updates on our available dogs for adoption, fundraisers and events!
+          </p>
+          <form className='flex flex-col justify-center items-center w-full overflow-hidden'>
             <div
-              style={{
-                borderRadius: '0.75rem 0.75rem 0 0',
-                maxWidth: '600px',
-                width: '100%',
-                display: 'grid',
-                gridTemplateColumns: '1fr 1fr',
-              }}
+              className={`${newsletterEmail?.message ? 'block' : 'hidden'
+                } w-full text-center font-Matter-Medium text-2xl text-teal-600 h-[54px]`}
             >
-              <Image
-                src={P1}
-                width='100%'
-                style={{
-                  aspectRatio: '1/1',
-                  objectFit: 'cover',
-                  borderRadius: '0.75rem 0 0 0',
-                  width: '100%',
-                }}
-                alt='LPDR Pop Up Rescue Dachshund'
-              />
-              <Image
-                src={P2}
-                width='100%'
-                style={{
-                  aspectRatio: '1/1',
-                  objectFit: 'cover',
-                  borderRadius: '0 0.75rem 0 0',
-                  width: '100%',
-                }}
-                alt='LPDR Pop Up Rescue Dachshund'
-              />
+              {newsletterEmail?.message}!
             </div>
-            <div style={{ position: 'relative' }}>
-              <Convex />
+            <div
+              className={`${newsletterEmail.message ? 'hidden' : 'flex'
+                } w-full border-[1px] border-gray-200 rounded-xl p-3 flex items-center`}
+            >
+              <i className='fa-solid fa-envelopes-bulk text-teal-500 mr-1.5'></i>
+              <p className='font-Matter-Medium whitespace-nowrap text-sm mr-2'>Email</p>
+              <input
+                type='email'
+                onChange={(e: any) => setNewsletterEmail(e.target.value)}
+                name='trackingNumber'
+                alt='Email'
+                aria-label='Email'
+                value={email || ''}
+                className='user-input w-full focus:outline-none text-sm font-Matter-Regular border-none placeholder:text-sm placeholder:font-Matter-Regular placeholder:text-gray-300'
+                placeholder='Enter email'
+              />
+              {isLoading ? (
+                <TailwindSpinner color='fill-teal-400' />
+              ) : (
+                <i
+                  onClick={onSubmit}
+                  className='fa-solid fa-paper-plane text-green-500 cursor-pointer'
+                ></i>
+              )}
             </div>
-            <RightSideModal className='d-flex justify-content-center align-items-center flex-column'>
-              <Title>Subscribe!</Title>
-              <Text textAlign='center' marginBottom='2rem'>
-                Get weekly updates on our available dogs for adoption,
-                fundraisers and events!
-              </Text>
-              {loading && <HorizontalLoader />}
-              {error && <Message variant='danger'>{error}</Message>}
-              <Form
-                onSubmit={submitHandler}
-                className='d-flex w-100 justify-content-center'
-              >
-                <Form.Group controlId='newsletterEmail' className='mb-0 w-75'>
-                  <Form.Control
-                    className='py-0 mt-0 popup'
-                    placeholder='Email address'
-                    required
-                    as='input'
-                    type='email'
-                    value={email}
-                    onChange={(e) => setNewsletterEmail(e.target.value)}
-                    style={{
-                      borderRadius: '25px 0 0 25px',
-                      border: '1px solid #d2d2d2',
-                    }}
-                  ></Form.Control>
-                </Form.Group>
-                {!success ? (
-                  <SubscribeBtn type='submit' disabled={success}>
-                    SUBSCRIBE
-                  </SubscribeBtn>
-                ) : (
-                  <CheckmarkContainer>
-                    <Checkmark />
-                  </CheckmarkContainer>
-                )}
-              </Form>
-              <Row className='mt-5'>
-                <Col className='d-flex flex-column'>
-                  <ContinueBtn
-                    onClick={() => {
-                      handleClose();
-                      sessionStorage.setItem(
-                        'continuedToSite',
-                        JSON.stringify(true)
-                      );
-                      setNl && setNl(false);
-                    }}
-                  >
-                    Continue to site
-                  </ContinueBtn>
-                </Col>
-              </Row>
-            </RightSideModal>
-          </Modal.Body>
-        </StyledModal>
-      )}
-    </>
+          </form>
+        </div>
+      </div>
+    </Modal>
   );
 };
 

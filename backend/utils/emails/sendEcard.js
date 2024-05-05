@@ -49,11 +49,7 @@ export const sendEcard = async (pugEmail) => {
           `${eCard.recipientsEmail}`.rainbow
         );
         try {
-          const eCardOrder = await ECardOrder.findById(eCard._id);
-          if (!eCardOrder) return;
-          eCardOrder.isSent = true;
-          await eCardOrder.save();
-          console.log(`ECard updated`.brightWhite);
+          await ECardOrder.findByIdAndUpdate(eCard._id, { isSent: true, status: 'Sent' });
         } catch (err) {
           console.log(`err`.brightRed);
         }

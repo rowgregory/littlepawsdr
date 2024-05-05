@@ -1,4 +1,4 @@
-import { FC, useMemo } from 'react';
+import { FC, useMemo, useState } from 'react';
 import {
   ClearFilterData,
   Search,
@@ -9,21 +9,18 @@ interface SearchBarProps {
   data: any;
   setSearchResults: any;
   loading: boolean;
-  searchQuery: string;
-  setSearchQuery: any;
 }
 
 const SearchBar: FC<SearchBarProps> = ({
   data,
   setSearchResults,
   loading,
-  searchQuery,
-  setSearchQuery,
 }) => {
+  const [searchQuery, setSearchQuery] = useState('');
   const filterData = useMemo(
     () => (dataArray: any, query: any) =>
       dataArray.filter((item: any) =>
-        item.name.toLowerCase().startsWith(query.toLowerCase())
+        item?.name?.toLowerCase().startsWith(query.toLowerCase())
       ),
     []
   );
@@ -36,15 +33,16 @@ const SearchBar: FC<SearchBarProps> = ({
   const handleSearch = (query: string) => {
     if (query === '') {
       clearSearch();
+
     } else {
-      const filteredDachshunds = filterData(data?.dachshund || [], query);
+      const filteredDachshunds = filterData(data?.searchBar?.list || [], query);
       const filteredProducts = filterData(
-        data?.searchBar?.products || [],
+        data?.initialData?.products || [],
         query
       );
-      const filteredEcards = filterData(data?.searchBar?.ecards || [], query);
+      const filteredEcards = filterData(data?.initialData?.ecards || [], query);
       const filteredWelcomeWieners = filterData(
-        data?.searchBar?.welcomeWieners || [],
+        data?.initialData?.welcomeWieners || [],
         query
       );
 

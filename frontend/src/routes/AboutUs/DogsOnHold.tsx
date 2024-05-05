@@ -4,25 +4,71 @@ import OnHoldHigh from '../../components/assets/notavailable.jpg';
 import OnHoldLow from '../../components/assets/notavailable-low.jpg';
 import LeftArrow from '../../components/svg/LeftArrow';
 import RightArrow from '../../components/svg/RightArrow';
-import { LoadingImg } from '../../components/LoadingImg';
 import Hero from '../../components/Hero';
-import {
-  Container,
-  DogContainer,
-  SupportFoster,
-} from '../../components/styles/GridDogStyles';
 import DachshundCard from '../../components/DachshundCard';
+import { RootState } from '../../redux/toolkitStore';
+import { Fragment, useEffect } from 'react';
+import styled, { keyframes } from 'styled-components';
+import { Link } from 'react-router-dom';
+import { AquaTile } from '../../components/assets';
+import { useGetDachshundsByStatusMutation } from '../../redux/services/rescueGroupsApi';
+import GreenRotatingTransparentCircle from '../../components/Loaders/GreenRotatingTransparentCircle';
+
+const MoveLeft = keyframes`
+ 0% {
+    background-position: 0 0;
+ }
+ 100% {
+    background-position: -100% 0;
+ }
+`;
+
+const SupportFoster = styled(Link)`
+  padding-block: 60px;
+  margin-top: 96px;
+  position: relative;
+  overflow: hidden;
+  text-decoration: none !important;
+  &:before {
+    content: '';
+    position: absolute;
+    background: url(${AquaTile});
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: -1;
+  }
+  :hover {
+    &:before {
+      animation: ${MoveLeft} 20s linear infinite;
+    }
+  }
+  div {
+    color: #fff;
+    font-size: 24px;
+    font-weight: 600;
+    :hover {
+      text-decoration: none;
+    }
+  }
+`;
 
 const DogsOnHold = () => {
-  const state = useSelector((state: any) => state);
-  const loading = state.dachshundPicturesVideosStatuses.loading;
-  const allDahchshunds = state.dachshundPicturesVideosStatuses.dachshunds;
-  const dachshundsOnHold = allDahchshunds?.filter(
-    (dachshund: any) => dachshund.relationships.statuses.data[0].id === '17'
-  );
+  const dachshund = useSelector((state: RootState) => state.dachshund);
+
+  const [getDachshunds, { isLoading }] = useGetDachshundsByStatusMutation({
+    selectFromResult: () => ({}),
+  });
+
+  useEffect(() => {
+    getDachshunds({ status: 'Hold' });
+  }, [getDachshunds]);
+
+  if (isLoading) return <GreenRotatingTransparentCircle />;
 
   return (
-    <>
+    <Fragment>
       <Hero
         low={OnHoldLow}
         high={OnHoldHigh}
@@ -30,7 +76,7 @@ const DogsOnHold = () => {
         link='https://www.pexels.com/photo/close-up-of-sausage-dog-on-leash-10606528/'
         photographer='TranStudios Photography & Video'
       />
-      <Container>
+      <div className='max-w-screen-xl w-full mx-auto mb-24 px-3'>
         <div className='w-100 d-flex justify-content-between mt-3'>
           <LeftArrow text='Home' url='/' text2='Surrender' url2='/surrender' />
           <RightArrow
@@ -67,17 +113,13 @@ const DogsOnHold = () => {
         >
           <div>Support a Foster Here</div>
         </SupportFoster>
-        <DogContainer>
-          {loading
-            ? [...Array(3).keys()].map((z: any, i: number) => (
-                <LoadingImg key={i} w='100%' mw='300px' />
-              ))
-            : dachshundsOnHold?.map((dachshund: any) => (
-                <DachshundCard key={dachshund?.id} dachshund={dachshund} />
-              ))}
-        </DogContainer>
-      </Container>
-    </>
+        <div className='grid grid-col-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-20'>
+          {dachshund.dachshunds?.map((dachshund: any) => (
+            <DachshundCard key={dachshund?.id} dachshund={dachshund} />
+          ))}
+        </div>
+      </div>
+    </Fragment>
   );
 };
 

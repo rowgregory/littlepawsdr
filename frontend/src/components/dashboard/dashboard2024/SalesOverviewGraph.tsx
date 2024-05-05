@@ -5,9 +5,9 @@ import { useSelector } from 'react-redux';
 import JumpingRumpLoader from '../../Loaders/JumpingRopLoader';
 
 const SalesOverviewGraph = () => {
-  const state = useSelector((state: any) => state);
-  const lineChart = state.dashboardCurrentYearData.currentYearData?.lineChart;
-  const loading = state.dashboardCurrentYearData?.loading;
+  const dashboard = useSelector((state: any) => state.dashboard);
+  const lineChart = dashboard.currentYearData?.lineChart;
+  const loading = dashboard.loading;
 
   const [options, setOptions] = useState({
     options: {

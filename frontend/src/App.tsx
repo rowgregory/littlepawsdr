@@ -5,34 +5,31 @@ import GlobalStyles from './GlobalStyles';
 import { ThemeProvider } from 'styled-components';
 import { themes } from './utils/theme';
 import { PayPalScriptProvider } from '@paypal/react-paypal-js';
-import useTheme from './utils/hooks/useTheme';
-import { ParallaxProvider } from 'react-scroll-parallax';
+import { PersistGate } from 'redux-persist/integration/react';
+import { persistor } from './redux/toolkitStore';
+import GreenRotatingTransparentCircle from './components/Loaders/GreenRotatingTransparentCircle';
 
-const App = () => {
-  const theme = useTheme();
+const PayPalOptions = {
+  'client-id': process.env.REACT_APP_PAYPAL_CLIENT_ID,
+  currency: 'USD',
+  intent: 'capture',
+  components: 'buttons,funding-eligibility',
+  'enable-funding': 'venmo',
+} as any;
 
-  const PayPalOptions = {
-    'client-id': process.env.REACT_APP_PAYPAL_CLIENT_ID,
-    currency: 'USD',
-    intent: 'capture',
-    components: 'buttons,funding-eligibility',
-    'enable-funding': 'venmo',
-  } as any;
-
-  return (
-    <PayPalScriptProvider options={PayPalOptions}>
-      <ParallaxProvider>
+const App = () => (
+  <PayPalScriptProvider options={PayPalOptions}>
+    <PersistGate loading={null} persistor={persistor}>
       <Router>
-        <ThemeProvider theme={themes[theme]}>
+        <ThemeProvider theme={themes['light']}>
           <GlobalStyles />
-          <Suspense fallback={<></>}>
+          <Suspense fallback={<GreenRotatingTransparentCircle />}>
             <MainRoutes />
           </Suspense>
         </ThemeProvider>
       </Router>
-      </ParallaxProvider>
-    </PayPalScriptProvider>
-  );
-};
+    </PersistGate>
+  </PayPalScriptProvider>
+);
 
 export default App;

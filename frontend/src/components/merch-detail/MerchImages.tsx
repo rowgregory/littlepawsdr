@@ -1,28 +1,13 @@
 import { useState } from 'react';
-import { ImagesContainer } from '../styles/product-details/Styles';
 import { LoadingImg } from '../LoadingImg';
-import { Image } from 'react-bootstrap';
 import styled from 'styled-components';
 
-const MainImage = styled(Image)`
-  max-width: 700px;
-  width: 100%;
-  object-fit: cover;
-  aspect-ratio: 1/1;
-`;
-
-const SmallerImages = styled(Image)`
-  object-fit: cover;
-  aspect-ratio: 1/1;
-  width: 75px;
-`;
 const SmallerImagesContainer = styled.div<{ morethanoneimage: string }>`
   margin-top: 24px;
   gap: 8px;
   overflow-x: scroll;
   cursor: pointer;
-  display: ${({ morethanoneimage }) =>
-    morethanoneimage === 'true' ? 'flex' : 'none'};
+  display: ${({ morethanoneimage }) => (morethanoneimage === 'true' ? 'flex' : 'none')};
 
   ::-webkit-scrollbar {
     display: none;
@@ -37,36 +22,32 @@ const SmallerImagesContainer = styled.div<{ morethanoneimage: string }>`
   }
 `;
 
-const MerchImages = ({
-  loading,
-  product,
-}: {
-  loading: boolean;
-  product: any;
-}) => {
+const MerchImages = ({ loading, product }: { loading: boolean; product: any }) => {
   const [scaleImage, setScaleImage] = useState({ isScaled: false, id: '' });
 
   return (
-    <ImagesContainer>
+    <div className='w-full mb-8 col-span-12 md:mb-0 md:col-span-5'>
       {loading ? (
         <LoadingImg maxw='700px' w='100%' ar='1/1' />
       ) : (
-        <MainImage src={scaleImage?.id || product?.image || product?.displayUrl} />
+        <img
+          className='max-w-screen-lg w-full object-cover aspect-square'
+          src={scaleImage?.id || product?.image || product?.displayUrl}
+          alt={product?.name}
+        />
       )}
-      <SmallerImagesContainer
-        morethanoneimage={(product?.images?.length >= 2).toString()}
-      >
+      <SmallerImagesContainer morethanoneimage={(product?.images?.length >= 2).toString()}>
         {product?.images?.map((img: string, i: number) => (
-          <SmallerImages
+          <img
+            className='object-cover aspect-square w-20'
+            alt='LPDR merch'
             key={i}
             src={img}
-            onMouseEnter={() =>
-              setScaleImage({ isScaled: !scaleImage.isScaled, id: img })
-            }
+            onMouseEnter={() => setScaleImage({ isScaled: !scaleImage.isScaled, id: img })}
           />
         ))}
       </SmallerImagesContainer>
-    </ImagesContainer>
+    </div>
   );
 };
 

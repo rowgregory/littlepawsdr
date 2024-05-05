@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { Text } from '../../components/styles/Styles';
 import FosterHigh from '../../components/assets/foster-high.jpeg';
@@ -6,7 +5,7 @@ import FosterLow from '../../components/assets/foster-low.jpg';
 import LeftArrow from '../../components/svg/LeftArrow';
 import RightArrow from '../../components/svg/RightArrow';
 import Hero from '../../components/Hero';
-import { Container } from '../../components/styles/GridDogStyles';
+import { Fragment } from 'react';
 
 const FosterApplicationIFrame = styled.iframe`
   border: none;
@@ -24,7 +23,7 @@ const FosterApplicationIFrame = styled.iframe`
 
 const FosterApplication = () => {
   return (
-    <>
+    <Fragment>
       <Hero
         low={FosterLow}
         high={FosterHigh}
@@ -32,8 +31,7 @@ const FosterApplication = () => {
         link='https://unsplash.com/@chelsea777?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText'
         photographer='Kojirou Sasaki'
       />
-
-      <Container>
+      <div className='max-w-screen-xl w-full mx-auto mb-24 px-3'>
         <div className='w-100 d-flex justify-content-between mt-3'>
           <LeftArrow
             text='Home'
@@ -134,8 +132,8 @@ const FosterApplication = () => {
             src='https://toolkit.rescuegroups.org/of/f?c=DGKQZWCQ'
           ></FosterApplicationIFrame>
         </Text>
-      </Container>
-    </>
+      </div>
+    </Fragment>
   );
 };
 

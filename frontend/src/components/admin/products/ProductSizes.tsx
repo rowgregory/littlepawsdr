@@ -1,82 +1,40 @@
 import { Accordion } from '../../styles/place-order/Styles';
 import { Form } from 'react-bootstrap';
 import { chooseSizes, sizes_v2 } from '../../../utils/adminProductUtils';
-import styled from 'styled-components';
-import {
-  Quantity,
-  SelectInput,
-  SelectInputContainer,
-} from '../../styles/product-details/Styles';
+import { Quantity, SelectInput, SelectInputContainer } from '../../styles/product-details/Styles';
 
-const SizeContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 3rem;
-`;
+const ProductSizes = ({ doesProductHaveSizes, sizes, setInputs }: any) => {
+  const isSizeSelected = (sizeChosen: any) => sizes?.some((itemSize: any) => itemSize.size === sizeChosen);
 
-const SizeBtn = styled.div<{ active?: boolean }>`
-  height: 3.75rem;
-  width: 81.77px;
-  margin: 0 1rem 0.5rem 0;
-  border: 1px solid ${({ theme }) => theme.colors.quinary};
-  color: ${({ theme, active }) =>
-    active ? theme.white : theme.colors.quinary};
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  background: ${({ theme, active }) => (active ? theme.colors.quinary : '')};
-  transition: 300ms;
-  :hover {
-    color: ${({ theme, active }) => theme.white};
-    background: ${({ theme, active }) => (active ? '' : theme.colors.quinary)};
-  }
-`;
-
-const ProductSizes = ({
-  doesProductHaveSizes,
-  productSizes,
-  setProductSizes,
-}: any) => {
-  const isSizeSelected = (size: any) =>
-    productSizes.some((productSize: any) => productSize.size === size);
-
-  const handleAmountChange = (size: any, newAmount: any) => {
-    const updatedProductSizes = productSizes.map((productSize: any) =>
-      productSize.size === size
-        ? { ...productSize, amount: newAmount }
-        : productSize
-    );
-    setProductSizes(updatedProductSizes);
+  const handleAmountChange = (selectedSize: any, selectedQty: any) => {
+    setInputs((prev: any) => ({
+      ...prev,
+      sizes: sizes?.map((itemSize: any) => (itemSize?.size === selectedSize ? { ...itemSize, amount: selectedQty } : itemSize)),
+    }));
   };
 
   return (
-    <Accordion toggle={doesProductHaveSizes} maxheight='470px'>
+    <Accordion toggle={doesProductHaveSizes} maxheight='453px'>
       <Form.Group className='d-flex flex-column' controlId='chooseSizes'>
-        <Form.Label>Choose which sizes you want.</Form.Label>
-        <SizeContainer className='mb-0'>
-          {sizes_v2().map((s, i) => (
+        <label className='font-Matter-Medium text-sm mb-2'>Click and select a size and an amount</label >
+        <div className='flex flex-col'>
+          {sizes_v2.map((s, i) => (
             <div key={i} className='d-flex'>
-              <SizeBtn
-                active={isSizeSelected(s.size)}
-                onClick={() => chooseSizes(s, productSizes, setProductSizes)}
+              <button
+                className={`duration-300 flex items-center justify-center cursor-pointer w-20 h-16 mt-0 mr-3 mb-2 ml-0 ${isSizeSelected(s?.size) ? 'bg-blue-to-purple border-transparent text-white' : 'border-[1px] border-gray-100'
+                  } hover:bg-blue-to-purple hover:text-white`}
+                onClick={(e: any) => chooseSizes(s, sizes, setInputs, e)}
                 key={i}
               >
                 {s?.size}
-              </SizeBtn>
+              </button>
               {isSizeSelected(s.size) && (
                 <SelectInputContainer>
                   <Quantity>QTY</Quantity>
                   <SelectInput
-                    value={
-                      productSizes?.find(
-                        (productSize: any) => productSize?.size === s?.size
-                      )?.amount || 1
-                    }
+                    value={sizes?.find((itemSize: any) => itemSize?.size === s?.size)?.amount || 1}
                     as='select'
-                    onChange={(e: any) =>
-                      handleAmountChange(s.size, +e.target.value)
-                    }
+                    onChange={(e: any) => handleAmountChange(s.size, +e.target.value)}
                   >
                     {[...Array(20).keys()].map((x, i) => (
                       <option key={i} value={x + 1}>
@@ -88,7 +46,7 @@ const ProductSizes = ({
               )}
             </div>
           ))}
-        </SizeContainer>
+        </div>
       </Form.Group>
     </Accordion>
   );

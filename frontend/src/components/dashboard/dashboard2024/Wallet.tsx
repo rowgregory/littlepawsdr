@@ -4,11 +4,12 @@ import { Flex, Text } from '../../styles/Styles';
 import formatCurrency from '../../../utils/formatCurrency';
 import { useSelector } from 'react-redux';
 import JumpingRumpLoader from '../../Loaders/JumpingRopLoader';
+import { RootState } from '../../../redux/toolkitStore';
 
 const Wallet = () => {
-  const state = useSelector((state: any) => state);
-  const dashboardDetails = state.dashboardCurrentYearData?.currentYearData;
-  const loading = state.dashboardCurrentYearData?.loading;
+  const dashboard = useSelector((state: RootState) => state.dashboard);
+  const dashboardDetails = dashboard?.currentYearData;
+  const loading = dashboard?.loading;
 
   const [chartData, setChartData] = useState({
     options: {

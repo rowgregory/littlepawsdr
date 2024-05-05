@@ -1,112 +1,195 @@
 import mongoose from 'mongoose';
 import WelcomeWienerDog from '../models/welcomeWienerDogModel.js';
+import Error from '../models/errorModel.js';
 
-// Get all Welcome Wiener Dogs
+/**
+ @desc    Get welcome wiener dogs
+ @route   GET /api/welcome-wiener-dog
+ @access  Public
+*/
 const getAllWelcomeWienerDogs = async (req, res) => {
   try {
-    const welcomeWienerDogs = await WelcomeWienerDog.find({}).populate({
+    const welcomeWieners = await WelcomeWienerDog.find({}).populate({
       path: 'associatedProducts',
       select: 'name',
-      model: 'WelcomeWienerProduct', // this should match the ref option in associatedProducts field definition
-    }).sort({ updatedAt: -1 }) // Sort by updatedAt in descending order
-      .exec();
+      model: 'WelcomeWienerProduct',
+    });
 
-    res.status(200).json(welcomeWienerDogs);
-  } catch (error) {
-    res.status(404).json({ message: error.message });
+    res.status(200).json({ welcomeWieners });
+  } catch (err) {
+    await Error.create({
+      functionName: 'GET_WELCOME_WIENER_DOGS_PUBLIC',
+      name: err.name,
+      message: err.message,
+      user: { id: req?.user?._id, email: req?.user?.email },
+    });
+
+    res.status(500).json({
+      message: 'Error fetching welcome wiener dogs',
+      sliceName: 'welcomeWienerApi',
+    });
   }
 };
 
-// Get a Welcome Wiener Dog by Id
+/**
+ @desc    Get welcome wiener dog
+ @route   GET /api/welcome-wiener-dog/:id
+ @access  Public
+*/
 const getWelcomeWienerDogById = async (req, res) => {
   const { id } = req.params;
   try {
-    const welcomeWienerDog = await WelcomeWienerDog.findById(id).populate({
+    const welcomeWiener = await WelcomeWienerDog.findById(id).populate({
       path: 'associatedProducts',
       model: 'WelcomeWienerProduct',
     });
 
-    res.status(200).json(welcomeWienerDog);
-  } catch (error) {
-    res.status(404).json({ message: error.message });
+    res.status(200).json({ welcomeWiener });
+  } catch (err) {
+    await Error.create({
+      functionName: 'GET_WELCOME_WIENER_DOG_PUBLIC',
+      name: err.name,
+      message: err.message,
+      user: { id: req?.user?._id, email: req?.user?.email },
+    });
+
+    res.status(500).json({
+      message: 'Error fetching welcome wiener dog',
+      sliceName: 'welcomeWienerApi',
+    });
   }
 };
 
-// Create a new Welcome Wiener Dog
+/**
+ @desc    Get welcome wiener dog
+ @route   POST /api/welcome-wiener-dog
+ @access  Private Admin
+*/
 const createWelcomeWienerDog = async (req, res) => {
   const { displayUrl, name, bio, age, associatedProducts, images } = req.body;
 
-  const objectIds = associatedProducts?.map(id => new mongoose.Types.ObjectId(id));
-
-  const newWelcomeWienerDog = new WelcomeWienerDog({
-    displayUrl,
-    name,
-    bio,
-    age,
-    associatedProducts: objectIds,
-    images
-  });
-
   try {
-    await newWelcomeWienerDog.save();
-    res.status(201).json(newWelcomeWienerDog);
-  } catch (error) {
-    res.status(409).json({ message: error.message });
+    const objectIds = associatedProducts?.map((id) => new mongoose.Types.ObjectId(id));
+
+    await WelcomeWienerDog.create({
+      displayUrl,
+      name,
+      bio,
+      age,
+      associatedProducts: objectIds,
+      images,
+    });
+
+    res
+      .status(201)
+      .json({ message: 'Welcome Wiener created', sliceName: 'welcomeWienerApi' });
+  } catch (err) {
+    await Error.create({
+      functionName: 'CREATE_WELCOME_WIENER_DOG_PRIVATE_ADMIN',
+      name: err.name,
+      message: err.message,
+      user: { id: req?.user?._id, email: req?.user?.email },
+    });
+
+    res.status(500).json({
+      message: 'Error creating welcome wiener dog',
+      sliceName: 'welcomeWienerApi',
+    });
   }
 };
 
-// Update a Welcome Wiener Dog
+/**
+ @desc    Get welcome wiener dog
+ @route   PUT /api/welcome-wiener-dog/:id
+ @access  Private Admin
+*/
 const updateWelcomeWienerDog = async (req, res) => {
   const { id } = req.params;
   const { displayUrl, name, bio, age, associatedProducts, images } = req.body;
 
   try {
-    const updatedWelcomeWienerDog = await WelcomeWienerDog.findByIdAndUpdate(
+    await WelcomeWienerDog.findByIdAndUpdate(
       id,
       { displayUrl, name, bio, age, associatedProducts, images },
       { new: true }
     );
-    res.status(200).json(updatedWelcomeWienerDog);
-  } catch (error) {
-    res.status(409).json({ message: error.message });
+    res
+      .status(200)
+      .json({ message: 'Welcome Wiener updated', sliceName: 'welcomeWienerApi' });
+  } catch (err) {
+    await Error.create({
+      functionName: 'UPDATE_WELCOME_WIENER_DOG_PRIVATE_ADMIN',
+      name: err.name,
+      message: err.message,
+      user: { id: req?.user?._id, email: req?.user?.email },
+    });
+
+    res.status(500).json({
+      message: 'Error updating welcome wiener dog',
+      sliceName: 'welcomeWienerApi',
+    });
   }
 };
 
-// Delete a Welcome Wiener Dog
+/**
+ @desc    Get welcome wiener dog
+ @route   DELETE /api/welcome-wiener-dog/:id
+ @access  Private Admin
+*/
 const deleteWelcomeWienerDog = async (req, res) => {
   const { id } = req.params;
 
   try {
-    await WelcomeWienerDog.findByIdAndDelete(id)
-    const welcomeWienerDogs = await WelcomeWienerDog.find();
+    const welcomeWiener = await WelcomeWienerDog.findById(id);
+    await welcomeWiener.deleteOne();
+
     res.status(200).json({
-      message: 'Welcome Wiener Dog deleted successfully.',
-      dachshundList: welcomeWienerDogs,
+      message: 'Welcome Wiener deleted',
+      sliceName: 'welcomeWienerApi',
     });
-  } catch (error) {
-    res.status(409).json({ message: error.message });
+  } catch (err) {
+    await Error.create({
+      functionName: 'DELET_WELCOME_WIENER_DOG_PRIVATE_ADMIN',
+      name: err.name,
+      message: err.message,
+      user: { id: req?.user?._id, email: req?.user?.email },
+    });
+
+    res.status(500).json({
+      message: 'Error deleting welcome wiener dog',
+      sliceName: 'welcomeWienerApi',
+    });
   }
 };
 
+/**
+ @desc    Toggle welcome wiener dog
+ @route   POST /api/welcome-wiener-dog
+ @access  Private Admin
+*/
 const toggleWelcomeWienerDog = async (req, res) => {
-  const { welcomeDachshund, id } = req.body;
+  const { id } = req.body;
 
   try {
-    const wiener = await WelcomeWienerDog.findById(id);
-    if (!wiener) {
-      return res.status(400).json({ message: 'Welcome Wiener not found' });
-    }
+    const wiener = await WelcomeWienerDog.findByIdAndUpdate(
+      id,
+      [{ $set: { isLive: { $not: "$isLive" } } }],
+      { new: true }
+    )
 
-    wiener.isLive = wiener.isLive ? false : true;
-    await wiener.save();
-
-    res.status(200).json({
-      message: 'Welcome Wiener Dachshund successfully updated.',
-      success: true,
-      welcomeDachshund,
+    res.status(200).json({ message: `Welcome Wiener is ${wiener.isLive ? 'ONLINE' : 'OFFLINE'}` });
+  } catch (err) {
+    await Error.create({
+      functionName: 'TOGGLE_WELCOME_WIENER_DOG_STATUS_PRIVATE_ADMIN',
+      name: err.name,
+      message: err.message,
+      user: { id: req?.user?._id, email: req?.user?.email },
     });
-  } catch (error) {
-    res.status(409).json({ message: error.message });
+
+    res.status(500).json({
+      message: 'Error toggling welcome wiener dog status',
+      sliceName: 'welcomeWienerApi',
+    });
   }
 };
 

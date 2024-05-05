@@ -30,7 +30,7 @@ export const quickLinks = () => {
     },
     {
       linkKey: 'Contact Us',
-      linkPath: '/about/contact-us',
+      linkPath: '/contact-us',
     },
   ];
 };

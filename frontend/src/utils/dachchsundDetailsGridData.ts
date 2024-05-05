@@ -1,50 +1,50 @@
-export const dachshundDetailsGridData = (info: any) => [
+export const dachshundDetailsGridData = (data: any) => [
   {
     title: 'Name',
-    textKey: info?.attributes?.name,
+    textKey: data[0]?.attributes?.name,
   },
   {
     title: 'Age',
-    textKey: info?.attributes?.ageString,
+    textKey: data[0]?.attributes?.ageString,
   },
   {
     title: 'Gender',
-    textKey: info?.attributes?.sex,
+    textKey: data[0]?.attributes?.sex,
   },
   {
     title: 'Size',
-    textKey: info?.attributes?.sizeGroup,
+    textKey: data[0]?.attributes?.sizeGroup,
   },
   {
     title: 'Primary Color',
-    textKey: info?.attributes?.colorDetails,
+    textKey: data[0]?.attributes?.colorDetails,
   },
   {
     title: 'Grooming Needs',
-    textKey: info?.attributes?.groomingNeeds,
+    textKey: data[0]?.attributes?.groomingNeeds,
   },
   {
     title: 'Ok with kids',
-    textKey: info?.attributes?.isKidsOk ? 'YES' : 'NO',
+    textKey: data[0]?.attributes?.isKidsOk ? 'Yes' : 'No',
   },
   {
     title: 'Housetrained',
-    textKey: info?.attributes?.isHousetrained ? 'YES' : 'NO',
+    textKey: data[0]?.attributes?.isHousetrained ? 'Yes' : 'No',
   },
   {
     title: 'New People Reaction',
-    textKey: info?.attributes?.newPeopleReaction,
+    textKey: data[0]?.attributes?.newPeopleReaction,
   },
   {
     title: 'Vocal Level',
-    textKey: info?.attributes?.vocalLevel,
+    textKey: data[0]?.attributes?.vocalLevel,
   },
   {
     title: 'Ok with dogs',
-    textKey: info?.attributes?.isDogsOk ? 'YES' : 'NO',
+    textKey: data[0]?.attributes?.isDogsOk ? 'Yes' : 'No',
   },
   {
     title: 'Okay with cats',
-    textKey: info?.attributes?.isCatsOk ? 'YES' : 'NO',
+    textKey: data[0]?.attributes?.isCatsOk ? 'Yes' : 'No',
   },
 ];

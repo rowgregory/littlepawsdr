@@ -1,31 +1,20 @@
 import { Toast as T } from 'react-bootstrap';
-import styled from 'styled-components';
 
-const ToastContainer = styled(T)`
-  position: fixed;
-  bottom: 50px;
-  left: 50%;
-  transform: translateX(-50%);
-`;
-const Body = styled(T.Body)`
-  color: #fff;
-`;
-
-const Toast = ({ showToast, setShowToast, headerText, bodyText }: any) => {
+const Toast = ({ message, success }: { message: any; success?: boolean }) => {
   return (
-    <ToastContainer
-      delay={3000}
-      autohide
-      show={showToast}
-      onClose={() => {
-        setShowToast && setShowToast(false);
-      }}
+    <T
+      className={`fixed z-[5002] bottom-4 left-1/2 -translate-x-1/2 shadow-xl rounded-lg bg-[#fff] border-[1px] ${success ? 'border-green-500' : 'border-red-500'
+        } `}
+      show={message !== null}
     >
-      <T.Header>
-        <strong className='me-auto'>{headerText}</strong>
-      </T.Header>
-      <Body>{bodyText}</Body>
-    </ToastContainer>
+      <T.Body className='text-gray-800 font-Matter-Regular text-sm flex items-center w-fit '>
+        <i
+          className={`${success ? 'fa-check text-green-500' : 'fa-exclamation text-red-500'} fa-solid  fa-xs border-[1px] rounded-full h-4 w-4 flex items-center justify-center ${success ? 'border-green-500 text-green-500' : 'border-red-500 text-red-500'
+            } mr-2`}
+        ></i>
+        {message.text}
+      </T.Body>
+    </T>
   );
 };
 

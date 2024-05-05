@@ -4,15 +4,16 @@ import fetch from 'node-fetch';
 import google from 'googleapis';
 import path from 'path';
 import registerConfirmation from './emails/registerConfirmation.js';
-import ecardPurchase from './emails/ecardPurchase.js';
 import resetPassword from './emails/resetPassword.js';
 import productPurchase from './emails/productPurchase.js';
 import sendEcard from './emails/sendEcard.js';
-import welcomeWienerPurchase from './emails/welcomeWienerPurchase.js';
 import orderShippedConfirmation from './emails/orderShippedConfirmation.js';
-import orderNotification from './emails/orderNotification.js';
 import adoptionFeeConfirmation from './emails/adoptionFeeConfirmation.js';
 import dotenv from 'dotenv'
+import notifyAuctionWinners from './emails/notifyAuctionWinners.js';
+import auctionItemOrderShippedConfirmation from './emails/auctionItemOrderShippedConfirmation.js';
+import paymentRedminderWinningBidAuctionItem from './emails/paymentReminderWinningBidAuctionItem.js';
+import orderNotification from './emails/orderNotification.js';
 dotenv.config()
 
 const OAuth2 = google.google.auth.OAuth2;
@@ -31,7 +32,7 @@ google.google.options({
   auth: Oauth2_client,
 });
 
-export const sendEmail = async (body, res, type, token, hasEmailBeenSent) => {
+export const sendEmail = async (body, res, type, token, hasEmailBeenSent, log) => {
   const __dirname = path.resolve();
   const root = path.join(__dirname, 'emails');
   let accessToken = await Oauth2_client.getAccessToken();
@@ -57,7 +58,7 @@ export const sendEmail = async (body, res, type, token, hasEmailBeenSent) => {
     secure: true,
     auth: {
       type: 'OAuth2',
-      user: process.env.EMAIL_ADDRESS,
+      user: 'it.little.paws@gmail.com',
       clientId: process.env.OAUTH_CLIENT_ID,
       clientSecret: process.env.OAUTH_CLIENT_SECRET,
       refreshToken: process.env.OAUTH_REFRESH_TOKEN,
@@ -84,22 +85,24 @@ export const sendEmail = async (body, res, type, token, hasEmailBeenSent) => {
 
   switch (type) {
     case 'sendRegisterConfirmationEmail':
-      return registerConfirmation(pugEmail, body, res);
-    case 'eCardPurchaseConfirmation':
-      return ecardPurchase(pugEmail, body, res);
+      return registerConfirmation(pugEmail, body);
     case 'resetPassword':
       return resetPassword(transporter, body, token, res);
     case 'sendOrderConfirmationEmail':
       return productPurchase(pugEmail, body, hasEmailBeenSent);
     case 'ecard':
       return sendEcard(pugEmail);
-    case 'sendWelcomeWienerOrderConfirmationEmail':
-      return welcomeWienerPurchase(pugEmail, body, hasEmailBeenSent);
     case 'sendOrderShippedConfirmationEmail':
-      return orderShippedConfirmation(pugEmail, body, hasEmailBeenSent);
-    case 'sendOrderNotificationEmail':
-      return orderNotification(pugEmail, body, hasEmailBeenSent);
+      return orderShippedConfirmation(pugEmail, body);
     case 'sendAdoptionFeeConfirmation':
       return adoptionFeeConfirmation(pugEmail, body, hasEmailBeenSent)
+    case 'AUCTION_ITEM_WINNER':
+      return notifyAuctionWinners(pugEmail, body, log)
+    case 'AUCTION_ITEM_ORDER_SHIPPED_CONFIRMATION':
+      return auctionItemOrderShippedConfirmation(pugEmail, body)
+    case 'REMINDER_PAYMENT_EMAIL_AUCTION_ITEM_WINNER':
+      return paymentRedminderWinningBidAuctionItem(pugEmail, body)
+    case 'ADMIN_ORDER_NOTIFICATION':
+      return orderNotification(pugEmail, body)
   }
 };

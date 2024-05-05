@@ -1,30 +1,27 @@
-import { formatDate } from '../../utils/formatDate.js';
+import Error from '../../models/errorModel.js';
+import { logEvent } from '../logHelpers.js';
 
-const orderNotification = (pugEmail, body, hasEmailBeenSent) => {
+const orderNotification = (pugEmail, log) => {
   pugEmail
-  .send({
-    template: 'ordernotification',
-    message: {
-      from: 'Little Paws Dachshund Rescue <no-reply@littlepawsdr.org',
-      to: 'orders@littlepawsdr.org',
-    },
-    locals: {
-      id: body?._id,
-      orderItems: body?.orderItems,
-      orderDate: formatDate(body?.createdAt),
-      subtotal: body?.subtotal,
-      shippingPrice: body?.shippingPrice,
-      totalPrice: body?.totalPrice,
-      email: body?.email,
-      name: body?.name
-    },
-  })
-  .then(() => {
-    console.log(`Order notification email has been sent to orders@littlepaws.org`);
-  });
+    .send({
+      template: 'ordernotification',
+      message: {
+        from: 'Little Paws Dachshund Rescue <no-reply@littlepawsdr.org',
+        to: 'orders@littlepawsdr.org',
 
-  hasEmailBeenSent = true;
-  return hasEmailBeenSent;
-}
+      },
+    })
+    .then(async () => {
+      logEvent(log, `ORDER NOTIFICATION EMAIL HAS BEEN TO SENT TO orders@littlepawsdr.org`)
+      await log.save()
+    })
+    .catch(async (err) => {
+      await Error.create({
+        functionName: 'ORDER_NOTIFICATION_EMAIL',
+        message: err.message,
+        name: err.name,
+      });
+    });
+};
 
 export default orderNotification;

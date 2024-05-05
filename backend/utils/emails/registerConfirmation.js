@@ -1,6 +1,6 @@
-import { encrypt } from '../../utils/crypto.js';
+import User from '../../models/userModel.js';
 
-const registerConfirmation = (pugEmail, body, res) => {
+const registerConfirmation = (pugEmail, body) => {
   return pugEmail
     .send({
       template: 'registerconfirmation',
@@ -9,14 +9,15 @@ const registerConfirmation = (pugEmail, body, res) => {
         to: body.email,
       },
       locals: {
-        email: body.email,
-        name: body.name,
         token: body.token,
-        id: JSON.stringify(encrypt(body.password)),
+        name: body.name,
+        userId: body.userId,
+        cameFromAuction: body.cameFromAuction,
+        customCampaignLink: body.customCampaignLink
       },
     })
-    .then(() => res.status(200).json({ message: 'Confirmation email sent' }))
-    .catch(err => console.log('ERROR: ', err));
+    .then(async () => await User.findByIdAndUpdate(body.userId, { registrationConfirmationEmailSent: true }))
+    .catch((err) => console.log('ERROR: ', err));
 };
 
 export default registerConfirmation;

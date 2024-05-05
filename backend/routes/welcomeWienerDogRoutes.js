@@ -11,14 +11,15 @@ const router = express.Router();
 
 import { protect, admin } from '../middleware/authMiddleware.js';
 
-// PUT toggle a welcomeWienerDog by id
-router.put('/toggle-live', protect, admin, toggleWelcomeWienerDog);
 
 // GET all welcomeWienerDogs
 router.get('/', getAllWelcomeWienerDogs);
 
 // POST a new welcomeWienerDog
 router.post('/', protect, admin, createWelcomeWienerDog);
+
+// PUT toggle a welcomeWienerDog by id
+router.put('/toggle-live', protect, admin, toggleWelcomeWienerDog);
 
 // PUT update a welcomeWienerDog by id
 router.put('/:id', protect, admin, updateWelcomeWienerDog);

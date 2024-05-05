@@ -2,17 +2,146 @@ import { Link } from 'react-router-dom';
 import { Text } from '../../components/styles/Styles';
 import ReactPlayer from 'react-player/lazy';
 import Video from '../../components/videos/landing-high.mp4';
-import {
-  Container,
-  QuickOptionContainerDesktop,
-  QuickOptionContainerMobile,
-  Wave,
-} from './styles';
+import styled, { keyframes } from 'styled-components';
+import { AquaTile } from '../assets';
+
+export const Draw = keyframes`
+  from {
+    stroke-dashoffset: 400
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+`;
+
+export const Wave = styled.svg`
+  height: 150px;
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  z-index: 0;
+  path {
+    stroke-dasharray: 400;
+    stroke-linecap: round;
+    animation-timing-function: ease-in;
+    animation: ${Draw} 6s infinite;
+    animation-direction: alternate-reverse;
+    opacity: 0.2;
+  }
+`;
+
+export const QuickOptionContainerDesktop = styled.div`
+  display: none;
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    color: #fff;
+    position: absolute;
+    z-index: 1;
+    bottom: 0;
+    left: 0;
+    border-top: 1px solid rgb(255, 255, 255, 0.5);
+    width: 100%;
+
+    a:nth-child(1) {
+      padding: 40px 25px;
+      :hover {
+        &:before {
+          content: '';
+          position: absolute;
+          background: url(${AquaTile});
+          top: 0;
+          left: 0;
+          bottom: 0;
+          right: 0;
+          width: 33.3%;
+          opacity: 0.7;
+          color: #fff;
+          z-index: -1;
+        }
+      }
+    }
+
+    a:nth-child(2) {
+      padding: 40px 25px;
+      border-left: 1px solid rgb(255, 255, 255, 0.5);
+      border-right: 1px solid rgb(255, 255, 255, 0.5);
+      :hover {
+        &:before {
+          content: '';
+          position: absolute;
+          background: url(${AquaTile});
+          top: 0;
+          left: 33.3%;
+          bottom: 0;
+          right: 0;
+          width: 33.3%;
+          opacity: 0.7;
+          color: #fff;
+          z-index: -1;
+        }
+      }
+    }
+    a:nth-child(3) {
+      padding: 40px 25px;
+      :hover {
+        &:before {
+          content: '';
+          position: absolute;
+          background: url(${AquaTile});
+          top: 0;
+          left: 66.6%;
+          bottom: 0;
+          right: 0;
+          width: 33.3%;
+          opacity: 0.7;
+          color: #fff;
+          z-index: -1;
+        }
+      }
+    }
+    a {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-left: 2rem;
+      cursor: pointer;
+      text-decoration: none;
+      div {
+        color: #fff !important;
+      }
+    }
+  }
+`;
+
+export const QuickOptionContainerMobile = styled.div`
+  display: grid;
+  grid-template-columns: 1fr;
+  color: #fff;
+  width: 100%;
+  a {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 2rem;
+    cursor: pointer;
+    text-decoration: none;
+    transition: 300ms;
+    border-top: 2px solid rgb(255, 255, 255);
+    background: url(${AquaTile});
+    height: 125px;
+    div {
+      color: #fff;
+    }
+  }
+  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+    display: none;
+  }
+`;
 
 const quickOptionArrData = () => [
   {
     linkKey: '/available',
-
     mb: '0.4rem',
     fontSize_1: '0.75rem',
     fontWeight: 'bold',
@@ -22,7 +151,6 @@ const quickOptionArrData = () => [
   },
   {
     linkKey: '/about/sanctuary',
-
     mb: '0.4rem',
     fontSize_1: '0.75rem',
     fontWeight: 'bold',
@@ -32,7 +160,6 @@ const quickOptionArrData = () => [
   },
   {
     linkKey: '/volunteer/volunteer-application',
-
     mb: '0.4rem',
     fontSize_1: '0.75rem',
     fontWeight: 'bold',
@@ -45,7 +172,7 @@ const quickOptionArrData = () => [
 const Banner = () => {
   return (
     <>
-      <Container>
+      <div className='reltive h-screen'>
         <ReactPlayer
           style={{ position: 'absolute', top: 0, left: 0 }}
           url={Video}
@@ -68,11 +195,7 @@ const Banner = () => {
         <QuickOptionContainerDesktop>
           {quickOptionArrData().map((obj: any, i: number) => (
             <Link to={obj.linkKey} key={i}>
-              <Text
-                marginBottom={obj.mb}
-                fontSize={obj.fontSize_1}
-                fontWeight={obj.fontWeight}
-              >
+              <Text marginBottom={obj.mb} fontSize={obj.fontSize_1} fontWeight={obj.fontWeight}>
                 {obj.textKey_1}
               </Text>
               <Text color={obj.color} fontSize={obj.fontSize_2}>
@@ -81,15 +204,11 @@ const Banner = () => {
             </Link>
           ))}
         </QuickOptionContainerDesktop>
-      </Container>
+      </div>
       <QuickOptionContainerMobile>
         {quickOptionArrData().map((obj: any, i: number) => (
           <Link to={obj.linkKey} key={i}>
-            <Text
-              marginBottom={obj.mb}
-              fontSize={obj.fontSize_1}
-              fontWeight={obj.fontWeight}
-            >
+            <Text marginBottom={obj.mb} fontSize={obj.fontSize_1} fontWeight={obj.fontWeight}>
               {obj.textKey_1}
             </Text>
             <Text color={obj.color} fontSize={obj.fontSize_2}>
@@ -98,12 +217,7 @@ const Banner = () => {
           </Link>
         ))}
       </QuickOptionContainerMobile>
-      <Wave
-        xmlns='http://www.w3.org/2000/svg'
-        width='390'
-        height='35'
-        viewBox='0 0 390 35'
-      >
+      <Wave xmlns='http://www.w3.org/2000/svg' width='390' height='35' viewBox='0 0 390 35'>
         <path
           fill='none'
           stroke='#fff'
@@ -117,9 +231,7 @@ const Banner = () => {
         marginTop='4px'
         cursor='pointer'
         fontSize='9px'
-        onClick={() =>
-          window.open('https://mixkit.co/@rubenvelasco/', '_blank')
-        }
+        onClick={() => window.open('https://mixkit.co/@rubenvelasco/', '_blank')}
       >
         Video by Ruben Velasco
       </Text>

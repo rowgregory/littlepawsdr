@@ -29,7 +29,12 @@ const adoptionFeeSchema = mongoose.Schema(
     },
     bypassCode: {
       type: String
-    }
+    },
+    exp: {
+      type: String
+    },
+    tokenStatus: { type: String, default: 'Valid' },
+    applicationStatus: { type: String, default: 'Active' },
   },
   {
     timestamps: true,

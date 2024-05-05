@@ -3,6 +3,10 @@ import mongoose from 'mongoose';
 const orderSchema = mongoose.Schema(
   {
     name: { type: String, required: true },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User'
+    },
     // model for all products, ecards, products, welcome wieners
     orderItems: [
       {
@@ -40,7 +44,7 @@ const orderSchema = mongoose.Schema(
     totalPrice: { type: Number, required: true, default: 0.0 },
     paypalOrderId: { type: String, required: true },
     email: { type: String, required: true },
-    confirmationEmailHasBeenSent: { type: Boolean },
+    confirmationEmailHasBeenSent: { type: Boolean, default: false },
     orderShippedconfirmationEmailHasBeenSent: { type: Boolean },
     orderNotificationEmailHasBeenSent: { type: Boolean },
 
@@ -54,10 +58,16 @@ const orderSchema = mongoose.Schema(
     shippingPrice: { type: Number, default: 0.0 },
     isShipped: { type: Boolean, default: false },
     shippedOn: { type: Date },
+    shippingProvider: { type: String },
     trackingNumber: { type: String },
     requiresShipping: { type: Boolean },
     subtotal: { type: Number },
     totalItems: { type: Number },
+    status: { type: String },
+    isEcard: { type: Boolean },
+    isWelcomeWiener: { type: Boolean },
+    isProduct: { type: Boolean },
+    processingFee: { type: Number, default: 0.035 }
   },
   {
     timestamps: true,

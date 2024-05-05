@@ -1,31 +1,27 @@
 import { Link } from 'react-router-dom';
-import { DachshundImage, TextContainer } from './styles/GridDogStyles';
-import { Text } from './styles/Styles';
-import { formatDate } from '../utils/formatDate';
-import { SorryNoImg } from './assets';
+import { NoImgDog } from './assets';
 
-const DachshundCard = ({ dachshund, type }: any) => (
+const DachshundCard = ({ dachshund }: any) => (
   <Link
     to={`/about/type/${dachshund.id}`}
     key={dachshund.id}
-    className='rounded d-flex justify-content-center h-100'
-    style={{ position: 'relative' }}
+    className='rounded-lg flex flex-col justify-center h-full relative hover:no-underline'
   >
-    <DachshundImage
-      src={dachshund?.attributes?.photos[0] ?? SorryNoImg}
+    <img
+      className='object-cover w-full aspect-square'
+      src={dachshund?.attributes?.photos[0] ?? NoImgDog}
       alt='successful-adoption'
       loading='lazy'
     />
-    <TextContainer>
-      <div className='d-flex align-self-center'>
-        <Text fontSize='18px' fontWeight={400} color='#fff'>
+    <div
+      className='bg-teal-500 text-[#fff] mx-auto w-full p-1 text-center flex justify-center flex-col'
+    >
+      <div className='flex self-center'>
+        <p className='text-lg font-Matter-Medium text-[#fff]'>
           {dachshund?.attributes?.name?.split('(')[0]}
-        </Text>
+        </p>
       </div>
-      {type === 'successful-adoptions' && dachshund?.attributes?.adoptedDate && (
-        <Text color='#dcdcdc'>Adopted on {formatDate(dachshund?.attributes?.adoptedDate)}</Text>
-      )}
-    </TextContainer>
+    </div>
   </Link>
 );
 

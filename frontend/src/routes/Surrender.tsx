@@ -1,5 +1,5 @@
-import React from 'react';
-import styled, { useTheme } from 'styled-components';
+import { Fragment } from 'react';
+import styled from 'styled-components';
 import { Text } from '../components/styles/Styles';
 import SurrenderHigh from '../components/assets/surrender.jpg';
 import SurrenderLow from '../components/assets/surrender-low.jpg';
@@ -8,23 +8,13 @@ import RightArrow from '../components/svg/RightArrow';
 import Hero from '../components/Hero';
 
 const SurrenderApplicationIFrame = styled.iframe`
-  border: none;
-  height: 4400px;
-
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
-    height: 3900px;
-  }
-
-  @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 1) {
-    height: 4200px;
-  }
+ height: 600px;
+ overflow-y: scroll;
 `;
 
 const Surrender = () => {
-  const theme = useTheme() as any;
-  const isDay = theme.mode === 'day';
   return (
-    <>
+    <Fragment>
       <Hero
         low={SurrenderLow}
         high={SurrenderHigh}
@@ -112,24 +102,15 @@ const Surrender = () => {
           following Surrender Questionnaire:
         </Text>
         <Text maxWidth='722px' className='mx-auto'>
-          {isDay ? (
-            <SurrenderApplicationIFrame
-              title='Surrender Application'
-              width='100%'
-              scrolling='no'
-              src='https://toolkit.rescuegroups.org/of/f?c=QCVXZJTH'
-            ></SurrenderApplicationIFrame>
-          ) : (
-            <SurrenderApplicationIFrame
-              title='Surrender Application'
-              width='100%'
-              scrolling='no'
-              src='https://toolkit.rescuegroups.org/of/f?c=RXYMKGSJ'
-            ></SurrenderApplicationIFrame>
-          )}
+          <SurrenderApplicationIFrame
+            title='Surrender Application'
+            width='100%'
+            src='https://toolkit.rescuegroups.org/of/f?c=QCVXZJTH'
+          ></SurrenderApplicationIFrame>
+
         </Text>
       </div>
-    </>
+    </Fragment>
   );
 };
 

@@ -4,6 +4,7 @@ import { Flex, Text } from '../../styles/Styles';
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 import JumpingRumpLoader from '../../Loaders/JumpingRopLoader';
+import { RootState } from '../../../redux/toolkitStore';
 
 const Breakdown = styled.div`
   border: none;
@@ -37,10 +38,10 @@ const ChartContainer = styled.div`
 `;
 
 const RevenuePerItemRadialChart = () => {
-  const state = useSelector((state: any) => state);
-  const welcomeWienerStats = state.dashboardCurrentYearData.currentYearData?.welcomeWienerStats;
-  const welcomeWienerRevenue = state.dashboardCurrentYearData.currentYearData?.revenue?.welcomeWienerRevenue;
-  const loading = state.dashboardCurrentYearData.loading;
+  const dashboard = useSelector((state: RootState) => state.dashboard);
+  const welcomeWienerStats = dashboard.currentYearData?.welcomeWienerStats;
+  const welcomeWienerRevenue = dashboard.currentYearData?.revenue?.welcomeWienerRevenue;
+  const loading = dashboard.loading;
   const totalRevenue = welcomeWienerStats?.welcomeWienerRevenue;
   const colors = ['#fc5b82', '#fd7e61', '#fd9c45', '#fed710'];
 

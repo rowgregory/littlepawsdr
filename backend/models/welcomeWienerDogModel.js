@@ -4,19 +4,15 @@ const welcomeWienerDogSchema = mongoose.Schema(
   {
     displayUrl: {
       type: String,
-      required: true,
     },
     name: {
       type: String,
-      required: true,
     },
     bio: {
       type: String,
-      required: true,
     },
     age: {
       type: String,
-      required: true,
     },
     associatedProducts: {
       type: [mongoose.Schema.Types.ObjectId],
@@ -27,9 +23,11 @@ const welcomeWienerDogSchema = mongoose.Schema(
       default: false,
     },
     isWelcomeWiener: { type: Boolean, default: true },
-    images: {
-      type: [String],
-    },
+    images: [
+      {
+        url: { type: String }
+      }
+    ],
   },
   { timestamps: true }
 );

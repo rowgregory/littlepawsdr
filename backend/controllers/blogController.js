@@ -2,60 +2,65 @@ import asyncHandler from 'express-async-handler';
 import Blog from '../models/blogModel.js';
 import Error from '../models/errorModel.js';
 
-// @desc    Get all blogs
-// @route   GET /api/blog
-// @access  Public
+/**
+ @desc    Get all blogs
+ @route   GET /api/blog
+ @access  Public
+*/
 const getBlogs = asyncHandler(async (req, res) => {
   try {
-    const blogs = await Blog.find({})
-      .populate('user', '_id name avatar')
-      .sort({ updatedAt: -1 }) // Sort by updatedAt in descending order
-      .exec();
+    const blogs = await Blog.find({}).populate('user', '_id name avatar');
 
-    res.json(blogs);
+    res.status(200).json({ blogs });
   } catch (err) {
-    const createdError = new Error({
+    await Error.create({
       functionName: 'GET_BLOG_LIST_PUBLIC',
-      detail: err.message,
-      status: 500,
+      name: err.name,
+      message: err.message,
+      user: { id: req?.user?._id, email: req?.user?.email },
     });
 
-    await createdError.save();
     res.status(500).send({
-      message: '500 - Server Error',
+      message: 'Error fetching blogs',
+      sliceName: 'blogApi',
     });
   }
 });
 
-// @desc    Get blog details
-// @route   GET /api/blog/:id
-// @access  Public
+/**
+ @desc    Get blog details
+ @route   GET /api/blog/:id
+ @access  Public
+*/
 const getBlogDetails = asyncHandler(async (req, res) => {
   try {
     const blog = await Blog.findById(req.params.id).populate('user', '_id name avatar');
 
-    res.json(blog);
+    res.json({ blog });
   } catch (err) {
-    const createdError = new Error({
+    await Error.create({
       functionName: 'GET_BLOG_BY_ID_PUBLIC',
-      detail: err.message,
-      status: 500,
+      name: err.name,
+      message: err.message,
+      user: { id: req?.user?._id, email: req?.user?.email },
     });
 
-    await createdError.save();
     res.status(500).send({
-      message: '500 - Server Error',
+      message: 'Error fetching blog',
+      sliceName: 'blogApi',
     });
   }
 });
 
-// @desc    Create a blog
-// @route   POST /api/blog
-// @access  Private/Admin
+/**
+ @desc    Create a blog
+ @route   POST /api/blog
+ @access  Private/Admin
+*/
 const createBlog = asyncHandler(async (req, res) => {
   const { title, article, image } = req.body;
   try {
-    const blog = new Blog({
+    await Blog.create({
       user: req.user._id,
       title,
       article,
@@ -64,86 +69,69 @@ const createBlog = asyncHandler(async (req, res) => {
       authorImg: req.user.avatar,
     });
 
-    const createdBlog = await blog.save();
-
-    res.status(201).json(createdBlog);
+    res.status(201).json({ message: 'Blog created', sliceName: 'blogApi' });
   } catch (err) {
-    const createdError = new Error({
+    await Error.create({
       functionName: 'CREATE_BLOG_ADMIN',
-      user: {
-        id: req?.user?._id,
-        name: req?.user?.name,
-        email: req?.user?.email,
-      },
-      detail: err.message,
-      status: 500,
+      name: err.name,
+      message: err.message,
+      user: { id: req?.user?._id, email: req?.user?.email },
     });
 
-    await createdError.save();
-    res.status(500).send({
-      message: '500 - Server Error',
+    res.status(500).json({
+      message: 'Error creating blog',
+      sliceName: 'blogApi',
     });
   }
 });
 
-// @desc    Update a blog
-// @route   PUT /api/blog/:id
-// @access  Private/Admin
+/**
+ @desc    Update a blog
+ @route   PUT /api/blog/:id
+ @access  Private/Admin
+*/
 const updateBlog = asyncHandler(async (req, res) => {
   try {
-    const { title, article, image } = req.body;
-    const blog = await Blog.findById(req.params.id);
+    await Blog.findOneAndUpdate({ _id: req.body._id }, req.body, { new: true });
 
-    blog.title = title ?? blog.title;
-    blog.article = article ?? blog.article;
-    blog.image = image ?? blog.image;
-
-    const updatedBlog = await blog.save();
-
-    res.json(updatedBlog);
+    res.json({ message: 'Blog updated', sliceName: 'blogApi' });
   } catch (err) {
-    const createdError = new Error({
+    await Error.create({
       functionName: 'UPDATE_BLOG_ADMIN',
-      user: {
-        id: req?.user?._id,
-        name: req?.user?.name,
-        email: req?.user?.email,
-      },
-      detail: err.message,
-      status: 500,
+      name: err.name,
+      message: err.message,
+      user: { id: req?.user?._id, email: req?.user?.email },
     });
 
-    await createdError.save();
-    res.status(500).send({
-      message: '500 - Server Error',
+    res.status(500).json({
+      message: 'Error updating blog',
+      sliceName: 'blogApi',
     });
   }
 });
 
-// @desc    Delete a blog
-// @route   DELETE /api/blog/:id
-// @access  Private/Admin
+/**
+ @desc    Delete a blog
+ @route   DELETE /api/blog/:id
+ @access  Private/Admin
+*/
 const deleteBlog = asyncHandler(async (req, res) => {
   try {
     const blog = await Blog.findById(req.params.id);
     await blog.deleteOne();
 
-    res.json({ message: 'Blog removed' });
+    res.json({ message: 'Blog deleted', sliceName: 'blogApi' });
   } catch (err) {
-    const createdError = new Error({
+    await Error.create({
       functionName: 'DELETE_BLOG_ADMIN',
-      user: {
-        id: req?.user?._id,
-        name: req?.user?.name,
-        email: req?.user?.email,
-      },
-      detail: err.message,
-      status: 500,
+      name: err.name,
+      message: err.message,
+      user: { id: req?.user?._id, email: req?.user?.email },
     });
 
-    await createdError.save();
-    res.status(500).send({
-      message: '500 - Server Error',
+    res.status(500).json({
+      message: 'Error deleting blog',
+      sliceName: 'blogApi',
     });
   }
 });

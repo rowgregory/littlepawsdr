@@ -212,10 +212,10 @@ html(xmlns='http://www.w3.org/1999/xhtml')
 
   body(itemscope='' itemtype='http://schema.org/EmailMessage')
     .container(width='800')
-      .content 
+      .content
         .header-section
           img.logo(src='https://i.ibb.co/GMWQxTM/logo.png' alt='little paws dachshund rescue')
-          h3 Ecard Order Confirmation                          
+          h3 Ecard Order Confirmation
           div Order Id: <strong>#{id}</strong>
         div.secondary-font Your ecard order has been confirmed and will be sent to #{recipientsEmail} on #{dateToSend}
         .horizontal-line
@@ -223,16 +223,16 @@ html(xmlns='http://www.w3.org/1999/xhtml')
           tbody
             tr
               td
-                div.table-header Order Date                          
+                div.table-header Order Date
                 strong #{createdAt}
               td
-                div.table-header PayPal Order Id                 
+                div.table-header PayPal Order Id
                 strong #{orderId}
               td
-                div.table-header Receipient's Name                     
+                div.table-header Receipient's Name
                 strong #{recipientsFirstName}
         .horizontal-line
-        .order-item 
+        .order-item
           .picture-name-qty
             img.img(src=image, alt=name style='width:60px; height:60px')
             .qty-size
@@ -240,20 +240,20 @@ html(xmlns='http://www.w3.org/1999/xhtml')
               div Message: #{message}
           strong.price $#{totalPrice}
         .horizontal-line
-        .total-container 
-          .total-block 
-            .flex 
-              .float-left Subtotal 
+        .total-container
+          .total-block
+            .flex
+              .float-left Subtotal
               .float-right  $#{subTotal}
-            .horizontal-line 
-            .total 
-              strong.float-left Total 
+            .horizontal-line
+            .total
+              strong.float-left Total
               strong.total-price  $#{totalPrice}
             .horizontal-line
-        .clear 
+        .clear
           div.thank-you Thank you for donating!
           div.lpdr Little Paws Dachsund Rescue
       .footer
-        -var contactLink = `<a href='https://www.littlepawsdr.org/about/contact-us')>Need Help?</a>`;
+        -var contactLink = `<a href='https://www.littlepawsdr.org/contact-us')>Need Help?</a>`;
         .help <span>!{contactLink}</span>
         .rescue Little Paws Dachshund Rescue #{new Date().getFullYear()}

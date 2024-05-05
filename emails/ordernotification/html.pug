@@ -14,17 +14,17 @@ html(xmlns='http://www.w3.org/1999/xhtml')
         align-items: center;
         height: 100%;
         background-color: #f6f6f6;
-        width: 100%;
         padding: 24px;
       }
 
       .container {
         display: block !important;
-        max-width: 800px !important;
+        max-width: 600px !important;
         margin: 0 auto !important;
         /* makes it centered */
         clear: both !important;
         background-color: #fff;
+        padding: 24px;
       }
 
       .content {
@@ -32,6 +32,10 @@ html(xmlns='http://www.w3.org/1999/xhtml')
         margin: 0 auto;
         display: block;
         padding: 36px;
+      }
+
+      .footer {
+        height: 20px;
       }
 
       .header-section {
@@ -44,13 +48,14 @@ html(xmlns='http://www.w3.org/1999/xhtml')
       }
 
       .secondary-font {
-        color: #cfd0d2;
+        color: #dcdde1;
         margin-bottom: 32px;
+        font-size: 14px;
       }
 
       .horizontal-line {
         border-bottom: 1px solid #f2f2f2;
-
+        margin-bottom: 24px;
       }
 
       table {
@@ -61,20 +66,19 @@ html(xmlns='http://www.w3.org/1999/xhtml')
         margin-bottom: 8px;
       }
 
-      .order-item {
-        padding: 18px 0;
+      div.auction-item {
         display: flex;
+        justify-content: between;
+        align-items: center;
+        max-width: 800px;
         width: 100%;
+        margin-top: 48px;
+        margin-bottom: 32px;
       }
 
-      .picture-name-qty {
-        display: flex;
-        width: 91%;
-      }
-
-      .qty-size {
-        display: block;
-        margin-left: 10px;
+      .picture-name-desc {
+        float: left;
+        width: 100%;
       }
 
       .total-container {
@@ -107,10 +111,9 @@ html(xmlns='http://www.w3.org/1999/xhtml')
       }
 
       .thank-you {
-        color: #9b6baa;
+        color: #6c6f79;
         font-size: 18px;
         font-weight: 400;
-        text-decoration: none;
       }
 
       .lpdr {
@@ -119,17 +122,6 @@ html(xmlns='http://www.w3.org/1999/xhtml')
 
       .aligncenter {
         text-align: center;
-      }
-
-      .manage-order-btn {
-        background: #9761aa;
-        color: #fff;
-        border-radius: 6px;
-        text-decoration: none;
-        text-align: center;
-        padding: 14px 22px;
-        width: fit-content;
-        font-size: 13px;
       }
 
       .float-right {
@@ -149,6 +141,7 @@ html(xmlns='http://www.w3.org/1999/xhtml')
       }
 
       .footer {
+        margin-top: 48px;
         background: #fcfbfe;
         padding: 20px 36px;
         max-width: 800px;
@@ -156,7 +149,7 @@ html(xmlns='http://www.w3.org/1999/xhtml')
       }
 
       .help {
-        float: left;
+        text-align: center !important;
       }
 
       .rescue {
@@ -177,18 +170,64 @@ html(xmlns='http://www.w3.org/1999/xhtml')
         font-size: 11px;
       }
 
-      .product-name {
+      .name {
+        font-size: 16px;
+      }
+      .desc, .details {
         font-size: 14px;
       }
 
-      .price {
-        font-size: 16px;
+      .details {
         width: fit-content;
+        float: left;
+        font-size: 14px;
+      }
+      .details-data {
+        width: fit-content;
+        float: right;
+        font-size: 14px;
+      }
+      .total {
+        font-weight: 600;
       }
 
-        /* -------------------------------------
-      RESPONSIVE AND MOBILE FRIENDLY STYLES
-      ------------------------------------- */
+      .price {
+        font-size: 14px;
+        width: fit-content;
+        float: right;
+      }
+
+      .message {
+        font-size: 28px;
+        text-align: center;
+        font-weight: 600;
+      }
+
+      .view-orders-link {
+        background: #22c2b7;
+        padding: 8px 44px;
+        color: white;
+        font-size: 16px;
+        font-weight: 600;
+        margin: 0 auto 24px;
+        border-radius: 6px;
+        text-decoration: none;
+      }
+
+      .text {
+        font-size: 14px;
+        margin: 0 auto;
+      }
+
+      .align-center {
+        width:100%;
+        margin-inline: auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+      }
+
       @media only screen and (max-width: 640px) {
         body {
           padding: 0 !important;
@@ -212,48 +251,11 @@ html(xmlns='http://www.w3.org/1999/xhtml')
 
 
   body(itemscope='' itemtype='http://schema.org/EmailMessage')
-    .container(width='800')
-      .content 
-        .header-section
-          img.logo(src='https://i.ibb.co/GMWQxTM/logo.png' alt='little paws dachshund rescue')                       
-          div Order Id: <strong>#{id}</strong>
-        .horizontal-line
-        table(width='100%' cellpadding='0' cellspacing='0')
-          tbody
-            tr
-              td
-                div.table-header Order Date                          
-                strong #{orderDate}
-              td
-                div.table-header Name                         
-                strong #{name}
-        .horizontal-line
-        each val in orderItems
-          .order-item 
-            .picture-name-qty
-              img.img(src=val.productImage, alt=val._id style='width:60px; height:60px')
-              .qty-size
-                strong.product-name #{val.productName}
-                div Quantity: #{val.quantity}
-                if val.size
-                  div Size: #{val.size}
-            strong.price $#{val.price}
-        .horizontal-line
-        .total-container 
-          .total-block 
-            .flex 
-              .float-left Subtotal 
-              .float-right  $#{subtotal}
-            .flex 
-              .float-left Shipping Fee 
-              .float-right  $#{shippingPrice}
-            .horizontal-line 
-            .total 
-              strong.float-left Total 
-              strong.total-price  $#{totalPrice}
-            .horizontal-line
-        .clear 
-          -var orderDetails = `<a href='https://www.littlepawsdr.org/admin/order/${id}')>View Order Details</a>`;
-          div.thank-you <span>!{orderDetails}</span>
-      .footer
-        .rescue Little Paws Dachshund Rescue #{new Date().getFullYear()}
+    .container(width='600px')
+      .header-section
+        img.logo(src='https://i.ibb.co/GMWQxTM/logo.png' alt='little paws dachshund rescue')
+        p.message We've received a new order!
+      .horizontal-line
+      div.align-center
+        a.view-orders-link(href=`https://www.littlepawsdr.org/admin/customer-orders/orders`) View orders
+      div.align-center

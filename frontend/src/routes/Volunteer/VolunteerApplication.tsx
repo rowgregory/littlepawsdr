@@ -6,7 +6,7 @@ import VolunteerAppLow from '../../components/assets/volunteer-app-low.jpg';
 import RightArrow from '../../components/svg/RightArrow';
 import LeftArrow from '../../components/svg/LeftArrow';
 import Hero from '../../components/Hero';
-import { Container } from '../../components/styles/GridDogStyles';
+import { Fragment } from 'react';
 
 const VolunteerApplicationIFrame = styled.iframe`
   border: none;
@@ -15,7 +15,7 @@ const VolunteerApplicationIFrame = styled.iframe`
 
 const VolunteerApplication = () => {
   return (
-    <>
+    <Fragment>
       <Hero
         low={VolunteerAppLow}
         high={VolunteerAppHigh}
@@ -23,7 +23,7 @@ const VolunteerApplication = () => {
         link='https://unsplash.com/@just_another_photographa?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText'
         photographer='James Watson'
       />
-      <Container>
+      <div className='max-w-screen-xl w-full mx-auto mb-24 px-3'>
         <div className='w-100 d-flex justify-content-between mt-3'>
           <LeftArrow
             text='Home'
@@ -106,8 +106,8 @@ const VolunteerApplication = () => {
             src='https://toolkit.rescuegroups.org/of/f?c=FPGYBJHM'
           ></VolunteerApplicationIFrame>
         </Text>
-      </Container>
-    </>
+      </div>
+    </Fragment>
   );
 };
 

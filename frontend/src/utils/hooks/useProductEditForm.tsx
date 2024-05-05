@@ -1,12 +1,60 @@
 import { useEffect, useState } from 'react';
 
-export const useProductEditForm = (
-  callback?: any,
-  data?: any,
-  setDoesProductHaveSizes?: any,
-  setProductSizes?: any
+export const validateField = (
+  field: string,
+  value: string,
+  setErrors: Function
 ) => {
-  const values = {
+  let isValid = true;
+  let errorMessage = '';
+
+  switch (field) {
+    case 'name':
+      isValid = !!value
+      errorMessage = 'Enter product name.';
+      break;
+    case 'images':
+      isValid = value?.length > 0
+      errorMessage = 'Upload at least one image.';
+      break;
+    case 'price':
+      isValid = !!value
+      errorMessage = 'Enter price.';
+      break;
+    default:
+      isValid = !!value;
+      errorMessage = `Enter ${field} to continue.`;
+      break;
+  }
+
+  if (!isValid) {
+    setErrors((errors: any) => ({
+      ...errors,
+      [field]: errorMessage,
+    }));
+  } else {
+    setErrors((errors: any) => ({
+      ...errors,
+      [field]: '',
+    }));
+  }
+
+  return isValid;
+};
+
+export const validateProductCreate = (inputs: any, setErrors: Function) => {
+  const requiredFields = ['name', 'images', 'price'];
+  let formIsValid = false;
+
+  requiredFields.forEach((field) => {
+    formIsValid = validateField(field, inputs[field], setErrors);
+  });
+
+  return formIsValid;
+};
+
+export const useProductEditForm = (setErrors: any, data?: any) => {
+  const [inputs, setInputs] = useState({
     name: '',
     price: 0,
     shippingPrice: 0,
@@ -18,8 +66,7 @@ export const useProductEditForm = (
     sizes: [],
     images: [],
     hasSizes: false,
-  };
-  const [inputs, setInputs] = useState(values);
+  });
 
   useEffect(() => {
     if (data) {
@@ -35,24 +82,29 @@ export const useProductEditForm = (
         countInStock: data.countInStock,
         description: data.description,
         sizes: data.sizes,
+        hasSizes: data?.sizes?.length > 0,
       }));
     }
+  }, [data]);
 
-    setDoesProductHaveSizes(data?.sizes?.length > 0 ? true : false);
-    setProductSizes(data?.sizes);
-  }, [data, setDoesProductHaveSizes, setProductSizes]);
 
   const handleInput = (e: any) => {
+    const { name, value } = e.target;
     setInputs((inputs: any) => ({
       ...inputs,
-      [e.target.name]: e.target.value,
+      [name]: value,
+    }));
+
+    validateField(name, value, setErrors);
+  };
+
+  const handleSwitch = (e: any) => {
+    const { name, checked } = e.target;
+    setInputs((inputs: any) => ({
+      ...inputs,
+      [name]: checked,
     }));
   };
 
-  const onSubmit = (e: any) => {
-    e.preventDefault();
-    callback();
-  };
-
-  return { inputs, handleInput, setInputs, onSubmit };
+  return { inputs, handleInput, handleSwitch, setInputs };
 };
