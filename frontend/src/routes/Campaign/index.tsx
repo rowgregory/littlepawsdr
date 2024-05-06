@@ -86,14 +86,6 @@ const Navbar = () => {
         )}
       </div>
       <div className='flex items-center'>
-        {user?.isAdmin && (
-          <Link
-            className='font-Matter-Regular text-sm mr-2 absolute right-10'
-            to={`/admin/campaigns/${state.campaign.campaign._id}/details`}
-          >
-            Dashbaord
-          </Link>
-        )}
         {user?.isAdmin ? (
           <img
             src={user?.avatar || NoImgDog}
