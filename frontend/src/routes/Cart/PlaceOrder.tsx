@@ -25,7 +25,7 @@ const checkCartItems = (cartItems: any) => {
 
     if (product?.isWelcomeWiener) isWelcomeWiener = true;
 
-    if (product?.isCard) isEcard = true;
+    if (product?.isEcard) isEcard = true;
 
     if (isProduct && isWelcomeWiener && isEcard) {
       break;

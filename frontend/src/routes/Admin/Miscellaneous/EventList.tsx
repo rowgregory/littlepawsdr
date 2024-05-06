@@ -119,7 +119,7 @@ const EventList = () => {
                         </td>
                         <td>
                           <p className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>
-                            {formatDateWithTimezone(event?.createdAt)}
+                            {formatDateWithTimezone(event?.startDate)}
                           </p>
                         </td>
                         <td>
