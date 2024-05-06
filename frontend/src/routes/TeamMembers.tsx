@@ -9,6 +9,7 @@ import CardFlip from '../components/boardmember-card/CardFlip';
 import Hero from '../components/Hero';
 import { LoadingImg } from '../components/LoadingImg';
 import { useGetBoardMembersQuery } from '../redux/services/boardMemberApi';
+import VerticalLogo from '../components/common/VerticalLogo';
 
 const Container = styled.div`
   max-width: 1280px;
@@ -49,36 +50,6 @@ const CardWrapper = styled(Col)`
     grid-template-rows: repeat(auto-fill, 380px);
   }
 `;
-
-const VerticalText = styled.div`
-  color: ${({ theme }) => theme.secondaryBg};
-  font-size: 150px;
-  font-weight: 600;
-`;
-
-const VerticalLogo = () => (
-  <div
-    style={{
-      position: 'fixed',
-      right: 'calc(100% - 163px)',
-      top: 0,
-      bottom: 0,
-      left: 0,
-      zIndex: -1,
-    }}
-  >
-    <div
-      style={{
-        height: '163px',
-        transformOrigin: 'left',
-        transform: 'rotate(90deg) translate(0%, -50%)',
-        width: '200vh',
-      }}
-    >
-      <VerticalText>Little Paws Dachshund Reschue</VerticalText>
-    </div>
-  </div>
-);
 
 const ArrowContainer = styled.div`
   max-width: 980px;

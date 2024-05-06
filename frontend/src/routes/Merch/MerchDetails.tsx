@@ -18,8 +18,6 @@ const ProductDetails = () => {
   const { data, isLoading } = useGetProductQuery(id);
   const product = data?.product;
 
-  console.log(product)
-
   useEffect(() => {
     scrollToTop()
     if (!product) return;
