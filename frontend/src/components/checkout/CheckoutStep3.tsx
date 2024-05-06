@@ -1,4 +1,4 @@
-import { PayPalButtons, usePayPalScriptReducer } from '@paypal/react-paypal-js';
+import { PayPalButtons } from '@paypal/react-paypal-js';
 import { Fragment, useState } from 'react';
 import { useAppDispatch } from '../../redux/toolkitStore';
 import { useCreateOrderMutation } from '../../redux/services/orderApi';
@@ -17,11 +17,6 @@ const CheckoutStep3 = ({ cart, step, inputs, isProduct, isWelcomeWiener, isEcard
   const cartItems = cart.cartItems;
 
   const [createOrder] = useCreateOrderMutation();
-
-  const [{ isPending, isRejected }] = usePayPalScriptReducer();
-
-  console.log('IS REJECTEDDD: ', isRejected);
-  console.log('IS PENDING: ', isPending);
 
   const payPalComponents = {
     style: { layout: 'vertical' },

@@ -42,8 +42,6 @@ const DachshundDetails = () => {
 
   if (isLoading) return <GreenRotatingTransparentCircle />;
 
-  console.log('data: ', data);
-
   return (
     <div className='max-w-screen-lg w-full mx-auto mt-28 px-3.5 lg:px-0'>
       <LeftArrow text={`Back to ${leftArrowText}`} url={leftArrowUrl} />

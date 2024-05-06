@@ -51,6 +51,10 @@ import WhiteLogo from './logo-white2.png';
 import EscheresqueDark from './escheresque-dark.png';
 import Tile from './3px-tile.png';
 import Arches from './arches.png';
+import LightHoneycomb from './light-honeycomb-dark.png';
+import LightWool from './light-wool.png';
+import Nami from './nami.png';
+import Padded from './padded.png';
 
 export {
   Icon1,
@@ -106,4 +110,8 @@ export {
   EscheresqueDark,
   Tile,
   Arches,
+  LightHoneycomb,
+  LightWool,
+  Nami,
+  Padded,
 };

@@ -68,8 +68,8 @@ const Orders = () => {
                     <i className='fa-solid fa check text-green-600'></i>
                     <p
                       className={`text-gray-900 text-sm font-Matter-Regular items-center px-2.5 whitespace-nowrap w-fit ${orderOpened?.order?.isShipped
-                        ? 'text-green-500 bg-green-50 px-2 py-0.5 rounded-3xl'
-                        : 'text-red-500 bg-red-50 px-2 py-0.5 rounded-3xl'
+                          ? 'text-green-500 bg-green-50 px-2 py-0.5 rounded-3xl'
+                          : 'text-red-500 bg-red-50 px-2 py-0.5 rounded-3xl'
                         }`}
                     >
                       {orderOpened?.order?.isShipped ? 'Complete' : 'Pending Fulfillment'}
@@ -119,6 +119,12 @@ const Orders = () => {
                     </p>
                   </div>
                   <div className='flex justify-between'>
+                    <p className='text-sm font-Matter-Medium'>Processing Fee</p>
+                    <p className='text-sm font-Matter-Regular'>
+                      ${orderOpened?.order?.processingFee?.toFixed(2)}
+                    </p>
+                  </div>
+                  <div className='flex justify-between'>
                     <p className='text-sm font-Matter-Medium'>Shipping</p>
                     <p className='text-sm font-Matter-Regular'>
                       ${orderOpened?.order?.shippingPrice?.toFixed(2)}
@@ -132,30 +138,32 @@ const Orders = () => {
                     </p>
                   </div>
                 </div>
-                <div className='border-[1px] border-gray-200 rounded-xl p-3 flex items-center'>
-                  <i className='fa-solid fa-plane-departure text-teal-500 mr-1.5'></i>
-                  <p className='font-Matter-Medium whitespace-nowrap text-sm mr-2'>
-                    Tracking Number
-                  </p>
-                  <input
-                    type='text'
-                    onChange={(e: any) => setTrackingNumber(e.target.value)}
-                    name='trackingNumber'
-                    alt='Order tracking number'
-                    aria-label='Enter tracking number'
-                    value={trackingNumber || ''}
-                    className='w-full focus:outline-none font-Matter-Light border-none placeholder:text-sm placeholder:font-Matter-Regular placeholder:text-gray-300'
-                    placeholder='Enter tracking number'
-                  />
-                  {loadingUpdate ? (
-                    <TailwindSpinner />
-                  ) : (
-                    <i
-                      onClick={() => handleTrackingNumber()}
-                      className='fa-solid fa-paper-plane text-green-500 cursor-pointer'
-                    ></i>
-                  )}
-                </div>
+                {orderOpened?.order?.isProduct && (
+                  <div className='border-[1px] border-gray-200 rounded-xl p-3 flex items-center'>
+                    <i className='fa-solid fa-plane-departure text-teal-500 mr-1.5'></i>
+                    <p className='font-Matter-Medium whitespace-nowrap text-sm mr-2'>
+                      Tracking Number
+                    </p>
+                    <input
+                      type='text'
+                      onChange={(e: any) => setTrackingNumber(e.target.value)}
+                      name='trackingNumber'
+                      alt='Order tracking number'
+                      aria-label='Enter tracking number'
+                      value={trackingNumber || ''}
+                      className='w-full focus:outline-none font-Matter-Light border-none placeholder:text-sm placeholder:font-Matter-Regular placeholder:text-gray-300'
+                      placeholder='Enter tracking number'
+                    />
+                    {loadingUpdate ? (
+                      <TailwindSpinner />
+                    ) : (
+                      <i
+                        onClick={() => handleTrackingNumber()}
+                        className='fa-solid fa-paper-plane text-green-500 cursor-pointer'
+                      ></i>
+                    )}
+                  </div>
+                )}
               </div>
             </section>
           </div>
@@ -248,12 +256,14 @@ const Orders = () => {
                               </td>
                               <td>
                                 <p
-                                  className={`text-gray-900 text-sm font-Matter-Regular items-center px-2.5 whitespace-nowrap w-fit ${order?.isShipped
-                                    ? 'text-green-500 bg-green-50 px-2 py-0.5 rounded-3xl'
-                                    : 'text-red-500 bg-red-50 px-2 py-0.5 rounded-3xl'
+                                  className={`text-gray-900 text-sm font-Matter-Regular items-center px-2.5 whitespace-nowrap w-fit ${!order.isProduct
+                                      ? 'text-indigo-500 bg-indigo-50 py-0.5 rounded-2xl'
+                                      : order?.status === 'Complete'
+                                        ? 'text-green-500 bg-green-50 px-2 py-0.5 rounded-3xl'
+                                        : 'text-red-500 bg-red-50 px-2 py-0.5 rounded-3xl'
                                     }`}
                                 >
-                                  {order?.isShipped ? 'Complete' : 'Pending Fulfillment'}
+                                  {order?.status}
                                 </p>
                               </td>
                               <td>

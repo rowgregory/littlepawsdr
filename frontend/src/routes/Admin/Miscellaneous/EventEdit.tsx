@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom';
 import { FormFile } from 'react-bootstrap';
 import TailwindSpinner from '../../../components/Loaders/TailwindSpinner';
 import useEventEditForm from '../../../utils/hooks/useEventEditForm';
+import { formatDateForCalandar, formatDateForEstTimezone } from '../../../utils/hooks/useAuctionSettingsForm';
 
 const EventEdit = () => {
   const {
@@ -27,8 +28,8 @@ const EventEdit = () => {
         _id: event._id,
         title: inputs.title,
         description: inputs.description,
-        startDate: inputs.startDate,
-        endDate: inputs.endDate,
+        startDate: formatDateForEstTimezone(inputs.startDate, 13, 0),
+        endDate: formatDateForEstTimezone(inputs.endDate, 21, 0),
         image: inputs.image,
         background: inputs.background,
         color: inputs.color,
@@ -41,8 +42,8 @@ const EventEdit = () => {
       await createEvent({
         title: inputs.title,
         description: inputs.description,
-        startDate: inputs.startDate,
-        endDate: inputs.endDate,
+        startDate: formatDateForEstTimezone(inputs.startDate, 13, 0),
+        endDate: formatDateForEstTimezone(inputs.endDate, 21, 0),
         image: inputs.image,
         background: inputs.background,
         color: inputs.color,
@@ -150,7 +151,7 @@ const EventEdit = () => {
                   onChange={handleInput}
                   type='date'
                   alt='startDate'
-                  value={inputs.startDate || ''}
+                  value={formatDateForCalandar(inputs.startDate) || ''}
                 />
               </div>
               <div className='flex flex-col'>
@@ -163,7 +164,7 @@ const EventEdit = () => {
                   onChange={handleInput}
                   type='Date'
                   alt='endDate'
-                  value={inputs.endDate || ''}
+                  value={formatDateForCalandar(inputs.endDate) || ''}
                 />
               </div>
             </div>

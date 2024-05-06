@@ -3,7 +3,6 @@ import { useParams } from 'react-router-dom';
 import { useGetEventQuery } from '../../redux/services/eventApi';
 import GreenRotatingTransparentCircle from '../../components/Loaders/GreenRotatingTransparentCircle';
 import { Tile } from '../../components/assets';
-import { getOrdinalDate } from '../../utils/dateFunctions';
 import { Link } from 'react-router-dom';
 import VerticalLogo from '../../components/common/VerticalLogo';
 
@@ -11,9 +10,6 @@ const Event = () => {
   const { id } = useParams();
   const { data, isLoading } = useGetEventQuery(id);
   const event = data?.event;
-
-  const start = event?.startDate?.split('-');
-  const end = event?.endDate?.split('-');
 
   if (isLoading) return <GreenRotatingTransparentCircle />;
 
@@ -60,17 +56,21 @@ const Event = () => {
             <div className='col-span-12 md:col-span-6 lg:col-span-4 flex flex-col'>
               <div className='flex'>
                 <p className='font-Matter-Bold text-3xl lg:text-4xl'>
-                  {start && getOrdinalDate(start).month}
-                  <sup className='font-Matter-Bold ml-1'>
-                    {start && getOrdinalDate(start).superscriptOrdinal}
-                  </sup>
+                  {new Date(event?.startDate).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    hour12: true,
+                    timeZone: 'America/New_York',
+                  })}
                 </p>
                 <p className='font-Matter-Bold text-3xl lg:text-4xl mx-3'>-</p>
                 <p className='font-Matter-Bold text-3xl lg:text-4xl'>
-                  {end && getOrdinalDate(end).month}
-                  <sup className='font-Matter-Bold ml-1'>
-                    {end && getOrdinalDate(end).superscriptOrdinal}
-                  </sup>
+                  {new Date(event?.endDate).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    hour12: true,
+                    timeZone: 'America/New_York',
+                  })}
                 </p>
               </div>
               <p className='font-Matter-Regular'>{event?.description}</p>
@@ -88,10 +88,16 @@ const Event = () => {
               <div className='border-[6px] border-slate-100 flex flex-col justify-between h-fit rounded-md w-full p-4 lg:aspect-square lg:-mt-24 bg-white'>
                 <div>
                   <p className='font-Matter-Medium text-2xl mb-4'>Unlock Hope</p>
-                  <p className='font-Matter-Light text-lg mb-5'>Support Our Cause and Transform Futures.</p>
-
+                  <p className='font-Matter-Light text-lg mb-5'>
+                    Support Our Cause and Transform Futures.
+                  </p>
                 </div>
-                <Link to='/donate' className='w-full text-center rounded-md text-white bg-[#9863a8] font-Museo-Slab-700 py-3 text-2xl hover:no-underline hover:shadow-lg duration-200'>DONATE</Link>
+                <Link
+                  to='/donate'
+                  className='w-full text-center rounded-md text-white bg-[#9863a8] font-Museo-Slab-700 py-3 text-2xl hover:no-underline hover:shadow-lg duration-200'
+                >
+                  DONATE
+                </Link>
               </div>
             </div>
           </div>

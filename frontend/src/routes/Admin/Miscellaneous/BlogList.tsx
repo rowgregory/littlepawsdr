@@ -135,7 +135,7 @@ const BlogList = () => {
                                   Edit
                                 </Link>
                                 <Link
-                                  to={`/blogs/${blogToBeEdited?.blog?._id}`}
+                                  to={`/blog/${blogToBeEdited?.blog?._id}`}
                                   className='flex w-full text-sm text-gray-900 rounded-lg px-2 py-1 hover:no-underline hover:bg-gray-100 hover:text-gray-900'
                                 >
                                   View
