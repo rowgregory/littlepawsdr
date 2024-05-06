@@ -114,7 +114,7 @@ const createAdoptionApplicationFee = async (res, req) => {
         name: `${fee.firstName} ${fee.lastName}`,
         email: fee.emailAddress,
       },
-      '1d'
+      '7d'
     );
     logEvent(log, 'JWT CREATED')
     logEvent(log, 'DECODEDING JWT TO GET EXP')
