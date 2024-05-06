@@ -55,7 +55,7 @@ const CodeCopied = styled.div<{ anim: string }>`
 `;
 
 // const socket = io('http://localhost:5000')
-const socket = io('https://www.littlepawsdr.org:5000');
+const socket = io('https://www.littlepawsdr.org');
 
 const AdoptionApplicationBypassCode = () => {
   const dispatch = useAppDispatch()
