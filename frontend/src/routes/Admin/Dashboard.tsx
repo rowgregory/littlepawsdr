@@ -7,7 +7,7 @@ import { io } from 'socket.io-client';
 import { useSelector } from 'react-redux';
 
 // const socket = io('http://localhost:5000')
-const socket = io('https://www.littlepawsdr.org:5000');
+const socket = io('https://www.littlepawsdr.org');
 
 const Dashboard = () => {
   const dispatch = useAppDispatch()

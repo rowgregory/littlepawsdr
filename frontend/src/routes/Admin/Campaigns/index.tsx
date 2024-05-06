@@ -172,7 +172,7 @@ const Sidebar = ({ sidebarLinkArr }: any) => {
 
 
 // const socket = io('http://localhost:5000');
-const socket = io('https://www.littlepawsdr.org:5000');
+const socket = io('https://www.littlepawsdr.org');
 
 const CampaignLayout = ({ navbar, children }: any) => {
   const { id } = useParams();

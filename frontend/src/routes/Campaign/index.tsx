@@ -22,7 +22,7 @@ interface CampaignLayoutProps {
 
 
 // const socket = io('http://localhost:5000');
-const socket = io('https://www.littlepawsdr.org:5000');
+const socket = io('https://www.littlepawsdr.org');
 
 const CampaignLayout: FC<CampaignLayoutProps> = ({ navbar, children }) => {
   const params = useParams();
