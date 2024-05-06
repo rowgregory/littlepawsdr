@@ -1,157 +1,103 @@
-import { Card, Spinner } from 'react-bootstrap';
-import styled from 'styled-components';
-import { Text } from '../../components/styles/Styles';
 import LeftArrow from '../../components/svg/LeftArrow';
 import { useParams } from 'react-router-dom';
 import { useGetEventQuery } from '../../redux/services/eventApi';
-
-const CardContainer = styled.div<{ event: any }>`
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-  padding: 80px 16px;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  min-height: calc(100vh - 426px);
-  background-color: #e5e5f7;
-  opacity: 0.8;
-  background-image: ${({ event }) => `repeating-radial-gradient(
-      circle at 0 0,
-      transparent 0,
-      #e5e5f7 10px
-    ),
-    repeating-linear-gradient(${event?.background?.split(',')[1]?.split(' ')[1]
-    }, ${event?.background?.split(',')[2]?.split(' ')[1]})`};
-`;
-
-const CardTitle = styled(Card.Title) <{ color?: string }>`
-  font-size: 56px;
-  text-transform: uppercase;
-  text-align: center;
-  font-family: 'Maven Pro', sans-serif;
-  color: ${({ color }) => color};
-  margin-top: -90px;
-  z-index: 10;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-    margin-top: -150px;
-    font-size: 72px;
-  }
-`;
-
-const Month = styled(Card.Text) <{ color?: string }>`
-  font-size: 3em;
-  margin-bottom: 0;
-  margin-top: 96px;
-  font-family: 'Maven Pro', sans-serif;
-  text-transform: uppercase;
-  color: ${({ color }) => color};
-`;
-
-const Description = styled(Card.Text) <{ color?: string }>`
-  font-size: 1rem;
-  color: ${({ color }) => color};
-`;
-
-const CardImg = styled(Card.Img)`
-  object-fit: cover;
-  aspect-ratio: 1/1;
-  border-radius: 50%;
-  max-width: 600px;
-  width: 100%;
-`;
-
-export const getOrdinalDate = (date: any) => {
-  const getOrdinal = (d: string) => {
-    const day = parseInt(d);
-    if (day > 3 && day < 21) return 'th';
-    switch (day % 10) {
-      case 1:
-        return 'st';
-      case 2:
-        return 'nd';
-      case 3:
-        return 'rd';
-      default:
-        return 'th';
-    }
-  };
-  const superscriptOrdinal = `${date[2] < '10' ? `${date[2].slice(1)}` : date[2]
-    }${getOrdinal(date[2])}`;
-
-  const month = new Date(date[0], date[1] - 1, date[2])
-    .toLocaleString('default', { month: 'short' })
-    .toUpperCase();
-
-  return { superscriptOrdinal, month };
-};
+import GreenRotatingTransparentCircle from '../../components/Loaders/GreenRotatingTransparentCircle';
+import { Tile } from '../../components/assets';
+import { getOrdinalDate } from '../../utils/dateFunctions';
+import { Link } from 'react-router-dom';
+import VerticalLogo from '../../components/common/VerticalLogo';
 
 const Event = () => {
   const { id } = useParams();
-
-  const { data, isLoading } = useGetEventQuery({ id })
+  const { data, isLoading } = useGetEventQuery(id);
   const event = data?.event;
 
   const start = event?.startDate?.split('-');
   const end = event?.endDate?.split('-');
 
-
+  if (isLoading) return <GreenRotatingTransparentCircle />;
 
   return (
-    <>
-      <CardContainer event={event}>
+    <div className='min-h-[calc(100vh-540px)] mt-[65px] pb-20 w-full'>
+      <VerticalLogo />
+      <div className='mx-auto w-full'>
         <div
-          style={{ maxWidth: '1100px', width: '100%', marginInline: 'auto' }}
-          className='d-flex justify-content-center flex-column align-items-center'
+          style={{
+            backgroundImage: `url(${Tile})`,
+            backgroundColor: event?.background?.split(',')[1]?.split(' ')[1],
+          }}
+          className='h-48 md:h-60 bg-repeat flex items-center top-[65px] border-b-[7px] border-[#9863a8]'
         >
-          {isLoading ? (
-            <Spinner animation='border' />
-          ) : (
-            <>
-              <div className='w-100 d-flex justify-content-start pt-4'>
-                <LeftArrow text='Events' url='/events' />
-              </div>
-              <CardImg
-                src={event?.image}
-                alt={`${event?.title}-${event?._id}`}
-              />
-              <CardTitle color={event?.color} className='mb-0'>
-                {event?.title}
-              </CardTitle>
-              <div className='d-flex w-100 justify-content-center align-items-center'>
-                <Month color={event?.color}>
-                  {start && getOrdinalDate(start).month}
-                  <sup>{start && getOrdinalDate(start).superscriptOrdinal}</sup>
-                </Month>
-                <Month color={event?.color} className='mx-3'>
-                  -
-                </Month>
-                <Month color={event?.color}>
-                  {end && getOrdinalDate(end).month}
-                  <sup>{end && getOrdinalDate(end).superscriptOrdinal}</sup>
-                </Month>
-              </div>
-              <Description color={event?.color}>
-                {event?.description}
-              </Description>
-              {event?.externalLink && (
-                <Text
-                  p='4px 8px'
-                  border={`1px solid ${event?.color}`}
-                  cursor='pointer'
-                  marginTop='48px'
-                  fontSize='22px'
-                  color={event?.color}
-                  fontWeight={600}
-                  onClick={() => window.open(event?.externalLink, '_blank')}
-                >
-                  View the event here
-                </Text>
-              )}
-            </>
-          )}
+          <h1 className='max-w-screen-xl w-full px-3 text-4xl md:text-6xl font-Matter-Medium text-[#fff] mx-auto'>
+            {event?.title}
+          </h1>
         </div>
-      </CardContainer>
-    </>
+        <div className='flex justify-center flex-col items-center mx-auto w-full max-w-screen-xl px-3'>
+          <div className='w-full flex justify-start pt-4 pb-8'>
+            <LeftArrow text='Events' url='/events' />
+          </div>
+          <div className='grid grid-cols-12 gap-y-12 gap-x-0 md:gap-x-12 lg:gap-12'>
+            <div className='col-span-12 md:col-span-6 lg:col-span-5'>
+              <div
+                className='p-4 max-w-screen-md w-full'
+                style={{
+                  backgroundImage: `repeating-radial-gradient(
+                  circle at 0 0,
+                  transparent 0,
+                  #e5e5f7 10px
+                ),
+                  repeating-linear-gradient(${event?.background?.split(',')[1]?.split(' ')[1]}, ${event?.background?.split(',')[2]?.split(' ')[1]
+                    })`,
+                }}
+              >
+                <img
+                  src={event?.image}
+                  alt={`${event?.title}-${event?._id}`}
+                  className='object-contain w-full'
+                />
+              </div>
+            </div>
+            <div className='col-span-12 md:col-span-6 lg:col-span-4 flex flex-col'>
+              <div className='flex'>
+                <p className='font-Matter-Bold text-3xl lg:text-4xl'>
+                  {start && getOrdinalDate(start).month}
+                  <sup className='font-Matter-Bold ml-1'>
+                    {start && getOrdinalDate(start).superscriptOrdinal}
+                  </sup>
+                </p>
+                <p className='font-Matter-Bold text-3xl lg:text-4xl mx-3'>-</p>
+                <p className='font-Matter-Bold text-3xl lg:text-4xl'>
+                  {end && getOrdinalDate(end).month}
+                  <sup className='font-Matter-Bold ml-1'>
+                    {end && getOrdinalDate(end).superscriptOrdinal}
+                  </sup>
+                </p>
+              </div>
+              <p className='font-Matter-Regular'>{event?.description}</p>
+              {event?.externalLink && (
+                <p
+                  className='py-3 px-5 rounded-md text-2xl mt-16 cursor-pointer font-Museo-Slab-700 text-white text-center hover:shadow-lg duration-200'
+                  onClick={() => window.open(event?.externalLink, '_blank')}
+                  style={{ backgroundColor: event?.background?.split(',')[2]?.split(' ')[1] }}
+                >
+                  EVENT
+                </p>
+              )}
+            </div>
+            <div className='col-span-12 lg:col-span-3'>
+              <div className='border-[6px] border-slate-100 flex flex-col justify-between h-fit rounded-md w-full p-4 lg:aspect-square lg:-mt-24 bg-white'>
+                <div>
+                  <p className='font-Matter-Medium text-2xl mb-4'>Unlock Hope</p>
+                  <p className='font-Matter-Light text-lg mb-5'>Support Our Cause and Transform Futures.</p>
+
+                </div>
+                <Link to='/donate' className='w-full text-center rounded-md text-white bg-[#9863a8] font-Museo-Slab-700 py-3 text-2xl hover:no-underline hover:shadow-lg duration-200'>DONATE</Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 
