@@ -20,11 +20,13 @@ const createOrder = asyncHandler(async (req, res) => {
   const log = await prepareLog('CREATE_ORDER');
   let createdOrder;
   try {
-    logEvent(log, 'BEGINNING OF CREATE ORDER', orderData);
     createdOrder = await createOrderDocument(orderData, req?.user, log);
 
     if (createdOrder.isEcard) {
-      await createEcardOrders(createdOrder);
+      await createEcardOrders(createdOrder, log);
+    }
+    if (createdOrder.isProduct) {
+      await createProductOrders(createdOrder, log);
     }
 
     if (createdOrder.isWelcomeWiener) {
@@ -32,12 +34,10 @@ const createOrder = asyncHandler(async (req, res) => {
     }
 
     if (createdOrder?.isProduct) {
-      await sendEmail(log, {}, 'ADMIN_ORDER_NOTIFICATION');
+      await sendEmail({}, {}, 'ADMIN_ORDER_NOTIFICATION');
       await updateProductStock(createdOrder, log);
     }
 
-    logEvent(log, 'ALL CREATE ORDER TASKS FINISHED SUCCESSFULLY', { orderId: createdOrder?._id });
-    await log.save();
     res.status(201).json({
       message: 'Order created',
       order: { orderId: createdOrder?._id },
@@ -89,33 +89,91 @@ async function createOrderDocument(orderData, user, log) {
   }
 }
 
-async function createEcardOrders(createdOrder) {
+async function createEcardOrders(createdOrder, log) {
+  logEvent(log, 'BEGINNING CREATE ECARD ORDER DOCUMENT', createdOrder?._id);
   const ecards = createdOrder.orderItems.filter((item) => item.dateToSend);
 
-  if (ecards?.length > 0) {
-    for (const item of ecards) {
-      await ECardOrder.create({
-        ...item,
-        productName: item.productName,
-        message: item.message,
-        dateToSend: item.dateToSend,
-        recipientsEmail: item.recipientsEmail,
-        recipientsFullName: item.recipientsFullName,
-        productId: item.productId,
-        email: createdOrder.email,
-        isPhysicalProduct: false,
-        totalPrice: item.price,
-        subtotal: item.price,
-        image: item.productImage,
-        quantity: 1,
-        orderId: createdOrder._id,
-      });
+  try {
+    if (ecards?.length > 0) {
+      for (const item of ecards) {
+        const ecardOrder = await ECardOrder.create({
+          ...item,
+          productName: item.productName,
+          message: item.message,
+          dateToSend: item.dateToSend,
+          recipientsEmail: item.recipientsEmail,
+          recipientsFullName: item.recipientsFullName,
+          productId: item.productId,
+          email: createdOrder.email,
+          isPhysicalProduct: false,
+          totalPrice: item.price,
+          subtotal: item.price,
+          image: item.productImage,
+          quantity: 1,
+          orderId: createdOrder._id,
+          sendNow: item.sendNow,
+          name: item.name,
+        });
+
+        logEvent(log, 'ADDING ECARDORDER ID TO ORDER');
+        createdOrder.ecardOrder = ecardOrder._id;
+        const savedOrder = await createdOrder.save();
+        logEvent(log, 'CREATED ORDER SAVED WITH ECARDORDER ID');
+
+        if (savedOrder) {
+          if (ecardOrder?.sendNow === 'send-now') {
+            logEvent(log, 'ECARD ORDER SENDING INSTANTLY', {
+              ecardOrderId: ecardOrder?._id,
+              sendNow: ecardOrder?.sendNow,
+            });
+            sendEmail({}, {}, 'ecard', '', false);
+          } else {
+            logEvent(log, 'ECARD SENDING LATER', {
+              ecardOrderId: ecardOrder?._id,
+              sendNow: ecardOrder?.sendNow,
+            });
+            await log.save();
+          }
+        }
+      }
     }
+  } catch (err) {
+    logEvent(log, 'ERROR_CREATING_ECARDORDER_DOCUMENT', { message: err.message, name: err.name });
+    await log.save();
+  }
+}
+async function createProductOrders(createdOrder, log) {
+  logEvent(log, 'BEGINNING CREATE PRODUCT ORDER DOCUMENT', { createdOrderId: createdOrder?._id });
+  const products = createdOrder.orderItems.filter((item) => item.isProduct);
+
+  try {
+    if (products?.length > 0) {
+      for (const item of products) {
+        const productOrder = await ProductOrder.create({
+          price: item?.price,
+          productId: item?.productId,
+          productImage: item.productImage,
+          productName: item.productName,
+          quantity: item.quantity,
+          size: item.size,
+          shippingPrice: item.shippingPrice,
+          email: createdOrder.email,
+          subtotal: item.price * +item.quantity,
+          orderId: createdOrder?._id,
+        });
+
+        logEvent(log, 'END CREATE PRODUCT ORDER DOCUMENT', { productOrderId: productOrder?._id });
+        await log.save();
+      }
+    }
+  } catch (err) {
+    logEvent(log, 'ERROR_CREATING_ECARDORDER_DOCUMENT', { message: err.message, name: err.name });
+    await log.save();
   }
 }
 
 async function createWelcomeWienerOrders(createdOrder, log) {
-  logEvent(log, 'INITIATE WELCOME WIENER CREATE DOCUMENT');
+  logEvent(log, 'BEGINNING CREATE WELCOME WIENER ORDER DOCUMENT');
   const welcomeWieners = createdOrder.orderItems.filter((item) => item.dachshundId);
 
   for (const item of welcomeWieners) {
@@ -135,7 +193,7 @@ async function createWelcomeWienerOrders(createdOrder, log) {
       totalPrice: item.quantity * item.price,
       orderId: createdOrder._id,
     });
-    logEvent(log, 'WELCOME WIENER ORDER DOCUMENT CREATED', welcomeWienerOrder);
+    logEvent(log, 'END CREATE WELCOME WIENER ORDER DOCUMENT', welcomeWienerOrder?._id);
     await log.save();
     return welcomeWienerOrder;
   }
@@ -143,45 +201,50 @@ async function createWelcomeWienerOrders(createdOrder, log) {
 
 async function updateProductStock(createdOrder, log) {
   for (const item of createdOrder?.orderItems) {
-    const product = await Product.findById(item.productId);
-    logEvent(log, 'PHYSICAL PRODUCT FOUND AND READY FOR UPDATING', product.name);
-
-    const objIndex = product?.sizes?.findIndex((obj) => obj?.size === item?.size);
-
-    if (product?.sizes?.length > 0) {
-      logEvent(log, 'PRODUCT HAS SIZES - READY TO BULK EXECUTE', {
+    if (item.isProduct) {
+      const product = await Product.findById(item.productId);
+      logEvent(log, 'PHYSICAL PRODUCT FOUND AND READY FOR UPDATING', {
         productName: product.name,
-        sizes: product?.sizes,
+        countInStock: product.countInStock,
       });
 
-      const bulk = Product.collection.initializeOrderedBulkOp();
-      bulk.find({ 'sizes.size': item.size, _id: product?._id }).updateOne({
-        $set: {
-          'sizes.$.amount': product.sizes[objIndex].amount - item.quantity,
-        },
-      });
+      const objIndex = product?.sizes?.findIndex((obj) => obj?.size === item?.size);
 
-      bulk.find({ 'sizes.size': item.size, _id: product?._id }).updateOne({
-        $pull: {
-          sizes: {
-            amount: 0,
+      if (product?.sizes?.length > 0) {
+        logEvent(log, 'PRODUCT HAS SIZES - READY TO BULK EXECUTE', {
+          productName: product.name,
+          sizes: product?.sizes,
+        });
+
+        const bulk = Product.collection.initializeOrderedBulkOp();
+        bulk.find({ 'sizes.size': item.size, _id: product?._id }).updateOne({
+          $set: {
+            'sizes.$.amount': product.sizes[objIndex].amount - item.quantity,
           },
-        },
+        });
+
+        bulk.find({ 'sizes.size': item.size, _id: product?._id }).updateOne({
+          $pull: {
+            sizes: {
+              amount: 0,
+            },
+          },
+        });
+
+        bulk.execute();
+      }
+
+      product.countInStock -= item.quantity;
+      product.isOutofStock = product.countInStock === 0 ? true : false;
+
+      logEvent(log, 'UPDATING COUNT IN STOCK AND OUT OF STOCK', {
+        countInStock: product.countInStock,
+        isOutOfStock: product.isOutOfStock,
       });
 
-      bulk.execute();
+      await product.save();
+      await log.save();
     }
-
-    product.countInStock -= item.quantity;
-    product.isOutofStock = product.countInStock === 0 ? true : false;
-
-    logEvent(log, 'UPDATING COUNT IN STOCK AND OUT OF STOCK', {
-      countInStock: product.countInStock,
-      isOutOfStock: product.isOutOfStock,
-    });
-
-    await product.save();
-    await log.save();
   }
 }
 
@@ -218,12 +281,11 @@ const getOrderById = asyncHandler(async (req, res) => {
 */
 const getOrders = asyncHandler(async (req, res) => {
   try {
-    const orders = await Order.find({}).populate('user');
-    const ecardOrders = await ECardOrder.find({});
-    const welcomeWienerOrders = await WelcomeWienerOrder.find({});
-    const productOrders = await ProductOrder.find({});
+    const orders = await Order.find({})
+      .sort({ createdAt: -1 })
+      .populate([{ path: 'user' }]);
 
-    res.status(200).json({ orders, ecardOrders, welcomeWienerOrders, productOrders });
+    res.status(200).json({ orders });
   } catch (err) {
     await Error.create({
       functionName: 'GET_ALL_ORDERS_ADMIN',
@@ -245,10 +307,13 @@ const getOrders = asyncHandler(async (req, res) => {
 @access  Private/Admin
 */
 const updateOrderWithTrackingNumber = asyncHandler(async (req, res) => {
+  const log = await prepareLog('UPDATE ORDER WITH TRACKING NUMBER')
+  logEvent(log, 'BEGINNING UPDATE ORDER WITH TRACKING NUMBER', { orderId: req?.body?.id, trackingNumber: req.body?.trackingNumber })
   try {
     const { id, trackingNumber } = req.body;
 
-    await ProductOrder.findOneAndUpdate({ orderId: id }, { status: 'Completed' });
+    const productOrder = await ProductOrder.findOne({ orderId: id })
+    logEvent(log, 'RETREIVING PRODUCT ORDER PRODUCTID TO UPDATE INDIVIDUAL ECARD ORDER ITEM', { productId: productOrder?.productId })
 
     const order = await Order.findByIdAndUpdate(
       id,
@@ -258,12 +323,17 @@ const updateOrderWithTrackingNumber = asyncHandler(async (req, res) => {
         isShipped: true,
         shippedOn: Date.now(),
         status: 'Complete',
+        $set: {
+          'orderItems.$[item].isShipped': true,
+          'orderItems.$[item].status': 'Shipped',
+        },
       },
-      { new: true }
+      { new: true, arrayFilters: [{ 'item.productId': productOrder.productId }] }
     );
+    logEvent(log, 'ORDER UPDATED - SENDING EMAIL TO NOTIFY USER')
+    await sendEmail(order, {}, 'sendOrderShippedConfirmationEmail');
 
-    await sendEmail(order, res, 'sendOrderShippedConfirmationEmail');
-
+    logEvent(log, 'END UPDATE ORDER WITH TRACKING NUMBER SUCCESSFULLY')
     res.status(200).json({
       message: 'Order updated and shipping confirmation email has been sent',
       sliceName: 'orderApi',

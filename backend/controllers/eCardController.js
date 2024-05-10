@@ -35,58 +35,6 @@ const createECard = asyncHandler(async (req, res) => {
 });
 
 /**
- @desc    Get filtered ecards
- @route   GET /api/ecard/filtered/:category
- @access  Public
-*/
-const getFilteredEcards = asyncHandler(async (req, res) => {
-  try {
-    const ecards = await ECard.find({ category: req.params.category });
-
-    res.json({ ecards });
-  } catch (err) {
-    await Error.create({
-      functionName: 'GET_FILTERED_ECARDS_LIST_PUBLIC',
-      name: err.name,
-      message: err.message,
-      user: { id: req?.user?._id, email: req?.user?.email },
-    });
-
-    res.status(500).json({
-      message: 'Error fetching filtered ecards',
-      sliceName: 'ecardApi',
-    });
-  }
-});
-
-/**
- @desc    Get ecard categories
- @route   GET /api/ecard/categories
- @access  Public
-*/
-const getEcardCategories = asyncHandler(async (req, res) => {
-  try {
-    const ecards = await ECard.find();
-
-    const categories = [...new Set(ecards?.map((ecard) => ecard.category))];
-
-    res.json({ categories });
-  } catch (err) {
-    await Error.create({
-      functionName: 'GET_FILTERED_ECARDS_LIST_PUBLIC',
-      name: err.name,
-      message: err.message,
-      user: { id: req?.user?._id, email: req?.user?.email },
-    });
-
-    res.status(500).json({
-      message: 'Error fetching ecard categories',
-      sliceName: 'ecardApi',
-    });
-  }
-});
-
-/**
  @desc    Get all eCards
  @route   GET /api/ecards
  @access  Public
@@ -95,7 +43,9 @@ const getECards = asyncHandler(async (req, res) => {
   try {
     const ecards = await ECard.find({}).sort({ updated: -1 });
 
-    res.json({ ecards });
+    const categories = [...new Set(ecards?.map((ecard) => ecard.category))];
+
+    res.json({ ecards, categories });
   } catch (err) {
     await Error.create({
       functionName: 'GET_ECARDS_LIST_PUBLIC',
@@ -191,8 +141,6 @@ const deleteEcard = asyncHandler(async (req, res) => {
 
 export {
   createECard,
-  getFilteredEcards,
-  getEcardCategories,
   getECards,
   getECardDetails,
   updateECard,

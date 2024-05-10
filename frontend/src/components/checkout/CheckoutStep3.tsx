@@ -5,6 +5,7 @@ import { useCreateOrderMutation } from '../../redux/services/orderApi';
 import { useNavigate } from 'react-router-dom';
 import { resetCart } from '../../redux/features/cart/cartSlice';
 import ContactLoader from '../Loaders/ContactLoader/ContactLoader';
+import toFixed from '../../utils/toFixed';
 
 const CheckoutStep3 = ({ cart, step, inputs, isProduct, isWelcomeWiener, isEcard }: any) => {
   const navigate = useNavigate();
@@ -26,7 +27,7 @@ const CheckoutStep3 = ({ cart, step, inputs, isProduct, isWelcomeWiener, isEcard
         purchase_units: [
           {
             amount: {
-              value: Number(totalPrice),
+              value: Number(toFixed(totalPrice)),
             },
           },
         ],

@@ -1,29 +1,39 @@
 import Log from '../models/logSchema.js';
 
-async function prepareLog(journey) {
-  let log = await Log.findOne().sort({ updatedAt: -1 });
+function generateRandomString() {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let randomString = '';
 
-  const currentTime = Date.now();
-  const THRESHOLD_TIME = 45 * 1000; // 45 seconds
-
-  // Check if the most recent log exists and if it was created within the threshold time
-  if (log && currentTime - log.updatedAt.getTime() < THRESHOLD_TIME) {
-    return log; // Return the existing log
+  for (let i = 0; i < 7; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    randomString += characters.charAt(randomIndex);
   }
 
-  // Create a new log if the most recent one is older than the threshold time or doesn't exist
-  return Log.create({ journey });
+  return randomString;
 }
 
-function logEvent(log, message, data) {
-  log.events.push({
+async function prepareLog(journeyIdentifier) {
+  let log = await Log.findOne({ journey: journeyIdentifier });
+
+  if (log) {
+    return log;
+  } else {
+    log = await Log.create({ journey: `${journeyIdentifier}_${generateRandomString()}` });
+    return log;
+  }
+}
+
+async function logEvent(log, message, data) {
+  const foundLog = await Log.findById(log._id);
+  if (!foundLog) return;
+
+  foundLog.events.push({
     timestamp: Date.now(),
     message,
-    data
+    data,
   });
+
+  await foundLog.save()
 }
 
-export {
-  prepareLog,
-  logEvent
-}
+export { prepareLog, logEvent };

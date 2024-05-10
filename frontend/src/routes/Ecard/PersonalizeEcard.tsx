@@ -1,172 +1,285 @@
-import { Fragment, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { validatePersonalize } from '../../utils/validateECardCheckout';
-import { v4 as uuidv4 } from 'uuid';
+import { Fragment, useEffect, useState } from 'react';
 import { useGetEcardQuery } from '../../redux/services/ecardApi';
-import { addToCart, toggleCartDrawer } from '../../redux/features/cart/cartSlice';
-import { useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import GreenRotatingTransparentCircle from '../../components/Loaders/GreenRotatingTransparentCircle';
 import VerticalLogo from '../../components/common/VerticalLogo';
-import { Padded } from '../../components/assets';
-import LeftArrow from '../../components/svg/LeftArrow';
+import { Link } from 'react-router-dom';
+import {
+  formatDateForCalandar,
+  formatDateForEstTimezone,
+} from '../../utils/hooks/useAuctionSettingsForm';
 
-const useECardForm = (cb: any) => {
+const useECardForm = (state: any) => {
+  const [errors, setErrors] = useState({}) as any;
   const [inputs, setInputs] = useState({
+    name: '',
+    email: '',
     recipientsFullName: '',
     recipientsEmail: '',
-    dateToSend: '',
+    dateToSend: new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }),
     message: '',
   });
 
-  const handleInput = (event: any) => {
-    event.persist();
+  useEffect(() => {
+    if (state?.ecard) {
+      setInputs((prev: any) => ({
+        ...prev,
+        name: state?.ecard?.name,
+        email: state?.ecard?.email,
+        recipientsFullName: state?.ecard?.recipientsFullName,
+        recipientsEmail: state?.ecard?.recipientsEmail,
+        dateToSend: formatDateForCalandar(state?.dateToSend),
+        message: state?.ecard?.message,
+      }));
+    }
+  }, [state]);
+
+  const validate = () => {
+    const errors = {} as any;
+    if (!inputs.name.trim()) {
+      errors.name = 'Your name is required';
+    }
+    if (!inputs.email.trim()) {
+      errors.email = 'Your email is required';
+    } else if (!/^\S+@\S+\.\S+$/.test(inputs.email)) {
+      errors.email = 'Invalid email address';
+    }
+    if (!inputs.recipientsFullName.trim()) {
+      errors.recipientsFullName = "Recipient's full name is required";
+    }
+    if (!inputs.recipientsEmail.trim()) {
+      errors.recipientsEmail = "Recipient's email is required";
+    } else if (!/^\S+@\S+\.\S+$/.test(inputs.recipientsEmail)) {
+      errors.recipientsEmail = 'Invalid email address';
+    }
+    if (!inputs.dateToSend.trim()) {
+      errors.dateToSend = 'Date to send is required';
+    }
+    if (!inputs.message.trim()) {
+      errors.message = 'Message is required';
+    }
+
+    setErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleInput = (e: any) => {
+    e.persist();
 
     setInputs((inputs) => ({
       ...inputs,
-      [event.target.name]: event.target.value,
+      [e.target.name]: e.target.value,
     }));
   };
 
-  const onSubmit = (e: any) => {
-    e.preventDefault();
-    cb();
-  };
-
-  return { handleInput, inputs, onSubmit };
+  return { handleInput, inputs, validate, errors };
 };
 
 const PersonalizeEcard = () => {
-  const dispatch = useDispatch();
-  const [errors, setErrors] = useState({}) as any;
+  const navigate = useNavigate();
+  const { state } = useLocation();
   const { id } = useParams();
-  let formIsValid: boolean = false;
+  const [sendNow, setSendNow] = useState(state?.ecard?.sendNow ?? 'send-now');
 
   let { data, isLoading } = useGetEcardQuery(id);
   const ecard = data?.ecard;
 
-  const personalizeCallback = () => {
-    const isValid = validatePersonalize(setErrors, inputs, formIsValid);
+  const personalizeCallback = (e: any) => {
+    e.preventDefault();
+    const isValid = validate();
 
     if (isValid) {
-      const ecardCartItem = {
-        price: ecard?.price,
-        productImage: ecard?.image,
-        productName: ecard?.name,
-        productId: uuidv4(),
-        quantity: 1,
-        isEcard: true,
-        recipientsFullName: inputs.recipientsFullName,
-        recipientsEmail: inputs.recipientsEmail,
-        dateToSend: inputs.dateToSend,
-        message: inputs.message,
-        isPhysicalProduct: false,
-        subtotal: ecard.price,
-        totalPrice: ecard.price,
-        shippingPrice: 0,
-        category: ecard.category,
-        ecardId: ecard?._id,
-      };
-      dispatch(addToCart({ item: ecardCartItem }));
-      dispatch(toggleCartDrawer(true));
+      navigate(
+        {
+          pathname: `/ecards/personalize/${ecard?._id}/preview`,
+        },
+        {
+          state: {
+            ecard,
+            ...inputs,
+            sendNow,
+            ...{
+              dateToSend: new Date(
+                formatDateForEstTimezone(inputs.dateToSend, 13, 0)
+              ).toISOString(),
+            },
+          },
+        }
+      );
     }
   };
 
-  const { inputs, handleInput, onSubmit } = useECardForm(personalizeCallback);
+  const { inputs, handleInput, validate, errors } = useECardForm(state);
 
   if (isLoading) return <GreenRotatingTransparentCircle />;
+
+  const date = new Date();
+  const tomorrowDate = new Date(date);
+  tomorrowDate.setDate(date.getDate() + 1);
+
+  const tomorrowInNewYork = tomorrowDate.toLocaleString('en-US', {
+    timeZone: 'America/New_York',
+  });
+
+  const tomorrow = formatDateForCalandar(new Date(tomorrowInNewYork));
 
   return (
     <Fragment>
       {isLoading && <GreenRotatingTransparentCircle />}
       <VerticalLogo />
       <div className='min-h-[calc(100vh-540px)] mt-[65px] pb-20 w-full'>
-        <div className='mx-auto w-full'>
-          <div
-            style={{
-              backgroundImage: `url(${Padded})`,
-            }}
-            className='h-48 md:h-60 bg-repeat flex items-center top-[65px] border-b-[7px] bg-teal-300 border-[#9863a8] mb-12'
-          >
-            <h1 className='max-w-screen-xl w-full px-3 text-4xl md:text-6xl font-Matter-Medium text-[#fff] mx-auto'>
-              {ecard?.name}
-            </h1>
+        <div className='mx-auto w-full max-w-screen-sm px-[16px] md:px-0'>
+          <h1 className='text-4xl font-Matter-Bold pt-10 pb-6 text-[#313436]'>Personalize ecard</h1>
+          <div className='bg-gray-100 flex p-7 rounded-lg'>
+            <img className='object-contain h-48 w-60 mr-3' src={ecard?.image} alt={ecard?.name} />
+            <div className='flex flex-col justify-between'>
+              <div>
+                <p className='text-lg font-Matter-Light mb-2.5'>You have chosen this ecard:</p>
+                <p className='text-2xl font-Matter-Bold text-[#313436]'>{ecard?.name}</p>
+              </div>
+              <Link to='/ecards' className='text-blue-800 underline'>
+                Pick another ecard
+              </Link>
+            </div>
           </div>
-          <div className='w-full mx-auto max-w-screen-xl px-3 pb-8'>
-            <LeftArrow text={`${ecard?.category} ecards`} url={`/ecards/${ecard?.category}`} />
-          </div>
-          <div className='grid grid-cols-12 gap-7 w-full mx-auto max-w-screen-xl px-3'>
-            <form className='col-span-12 md:col-start-3 md:col-span-5 flex flex-col'>
-              <label className='font-Matter-Medium text-sm mb-1' htmlFor='email'>
-                Recipeints full name*
-              </label>
-              <input
-                className='user-input border-[1px] border-gray-200 rounded-md py-2.5 px-3.5 font-Matter-Regular focus:outline-none '
-                id='recipientsFullName'
-                name='recipientsFullName'
-                onChange={handleInput}
-                type='text'
-                alt='Recipeints full name'
-                aria-label='Recipeints full name'
-                value={inputs.recipientsFullName || ''}
-              />
-              <p className='text-red-500 font-Matter-Medium text-xs mb-4 '>
-                {errors?.recipientsFullName}
-              </p>
-              <label className='font-Matter-Medium text-sm mb-1' htmlFor='password'>
-                Recipients email*
-              </label>
-              <input
-                className='user-input border-[1px] border-gray-200 rounded-md py-2.5 px-3.5 font-Matter-Regular focus:outline-none '
-                id='recipientsEmail'
-                name='recipientsEmail'
-                onChange={handleInput}
-                type='email'
-                alt='Recipients email'
-                aria-label='Recipients email'
-                value={inputs.recipientsEmail || ''}
-              />
-              <p className='text-red-500 font-Matter-Medium text-xs mb-4 '>
-                {errors?.recipientsEmail}
-              </p>
+          <h3 className='text-xl font-Matter-Bold text-[#313436] my-8'>Send this ecard</h3>
+          <div className='grid grid-cols-12 gap-7 w-full mx-auto'>
+            <form className='col-span-12 flex flex-col'>
+              <div className='flex flex-col md:flex-row gap-3'>
+                <div className='flex flex-col w-full'>
+                  <label className='font-Matter-Medium text-sm mb-1' htmlFor='name'>
+                    Your name*
+                  </label>
+                  <input
+                    className='user-input border-[1px] border-gray-300 rounded-md py-2.5 px-3.5 font-Matter-Regular focus:outline-none'
+                    id='name'
+                    name='name'
+                    onChange={handleInput}
+                    type='text'
+                    alt='Your name'
+                    aria-label='Your name'
+                    value={inputs.name || ''}
+                  />
+                  <p className='text-red-500 font-Matter-Medium text-xs mb-4 '>{errors?.name}</p>
+                </div>
+                <div className='flex flex-col w-full'>
+                  <label className='font-Matter-Medium text-sm mb-1' htmlFor='email'>
+                    Your email*
+                  </label>
+                  <input
+                    className='user-input border-[1px] border-gray-300 rounded-md py-2.5 px-3.5 font-Matter-Regular focus:outline-none'
+                    id='email'
+                    name='email'
+                    onChange={handleInput}
+                    type='email'
+                    alt='Your email'
+                    aria-label='Your email'
+                    value={inputs.email || ''}
+                  />
+                  <p className='text-red-500 font-Matter-Medium text-xs mb-4 '>{errors?.email}</p>
+                </div>
+              </div>
+              <div className='flex flex-col md:flex-row gap-3'>
+                <div className='flex flex-col w-full'>
+                  <label className='font-Matter-Medium text-sm mb-1' htmlFor='email'>
+                    Recipeints full name*
+                  </label>
+                  <input
+                    className='user-input border-[1px] border-gray-300 rounded-md py-2.5 px-3.5 font-Matter-Regular focus:outline-none'
+                    id='recipientsFullName'
+                    name='recipientsFullName'
+                    onChange={handleInput}
+                    type='text'
+                    alt='Recipeints full name'
+                    aria-label='Recipeints full name'
+                    value={inputs.recipientsFullName || ''}
+                  />
+                  <p className='text-red-500 font-Matter-Medium text-xs mb-4 '>
+                    {errors?.recipientsFullName}
+                  </p>
+                </div>
+                <div className='flex flex-col w-full'>
+                  <label className='font-Matter-Medium text-sm mb-1' htmlFor='password'>
+                    Recipients email*
+                  </label>
+                  <input
+                    className='user-input border-[1px] border-gray-300 rounded-md py-2.5 px-3.5 font-Matter-Regular focus:outline-none'
+                    id='recipientsEmail'
+                    name='recipientsEmail'
+                    onChange={handleInput}
+                    type='email'
+                    alt='Recipients email'
+                    aria-label='Recipients email'
+                    value={inputs.recipientsEmail || ''}
+                  />
+                  <p className='text-red-500 font-Matter-Medium text-xs mb-4 '>
+                    {errors?.recipientsEmail}
+                  </p>
+                </div>
+              </div>
               <label className='font-Matter-Medium text-sm mb-1' htmlFor='bio'>
                 Message*
               </label>
               <textarea
-                className='user-input border-[1px] border-gray-200 rounded-md w-full py-2.5 px-3.5 font-Matter-Regular focus:outline-none'
+                className='user-input border-[1px] border-gray-300 rounded-md w-full py-2.5 px-3.5 font-Matter-Regular focus:outline-none'
                 id='message'
                 name='message'
-                rows={5}
+                rows={4}
                 value={inputs.message || ''}
                 onChange={handleInput}
                 aria-label='Enter message'
               ></textarea>
               <p className='text-red-500 font-Matter-Medium text-xs mb-4 '>{errors?.message}</p>
-              <label className='font-Matter-Medium text-sm mb-1'>Date to send</label>
-              <input
-                className='user-input border-[1px] border-gray-200 rounded-md py-2.5 px-3.5 font-Matter-Regular focus:outline-none '
-                name='dateToSend'
-                id='dateToSend'
-                onChange={handleInput}
-                type='date'
-                alt='Date to send'
-                aria-label='Date to send'
-                value={inputs.dateToSend || ''}
-              />
-              <p className='text-red-500 font-Matter-Medium text-xs mb-4 '>{errors?.dateToSend}</p>
+              <label htmlFor='sendNow' className='font-Matter-Light'>
+                <input
+                  name='sendNow'
+                  type='radio'
+                  value='send-now'
+                  onChange={(e: any) => setSendNow(e.target.value)}
+                  className='mr-2 personalize-ecard'
+                  checked={sendNow === 'send-now'}
+
+
+                />
+                Send my ecard right now
+              </label>
+              <label htmlFor='sendNow' className='font-Matter-Light'>
+                <input
+                  name='sendNow'
+                  type='radio'
+                  value='send-later'
+                  onChange={(e: any) => setSendNow(e.target.value)}
+                  className='mr-2 personalize-ecard'
+                  checked={sendNow === 'send-later'}
+                />
+                Send my ecard later
+              </label>
+              {sendNow === 'send-later' && (
+                <div className='flex flex-col'>
+                  <label className='font-Matter-Medium text-sm mb-1'>Date to send</label>
+                  <input
+                    className='ecard-calandar user-input border-[1px] border-gray-300 rounded-md py-2.5 px-3.5 font-Matter-Regular focus:outline-none '
+                    name='dateToSend'
+                    id='dateToSend'
+                    onChange={handleInput}
+                    type='date'
+                    alt='Date to send'
+                    aria-label='Date to send'
+                    value={inputs.dateToSend || ''}
+                    min={tomorrow}
+                  />
+                  <p className='text-red-500 font-Matter-Medium text-xs mb-4 '>
+                    {errors?.dateToSend}
+                  </p>
+                </div>
+              )}
               <button
-                className='mt-4 bg-teal-400 rounded-md text-white px-4 py-2.5 font-Matter-Medium duration-200 hover:bg-teal-500 hover:shadow-lg'
-                onClick={onSubmit}
+                onClick={personalizeCallback}
+                className='mt-4 bg-teal-400 rounded-md text-white px-4 py-2.5 font-Matter-Medium duration-200 hover:bg-teal-500 hover:shadow-lg hover:no-underline text-center'
               >
-                Add to cart
+                Preview ecard
               </button>
             </form>
-            <div className='col-span-12 md:col-span-3'>
-              <img
-                className='w-full mx-auto object-cover'
-                src={ecard?.image}
-                alt={ecard?.name}
-              />
-            </div>
           </div>
         </div>
       </div>

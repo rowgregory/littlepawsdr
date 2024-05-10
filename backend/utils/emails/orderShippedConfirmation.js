@@ -1,7 +1,10 @@
 import Order from '../../models/orderModel.js';
 import { formatDate } from '../../utils/formatDate.js';
+import { logEvent, prepareLog } from '../logHelpers.js';
 
-const orderShippedConfirmation = (pugEmail, body) => {
+const orderShippedConfirmation = async (pugEmail, body) => {
+  const log = await prepareLog('ORDER SHIPPED CONFIRMATION EMAIL')
+  logEvent(log, 'BEGINNING ORDER SHIPPING CONFIRMATION EMAIL', { orderId: body?._id })
   pugEmail
     .send({
       template: 'orderShippedConfirmation',
@@ -20,7 +23,8 @@ const orderShippedConfirmation = (pugEmail, body) => {
     })
     .then(async () => {
       await Order.findByIdAndUpdate(body?._id, { orderShippedconfirmationEmailHasBeenSent: true });
-      console.log(`Order shipped confirmation email has been sent to ${body?.email}`);
+      logEvent(log, `ORDER EMAIL CONFIRMATION SENT`, { email: body?.email })
+      await log.save()
     })
     .catch((err) => console.error(`Error sending order shipped confirmation email: ${err}`));
 };

@@ -8,11 +8,9 @@ const productOrderSchema = mongoose.Schema(
     productName: { type: String },
     quantity: { type: Number },
     size: { type: String },
-    shippingPrice: { type: Number },
     email: { type: String },
     isPhysicalProduct: { type: Boolean, default: true },
     subtotal: { type: Number },
-    totalPrice: { type: Number },
     orderId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Order'

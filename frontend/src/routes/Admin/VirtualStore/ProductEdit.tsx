@@ -85,7 +85,7 @@ const ProductEdit = () => {
   const editPhotoHandler = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const newFiles = e.target.files ? Array.from(e.target.files) : [];
     setPhotoAmount(Number(newFiles.length));
-    const images = await uploadMultipleFilesToFirebase(newFiles, false);
+    const images = await uploadMultipleFilesToFirebase(newFiles);
     setInputs((prev: any) => ({
       ...prev,
       images: prev.images ? [...prev.images, ...images] : [...images],

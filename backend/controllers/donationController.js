@@ -9,7 +9,7 @@ import Donation from '../models/donationModel.js';
  */
 const getDonations = asyncHandler(async (req, res) => {
   try {
-    const donations = await Donation.find();
+    const donations = await Donation.find().sort({ createdAt: -1 });
 
     res.json({ donations });
   } catch (err) {

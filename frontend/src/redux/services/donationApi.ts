@@ -18,7 +18,7 @@ export const donationApi = api.injectEndpoints({
         method: 'POST',
         body: donation,
       }),
-      invalidatesTags: ['Donation'],
+      invalidatesTags: ['Donation', 'User'],
     }),
   }),
 });

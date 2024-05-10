@@ -96,7 +96,7 @@ const PlaceOrder = () => {
           </h1>
         </div>
         <div className='grid grid-cols-12 gap-6 w-full pt-3 px-[16px] md:px-6 max-w-screen-lg mx-auto pb-24 h-fit bg-white'>
-          <div className='col-span-12 md:col-span-8'>
+          <div className='col-span-12 lg:col-span-8'>
             <CheckoutProgressTracker step={step} setStep={setStep} isProduct={isProduct} />
             {step.step1 && (
               <CheckoutStep1
@@ -125,7 +125,7 @@ const PlaceOrder = () => {
               />
             )}
           </div>
-          <div className='col-span-12 md:col-span-4'>
+          <div className='col-span-12 lg:col-span-4'>
             <ItemsContainer cart={cart} />
           </div>
         </div>

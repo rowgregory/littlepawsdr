@@ -42,6 +42,7 @@ const ProductDetails = () => {
       isProduct: true,
       isWelcomeWiener: false,
       shippingPrice: product?.shippingPrice,
+      status: 'Not Shipped'
     };
     dispatch(addToCart({ item: productCartItem }));
     dispatch(toggleCartDrawer(true));

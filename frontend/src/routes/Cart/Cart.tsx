@@ -1,6 +1,5 @@
 import { Spinner } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
-import { Flex, Text } from '../../components/styles/Styles';
 import {
   CartContainer,
   CartItemContainer,
@@ -60,36 +59,36 @@ const Cart = () => {
                 </td>
                 <td></td>
                 <td>
-                  <Text className='mb-0'>Subtotal</Text>
+                  <p className='mb-0 font-Matter-Light'>Subtotal</p>
                 </td>
                 <td>
-                  <Text fontWeight='bold'>{addDecimals(subtotal)}</Text>
+                  <p className='font-Matter-Medium'>{addDecimals(subtotal)}</p>
                 </td>
               </tr>
             </tbody>
           </CartItemContainer>
         ) : (
-          <Flex flexDirection='column' width='100%'>
+          <div className='flex flex-col w-full'>
             <SplitTextToChars
               text='Hey, thanks for being here! Checkout out our latest merchandise, ecards, and welcome wieners!'
               page='cart'
               fontSize='16px'
             />
-          </Flex>
+          </div>
         )}
       </Container>
       <CheckoutBtnColumn>
         <SecondSubTotal>
-          <Text fontSize='28px' fontWeight={400} color='#9761aa' marginBottom='48px'>
+          <p className='text-3xl text-[#9761aa] font-Matter-Medium mb-12'>
             Order Summary
-          </Text>
-          <div className='d-flex align-items-baseline justify-content-between w-100'>
-            <Text fontSize='14px' color='#fff'>
+          </p>
+          <div className='flex items-baseline justify-between w-full'>
+            <p className='text-sm font-matter-Light text-white'>
               Subtotal ({cartItemsAmount}&nbsp;items):&nbsp;
-            </Text>
-            <Text color='#fff' fontWeight='bold' fontSize='14px' marginBottom='0'>
+            </p>
+            <p className='text-white font-Matter-Medium text-sm mb-0'>
               {addDecimals(subtotal)}
-            </Text>
+            </p>
           </div>
         </SecondSubTotal>
         <div className='d-flex flex-column'>

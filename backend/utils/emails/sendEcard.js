@@ -1,29 +1,29 @@
 import ECardOrder from '../../models/eCardOrderModel.js';
-import colors from 'colors';
+import Order from '../../models/orderModel.js';
+import { logEvent, prepareLog } from '../logHelpers.js';
 
 export const sendEcard = async (pugEmail) => {
+  const log = await prepareLog('SEND ECARD')
+  logEvent(log, 'BEGINNING SEND EMAIL CRONJOB');
   const today = new Date();
-  const dateToCheck = new Date(
-    today.getFullYear(),
-    today.getMonth(),
-    today.getDate(),
-    0,
-    0,
-    0,
-    0
-  );
+
+  const dateToCheck = new Date(today.getFullYear(), today.getMonth(), today.getDate());
 
   const aggregatedECards = await ECardOrder.find({
     $or: [
-      { dateToSend: dateToCheck, isSent: false },
       { dateToSend: { $lt: dateToCheck }, isSent: false },
+      { sendNow: 'send-now', isSent: false },
     ],
   });
+  logEvent(log, 'AGGREGATED_ECARDS', aggregatedECards);
 
   const eCardsToSend = Object.keys(aggregatedECards).length > 0;
+  logEvent(log, 'ARE_THERE_ECARDS_TO_SEND?', eCardsToSend);
+  await log.save();
   if (!eCardsToSend) return;
 
-  aggregatedECards?.forEach(eCard => {
+  logEvent(log, 'SENDING_ECARDS');
+  aggregatedECards?.forEach((eCard) => {
     pugEmail
       .send({
         template: 'ecard',
@@ -32,29 +32,49 @@ export const sendEcard = async (pugEmail) => {
           to: eCard.recipientsEmail,
         },
         locals: {
-          email: eCard.email,
-          totalPrice: eCard.totalPrice,
-          dateToSend: eCard.dateToSend,
-          recipientsEmail: eCard.recipientsEmail,
-          recipientsFirstName: eCard.recipientsFirstName,
           image: eCard.image,
           message: eCard.message,
-          firstName: eCard.firstName,
-          lastName: eCard.lastName,
+          name: eCard.name,
         },
       })
       .then(async () => {
-        console.log(
-          `E-Card has been sent to `.brightWhite +
-          `${eCard.recipientsEmail}`.rainbow
-        );
         try {
-          await ECardOrder.findByIdAndUpdate(eCard._id, { isSent: true, status: 'Sent' });
+          const ecardOrder = await ECardOrder.findByIdAndUpdate(
+            eCard._id,
+            { isSent: true, status: 'Sent' },
+            { new: true }
+          );
+          logEvent(log, 'ECARDS_SUCCESSFULLY_SENT', {
+            id: ecardOrder?._id,
+            isSent: ecardOrder?.isSent,
+            status: ecardOrder?.status,
+          });
+          logEvent(log, 'UPDATING ORDER ITEM WITH ECARD ORDER ORDER ID', { ecardOrderId: ecardOrder.orderId });
+          const order = await Order.findByIdAndUpdate(
+            ecardOrder.orderId,
+            {
+              $set: {
+                'orderItems.$[item].isSent': true,
+                'orderItems.$[item].status': 'Sent'
+              }
+            },
+            {
+              new: true,
+              arrayFilters: [{ 'item.productId': ecardOrder.productId }]
+            }
+          );
+
+          logEvent(log, 'ORDER ITEM UPDATED');
+          await log.save();
         } catch (err) {
-          console.log(`err`.brightRed);
+          logEvent(log, 'ERROR SENDING ECARDS', { message: err.message, name: err.name });
+          await log.save();
         }
       })
-      .catch(err => console.log(`${err}`.brightRed));
+      .catch(async (err) => {
+        logEvent(log, 'ERROR SENDING ECARDS', { message: err.message, name: err.name });
+        await log.save();
+      });
   });
 };
 

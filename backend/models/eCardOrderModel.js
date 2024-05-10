@@ -20,13 +20,14 @@ const eCardOrderSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Order'
     },
+    sendNow: { type: String },
+    status: { type: String, default: 'Not sent' },
 
     // legacy attributes
     firstName: { type: String },
     lastName: { type: String },
     recipientsFirstName: { type: String },
     subTotal: { type: Number },
-    status: { type: String, default: 'Not sent' }
   },
   {
     timestamps: true,

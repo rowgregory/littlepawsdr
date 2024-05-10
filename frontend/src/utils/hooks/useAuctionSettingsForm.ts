@@ -2,13 +2,15 @@ import { useEffect, useMemo, useState } from 'react';
 
 export const formatDateForCalandar = (date: any) => {
   const formattedDate = new Date(date);
-  if (!isNaN(formattedDate.getTime())) {
-    // Format date as "yyyy-MM-dd"
-    return `${formattedDate.getFullYear()}-${(formattedDate.getMonth() + 1)
-      .toString()
-      .padStart(2, '0')}-${formattedDate.getDate().toString().padStart(2, '0')}`;
-  }
-  return '';
+  const options: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    timeZone: 'America/New_York',
+  };
+  const formattedDateString = formattedDate.toLocaleString('en-US', options);
+  const [month, day, year] = formattedDateString.split('/');
+  return `${year}-${month}-${day}`;
 };
 
 export const formatDateForEstTimezone = (dateString: string, hour: number, minutes: number) => {

@@ -1,7 +1,9 @@
 import Error from '../../models/errorModel.js';
-import { logEvent } from '../logHelpers.js';
+import { logEvent, prepareLog } from '../logHelpers.js';
 
-const orderNotification = (pugEmail, log) => {
+const orderNotification = async (pugEmail) => {
+  const log = await prepareLog('ADMIN ORDER NOTIFICATION EMAIL')
+  logEvent(log, 'BEGINNING ADMIN ORDER NOTIFICATION EMAIL')
   pugEmail
     .send({
       template: 'ordernotification',

@@ -1,6 +1,6 @@
 import { useGetBoardMembersQuery } from '../redux/services/boardMemberApi';
 import VerticalLogo from '../components/common/VerticalLogo';
-import { LightHoneycomb } from '../components/assets';
+import { LightHoneycomb, NoImgDog } from '../components/assets';
 import { Link } from 'react-router-dom';
 import { Fragment } from 'react';
 import GreenRotatingTransparentCircle from '../components/Loaders/GreenRotatingTransparentCircle';
@@ -94,19 +94,19 @@ const TeamMembers = () => {
                     >
                       <div className='text-center pb-4 px-3 mt-20'>
                         <img
-                          src={user?.image}
-                          className='w-64 mx-auto p-3.5 rounded-full'
+                          src={user?.image ?? user?.avatar ?? NoImgDog}
+                          className='w-64 h-64 object-cover mx-auto p-3.5 rounded-full'
                           alt={`Board member - ${user?.name}`}
                         />
                         <p className='font-Matter-Bold text-2xl'>{user?.name}</p>
-                        <p className='font-Matter-Regular text-lg'>{user?.affiliation}</p>
+                        <p className='font-Matter-Regular text-lg'>{user?.affiliation ?? user?.volunteerTitle}</p>
                         <p className='font-Matter-Light'>{user?.email}</p>
                         <p className='font-Matter-Light text-sm'>{user?.location}</p>
                       </div>
                     </div>
                   </div>
                 )
-            )}
+            ).reverse()}
           </div>
         </div>
       </div>
