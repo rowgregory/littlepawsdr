@@ -135,7 +135,7 @@ const WelcomeWienerProductList = () => {
                               productToBeEdited?.product?._id === product?._id && (
                                 <div
                                   ref={productMenuRef}
-                                  className='flex flex-col justify-center shadow-lg p-1.5 absolute z-40 w-28 h-fit border bg-white -top-6 right-24 rounded-lg'
+                                  className='flex flex-col justify-center shadow-lg p-1.5 absolute z-40 w-28 h-fit border bg-white -top-8 right-24 rounded-lg'
                                 >
                                   <Link
                                     to={`/admin/virtual-store/welcome-wieners/digital/${productToBeEdited?.product?._id}`}

@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react';
+import { useState } from 'react';
 import { useGetDonationsQuery } from '../../redux/services/donationApi';
 import GreenRotatingTransparentCircle from '../../components/Loaders/GreenRotatingTransparentCircle';
 import MagnifyingGlass from '../../components/svg/MagnifyingGlass';
@@ -12,8 +12,11 @@ const OneTimeDonations = () => {
   const donations = data?.donations;
   const noDonations = donations?.length === 0;
 
-  const filteredDonations = donations?.filter((fee: any) =>
-    fee?.email?.toLowerCase().includes(text.toLowerCase())
+  const filteredDonations = donations?.filter(
+    (donation: any) =>
+      donation?.email?.toLowerCase().includes(text.toLowerCase()) ||
+      donation?.firstName?.toLowerCase().includes(text.toLowerCase()) ||
+      donation?.lastName?.toLowerCase().includes(text.toLowerCase())
   );
 
   return (
@@ -48,7 +51,7 @@ const OneTimeDonations = () => {
                   <thead className='whitespace-nowrap px-4 pb-4 pt-2'>
                     <tr className='bg-zinc-50'>
                       <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
-                        <div className=' text-sm -mx-1.5 -my-1 w-fit px-1.5 py-1 rounded-md flex flex-nowrap items-center gap-2'>
+                        <div className='text-sm -mx-1.5 -my-1 w-fit px-1.5 py-1 rounded-md flex flex-nowrap items-center gap-2'>
                           First name
                         </div>
                       </th>
@@ -58,14 +61,10 @@ const OneTimeDonations = () => {
                         </div>
                       </th>
                       <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
-                        <div className=' text-sm flex flex-nowrap items-center gap-2'>
-                          Amount
-                        </div>
+                        <div className=' text-sm flex flex-nowrap items-center gap-2'>Amount</div>
                       </th>
                       <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
-                        <div className=' text-sm flex flex-nowrap items-center gap-2'>
-                          Email
-                        </div>
+                        <div className=' text-sm flex flex-nowrap items-center gap-2'>Email</div>
                       </th>
                       <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
                         <div className=' text-sm flex flex-nowrap items-center gap-2'>
@@ -80,7 +79,7 @@ const OneTimeDonations = () => {
                   <tbody>
                     {filteredDonations?.map((donation: any) => (
                       <tr
-                        className='z-1 h-[3.25rem] group bg-white [&_td]:focus-within:bg-gray-100 [&_td]:hover:cursor-pointer [&_td]:hover:bg-gray-100 relative'
+                        className='z-1 h-[3.25rem] group bg-white [&_td]:focus-within:bg-gray-100 [&_td]:hover:bg-gray-100 relative'
                         key={donation?._id}
                       >
                         <td>
@@ -112,9 +111,7 @@ const OneTimeDonations = () => {
                             {formatDateWithTimezone(donation?.createdAt)}
                           </p>
                         </td>
-                        <td>
-
-                        </td>
+                        <td></td>
                       </tr>
                     ))}
                   </tbody>

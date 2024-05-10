@@ -4,6 +4,7 @@ import { RootState } from '../../redux/toolkitStore';
 import { useSelector } from 'react-redux';
 import { formatDateWithTimezone } from '../../utils/dateFunctions';
 import { Link } from 'react-router-dom';
+import toFixed from '../../utils/toFixed';
 
 const Purchases = () => {
   const user = useSelector((state: RootState) => state.user);
@@ -30,7 +31,11 @@ const Purchases = () => {
             orderItems: item.orderItems,
             status: item.status,
             shippingProvider: item.shippingProvider,
-            paypalOrderId: item.paypalOrderId
+            paypalOrderId: item.paypalOrderId,
+            processingFee: item.processingFee,
+            shippingPrice: item.shippingPrice,
+            shippedOn: item.shippedOn,
+            isShipped: item.isShipped,
           },
         ],
       };
@@ -81,7 +86,7 @@ const Purchases = () => {
             </tr>
           </thead>
           <tbody>
-            {orders?.map((item: any) => (
+            {orders?.map((item: any, h: number) => (
               <Fragment key={item?._id}>
                 <tr
                   onClick={() => toggleRow(item)}
@@ -107,7 +112,7 @@ const Purchases = () => {
                       {formatDateWithTimezone(item?.createdAt)}
                     </p>
                   </td>
-                  <td>
+                  <td className='px-4'>
                     <p
                       className={`${item?.status === 'Complete'
                         ? 'bg-green-100 text-green-500 '
@@ -123,7 +128,11 @@ const Purchases = () => {
                 {openRows?.rows.map(
                   (row: any) =>
                     row.id === item._id && (
-                      <tr key={row?.id}>
+                      <tr
+                        key={row?.id}
+                        className={`${h !== orders.length - 1 ? 'border-b-2 border-slate-200' : 'border-none'
+                          }`}
+                      >
                         <td colSpan={12} className='pt-3'>
                           <div className='grid grid-cols-12 px-4 pt-2 pb-4 gap-8'>
                             <div className='col-span-6'>
@@ -136,37 +145,131 @@ const Purchases = () => {
                                       alt='Auction Item'
                                       className='object-contain bg-gray-300 rounded-sm h-12 w-12 aspect-square mr-2'
                                     />
-                                    <p className='font-Matter-Medium text-sm'>
-                                      {orderItem?.productName}
-                                    </p>
+                                    <div className='flex flex-col'>
+                                      <p className='font-Matter-Light text-sm'>
+                                        {orderItem?.isEcard
+                                          ? `${orderItem?.productName}${orderItem.isSent ? ' sent' : ' sending'
+                                          } on ${new Date(
+                                            orderItem?.dateToSend
+                                          ).toLocaleDateString('en-US', {
+                                            timeZone: 'America/New_York',
+                                            month: 'short',
+                                            day: 'numeric',
+                                            year: 'numeric',
+                                          })}`
+                                          : orderItem?.productName}
+                                      </p>
+                                      <p className='font-Matter-Light text-xs'>
+                                        Quantity: {orderItem?.quantity}
+                                      </p>
+                                      {orderItem?.isEcard && (
+                                        <div>
+                                          <p className='font-Matter-Light text-xs'>
+                                            To: {orderItem?.recipientsFullName}
+                                          </p>
+                                          <p className='font-Matter-Light text-xs'>
+                                            Message: {orderItem?.message}
+                                          </p>
+                                        </div>
+                                      )}
+                                      {orderItem?.isProduct && (
+                                        <p
+                                          className={`font-Matter-Light text-xs rounded-2xl px-2 py-0.5 ${orderItem?.status === 'Not Shipped'
+                                            ? 'bg-red-100 text-red-500'
+                                            : 'bg-green-100 text-green-500'
+                                            }`}
+                                        >
+                                          {orderItem?.status}
+                                        </p>
+                                      )}
+                                    </div>
                                   </div>
-                                  <p className='font-Matter-Medium text-sm'>${orderItem?.price}</p>
+                                  <p className='font-Matter-Light text-sm'>
+                                    ${toFixed(orderItem?.price)}
+                                  </p>
                                 </div>
                               ))}
+                              <div className='px-4 border-b-[1px] border-gray-200 w-full my-3.5'></div>
+
+                              <div className='grid grid-cols-8 '>
+                                <p className='text-sm font-Matter-Light col-start-4 col-span-3 text-right'>
+                                  Processing Fee
+                                </p>
+                                <p className='text-sm font-Matter-Light col-start-8 col-span-1 text-right'>
+                                  ${toFixed(row.processingFee)}
+                                </p>
+                              </div>
+                              <div className='grid grid-cols-8'>
+                                <p className='text-sm font-Matter-Light col-start-4 col-span-3 text-right'>
+                                  Shipping Costs
+                                </p>
+                                <p className='text-sm font-Matter-Light col-start-8 col-span-1 text-right'>
+                                  ${toFixed(row.shippingPrice)}
+                                </p>
+                              </div>
+                              <div className='grid grid-cols-8 mt-1'>
+                                <p className='text-sm font-Matter-SemiBold col-start-4 col-span-3 text-right'>
+                                  Total Price
+                                </p>
+                                <p className='text-sm font-Matter-SemiBold col-start-8 col-span-1 text-right'>
+                                  ${toFixed(row.totalPrice)}
+                                </p>
+                              </div>
                               <div
                                 className={`text-green-500 bg-green-100 mt-4 mb-3 w-full py-1 flex items-center justify-center font-Matter-Regular`}
                               >
                                 Paid
                               </div>
+                            </div>
+                            <div className='col-span-6'>
+                              <p className='font-Matter-Medium mb-1.5'>Order Details</p>
+                              {row.isShipped && (
+                                <div className='grid grid-cols-12 mt-1'>
+                                  <p className='text-sm font-Matter-Light col-span-3 text-left whitespace-nowrap'>
+                                    Shipped Date
+                                  </p>
+                                  <p className='text-sm font-Matter-SemiBold col-span-8'>
+                                    {formatDateWithTimezone(row.shippedOn)}
+                                  </p>
+                                </div>
+                              )}
+                              <div className='grid grid-cols-12 mt-1'>
+                                <p className='text-sm font-Matter-Light col-span-3 text-left'>
+                                  Order Id
+                                </p>
+                                <p className='text-sm font-Matter-SemiBold'>{row.id}</p>
+                              </div>
+                              <div className='grid grid-cols-12 mt-1 mb-3.5'>
+                                <p className='text-sm font-Matter-Light col-span-3 text-left'>
+                                  PayPal Id
+                                </p>
+                                <p className='text-sm font-Matter-SemiBold'>{row.paypalOrderId}</p>
+                              </div>
                               {row?.status === 'Complete' && (
                                 <Fragment>
                                   <label
-                                    className='font-Matter-Medium text-sm mb-0'
+                                    className='font-Matter-Medium mb-1'
                                     htmlFor='Tracking number'
                                   >
                                     Tracking Number
                                   </label>
-                                  <div className='bg-white border-[1px] flex items-center w-full border-gray-200 rounded-md h-10 py-2.5 px-4 font-Matter-Regular focus:outline-none'>
-                                    {row.shippingProvider}:&nbsp;
-                                    <p className='font-Matter-Medium'>{row.trackingNumber}</p>
+                                  <div
+                                    onClick={() =>
+                                      window.open(
+                                        `https://www.google.com/search?q=${row.shippingProvider}%3A+${row.trackingNumber}`,
+                                        '_blank'
+                                      )
+                                    }
+                                    className='group bg-gray-100 flex items-center justify-between w-full rounded-sm py-1 px-4 cursor-pointer'
+                                  >
+                                    <p className='font-Matter-Light group-hover:text-teal-500 group-hover:underline duration-200'>
+                                      {row.shippingProvider}:&nbsp;{row.trackingNumber}
+                                    </p>
+
+                                    <i className='fa-solid fa-arrow-up-right-from-square group-hover:text-teal-500'></i>
                                   </div>
                                 </Fragment>
                               )}
-                            </div>
-                            <div className='col-span-6'>
-                              <p className='font-Matter-Medium mb-1.5'>Order Details</p>
-                              <p className='font-matter-Light text-sm'>Order Id: {row.id}</p>
-                              <p className='font-matter-Light text-sm'>PayPal Id: {row.paypalOrderId}</p>
                             </div>
                           </div>
                         </td>

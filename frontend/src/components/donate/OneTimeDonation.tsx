@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useCreateDonationMutation } from '../../redux/services/donationApi';
 import GreenRotatingTransparentCircle from '../Loaders/GreenRotatingTransparentCircle';
 import { PayPalButtons } from '@paypal/react-paypal-js';
+import toFixed from '../../utils/toFixed';
 
 const validateDonationIdentityForm = (values: any) => {
   const errors = {} as any;
@@ -25,7 +26,6 @@ const validateDonationIdentityForm = (values: any) => {
 
   return errors;
 };
-
 
 const useDonationForm = () => {
   const [inputs, setInputs] = useState({
@@ -116,12 +116,7 @@ export const OneTimeDonationProgressTracker = ({ step, setStep, type }: any) => 
 
 const oneTimeDonationOptions = [25, 35, 50, 150, 500];
 
-export const OneTimeDonationForm = ({
-  type,
-  step,
-  setStep,
-  setOpenModal,
-}: any) => {
+export const OneTimeDonationForm = ({ type, step, setStep, setOpenModal }: any) => {
   const [orderLoader, setOrderLoader] = useState(false);
   const { inputs, handleInput, setInputs } = useDonationForm();
   const [createDonation] = useCreateDonationMutation();
@@ -138,6 +133,20 @@ export const OneTimeDonationForm = ({
     }
   };
 
+  const handleStep1 = (e: any) => {
+    e.preventDefault();
+
+    if (inputs.donationAmount === 0 && +inputs.otherAmount <= 0.99) {
+      setErrors((prev: any) => ({
+        ...prev,
+        donationAmount: 'Amount needs to be greater than or equal to 1',
+      }));
+    } else {
+      setErrors({});
+      setStep((prev: any) => ({ ...prev, step1: false, step2: true }));
+    }
+  };
+
   const payPalComponents = {
     style: { layout: 'vertical' },
     forceRerender: [step.step2],
@@ -146,7 +155,7 @@ export const OneTimeDonationForm = ({
         purchase_units: [
           {
             amount: {
-              value: Number(inputs.donationAmount || inputs.otherAmount),
+              value: Number(toFixed(inputs.donationAmount || +inputs.otherAmount)),
             },
           },
         ],
@@ -163,8 +172,8 @@ export const OneTimeDonationForm = ({
             firstName: inputs.firstName,
             lastName: inputs.lastName,
             email: inputs.email,
-            donationAmount: inputs.donationAmount,
-            oneTimeDonationAmount: inputs.donationAmount,
+            donationAmount: Number(inputs.donationAmount || +inputs.otherAmount),
+            oneTimeDonationAmount: Number(inputs.donationAmount || +inputs.otherAmount),
             paypalId: details.id,
           })
             .unwrap()
@@ -196,6 +205,12 @@ export const OneTimeDonationForm = ({
         </div>
       ) : step.step2 ? (
         <div className='grid grid-cols-12 gap-4'>
+          <p className='col-span-12 font-Matter-Light text-sm'>
+            Donation Amount:{' '}
+            <span className='text-sm font-Matter-Medium'>
+              ${toFixed(inputs.donationAmount || +inputs.otherAmount)}
+            </span>
+          </p>
           <div className='col-span-12 md:col-span-6'>
             <label className='font-Matter-Medium text-sm mb-1' htmlFor='firstName'>
               First name
@@ -277,8 +292,13 @@ export const OneTimeDonationForm = ({
               onClick={() => setInputs((prev: any) => ({ ...prev, donationAmount: 0 }))}
             />
           </div>
+          {errors?.donationAmount && (
+            <p className='font-Matter-Regular text-sm text-red-500 mt-0.5'>
+              {errors?.donationAmount}
+            </p>
+          )}
           <button
-            onClick={() => setStep((prev: any) => ({ ...prev, step1: false, step2: true }))}
+            onClick={handleStep1}
             className='bg-teal-500 text-white px-16 h-24 flex items-center justify-center font-Matter-Bold text-3xl mx-auto my-16'
           >
             CONTINUE

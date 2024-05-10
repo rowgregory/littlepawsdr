@@ -32,53 +32,26 @@ export const ecardSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addMatcher(
-        ecardApi.endpoints.getEcards.matchFulfilled,
-        (state, { payload }: any) => {
-          state.ecards = payload.ecards;
-        }
-      )
-      .addMatcher(
-        ecardApi.endpoints.getEcard.matchFulfilled,
-        (state, { payload }: any) => {
-          state.ecard = payload.ecard;
-        }
-      )
-      .addMatcher(
-        ecardApi.endpoints.updateEcard.matchFulfilled,
-        (state, { payload }: any) => {
-          state.message = payload.message;
-        }
-      )
-      .addMatcher(
-        ecardApi.endpoints.createEcard.matchFulfilled,
-        (state, { payload }: any) => {
-          state.message = payload.message;
-        }
-      )
-      .addMatcher(
-        ecardApi.endpoints.getEcardsByCategory.matchFulfilled,
-        (state, { payload }: any) => {
-          state.ecards = payload.ecards;
-        }
-      )
-      .addMatcher(
-        ecardApi.endpoints.getEcardCategories.matchFulfilled,
-        (state, { payload }: any) => {
-          state.categories = payload.categories;
-        }
-      )
-      .addMatcher(
-        ecardApi.endpoints.deleteEcard.matchFulfilled,
-        (state, { payload }: any) => {
-          state.message = payload.message;
-        }
-      )
+      .addMatcher(ecardApi.endpoints.getEcards.matchFulfilled, (state, { payload }: any) => {
+        state.ecards = payload.ecards;
+        state.categories = payload.categories;
+      })
+      .addMatcher(ecardApi.endpoints.getEcard.matchFulfilled, (state, { payload }: any) => {
+        state.ecard = payload.ecard;
+      })
+      .addMatcher(ecardApi.endpoints.updateEcard.matchFulfilled, (state, { payload }: any) => {
+        state.message = payload.message;
+      })
+      .addMatcher(ecardApi.endpoints.createEcard.matchFulfilled, (state, { payload }: any) => {
+        state.message = payload.message;
+      })
+      .addMatcher(ecardApi.endpoints.deleteEcard.matchFulfilled, (state, { payload }: any) => {
+        state.message = payload.message;
+      })
 
       .addMatcher(
         (action) =>
-          action.type.endsWith('/rejected') &&
-          action.payload?.data?.sliceName === 'ecardApi',
+          action.type.endsWith('/rejected') && action.payload?.data?.sliceName === 'ecardApi',
         (state, action: any) => {
           state.loading = false;
           state.error = action.payload.data;

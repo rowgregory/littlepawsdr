@@ -55,6 +55,9 @@ import LightHoneycomb from './light-honeycomb-dark.png';
 import LightWool from './light-wool.png';
 import Nami from './nami.png';
 import Padded from './padded.png';
+import PineappleCut from './pineapple-cut.png';
+import SmoothWallDark from './smooth-wall-dark.png';
+import Triangles from './triangles.png';
 
 export {
   Icon1,
@@ -114,4 +117,7 @@ export {
   LightWool,
   Nami,
   Padded,
+  PineappleCut,
+  SmoothWallDark,
+  Triangles,
 };

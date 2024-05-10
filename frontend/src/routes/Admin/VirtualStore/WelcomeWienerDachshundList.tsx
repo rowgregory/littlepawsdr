@@ -132,8 +132,8 @@ const WelcomeWienerDachshundList = () => {
                             <div onClick={() => toggleLive({ id: wiener?._id })} className='px-4'>
                               <p
                                 className={`cursor-pointer text-gray-900 text-sm font-Matter-Regular items-center whitespace-nowrap border-2 rounded-3xl px-2 py-1 w-fit ${wiener?.isLive
-                                    ? 'text-green-700 bg-green-50 border-green-500'
-                                    : 'text-gray-700 bg-gray-50 border-gray-700'
+                                  ? 'text-green-700 bg-green-50 border-green-500'
+                                  : 'text-gray-700 bg-gray-50 border-gray-700'
                                   }`}
                               >
                                 {wiener.isLive ? 'Online' : 'Offline'}
@@ -146,7 +146,7 @@ const WelcomeWienerDachshundList = () => {
                                 welcomeWienerToBeEdited.wiener._id === wiener._id && (
                                   <div
                                     ref={welcomeWienerMenuRef}
-                                    className='flex flex-col justify-center shadow-lg p-1.5 absolute z-[5000] w-28 h-fit border bg-white -top-9 right-24 rounded-lg'
+                                    className='flex flex-col justify-center shadow-lg p-1.5 absolute z-[5000] w-28 h-fit border bg-white top-[-44px] right-24 rounded-lg'
                                   >
                                     <Link
                                       to={`/admin/virtual-store/welcome-wieners/${welcomeWienerToBeEdited?.wiener._id}`}

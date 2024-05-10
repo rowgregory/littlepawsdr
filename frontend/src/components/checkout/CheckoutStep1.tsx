@@ -7,7 +7,7 @@ const CheckoutStep1 = ({ handleInput, inputs, errors, submitContactInfo }: any) 
             Name*
           </label>
           <input
-            className='bg-white border-[1px] border-gray-200 rounded-md  py-2.5 px-4 font-Matter-Regular focus:outline-none '
+            className='user-input bg-white border-[1px] border-gray-200 rounded-md  py-2.5 px-4 font-Matter-Regular focus:outline-none '
             name='name'
             onChange={handleInput}
             type='text'
@@ -21,7 +21,7 @@ const CheckoutStep1 = ({ handleInput, inputs, errors, submitContactInfo }: any) 
             Email*
           </label>
           <input
-            className='bg-white border-[1px] border-gray-200 rounded-md py-2.5 px-4 font-Matter-Regular focus:outline-none '
+            className='user-input bg-white border-[1px] border-gray-200 rounded-md py-2.5 px-4 font-Matter-Regular focus:outline-none '
             name='emailAddress'
             onChange={handleInput}
             type='text'

@@ -26,7 +26,7 @@ const CheckoutProgressTracker = ({ step, setStep, isProduct }: any) => {
           className={`${step.step3 ? 'border-teal-500' : 'border-gray-300 text-gray-300'
             }  border-b-4 text-xl font-Matter-Medium tracking wider px-8 w-full text-center pb-1`}
         >
-          3. Payment
+          {isProduct ? '3' : '2'}. Payment
         </div>
       </div>
       <div className='flex justify-between w-72 mx-auto md:hidden mt-4 mb-8'>
@@ -36,7 +36,7 @@ const CheckoutProgressTracker = ({ step, setStep, isProduct }: any) => {
           </p>
           <div
             className={`${step.step1 ? 'bg-teal-500' : 'bg-gray-300'
-              } text-2xl font-Museo-Slab-700 w-12 h-12 rounded-full flex items-center justify-center text-white pb-1 aspect-square pt-2 relative after:content-[''] after:w-12 after:absolute after:top-6 after:left-[58px] after:border-2 after:border-gray-300`}
+              } text-2xl font-Museo-Slab-700 w-12 h-12 rounded-full flex items-center justify-center text-white pb-1 aspect-square pt-2 relative after:content-[''] ${isProduct ? 'after:w-12' : 'after:w-[170px]'} after:absolute after:top-6 after:left-[58px] after:border-2 after:border-gray-300`}
           >
             1
           </div>
@@ -60,7 +60,7 @@ const CheckoutProgressTracker = ({ step, setStep, isProduct }: any) => {
             className={`${step.step3 ? 'bg-teal-500' : 'bg-gray-300'
               } text-2xl font-Museo-Slab-700 w-12 h-12 rounded-full flex items-center justify-center text-white pb-1 aspect-square pt-2`}
           >
-            3
+            {isProduct ? '3' : '2'}
           </div>
         </div>
       </div>

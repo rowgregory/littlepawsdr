@@ -1,6 +1,7 @@
 import asyncHandler from 'express-async-handler';
 import BoardMember from '../models/boardMemberModel.js';
 import Error from '../models/errorModel.js';
+import User from '../models/userModel.js';
 
 /**
  @desc    Get all manually added users
@@ -10,8 +11,9 @@ import Error from '../models/errorModel.js';
 const getBoardMembers = asyncHandler(async (req, res) => {
   try {
     const boardMembers = await BoardMember.find({});
+    const admin = await User.find({ isAdmin: true });
 
-    res.status(200).json({ boardMembers });
+    res.status(200).json({ boardMembers: boardMembers.concat(admin) });
   } catch (err) {
     await Error.create({
       functionName: 'GET_BOARD_MEMBERS_PUBLIC',

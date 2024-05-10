@@ -32,7 +32,7 @@ google.google.options({
   auth: Oauth2_client,
 });
 
-export const sendEmail = async (body, res, type, token, hasEmailBeenSent, log) => {
+export const sendEmail = async (body, res, type, token, hasEmailBeenSent) => {
   const __dirname = path.resolve();
   const root = path.join(__dirname, 'emails');
   let accessToken = await Oauth2_client.getAccessToken();
@@ -103,6 +103,6 @@ export const sendEmail = async (body, res, type, token, hasEmailBeenSent, log) =
     case 'REMINDER_PAYMENT_EMAIL_AUCTION_ITEM_WINNER':
       return paymentRedminderWinningBidAuctionItem(pugEmail, body)
     case 'ADMIN_ORDER_NOTIFICATION':
-      return orderNotification(pugEmail, body)
+      return orderNotification(pugEmail)
   }
 };

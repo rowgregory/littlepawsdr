@@ -216,8 +216,8 @@ const fetchPersonalData = asyncHandler(async (req, res) => {
 
     const adoptionApplicationFees = await AdoptionFee.find({
       emailAddress: req.user.email,
-    });
-    const orders = await Order.find({ email: req.user.email })
+    }).sort({ createdAt: -1 });
+    const orders = await Order.find({ email: req.user.email }).sort({ createdAt: -1 })
 
     const user = await User.findById(req.user._id);
     const donations = await Donation.find({ email: req.user.email })

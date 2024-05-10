@@ -24,6 +24,16 @@ const welcomeWienerIconData = [
     iconClassName: 'fa-solid fa-volleyball',
     textKey: 'Toys',
   },
+  {
+    icon: <i className='fa-solid fa-bed fa-xl'></i>,
+    iconClassName: 'fa-solid fa-bed',
+    textKey: 'Hospitality',
+  },
+  {
+    icon: <i className='fa-solid fa-lock fa-xl'></i>,
+    iconClassName: 'fa-solid fa-lock',
+    textKey: 'Safety and Security',
+  },
 ];
 
 export default welcomeWienerIconData;

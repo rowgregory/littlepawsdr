@@ -14,8 +14,8 @@ import {
 
 export const cronJobs = (io) => {
   return {
-    // Every hour
-    sendEcard: cron.schedule('0 * * * *', () => sendEmail({}, {}, 'ecard'), {
+    // Every day at 9:00 9:01 & 9:02AM
+    sendEcard: cron.schedule('0-2 9 * * *', () => sendEmail({}, {}, 'ecard'), {
       scheduled: true,
       timezone: 'America/New_York',
     }),

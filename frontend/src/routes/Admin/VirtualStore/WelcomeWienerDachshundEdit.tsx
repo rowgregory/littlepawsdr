@@ -29,7 +29,7 @@ const WelcomeWienerDachshundEdit = () => {
         name: inputs?.name,
         bio: inputs?.bio,
         age: inputs?.age,
-        displayUrl: inputs.images[0]?.url,
+        displayUrl: inputs.images[0],
         associatedProducts: inputs?.associatedProducts,
         images: inputs?.images,
       })
@@ -40,7 +40,7 @@ const WelcomeWienerDachshundEdit = () => {
         name: inputs?.name,
         bio: inputs?.bio,
         age: inputs?.age,
-        displayUrl: inputs?.images[0]?.url,
+        displayUrl: inputs?.images[0],
         associatedProducts: inputs?.associatedProducts?.map((obj: any) => obj?._id),
         images: inputs?.images,
       })
@@ -55,7 +55,7 @@ const WelcomeWienerDachshundEdit = () => {
   const editPhotoHandler = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const newFiles = e.target.files ? Array.from(e.target.files) : [];
     setInputs((inputs: any) => ({ ...inputs, photoAmount: Number(newFiles.length) }));
-    const images = await uploadMultipleFilesToFirebase(newFiles, true);
+    const images = await uploadMultipleFilesToFirebase(newFiles);
     setInputs((inputs: any) => ({
       ...inputs,
       images: [...inputs.images, ...images],
@@ -179,7 +179,7 @@ const WelcomeWienerDachshundEdit = () => {
                       onClick={() =>
                         setInputs((prev: any) => ({
                           ...prev,
-                          images: inputs.images.filter((image: { url: string }) => image.url !== file.url),
+                          images: inputs.images.filter((image: { url: string }) => image !== file),
                         }))
                       }
                       className='fas fa-times fa-sm text-white absolute top-5 left-3.5 z-2 cursor-pointer'
@@ -187,7 +187,7 @@ const WelcomeWienerDachshundEdit = () => {
 
                     <img
                       className='w-full h-full object-cover'
-                      src={file?.url}
+                      src={file}
                       alt='auction-item'
                     />
                   </div>

@@ -60,7 +60,7 @@ const WelcomeWienerProductEdit = () => {
         <i className='fas fa-chevron-left fa-xs mr-2'></i>
         <p className='font-Matter-Regular text-sm mt-0.5'>Back to digital products</p>
       </Link>
-      <div className='bg-white border border-slate-100 rounded-xl p-8 grid gap-y-8'>
+      <div className='bg-white border border-slate-100 rounded-xl py-4 px-2.5 md:p-8 grid gap-y-8'>
         <div className='font-Matter-Medium text-2xl'>Digital Products Details</div>
         <form className='flex flex-col gap-y-8'>
           <div className='flex flex-col md:flex-row gap-4'>
