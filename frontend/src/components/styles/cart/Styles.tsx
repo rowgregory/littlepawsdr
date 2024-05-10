@@ -1,63 +1,5 @@
 import { Button } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-
-export const CartContainer = styled.div`
-  background: #ecf0f1;
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  justify-content: space-between;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    flex-direction: row;
-  }
-`;
-
-export const Container = styled.div<{ emptycart?: boolean }>`
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  padding: 16px 16px 18px 16px;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
-    padding: 48px 28px 0 28px;
-    min-height: 100vh;
-  }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
-    padding: 48px 45px 0 45px;
-    min-height: 100vh;
-  }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    padding: 48px 64px 0 64px;
-    min-height: 100vh;
-  }
-`;
-
-export const ProductName = styled(Link)`
-  color: ${({ theme }) => theme.card.text};
-  text-decoration: none;
-  font-size: 13px;
-  :hover {
-    color: ${({ theme }) => theme.card.text};
-  }
-`;
-
-export const CartItemContainer = styled.table`
-  margin-bottom: 16px;
-  tr {
-    height: 120px;
-    background: #e5e9ea;
-    border-bottom: 16px solid #ecf0f1;
-
-    .remove-cart-item {
-      background: #ecf0f1;
-    }
-
-    i {
-      color: #909292;
-    }
-  }
-`;
 
 export const CheckoutBtnColumn = styled.div`
   display: flex;
@@ -114,25 +56,5 @@ export const SecondSubTotal = styled.div`
   }
   @media screen and (min-width: ${({ theme }) => theme.breakpoints[2]}) {
     padding: 100px 60px;
-  }
-`;
-
-export const CartBtn = styled.div`
-  height: 20px;
-  width: 20px;
-  border-radius: 50%;
-  background: #858382;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #fff;
-  transition: 300ms;
-  cursor: pointer;
-  &.plus {
-    margin-bottom: 4px;
-  }
-
-  :hover {
-    filter: brightness(0.9);
   }
 `;

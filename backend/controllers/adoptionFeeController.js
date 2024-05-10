@@ -222,7 +222,7 @@ const checkUserAdoptionFeeTokenValidity = asyncHandler(async (req, res) => {
 */
 const getAdoptionFees = asyncHandler(async (req, res) => {
   try {
-    const adoptionApplicationFees = await AdoptionFee.find({}).sort({ updated: -1 });
+    const adoptionApplicationFees = await AdoptionFee.find({}).sort({ createdAt: -1 });
 
     res.status(200).json({ adoptionApplicationFees });
   } catch (err) {

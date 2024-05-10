@@ -54,7 +54,7 @@ const addNewsletterEmail = asyncHandler(async (req, res) => {
 */
 const getNewsletterEmails = asyncHandler(async (req, res) => {
   try {
-    const newsletterEmails = await Newsletter.find({});
+    const newsletterEmails = await Newsletter.find({}).sort({ createdAt: -1 });
 
     res.json({ newsletterEmails });
   } catch (err) {
