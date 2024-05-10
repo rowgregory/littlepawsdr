@@ -18,7 +18,7 @@ const createActionHistoryLog = async (values) => {
  */
 const getactionHistories = asyncHandler(async (req, res) => {
   try {
-    const actionHistories = await ActionHistory.find({}).sort({ updatedAt: -1 })
+    const actionHistories = await ActionHistory.find({}).sort({ createdAt: -1 })
 
     res.json({ actionHistories });
   } catch (err) {

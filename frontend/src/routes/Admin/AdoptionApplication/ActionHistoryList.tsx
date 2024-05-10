@@ -3,6 +3,7 @@ import { useGetActionHistoriesQuery } from '../../../redux/services/actionHistor
 import GreenRotatingTransparentCircle from '../../../components/Loaders/GreenRotatingTransparentCircle';
 import MagnifyingGlass from '../../../components/svg/MagnifyingGlass';
 import { formatDateWithTimezone } from '../../../utils/dateFunctions';
+import Pagination from '../../../components/common/Pagination';
 
 const ActionHistoryList = () => {
   const [text, setText] = useState('');
@@ -39,73 +40,80 @@ const ActionHistoryList = () => {
             <div className='font-Matter-Medium my-2'>You have no history</div>
           </div>
         ) : (
-          <div className='rounded-xl bg-white overflow-x-scroll relative'>
-            <table className='w-full'>
-              <thead className='whitespace-nowrap px-4 pb-4 pt-2'>
-                <tr className='bg-zinc-50'>
-                  <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
-                    <div className=' text-sm cursor-pointer -mx-1.5 -my-1 w-fit px-1.5 py-1 rounded-md hover:bg-gray-200 flex flex-nowrap items-center gap-2'>
-                      Name
-                    </div>
-                  </th>
-                  <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
-                    <div className=' text-sm flex flex-nowrap items-center gap-2'>
-                      Email
-                    </div>
-                  </th>
-                  <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
-                    <div className=' text-sm flex flex-nowrap items-center gap-2'>
-                      Action type
-                    </div>
-                  </th>
-                  <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
-                    <div className=' text-sm flex flex-nowrap items-center gap-2'>IP</div>
-                  </th>
-                  <th>
-                    <div className='flex flex-nowrap items-center gap-2'></div>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredActionHistories?.map((history: any) => (
-                  <tr
-                    className='z-1 h-[3.25rem] group bg-white [&_td]:focus-within:bg-gray-100 [&_td]:hover:cursor-pointer [&_td]:hover:bg-gray-100 relative'
-                    key={history?._id}
-                  >
-                    <td>
-                      <div className='m-0 w-full  p-0 decoration-inherit hover:text-inherit hover:decoration-inherit !flex h-[3.25rem] items-center px-4 whitespace-nowrap'>
-                        <div className='max-w-[15rem]'>
-                          <span className='text-sm font-Matter-Regular truncate'>
-                            {history?.user?.name}
-                          </span>
+          <div className='rounded-lg bg-white overflow-x-hidden relative'>
+            <Pagination
+              render={(startIndex: number, endIndex: number) => (
+                <table className='w-full'>
+                  <thead className='whitespace-nowrap px-4 pb-4 pt-2'>
+                    <tr className='bg-zinc-50'>
+                      <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
+                        <div className=' text-sm cursor-pointer -mx-1.5 -my-1 w-fit px-1.5 py-1 rounded-md hover:bg-gray-200 flex flex-nowrap items-center gap-2'>
+                          Name
                         </div>
-                      </div>
-                    </td>
-                    <td>
-                      <p className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>
-                        {history?.user?.email}
-                      </p>
-                    </td>
-                    <td>
-                      <p className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>
-                        {history?.actionType}
-                      </p>
-                    </td>
-                    <td>
-                      <p className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>
-                        {history?.ip}
-                      </p>
-                    </td>
-                    <td>
-                      <p className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>
-                        {formatDateWithTimezone(history?.createdAt)}
-                      </p>
-                    </td>
-                    <td></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                      </th>
+                      <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
+                        <div className=' text-sm flex flex-nowrap items-center gap-2'>
+                          Email
+                        </div>
+                      </th>
+
+                      <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
+                        <div className=' text-sm flex flex-nowrap items-center gap-2'>
+                          Date & Time
+                        </div>
+                      </th>
+                      <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
+                        <div className=' text-sm flex flex-nowrap items-center gap-2'>
+                          Action type
+                        </div>
+                      </th>
+                      <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
+                        <div className=' text-sm flex flex-nowrap items-center gap-2'>IP</div>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredActionHistories?.slice(startIndex, endIndex)?.map((history: any) => (
+                      <tr
+                        className='z-1 h-[3.25rem] group bg-white [&_td]:focus-within:bg-gray-100 [&_td]:hover:cursor-pointer [&_td]:hover:bg-gray-100 relative'
+                        key={history?._id}
+                      >
+                        <td>
+                          <div className='m-0 w-full  p-0 decoration-inherit hover:text-inherit hover:decoration-inherit !flex h-[3.25rem] items-center px-4 whitespace-nowrap'>
+                            <div className='max-w-[15rem]'>
+                              <span className='text-sm font-Matter-Regular truncate'>
+                                {history?.user?.name}
+                              </span>
+                            </div>
+                          </div>
+                        </td>
+                        <td>
+                          <p className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>
+                            {history?.user?.email}
+                          </p>
+                        </td>
+                        <td>
+                          <p className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>
+                            {formatDateWithTimezone(history?.createdAt)}
+                          </p>
+                        </td>
+                        <td>
+                          <p className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>
+                            {history?.actionType}
+                          </p>
+                        </td>
+                        <td>
+                          <p className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>
+                            {history?.ip}
+                          </p>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+              totalItems={data?.actionHistories?.length}
+            ></Pagination>
           </div>
         )}
       </div>

@@ -58,6 +58,7 @@ import Padded from './padded.png';
 import PineappleCut from './pineapple-cut.png';
 import SmoothWallDark from './smooth-wall-dark.png';
 import Triangles from './triangles.png';
+import AiCartDog2 from './empty-cart-dachshund-1.jpeg';
 
 export {
   Icon1,
@@ -120,4 +121,5 @@ export {
   PineappleCut,
   SmoothWallDark,
   Triangles,
+  AiCartDog2,
 };

@@ -3,6 +3,7 @@ import { useGetAdoptionApplicationFeesQuery } from '../../../redux/services/adop
 import GreenRotatingTransparentCircle from '../../../components/Loaders/GreenRotatingTransparentCircle';
 import MagnifyingGlass from '../../../components/svg/MagnifyingGlass';
 import { formatDateWithTimezone } from '../../../utils/dateFunctions';
+import Pagination from '../../../components/common/Pagination';
 
 const AdoptionFeeList = () => {
   const [text, setText] = useState('');
@@ -38,74 +39,73 @@ const AdoptionFeeList = () => {
             <div className='font-Matter-Medium my-2'>No fees</div>
           </div>
         ) : (
-          <div className='relative'>
-            <div className='rounded-xl bg-white overflow-x-scroll sm:overflow-x-hidden relative'>
-              <table className='w-full'>
-                <thead className='whitespace-nowrap px-4 pb-4 pt-2'>
-                  <tr className='bg-zinc-50'>
-                    <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
-                      <div className=' text-sm cursor-pointer -mx-1.5 -my-1 w-fit px-1.5 py-1 rounded-md hover:bg-gray-200 flex flex-nowrap items-center gap-2'>
-                        First name
-                      </div>
-                    </th>
-                    <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
-                      <div className=' text-sm flex flex-nowrap items-center gap-2'>
-                        Last name
-                      </div>
-                    </th>
-                    <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
-                      <div className=' text-sm flex flex-nowrap items-center gap-2'>
-                        Email
-                      </div>
-                    </th>
-                    <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
-                      <div className=' text-sm flex flex-nowrap items-center gap-2'>
-                        Date & Time
-                      </div>
-                    </th>
-                    <th>
-                      <div className='flex flex-nowrap items-center gap-2'></div>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredAdoptionFees?.map((ecard: any) => (
-                    <tr
-                      className='z-1 h-[3.25rem] group bg-white [&_td]:focus-within:bg-gray-100 [&_td]:hover:cursor-pointer [&_td]:hover:bg-gray-100 relative'
-                      key={ecard?._id}
-                    >
-                      <td>
-                        <div className='m-0 w-full  p-0 decoration-inherit hover:text-inherit hover:decoration-inherit !flex h-[3.25rem] items-center px-4 whitespace-nowrap'>
-                          <div className='max-w-[15rem]'>
-                            <span className='text-sm font-Matter-Regular truncate'>
-                              {ecard?.firstName}
-                            </span>
-                          </div>
+          <div className='rounded-lg bg-white overflow-x-hidden relative'>
+            <Pagination
+              render={(startIndex: number, endIndex: number) => (
+                <table className='w-full'>
+                  <thead className='whitespace-nowrap px-4 pb-4 pt-2'>
+                    <tr className='bg-zinc-50'>
+                      <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
+                        <div className=' text-sm -mx-1.5 -my-1 w-fit px-1.5 py-1 rounded-md flex flex-nowrap items-center gap-2'>
+                          First name
                         </div>
-                      </td>
-                      <td>
-                        <p className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>
-                          {ecard?.lastName}
-                        </p>
-                      </td>
-                      <td>
-                        <p className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>
-                          {ecard?.emailAddress}
-                        </p>
-                      </td>
-                      <td>
-                        <p className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>
-                          {formatDateWithTimezone(ecard?.createdAt)}
-                        </p>
-                      </td>
-                      <td>
-
-                      </td>
+                      </th>
+                      <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
+                        <div className=' text-sm flex flex-nowrap items-center gap-2'>
+                          Last name
+                        </div>
+                      </th>
+                      <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
+                        <div className=' text-sm flex flex-nowrap items-center gap-2'>Email</div>
+                      </th>
+                      <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
+                        <div className=' text-sm flex flex-nowrap items-center gap-2'>
+                          Date & Time
+                        </div>
+                      </th>
+                      <th>
+                        <div className='flex flex-nowrap items-center gap-2'></div>
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody>
+                    {filteredAdoptionFees?.slice(startIndex, endIndex)?.map((ecard: any) => (
+                      <tr
+                        className='z-1 h-[3.25rem] group bg-white [&_td]:focus-within:bg-gray-100 [&_td]:hover:bg-gray-100 relative'
+                        key={ecard?._id}
+                      >
+                        <td>
+                          <div className='m-0 w-full  p-0 decoration-inherit hover:text-inherit hover:decoration-inherit !flex h-[3.25rem] items-center px-4 whitespace-nowrap'>
+                            <div className='max-w-[15rem]'>
+                              <span className='text-sm font-Matter-Regular truncate'>
+                                {ecard?.firstName}
+                              </span>
+                            </div>
+                          </div>
+                        </td>
+                        <td>
+                          <p className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>
+                            {ecard?.lastName}
+                          </p>
+                        </td>
+                        <td>
+                          <p className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>
+                            {ecard?.emailAddress}
+                          </p>
+                        </td>
+                        <td>
+                          <p className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>
+                            {formatDateWithTimezone(ecard?.createdAt)}
+                          </p>
+                        </td>
+                        <td></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+              totalItems={adoptionFees?.length}
+            ></Pagination>
           </div>
         )}
       </div>
