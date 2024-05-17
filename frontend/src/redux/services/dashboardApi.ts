@@ -2,15 +2,23 @@ import { api } from './api';
 
 export const dashboardApi = api.injectEndpoints({
   endpoints: (build: any) => ({
-    getDashboardData: build.query({
-      query: () => '/dashboard',
-      providesTags: ['Dashboard'],
-    }),
     getAdoptionApplicationBypassCode: build.query({
       query: () => '/dashboard/adoption-application-bypass-code',
+      providesTags: ['Dashboard'],
+    }),
+    getWelcomeWienerOrders: build.query({
+      query: () => '/dashboard/orders/welcome-wieners',
+      providesTags: ['Dashboard'],
+    }),
+    getEcardOrders: build.query({
+      query: () => '/dashboard/orders/ecards',
       providesTags: ['Dashboard'],
     }),
   }),
 });
 
-export const { useGetDashboardDataQuery, useGetAdoptionApplicationBypassCodeQuery } = dashboardApi;
+export const {
+  useGetAdoptionApplicationBypassCodeQuery,
+  useGetWelcomeWienerOrdersQuery,
+  useGetEcardOrdersQuery,
+} = dashboardApi;

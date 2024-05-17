@@ -9,7 +9,7 @@ import AdoptionApplication from './AdoptionApplication';
 
 const AdoptRoutes = () => {
   return (
-    <div className='min-h-[calc(100vh-555px)] pb-60 mt-[65px]'>
+    <div className='min-h-[calc(100vh-540px)] pb-60 mt-[65px]'>
       <Routes>
         <Route path='/' element={<AdoptionApplicationTermsAndPayment />} />
         <Route path='application/verified/:token' element={<AdoptionApplication />} />

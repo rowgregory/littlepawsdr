@@ -64,7 +64,7 @@ const SponsorSanctuary = () => {
               },
             }}
           />
-          <Link to='/donate' state={{ cameFromSanctuary: true }} className='bg-teal-300 text-white font-Museo-Slab-700 text-2xl flex items-center justify-center px-5 py-3.5 absolute bottom-4 left-1/2 transform -translate-x-1/2 z-10 hover:no-underline'>DONATE</Link>
+          <Link to='/donate' state={{ cameFromSanctuary: true }} className='bg-teal-300 text-white font-Museo-Slab-700 rounded-lg text-2xl flex items-center justify-center px-5 py-3.5 absolute bottom-4 left-1/2 transform -translate-x-1/2 z-10 hover:no-underline hover:bg-teal-400 duration-200'>SPONSOR</Link>
         </div>
       </div>
     </div>

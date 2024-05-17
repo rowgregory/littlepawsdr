@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const eCardOrderSchema = mongoose.Schema(
   {
-    productId: { type: String, required: true },
+    productId: { type: mongoose.Schema.Types.ObjectId, ref: 'ECard' },
     recipientsFullName: { type: String, required: true },
     recipientsEmail: { type: String, required: true },
     dateToSend: { type: Date, required: true },

@@ -65,6 +65,13 @@ interface DashboardStatePayload {
   };
   bypassCode: string;
   sidebar: boolean;
+  welcomeWienerOrders: [];
+  welcomeWienerRevenue: number;
+  totalWelcomeWieners: number;
+  firstWelcomeWienerOrderCreatedAt: string;
+  ecardOrders: [];
+  ecardOrderRevenue: number;
+  totalEcardOrders: number;
 }
 
 const initialDashboardState: DashboardStatePayload = {
@@ -126,6 +133,13 @@ const initialDashboardState: DashboardStatePayload = {
   },
   bypassCode: '',
   sidebar: false,
+  welcomeWienerOrders: [],
+  welcomeWienerRevenue: 0,
+  totalWelcomeWieners: 0,
+  firstWelcomeWienerOrderCreatedAt: '',
+  ecardOrders: [],
+  ecardOrderRevenue: 0,
+  totalEcardOrders: 0,
 };
 
 export const dashboardSlice = createSlice({
@@ -145,16 +159,26 @@ export const dashboardSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addMatcher(
-        dashboardApi.endpoints.getDashboardData.matchFulfilled,
-        (state, { payload }: any) => {
-          state.currentYearData = payload.currentYearData;
-          state.loading = false;
-        }
-      )
-      .addMatcher(
         dashboardApi.endpoints.getAdoptionApplicationBypassCode.matchFulfilled,
         (state, { payload }: any) => {
           state.bypassCode = payload.bypassCode;
+        }
+      )
+      .addMatcher(
+        dashboardApi.endpoints.getWelcomeWienerOrders.matchFulfilled,
+        (state, { payload }: any) => {
+          state.welcomeWienerOrders = payload.welcomeWienerOrders;
+          state.welcomeWienerRevenue = payload.welcomeWienerRevenue;
+          state.totalWelcomeWieners = payload.totalWelcomeWieners;
+          state.firstWelcomeWienerOrderCreatedAt = payload.firstWelcomeWienerOrderCreatedAt;
+        }
+      )
+      .addMatcher(
+        dashboardApi.endpoints.getEcardOrders.matchFulfilled,
+        (state, { payload }: any) => {
+          state.ecardOrders = payload.ecardOrders;
+          state.ecardOrderRevenue = payload.ecardOrderRevenue;
+          state.totalEcardOrders = payload.totalEcardOrders;
         }
       )
       .addMatcher(

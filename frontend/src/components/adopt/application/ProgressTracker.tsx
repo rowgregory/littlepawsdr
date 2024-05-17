@@ -38,7 +38,7 @@ const ProgressTracker = (props: ProgressTrackerProps) => {
   return (
     <div className='max-w-[400px] w-full flex justify-between items-center relative mx-auto mt-6 mb-10 px-[20px]'>
       <Step step={step.step1.toString()}>
-        {step.step1 ? <i className='fas fa-check text-white'></i> : '1'}
+        {step.step2 ? <i className='fas fa-check text-white'></i> : '1'}
       </Step>
       <p className='absolute text-sm font-Matter-Light top-[29px] left-[13px]'>Terms</p>
       <Line step={step.step2.toString()} style={{ left: '10%', width: '25%' }} />

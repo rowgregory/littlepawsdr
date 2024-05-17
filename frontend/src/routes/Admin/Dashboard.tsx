@@ -1,17 +1,21 @@
 import { useEffect } from 'react';
-import { UnderConstruction } from '../../components/assets';
 import { useGetAdoptionApplicationBypassCodeQuery } from '../../redux/services/dashboardApi';
 import { setAdoptionApplicationBypassCode } from '../../redux/features/dashboard/dashboardSlice';
 import { useAppDispatch } from '../../redux/toolkitStore';
 import { io } from 'socket.io-client';
 import { useSelector } from 'react-redux';
+import WelcomeWienerOrderTable from '../../redux/features/dashboard/components/WelcomeWienerOrderTable';
+import EcardOrderTable from '../../redux/features/dashboard/components/EcardOrderTable';
 
 // const socket = io('http://localhost:5000')
 const socket = io('https://www.littlepawsdr.org');
 
 const Dashboard = () => {
-  const dispatch = useAppDispatch()
-  const dashboard = useSelector((state: any) => state.dashboard);
+  const dispatch = useAppDispatch();
+  const state = useSelector((state: any) => state);
+  const dashboard = state.dashboard;
+  const auth = state.auth;
+
   useGetAdoptionApplicationBypassCodeQuery();
 
   useEffect(() => {
@@ -25,14 +29,21 @@ const Dashboard = () => {
   }, [dispatch]);
 
   return (
-    <div className='min-h-screen flex items-center justify-center bg-blue-to-purple'>
-      <div className='bg-white max-h-[600px] h-full max-w-[600px] w-full my-auto mx-4 flex items-center flex-col justify-center shadow-2xl rounded-xl p-4'>
-        <img src={UnderConstruction} className='w-96 aspect-square rounded-xl' alt='Under construction' />
-        <p className='font-Matter-Medium mt-4 text-3xl p-2'>Under construction</p>
-        <p className='font-Matter-Medium my-2 text-lg text-center'>Bypass code: {dashboard?.bypassCode}</p>
+    <div className='bg-zinc-50 pt-16 md:pt-20 px-[8px] md:px-[20px] pb-10 min-h-screen'>
+      <div className='max-w-screen-lg w-full mx-auto'>
+        <div className='flex items-center justify-between mb-9'>
+          <h1 className='font-Matter-Medium text-2xl'>Welcome, {auth?.user?.firstName}!</h1>
+          <h2 className='font-Matter-Regular'>Bypass code: {dashboard?.bypassCode}</h2>
+        </div>
+        <div className='bg-white w-full border-[1px] border-slate-200 rounded-xl mb-10'>
+          <WelcomeWienerOrderTable />
+        </div>
+        <div className='bg-white w-full border-[1px] border-slate-200 rounded-xl'>
+          <EcardOrderTable />
+        </div>
       </div>
     </div>
-  )
+  );
 };
 
 export default Dashboard;
