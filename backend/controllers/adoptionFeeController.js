@@ -182,7 +182,7 @@ const checkUserAdoptionFeeTokenValidity = asyncHandler(async (req, res) => {
       // if code does not match
     } else if (bypassCode && bypassCode !== code) {
       await createActionHistoryLog({
-        actionType: 'Invalid adoption application bypass code attempt',
+        actionType: `${firstName} ${lastName} tried to use ${bypassCode}, but that is incorrect. Did you give ${firstName} ${lastName} the bypass code?`,
         user: {
           name: `${firstName} ${lastName}`,
           email,
