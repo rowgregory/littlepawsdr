@@ -13,7 +13,7 @@ const Ecards = () => {
   const [currentCategory, setCurrentCategory] = useState('');
 
   const filterEcards = ecards?.filter((ecard: any) => {
-    return ecard?.category.includes(currentCategory);
+    return ecard?.category?.includes(currentCategory);
   });
 
   return (
