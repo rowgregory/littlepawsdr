@@ -96,7 +96,7 @@ const Ecards = () => {
                     <img
                       src={ecard?.image}
                       alt={ecard?.name}
-                      className='w-full h-full object-cover'
+                      className='w-full h-full object-cover aspect-square'
                     />
                     <p className='font-Matter-Bold px-2 py-2 text-center text-lg'>{ecard?.name}</p>
                   </Link>

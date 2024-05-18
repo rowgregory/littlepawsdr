@@ -41,7 +41,7 @@ const createECard = asyncHandler(async (req, res) => {
 */
 const getECards = asyncHandler(async (req, res) => {
   try {
-    const ecards = await ECard.find({}).sort({ updated: -1 });
+    const ecards = await ECard.find({ name: { $nin: ["Valentine Alice", "Valentine Daphne"] } }).sort({ updated: -1 });
 
     const categories = [...new Set(ecards?.map((ecard) => ecard.category))];
 
