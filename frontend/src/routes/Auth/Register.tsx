@@ -36,14 +36,14 @@ const Register = () => {
       .then((data: any) => {
         openModal(data.message);
       })
-      .catch((err: any) => console.log('ERROR: ', err));
+      .catch(
+        (err: any) =>
+          err.data.message === 'Password is not strong enough' &&
+          setModal({ open: true, help: true, text: err.data.message })
+      );
   };
 
-  const { inputs, handleInputChange, onSubmit } = useRegisterForm(
-    registerCb,
-    state,
-    setModal
-  );
+  const { inputs, handleInputChange, onSubmit } = useRegisterForm(registerCb, state, setModal);
 
   useEffect(() => {
     if (inputs.password) {
@@ -62,11 +62,7 @@ const Register = () => {
       <div className='bg-white min-h-screen flex items-center justify-center p-8'>
         <div className='max-w-md w-full'>
           <Link to='/'>
-            <img
-              src={Logo2024}
-              alt='Little Paws Dachshund Rescue'
-              className='w-44 mb-4 mx-auto'
-            />
+            <img src={Logo2024} alt='Little Paws Dachshund Rescue' className='w-44 mb-4 mx-auto' />
           </Link>
           <p className='font-Matter-Medium text-2xl text-center mb-2.5'>Register</p>
           <p className='text-gray-400 text-sm font-Matter-Regular text-center mb-4'>
