@@ -203,6 +203,12 @@ const Orders = () => {
                   </div>
                 </div>
                 {orderOpened?.order?.isProduct && (
+                  <div className='bg-slate-50 rounded-lg p-3 mb-4'>
+                    <p className='font-Matter-Medium'>Shipping Address</p>
+                    <p className='font-Matter-Light text-sm'>{`${orderOpened?.order?.shippingAddress?.address}, ${orderOpened?.order?.shippingAddress?.city} ${orderOpened?.order?.shippingAddress?.state} ${orderOpened?.order?.shippingAddress?.zipPostalCode}`}</p>
+                  </div>
+                )}
+                {orderOpened?.order?.isProduct && (
                   <div className='border-[1px] border-gray-200 rounded-xl p-3 flex items-center'>
                     <i className='fa-solid fa-plane-departure text-teal-500 mr-1.5'></i>
                     <p className='font-Matter-Regular whitespace-nowrap text-sm mr-2'>
