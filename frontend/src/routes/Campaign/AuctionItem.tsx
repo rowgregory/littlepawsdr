@@ -57,6 +57,8 @@ const AuctionItem = () => {
   const [mainPhoto, setMainPhoto] = useState(null);
   const ifCampaignIsOver = campaign?.campaign?.auction?.settings?.hasEnded;
 
+
+
   useEffect(() => {
     return () => {
       window.scrollTo(0, 0)
@@ -73,6 +75,8 @@ const AuctionItem = () => {
   const auctionItem = campaign?.campaign?.auction?.items?.find(
     (item: any) => item?._id === auctionItemId
   ) as any;
+
+  console.log('auction item: ', auctionItem)
 
   const [placeBid, { isLoading: loadingPlacingBid }] = usePlaceBidMutation();
 
@@ -170,6 +174,7 @@ const AuctionItem = () => {
                   alt='Little Paws Auction'
                 />
               </div>
+              <p className='font-Matter-Regular px-3 py-4'>{auctionItem?.description}</p>
             </div>
             <div className='col-span-12 lg:col-span-5 order-3'>
               <h1 className='font-Matter-Medium text-5xl tracking-wide mb-8'>
