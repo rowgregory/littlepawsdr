@@ -53,7 +53,7 @@ const WinningBids = () => {
           </div>
         ) : (
           <div className='relative'>
-            <div className='rounded-xl bg-white overflow-x-scroll sm:overflow-x-hidden relative'>
+            <div className='rounded-xl bg-white overflow-x-scroll md:overflow-x-hidden relative'>
               <table className='w-full'>
                 <thead className='whitespace-nowrap px-4 pb-4 pt-2'>
                   <tr className='bg-zinc-50'>
@@ -83,22 +83,31 @@ const WinningBids = () => {
                       >
                         <td className='w-10 h-10'>
                           <i
-                            className={`text-gray-700 fas fa-chevron-right fa-xs ml-4 duration-300 origin-center ${openRows?.rows.some((row: any) => row.id === bidder._id) ? 'rotate-90' : ''
+                            className={`text-gray-700 fas fa-chevron-right fa-xs ml-4 duration-300 origin-center ${openRows?.rows.some((row: any) => row.id === bidder._id)
+                              ? 'rotate-90'
+                              : ''
                               }`}
                           ></i>
                         </td>
-                        <td>
-                          <div className='m-0 p-0 decoration-inherit hover:text-inherit hover:decoration-inherit !flex h-[3.25rem] items-center pl-3 whitespace-nowrap'>
-                            <div className='max-w-[15rem]'>
-                              <span className='text-sm font-Matter-Regular truncate'>{bidder?.auctionItem?.name}</span>
-                            </div>
+                        <td className='max-w-16 w-full overflow-hidden'>
+                          <div className=' m-0 p-0 decoration-inherit hover:text-inherit hover:decoration-inherit !flex h-[3.25rem] items-center pl-3 whitespace-nowrap'>
+
+                            <span className='text-sm font-Matter-Regular truncate'>
+                              {bidder?.auctionItem?.name?.split('').length >= 25
+                                ? `${bidder?.auctionItem?.name?.substring(0, 25)}...`
+                                : bidder?.auctionItem?.name}
+                            </span>
                           </div>
                         </td>
-                        <td>
-                          <p className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>{bidder?.user?.name}</p>
+                        <td className='max-w-40 w-full overflow-hidden'>
+                          <p className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap truncate'>
+                            {bidder?.user?.name}
+                          </p>
                         </td>
                         <td>
-                          <p className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>${bidder?.totalPrice}</p>
+                          <p className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>
+                            ${bidder?.totalPrice}
+                          </p>
                         </td>
                         <td className='flex items-center px-4 py-3'>
                           <p
@@ -129,9 +138,13 @@ const WinningBids = () => {
                                             alt='Auction Item'
                                             className='object-contain bg-gray-300 rounded-sm h-12 w-12 aspect-square mr-2'
                                           />
-                                          <p className='font-Matter-Medium text-sm'>{row.auctionItem?.name}</p>
+                                          <p className='font-Matter-Medium text-sm'>
+                                            {row.auctionItem?.name}
+                                          </p>
                                         </div>
-                                        <p className='font-Matter-Medium text-sm'>${row.totalPrice}</p>
+                                        <p className='font-Matter-Medium text-sm'>
+                                          ${row.totalPrice}
+                                        </p>
                                       </div>
                                       <div
                                         className={`${row?.auctionItemPaymentStatus === 'Paid'
@@ -147,15 +160,21 @@ const WinningBids = () => {
                                     <div>
                                       <p className='font-Matter-Medium mb-1.5'>Contact</p>
                                       <div className='flex items-center justify-between px-2 py-1.5 rounded-sm bg-gray-100'>
-                                        <p className='font-Matter-Regular text-sm'>{row.user?.email}</p>
+                                        <p className='font-Matter-Regular text-sm'>
+                                          {row.user?.email}
+                                        </p>
                                       </div>
                                     </div>
                                     {row.user?.shippingAddress && (
                                       <div>
-                                        <p className='font-Matter-Medium mb-1.5'>Shipping Address</p>
+                                        <p className='font-Matter-Medium mb-1.5'>
+                                          Shipping Address
+                                        </p>
                                         <div className='flex items-center justify-between px-2 py-1.5 rounded-sm bg-gray-100'>
                                           <div className='flex flex-col'>
-                                            <p className='font-Matter-Regular text-sm'>{row.user?.shippingAddress?.address}</p>
+                                            <p className='font-Matter-Regular text-sm'>
+                                              {row.user?.shippingAddress?.address}
+                                            </p>
                                             <p className='font-Matter-Regular text-sm'>{`${row.user?.shippingAddress?.city}, ${row.user?.shippingAddress?.state} ${row.user?.shippingAddress?.country} ${row.user?.shippingAddress?.zipPostalCode}`}</p>
                                           </div>
                                         </div>

@@ -6,8 +6,28 @@ import {
   Campaign,
   Bid,
 } from '../../models/campaignModel.js';
-import { io } from '../../server.js';
 import { logEvent } from '../logHelpers.js';
+import { io } from '../../server.js';
+
+const sendEmailWithRetry = async (emailOptions, pugEmail, log, retries = 3, delay = 5000) => {
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      await pugEmail.send(emailOptions);
+      logEvent(log, 'AUCTION WINNING BIDDER EMAIL SENT');
+      return;
+    } catch (error) {
+      if (attempt < retries) {
+        console.warn(
+          `Email send failed, retrying in ${delay}ms... (Attempt ${attempt} of ${retries})`
+        );
+        await new Promise((resolve) => setTimeout(resolve, delay));
+      } else {
+        console.error('Email send failed after all retries:', error);
+        logEvent(log, 'AUCTION WINNING BIDDER EMAIL FAILED', error);
+      }
+    }
+  }
+};
 
 export const notifyAuctionWinners = async (pugEmail, topBids, log) => {
   try {
@@ -15,15 +35,14 @@ export const notifyAuctionWinners = async (pugEmail, topBids, log) => {
       logEvent(log, 'INVALID TOPBIDS', topBids);
       return;
     }
+    logEvent(log, 'UPDATED TOP BIDS');
 
-    topBids?.forEach(async (topBid) => {
+    for (const topBid of topBids) {
       await AuctionBidder.findOneAndUpdate({ user: topBid.user }, { status: 'Winner' });
-      logEvent(log, 'UPDATED AUCTION BIDDER TO WINNER');
 
       const campaign = await Campaign.findOne({ auction: topBid.auction }).populate([
         { path: 'auction' },
       ]);
-      logEvent(log, 'CAMPAIGN FOUND');
       const auctionItem = await AuctionItem.findByIdAndUpdate(
         topBid.auctionItem,
         { soldPrice: topBid.bidAmount, topBidder: topBid.bidder },
@@ -57,13 +76,12 @@ export const notifyAuctionWinners = async (pugEmail, topBids, log) => {
       );
       logEvent(log, 'AUCTION SAVED WITH WINNING BIDDER IDS - EMITTING AUCTION UPDATED');
 
-      io.emit('auction-updated');
-
-      await pugEmail
-        .send({
+      // Send email with a delay
+      await sendEmailWithRetry(
+        {
           template: 'auctionItemWinningBidder',
           message: {
-            from: `Little Paws Dachshund Rescue <no-reply@littlepawsdr.org`,
+            from: 'Little Paws Dachshund Rescue <no-reply@littlepawsdr.org>',
             to: topBid.email,
           },
           locals: {
@@ -73,29 +91,34 @@ export const notifyAuctionWinners = async (pugEmail, topBids, log) => {
             subtotal: itemSoldPrice?.toFixed(2),
             processingFee: winningBidder.processingFee?.toFixed(2),
             shipping: winningBidder.shipping?.toFixed(2),
-            processingFee: winningBidder.processingFee?.toFixed(2),
             totalPrice: winningBidder.totalPrice?.toFixed(2),
             id: winningBidder._id,
           },
-        })
-        .then(async () => {
-          logEvent(log, 'AUCTION WINNING BIDDER EMAIL SENT');
-          await AuctionWinningBidder.findOneAndUpdate(winningBidder?._id, {
-            auctionPaymentNotificationEmailHasBeenSent: true,
-            emailNotificationCount: 1,
-          });
-          logEvent(log, 'AUCTION WINNING BIDDER UPDATED');
+        },
+        pugEmail,
+        log
+      );
 
-          await Bid.findByIdAndUpdate(topBid?._id, {
-            sentWinnerEmail: true,
-            emailCount: 1,
-          });
-          logEvent(log, 'BID UPATED');
-        });
+      // Add a 1-second delay between emails
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      logEvent(log, 'ALL TASKS COMPLETE SUCCESSFULLY');
-      await log.save()
-    });
+      // Update database
+      await AuctionWinningBidder.findOneAndUpdate(winningBidder?._id, {
+        auctionPaymentNotificationEmailHasBeenSent: true,
+        emailNotificationCount: 1,
+      });
+      logEvent(log, 'AUCTION WINNING BIDDER UPDATED');
+
+      await Bid.findByIdAndUpdate(topBid?._id, {
+        sentWinnerEmail: true,
+        emailCount: 1,
+      });
+      logEvent(log, 'BID UPDATED');
+    }
+    logEvent(log, 'ALL TASKS COMPLETE SUCCESSFULLY');
+
+    io.emit('auction-updated');
+    await log.save();
   } catch (err) {
     console.error('An error occurred:', err);
   }
