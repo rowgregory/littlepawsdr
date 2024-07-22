@@ -72,9 +72,9 @@ const WelcomeWienerOrderTable = () => {
               </tr>
             </thead>
             <tbody>
-              {sortedArray?.map((order: any) => (
+              {sortedArray?.map((order: any, i: number) => (
                 <tr
-                  key={order?._id}
+                  key={i}
                   className='z-1 group bg-white [&_td]:focus-within:bg-gray-100 [&_td]:hover:bg-gray-100 relative'
                 >
                   <td className='m-0 p-0 decoration-inherit hover:text-inherit hover:decoration-inherit !flex h-[3.25rem] items-center whitespace-nowrap'>

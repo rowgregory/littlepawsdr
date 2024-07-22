@@ -1,6 +1,5 @@
 import cron from 'node-cron';
 import { sendEmail } from './sendEmail.js';
-import { updateEventStatus } from './updateEventStatus.js';
 import AdoptionApplicationBypassCode from '../models/adoptionApplicationBypassCodeModel.js';
 import { AuctionWinningBidder } from '../models/campaignModel.js';
 import { logEvent, prepareLog } from './logHelpers.js';
@@ -14,13 +13,8 @@ import {
 
 export const cronJobs = (io) => {
   return {
-    // Every day at 9:00 9:01 & 9:02AM
-    sendEcard: cron.schedule('0-2 9 * * *', () => sendEmail({}, {}, 'ecard'), {
-      scheduled: true,
-      timezone: 'America/New_York',
-    }),
     // Every day at 9:00AM
-    updateEventStatus: cron.schedule('0 9 * * *', async () => updateEventStatus(), {
+    sendEcard: cron.schedule('0 9 * * *', () => sendEmail({}, {}, 'ecard'), {
       scheduled: true,
       timezone: 'America/New_York',
     }),
@@ -47,9 +41,9 @@ export const cronJobs = (io) => {
         timezone: 'America/New_York',
       }
     ),
-    // Every day at 9:00 9:01 & 9:02AM
+    // Every day at 9:00AM
     updateAuctionToBegin: cron.schedule(
-      '0-2 9 * * *',
+      '0 9 * * *',
       async () => {
         const log = await prepareLog('UPDATE_ACUTION_TO_BEGIN');
         logEvent(log, 'AUCTION ATTEMPTING TO BEGIN');
@@ -72,9 +66,9 @@ export const cronJobs = (io) => {
         timezone: 'America/New_York',
       }
     ),
-    // Every day at 5:00, 5:01, and 5:02PM
+    // Every day at 5:00PM
     sendOutAuctionItemWinnerEmails: cron.schedule(
-      '0-2 17 * * *',
+      '0 17 * * *',
       async () => {
         const log = await prepareLog('UPDATE_AUCTION_TO_END');
 
@@ -82,6 +76,7 @@ export const cronJobs = (io) => {
 
         const auction = await findOneAndUpdateAuctionEnd();
 
+        logEvent(log, 'AUCTION UPDATED TO END');
         if (auction) {
           await handleTopBids(auction, log);
 
@@ -97,9 +92,9 @@ export const cronJobs = (io) => {
         timezone: 'America/New_York',
       }
     ),
-    // Every day at 5:00, 5:01, and 5:02PM
+    // Every day at 5:00PM
     sendOutPaymentReminderEmailForWinningBidAuctionItem: cron.schedule(
-      '0-2 17 * * *',
+      '0 9 * * *',
       async () => {
         const twoDaysAgo = new Date();
         twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
