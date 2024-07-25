@@ -8,7 +8,7 @@ const paymentRedminderWinningBidAuctionItem = async (pugEmail, auctionWinningBid
         template: 'paymentreminderwinningbidauctionitem',
         message: {
           from: `Little Paws Dachshund Rescue <no-reply@littlepawsdr.org`,
-          to: 'rowgregory@gmail.com',
+          to: winningBidder.user.email,
         },
         locals: {
           photo: winningBidder.auctionItem.photos[0].url,
@@ -26,8 +26,13 @@ const paymentRedminderWinningBidAuctionItem = async (pugEmail, auctionWinningBid
           emailNotificationCount: 2,
         });
       })
-      .catch(async (err) =>
-        await Error.create({ functionName: 'AUCTION_ITEM_PAYMENT_REMINDER_EMAIL', name: err.name, message: err.message })
+      .catch(
+        async (err) =>
+          await Error.create({
+            functionName: 'AUCTION_ITEM_PAYMENT_REMINDER_EMAIL',
+            name: err.name,
+            message: err.message,
+          })
       );
   });
 };

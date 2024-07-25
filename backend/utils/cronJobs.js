@@ -92,10 +92,15 @@ export const cronJobs = (io) => {
         timezone: 'America/New_York',
       }
     ),
-    // Every day at 5:00PM
+    // Every day at 9:00AM
     sendOutPaymentReminderEmailForWinningBidAuctionItem: cron.schedule(
       '0 9 * * *',
       async () => {
+        const log = await prepareLog(
+          'SEND_OUT_PAYMENT_REMINDER_EMAIL_FOR_WINNING_BID_ACUTION_ITEM'
+        );
+        logEvent(log, 'INITIATE SENDING OUT EMAILS TO REMAINING AUCTION WINNING BIDDERS');
+
         const twoDaysAgo = new Date();
         twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
 
@@ -105,10 +110,13 @@ export const cronJobs = (io) => {
           winningBidPaymentStatus: 'Awaiting Payment',
           auctionItemPaymentStatus: 'Pending',
           createdAt: { $lte: twoDaysAgo },
-        }).populate([{ path: 'auctionItem', populate: [[{ path: 'photos' }]] }]);
+        }).populate([{ path: 'auctionItem', populate: [[{ path: 'photos' }]] }, { path: 'user' }]);
 
         if (auctionWinningBidders.length > 0) {
+          logEvent(log, 'EMAILS TO SEND');
           sendEmail(auctionWinningBidders, {}, 'REMINDER_PAYMENT_EMAIL_AUCTION_ITEM_WINNER');
+        } else {
+          logEvent(log, 'THERE ARE NO EMAILS TO SEND');
         }
       },
       {
