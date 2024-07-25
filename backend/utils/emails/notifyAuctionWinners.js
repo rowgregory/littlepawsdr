@@ -35,7 +35,7 @@ export const notifyAuctionWinners = async (pugEmail, topBids, log) => {
       logEvent(log, 'INVALID TOPBIDS', topBids);
       return;
     }
-    logEvent(log, 'UPDATED TOP BIDS');
+    logEvent(log, 'ABOUT TO LOOP THROUGH TOP BIDS');
 
     for (const topBid of topBids) {
       await AuctionBidder.findOneAndUpdate({ user: topBid.user }, { status: 'Winner' });
