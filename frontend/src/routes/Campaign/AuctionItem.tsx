@@ -57,13 +57,11 @@ const AuctionItem = () => {
   const [mainPhoto, setMainPhoto] = useState(null);
   const ifCampaignIsOver = campaign?.campaign?.auction?.settings?.hasEnded;
 
-
-
   useEffect(() => {
     return () => {
-      window.scrollTo(0, 0)
-    }
-  }, [])
+      window.scrollTo(0, 0);
+    };
+  }, []);
 
   const handleCloseBidModal = () => {
     setOpenBidModal(false);
@@ -76,21 +74,20 @@ const AuctionItem = () => {
     (item: any) => item?._id === auctionItemId
   ) as any;
 
-  console.log('auction item: ', auctionItem)
-
   const [placeBid, { isLoading: loadingPlacingBid }] = usePlaceBidMutation();
 
-  const endDateModified = new Date(
-    campaign?.campaign?.auction?.settings?.endDate
-  ).toLocaleString('en-us', {
-    timeZone: 'America/New_York',
-    month: 'short',
-    day: '2-digit',
-    year: 'numeric',
-    hour: 'numeric',
-    minute: 'numeric',
-    timeZoneName: 'short',
-  });
+  const endDateModified = new Date(campaign?.campaign?.auction?.settings?.endDate).toLocaleString(
+    'en-us',
+    {
+      timeZone: 'America/New_York',
+      month: 'short',
+      day: '2-digit',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      timeZoneName: 'short',
+    }
+  );
 
   const handlePlaceBidCb = async () => {
     await placeBid({
@@ -106,10 +103,7 @@ const AuctionItem = () => {
       .catch((err: any) => err);
   };
 
-  const { inputs, handleInput, onSubmit } = useAuctionItemForm(
-    handlePlaceBidCb,
-    auctionItem
-  );
+  const { inputs, handleInput, onSubmit } = useAuctionItemForm(handlePlaceBidCb, auctionItem);
 
   return (
     <Fragment>
@@ -144,12 +138,8 @@ const AuctionItem = () => {
               to={`${pathname.split('item')[0].slice(0, -1)}`}
               className='flex items-center hover:no-underline'
             >
-              <i
-                className={`fa-solid fa-home ${campaign?.campaign.themeColor.text} mr-1.5`}
-              ></i>
-              <p className={`font-Matter-Regular ${campaign?.campaign.themeColor.text}`}>
-                Auction
-              </p>
+              <i className={`fa-solid fa-home ${campaign?.campaign.themeColor.text} mr-1.5`}></i>
+              <p className={`font-Matter-Regular ${campaign?.campaign.themeColor.text}`}>Auction</p>
             </Link>
             <i className='fa-solid fa-chevron-right fa-sm text-gray-300 mx-3'></i>
             <p className='font-Matter-Regular text-black'>{auctionItem?.name}</p>
@@ -238,12 +228,8 @@ const AuctionItem = () => {
                   <p className='font-Matter-Regular text-xs text-gray-400'>ITEM ID:</p>
                   {auctionItem?.isAuction && (
                     <Fragment>
-                      <p className='font-Matter-Regular text-xs text-gray-400'>
-                        STARTING PRICE:
-                      </p>
-                      <p className='font-Matter-Regular text-xs text-gray-400'>
-                        BID INCREMENT:
-                      </p>
+                      <p className='font-Matter-Regular text-xs text-gray-400'>STARTING PRICE:</p>
+                      <p className='font-Matter-Regular text-xs text-gray-400'>BID INCREMENT:</p>
                     </Fragment>
                   )}
                   <p className='font-Matter-Regular text-xs text-gray-400'>START DATE:</p>
@@ -253,30 +239,22 @@ const AuctionItem = () => {
                   <p className='font-Matter-Medium text-xs'>{auctionItem?._id}</p>
                   {auctionItem?.isAuction && (
                     <Fragment>
-                      <p className='font-Matter-Medium text-xs'>
-                        ${auctionItem?.startingPrice}
-                      </p>
+                      <p className='font-Matter-Medium text-xs'>${auctionItem?.startingPrice}</p>
                       <p className='font-Matter-Medium text-xs'>$1</p>
                     </Fragment>
                   )}
                   <p className='font-Matter-Medium text-xs'>
-                    {formatDateWithTimezone(
-                      campaign?.campaign?.auction?.settings?.startDate
-                    )}
+                    {formatDateWithTimezone(campaign?.campaign?.auction?.settings?.startDate)}
                   </p>
                   <p className='font-Matter-Medium text-xs '>
-                    {formatDateWithTimezone(
-                      campaign?.campaign?.auction?.settings?.endDate
-                    )}
+                    {formatDateWithTimezone(campaign?.campaign?.auction?.settings?.endDate)}
                   </p>
                 </div>
               </div>
               {auctionItem?.sellingFormat === 'auction' && (
                 <Fragment>
                   <div className='grid grid-cols-12 gap-4 items-center mb-3'>
-                    <i
-                      className={`col-span-1 fa-solid fa-chart-line fa-lg ${theme.text} mr-2`}
-                    ></i>
+                    <i className={`col-span-1 fa-solid fa-chart-line fa-lg ${theme.text} mr-2`}></i>
                     <p className='col-span-11 text-lg font-Matter-Medium'>Bid History</p>
                   </div>
                   {+auctionItem?.bids?.length === 0 ? (

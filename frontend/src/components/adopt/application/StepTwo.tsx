@@ -89,26 +89,24 @@ const StepTwo = ({ setOrderLoader, orderLoader, setStep }: any) => {
     onApprove: (data: any, actions: any) => {
       setOrderLoader(true);
       return actions.order.capture().then(async (details: any) => {
-        if (details.status === 'COMPLETED' && details.id) {
-          const adoptionFee = {
-            firstName: inputs.firstName,
-            lastName: inputs.lastName,
-            feeAmount: 15,
-            paypalOrderId: details.id,
-            email: inputs.email,
-            state: inputs.state,
-          };
+        const adoptionFee = {
+          firstName: inputs.firstName,
+          lastName: inputs.lastName,
+          feeAmount: 15,
+          paypalOrderId: details.id,
+          email: inputs.email,
+          state: inputs.state,
+        };
 
-          await createAdoptionFee(adoptionFee)
-            .unwrap()
-            .then((data: any) => {
-              if (data) {
-                setOrderLoader(false);
-                navigate(`/adopt/application/verified/${data?.token}`);
-              }
-            })
-            .catch(() => setOrderLoader(false));
-        }
+        await createAdoptionFee(adoptionFee)
+          .unwrap()
+          .then((data: any) => {
+            if (data) {
+              setOrderLoader(false);
+              navigate(`/adopt/application/verified/${data?.token}`);
+            }
+          })
+          .catch(() => setOrderLoader(false));
       });
     },
   } as any;
@@ -134,7 +132,7 @@ const StepTwo = ({ setOrderLoader, orderLoader, setStep }: any) => {
                     onClick={() => {
                       setOpenBasic(true);
                       setOpenPayment(false);
-                      setStep((prev: any) => ({ ...prev, step2: true, step3: false }))
+                      setStep((prev: any) => ({ ...prev, step2: true, step3: false }));
                     }}
                     className='fas fa-chevron-down fa-sm cursor-pointer'
                   ></i>

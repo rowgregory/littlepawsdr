@@ -55,8 +55,9 @@ export const OneTimeDonationProgressTracker = ({ step, setStep, type }: any) => 
         onClick={() =>
           step.step2 || step.step3 ? setStep({ step1: true, step2: false, step3: false }) : {}
         }
-        className={`${step.step1 ? 'border-teal-500' : 'border-gray-300 text-gray-300'} ${step.step2 || step.step3 ? 'cursor-pointer' : ''
-          } border-b-4 text-xl font-Matter-Medium tracking wider px-8 w-full text-center pb-1 whitespace-nowrap`}
+        className={`${step.step1 ? 'border-teal-500' : 'border-gray-300 text-gray-300'} ${
+          step.step2 || step.step3 ? 'cursor-pointer' : ''
+        } border-b-4 text-xl font-Matter-Medium tracking wider px-8 w-full text-center pb-1 whitespace-nowrap`}
       >
         1. Gift Amount
       </div>
@@ -64,14 +65,16 @@ export const OneTimeDonationProgressTracker = ({ step, setStep, type }: any) => 
         onClick={() =>
           step.step3 ? setStep((prev: any) => ({ ...prev, step2: true, step3: false })) : {}
         }
-        className={`${step.step2 ? 'border-teal-500' : 'border-gray-300 text-gray-300'} ${step.step3 ? 'cursor-pointer' : ''
-          } border-b-4 text-xl font-Matter-Medium tracking wider px-8 w-full text-center pb-1`}
+        className={`${step.step2 ? 'border-teal-500' : 'border-gray-300 text-gray-300'} ${
+          step.step3 ? 'cursor-pointer' : ''
+        } border-b-4 text-xl font-Matter-Medium tracking wider px-8 w-full text-center pb-1`}
       >
         2. Identity
       </div>
       <div
-        className={`${step.step3 ? 'border-teal-500' : 'border-gray-300 text-gray-300'
-          }  border-b-4 text-xl font-Matter-Medium tracking wider px-8 w-full text-center pb-1`}
+        className={`${
+          step.step3 ? 'border-teal-500' : 'border-gray-300 text-gray-300'
+        }  border-b-4 text-xl font-Matter-Medium tracking wider px-8 w-full text-center pb-1`}
       >
         3. Payment
       </div>
@@ -82,8 +85,9 @@ export const OneTimeDonationProgressTracker = ({ step, setStep, type }: any) => 
           Gift Amount
         </p>
         <div
-          className={`${step.step1 ? 'bg-teal-500' : 'bg-gray-300'
-            } text-2xl font-Museo-Slab-700 w-12 h-12 rounded-full flex items-center justify-center text-white pb-1 aspect-square pt-2 relative after:content-[''] after:w-12 after:absolute after:top-6 after:left-[58px] after:border-2 after:border-gray-300`}
+          className={`${
+            step.step1 ? 'bg-teal-500' : 'bg-gray-300'
+          } text-2xl font-Museo-Slab-700 w-12 h-12 rounded-full flex items-center justify-center text-white pb-1 aspect-square pt-2 relative after:content-[''] after:w-12 after:absolute after:top-6 after:left-[58px] after:border-2 after:border-gray-300`}
         >
           1
         </div>
@@ -93,8 +97,9 @@ export const OneTimeDonationProgressTracker = ({ step, setStep, type }: any) => 
           Identity
         </p>
         <div
-          className={`${step.step2 ? 'bg-teal-500' : 'bg-gray-300'
-            } text-2xl font-Museo-Slab-700 w-12 h-12 rounded-full flex items-center justify-center text-white pb-1 aspect-square pt-2 relative after:content-[''] after:w-12 after:absolute after:top-6 after:left-[58px] after:border-2 after:border-gray-300`}
+          className={`${
+            step.step2 ? 'bg-teal-500' : 'bg-gray-300'
+          } text-2xl font-Museo-Slab-700 w-12 h-12 rounded-full flex items-center justify-center text-white pb-1 aspect-square pt-2 relative after:content-[''] after:w-12 after:absolute after:top-6 after:left-[58px] after:border-2 after:border-gray-300`}
         >
           2
         </div>
@@ -104,8 +109,9 @@ export const OneTimeDonationProgressTracker = ({ step, setStep, type }: any) => 
           Payment
         </p>
         <div
-          className={`${step.step3 ? 'bg-teal-500' : 'bg-gray-300'
-            } text-2xl font-Museo-Slab-700 w-12 h-12 rounded-full flex items-center justify-center text-white pb-1 aspect-square pt-2`}
+          className={`${
+            step.step3 ? 'bg-teal-500' : 'bg-gray-300'
+          } text-2xl font-Museo-Slab-700 w-12 h-12 rounded-full flex items-center justify-center text-white pb-1 aspect-square pt-2`}
         >
           3
         </div>
@@ -167,26 +173,24 @@ export const OneTimeDonationForm = ({ type, step, setStep, setOpenModal }: any) 
     onApprove: (data: any, actions: any) => {
       setOrderLoader(true);
       return actions.order.capture().then(async (details: any) => {
-        if (details.status === 'COMPLETED' && details.id) {
-          await createDonation({
-            firstName: inputs.firstName,
-            lastName: inputs.lastName,
-            email: inputs.email,
-            donationAmount: Number(inputs.donationAmount || +inputs.otherAmount),
-            oneTimeDonationAmount: Number(inputs.donationAmount || +inputs.otherAmount),
-            paypalId: details.id,
+        await createDonation({
+          firstName: inputs.firstName,
+          lastName: inputs.lastName,
+          email: inputs.email,
+          donationAmount: Number(inputs.donationAmount || +inputs.otherAmount),
+          oneTimeDonationAmount: Number(inputs.donationAmount || +inputs.otherAmount),
+          paypalId: details.id,
+        })
+          .unwrap()
+          .then(() => {
+            setOpenModal(true);
+            setOrderLoader(false);
+            setStep({ step1: true, step2: false, step3: false });
           })
-            .unwrap()
-            .then(() => {
-              setOpenModal(true);
-              setOrderLoader(false);
-              setStep({ step1: true, step2: false, step3: false });
-            })
-            .catch((err: any) => {
-              setOrderLoader(false);
-              setStep({ step1: true, step2: false, step3: false });
-            });
-        }
+          .catch((err: any) => {
+            setOrderLoader(false);
+            setStep({ step1: true, step2: false, step3: false });
+          });
       });
     },
   } as any;
@@ -276,8 +280,9 @@ export const OneTimeDonationForm = ({ type, step, setStep, setOpenModal }: any) 
                   }));
                 }}
                 key={i}
-                className={`py-[16px] px-[22px] rounded-lg flex items-center justify-center text-white font-Matter-Medium cursor-pointer ${num === inputs.donationAmount ? 'bg-teal-500' : 'bg-gray-300'
-                  }`}
+                className={`py-[16px] px-[22px] rounded-lg flex items-center justify-center text-white font-Matter-Medium cursor-pointer ${
+                  num === inputs.donationAmount ? 'bg-teal-500' : 'bg-gray-300'
+                }`}
               >
                 ${num}
               </div>

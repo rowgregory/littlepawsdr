@@ -49,26 +49,24 @@ const BuyAuctionItemNow = () => {
     onApprove: (data: any, actions: any) => {
       setOrderLoader(true);
       return actions.order.capture().then(async (details: any) => {
-        if (details.status === 'COMPLETED' && details.id) {
-          const instantBuyObj = {
-            auction: auctionItem?.auction,
-            auctionItem: auctionItem,
-            payPalId: details.id,
-            buyNowPrice: auctionItem?.buyNowPrice,
-            processingFee: auctionItem?.processingFee,
-            totalPrice: auctionItem?.total,
-            feesRequired: auctionItem?.feesRequired,
-          };
+        const instantBuyObj = {
+          auction: auctionItem?.auction,
+          auctionItem: auctionItem,
+          payPalId: details.id,
+          buyNowPrice: auctionItem?.buyNowPrice,
+          processingFee: auctionItem?.processingFee,
+          totalPrice: auctionItem?.total,
+          feesRequired: auctionItem?.feesRequired,
+        };
 
-          await createInstantBuy(instantBuyObj)
-            .unwrap()
-            .then(() => {
-              setOrderLoader(false);
-            })
-            .catch(() => {
-              setOrderLoader(false);
-            });
-        }
+        await createInstantBuy(instantBuyObj)
+          .unwrap()
+          .then(() => {
+            setOrderLoader(false);
+          })
+          .catch(() => {
+            setOrderLoader(false);
+          });
       });
     },
   } as any;
@@ -159,9 +157,7 @@ const BuyAuctionItemNow = () => {
                             {auctionItem?.name}
                           </figcaption>
                         </figure>
-                        <p className='font-Matter-Medium'>
-                          ${toFixed(auctionItem?.buyNowPrice)}
-                        </p>
+                        <p className='font-Matter-Medium'>${toFixed(auctionItem?.buyNowPrice)}</p>
                       </div>
                       <div className='flex items-center justify-between mb-3'>
                         <p className='font-Matter-Regular'>Shipping Fee</p>
@@ -178,9 +174,7 @@ const BuyAuctionItemNow = () => {
                       </div>
                       <div className='flex items-center justify-between mt-3.5'>
                         <p className='font-Matter-Regular'>Total</p>
-                        <p className='font-Matter-Medium'>
-                          ${toFixed(auctionItem?.total)}
-                        </p>
+                        <p className='font-Matter-Medium'>${toFixed(auctionItem?.total)}</p>
                       </div>
                     </div>
                     <div className='bg-white rounded-xl w-full px-6 md:p-0 mt-10'>
