@@ -25,6 +25,7 @@ import getTrackingService from '../utils/getTrackingService.js';
 import { io } from '../server.js';
 import { sendEmail } from '../utils/sendEmail.js';
 import formDateForActiveCampaigns from '../utils/formDateForActiveCampaigns.js';
+import { logEvent, prepareLog } from '../utils/logHelpers.js';
 
 /**
  @desc    Create a campaign
@@ -90,18 +91,12 @@ const getCampaign = asyncHandler(async (req, res) => {
           { path: 'settings', select: 'endDate startDate' },
           {
             path: 'winningBids',
-            populate: [
-              { path: 'user' },
-              { path: 'auctionItem', populate: [{ path: 'photos' }] },
-            ],
+            populate: [{ path: 'user' }, { path: 'auctionItem', populate: [{ path: 'photos' }] }],
           },
           { path: 'bidders', populate: [{ path: 'user' }] },
           {
             path: 'itemFulfillments',
-            populate: [
-              { path: 'user' },
-              { path: 'auctionItem', populate: [{ path: 'photos' }] },
-            ],
+            populate: [{ path: 'user' }, { path: 'auctionItem', populate: [{ path: 'photos' }] }],
           },
         ],
       },
@@ -155,26 +150,18 @@ const updateCampaign = asyncHandler(async (req, res) => {
           { path: 'settings', select: 'endDate startDate' },
           {
             path: 'winningBids',
-            populate: [
-              { path: 'user' },
-              { path: 'auctionItem', populate: [{ path: 'photos' }] },
-            ],
+            populate: [{ path: 'user' }, { path: 'auctionItem', populate: [{ path: 'photos' }] }],
           },
           { path: 'bidders', populate: [{ path: 'user' }] },
           {
             path: 'itemFulfillments',
-            populate: [
-              { path: 'user' },
-              { path: 'auctionItem', populate: [{ path: 'photos' }] },
-            ],
+            populate: [{ path: 'user' }, { path: 'auctionItem', populate: [{ path: 'photos' }] }],
           },
         ],
       },
     ]);
 
-    res
-      .status(201)
-      .json({ message: 'Campaign updated', type, campaign, sliceName: 'campaignApi' });
+    res.status(201).json({ message: 'Campaign updated', type, campaign, sliceName: 'campaignApi' });
   } catch (err) {
     await Error.create({
       functionName: 'GET_CAMPAIGN_DETAILS_ADMIN',
@@ -198,11 +185,7 @@ const updateCampaign = asyncHandler(async (req, res) => {
 const updateAuction = asyncHandler(async (req, res) => {
   try {
     const { type, ...rest } = req.body;
-    await Auction.findOneAndUpdate(
-      { _id: req.body.id },
-      { settings: rest.data },
-      { new: true }
-    );
+    await Auction.findOneAndUpdate({ _id: req.body.id }, { settings: rest.data }, { new: true });
 
     io.emit('auction-updated');
 
@@ -237,11 +220,7 @@ const getAuctionItem = asyncHandler(async (req, res) => {
         $set: {
           processingFee: { $multiply: ['$buyNowPrice', 0.035] },
           total: {
-            $add: [
-              '$buyNowPrice',
-              { $multiply: ['$buyNowPrice', 0.035] },
-              '$shippingCosts',
-            ],
+            $add: ['$buyNowPrice', { $multiply: ['$buyNowPrice', 0.035] }, '$shippingCosts'],
           },
         },
       },
@@ -331,9 +310,7 @@ const updateAuctionItem = asyncHandler(async (req, res) => {
 
     const newPhotosToCreate = req.body.photos.filter(
       (bodyPhoto) =>
-        !auctionItem.photos.some((auctionItemPhoto) =>
-          auctionItemPhoto._id.equals(bodyPhoto._id)
-        )
+        !auctionItem.photos.some((auctionItemPhoto) => auctionItemPhoto._id.equals(bodyPhoto._id))
     );
 
     const auctionItemPhotos = await Promise.all(
@@ -609,9 +586,7 @@ const createOneTimeAuctionDonation = asyncHandler(async (req, res) => {
     await savedAuction.populate('donations');
 
     const uniqueDonationEmails = new Set(
-      savedAuction.donations
-        .filter((donation) => donation.email)
-        .map((donation) => donation.email)
+      savedAuction.donations.filter((donation) => donation.email).map((donation) => donation.email)
     );
 
     const campaign = await Campaign.findOne({ auction: auctionId });
@@ -662,9 +637,9 @@ const createAuctionItemInstantBuy = asyncHandler(async (req, res) => {
       { new: true }
     );
 
-    const popoulatedAuctionItem = await AuctionItem.findById(
-      savedAuctionItem._id
-    ).populate('instantBuyers');
+    const popoulatedAuctionItem = await AuctionItem.findById(savedAuctionItem._id).populate(
+      'instantBuyers'
+    );
 
     const auctionItemFulfillment = await createAuctionItemFulfillmentDocument(
       { ...req.body, instantBuyer: instantBuy._id },
@@ -834,10 +809,7 @@ const updateItemFulfillment = asyncHandler(async (req, res) => {
 
     const populateAuctionItemFulfillment = await AuctionItemFulfillment.findById(
       auctionItemFulfillment?._id
-    ).populate([
-      { path: 'auctionItem', populate: [{ path: 'photos' }] },
-      { path: 'user' },
-    ]);
+    ).populate([{ path: 'auctionItem', populate: [{ path: 'photos' }] }, { path: 'user' }]);
 
     await AuctionItemInstantBuyer.findByIdAndUpdate(
       populateAuctionItemFulfillment.instantBuyer,
@@ -898,29 +870,44 @@ const updateItemFulfillment = asyncHandler(async (req, res) => {
 */
 const updateAuctionWinningBidder = asyncHandler(async (req, res) => {
   try {
+    const log = await prepareLog('UPDATE_AUCTION_WINNING_BIDDER');
+    logEvent(log, 'INITIALIZE UPATING AUCTION WINNING BIDDER', { winningBidderId: req.body.id });
+
     const auctionWinningBidder = await AuctionWinningBidder.findByIdAndUpdate(
       req.body.id,
       {
         winningBidPaymentStatus: 'Paid',
         auctionItemPaymentStatus: 'Paid',
         shippingStatus: 'Pending Fulfillment',
-        payPalId: req.body.payPalId,
+        payPalId: req.body?.payPalId,
       },
       { new: true }
     );
+    logEvent(log, 'UPDATED AUCTION WINNING BIDDER', auctionWinningBidder?.user);
 
     const populatedAuctionWinningBidder = await AuctionWinningBidder.findById(
       auctionWinningBidder._id
     ).populate([{ path: 'auctionItem' }, { path: 'user' }]);
 
+    logEvent(log, 'POPULATING AUCTION WINNING BIDDER', auctionWinningBidder?.user?.name);
+
+    logEvent(log, 'INITIATE CREATE AUCTION ITEM FULFILLMENT DOCUMENT');
+
     const auctionItemFulfillment = await createAuctionItemFulfillmentDocument(
-      { ...populatedAuctionWinningBidder.toObject(), winningBidder: populatedAuctionWinningBidder._id },
+      {
+        ...populatedAuctionWinningBidder.toObject(),
+        winningBidder: populatedAuctionWinningBidder._id,
+      },
       populatedAuctionWinningBidder.user
     );
+
+    logEvent(log, 'AUCTION ITEM FULFILLMENT DOCUMENT CREATED', auctionItemFulfillment?._id);
 
     await Auction.findByIdAndUpdate(auctionItemFulfillment?.auction, {
       $push: { itemFulfillments: auctionItemFulfillment._id },
     });
+
+    logEvent(log, 'AUCTION ITEM FULFILLMENT ID ADDED TO AUCTION');
 
     const populatedAuctionWinningBidders = await AuctionWinningBidder.find().populate([
       { path: 'auction' },
@@ -934,8 +921,10 @@ const updateAuctionWinningBidder = asyncHandler(async (req, res) => {
         .map((winningBidder) => winningBidder.user.email)
     );
 
+    logEvent(log, 'UNIQUE WINNING BID EMAILS', uniqueWinningBidsEmails);
+
     const campaign = await Campaign.findOne({ auction: auctionWinningBidder.auction });
-    if (!campaign) return res.status(404).json({ message: 'Campaign not found' });
+    logEvent(log, 'CAMPAIGN FOUND', campaign?._id);
 
     const existingSupporterEmails = new Set(campaign.supporterEmails);
 
@@ -947,7 +936,14 @@ const updateAuctionWinningBidder = asyncHandler(async (req, res) => {
     campaign.supporters = campaign.supporterEmails.length;
     campaign.totalCampaignRevenue += auctionWinningBidder.totalPrice;
 
+    logEvent(log, 'CAMPAIGN DETAILS UPDATED', {
+      supporterEmails: campaign?.supporterEmails,
+      totalCampaignRevenue: campaign?.totalCampaignRevenue,
+    });
+
     await campaign.save();
+
+    logEvent(log, 'COMPLETE UPDATE AUCTION WINNING BIDDER');
 
     res.status(200).json({ sliceName: 'campaignApi' });
   } catch (err) {

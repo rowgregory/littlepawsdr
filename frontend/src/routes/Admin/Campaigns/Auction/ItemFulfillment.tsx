@@ -37,7 +37,13 @@ const ItemFulfillment = () => {
 
         setOpenRows((prev: any) => ({
           rows: prev.rows.map((row: any, index: number) =>
-            index === i ? { ...row, trackingNumber: data.trackingNumber, shippingProvider: data.shippingProvider } : row
+            index === i
+              ? {
+                  ...row,
+                  trackingNumber: data.trackingNumber,
+                  shippingProvider: data.shippingProvider,
+                }
+              : row
           ),
         }));
       });
@@ -63,6 +69,7 @@ const ItemFulfillment = () => {
             auctionItemPaymentStatus: itemFulfillment?.auctionItemPaymentStatus,
             shippingProvider: itemFulfillment?.shippingProvider,
             trackingNumber: itemFulfillment?.trackingNumber,
+            totalPrice: itemFulfillment?.totalPrice,
           },
         ],
       };
@@ -89,7 +96,7 @@ const ItemFulfillment = () => {
             </div>
           </div>
         ) : (
-          <div className='rounded-xl bg-white overflow-x-scroll xl:overflow-x-hidden relative'>
+          <div className='rounded-xl bg-white overflow-x-scroll relative'>
             <table className='w-full'>
               <thead className='whitespace-nowrap px-4 pb-4 pt-2'>
                 <tr className='bg-zinc-50'>
@@ -115,7 +122,7 @@ const ItemFulfillment = () => {
                 </tr>
               </thead>
               <tbody>
-                {itemFulfillments?.map((itemFulfillment: any) => (
+                {itemFulfillments?.map((itemFulfillment: any, i: number) => (
                   <Fragment key={itemFulfillment?._id}>
                     <tr
                       onClick={() => toggleRow(itemFulfillment)}
@@ -123,8 +130,11 @@ const ItemFulfillment = () => {
                     >
                       <td className='w-10 h-10'>
                         <i
-                          className={`text-gray-700 fas fa-chevron-right fa-xs ml-4 duration-300 origin-center ${openRows?.rows.some((row: any) => row.id === itemFulfillment._id) ? 'rotate-90' : ''
-                            }`}
+                          className={`text-gray-700 fas fa-chevron-right fa-xs ml-4 duration-300 origin-center ${
+                            openRows?.rows.some((row: any) => row.id === itemFulfillment._id)
+                              ? 'rotate-90'
+                              : ''
+                          }`}
                         ></i>
                       </td>
                       <td>
@@ -136,8 +146,8 @@ const ItemFulfillment = () => {
                           </div>
                         </div>
                       </td>
-                      <td>
-                        <p className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>
+                      <td className='max-w-20 w-full'>
+                        <p className='text-gray-900 text-sm font-Matter-Regular items-center px-4 truncate whitespace-nowrap'>
                           {itemFulfillment?.auctionItem?.name}
                         </p>
                       </td>
@@ -159,12 +169,13 @@ const ItemFulfillment = () => {
                       </td>
                       <td className='flex items-center py-3 pl-4'>
                         <p
-                          className={`${itemFulfillment.shippingStatus === 'Unfilfilled'
-                            ? 'text-gray-900 bg-gray-100'
-                            : itemFulfillment.shippingStatus === 'Complete'
+                          className={`${
+                            itemFulfillment.shippingStatus === 'Unfilfilled'
+                              ? 'text-gray-900 bg-gray-100'
+                              : itemFulfillment.shippingStatus === 'Complete'
                               ? 'text-green-500 bg-green-100'
                               : 'text-blue-500 bg-blue-100'
-                            } px-2 py-1 rounded-3xl text-sm font-Matter-Regular items-center whitespace-nowrap`}
+                          } px-2 py-1 rounded-3xl text-sm font-Matter-Regular items-center whitespace-nowrap`}
                         >
                           {itemFulfillment?.shippingStatus}
                         </p>
@@ -186,14 +197,23 @@ const ItemFulfillment = () => {
                                           alt='Auction Item'
                                           className='object-contain bg-gray-300 rounded-sm h-12 w-12 aspect-square mr-2'
                                         />
-                                        <p className='font-Matter-Medium text-sm'>{row?.auctionItem?.name}</p>
+                                        <p className='font-Matter-Medium text-sm'>
+                                          {row?.auctionItem?.name}
+                                        </p>
                                       </div>
-                                      <p className='font-Matter-Medium text-sm'>${row.auctionItem.buyNowPrice}</p>
+                                      {
+                                        <p className='font-Matter-Medium text-sm'>
+                                          ${row?.totalPrice?.toFixed(2)}
+                                        </p>
+                                      }
                                     </div>
                                     <p className='bg-green-100 text-green-600 py-1.5 px-3 my-3 text-sm font-Matter-Regular text-center'>
                                       {row?.auctionItemPaymentStatus}
                                     </p>
-                                    <label className='font-Matter-Medium mb-1.5' htmlFor='Tracking number'>
+                                    <label
+                                      className='font-Matter-Medium mb-1.5'
+                                      htmlFor='Tracking number'
+                                    >
                                       Tracking Number
                                     </label>
                                     <input
@@ -213,7 +233,9 @@ const ItemFulfillment = () => {
                                       value={row.trackingNumber || ''}
                                     />
                                     {row?.shippingProvider && (
-                                      <p className='text-xs font-matter-Light pt-1 mb-3'>{row?.shippingProvider}</p>
+                                      <p className='text-xs font-matter-Light pt-1 mb-3'>
+                                        {row?.shippingProvider}
+                                      </p>
                                     )}
                                     <div
                                       className='mt-4 flex justify-center items-center px-3 py-2 bg-yellow-to-green text-white w-16 h-10 rounded-lg font-Matter-Regular cursor-pointer'
@@ -243,7 +265,9 @@ const ItemFulfillment = () => {
                                   <Fragment>
                                     <p className='font-Matter-Medium mb-1.5'>Contact</p>
                                     <div className='flex items-center justify-between px-2 py-1.5 rounded-sm bg-gray-100'>
-                                      <p className='font-Matter-Regular text-sm'>{row.user?.email}</p>
+                                      <p className='font-Matter-Regular text-sm'>
+                                        {row.user?.email}
+                                      </p>
                                     </div>
                                   </Fragment>
                                   {row.user?.shippingAddress && (

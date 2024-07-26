@@ -43,21 +43,18 @@ const AuctionItemWinner = () => {
     onApprove: (data: any, actions: any) => {
       setOrderLoader(true);
       return actions.order.capture().then(async (details: any) => {
-        if (details.status === 'COMPLETED' && details.id) {
-          const winningBidder = {
-            id: winningBid?._id,
-            payPalId: details.id,
-          };
-
-          await payforAuctionItem(winningBidder)
-            .unwrap()
-            .then(() => {
-              setOrderLoader(false);
-            })
-            .catch(() => {
-              setOrderLoader(false);
-            });
-        }
+        const winningBidder = {
+          id: winningBid?._id,
+          payPalId: details?.id,
+        };
+        await payforAuctionItem(winningBidder)
+          .unwrap()
+          .then(() => {
+            setOrderLoader(false);
+          })
+          .catch(() => {
+            setOrderLoader(false);
+          });
       });
     },
   } as any;
@@ -76,7 +73,12 @@ const AuctionItemWinner = () => {
               A confirmation of your payment has been <br />
               sent to your email.
             </p>
-            <Link to='/settings/campaign/winning-bids' className={`text-[#fff] ${winningBid?.theme?.dark} font-Matter-Medium px-4 py-2.5 rounded-lg mt-4 hover:text-[#fff] hover:no-underline`}>See my winning bids</Link>
+            <Link
+              to='/settings/campaign/winning-bids'
+              className={`text-[#fff] ${winningBid?.theme?.dark} font-Matter-Medium px-4 py-2.5 rounded-lg mt-4 hover:text-[#fff] hover:no-underline`}
+            >
+              See my winning bids
+            </Link>
           </div>
         </div>
       </Modal>
@@ -85,7 +87,10 @@ const AuctionItemWinner = () => {
           className={`flex md:fixed flex-col justify-between h-full md:w-[327px] md:min-h-screen p-[12px] md:px-6 md:py-8 ${winningBid?.theme?.dark} `}
         >
           <div>
-            <Link to={`/campaigns/${customCampaignLink}/auction/item/${auctionItemId}`} className='flex items-center cursor-pointer hover:no-underline hover:text-[#fff]'>
+            <Link
+              to={`/campaigns/${customCampaignLink}/auction/item/${auctionItemId}`}
+              className='flex items-center cursor-pointer hover:no-underline hover:text-[#fff]'
+            >
               <i className='fa-solid fa-arrow-left text-gray-100 mr-2.5'></i>
               <p className='font-Matter-Regular text-gray-100 text-xs md:text-sm'>
                 Back to auction
@@ -114,55 +119,50 @@ const AuctionItemWinner = () => {
                   Go to campaigns
                 </Link>
               </div>
-            ) : winningBid?.auctionItemPaymentStatus === 'Pending' && !campaign?.success && (
-              <div className='flex flex-col md:mt-5'>
-                <div className='bg-white rounded-xl w-full mt-3.5 lg:mt-0 mb-4'>
-                  <div className="flex flex-col">
-                    <div className='flex items-center justify-between my-3'>
-                      <figure className='flex items-center'>
-                        <img
-                          src={winningBid?.auctionItem?.photos[0]?.url}
-                          className='w-16 h-16 rounded-lg object-cover'
-                          alt='Little Paws Dachshund Rescue Auction'
-                        />
-                        <figcaption className='ml-4 font-Matter-Medium'>
-                          {winningBid?.auctionItem?.name}
-                        </figcaption>
-                      </figure>
-                      <p className='font-Matter-Regular'>
-                        ${toFixed(winningBid?.itemSoldPrice)}
-                      </p>
-                    </div>
-                    <div className='w-full h-[0.5px] bg-gray-100 mb-4'></div>
-                    <div className='flex items-center justify-between mb-3'>
-                      <p className='font-Matter-Regular'>Shipping Fee</p>
-                      <p className='font-Matter-Regular'>
-                        ${toFixed(winningBid?.shipping)}
-                      </p>
-                    </div>
-                    <div className='flex items-center justify-between mb-3'>
-                      <p className='font-Matter-Regular'>Processing Fee</p>
-                      <p className='font-Matter-Regular'>
-                        ${toFixed(winningBid?.processingFee)}
-                      </p>
-                    </div>
-                    <div className='flex items-center justify-between mt-3.5'>
-                      <p className='font-Matter-Medium'>Total</p>
-                      <p className='font-Matter-Medium'>
-                        ${toFixed(winningBid?.totalPrice)}
-                      </p>
+            ) : (
+              winningBid?.auctionItemPaymentStatus === 'Pending' &&
+              !campaign?.success && (
+                <div className='flex flex-col md:mt-5'>
+                  <div className='bg-white rounded-xl w-full mt-3.5 lg:mt-0 mb-4'>
+                    <div className='flex flex-col'>
+                      <div className='flex items-center justify-between my-3'>
+                        <figure className='flex items-center'>
+                          <img
+                            src={winningBid?.auctionItem?.photos[0]?.url}
+                            className='w-16 h-16 rounded-lg object-cover'
+                            alt='Little Paws Dachshund Rescue Auction'
+                          />
+                          <figcaption className='ml-4 font-Matter-Medium'>
+                            {winningBid?.auctionItem?.name}
+                          </figcaption>
+                        </figure>
+                        <p className='font-Matter-Regular'>${toFixed(winningBid?.itemSoldPrice)}</p>
+                      </div>
+                      <div className='w-full h-[0.5px] bg-gray-100 mb-4'></div>
+                      <div className='flex items-center justify-between mb-3'>
+                        <p className='font-Matter-Regular'>Shipping Fee</p>
+                        <p className='font-Matter-Regular'>${toFixed(winningBid?.shipping)}</p>
+                      </div>
+                      <div className='flex items-center justify-between mb-3'>
+                        <p className='font-Matter-Regular'>Processing Fee</p>
+                        <p className='font-Matter-Regular'>${toFixed(winningBid?.processingFee)}</p>
+                      </div>
+                      <div className='flex items-center justify-between mt-3.5'>
+                        <p className='font-Matter-Medium'>Total</p>
+                        <p className='font-Matter-Medium'>${toFixed(winningBid?.totalPrice)}</p>
+                      </div>
                     </div>
                   </div>
+                  <div className='bg-white rounded-xl w-full px-6 md:p-0 mt-10'>
+                    <PayPalButtons
+                      style={payPalComponents.style}
+                      forceReRender={payPalComponents.forceRerender}
+                      createOrder={payPalComponents.createOrder}
+                      onApprove={payPalComponents.onApprove}
+                    />
+                  </div>
                 </div>
-                <div className='bg-white rounded-xl w-full px-6 md:p-0 mt-10'>
-                  <PayPalButtons
-                    style={payPalComponents.style}
-                    forceReRender={payPalComponents.forceRerender}
-                    createOrder={payPalComponents.createOrder}
-                    onApprove={payPalComponents.onApprove}
-                  />
-                </div>
-              </div>
+              )
             )}
           </div>
         </div>

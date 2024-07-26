@@ -39,40 +39,38 @@ const CheckoutStep3 = ({ cart, step, inputs, isProduct, isWelcomeWiener, isEcard
     onApprove: (data: any, actions: any) => {
       setOrderLoader(true);
       return actions.order.capture().then(async (details: any) => {
-        if (details.status === 'COMPLETED' && details.id) {
-          const shippingAddress = {
-            address: inputs?.address,
-            city: inputs?.city,
-            state: inputs?.state,
-            zipPostalCode: inputs?.zipPostalCode,
-          };
+        const shippingAddress = {
+          address: inputs?.address,
+          city: inputs?.city,
+          state: inputs?.state,
+          zipPostalCode: inputs?.zipPostalCode,
+        };
 
-          await createOrder({
-            name: inputs.name,
-            orderItems: cartItems,
-            subtotal,
-            totalPrice,
-            paypalOrderId: details.id,
-            email: inputs.emailAddress,
-            ...(isProduct && { shippingAddress }),
-            shippingPrice,
-            totalItems: cartItemsAmount,
-            isProduct,
-            isWelcomeWiener,
-            isEcard,
-            requiresShipping: isProduct,
-            processingFee: cart?.processingFee
+        await createOrder({
+          name: inputs.name,
+          orderItems: cartItems,
+          subtotal,
+          totalPrice,
+          paypalOrderId: details.id,
+          email: inputs.emailAddress,
+          ...(isProduct && { shippingAddress }),
+          shippingPrice,
+          totalItems: cartItemsAmount,
+          isProduct,
+          isWelcomeWiener,
+          isEcard,
+          requiresShipping: isProduct,
+          processingFee: cart?.processingFee,
+        })
+          .unwrap()
+          .then((data: any) => {
+            dispatch(resetCart());
+            navigate(`/order/${data?.order?.orderId}`);
+            setOrderLoader(false);
           })
-            .unwrap()
-            .then((data: any) => {
-              dispatch(resetCart());
-              navigate(`/order/${data?.order?.orderId}`);
-              setOrderLoader(false);
-            })
-            .catch((err: any) => {
-              setOrderLoader(false);
-            });
-        }
+          .catch((err: any) => {
+            setOrderLoader(false);
+          });
       });
     },
     onError: (err: any) => {

@@ -102,11 +102,13 @@ const Step1 = ({ campaign, setInputs, inputs }: any) => (
               oneTimeDonationAmount: amount,
             }))
           }
-          className={`${inputs.oneTimeDonationAmount === amount
+          className={`${
+            inputs.oneTimeDonationAmount === amount
               ? `${campaign?.themeColor?.dark} text-white shadow-md`
               : ''
-            } cursor-pointer col-span-1 border-[0.5px] px-2 py-1.5 rounded-sm ${campaign?.themeColor?.text
-            } text-center text-xs font-Matter-Medium`}
+          } cursor-pointer col-span-1 border-[0.5px] px-2 py-1.5 rounded-sm ${
+            campaign?.themeColor?.text
+          } text-center text-xs font-Matter-Medium`}
           key={i}
         >
           ${amount}
@@ -198,26 +200,24 @@ const AuctionDonationModal = ({
     onApprove: (data: any, actions: any) => {
       setOrderLoader(true);
       return actions.order.capture().then(async (details: any) => {
-        if (details.status === 'COMPLETED' && details.id) {
-          await createOneTimeAuctionDonation({
-            auctionId: campaign?.auction?._id,
-            donor: inputs.donor,
-            email: inputs.email,
-            donorPublicMessage: inputs.donorPublicMessage,
-            oneTimeDonationAmount: inputs.oneTimeDonationAmount,
-            creditCardProcessingFee: inputs.oneTimeDonationAmount * 0.035,
-            paypalId: details.id,
-            hasAnonymousBiddingEnabled: auth?.user?.anonymousBidding,
+        await createOneTimeAuctionDonation({
+          auctionId: campaign?.auction?._id,
+          donor: inputs.donor,
+          email: inputs.email,
+          donorPublicMessage: inputs.donorPublicMessage,
+          oneTimeDonationAmount: inputs.oneTimeDonationAmount,
+          creditCardProcessingFee: inputs.oneTimeDonationAmount * 0.035,
+          paypalId: details.id,
+          hasAnonymousBiddingEnabled: auth?.user?.anonymousBidding,
+        })
+          .unwrap()
+          .then(() => {
+            setOrderLoader(false);
+            setOpenModal({ donate: false, confirmation: true, unauthorized: false });
           })
-            .unwrap()
-            .then(() => {
-              setOrderLoader(false);
-              setOpenModal({ donate: false, confirmation: true, unauthorized: false });
-            })
-            .catch((err: any) => {
-              setOrderLoader(false);
-            });
-        }
+          .catch((err: any) => {
+            setOrderLoader(false);
+          });
       });
     },
   } as any;
@@ -231,15 +231,16 @@ const AuctionDonationModal = ({
             <div className='flex items-center'>
               <i
                 onClick={handleBack}
-                className={`${steps.step2 || steps.step3 ? 'flex' : 'hidden'
-                  } cursor-pointer fa-solid fa-arrow-left fa-xs text-gray-900 h-6 w-6 rounded-full bg-gray-200 items-center justify-center mr-2.5`}
+                className={`${
+                  steps.step2 || steps.step3 ? 'flex' : 'hidden'
+                } cursor-pointer fa-solid fa-arrow-left fa-xs text-gray-900 h-6 w-6 rounded-full bg-gray-200 items-center justify-center mr-2.5`}
               ></i>
               <p className='text-sm font-Matter-Medium'>
                 {steps.step3
                   ? 'Final Details'
                   : steps.step2
-                    ? 'Show Your Support'
-                    : 'Select Amount'}
+                  ? 'Show Your Support'
+                  : 'Select Amount'}
               </p>
             </div>
             <i

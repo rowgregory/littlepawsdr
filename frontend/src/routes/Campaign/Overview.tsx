@@ -82,9 +82,9 @@ const Overview = () => {
 
   useEffect(() => {
     if (openModal.donate) {
-      window.scrollTo(0, window.innerHeight)
+      window.scrollTo(0, window.innerHeight);
     }
-  }, [openModal.donate])
+  }, [openModal.donate]);
 
   return (
     <div className={`${openModal.donate ? 'overflow-hidden' : ''}`}>
@@ -117,9 +117,7 @@ const Overview = () => {
             />
           </div>
           <div className='flex items-center justify-between mt-3'>
-            <p className='font-Matter-Light text-xs'>
-              Organized by Little Paws Dachshund Rescue
-            </p>
+            <p className='font-Matter-Light text-xs'>Organized by Little Paws Dachshund Rescue</p>
             <p
               className={`font-Matter-Light text-xs flex items-center ${theme?.light} rounded-lg p-2`}
             >
@@ -140,19 +138,17 @@ const Overview = () => {
               </span>
             </p>
             <p className='font-Matter-Regular'>
-              {progressPercentage > 100 ? '100' : Math.round(progressPercentage)}% of $
-              {campaign?.goal} goal
+              {progressPercentage > 100 ? '100' : Math.round(progressPercentage)}% of
+              {!campaign?.isMoneyRaisedVisible && `${campaign?.goal}`} goal
             </p>
           </div>
-          {!campaign?.isMoneyRaisedVisible && (
-            <div className='relative h-6 bg-gray-200 rounded-2xl overflow-hidden'>
-              <Bar
-                width={Number(progressPercentage)}
-                prevWidth={Number(prevWidthRef.current)}
-                className={`${theme?.gradient}`}
-              />
-            </div>
-          )}
+          <div className='relative h-6 bg-gray-200 rounded-2xl overflow-hidden'>
+            <Bar
+              width={Number(progressPercentage)}
+              prevWidth={Number(prevWidthRef.current)}
+              className={`${theme?.gradient}`}
+            />
+          </div>
           <p className='text-2xl font-Matter-Medium mt-4 mb-2.5'>Story</p>
           <p className='font-Matter-Light text-sm'>{campaign?.story}</p>
         </div>
@@ -172,17 +168,17 @@ const Overview = () => {
               >
                 <div className='grid grid-cols-9 gap-1 mb-2 items-center'>
                   <p
-                    className={`col-span-2 md:col-span-12 lg:col-span-2 ${theme?.light} ${theme?.text
-                      } ${donation?.oneTimeDonationAmount > 1000 ? 'text-xs' : 'text-sm'
-                      } h-12 w-12 rounded-full flex items-center justify-center font-Matter-Medium`}
+                    className={`col-span-2 md:col-span-12 lg:col-span-2 ${theme?.light} ${
+                      theme?.text
+                    } ${
+                      donation?.oneTimeDonationAmount > 1000 ? 'text-xs' : 'text-sm'
+                    } h-12 w-12 rounded-full flex items-center justify-center font-Matter-Medium`}
                   >
                     {formatCurrency(donation?.oneTimeDonationAmount)}
                   </p>
                   <p className='col-span-7 md:col-span-12 lg:col-span-7 font-Matter-Light'>
                     <span className='font-Matter-Medium'>{donation?.donor}</span> made a{' '}
-                    <span className='font-Matter-Medium'>
-                      ${donation?.oneTimeDonationAmount}
-                    </span>{' '}
+                    <span className='font-Matter-Medium'>${donation?.oneTimeDonationAmount}</span>{' '}
                     donation
                   </p>
                 </div>
