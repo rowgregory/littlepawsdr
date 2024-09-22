@@ -307,13 +307,18 @@ const getOrders = asyncHandler(async (req, res) => {
 @access  Private/Admin
 */
 const updateOrderWithTrackingNumber = asyncHandler(async (req, res) => {
-  const log = await prepareLog('UPDATE ORDER WITH TRACKING NUMBER')
-  logEvent(log, 'BEGINNING UPDATE ORDER WITH TRACKING NUMBER', { orderId: req?.body?.id, trackingNumber: req.body?.trackingNumber })
+  const log = await prepareLog('UPDATE ORDER WITH TRACKING NUMBER');
+  logEvent(log, 'BEGINNING UPDATE ORDER WITH TRACKING NUMBER', {
+    orderId: req?.body?.id,
+    trackingNumber: req.body?.trackingNumber,
+  });
   try {
     const { id, trackingNumber } = req.body;
 
-    const productOrder = await ProductOrder.findOne({ orderId: id })
-    logEvent(log, 'RETREIVING PRODUCT ORDER PRODUCTID TO UPDATE INDIVIDUAL ECARD ORDER ITEM', { productId: productOrder?.productId })
+    const productOrder = await ProductOrder.findOne({ orderId: id });
+    logEvent(log, 'RETREIVING PRODUCT ORDER PRODUCTID TO UPDATE INDIVIDUAL ECARD ORDER ITEM', {
+      productId: productOrder?.productId,
+    });
 
     const order = await Order.findByIdAndUpdate(
       id,
@@ -324,16 +329,16 @@ const updateOrderWithTrackingNumber = asyncHandler(async (req, res) => {
         shippedOn: Date.now(),
         status: 'Complete',
         $set: {
-          'orderItems.$[item].isShipped': true,
-          'orderItems.$[item].status': 'Shipped',
+          'orderItems.$[].isShipped': true,
+          'orderItems.$[].status': 'Shipped',
         },
       },
-      { new: true, arrayFilters: [{ 'item.productId': productOrder.productId }] }
+      { new: true }
     );
-    logEvent(log, 'ORDER UPDATED - SENDING EMAIL TO NOTIFY USER')
+    logEvent(log, 'ORDER UPDATED - SENDING EMAIL TO NOTIFY USER');
     await sendEmail(order, {}, 'sendOrderShippedConfirmationEmail');
 
-    logEvent(log, 'END UPDATE ORDER WITH TRACKING NUMBER SUCCESSFULLY')
+    logEvent(log, 'END UPDATE ORDER WITH TRACKING NUMBER SUCCESSFULLY');
     res.status(200).json({
       message: 'Order updated and shipping confirmation email has been sent',
       sliceName: 'orderApi',
