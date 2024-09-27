@@ -12,10 +12,10 @@ export const Container = styled.div<{ open: boolean }>`
   background: #33495e;
   transition: 0.4s;
   box-shadow: 29px 0 53px rgb(0 0 0 / 10%);
-  left: ${({ open }) => (open ? '0px' : '-100vw')};
+  left: ${({ open }) => (open ? '0px' : '-110vw')};
   width: ${({ open }) => (open ? '100vw' : '')};
 
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[1]}) {
+  @media screen and (min-width: 400px) {
     left: ${({ open }) => (open ? '0px' : '-400px')};
     width: ${({ open }) => (open ? '400px' : '')};
     max-width: 400px;
@@ -178,7 +178,7 @@ export const LinkContainer = styled.div`
   }
 `;
 
-export const StyledLink = styled(Link) <{ highlight: any }>`
+export const StyledLink = styled(Link)<{ highlight: any }>`
   transition: 300ms;
   color: #cbd7db;
   font-family: Montserrat, sans-serif;
@@ -195,7 +195,7 @@ export const StyledLink = styled(Link) <{ highlight: any }>`
     text-decoration: none;
   }
 `;
-export const SingleLink = styled(Link) <{ highlight: any }>`
+export const SingleLink = styled(Link)<{ highlight: any }>`
   transition: 300ms;
   color: #cbd7db;
   font-family: Montserrat, sans-serif;

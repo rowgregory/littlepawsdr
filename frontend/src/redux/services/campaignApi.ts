@@ -121,6 +121,10 @@ export const campaignApi = api.injectEndpoints({
       }),
       invalidatesTags: ['Campaign'],
     }),
+    getCustomCampaignLink: build.query({
+      query: () => `${BASE_URL}/custom-campaign-link`,
+      providesTags: ['Campaign'],
+    }),
   }),
 });
 
@@ -143,4 +147,5 @@ export const {
   useUpdateItemFulfillmentMutation,
   useUpdateAuctionWinningBidderMutation,
   useDeleteAuctionItemMutation,
+  useGetCustomCampaignLinkQuery,
 } = campaignApi;

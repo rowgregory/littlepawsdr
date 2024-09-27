@@ -1,6 +1,11 @@
 import { useLocation, Link } from 'react-router-dom';
 import WhiteLogo from '../components/assets/logo-white2.png';
-import { privacyPolicyLinkKey, quickLinks, termsOfServiceLinkKey } from '../utils/footerUtils';
+import {
+  pagesToExclude,
+  privacyPolicyLinkKey,
+  quickLinks,
+  termsOfServiceLinkKey,
+} from '../utils/footerUtils';
 import { HomeDog } from './assets';
 import { scrollToTop } from '../utils/scrollToTop';
 import { Fragment, useState } from 'react';
@@ -12,27 +17,13 @@ const Footer = () => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const { pathname } = useLocation();
-  const pagesToAvoid = [
-    '/login',
-    '/admin',
-    '/settings',
-    '/register',
-    '/forgot-password',
-    '/reset-password',
-    '/cart',
-    '/order',
-    '/email-confirmation',
-    '/404',
-    '/campaigns',
-    '/auction-items',
-  ].some((a: string) => pathname.includes(a));
 
   return (
     <Fragment>
       <InstagramModal show={show} handleClose={handleClose} />
-      <div className={`${pagesToAvoid ? 'hidden' : 'block'}`}>
+      <div className={`${pagesToExclude(pathname) ? 'hidden' : 'block'}`}>
         <footer
-          className={`w-full h-[475px] bg-bottom flex flex-col justify-between items-center mx-auto max-w-[2000px] bg-cover bg-no-reapeat relative before:content-['*'] z-0 before:bg-black/60 before:absolute before:top-0 before:bottom-0 before:right-0 before:left-0`}
+          className={`w-full bg-bottom flex flex-col justify-between items-center mx-auto max-w-[2000px] bg-cover bg-no-reapeat relative before:content-['*'] z-0 before:bg-black/60 before:absolute before:top-0 before:bottom-0 before:right-0 before:left-0`}
           style={{ backgroundImage: `url(${HomeDog})` }}
         >
           <div className='w-full flex flex-col'>

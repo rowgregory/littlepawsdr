@@ -35,6 +35,22 @@ export const quickLinks = () => {
   ];
 };
 
+export const pagesToExclude = (pathname: string) =>
+  [
+    '/login',
+    '/admin',
+    '/settings',
+    '/register',
+    '/forgot-password',
+    '/reset-password',
+    '/cart',
+    '/order',
+    '/email-confirmation',
+    '/404',
+    '/campaigns',
+    '/auction-items',
+  ].some((a: string) => pathname.includes(a));
+
 export const privacyPolicyLinkKey =
   'https://www.privacypolicies.com/live/c37902bc-11cd-430e-a925-2b82ce905c88';
 

@@ -18,6 +18,7 @@ import {
   updateItemFulfillment,
   updateAuctionWinningBidder,
   deleteAuctionItem,
+  getCustomCampaignLinkName,
 } from '../controllers/campaignController.js';
 import { admin, protect } from '../middleware/authMiddleware.js';
 const router = express.Router();
@@ -27,6 +28,7 @@ router
   .get(getCampaigns)
   .post(protect, admin, createCampaign)
   .put(protect, admin, updateCampaign);
+router.route('/custom-campaign-link').get(getCustomCampaignLinkName);
 router.route('/:id').get(getCampaign);
 router.route('/auction').put(protect, admin, updateAuction);
 router

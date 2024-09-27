@@ -3,23 +3,20 @@ import { Menu, SingleLink } from '../styles/left-navigation/styles';
 import { Flex } from '../styles/Styles';
 import { singleLinkData } from '../../utils/leftNavigation';
 import AccordionLinks from './AccordionLinks';
+import { FC } from 'react';
 
-const LinkContent = ({
-  closeMenu,
-  error,
-}: {
+type LinkContentProps = {
   closeMenu: () => void;
   error: any;
-}) => {
+  campaignLinkKey: string;
+};
+
+const LinkContent: FC<LinkContentProps> = ({ closeMenu, error, campaignLinkKey }) => {
   const { pathname } = useLocation();
 
   return (
     <Menu>
-      <SingleLink
-        to='/'
-        onClick={() => closeMenu()}
-        highlight={(pathname === '/').toString()}
-      >
+      <SingleLink to='/' onClick={() => closeMenu()} highlight={(pathname === '/').toString()}>
         <i className='fas fa-home mr-2'></i>
         Home
       </SingleLink>
@@ -31,7 +28,7 @@ const LinkContent = ({
         {singleLinkData.map((link: any, i: number) => (
           <SingleLink
             key={i}
-            to={link.linkKey}
+            to={link.linkText === 'Campaigns' ? campaignLinkKey : link.linkKey}
             onClick={() => closeMenu()}
             highlight={(pathname === link.linkKey).toString()}
           >
@@ -41,12 +38,7 @@ const LinkContent = ({
         ))}
       </div>
       {error && (
-        <Flex
-          alignItems='center'
-          justifyContent='center'
-          color='#FF6B6B'
-          marginTop='32px'
-        >
+        <Flex alignItems='center' justifyContent='center' color='#FF6B6B' marginTop='32px'>
           Error loading search bar data
           <i className='fas fa-refresh ml-1'></i>
         </Flex>

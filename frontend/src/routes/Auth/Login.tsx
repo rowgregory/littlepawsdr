@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import useLoginForm from '../../utils/hooks/useLoginForm';
 import { useLoginMutation } from '../../redux/services/authApi';
 import { Logo2024 } from '../../components/assets';
@@ -9,12 +9,15 @@ const Login = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [login, { isLoading }] = useLoginMutation();
+  const { state } = useLocation();
 
   const loginFormCallback = async () => {
     await login({ email: inputs.email.toLowerCase(), password: inputs.password })
       .unwrap()
       .then((payload: User) => {
-        if (payload?.isAdmin) {
+        if (state?.cameFromAuction) {
+          navigate(`/campaigns/${state?.customCampaignLink}/auction`);
+        } else if (payload?.isAdmin) {
           navigate('/admin');
         } else if (payload?.token) {
           navigate('/');
@@ -26,7 +29,7 @@ const Login = () => {
   const { inputs, handleInputChange, onSubmit } = useLoginForm(loginFormCallback);
 
   return (
-    <div className='bg-white min-h-screen flex items-center justify-center p-8'>
+    <div className='bg-white min-h-screen flex items-center justify-center px-2.5 py-8 lg:p-8'>
       <div className='max-w-md w-full'>
         <Link to='/'>
           <img src={Logo2024} alt='Little Paws Dachshund Rescue' className='w-44 mb-4 mx-auto' />
@@ -58,8 +61,9 @@ const Login = () => {
             />
             <i
               onClick={() => setShowPassword(!showPassword)}
-              className={`fa-solid ${showPassword ? 'fa-eye' : 'fa-eye-slash'
-                } absolute top-4 right-2`}
+              className={`fa-solid ${
+                showPassword ? 'fa-eye' : 'fa-eye-slash'
+              } absolute top-4 right-2`}
             ></i>
           </div>
 

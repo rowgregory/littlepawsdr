@@ -1011,6 +1011,41 @@ const deleteAuctionItem = asyncHandler(async (req, res) => {
   }
 });
 
+/**
+ @desc    Get custom campaign link name
+ @route   GET /api/campaign/custom-campaign-link
+ @access  Public
+*/
+const getCustomCampaignLinkName = asyncHandler(async (req, res) => {
+  try {
+    const campaigns = await Campaign.find().populate([
+      { path: 'auction', populate: [{ path: 'settings' }] },
+    ]);
+
+    campaigns.forEach((campaign) => {
+      const { hasBegun, hasEnded } = campaign.auction?.settings || {};
+
+      if (hasBegun && !hasEnded) {
+        res
+          .status(201)
+          .json({ customCampaignLink: campaign.customCampaignLink, sliceName: 'campaignApi' });
+      }
+    });
+  } catch (err) {
+    await Error.create({
+      functionName: 'GET_CUSTOM_CAMPAIGN_LINK',
+      name: err.name,
+      message: err.message,
+      user: { id: req?.user?._id, email: req?.user?.email },
+    });
+    console.log(err);
+    res.status(500).send({
+      message: 'Error fetching custom campaign link name item',
+      sliceName: 'campaignApi',
+    });
+  }
+});
+
 export {
   createCampaign,
   getCampaign,
@@ -1030,4 +1065,5 @@ export {
   updateItemFulfillment,
   updateAuctionWinningBidder,
   deleteAuctionItem,
+  getCustomCampaignLinkName,
 };

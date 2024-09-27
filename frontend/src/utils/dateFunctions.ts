@@ -1,5 +1,15 @@
 const formatDateWithTimezone = (dateCreated: any): string => {
-  return new Date(dateCreated)?.toLocaleDateString('en-US', {
+  if (!dateCreated) {
+    return ''; // Return an empty string if dateCreated is undefined or null
+  }
+
+  const parsedDate = new Date(dateCreated);
+
+  if (isNaN(parsedDate.getTime())) {
+    return ''; // Return an empty string if dateCreated is invalid
+  }
+
+  return parsedDate.toLocaleDateString('en-US', {
     month: 'short',
     day: 'numeric',
     year: 'numeric',

@@ -4,7 +4,6 @@ import Home from './Home';
 import OrderReceipt from './OrderReceipt';
 import Surrender from './Surrender';
 import PageNotFound from './PageNotFound';
-import PopUp from '../components/common/PopUp';
 import GlobalStyles from '../GlobalStyles';
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
@@ -89,7 +88,6 @@ export const MainRoutes: FC = () => {
             />
           )
       )}
-      <PopUp />
       <GlobalStyles />
       <CookiePolicyPopUp />
       <CartDrawer />

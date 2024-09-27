@@ -3,7 +3,9 @@ const TailwindSpinner = ({ color, wAndH }: { color?: string; wAndH?: string }) =
     <div role='status'>
       <svg
         aria-hidden='true'
-        className={`inline ${wAndH ?? 'w-4 h-4'} text-gray-200 animate-spin ${color || 'fill-purple-600'}`}
+        className={`inline ${wAndH ?? 'w-5 h-5'} text-zinc-400 animate-spin ${
+          color || 'fill-orange-400'
+        }`}
         viewBox='0 0 100 101'
         fill='none'
         xmlns='http://www.w3.org/2000/svg'
@@ -18,7 +20,7 @@ const TailwindSpinner = ({ color, wAndH }: { color?: string; wAndH?: string }) =
         />
       </svg>
     </div>
-  )
-}
+  );
+};
 
-export default TailwindSpinner
+export default TailwindSpinner;

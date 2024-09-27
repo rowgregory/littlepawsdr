@@ -7,6 +7,10 @@ body {
   background: ${({ theme }) => theme.bg};
 }
 
+.modal {
+padding-right: 0px !important;
+}
+
 input[name='profileCardTheme'] {
   display: none !important;
 }

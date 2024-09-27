@@ -6,6 +6,7 @@ import { useAppDispatch } from '../redux/toolkitStore';
 import { toggleLeftDrawer, toggleUserDropdown } from '../redux/features/navbar/navbarSlice';
 import { NoImgDog, TransparentPurpleLogo } from './assets';
 import { navbarBtnStyles, useSetShowNavbarBackground } from './navbar/navbarHelpers';
+import { urlsToExclude } from '../utils/navbar-helpers';
 
 const Navbar = () => {
   const dispatch = useAppDispatch();
@@ -17,31 +18,21 @@ const Navbar = () => {
 
   useSetShowNavbarBackground();
 
-  const urlsToExclude = ![
-    'admin',
-    'login',
-    'forgot-password',
-    'register',
-    'place-order',
-    'cart',
-    'order',
-    'reset',
-    'email-confirmation',
-    '404',
-    'auction',
-    'campaigns',
-  ].some((a: string) => pathname?.includes(a));
-
   return (
     <nav
-      className={`${navbar.toggle.bgColor || pathname !== '/'
-        ? `bg-clip-padding backdrop-filter backdrop-blur-sm border-transparent bg-white border-b-gray-300 `
-        : 'bg-none border-b-white/50'
-        } ${urlsToExclude ? 'block' : 'hidden'
-        } border-b-[0.5px] fixed z-[1000] w-full duration-200 h-[65px] top-0 flex items-center justify-between px-3.5`}
+      className={`${
+        navbar.toggle.bgColor || pathname !== '/'
+          ? `bg-clip-padding backdrop-filter backdrop-blur-sm border-transparent bg-white border-b-gray-300 `
+          : 'bg-none border-b-white/50'
+      } ${
+        urlsToExclude(pathname) ? 'block' : 'hidden'
+      } border-b-[0.5px] fixed z-[1000] w-full duration-200 h-[65px] top-0 flex items-center justify-between px-3.5`}
     >
       <div className='d-flex justify-content-center align-items-center'>
-        <div onClick={() => dispatch(toggleLeftDrawer({ leftDrawer: true }))} className={navbarBtnStyles}>
+        <div
+          onClick={() => dispatch(toggleLeftDrawer({ leftDrawer: true }))}
+          className={navbarBtnStyles}
+        >
           <i className='fas fa-bars text-gray-800'></i>
         </div>
         <Link to='/' className='cursor-pointer'>

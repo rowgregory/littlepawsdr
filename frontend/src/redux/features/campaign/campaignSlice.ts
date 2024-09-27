@@ -102,6 +102,7 @@ export interface CampaignStatePayload {
   winner: {
     auctionItem: {};
   };
+  customCampaignLink: string;
 }
 
 export const initialCampaignState: CampaignStatePayload = {
@@ -204,6 +205,7 @@ export const initialCampaignState: CampaignStatePayload = {
   winner: {
     auctionItem: {},
   },
+  customCampaignLink: '',
 };
 
 export const campaignSlice = createSlice({
@@ -221,6 +223,18 @@ export const campaignSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addMatcher(
+        (action) => action.type.endsWith('/pending'),
+        (state, action) => {
+          state.loading = true;
+        }
+      )
+      .addMatcher(
+        (action) => action.type.endsWith('/fulfilled'),
+        (state) => {
+          state.loading = false;
+        }
+      )
+      .addMatcher(
         campaignApi.endpoints.createCampaign.matchFulfilled,
         (state, { payload }: any) => {
           state.campaignId = payload.campaignId;
@@ -235,20 +249,14 @@ export const campaignSlice = createSlice({
           state.campaign = payload.campaign;
         }
       )
-      .addMatcher(
-        campaignApi.endpoints.getCampaign.matchFulfilled,
-        (state, { payload }: any) => {
-          state.campaign = payload.campaign;
-        }
-      )
-      .addMatcher(
-        campaignApi.endpoints.updateAuction.matchFulfilled,
-        (state, { payload }: any) => {
-          state.message = payload.message;
-          state.success = true;
-          state.type = payload.type;
-        }
-      )
+      .addMatcher(campaignApi.endpoints.getCampaign.matchFulfilled, (state, { payload }: any) => {
+        state.campaign = payload.campaign;
+      })
+      .addMatcher(campaignApi.endpoints.updateAuction.matchFulfilled, (state, { payload }: any) => {
+        state.message = payload.message;
+        state.success = true;
+        state.type = payload.type;
+      })
       .addMatcher(
         campaignApi.endpoints.createAuctionItem.matchFulfilled,
         (state, { payload }: any) => {
@@ -273,12 +281,9 @@ export const campaignSlice = createSlice({
           state.message = payload.message;
         }
       )
-      .addMatcher(
-        campaignApi.endpoints.getCampaigns.matchFulfilled,
-        (state, { payload }: any) => {
-          state.campaigns = payload.campaigns;
-        }
-      )
+      .addMatcher(campaignApi.endpoints.getCampaigns.matchFulfilled, (state, { payload }: any) => {
+        state.campaigns = payload.campaigns;
+      })
       .addMatcher(
         campaignApi.endpoints.getCampaignsForAdminView.matchFulfilled,
         (state, { payload }: any) => {
@@ -303,13 +308,10 @@ export const campaignSlice = createSlice({
           state.instantBuy = payload.instantBuy;
         }
       )
-      .addMatcher(
-        campaignApi.endpoints.placeBid.matchFulfilled,
-        (state, { payload }: any) => {
-          state.message = payload.message;
-          state.confirmedBidAmount = payload.confirmedBidAmount;
-        }
-      )
+      .addMatcher(campaignApi.endpoints.placeBid.matchFulfilled, (state, { payload }: any) => {
+        state.message = payload.message;
+        state.confirmedBidAmount = payload.confirmedBidAmount;
+      })
       .addMatcher(
         campaignApi.endpoints.getWinningBidder.matchFulfilled,
         (state, { payload }: any) => {
@@ -336,9 +338,14 @@ export const campaignSlice = createSlice({
         }
       )
       .addMatcher(
+        campaignApi.endpoints.getCustomCampaignLink.matchFulfilled,
+        (state, { payload }: any) => {
+          state.customCampaignLink = payload.customCampaignLink;
+        }
+      )
+      .addMatcher(
         (action) =>
-          action.type.endsWith('/rejected') &&
-          action.payload?.data?.sliceName === 'campaignApi',
+          action.type.endsWith('/rejected') && action.payload?.data?.sliceName === 'campaignApi',
         (state, action: any) => {
           state.loading = false;
           state.error = action.error.message;

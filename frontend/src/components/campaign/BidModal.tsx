@@ -51,10 +51,12 @@ const BidModal = ({
             name='bidAmount'
             min={auctionItem?.startingPrice}
             onChange={handleInput}
-            placeholder={auctionItem?.minimumBid?.toString() ?? auctionItem?.startingPrice?.toString()}
+            placeholder={
+              auctionItem?.minimumBid?.toString() ?? auctionItem?.startingPrice?.toString()
+            }
             alt='Place your bid here'
-            className={`font-Matter-Medium text-2xl ${themeText} focus:outline-none placeholder:text-gray-300 placeholder:font-Matter-Medium placeholder:text-2xl`}
-            value={inputs.bidAmount || ""}
+            className={`font-Matter-Medium text-2xl ${themeText} focus:outline-none placeholder:text-gray-300 placeholder:font-Matter-Medium placeholder:text-2xl w-full`}
+            value={inputs.bidAmount || ''}
           />
         </div>
         <div className='flex gap-3'>
@@ -72,8 +74,9 @@ const BidModal = ({
               inputs.bidAmount < auctionItem?.minimumBid ||
               inputs.bidAmount < auctionItem?.startingPrice
             }
-          >{`Plac${loading ? 'ing' : 'e'} ${inputs.bidAmount >= auctionItem?.currentBid ? `$${inputs.bidAmount}` : ''
-            } bid`}</button>
+          >{`Plac${loading ? 'ing' : 'e'} ${
+            inputs.bidAmount >= auctionItem?.currentBid ? `$${inputs.bidAmount}` : ''
+          } bid`}</button>
         </div>
       </div>
     </Modal>

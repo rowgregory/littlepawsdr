@@ -7,13 +7,18 @@ import ResetPassword from './ResetPassword';
 import ForgotPassword from './ForgotPassword';
 import ResetPasswordSuccess from './ResetPasswordSuccess';
 import AuctionRegister from './AuctionRegister';
+import useScrollToTop from '../../utils/hooks/useScrollToTop';
 
 const AuthRoutes: FC = () => {
+  useScrollToTop();
   return (
     <Routes>
       <Route path='/login' element={<Login />} />
       <Route path='/register' element={<Register />} />{' '}
-      <Route path='/email-confirmation/:token/:userId/:customCampaignLink' element={<EmailConfirmation />} />
+      <Route
+        path='/email-confirmation/:token/:userId/:customCampaignLink'
+        element={<EmailConfirmation />}
+      />
       <Route path='/reset-password/:token' element={<ResetPassword />} />
       <Route path='/reset-password/success' element={<ResetPasswordSuccess />} />
       <Route path='/forgot-password' element={<ForgotPassword />} />
