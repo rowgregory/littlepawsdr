@@ -14,7 +14,7 @@ export const campaignApi = api.injectEndpoints({
         method: 'POST',
         body: campaign,
       }),
-      invalidatesTags: ['Campaign'],
+      invalidatesTags: ['Campaign', 'Auction'],
     }),
     updateCampaign: build.mutation({
       query: (campaign: any) => ({
@@ -29,7 +29,7 @@ export const campaignApi = api.injectEndpoints({
         method: 'PUT',
         body: auction,
       }),
-      invalidatesTags: ['Campaign'],
+      invalidatesTags: ['Campaign', 'Auction', 'Auction-Item'],
     }),
     getAuctionItem: build.query({
       query: (item: any) => `${BASE_URL}/auction/item/${item?.auctionItemId}`,
@@ -41,7 +41,7 @@ export const campaignApi = api.injectEndpoints({
         method: 'POST',
         body: auctionItem,
       }),
-      invalidatesTags: ['Campaign'],
+      invalidatesTags: ['Campaign', 'Auction-Item'],
     }),
     updateAuctionItem: build.mutation({
       query: (auctionItem: any) => ({

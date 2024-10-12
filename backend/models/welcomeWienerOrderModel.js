@@ -15,6 +15,7 @@ const welcomeWienerOrderSchema = mongoose.Schema(
     subtotal: { type: Number },
     totalPrice: { type: Number },
     orderId: { type: mongoose.Schema.Types.ObjectId, ref: 'Order' },
+    type: { type: String, default: 'WELCOME_WIENER'}
   },
   {
     timestamps: true,

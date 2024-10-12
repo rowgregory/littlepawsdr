@@ -1,6 +1,5 @@
 import { useLocation } from 'react-router-dom';
 import { Menu, SingleLink } from '../styles/left-navigation/styles';
-import { Flex } from '../styles/Styles';
 import { singleLinkData } from '../../utils/leftNavigation';
 import AccordionLinks from './AccordionLinks';
 import { FC } from 'react';
@@ -21,8 +20,8 @@ const LinkContent: FC<LinkContentProps> = ({ closeMenu, error, campaignLinkKey }
         Home
       </SingleLink>
       <AccordionLinks closeMenu={closeMenu} pathname={pathname} />
-      <div className='w-100' style={{ paddingInline: '22px' }}>
-        <hr className='my-5' style={{ background: '#556a7f' }} />
+      <div className='w-full px-[22px]'>
+        <hr className='my-5 bg-[#556a7f]' />
       </div>
       <div className='mb-4'>
         {singleLinkData.map((link: any, i: number) => (
@@ -38,10 +37,10 @@ const LinkContent: FC<LinkContentProps> = ({ closeMenu, error, campaignLinkKey }
         ))}
       </div>
       {error && (
-        <Flex alignItems='center' justifyContent='center' color='#FF6B6B' marginTop='32px'>
+        <div className='flex items-center justify-center mt-8 text-[#FF6B6B]'>
           Error loading search bar data
           <i className='fas fa-refresh ml-1'></i>
-        </Flex>
+        </div>
       )}
     </Menu>
   );

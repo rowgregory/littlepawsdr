@@ -1,7 +1,14 @@
-import { Modal } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
+import { Modal } from 'react-bootstrap';
+import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { RootState, useAppDispatch } from '../../redux/toolkitStore';
+import { setShowModal } from '../../redux/features/cart/cartSlice';
 
-const LeavePlaceOrderModal = ({ showModal, closeModal }: any) => {
+const LeavePlaceOrderModal = () => {
+  const dispatch = useAppDispatch();
+  const { showModal } = useSelector((state: RootState) => state.cart);
+  const closeModal = () => dispatch(setShowModal(false));
+
   return (
     <Modal show={showModal} centered onHide={closeModal}>
       <div className='bg-white px-4 py-5 h-60 rounded-xl flex flex-col justify-between'>
@@ -26,7 +33,7 @@ const LeavePlaceOrderModal = ({ showModal, closeModal }: any) => {
         </div>
       </div>
     </Modal>
-  )
-}
+  );
+};
 
-export default LeavePlaceOrderModal
+export default LeavePlaceOrderModal;

@@ -3,53 +3,34 @@ import mongoose from 'mongoose';
 const orderSchema = mongoose.Schema(
   {
     name: { type: String, required: true },
+    email: { type: String, required: true },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
     },
-    // model for all products, ecards, products, welcome wieners
-    orderItems: [
+    products: [
       {
-        price: { type: Number, required: true },
-        subtotal: { type: String },
-        productId: { type: String },
-        productImage: { type: String },
-        productName: { type: String },
-        quantity: { type: Number },
-        email: { type: String },
-
-        // product specific field
-        shippingPrice: { type: String },
-        size: { type: String },
-        isPhysicalProduct: { type: Boolean },
-        isShipped: { type: Boolean, default: false },
-
-        // welcome wiener specific fields
-        dachshundId: { type: String },
-        dachshundImage: { type: String },
-        dachshundName: { type: String },
-        productIcon: { type: String },
-
-        // ecard specific fields
-        recipientsFullName: { type: String },
-        recipientsEmail: { type: String },
-        dateToSend: { type: Date },
-        firstName: { type: String },
-        lastName: { type: String },
-        message: { type: String },
-        isSent: { type: String },
-        status: { type: String },
-        image: { type: String },
-        name: { type: String },
-        sendNow: { type: String },
-        isEcard: { type: Boolean },
-        isWelcomeWiener: { type: Boolean },
-        isProduct: { type: Boolean },
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'ProductOrder',
+        default: [],
       },
     ],
-    totalPrice: { type: Number, required: true, default: 0.0 },
+    welcomeWieners: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'WelcomeWienerOrder',
+        default: [],
+      },
+    ],
+    ecards: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'ECardOrder',
+        default: [],
+      },
+    ],
+
     paypalOrderId: { type: String, required: true },
-    email: { type: String, required: true },
     confirmationEmailHasBeenSent: { type: Boolean, default: false },
     orderShippedconfirmationEmailHasBeenSent: { type: Boolean },
     orderNotificationEmailHasBeenSent: { type: Boolean },
@@ -68,12 +49,12 @@ const orderSchema = mongoose.Schema(
     trackingNumber: { type: String },
     requiresShipping: { type: Boolean },
     subtotal: { type: Number },
+    totalPrice: { type: Number, required: true, default: 0.0 },
     totalItems: { type: Number },
     status: { type: String },
     isEcard: { type: Boolean },
     isWelcomeWiener: { type: Boolean },
     isProduct: { type: Boolean },
-    processingFee: { type: Number, default: 0.035 },
   },
   {
     timestamps: true,

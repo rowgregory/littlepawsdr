@@ -8,6 +8,7 @@ import {
   Campaign,
 } from '../models/campaignModel.js';
 import Error from '../models/errorModel.js';
+import { sendEmail } from './sendEmail.js';
 
 export async function createAuctionDocument() {
   return await Auction.create({});
@@ -31,7 +32,7 @@ export async function createAuctionItemDocument({
   totalQuantity,
   requiresShipping,
   shippingCosts,
-  minimumBid
+  minimumBid,
 }) {
   try {
     const auctionItemPhotos = await Promise.all(
@@ -60,7 +61,7 @@ export async function createAuctionItemDocument({
         requiresShipping,
         shippingCosts,
         itemBtnText: 'Buy Now',
-        isFixed: true
+        isFixed: true,
       });
     } else {
       auctionItem = new AuctionItem({
@@ -77,7 +78,7 @@ export async function createAuctionItemDocument({
         totalBids: 0,
         itemBtnText: 'Place Bid',
         minimumBid,
-        isAuction: true
+        isAuction: true,
       });
     }
     return await auctionItem.save();
@@ -91,7 +92,6 @@ export async function createAuctionItemDocument({
 }
 
 export async function createAuctionItemInstantBuyerDocument(data, user) {
-
   try {
     const auctionItemInstantBuyer = new AuctionItemInstantBuyer({
       auction: data.auction,
@@ -100,7 +100,6 @@ export async function createAuctionItemInstantBuyerDocument(data, user) {
       name: user?.name,
       email: user?.email,
       totalPrice: data.totalPrice,
-
     });
 
     await auctionItemInstantBuyer.save();
@@ -125,17 +124,16 @@ export async function createAuctionItemFulfillmentDocument(data, user) {
       auction: data.auction,
       auctionItem: data?.auctionItem,
       user: user?._id,
-      ...data?.instantBuyer && { instantBuyer: data?.instantBuyer },
-      ...data?.winningBidder && { winningBidder: data?.winningBidder },
+      ...(data?.instantBuyer && { instantBuyer: data?.instantBuyer }),
+      ...(data?.winningBidder && { winningBidder: data?.winningBidder }),
       name: user?.name,
       email: user?.email,
       payPalId: data.payPalId,
-      ...isFixed && { buyNowPrice: data.buyNowPrice },
-      processingFee: data.processingFee,
+      ...(isFixed && { buyNowPrice: data.buyNowPrice }),
       totalPrice: data.totalPrice,
       type: isFixed ? 'Fixed' : 'Auction',
       auctionItemPaymentStatus: 'Paid',
-      winningBidPaymentStatus: 'Complete'
+      winningBidPaymentStatus: 'Complete',
     });
 
     await auctionItemFulfillment.save();
@@ -155,6 +153,11 @@ export async function createAuctionItemFulfillmentDocument(data, user) {
 
 export async function createBidDocument(data, user) {
   try {
+    // Retrieve the current top bid for the auction item
+    const previousTopBid = await Bid.findOne({ auctionItem: data.auctionItemId })
+      .sort({ bidAmount: -1 }) // Sort by the highest bid amount
+      .exec();
+
     const bid = new Bid({
       auction: data.auctionId,
       auctionItem: data.auctionItemId,
@@ -165,11 +168,33 @@ export async function createBidDocument(data, user) {
       status: 'Top Bid',
     });
 
-    // // Retrieve the _id of the top bid
     const topBidId = bid._id;
 
     // Update status of other bids to 'Outbid' excluding the top bid
-    await Bid.updateMany({ auctionItem: data.auctionItemId, _id: { $ne: topBidId } }, { $set: { status: 'Outbid' } });
+    await Bid.updateMany(
+      { auctionItem: data.auctionItemId, _id: { $ne: topBidId } },
+      { $set: { status: 'Outbid' } }
+    );
+
+    // Send email notification to the previous top bidder if they exist and were outbid
+    if (previousTopBid && previousTopBid.email) {
+      const auctionItem = await AuctionItem.findById(data.auctionItemId).populate([
+        { path: 'photos' },
+      ]);
+
+      const campaign = await Campaign.findOne({ auction: data.auctionId });
+
+      const objToSendToEmail = {
+        email: previousTopBid.email,
+        previousTopBid: previousTopBid.bidAmount,
+        topBid: data.bidAmount,
+        itemImage: auctionItem.photos[0].url,
+        itemName: auctionItem.name,
+        link: `https://www.littlepawsdr.org/campaigns/${campaign.customCampaignLink}/auction/item/${auctionItem._id}`,
+      };
+
+      sendEmail(objToSendToEmail, {}, 'OUT_BID_NOTIFICATION');
+    }
 
     return await bid.save();
   } catch (err) {

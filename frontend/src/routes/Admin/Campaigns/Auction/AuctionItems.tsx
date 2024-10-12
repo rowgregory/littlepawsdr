@@ -101,10 +101,12 @@ const AuctionItems = () => {
                       key={i}
                     >
                       <td onClick={() => sendToBidsPage(item)}>
-                        <div className='m-0 w-full  p-0 decoration-inherit hover:text-inherit hover:decoration-inherit !flex h-[3.25rem] items-center px-4 whitespace-nowrap'>
-                          <div className='max-w-[15rem]'>
+                        <div className='m-0 w-full p-0 decoration-inherit hover:text-inherit hover:decoration-inherit !flex h-[3.25rem] items-center px-4 whitespace-nowrap'>
+                          <div className='max-w-60'>
                             <span className='text-sm font-Matter-Regular truncate'>
-                              {item?.name}
+                              {item?.name?.length > 30
+                                ? `${item?.name?.substring(0, 30)}...`
+                                : item?.name}
                             </span>
                           </div>
                         </div>

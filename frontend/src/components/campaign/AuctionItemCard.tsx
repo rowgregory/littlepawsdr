@@ -51,6 +51,7 @@ const AuctionItemCard = ({ item, auth, campaign }: any) => {
           pathname={pathname}
           theme={theme}
           setOpenShippingAddressModal={setOpenShippingAddressModal}
+          status={campaign?.auction?.settings?.status}
         />
       </div>
     </Fragment>

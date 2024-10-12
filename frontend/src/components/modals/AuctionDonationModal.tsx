@@ -1,4 +1,3 @@
-import { PayPalButtons } from '@paypal/react-paypal-js';
 import { Modal } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/toolkitStore';
@@ -6,136 +5,9 @@ import { useCreateOneTimeAuctionDonationMutation } from '../../redux/services/ca
 import { validateEmailRegex } from '../../utils/regex';
 import { Fragment, useState } from 'react';
 import GreenRotatingTransparentCircle from '../Loaders/GreenRotatingTransparentCircle';
-
-const oneTimeDonationData = [10, 25, 50, 100, 250, 500, 1000];
-
-const Step3 = ({ inputs, payPalComponents }: any) => {
-  return (
-    <div className='w-full h-auto'>
-      <div className='flex justify-between items-center mb-3.5 w-full'>
-        <p className='text-xs font-Matter-Medium'>Donation</p>
-        <p className='text-xs font-Matter-Medium'>${inputs?.oneTimeDonationAmount?.toFixed(2)}</p>
-      </div>
-      <div className='flex justify-between items-center mb-3.5'>
-        <p className='text-xs font-Matter-Medium'>Credit Card Processing Fee</p>
-        <p className='text-xs font-Matter-Medium'>
-          ${(inputs.oneTimeDonationAmount * 0.035).toFixed(2)}
-        </p>
-      </div>
-      <div className='flex justify-between items-center mb-3.5'>
-        <p className='text-xs font-Matter-Medium'>Total</p>
-        <p className='text-xs font-Matter-Medium'>
-          ${(inputs.oneTimeDonationAmount * 0.035 + inputs.oneTimeDonationAmount).toFixed(2)}
-        </p>
-      </div>
-      <div className='flex flex-col justify-between'>
-        <p className='text-xs font-Matter-Medium mb-3'>Payment</p>
-        <PayPalButtons
-          style={payPalComponents.style}
-          forceReRender={payPalComponents.forceRerender}
-          createOrder={payPalComponents.createOrder}
-          onApprove={payPalComponents.onApprove}
-        />
-      </div>
-    </div>
-  );
-};
-
-const Step2 = ({ inputs, setInputs, emailError }: any) => (
-  <div className='h-80'>
-    <p className='text-xs font-Matter-Medium mb-2'>Add a public message</p>
-    <div className='flex flex-col border-[0.5px] border-gray-200 rounded-xs bg-gray-50 p-3'>
-      <div className='flex items-center mb-3'>
-        <p className='font-Matter-Medium text-xs pr-1.5'>From: </p>
-        <input
-          type='text'
-          value={inputs.donor || ''}
-          name='donor'
-          onChange={(e: any) => setInputs((prev: any) => ({ ...prev, donor: e.target.value }))}
-          className='auction-donation-modal-input w-full bg-gray-50 font-Matter-Regular text-xs focus:outline-none border-0 placeholder:text-xs placeholder:text-gray-400 placeholder:font-Matter-Regular'
-          placeholder='Your name'
-        />
-      </div>
-      <textarea
-        value={inputs.donorPublicMessage || ''}
-        onChange={(e: any) =>
-          setInputs((prev: any) => ({
-            ...prev,
-            donorPublicMessage: e.target.value,
-          }))
-        }
-        placeholder='Write your message...'
-        rows={7}
-        className='auction-donation-modal-input auction-support-textarea text-xs focus:outline-none border-0 placeholder:text-xs placeholder:text-gray-400 placeholder:font-Matter-Regular'
-      ></textarea>
-      <div className='flex items-center mb-0'>
-        <p className='font-Matter-Medium text-xs pr-1.5'>Email: </p>
-        <input
-          type='email'
-          value={inputs.email || ''}
-          name='email'
-          onChange={(e: any) => setInputs((prev: any) => ({ ...prev, email: e.target.value }))}
-          className='auction-donation-modal-input w-full bg-gray-50 font-Matter-Regular text-xs focus:outline-none border-0 placeholder:text-xs placeholder:text-gray-400 placeholder:font-Matter-Regular'
-          placeholder='Your email'
-        />
-      </div>
-      <p className='text-xs text-red-500 font-Matter-Regular'>{emailError}</p>
-    </div>
-  </div>
-);
-
-const Step1 = ({ campaign, setInputs, inputs }: any) => (
-  <div className='h-80'>
-    <div className='flex items-center justify-between mb-4 w-full'>
-      <p
-        className={`text-sm w-full border-[1px] text-center ${campaign?.themeColor?.dark} text-white rounded-tl-sm rounded-bl-sm px-3 py-2`}
-      >
-        One Time
-      </p>
-    </div>
-    <div className='grid grid-cols-4 gap-3'>
-      {oneTimeDonationData.map((amount: number, i: number) => (
-        <span
-          onClick={() =>
-            setInputs((prev: any) => ({
-              ...prev,
-              oneTimeDonationAmount: amount,
-            }))
-          }
-          className={`${
-            inputs.oneTimeDonationAmount === amount
-              ? `${campaign?.themeColor?.dark} text-white shadow-md`
-              : ''
-          } cursor-pointer col-span-1 border-[0.5px] px-2 py-1.5 rounded-sm ${
-            campaign?.themeColor?.text
-          } text-center text-xs font-Matter-Medium`}
-          key={i}
-        >
-          ${amount}
-        </span>
-      ))}
-      <div className='flex items-center col-span-1 border-[0.5px] rounded-sm'>
-        <span
-          className={`${campaign?.themeColor?.dark} text-white font-Matter-Medium text-xs h-full p-1.5`}
-        >
-          $
-        </span>
-        <input
-          type='number'
-          onChange={(e: any) =>
-            setInputs((prev: any) => ({
-              ...prev,
-              oneTimeDonationAmount: parseFloat(e.target.value),
-            }))
-          }
-          className={`w-8/12 rounded-sm px-2 py-1.5 ${campaign?.themeColor?.text} text-xs font-Matter-Medium placeholder:font-Matter-Medium placeholder:text-gray-200 placeholder:text-xs focus:outline-none`}
-          placeholder='Other'
-          onFocus={() => setInputs((prev: any) => ({ ...prev, oneTimeDonationAmount: 0 }))}
-        />
-      </div>
-    </div>
-  </div>
-);
+import StepThree from '../campaign/auction-donation-modal/StepThree';
+import StepTwo from '../campaign/auction-donation-modal/StepTwo';
+import StepOne from '../campaign/auction-donation-modal/StepOne';
 
 const AuctionDonationModal = ({
   openModal,
@@ -206,7 +78,6 @@ const AuctionDonationModal = ({
           email: inputs.email,
           donorPublicMessage: inputs.donorPublicMessage,
           oneTimeDonationAmount: inputs.oneTimeDonationAmount,
-          creditCardProcessingFee: inputs.oneTimeDonationAmount * 0.035,
           paypalId: details.id,
           hasAnonymousBiddingEnabled: auth?.user?.anonymousBidding,
         })
@@ -248,13 +119,13 @@ const AuctionDonationModal = ({
               className='fa-solid fa-xmark fa-xs text-xs cursor-pointer flex s'
             ></i>
           </div>
-          <div className='p-4'>
+          <div className='p-4 w-full'>
             {steps.step3 ? (
-              <Step3 inputs={inputs} payPalComponents={payPalComponents} />
+              <StepThree inputs={inputs} payPalComponents={payPalComponents} />
             ) : steps.step2 ? (
-              <Step2 inputs={inputs} setInputs={setInputs} emailError={emailError} />
+              <StepTwo inputs={inputs} setInputs={setInputs} emailError={emailError} />
             ) : (
-              <Step1 campaign={campaign} inputs={inputs} setInputs={setInputs} />
+              <StepOne campaign={campaign} inputs={inputs} setInputs={setInputs} />
             )}
           </div>
           {!steps.step3 && (

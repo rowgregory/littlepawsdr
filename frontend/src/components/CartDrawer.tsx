@@ -115,7 +115,7 @@ const CartDrawer = () => {
             <Link
               className='font-matter-Medium border-2 border-black bg-black py-3 px-4 text-xs text-[#fff] w-full flex justify-center items-center h-11 duration-300 hover:no-underline hover:text-[#000] hover:bg-white whitespace-nowrap'
               onClick={() => dispatch(toggleCartDrawer(false))}
-              to='/cart/place-order'
+              to='/cart/checkout/customer-info'
             >
               CHECKOUT NOW
             </Link>

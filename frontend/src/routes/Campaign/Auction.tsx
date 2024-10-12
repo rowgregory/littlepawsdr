@@ -38,7 +38,7 @@ const Auction = () => {
               </p>
               <div className='flex items-center mb-4 md:mb-0'>
                 <VerifiedBadge theme={theme} />
-                <p className='text-sm'>
+                <p className='text-sm ml-1'>
                   By
                   <span>
                     <Link
@@ -57,16 +57,16 @@ const Auction = () => {
               </div>
             </div>
             <div className='sm:w-full md:w-4/12'>
-              <div className='bg-white py-[12px] px-3 rounded-xl h-fit flex flex-col'>
-                {!settings?.hasEnded && (
+              {!settings?.hasEnded && (
+                <div className='bg-white py-[12px] px-3 rounded-xl h-fit flex flex-col'>
                   <Fragment>
                     <p className='text-gray-400 font-Matter-Regular'>{settings?.auctionStatus}</p>
                     <p className='text-xl font-Matter-Medium mt-1'>
                       {formatDateWithTimezone(!hasBegun ? settings?.startDate : settings?.endDate)}
                     </p>
                   </Fragment>
-                )}
-              </div>
+                </div>
+              )}
               {!auth?.user && (
                 <button onClick={() => setModal(true)} className='hover:no-underline w-full'>
                   <p

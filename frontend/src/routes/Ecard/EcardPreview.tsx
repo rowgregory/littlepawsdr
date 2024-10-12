@@ -1,20 +1,20 @@
 import { Fragment } from 'react';
 import { useDispatch } from 'react-redux';
 import { addToCart, toggleCartDrawer } from '../../redux/features/cart/cartSlice';
-import { v4 as uuidv4 } from 'uuid';
 import VerticalLogo from '../../components/common/VerticalLogo';
 import { useLocation } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import { formatDateForEstTimezone } from '../../utils/hooks/useAuctionSettingsForm';
+import { formatDateTime } from '../../utils/formatDateTime';
+import { formatDateForEstTimezone } from '../../utils/dateFunctions';
 
 const EcardPreview = () => {
   const dispatch = useDispatch();
   const { state } = useLocation();
+
   const addEcardToCart = () => {
     const ecardCartItem = {
       productImage: state?.ecard?.image,
       productName: state?.ecard?.name,
-      productId: uuidv4(),
       quantity: 1,
       isEcard: true,
       recipientsFullName: state?.recipientsFullName,
@@ -24,8 +24,7 @@ const EcardPreview = () => {
       isPhysicalProduct: false,
       price: state?.ecard?.price,
       subtotal: state?.ecard?.price,
-      processingFee: state?.ecard?.price * 0.035,
-      totalPrice: state?.ecard?.price + state?.ecard?.price * 0.035,
+      totalPrice: state?.ecard?.price,
       category: state?.ecard?.category,
       ecardId: state?.ecard?._id,
       sendNow: state.sendNow,
@@ -61,11 +60,11 @@ const EcardPreview = () => {
           </div>
           <p className='mb-3 font-Matter-Light'>
             This card will be sent{' '}
-            {state?.sendNow === 'send-now' ? 'instantly' : `on ${new Date(state?.dateToSend)}`}
+            {state?.sendNow === 'send-now' ? 'instantly' : `on ${formatDateTime(state?.dateToSend)}`}
           </p>
           <div className='grid grid-cols-12 gap-4 w-64'>
-            <p className='col-span-6 font-Matter-Light'>To:</p>
-            <div className='col-span-6'>
+            <p className='col-span-3 font-Matter-Light'>To:</p>
+            <div className='col-span-9'>
               <p className='font-Matter-Light mb-1'>{state?.recipientsFullName}</p>
               <p className='font-Matter-Light'>{state?.recipientsEmail}</p>
             </div>

@@ -15,7 +15,8 @@ const productOrderSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Order'
     },
-    status: { type: String, default: 'Pending Fulfillment' }
+    status: { type: String, default: 'Pending Fulfillment' },
+    type: { type: String, default: 'PRODUCT'}
   },
   {
     timestamps: true,

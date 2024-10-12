@@ -16,9 +16,9 @@ const Bidders = () => {
       setCopied({ email: true, shippingAddress: false });
     }
     if (shippingAddress) {
-      const { address, city, state, zipPostalCode, country } = shippingAddress as any;
+      const { address, city, state, zipPostalCode } = shippingAddress as any;
       copiedText += `${address}\n`;
-      copiedText += `${city}, ${state}, ${country} ${zipPostalCode}`;
+      copiedText += `${city}, ${state}, USA ${zipPostalCode}`;
       setCopied({ email: false, shippingAddress: true });
     }
     navigator.clipboard.writeText(copiedText).then(async () =>
@@ -126,7 +126,7 @@ const Bidders = () => {
                                 <div className='flex items-center justify-between px-2 py-1.5 rounded-sm bg-zinc-50'>
                                   <div className='flex flex-col'>
                                     <p className='font-Matter-Regular text-sm'>{currentBidder?.user?.shippingAddress?.address}</p>
-                                    <p className='font-Matter-Regular text-sm'>{`${currentBidder?.user?.shippingAddress?.city}, ${currentBidder?.user?.shippingAddress?.state} ${currentBidder?.user?.shippingAddress?.country} ${currentBidder?.user?.shippingAddress?.zipPostalCode}`}</p>
+                                    <p className='font-Matter-Regular text-sm'>{`${currentBidder?.user?.shippingAddress?.city}, ${currentBidder?.user?.shippingAddress?.state} USA ${currentBidder?.user?.shippingAddress?.zipPostalCode}`}</p>
                                   </div>
                                   <i
                                     onClick={() => copyData('', bidder?.user?.shippingAddress)}

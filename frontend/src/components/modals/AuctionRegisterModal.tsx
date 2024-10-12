@@ -20,7 +20,7 @@ const AuctionRegisterModal: FC<AuctionRegisterModalProps> = ({
       <div className='bg-white rounded-xl p-4 sm:p-8 w-full relative'>
         <div className='flex items-center justify-between mb-4'>
           <div className='flex items-center'>
-            <i className={`fa-solid fa-user text-2xl ${theme.text} mr-3`}></i>
+            <i className={`fa-solid fa-user text-2xl ${theme?.text} mr-3`}></i>
             <p className='font-Matter-Medium text-xl'>Have An Account?</p>
           </div>
           <i
@@ -30,7 +30,7 @@ const AuctionRegisterModal: FC<AuctionRegisterModalProps> = ({
         </div>
         <div className='flex flex-col sm:flex-row items-center gap-5'>
           <Link
-            className={`${theme.border} border-4  ${theme.darker} text-white text-center w-full rounded-lg py-2.5 font-Matter-Medium text-xl cursor-pointer duration-300 hover:no-underline hover:${theme.text}`}
+            className={`${theme?.border} border-4  ${theme?.darker} text-white text-center w-full rounded-lg py-2.5 font-Matter-Medium text-xl cursor-pointer duration-300 hover:no-underline hover:${theme?.text}`}
             to='/auth/login'
             state={{
               cameFromAuction: true,
@@ -40,7 +40,7 @@ const AuctionRegisterModal: FC<AuctionRegisterModalProps> = ({
             Login
           </Link>
           <Link
-            className={`${theme.border} border-4 ${theme.text} text-center w-full rounded-lg py-2.5 font-Matter-Medium text-xl cursor-pointer duration-300 hover:no-underline hover:${theme.text}`}
+            className={`${theme?.border} border-4 ${theme?.text} text-center w-full rounded-lg py-2.5 font-Matter-Medium text-xl cursor-pointer duration-300 hover:no-underline hover:${theme?.text}`}
             to='/auth/register'
             state={{
               cameFromAuction: true,

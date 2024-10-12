@@ -54,9 +54,7 @@ const BuyAuctionItemNow = () => {
           auctionItem: auctionItem,
           payPalId: details.id,
           buyNowPrice: auctionItem?.buyNowPrice,
-          processingFee: auctionItem?.processingFee,
           totalPrice: auctionItem?.total,
-          feesRequired: auctionItem?.feesRequired,
         };
 
         await createInstantBuy(instantBuyObj)
@@ -166,12 +164,6 @@ const BuyAuctionItemNow = () => {
                         </p>
                       </div>
                       <div className='w-full h-[0.5px] bg-gray-100 mb-4'></div>
-                      <div className='flex items-center justify-between mb-3'>
-                        <p className='font-Matter-Regular'>Processing Fee</p>
-                        <p className='font-Matter-Regular'>
-                          ${toFixed(auctionItem?.processingFee)}
-                        </p>
-                      </div>
                       <div className='flex items-center justify-between mt-3.5'>
                         <p className='font-Matter-Regular'>Total</p>
                         <p className='font-Matter-Medium'>${toFixed(auctionItem?.total)}</p>
@@ -183,7 +175,6 @@ const BuyAuctionItemNow = () => {
                         forceReRender={payPalComponents.forceRerender}
                         createOrder={payPalComponents.createOrder}
                         onApprove={payPalComponents.onApprove}
-                        onError={(err: any) => console.log('ERROR: ', err)}
                       />
                     </div>
                   </Fragment>

@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
 import { FormFile } from 'react-bootstrap';
 import TailwindSpinner from '../../../components/Loaders/TailwindSpinner';
 import useEventEditForm from '../../../utils/hooks/useEventEditForm';
-import { formatDateForCalandar, formatDateForEstTimezone } from '../../../utils/hooks/useAuctionSettingsForm';
+import { formatDateForCalendar, formatDateForEstTimezone } from '../../../utils/dateFunctions';
 
 const EventEdit = () => {
   const {
@@ -151,7 +151,7 @@ const EventEdit = () => {
                   onChange={handleInput}
                   type='date'
                   alt='startDate'
-                  value={formatDateForCalandar(inputs.startDate) || ''}
+                  value={formatDateForCalendar(inputs.startDate) || ''}
                 />
               </div>
               <div className='flex flex-col'>
@@ -164,7 +164,7 @@ const EventEdit = () => {
                   onChange={handleInput}
                   type='Date'
                   alt='endDate'
-                  value={formatDateForCalandar(inputs.endDate) || ''}
+                  value={formatDateForCalendar(inputs.endDate) || ''}
                 />
               </div>
             </div>

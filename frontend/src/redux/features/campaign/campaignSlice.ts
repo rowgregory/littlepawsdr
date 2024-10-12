@@ -1,109 +1,6 @@
 import { Reducer, createSlice } from '@reduxjs/toolkit';
 import { campaignApi } from '../../services/campaignApi';
-
-export interface CampaignPayload {
-  _id: string;
-  title: string;
-  subtitle: string;
-  goal: number;
-  isTheme: boolean;
-  themeColor: {
-    xlight: string;
-    light: string;
-    dark: string;
-    darker: string;
-    text: string;
-    text2: string;
-    gradient: string;
-    border: string;
-    border2: string;
-    fill: string;
-  };
-  coverPhoto: string;
-  coverPhotoName: string;
-  maintainAspectRatio: boolean;
-  totalCampaignRevenue: number;
-  supporters: number;
-  story: string;
-  customCampaignLink: string;
-  isCampaignPublished: boolean;
-  isMoneyRaisedVisible: boolean;
-  isTipsEnabled: boolean;
-  feesRequired: boolean;
-  campaignStatus: string;
-  auction: {
-    _id: string;
-    settings: {
-      startDate: string;
-      endDate: string;
-      isAuctionPublished: boolean;
-      anonymousBidding: boolean;
-      hasBegun: boolean;
-      hasEnded: boolean;
-      auctionStatus: string;
-    };
-    donations: [];
-    items: [];
-    bidders: [];
-    winningBids: [];
-    itemFulfillments: [];
-  };
-  imgPreference: string;
-}
-export interface CampaignStatePayload {
-  loading: boolean;
-  success: boolean;
-  error: string | false | null;
-  message: string | null;
-  campaignId: string;
-  detailsId: string;
-  sharingId: string;
-  auctionId: string;
-  settingsId: string;
-  campaigns: {
-    active: [];
-    past: [];
-  };
-  campaignsForAdminView: [];
-  campaign: CampaignPayload;
-  auctionItem: {
-    _id: string;
-    name: string;
-    description: string;
-    photos: [
-      {
-        _id: string;
-        url: string;
-        name: string;
-        size: string;
-      }
-    ];
-    instantBuyers: [];
-    sellingFormat: string;
-    startingPrice: number;
-    buyNowPrice: number;
-    totalQuantity: number;
-    requiresShipping: boolean;
-    shippingCosts: number;
-    currentBid: number;
-    minimumBid: number;
-    totalBids: number;
-    bidIncrement: number;
-    retailValue: number;
-    highestBidAmount: number;
-    bids: [];
-    total: number;
-    topBidder: string;
-    soldPrice: number;
-  };
-  instantBuy: {} | any;
-  confirmedBidAmount: number;
-  type: string;
-  winner: {
-    auctionItem: {};
-  };
-  customCampaignLink: string;
-}
+import { CampaignStatePayload } from '../../../components/types/campaign-types';
 
 export const initialCampaignState: CampaignStatePayload = {
   loading: false,
@@ -116,6 +13,7 @@ export const initialCampaignState: CampaignStatePayload = {
   auctionId: '',
   settingsId: '',
   campaigns: {
+    upcoming: [],
     active: [],
     past: [],
   },
@@ -125,7 +23,6 @@ export const initialCampaignState: CampaignStatePayload = {
     title: '',
     subtitle: '',
     goal: 0,
-    isTheme: false,
     themeColor: {
       xlight: '',
       light: '',
@@ -148,7 +45,6 @@ export const initialCampaignState: CampaignStatePayload = {
     isCampaignPublished: false,
     isMoneyRaisedVisible: false,
     isTipsEnabled: false,
-    feesRequired: false,
     campaignStatus: '',
     auction: {
       _id: '',
@@ -203,9 +99,50 @@ export const initialCampaignState: CampaignStatePayload = {
   confirmedBidAmount: 0,
   type: '',
   winner: {
-    auctionItem: {},
+    _id: '',
+    auctionItemPaymentStatus: '',
+    hasShippingAddress: false,
+    itemSoldPrice: 0,
+    shipping: 0,
+    totalPrice: 0,
+    theme: {} as any,
+    user: {
+      name: '',
+    },
+    auctionItem: {
+      _id: '',
+      photos: [
+        {
+          _id: '',
+          url: '',
+          name: '',
+          size: '',
+        },
+      ],
+      name: '',
+      description: '',
+      instantBuyers: [],
+      sellingFormat: '',
+      startingPrice: 0,
+      buyNowPrice: 0,
+      totalQuantity: 0,
+      requiresShipping: false,
+      shippingCosts: 0,
+      currentBid: 0,
+      minimumBid: 0,
+      totalBids: 0,
+      bidIncrement: 0,
+      retailValue: 0,
+      highestBidAmount: 0,
+      bids: [],
+      total: 0,
+      topBidder: '',
+      soldPrice: 0,
+    },
+    customCampaignLink: '',
   },
   customCampaignLink: '',
+  status: ''
 };
 
 export const campaignSlice = createSlice({
@@ -341,6 +278,7 @@ export const campaignSlice = createSlice({
         campaignApi.endpoints.getCustomCampaignLink.matchFulfilled,
         (state, { payload }: any) => {
           state.customCampaignLink = payload.customCampaignLink;
+          state.status = payload.status;
         }
       )
       .addMatcher(

@@ -24,8 +24,9 @@ import mongoose from 'mongoose';
 import getTrackingService from '../utils/getTrackingService.js';
 import { io } from '../server.js';
 import { sendEmail } from '../utils/sendEmail.js';
-import formDateForActiveCampaigns from '../utils/formDateForActiveCampaigns.js';
 import { logEvent, prepareLog } from '../utils/logHelpers.js';
+import getAuctionStatus from '../utils/campaign-utils/getAuctionStatus.js';
+import { format, formatDistanceToNow } from 'date-fns';
 
 /**
  @desc    Create a campaign
@@ -88,12 +89,12 @@ const getCampaign = asyncHandler(async (req, res) => {
               { path: 'bids' },
             ],
           },
-          { path: 'settings', select: 'endDate startDate' },
+          { path: 'settings', select: 'endDate startDate status' },
           {
             path: 'winningBids',
             populate: [{ path: 'user' }, { path: 'auctionItem', populate: [{ path: 'photos' }] }],
           },
-          { path: 'bidders', populate: [{ path: 'user' }] },
+          { path: 'bidders', populate: [{ path: 'user', select: 'name email _id createdAt shippingAddress' }] },
           {
             path: 'itemFulfillments',
             populate: [{ path: 'user' }, { path: 'auctionItem', populate: [{ path: 'photos' }] }],
@@ -121,7 +122,7 @@ const getCampaign = asyncHandler(async (req, res) => {
 });
 
 /**
- @desc    Update campaign sharing
+ @desc    Update campaign
  @route   PUT /api/campaign
  @access  Private/Admin
 */
@@ -178,14 +179,23 @@ const updateCampaign = asyncHandler(async (req, res) => {
 });
 
 /**
- @desc    Update campaign sharing
+ @desc    Update aution
  @route   PUT /api/campaign/auction
  @access  Private/Admin
 */
 const updateAuction = asyncHandler(async (req, res) => {
   try {
     const { type, ...rest } = req.body;
-    await Auction.findOneAndUpdate({ _id: req.body.id }, { settings: rest.data }, { new: true });
+
+    const auction = await Auction.findById(req.body.id);
+    if (auction) {
+      auction.settings = {
+        ...auction.settings, // Keep existing settings
+        ...rest.data, // Update with new fields
+      };
+    }
+
+    await auction.save();
 
     io.emit('auction-updated');
 
@@ -218,9 +228,8 @@ const getAuctionItem = asyncHandler(async (req, res) => {
       { $match: { _id: new mongoose.Types.ObjectId(auctionItemId) } },
       {
         $set: {
-          processingFee: { $multiply: ['$buyNowPrice', 0.035] },
           total: {
-            $add: ['$buyNowPrice', { $multiply: ['$buyNowPrice', 0.035] }, '$shippingCosts'],
+            $add: ['$buyNowPrice', '$shippingCosts'],
           },
         },
       },
@@ -281,7 +290,7 @@ const createAuctionItem = asyncHandler(async (req, res) => {
       { _id: auction },
       { ...req.body, $push: { items: auctionItem._id } }
     );
-
+    io.emit('auction-updated');
     res.status(201).json({ message: 'Auction item created', sliceName: 'campaignApi' });
   } catch (err) {
     await Error.create({
@@ -401,8 +410,7 @@ const getCampaigns = asyncHandler(async (req, res) => {
       { path: 'auction', populate: [{ path: 'items' }, { path: 'settings' }] },
     ]);
 
-    const today = new Date();
-
+    const upcomingCampaigns = [];
     const activeCampaigns = [];
     const pastCampaigns = [];
 
@@ -410,55 +418,56 @@ const getCampaigns = asyncHandler(async (req, res) => {
       if (campaign.auction) {
         const auction = await Auction.findById(campaign.auction);
 
-        if (
-          (auction &&
-            today >= auction.settings.startDate &&
-            today <= auction.settings.endDate &&
-            campaign.isCampaignPublished) ||
-          (campaign.isCampaignPublished && !auction.settings.hasEnded)
-        ) {
-          activeCampaigns.push({
-            title: campaign.title,
-            message: `${formDateForActiveCampaigns(
-              auction?.settings?.startDate
-            )}  -  ${formDateForActiveCampaigns(auction.settings.endDate)}`,
-            customCampaignLink: campaign.customCampaignLink,
-            _id: campaign?._id,
-          });
-        } else if (campaign.isCampaignPublished) {
-          const endDate = new Date(auction.settings.endDate);
-          const timeDiff = Math.abs(today - endDate);
-          const hoursDiff = Math.floor(timeDiff / (1000 * 3600));
+        if (auction && auction.settings) {
+          const { startDate, endDate } = auction.settings;
 
-          let message;
+          if (startDate && endDate) {
 
-          if (hoursDiff < 24) {
-            message = `Ended ${hoursDiff} hour${hoursDiff > 1 ? 's' : ''} ago`;
-          } else {
-            const daysDiff = Math.floor(hoursDiff / 24);
-            if (daysDiff <= 30) {
-              if (daysDiff >= 14) {
-                const weeksDiff = Math.floor(daysDiff / 7);
-                message = `Ended ${weeksDiff} week${weeksDiff > 1 ? 's' : ''} ago`;
-              } else {
-                message = `Ended ${daysDiff} day${daysDiff > 1 ? 's' : ''} ago`;
-              }
+            const auctionStatus = getAuctionStatus(startDate, endDate);
+
+            if (auctionStatus === 'upcoming') {
+              const startsIn = formatDistanceToNow(startDate, { addSuffix: true });
+
+              upcomingCampaigns.push({
+                title: campaign.title,
+                message: `Starts ${startsIn}`,
+                dates: `${format(startDate, 'MMM do, yyyy')} - ${format(endDate, 'MMM do, yyyy')}`,
+                customCampaignLink: campaign.customCampaignLink,
+                _id: campaign?._id,
+              });
+            } else if (auctionStatus === 'active') {
+              const endsIn = formatDistanceToNow(endDate, { addSuffix: true });
+
+              activeCampaigns.push({
+                title: campaign.title,
+                message: `Ends ${endsIn}`,
+                dates: `${format(startDate, 'MMM do, yyyy')} - ${format(endDate, 'MMM do, yyyy')}`,
+                customCampaignLink: campaign.customCampaignLink,
+                _id: campaign?._id,
+              });
             } else {
-              const monthsDiff = Math.floor(daysDiff / 30);
-              message = `Ended ${monthsDiff} month${monthsDiff > 1 ? 's' : ''} ago`;
+              const endedIn = formatDistanceToNow(endDate, { addSuffix: true });
+
+              pastCampaigns.push({
+                title: campaign.title,
+                message: `Ended ${endedIn}`,
+                dates: `${format(startDate, 'MMM do, yyyy')} - ${format(endDate, 'MMM do, yyyy')}`,
+                customCampaignLink: campaign.customCampaignLink,
+                _id: campaign?._id,
+              });
             }
           }
-          pastCampaigns.push({
-            title: campaign.title,
-            message,
-            customCampaignLink: campaign.customCampaignLink,
-            _id: campaign?._id,
-          });
         }
       }
     }
 
-    res.status(200).json({ campaigns: { active: activeCampaigns, past: pastCampaigns } });
+    res.status(200).json({
+      campaigns: {
+        upcoming: upcomingCampaigns,
+        active: activeCampaigns,
+        past: pastCampaigns,
+      },
+    });
   } catch (err) {
     await Error.create({
       functionName: 'GET_ALL_CAMPAIGNS_PUBLIC',
@@ -468,7 +477,7 @@ const getCampaigns = asyncHandler(async (req, res) => {
     });
 
     res.status(500).send({
-      message: 'Error fetching campaigns',
+      message: err.message,
       sliceName: 'campaignApi',
     });
   }
@@ -558,7 +567,6 @@ const createOneTimeAuctionDonation = asyncHandler(async (req, res) => {
     email,
     donorPublicMessage,
     oneTimeDonationAmount,
-    creditCardProcessingFee,
     paypalId,
     hasAnonymousBiddingEnabled,
   } = req.body;
@@ -570,7 +578,6 @@ const createOneTimeAuctionDonation = asyncHandler(async (req, res) => {
       donorPublicMessage,
       email,
       oneTimeDonationAmount,
-      creditCardProcessingFee,
       paypalId,
     });
 
@@ -765,6 +772,7 @@ const getWinningBidder = asyncHandler(async (req, res) => {
   try {
     const winner = await AuctionWinningBidder.findById(req.params.id).populate([
       { path: 'auctionItem', populate: [{ path: 'photos' }] },
+      { path: 'user', select: 'name email shippingAddress' },
     ]);
 
     const campaign = await Campaign.findOne({ auction: winner.auction });
@@ -772,12 +780,13 @@ const getWinningBidder = asyncHandler(async (req, res) => {
     const winningBidder = {
       ...winner.toObject(),
       theme: campaign.themeColor,
+      customCampaignLink: campaign.customCampaignLink 
     };
 
     res.status(200).json({ winningBidder });
   } catch (err) {
     await Error.create({
-      functionName: 'GET_WINNING_BIDDER_PRIVAT',
+      functionName: 'GET_WINNING_BIDDER_PRIVATE',
       name: err.name,
       message: err.message,
       user: { id: req?.user?._id, email: req?.user?.email },
@@ -1021,16 +1030,25 @@ const getCustomCampaignLinkName = asyncHandler(async (req, res) => {
     const campaigns = await Campaign.find().populate([
       { path: 'auction', populate: [{ path: 'settings' }] },
     ]);
+    
+    const responseData = [];
 
     campaigns.forEach((campaign) => {
-      const { hasBegun, hasEnded } = campaign.auction?.settings || {};
-
-      if (hasBegun && !hasEnded) {
-        res
-          .status(201)
-          .json({ customCampaignLink: campaign.customCampaignLink, sliceName: 'campaignApi' });
+      const { status } = campaign.auction?.settings || {};
+    
+      if (status === 'LIVE') {
+        responseData.push({
+          customCampaignLink: campaign.customCampaignLink,
+          status,
+          sliceName: 'campaignApi',
+        });
+      } else {
+        responseData.push({ sliceName: 'campaignApi' });
       }
     });
+    
+    // Send a single response after processing all campaigns
+    res.status(200).json(responseData);
   } catch (err) {
     await Error.create({
       functionName: 'GET_CUSTOM_CAMPAIGN_LINK',
@@ -1038,7 +1056,6 @@ const getCustomCampaignLinkName = asyncHandler(async (req, res) => {
       message: err.message,
       user: { id: req?.user?._id, email: req?.user?.email },
     });
-    console.log(err);
     res.status(500).send({
       message: 'Error fetching custom campaign link name item',
       sliceName: 'campaignApi',

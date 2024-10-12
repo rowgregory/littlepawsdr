@@ -7,8 +7,8 @@ import { Link } from 'react-router-dom';
 
 const AuctionDonations = () => {
   const user = useSelector((state: RootState) => state.user);
-  const donations = user?.donations;
-  const noDonations = donations?.length === 0;
+  const auctionDonations = user?.auctionDonations;
+  const noDonations = auctionDonations?.length === 0;
 
   return (
     <Fragment>
@@ -47,24 +47,16 @@ const AuctionDonations = () => {
                     </div>
                   </th>
                   <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
-                    <div className=' text-sm flex flex-nowrap items-center gap-2'>
-                      Message
-                    </div>
+                    <div className=' text-sm flex flex-nowrap items-center gap-2'>Message</div>
                   </th>
                   <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
-                    <div className=' text-sm flex flex-nowrap items-center gap-2'>
-                      Auction
-                    </div>
+                    <div className=' text-sm flex flex-nowrap items-center gap-2'>Auction</div>
                   </th>
                   <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
-                    <div className=' text-sm flex flex-nowrap items-center gap-2'>
-                      Date & Time
-                    </div>
+                    <div className=' text-sm flex flex-nowrap items-center gap-2'>Date & Time</div>
                   </th>
                   <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
-                    <div className=' text-sm flex flex-nowrap items-center gap-2'>
-                      Status
-                    </div>
+                    <div className=' text-sm flex flex-nowrap items-center gap-2'>Status</div>
                   </th>
                   <th>
                     <div className='flex flex-nowrap items-center gap-2'></div>
@@ -72,7 +64,7 @@ const AuctionDonations = () => {
                 </tr>
               </thead>
               <tbody>
-                {donations?.map((donations: any) => (
+                {auctionDonations?.map((donations: any) => (
                   <tr
                     className='z-1 h-[3.25rem] group bg-white [&_td]:focus-within:bg-gray-100 [&_td]:hover:bg-gray-100 relative'
                     key={donations?._id}

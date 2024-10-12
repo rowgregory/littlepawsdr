@@ -7,12 +7,11 @@ const AuctionItemButtonBox = ({
   campaign,
   theme,
   auth,
-  params,
+  customLinkId,
   setOpenBidModal,
   setOpenAddressModal,
 }: any) => {
   const navigate = useNavigate();
-
   return (
     <Fragment>
       {ifCampaignIsOver && auctionItem?.sellingFormat === 'auction' ? (
@@ -26,8 +25,7 @@ const AuctionItemButtonBox = ({
           </div>
           <p className='text-3xl font-Matter-Medium mt-1'>{auctionItem?.topBidder}</p>
           <p className='font-Matter-Medium'>
-            Won this item for{' '}
-            <span className={`${theme?.text}`}>${auctionItem?.soldPrice}</span>
+            Won this item for <span className={`${theme?.text}`}>${auctionItem?.soldPrice}</span>
           </p>
         </div>
       ) : !auth?.user && !ifCampaignIsOver ? (
@@ -52,17 +50,14 @@ const AuctionItemButtonBox = ({
             ifCampaignIsOver ||
             auctionItem?.totalQuantity === 0
           }
-          className={`${ifCampaignIsOver
-            ? 'bg-gray-600 text-gray-200'
-            : campaign?.campaign.themeColor.dark
-            } py-3.5 w-full rounded-lg flex items-center justify-center mb-5 duration-200 hover:no-underline`}
+          className={`${
+            ifCampaignIsOver ? 'bg-gray-600 text-gray-200' : campaign?.campaign.themeColor.dark
+          } py-3.5 w-full rounded-lg flex items-center justify-center mb-5 duration-200 hover:no-underline`}
           onClick={() => {
             if (!auth?.user?.shippingAddress) {
               setOpenAddressModal({ open: true, auctionItemId: auctionItem._id });
             } else {
-              navigate(
-                `/campaigns/${params.customLinkId}/auction/item/${auctionItem?._id}/buy`
-              );
+              navigate(`/campaigns/${customLinkId}/auction/item/${auctionItem?._id}/buy`);
             }
           }}
         >
@@ -74,7 +69,9 @@ const AuctionItemButtonBox = ({
         <button
           disabled={!campaign?.campaign?.auction?.settings?.hasBegun || ifCampaignIsOver}
           onClick={() => setOpenBidModal(true)}
-          className={`${campaign?.campaign.themeColor.dark} py-3.5 w-full rounded-lg flex items-center justify-center mb-5`}
+          className={`${campaign?.campaign.themeColor.dark} ${
+            campaign?.campaign?.campaignStatus === 'Active Campaign' ? 'cursor-pointer' : 'cursor-not-allowed'
+          } py-3.5 w-full rounded-lg flex items-center justify-center mb-5`}
         >
           <i className='fa-solid fa-arrow-up-from-bracket text-white text-2xl'></i>
           <p className='text-2xl ml-3 text-white font-Matter-Medium'>Place a bid</p>
