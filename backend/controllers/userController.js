@@ -10,6 +10,7 @@ import {
 import AdoptionFee from '../models/adoptionFeeModel.js';
 import Order from '../models/orderModel.js';
 import Donation from '../models/donationModel.js';
+import validateShippingAddress from '../utils/user-utils/validatieShippingAddress.js';
 
 /**
  @desc    Get all users
@@ -70,6 +71,36 @@ const getUser = asyncHandler(async (req, res) => {
 });
 
 /**
+ @desc    Get user shipping address
+ @route   GET /api/users/:id/shipping-address
+ @access  Private
+*/
+const getUserShippingAddress = asyncHandler(async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).select('shippingAddress');
+
+    const isValid = validateShippingAddress(user.shippingAddress);
+    if (isValid) {
+      res.status(200).json({ hasShippingAddress: true });
+    } else {
+      res.status(200).json({ hasShippingAddress: false });
+    }
+  } catch (err) {
+    await Error.create({
+      functionName: 'GET_USER_SHIPPING_ADDRESS',
+      name: err.name,
+      message: err.message,
+      user: { id: req?.user?._id, email: req?.user?.email },
+    });
+
+    res.status(500).json({
+      message: `Error fetching user shipping address ${err.message}`,
+      sliceName: 'userApi',
+    });
+  }
+});
+
+/**
  @desc    Update User private
  @route   GET /api/users/:id
  @access  Private
@@ -102,7 +133,22 @@ const updateUser = asyncHandler(async (req, res) => {
       { bidder: user.anonymousBidding ? 'Anonymous' : user.name }
     );
 
-    res.status(200).json({ message: 'User updated', type, user, sliceName: 'userApi' });
+    const isValid = validateShippingAddress(user.shippingAddress);
+    if (isValid) {
+      res.status(200).json({
+        hasShippingAddress: true,
+        message: 'User updated',
+        type,
+        sliceName: 'userApi',
+      });
+    } else {
+      res.status(200).json({
+        hasShippingAddress: false,
+        message: 'User updated',
+        type,
+        sliceName: 'userApi',
+      });
+    }
   } catch (err) {
     await Error.create({
       functionName: 'UPDATE USER',
@@ -118,7 +164,6 @@ const updateUser = asyncHandler(async (req, res) => {
   }
 });
 
-
 /**
  @desc    Update user role
  @route   PUT /api/users/role/:id
@@ -126,11 +171,7 @@ const updateUser = asyncHandler(async (req, res) => {
 */
 const updateUserRole = asyncHandler(async (req, res) => {
   try {
-    await User.findByIdAndUpdate(
-      req.params.id,
-      { isAdmin: req.body.isAdmin },
-      { new: true }
-    );
+    await User.findByIdAndUpdate(req.params.id, { isAdmin: req.body.isAdmin }, { new: true });
 
     res.status(200).json({ message: 'User updated', sliceName: 'userApi' });
   } catch (err) {
@@ -169,7 +210,7 @@ const deleteUser = asyncHandler(async (req, res) => {
 
     res.status(404).json({
       message: `Error deleting user`,
-      sliceName: 'userApi'
+      sliceName: 'userApi',
     });
   }
 });
@@ -187,9 +228,10 @@ const fetchPersonalData = asyncHandler(async (req, res) => {
       {
         path: 'auction',
         select: '-bidders -donations -items -winningBids',
-        populate: { path: 'campaign', select: 'title' },
+        populate: [{ path: 'campaign', select: 'title customCampaignLink' }],
       },
     ]);
+
     const auctionDonations = await AuctionDonation.find({ email: req.user.email }).populate([
       {
         path: 'auctionId',
@@ -197,6 +239,7 @@ const fetchPersonalData = asyncHandler(async (req, res) => {
         populate: { path: 'campaign', select: 'title' },
       },
     ]);
+
     const instantBuys = await AuctionItemInstantBuyer.find({
       email: req.user.email,
     }).populate([
@@ -217,10 +260,14 @@ const fetchPersonalData = asyncHandler(async (req, res) => {
     const adoptionApplicationFees = await AdoptionFee.find({
       emailAddress: req.user.email,
     }).sort({ createdAt: -1 });
-    const orders = await Order.find({ email: req.user.email }).sort({ createdAt: -1 })
+
+    const orders = await Order.find({ email: req.user.email })
+      .sort({ createdAt: -1 })
+      .populate([{ path: 'products' }, { path: 'ecards' }, { path: 'welcomeWieners' }]);
 
     const user = await User.findById(req.user._id);
-    const donations = await Donation.find({ email: req.user.email })
+
+    const donations = await Donation.find({ email: req.user.email });
 
     res.status(200).json({
       bids,
@@ -230,7 +277,7 @@ const fetchPersonalData = asyncHandler(async (req, res) => {
       winningBids,
       adoptionApplicationFees,
       user,
-      donations
+      donations,
     });
   } catch (err) {
     await Error.create({
@@ -241,8 +288,8 @@ const fetchPersonalData = asyncHandler(async (req, res) => {
     });
 
     res.status(500).json({
-      message: `Failed to fetch personal data`,
-      sliceName: 'userApi'
+      message: `Failed to fetch personal data: ${err.message}`,
+      sliceName: 'userApi',
     });
   }
 });
@@ -250,6 +297,7 @@ const fetchPersonalData = asyncHandler(async (req, res) => {
 export {
   getUsers,
   getUser,
+  getUserShippingAddress,
   updateUser,
   deleteUser,
   updateUserRole,

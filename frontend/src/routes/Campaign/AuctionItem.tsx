@@ -3,13 +3,11 @@ import { useSelector } from 'react-redux';
 import { useLocation, useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { RootState } from '../../redux/toolkitStore';
-import { usePlaceBidMutation } from '../../redux/services/campaignApi';
 import { formatDateWithTimezone } from '../../utils/dateFunctions';
 import BidConfirmationModal from '../../components/modals/BidConfirmationModal';
 import BidModal from '../../components/campaign/BidModal';
 import AuctionItemButtonBox from '../../components/campaign/AuctionItemButtonBox';
 import AuctionItemShippingAddressModal from '../../components/modals/AuctionItemShippingAddressModal';
-import useAuctionItemFormPublic from '../../utils/hooks/useAuctionItemFormPublic';
 import AuctionItemImgAndDescSection from '../Admin/Campaigns/Auction/AuctionItemImgAndDescSection';
 import useScrollToTop from '../../utils/hooks/useScrollToTop';
 import AuctionItemDetailsSection from '../../components/campaign/AuctionItemDetailsSection';
@@ -18,17 +16,15 @@ import AuctionItemBidHistory from '../../components/campaign/AuctionItemBidHisto
 const AuctionItem = () => {
   const params = useParams();
   const { pathname } = useLocation();
-  const state = useSelector((state: RootState) => state);
-  const campaign = state.campaign;
-  const auth = state.auth;
+  const campaign = useSelector((state: RootState) => state.campaign);
+  const auth = useSelector((state: RootState) => state.auth);
   const customLinkId = params.customLinkId;
   const readyToBid = params.bid;
   const auctionItemId = params.auctionItemId;
   const [openBidModal, setOpenBidModal] = useState(readyToBid === 'bid');
   const [openConfirmationModal, setOpenConfirmationModal] = useState(false);
   const [openAddressModal, setOpenAddressModal] = useState({ open: false, auctionItemId: '' });
-  const theme = campaign.campaign.themeColor;
-
+  const theme = campaign?.campaign?.themeColor;
   const ifCampaignIsOver = campaign?.campaign?.auction?.settings?.hasEnded;
 
   const handleCloseBidModal = () => {
@@ -41,24 +37,6 @@ const AuctionItem = () => {
   const auctionItem = campaign?.campaign?.auction?.items?.find(
     (item: any) => item?._id === auctionItemId
   ) as any;
-
-  const [placeBid, { isLoading: loadingPlacingBid }] = usePlaceBidMutation();
-
-  const handlePlaceBidCb = async () => {
-    await placeBid({
-      auctionItemId: auctionItem?._id,
-      auctionId: campaign?.campaign?.auction?._id,
-      bidAmount: inputs.bidAmount,
-    })
-      .unwrap()
-      .then(() => {
-        handleCloseBidModal();
-        setOpenConfirmationModal(true);
-      })
-      .catch((err: any) => err);
-  };
-
-  const { inputs, handleInput, onSubmit } = useAuctionItemFormPublic(handlePlaceBidCb, auctionItem);
 
   useScrollToTop();
 
@@ -76,10 +54,7 @@ const AuctionItem = () => {
         handleClose={handleCloseBidModal}
         campaign={campaign}
         auctionItem={auctionItem}
-        handlePlaceBid={onSubmit}
-        inputs={inputs}
-        handleInput={handleInput}
-        loading={loadingPlacingBid}
+        setOpenConfirmationModal={setOpenConfirmationModal}
       />
       <AuctionItemShippingAddressModal
         open={openAddressModal.open}
@@ -116,7 +91,7 @@ const AuctionItem = () => {
                           {auctionItem?.bids?.length === 0 ? 'OPENING' : 'CURRENT'} BID
                         </p>
                         <p className='tracking-wider text-gray-800 font-Matter-Regular'>
-                          {`$${auctionItem?.currentBid}` ?? 'No Bids'}
+                          {auctionItem?.currentBid ? `$${auctionItem?.currentBid}` : 'No Bids'}
                         </p>
                       </div>
                       <div className='flex flex-col h-fit lg:mx-6 lg:border-l-2 lg:border-r-2 lg:border-gray-200 lg:px-4'>
@@ -149,7 +124,7 @@ const AuctionItem = () => {
                 campaign={campaign}
                 theme={theme}
                 auth={auth}
-                params={params}
+                customLinkId={customLinkId}
                 setOpenBidModal={setOpenBidModal}
                 setOpenAddressModal={setOpenAddressModal}
               />

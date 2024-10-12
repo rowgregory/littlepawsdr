@@ -41,6 +41,7 @@ import {
   educationTipReducer,
   resetEducationTipError,
 } from './features/education-tip/educationTipSlice';
+import { formReducer } from './features/form/formSlice';
 
 const errorHandlerMiddleware = (store: any) => (next: any) => (action: any) => {
   const resetErrorActions: { [key: string]: () => void } = {
@@ -116,6 +117,7 @@ const rootReducer = combineReducers({
   campaign: campaignReducer,
   cart: persistReducer(cartPersistConfig, cartReducer),
   navbar: navbarReducer,
+  form: formReducer,
   [rescueGroupsApi.reducerPath]: rescueGroupsApi.reducer,
   [api.reducerPath]: api.reducer,
 });

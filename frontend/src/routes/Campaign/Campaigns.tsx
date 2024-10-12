@@ -22,6 +22,14 @@ const Campaigns = () => {
         </Link>
         <p className='text-3xl text-gray-500 mb-3 text-center'>Little Paws Dachshund Rescue</p>
         <div className='max-w-[400px] w-full'>
+          <p className='text-black font-Matter-Medium text-lg mb-2 mt-6'>Upcoming Campaigns</p>
+          {campaigns?.upcoming?.length === 0 ? (
+            <div className='font-Matter-Light'>There are no upcoming campaigns</div>
+          ) : (
+            campaigns?.upcoming?.map((campaign: any, i: number) => (
+              <PublicCampaignLink key={i} campaign={campaign} />
+            ))
+          )}
           <p className='text-black font-Matter-Medium text-lg mb-2 mt-6'>Active Campaigns</p>
           {campaigns?.active?.length === 0 ? (
             <div className='font-Matter-Light'>There are no active campaigns</div>

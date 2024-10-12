@@ -15,7 +15,7 @@ const NavigationDrawer = () => {
   const campaign = useSelector((state: any) => state.campaign);
   const open = navbar.toggle.leftDrawer;
 
-  useGetCustomCampaignLinkQuery();
+  const { data: customCampaignLink } = useGetCustomCampaignLinkQuery();
 
   const handleClose = useCallback(() => {
     if (navbar.toggle.leftDrawer) {
@@ -27,8 +27,8 @@ const NavigationDrawer = () => {
 
   useScrollToTop();
 
-  const campaignLinkKey = campaign?.customCampaignLink
-    ? `/campaigns/${campaign?.customCampaignLink}/auction`
+  const campaignLinkKey = campaign?.status === 'LIVE' && customCampaignLink
+    ? `/campaigns/${customCampaignLink}/auction`
     : '/campaigns';
 
   return (

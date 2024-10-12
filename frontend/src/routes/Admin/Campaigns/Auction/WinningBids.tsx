@@ -83,18 +83,18 @@ const WinningBids = () => {
                       >
                         <td className='w-10 h-10'>
                           <i
-                            className={`text-gray-700 fas fa-chevron-right fa-xs ml-4 duration-300 origin-center ${openRows?.rows.some((row: any) => row.id === bidder._id)
-                              ? 'rotate-90'
-                              : ''
-                              }`}
+                            className={`text-gray-700 fas fa-chevron-right fa-xs ml-4 duration-300 origin-center ${
+                              openRows?.rows.some((row: any) => row.id === bidder._id)
+                                ? 'rotate-90'
+                                : ''
+                            }`}
                           ></i>
                         </td>
                         <td className='max-w-16 w-full overflow-hidden'>
                           <div className=' m-0 p-0 decoration-inherit hover:text-inherit hover:decoration-inherit !flex h-[3.25rem] items-center pl-3 whitespace-nowrap'>
-
                             <span className='text-sm font-Matter-Regular truncate'>
-                              {bidder?.auctionItem?.name?.split('').length >= 25
-                                ? `${bidder?.auctionItem?.name?.substring(0, 25)}...`
+                              {bidder?.auctionItem?.name?.length >= 20
+                                ? `${bidder?.auctionItem?.name?.substring(0, 20)}...`
                                 : bidder?.auctionItem?.name}
                             </span>
                           </div>
@@ -106,17 +106,18 @@ const WinningBids = () => {
                         </td>
                         <td>
                           <p className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>
-                            ${bidder?.totalPrice}
+                            ${bidder?.totalPrice?.toFixed(2)}
                           </p>
                         </td>
                         <td className='flex items-center px-4 py-3'>
                           <p
-                            className={`${bidder.winningBidPaymentStatus === 'Pending Fulfillment'
-                              ? 'text-gray-900 bg-gray-100'
-                              : bidder.winningBidPaymentStatus === 'Paid'
+                            className={`${
+                              bidder.winningBidPaymentStatus === 'Pending Fulfillment'
+                                ? 'text-gray-900 bg-gray-100'
+                                : bidder.winningBidPaymentStatus === 'Paid'
                                 ? 'text-green-500 bg-green-100'
                                 : 'text-blue-500 bg-blue-100'
-                              } px-2 py-1 rounded-3xl text-sm font-Matter-Regular items-center whitespace-nowrap`}
+                            } px-2 py-1 rounded-3xl text-sm font-Matter-Regular items-center whitespace-nowrap`}
                           >
                             {bidder?.winningBidPaymentStatus}
                           </p>
@@ -143,14 +144,15 @@ const WinningBids = () => {
                                           </p>
                                         </div>
                                         <p className='font-Matter-Medium text-sm'>
-                                          ${row.totalPrice}
+                                          ${row.totalPrice?.toFixed(2)}
                                         </p>
                                       </div>
                                       <div
-                                        className={`${row?.auctionItemPaymentStatus === 'Paid'
-                                          ? 'text-green-500 bg-green-100'
-                                          : 'text-orange-500 bg-orange-50'
-                                          } mt-4 mb-3 w-full py-1 flex items-center justify-center font-Matter-Regular`}
+                                        className={`${
+                                          row?.auctionItemPaymentStatus === 'Paid'
+                                            ? 'text-green-500 bg-green-100'
+                                            : 'text-orange-500 bg-orange-50'
+                                        } mt-4 mb-3 w-full py-1 flex items-center justify-center font-Matter-Regular`}
                                       >
                                         {row.auctionItemPaymentStatus}
                                       </div>

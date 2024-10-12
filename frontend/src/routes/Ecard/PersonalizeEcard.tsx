@@ -1,79 +1,11 @@
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useState } from 'react';
 import { useGetEcardQuery } from '../../redux/services/ecardApi';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import GreenRotatingTransparentCircle from '../../components/Loaders/GreenRotatingTransparentCircle';
 import VerticalLogo from '../../components/common/VerticalLogo';
 import { Link } from 'react-router-dom';
-import {
-  formatDateForCalandar,
-  formatDateForEstTimezone,
-} from '../../utils/hooks/useAuctionSettingsForm';
-
-const useECardForm = (state: any) => {
-  const [errors, setErrors] = useState({}) as any;
-  const [inputs, setInputs] = useState({
-    name: '',
-    email: '',
-    recipientsFullName: '',
-    recipientsEmail: '',
-    dateToSend: new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }),
-    message: '',
-  });
-
-  useEffect(() => {
-    if (state?.ecard) {
-      setInputs((prev: any) => ({
-        ...prev,
-        name: state?.ecard?.name,
-        email: state?.ecard?.email,
-        recipientsFullName: state?.ecard?.recipientsFullName,
-        recipientsEmail: state?.ecard?.recipientsEmail,
-        dateToSend: formatDateForCalandar(state?.dateToSend),
-        message: state?.ecard?.message,
-      }));
-    }
-  }, [state]);
-
-  const validate = () => {
-    const errors = {} as any;
-    if (!inputs.name.trim()) {
-      errors.name = 'Your name is required';
-    }
-    if (!inputs.email.trim()) {
-      errors.email = 'Your email is required';
-    } else if (!/^\S+@\S+\.\S+$/.test(inputs.email)) {
-      errors.email = 'Invalid email address';
-    }
-    if (!inputs.recipientsFullName.trim()) {
-      errors.recipientsFullName = "Recipient's full name is required";
-    }
-    if (!inputs.recipientsEmail.trim()) {
-      errors.recipientsEmail = "Recipient's email is required";
-    } else if (!/^\S+@\S+\.\S+$/.test(inputs.recipientsEmail)) {
-      errors.recipientsEmail = 'Invalid email address';
-    }
-    if (!inputs.dateToSend.trim()) {
-      errors.dateToSend = 'Date to send is required';
-    }
-    if (!inputs.message.trim()) {
-      errors.message = 'Message is required';
-    }
-
-    setErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
-
-  const handleInput = (e: any) => {
-    e.persist();
-
-    setInputs((inputs) => ({
-      ...inputs,
-      [e.target.name]: e.target.value,
-    }));
-  };
-
-  return { handleInput, inputs, validate, errors };
-};
+import { formatDateForCalendar, formatDateForEstTimezone } from '../../utils/dateFunctions';
+import useECardForm from '../../utils/hooks/useEcardForm';
 
 const PersonalizeEcard = () => {
   const navigate = useNavigate();
@@ -87,7 +19,6 @@ const PersonalizeEcard = () => {
   const personalizeCallback = (e: any) => {
     e.preventDefault();
     const isValid = validate();
-
     if (isValid) {
       navigate(
         {
@@ -111,17 +42,9 @@ const PersonalizeEcard = () => {
 
   const { inputs, handleInput, validate, errors } = useECardForm(state);
 
-  if (isLoading) return <GreenRotatingTransparentCircle />;
-
-  const date = new Date();
-  const tomorrowDate = new Date(date);
-  tomorrowDate.setDate(date.getDate() + 1);
-
-  const tomorrowInNewYork = tomorrowDate.toLocaleString('en-US', {
-    timeZone: 'America/New_York',
-  });
-
-  const tomorrow = formatDateForCalandar(new Date(tomorrowInNewYork));
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const minimum = formatDateForCalendar(tomorrow);
 
   return (
     <Fragment>
@@ -238,8 +161,6 @@ const PersonalizeEcard = () => {
                   onChange={(e: any) => setSendNow(e.target.value)}
                   className='mr-2 personalize-ecard'
                   checked={sendNow === 'send-now'}
-
-
                 />
                 Send my ecard right now
               </label>
@@ -266,7 +187,7 @@ const PersonalizeEcard = () => {
                     alt='Date to send'
                     aria-label='Date to send'
                     value={inputs.dateToSend || ''}
-                    min={tomorrow}
+                    min={minimum}
                   />
                   <p className='text-red-500 font-Matter-Medium text-xs mb-4 '>
                     {errors?.dateToSend}

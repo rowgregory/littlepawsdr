@@ -14,7 +14,7 @@ const orderShippedConfirmation = async (pugEmail, body) => {
       },
       locals: {
         id: body?._id,
-        orderItems: body?.orderItems?.filter((order) => order.isPhysicalProduct),
+        orderItems: body?.products,
         shippingAddress: body?.shippingAddress,
         trackingNumber: body?.trackingNumber,
         shippedOn: formatDate(body?.shippedOn),

@@ -1,4 +1,5 @@
 import formatCurrency from '../../utils/formatCurrency';
+import formatNameForAuctionItemCard from '../../utils/formatNameForAuctionItemCard';
 
 const AuctionDonationCard = ({ donation, theme }: { donation: any; theme: any }) => {
   return (
@@ -12,7 +13,7 @@ const AuctionDonationCard = ({ donation, theme }: { donation: any; theme: any })
           {formatCurrency(donation?.oneTimeDonationAmount)}
         </p>
         <p className='col-span-7 md:col-span-12 lg:col-span-7 font-Matter-Light'>
-          <span className='font-Matter-Medium'>{donation?.donor}</span> made a{' '}
+          <span className='font-Matter-Medium'>{formatNameForAuctionItemCard(donation?.donor)}</span> made a{' '}
           <span className='font-Matter-Medium'>${donation?.oneTimeDonationAmount}</span> donation
         </p>
       </div>

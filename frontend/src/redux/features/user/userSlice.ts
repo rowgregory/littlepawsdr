@@ -25,7 +25,7 @@ export interface User {
   lastName: string;
   firstNameFirstInitial: string;
   lastNameFirstInitial: string;
-  shippingAddress: ShippingAddress;
+  shippingAddress?: ShippingAddress;
 }
 
 export interface UserStatePayload {
@@ -38,7 +38,6 @@ export interface UserStatePayload {
   newsletterEmails: [];
   user: User | null;
   type: string;
-
   bids: [];
   auctionDonations: [];
   donations: [];
@@ -46,6 +45,7 @@ export interface UserStatePayload {
   orders: [] | null;
   winningBids: [] | null;
   adoptionApplicationFees: [] | null;
+  hasShippingAddress: boolean;
 }
 
 export const initialUserState: UserStatePayload = {
@@ -65,6 +65,7 @@ export const initialUserState: UserStatePayload = {
   orders: null,
   winningBids: null,
   adoptionApplicationFees: null,
+  hasShippingAddress: false,
 };
 
 export const userSlice = createSlice({
@@ -88,6 +89,9 @@ export const userSlice = createSlice({
       .addMatcher(userApi.endpoints.getUser.matchFulfilled, (state, { payload }: any) => {
         state.user = payload.user;
       })
+      .addMatcher(userApi.endpoints.getUserShippingAddress.matchFulfilled, (state, { payload }: any) => {
+        state.hasShippingAddress = payload.hasShippingAddress;
+      })
       .addMatcher(userApi.endpoints.updateUser.matchFulfilled, (state, { payload }: any) => {
         state.user = payload.user;
         state.success = true;
@@ -102,13 +106,13 @@ export const userSlice = createSlice({
       })
       .addMatcher(userApi.endpoints.fetchPersonalData.matchFulfilled, (state, { payload }: any) => {
         state.bids = payload.bids;
-        state.donations = payload.donations;
         state.auctionDonations = payload.auctionDonations;
         state.instantBuys = payload.instantBuys;
         state.orders = payload.orders;
         state.winningBids = payload.winningBids;
         state.adoptionApplicationFees = payload.adoptionApplicationFees;
         state.user = payload.user;
+        state.donations = payload.donations;
       })
       .addMatcher(
         (action: any) =>

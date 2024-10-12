@@ -10,7 +10,7 @@ interface OrdersStatePayload {
   productOrders: [] | null;
   ecardOrders: [] | null;
   welcomeWienerOrders: [] | null;
-  order: {};
+  order: {} | null | any;
   adoptionApplicationFees: [] | null;
 }
 

@@ -3,13 +3,11 @@ import { sendEmail } from './sendEmail.js';
 import AdoptionApplicationBypassCode from '../models/adoptionApplicationBypassCodeModel.js';
 import { AuctionWinningBidder } from '../models/campaignModel.js';
 import { logEvent, prepareLog } from './logHelpers.js';
-import {
-  findOneAndUpdateAuctionEnd,
-  findOneAndUpdateAuctionStart,
-  generateCode,
-  handleTopBids,
-  updateAuctionItemStatuses,
-} from './cronHelpers.js';
+import findOneAndUpdateAuctionStart from './cron-utils/findOneAndUpdateAuctionStart.js';
+import findOneAndUpdateAuctionEnd from './cron-utils/findOneAndUpdateAuctionEnd.js';
+import updateAuctionItemStatuses from './cron-utils/updateAuctionItemStatuses.js';
+import generateAdoptionApplicationFeeBypassCode from './cron-utils/generateAdoptionApplicationBypassCode.js';
+import handleTopBids from './cron-utils/handleTopBids.js';
 
 export const cronJobs = (io) => {
   return {
@@ -22,7 +20,7 @@ export const cronJobs = (io) => {
     generateAdoptionApplicationFeeBypassCode: cron.schedule(
       '0 0 */30 * *',
       async () => {
-        const generatedCode = generateCode();
+        const generatedCode = generateAdoptionApplicationFeeBypassCode();
         let existingDocument = await AdoptionApplicationBypassCode.findOne();
 
         if (!existingDocument) {
@@ -48,18 +46,11 @@ export const cronJobs = (io) => {
         const log = await prepareLog('UPDATE_ACUTION_TO_BEGIN');
         logEvent(log, 'AUCTION ATTEMPTING TO BEGIN');
 
-        const auction = await findOneAndUpdateAuctionStart();
+        const auction = await findOneAndUpdateAuctionStart(log);
 
         if (auction) {
-          logEvent(log, 'AUCTION UPDATED', auction);
-          await log.save();
-
           io.emit('auction-updated');
-        } else {
-          logEvent(log, 'NO AUCTION FOUND');
-          await log.save();
         }
-        await log.save();
       },
       {
         scheduled: true,
@@ -71,20 +62,16 @@ export const cronJobs = (io) => {
       '0 17 * * *',
       async () => {
         const log = await prepareLog('UPDATE_AUCTION_TO_END');
-
         logEvent(log, 'AUCTION ATTEMPTING TO END');
 
-        const auction = await findOneAndUpdateAuctionEnd();
+        const auction = await findOneAndUpdateAuctionEnd(log);
 
-        logEvent(log, 'AUCTION UPDATED TO END');
         if (auction) {
           await handleTopBids(auction, log);
 
           await updateAuctionItemStatuses(log);
-        } else {
-          logEvent(log, 'NO AUCTION FOUND');
 
-          await log.save();
+          io.emit('auction-updated');
         }
       },
       {

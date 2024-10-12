@@ -18,10 +18,8 @@ const AuctionItem = () => {
   const params = useParams() as any;
   const auctionItemId = params.auctionItemId;
   const isEditMode = params['*'].split('/')[1] === 'edit';
-  const [createAuctionItem, { isLoading: loadingCreate }] =
-    useCreateAuctionItemMutation();
-  const [updateAuctionItem, { isLoading: loadingUpdate }] =
-    useUpdateAuctionItemMutation();
+  const [createAuctionItem, { isLoading: loadingCreate }] = useCreateAuctionItemMutation();
+  const [updateAuctionItem, { isLoading: loadingUpdate }] = useUpdateAuctionItemMutation();
   const [deleteAuctionItemPhoto, { isLoading: loadingDelete }] =
     useDeleteAuctionItemPhotoMutation();
 
@@ -31,8 +29,19 @@ const AuctionItem = () => {
 
   const editPhotoHandler = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const newFiles = e.target.files ? Array.from(e.target.files) : [];
+
+    // Filter out any files that are videos
+    const imageFiles = newFiles.filter((file) => file.type.startsWith('image/'));
+
+    if (imageFiles.length !== newFiles.length) {
+      alert('Videos are not allowed. Please upload images only.');
+      return;
+    }
+
     setInputs((inputs: any) => ({ ...inputs, photoAmount: Number(newFiles.length) }));
+
     const images = await uploadMultipleFilesToFirebase(newFiles, true);
+
     setInputs((inputs: any) => ({
       ...inputs,
       photos: [...inputs.photos, ...images],
@@ -105,8 +114,7 @@ const AuctionItem = () => {
     }
   };
 
-  const { inputs, handleSwitch, handleInput, setInputs } =
-    useAuctionItemForm(auctionItem);
+  const { inputs, handleSwitch, handleInput, setInputs } = useAuctionItemForm(auctionItem);
 
   return (
     <div className='flex flex-col gap-y-8'>
@@ -155,9 +163,7 @@ const AuctionItem = () => {
             <label htmlFor='multiple-images' className='font-Matter-Medium'>
               Photos
             </label>
-            <p className='font-Matter-Light mb-2'>
-              Add detailed images of your auction item.
-            </p>
+            <p className='font-Matter-Light mb-2'>Add detailed images of your auction item.</p>
             <div className='border border-slate-100 border-dashed rounded-lg'>
               <Form.File
                 className='auction-item'
@@ -204,11 +210,7 @@ const AuctionItem = () => {
                     <div className='absolute z-2 top-6 left-8 text-xs text-gray-500'>
                       {file.size}KB
                     </div>
-                    <img
-                      className='w-full h-full object-cover'
-                      src={file.url}
-                      alt='auction-item'
-                    />
+                    <img className='w-full h-full object-cover' src={file.url} alt='auction-item' />
                   </div>
                 ))}
                 {inputs.photoAmount > 0 &&
@@ -230,10 +232,11 @@ const AuctionItem = () => {
             <div className='grid grid-cols-12 gap-3'>
               <label
                 htmlFor='auction'
-                className={` ${inputs.sellingFormat === 'auction'
-                  ? 'border-2 border-sky-600'
-                  : 'border-2 border-slate-100'
-                  } col-span-12 md:col-span-6 bg-slate-50 rounded-lg p-3 flex font-Matter-Medium cursor-pointer`}
+                className={` ${
+                  inputs.sellingFormat === 'auction'
+                    ? 'border-2 border-sky-600'
+                    : 'border-2 border-slate-100'
+                } col-span-12 md:col-span-6 bg-slate-50 rounded-lg p-3 flex font-Matter-Medium cursor-pointer`}
               >
                 <div className='w-16'>
                   <input
@@ -250,17 +253,17 @@ const AuctionItem = () => {
                 <div className='flex flex-col ml-1'>
                   <div className='font-Matter-Medium mb-0.5'>Auction Style</div>
                   <div className='font-Matter-Light'>
-                    Item is sold to the highest bidder or purchased at an optional
-                    Buy-It-Now price.
+                    Item is sold to the highest bidder or purchased at an optional Buy-It-Now price.
                   </div>
                 </div>
               </label>
               <label
                 htmlFor='fixed'
-                className={`${inputs.sellingFormat === 'fixed'
-                  ? 'border-2 border-sky-600'
-                  : 'border-2 border-slate-100'
-                  } col-span-12 md:col-span-6 bg-slate-50 rounded-lg p-3 flex font-Matter-Medium cursor-pointer`}
+                className={`${
+                  inputs.sellingFormat === 'fixed'
+                    ? 'border-2 border-sky-600'
+                    : 'border-2 border-slate-100'
+                } col-span-12 md:col-span-6 bg-slate-50 rounded-lg p-3 flex font-Matter-Medium cursor-pointer`}
               >
                 <div className='w-16'>
                   <input
@@ -389,14 +392,12 @@ const AuctionItem = () => {
                     checked={true}
                     value='public'
                     className='selling-format h-fit mt-1'
-                    onChange={(e: any) => { }}
+                    onChange={(e: any) => {}}
                   />
                 </div>
                 <div>
                   <div className='font-Matter-Medium'>Public</div>
-                  <div className='font-Matter-Light'>
-                    This item will be viewable by everyone.
-                  </div>
+                  <div className='font-Matter-Light'>This item will be viewable by everyone.</div>
                 </div>
               </label>
             </div>
@@ -405,11 +406,7 @@ const AuctionItem = () => {
             className='mt-4 flex justify-center items-center px-3 py-2 bg-yellow-to-green text-white w-16 h-10 rounded-lg font-Matter-Regular cursor-pointer'
             onClick={saveAuctionItem}
           >
-            {loadingUpdate || loadingCreate ? (
-              <TailwindSpinner color='text-[#fff]' />
-            ) : (
-              'Save'
-            )}
+            {loadingUpdate || loadingCreate ? <TailwindSpinner color='text-[#fff]' /> : 'Save'}
           </button>
         </form>
       </div>

@@ -20,6 +20,7 @@
     "colors": "^1.4.0",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
+    "date-fns": "^4.1.0",
     "dotenv": "^8.2.0",
     "email-templates": "^8.0.7",
     "express": "^4.17.1",

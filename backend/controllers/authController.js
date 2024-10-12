@@ -168,7 +168,6 @@ const login = asyncHandler(async (req, res) => {
       avatar: updatedUser.avatar,
       online: true,
       token: updatedUser.token,
-      confirmed: updatedUser.confirmed,
       lastLoginTime: updatedUser.lastLoginTime,
       firstNameFirstInitial: updatedUser.firstNameFirstInitial,
       lastNameFirstInitial: updatedUser.lastNameFirstInitial,
@@ -176,7 +175,6 @@ const login = asyncHandler(async (req, res) => {
       lastName: updatedUser.lastName,
       onlineStatus: 'ONLINE',
       updatedAt: updatedUser.updatedAt,
-      shippingAddress: updatedUser.shippingAddress,
       initialsBgColor: pastelColorRandomizer()
     });
   } catch (err) {

@@ -198,8 +198,8 @@ const getEcardOrders = asyncHandler(async (req, res) => {
       .status(200)
       .json({
         ecardOrders: result,
-        ecardOrderRevenue: ecardOrders[0].totalRevenue,
-        totalEcardOrders: ecardDocuments[0].totalDocuments,
+        ecardOrderRevenue: ecardOrders[0]?.totalRevenue,
+        totalEcardOrders: ecardDocuments[0]?.totalDocuments,
       });
   } catch (err) {
     await Error.create({

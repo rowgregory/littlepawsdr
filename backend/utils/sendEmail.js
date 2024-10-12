@@ -14,6 +14,7 @@ import notifyAuctionWinners from './emails/notifyAuctionWinners.js';
 import auctionItemOrderShippedConfirmation from './emails/auctionItemOrderShippedConfirmation.js';
 import paymentRedminderWinningBidAuctionItem from './emails/paymentReminderWinningBidAuctionItem.js';
 import orderNotification from './emails/orderNotification.js';
+import outBidNotification from './emails/outBidNotification.js';
 dotenv.config();
 
 const OAuth2 = google.google.auth.OAuth2;
@@ -32,7 +33,7 @@ google.google.options({
   auth: Oauth2_client,
 });
 
-export const sendEmail = async (body, res, type, token, hasEmailBeenSent, log) => {
+export const sendEmail = async (body, res, type, token, hasEmailBeenSent) => {
   const __dirname = path.resolve();
   const root = path.join(__dirname, 'emails');
   let accessToken = await Oauth2_client.getAccessToken();
@@ -97,12 +98,14 @@ export const sendEmail = async (body, res, type, token, hasEmailBeenSent, log) =
     case 'sendAdoptionFeeConfirmation':
       return adoptionFeeConfirmation(pugEmail, body, hasEmailBeenSent);
     case 'AUCTION_ITEM_WINNER':
-      return notifyAuctionWinners(pugEmail, body, log);
+      return notifyAuctionWinners(pugEmail, body);
     case 'AUCTION_ITEM_ORDER_SHIPPED_CONFIRMATION':
       return auctionItemOrderShippedConfirmation(pugEmail, body);
     case 'REMINDER_PAYMENT_EMAIL_AUCTION_ITEM_WINNER':
       return paymentRedminderWinningBidAuctionItem(pugEmail, body);
     case 'ADMIN_ORDER_NOTIFICATION':
       return orderNotification(pugEmail);
+    case 'OUT_BID_NOTIFICATION':
+      return outBidNotification(pugEmail, body);
   }
 };

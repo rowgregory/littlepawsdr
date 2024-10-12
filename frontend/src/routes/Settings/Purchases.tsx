@@ -1,9 +1,10 @@
 import { Fragment, useState } from 'react';
-import MagnifyingGlass from '../../components/svg/MagnifyingGlass';
-import { RootState } from '../../redux/toolkitStore';
-import { useSelector } from 'react-redux';
-import { formatDateWithTimezone } from '../../utils/dateFunctions';
 import { Link } from 'react-router-dom';
+import { format } from 'date-fns';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../redux/toolkitStore';
+import MagnifyingGlass from '../../components/svg/MagnifyingGlass';
+import { convertToEST, formatDateWithTimezone } from '../../utils/dateFunctions';
 import toFixed from '../../utils/toFixed';
 
 const Purchases = () => {
@@ -24,18 +25,16 @@ const Purchases = () => {
           ...prev.rows,
           {
             id: item?._id,
-            productImage: item.productImage,
-            productName: item.productName,
             totalPrice: item.totalPrice,
             trackingNumber: item.trackingNumber,
-            orderItems: item.orderItems,
-            status: item.status,
             shippingProvider: item.shippingProvider,
             paypalOrderId: item.paypalOrderId,
-            processingFee: item.processingFee,
             shippingPrice: item.shippingPrice,
             shippedOn: item.shippedOn,
             isShipped: item.isShipped,
+            products: item.products,
+            ecards: item.ecards,
+            welcomeWieners: item.welcomeWieners,
           },
         ],
       };
@@ -94,8 +93,9 @@ const Purchases = () => {
                 >
                   <td className='w-10 h-10'>
                     <i
-                      className={`text-gray-700 fas fa-chevron-right fa-xs ml-4 duration-300 origin-center ${openRows?.rows.some((row: any) => row.id === item._id) ? 'rotate-90' : ''
-                        }`}
+                      className={`text-gray-700 fas fa-chevron-right fa-xs ml-4 duration-300 origin-center ${
+                        openRows?.rows.some((row: any) => row.id === item._id) ? 'rotate-90' : ''
+                      }`}
                     ></i>
                   </td>
                   <td>
@@ -114,12 +114,13 @@ const Purchases = () => {
                   </td>
                   <td className='px-4'>
                     <p
-                      className={`${item?.status === 'Complete'
-                        ? 'bg-green-100 text-green-500 '
-                        : item.status === 'Digital Order'
+                      className={`${
+                        item?.status === 'Complete'
+                          ? 'bg-green-100 text-green-500 '
+                          : item.status === 'Digital Order'
                           ? 'bg-indigo-100 text-indigo-500'
                           : 'bg-gray-200 text-gray-500'
-                        } w-fit text-gray-900 text-sm font-Matter-Medium items-center py-1 px-2 whitespace-nowrap rounded-3xl`}
+                      } w-fit text-gray-900 text-sm font-Matter-Medium items-center py-1 px-2 whitespace-nowrap rounded-3xl`}
                     >
                       {item?.status}
                     </p>
@@ -130,83 +131,97 @@ const Purchases = () => {
                     row.id === item._id && (
                       <tr
                         key={row?.id}
-                        className={`${h !== orders.length - 1 ? 'border-b-2 border-slate-200' : 'border-none'
-                          }`}
+                        className={`${
+                          h !== orders.length - 1 ? 'border-b-2 border-slate-200' : 'border-none'
+                        }`}
                       >
                         <td colSpan={12} className='pt-3'>
                           <div className='grid grid-cols-12 px-4 pt-2 pb-4 gap-8'>
                             <div className='col-span-6'>
                               <p className='font-Matter-Medium mb-1.5'>Item Details</p>
-                              {row.orderItems?.map((orderItem: any, j: number) => (
+                              {[
+                                ...(row.products || []),
+                                ...(row.ecards || []),
+                                ...(row.welcomeWieners || []),
+                              ]?.map((item: any, j: number) => (
                                 <div key={j} className='flex items-center justify-between py-1.5'>
                                   <div className='flex items-center'>
                                     <img
-                                      src={orderItem?.productImage}
+                                      src={item?.productImage || item?.image}
                                       alt='Auction Item'
                                       className='object-contain bg-gray-300 rounded-sm h-12 w-12 aspect-square mr-2'
                                     />
                                     <div className='flex flex-col'>
-                                      <p className='font-Matter-Light text-sm'>
-                                        {orderItem?.isEcard
-                                          ? `${orderItem?.productName}${orderItem.isSent ? ' sent' : ' sending'
-                                          } on ${new Date(
-                                            orderItem?.dateToSend
-                                          ).toLocaleDateString('en-US', {
-                                            timeZone: 'America/New_York',
-                                            month: 'short',
-                                            day: 'numeric',
-                                            year: 'numeric',
-                                          })}`
-                                          : orderItem?.productName}
-                                      </p>
-                                      <p className='font-Matter-Light text-xs'>
-                                        Quantity: {orderItem?.quantity}
-                                      </p>
-                                      {orderItem?.isEcard && (
+                                      <div className='font-Matter-Light text-sm'>
+                                        {item?.type === 'ECARD' && (
+                                          <Fragment>
+                                            {item?.isSent ? (
+                                              <div>
+                                                <div className='text-green-500 w-fit text-xs bg-green-100 rounded-2xl px-2 py-0.5'>
+                                                  Delivered
+                                                </div>
+                                                <div className='text-xs'>
+                                                  Sent to {item?.recipientsFullName} on{' '}
+                                                  {format(item?.dateToSend, 'MMM do, yyyy')}
+                                                </div>
+                                              </div>
+                                            ) : (
+                                              <div>
+                                                <div className='text-amber-500 w-fit text-xs bg-amber-100 rounded-2xl px-2 py-0.5'>
+                                                  Queued
+                                                </div>
+                                                <div className='text-xs'>
+                                                  Sending to {item?.recipientsEmail} on{' '}
+                                                  {convertToEST(item?.dateToSend)}
+                                                </div>
+                                              </div>
+                                            )}
+                                          </Fragment>
+                                        )}
+                                        {item?.type === 'WELCOME_WIENER' && (
+                                          <div>
+                                            <div className='text-teal-500 w-fit text-xs bg-teal-100 rounded-2xl px-2 py-0.5'>
+                                              Processed
+                                            </div>
+                                            <div className='text-xs'>
+                                              {item?.quantity} {item?.productName} for{' '}
+                                              {item?.dachshundName}
+                                            </div>
+                                          </div>
+                                        )}
+                                      </div>
+                                      {item?.type === 'PRODUCT' && (
                                         <div>
-                                          <p className='font-Matter-Light text-xs'>
-                                            To: {orderItem?.recipientsFullName}
-                                          </p>
-                                          <p className='font-Matter-Light text-xs'>
-                                            Message: {orderItem?.message}
-                                          </p>
-                                        </div>
-                                      )}
-                                      {orderItem?.isProduct && (
-                                        <p
-                                          className={`font-Matter-Light text-xs rounded-2xl px-2 py-0.5 ${orderItem?.status === 'Not Shipped'
-                                            ? 'bg-red-100 text-red-500'
-                                            : 'bg-green-100 text-green-500'
+                                          <div
+                                            className={`w-fit text-xs rounded-2xl px-2 py-0.5 ${
+                                              item?.status === 'Not Shipped'
+                                                ? 'bg-red-100 text-red-500'
+                                                : 'bg-green-100 text-green-500'
                                             }`}
-                                        >
-                                          {orderItem?.status}
-                                        </p>
+                                          >
+                                            {item?.status}
+                                          </div>
+                                          <div className='text-xs'>Qty: {item?.quantity}</div>
+                                        </div>
                                       )}
                                     </div>
                                   </div>
                                   <p className='font-Matter-Light text-sm'>
-                                    ${toFixed(orderItem?.price)}
+                                    ${toFixed(item?.totalPrice || item?.price)}
                                   </p>
                                 </div>
                               ))}
                               <div className='px-4 border-b-[1px] border-gray-200 w-full my-3.5'></div>
-
-                              <div className='grid grid-cols-8 '>
-                                <p className='text-sm font-Matter-Light col-start-4 col-span-3 text-right'>
-                                  Processing Fee
-                                </p>
-                                <p className='text-sm font-Matter-Light col-start-8 col-span-1 text-right'>
-                                  ${toFixed(row.processingFee)}
-                                </p>
-                              </div>
-                              <div className='grid grid-cols-8'>
-                                <p className='text-sm font-Matter-Light col-start-4 col-span-3 text-right'>
-                                  Shipping Costs
-                                </p>
-                                <p className='text-sm font-Matter-Light col-start-8 col-span-1 text-right'>
-                                  ${toFixed(row.shippingPrice)}
-                                </p>
-                              </div>
+                              {row?.products?.length >= 1 && (
+                                <div className='grid grid-cols-8'>
+                                  <p className='text-sm font-Matter-Light col-start-4 col-span-3 text-right'>
+                                    Shipping Costs
+                                  </p>
+                                  <p className='text-sm font-Matter-Light col-start-8 col-span-1 text-right'>
+                                    ${toFixed(row.shippingPrice)}
+                                  </p>
+                                </div>
+                              )}
                               <div className='grid grid-cols-8 mt-1'>
                                 <p className='text-sm font-Matter-SemiBold col-start-4 col-span-3 text-right'>
                                   Total Price

@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const SellingFormatEnum = ['auction', 'fixed'];
 const WinningBidPaymentStatus = ['Pending Fulfillment', 'Complete', 'Awaiting Payment'];
-const CampaignStatusEnum = ['Inactive', 'Active'];
+const CampaignStatusEnum = ['Pre-Campaign', 'Active Campaign', 'Post-Campaign'];
 const BidderStatusEnum = ['Registered', 'Bidding', 'Winner'];
 const BidEnum = ['Outbid', 'Top Bid'];
 const AuctionItemStatusEnum = ['Sold', 'Unsold'];
@@ -36,7 +36,7 @@ const bidSchema = mongoose.Schema(
     email: { type: String },
     status: { type: String, enum: BidEnum, default: 'Top Bid' },
     sentWinnerEmail: { type: Boolean, default: false },
-    emailCount: { type: Number, default: 0 }
+    emailCount: { type: Number, default: 0 },
   },
   { timestamps: true }
 );
@@ -85,7 +85,7 @@ const itemSchema = mongoose.Schema(
     itemBtnText: { type: String },
     topBidder: { type: String },
     isAuction: { type: Boolean },
-    isFixed: { type: Boolean }
+    isFixed: { type: Boolean },
   },
   { timestamps: true }
 );
@@ -100,7 +100,6 @@ const auctionDonationSchema = mongoose.Schema(
     email: { type: String },
     donorPublicMessage: { type: String },
     oneTimeDonationAmount: { type: Number },
-    creditCardProcessingFee: { type: Number },
     paypalId: { type: String },
   },
   { timestamps: true }
@@ -166,12 +165,19 @@ const auctionWinningBidderSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'AuctionItem',
     },
-    winningBidPaymentStatus: { type: String, enum: WinningBidPaymentStatus, default: 'Awaiting Payment' },
-    auctionItemPaymentStatus: { type: String, enum: AuctionItemPaymentStatusEnum, default: 'Pending' },
+    winningBidPaymentStatus: {
+      type: String,
+      enum: WinningBidPaymentStatus,
+      default: 'Awaiting Payment',
+    },
+    auctionItemPaymentStatus: {
+      type: String,
+      enum: AuctionItemPaymentStatusEnum,
+      default: 'Pending',
+    },
     auctionPaymentNotificationEmailHasBeenSent: { type: Boolean, default: false },
     emailNotificationCount: { type: Number, default: 0 },
     elapsedTimeSinceAuctionItemWon: { type: String },
-    processingFee: { type: Number },
     totalPrice: { type: Number },
     shipping: { type: Number },
     shippingStatus: { type: String, default: 'Pending Payment Confirmation' },
@@ -207,12 +213,19 @@ const auctionItemFulfillmentSchema = mongoose.Schema(
     },
     name: { type: String },
     email: { type: String },
-    winningBidPaymentStatus: { type: String, enum: WinningBidPaymentStatus, default: 'Awaiting Payment' },
-    auctionItemPaymentStatus: { type: String, enum: AuctionItemPaymentStatusEnum, default: 'Pending' },
+    winningBidPaymentStatus: {
+      type: String,
+      enum: WinningBidPaymentStatus,
+      default: 'Awaiting Payment',
+    },
+    auctionItemPaymentStatus: {
+      type: String,
+      enum: AuctionItemPaymentStatusEnum,
+      default: 'Pending',
+    },
     auctionPaymentNotificationEmailHasBeenSent: { type: Boolean, default: false },
     emailNotificationCount: { type: Number, default: 0 },
     elapsedTimeSinceAuctionItemWon: { type: String },
-    processingFee: { type: Number },
     totalPrice: { type: Number },
     shipping: { type: Number },
     shippingStatus: { type: String, default: 'Unfilfilled' },
@@ -220,11 +233,9 @@ const auctionItemFulfillmentSchema = mongoose.Schema(
     itemSoldPrice: { type: Number },
     trackingNumber: { type: String },
     payPalId: { type: String },
-
   },
   { timestamps: true }
 );
-
 
 const auctionSchema = mongoose.Schema(
   {
@@ -268,13 +279,23 @@ const auctionSchema = mongoose.Schema(
       },
     ],
     settings: {
-      startDate: { type: Date, default: Date.now },
-      endDate: { type: Date, default: () => new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) },
-      isAuctionPublished: { type: Boolean, default: false },
-      anonymousBidding: { type: Boolean, default: true },
-      hasBegun: { type: Boolean, default: false },
-      hasEnded: { type: Boolean, default: false },
-      auctionStatus: { type: String, default: 'Bidding opens' },
+      type: Object,
+      default: () => {
+        const startDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 1 week from current date
+        const endDate = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000); // 2 week from current date
+        endDate.setHours(17, 0, 0, 0); // Set time to 5:00 PM (17:00) with zero minutes, seconds, and milliseconds
+        startDate.setHours(9, 0, 0, 0)
+        return {
+          startDate,
+          endDate,
+          isAuctionPublished: true,
+          anonymousBidding: true,
+          hasBegun: false,
+          hasEnded: false,
+          auctionStatus: 'Bidding opens',
+          status: 'UPCOMING',
+        };
+      },
     },
   },
   {
@@ -290,8 +311,7 @@ const campaignSchema = mongoose.Schema(
     },
     title: { type: String },
     subtitle: { type: String },
-    goal: { type: Number, default: 0 },
-    isTheme: { type: Boolean, default: true },
+    goal: { type: Number, default: 1000 },
     themeColor: {
       xlight: { type: String, default: 'bg-teal-50' },
       light: { type: String, default: 'bg-teal-100' },
@@ -316,13 +336,10 @@ const campaignSchema = mongoose.Schema(
       default:
         'Little Paws Dachshund Rescue is a 501c3 volunteer run organization specializing in finding permanent homes for dachshunds and dachshund mixes!',
     },
-    campaignStatus: { type: String, enum: CampaignStatusEnum, default: 'Inactive' },
+    campaignStatus: { type: String, enum: CampaignStatusEnum, default: 'Pre-Campaign' },
     customCampaignLink: { type: String },
-    isCampaignPublished: { type: Boolean, default: false },
-    isMoneyRaisedVisible: { type: Boolean, default: false },
-    feesRequired: { type: Boolean, default: true },
-    feesAmount: { type: Number, default: 0.035 },
-    hasEnded: { type: Boolean, default: false },
+    isCampaignPublished: { type: Boolean, default: true },
+    isMoneyRaisedVisible: { type: Boolean, default: true },
     imgPreference: { type: String },
   },
   {
@@ -332,14 +349,20 @@ const campaignSchema = mongoose.Schema(
 
 const Auction = mongoose.model('Auction', auctionSchema);
 const AuctionItem = mongoose.model('AuctionItem', itemSchema);
-const AuctionItemInstantBuyer = mongoose.model('AuctionItemInstantBuyer', auctionItemInstantBuyerSchema);
+const AuctionItemInstantBuyer = mongoose.model(
+  'AuctionItemInstantBuyer',
+  auctionItemInstantBuyerSchema
+);
 const AuctionItemPhoto = mongoose.model('AuctionItemPhoto', auctionItemPhotoSchema);
 const AuctionDonation = mongoose.model('AuctionDonation', auctionDonationSchema);
 const Campaign = mongoose.model('Campaign', campaignSchema);
 const Bid = mongoose.model('Bid', bidSchema);
 const AuctionBidder = mongoose.model('AuctionBidder', auctionBidderSchema);
 const AuctionWinningBidder = mongoose.model('AuctionWinningBidder', auctionWinningBidderSchema);
-const AuctionItemFulfillment = mongoose.model('AuctionItemFulfillment', auctionItemFulfillmentSchema);
+const AuctionItemFulfillment = mongoose.model(
+  'AuctionItemFulfillment',
+  auctionItemFulfillmentSchema
+);
 
 export {
   Auction,

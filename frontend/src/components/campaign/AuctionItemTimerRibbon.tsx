@@ -1,13 +1,6 @@
 import { FC } from 'react';
 import { dateFnFormatDistanceToNow } from '../../utils/date-fns-helpers';
-
-type AuctionItemTimerRibbonProps = {
-  item: any;
-  theme: any;
-  hasEnded: boolean;
-  hasBegun: boolean;
-  campaign: any;
-};
+import { AuctionItemTimerRibbonProps } from '../types/campaign-types';
 
 const AuctionItemTimerRibbon: FC<AuctionItemTimerRibbonProps> = ({
   item,
@@ -29,14 +22,14 @@ const AuctionItemTimerRibbon: FC<AuctionItemTimerRibbonProps> = ({
       <i
         className={`fa-solid ${
           hasEnded ? 'fa-solid fa-gavel' : hasBegun ? 'fa-hourglass' : 'fa-solid fa-clock'
-        } ${!hasEnded ? 'text-gray-700' : 'text-[#fff]'} mr-2`}
+        } ${!hasEnded ? theme.text : 'text-[#fff]'} mr-2`}
       ></i>
       <p className={`${!hasEnded ? 'text-gray-700' : 'text-[#fff]'}  font-Matter-Medium`}>
-        {!hasBegun
-          ? `Starts in ${dateFnFormatDistanceToNow(campaign?.auction?.settings?.startDate)}`
-          : !hasEnded
-          ? `Ends ${dateFnFormatDistanceToNow('2024-09-29T21:00:00.000Z')}`
-          : item.status}
+        {campaign?.auction?.settings?.status === 'UPCOMING'
+          ? `Starts ${dateFnFormatDistanceToNow(campaign?.auction?.settings?.startDate)}`
+          : campaign?.auction?.settings?.status === 'LIVE'
+          ? `Ends ${dateFnFormatDistanceToNow(campaign?.auction?.settings?.endDate)}`
+          : `Ended ${dateFnFormatDistanceToNow(campaign?.auction?.settings?.endDate)}`}
       </p>
     </div>
   );

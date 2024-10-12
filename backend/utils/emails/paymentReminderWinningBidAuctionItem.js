@@ -15,7 +15,6 @@ const paymentRedminderWinningBidAuctionItem = async (pugEmail, auctionWinningBid
           itemName: winningBidder.auctionItem.name,
           desc: winningBidder.auctionItem.description,
           subtotal: winningBidder.itemSoldPrice?.toFixed(2),
-          processingFee: winningBidder.processingFee?.toFixed(2),
           shipping: winningBidder.shipping?.toFixed(2),
           totalPrice: winningBidder.totalPrice?.toFixed(2),
           id: winningBidder._id,
