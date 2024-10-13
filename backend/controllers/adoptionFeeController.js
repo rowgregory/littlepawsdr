@@ -123,7 +123,7 @@ const createAdoptionApplicationFee = async (res, req) => {
     logEvent(log, 'JWT EXP', { exp: fee.exp })
     const savedAdoptionFee = await fee.save();
     logEvent(log, 'ADOPTION APPLICATION FEE SAVED WITH TOKEN - SENDING ADOPTION APPLICATION FEE CONFIRMATION EMAIL')
-    await sendEmail(savedAdoptionFee, res, 'sendAdoptionFeeConfirmation');
+    await sendEmail(savedAdoptionFee, 'SEND_ADOPTION_FEE_CONFIRMATION');
 
     createActionHistoryLog({
       actionType: req.body.feeAmount

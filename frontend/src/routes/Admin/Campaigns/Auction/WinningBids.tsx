@@ -70,6 +70,11 @@ const WinningBids = () => {
                       <div className=' text-sm flex flex-nowrap items-center gap-2'>Sold price</div>
                     </th>
                     <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
+                      <div className=' text-sm flex flex-nowrap items-center gap-2'>
+                        Payment Notifications
+                      </div>
+                    </th>
+                    <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
                       <div className=' text-sm flex flex-nowrap items-center gap-2'>Status</div>
                     </th>
                   </tr>
@@ -108,6 +113,21 @@ const WinningBids = () => {
                           <p className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>
                             ${bidder?.totalPrice?.toFixed(2)}
                           </p>
+                        </td>
+                        <td>
+                          <div className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>
+                            <div
+                              className={`${
+                                bidder?.emailNotificationCount === 1
+                                  ? 'bg-green-500'
+                                  : bidder?.emailNotificationCount === 2
+                                  ? 'bg-orange-500'
+                                  : 'bg-red-500'
+                              } w-5 h-5 flex items-center justify-center rounded-full text-sm text-white`}
+                            >
+                              {bidder?.emailNotificationCount}
+                            </div>
+                          </div>
                         </td>
                         <td className='flex items-center px-4 py-3'>
                           <p
@@ -177,7 +197,7 @@ const WinningBids = () => {
                                             <p className='font-Matter-Regular text-sm'>
                                               {row.user?.shippingAddress?.address}
                                             </p>
-                                            <p className='font-Matter-Regular text-sm'>{`${row.user?.shippingAddress?.city}, ${row.user?.shippingAddress?.state} ${row.user?.shippingAddress?.country} ${row.user?.shippingAddress?.zipPostalCode}`}</p>
+                                            <p className='font-Matter-Regular text-sm'>{`${row.user?.shippingAddress?.city}, ${row.user?.shippingAddress?.state} USA ${row.user?.shippingAddress?.zipPostalCode}`}</p>
                                           </div>
                                         </div>
                                       </div>

@@ -7,6 +7,7 @@ import asyncHandler from 'express-async-handler';
 import Error from '../models/errorModel.js';
 import { logEvent, prepareLog } from '../utils/logHelpers.js';
 import { pastelColorRandomizer } from '../utils/pastelColorRandomizer.js';
+import { validateEmailRegex } from '../utils/regex.js';
 
 const createUserDocument = async (user, log) => {
   try {
@@ -34,23 +35,24 @@ const createUserDocument = async (user, log) => {
  @access  Public
 */
 const register = asyncHandler(async (req, res) => {
-  const { email, password, confirmPassword, strength, cameFromAuction, customCampaignLink } =
-    req.body;
-
   const log = await prepareLog('REGISTER');
+  logEvent(log, 'INITIATE REGISTER');
+
   try {
-    logEvent(log, 'FETCHING USER BY EMAIL', { email });
+    const { email, password, confirmPassword, strength, cameFromAuction, customCampaignLink } =
+      req.body;
+
     const userExists = await User.findOne({ email });
+    logEvent(log, 'USER FOUND');
 
     if (userExists?.confirmed) {
-      logEvent(log, 'USER EXISTS AND IS CONFIRMED', userExists);
-      await log.save();
+      logEvent(log, 'USER EXISTS AND IS CONFIRMED');
+
       return res.status(400).json({
         message: 'An account with this email already exists',
         sliceName: 'authApi',
       });
     } else if (userExists) {
-      logEvent(log, 'USER EXISTS BUT IS NOT COFIRMED - RESENDING EMAIL', { email: userExists.email, confirmed: userExists.confirmed });
       const dataToSendToEmail = {
         userId: userExists._id,
         email: userExists.email,
@@ -59,10 +61,13 @@ const register = asyncHandler(async (req, res) => {
         cameFromAuction,
         customCampaignLink,
       };
+      logEvent(log, 'USER EXISTS BUT IS NOT COFIRMED, RESENDING EMAIL', dataToSendToEmail);
 
-      await sendEmail(dataToSendToEmail, {}, 'sendRegisterConfirmationEmail');
-      await log.save();
-      return res.status(400).json({
+      sendEmail(dataToSendToEmail, 'SEND_REGISTER_CONFIRMATION_EMAIL');
+
+      logEvent(log, 'END REGISTER');
+
+      res.status(400).json({
         message:
           'An account with this email has already been registered, but it has not yet been confirmed. We have resent the confirmation email to your inbox. Please check your email and follow the instructions to confirm your account',
         sliceName: 'authApi',
@@ -71,13 +76,11 @@ const register = asyncHandler(async (req, res) => {
 
     if (password !== confirmPassword) {
       logEvent(log, 'PASSWORDS DO NOT MATCH');
-      await log.save();
       return res.status(404).json({ message: 'Passwords do not match', sliceName: 'authApi' });
     }
 
     if (strength !== 4) {
       logEvent(log, 'PASSWORD IS NOT STRONG ENOUGH');
-      await log.save();
       return res
         .status(404)
         .json({ message: 'Password is not strong enough', sliceName: 'authApi' });
@@ -94,12 +97,16 @@ const register = asyncHandler(async (req, res) => {
       customCampaignLink,
     };
 
-    logEvent(log, 'DATA SENDING TO EMAIL', { name: user.name, email: user.email });
+    logEvent(log, 'DATA SENDING TO EMAIL', dataToSendToEmail);
 
-    await sendEmail(dataToSendToEmail, {}, 'sendRegisterConfirmationEmail');
-    await log.save();
+    sendEmail(dataToSendToEmail, 'SEND_REGISTER_CONFIRMATION_EMAIL');
+
+    logEvent(log, 'END REGISTER');
+
     res.status(200).json({ message: 'Confirmation email has been sent', sliceName: 'authApi' });
   } catch (err) {
+    logEvent(log, 'ERROR REGISTER');
+
     await Error.create({
       functionName: 'USER_REGISTER_PUBLIC',
       name: err.name,
@@ -175,7 +182,7 @@ const login = asyncHandler(async (req, res) => {
       lastName: updatedUser.lastName,
       onlineStatus: 'ONLINE',
       updatedAt: updatedUser.updatedAt,
-      initialsBgColor: pastelColorRandomizer()
+      initialsBgColor: pastelColorRandomizer(),
     });
   } catch (err) {
     await Error.create({
@@ -223,32 +230,45 @@ const refreshToken = asyncHandler(async (req, res) => {
  @access  Public
 */
 const forgotPasswordEmail = asyncHandler(async (req, res) => {
+  const log = await prepareLog('FORGOT PASSWORD EMAIL');
+  logEvent(log, 'INITIATE FORGOT PASSWORD EMAIL');
+
   try {
     const { email } = req.body;
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const isValidEmail = emailRegex.test(email);
-    if (!isValidEmail) return res.status(404).json({ message: 'Please enter valid email' });
+    const isValidEmail = validateEmailRegex.test(email);
+
+    if (!isValidEmail) {
+      logEvent(log, 'INVALID EMAIL', isValidEmail);
+      return res.status(404).json({ message: 'Please enter valid email', sliceName: 'authApi' });
+    }
 
     const user = await User.findOne({ email });
+    logEvent(log, 'USER FOUND BY EMAIL', user);
 
     if (user) {
       const token = generateToken(user._id, '30m');
+      logEvent(log, 'TOKEN GENERATED');
 
       user.resetPasswordToken = token;
       user.resetPasswordExpires = Date.now() + 360000;
 
       const updatedUser = await user.save();
+      logEvent(log, 'USER UPDATED WITH TOKEN & EXP, SENDING FORGOT PASSWORD EMAIL');
 
-      sendEmail(req.body, res, 'resetPassword', updatedUser.resetPasswordToken);
+      sendEmail({ email, token: updatedUser.resetPasswordToken }, 'FORGOT_PASSWORD');
+
+      logEvent(log, 'END FORGOT PASSWORD EMAIL');
 
       res.status(200).json({
         message: 'An email has been sent if an account exists.',
+        sliceName: 'authApi',
       });
     }
   } catch (err) {
+    logEvent(log, 'ERROR FORGOT PASSWORD EMAIL', err);
     await Error.create({
-      functionName: 'FORGOT_PASSWORD_PUBLIC',
+      functionName: 'FORGOT_PASSWORD_PUBLIC_ERROR',
       name: err.name,
       message: err.message,
       user: { id: req?.user?._id, email: req?.user?.email },
@@ -283,7 +303,14 @@ const resetPassword = asyncHandler(async (req, res) => {
 
     await user.save();
 
-    res.status(200).json({ tokenIsValid: false, success: true, message: 'Password updated' });
+    res
+      .status(200)
+      .json({
+        tokenIsValid: false,
+        success: true,
+        message: 'Password updated',
+        sliceName: 'authApi',
+      });
   } catch (err) {
     await Error.create({
       functionName: 'UPDATE_PASSWORD_PRIVATE',
@@ -323,7 +350,7 @@ const updateAccountToConfirmed = asyncHandler(async (req, res) => {
     );
     if (!user) return res.status(404).json({ message: 'User not found' });
 
-    res.status(200).json({ user });
+    res.status(200).json({ user, sliceName: 'authApi' });
   } catch (error) {
     await Error.create({
       functionName: 'CREATE_ACCOUNT_PRIVATE',

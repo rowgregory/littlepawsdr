@@ -4,8 +4,6 @@ import fetch from 'node-fetch';
 import google from 'googleapis';
 import path from 'path';
 import registerConfirmation from './emails/registerConfirmation.js';
-import resetPassword from './emails/resetPassword.js';
-import productPurchase from './emails/productPurchase.js';
 import sendEcard from './emails/sendEcard.js';
 import orderShippedConfirmation from './emails/orderShippedConfirmation.js';
 import adoptionFeeConfirmation from './emails/adoptionFeeConfirmation.js';
@@ -15,6 +13,8 @@ import auctionItemOrderShippedConfirmation from './emails/auctionItemOrderShippe
 import paymentRedminderWinningBidAuctionItem from './emails/paymentReminderWinningBidAuctionItem.js';
 import orderNotification from './emails/orderNotification.js';
 import outBidNotification from './emails/outBidNotification.js';
+import forgotPassword from './emails/forgotPassword.js';
+import thirdAuctionItemPaymentReminderEmail from './emails/thirdAuctionItemPaymentReminderEmail.js';
 dotenv.config();
 
 const OAuth2 = google.google.auth.OAuth2;
@@ -33,7 +33,7 @@ google.google.options({
   auth: Oauth2_client,
 });
 
-export const sendEmail = async (body, res, type, token, hasEmailBeenSent) => {
+export const sendEmail = async (body, type) => {
   const __dirname = path.resolve();
   const root = path.join(__dirname, 'emails');
   let accessToken = await Oauth2_client.getAccessToken();
@@ -85,18 +85,16 @@ export const sendEmail = async (body, res, type, token, hasEmailBeenSent) => {
   });
 
   switch (type) {
-    case 'sendRegisterConfirmationEmail':
+    case 'SEND_REGISTER_CONFIRMATION_EMAIL':
       return registerConfirmation(pugEmail, body);
-    case 'resetPassword':
-      return resetPassword(transporter, body, token, res);
-    case 'sendOrderConfirmationEmail':
-      return productPurchase(pugEmail, body, hasEmailBeenSent);
-    case 'ecard':
+    case 'FORGOT_PASSWORD':
+      return forgotPassword(pugEmail, body);
+    case 'ECARD':
       return sendEcard(pugEmail);
-    case 'sendOrderShippedConfirmationEmail':
+    case 'SEND_ORDER_SHIPPED_CONFIRMATION_EMAIL':
       return orderShippedConfirmation(pugEmail, body);
-    case 'sendAdoptionFeeConfirmation':
-      return adoptionFeeConfirmation(pugEmail, body, hasEmailBeenSent);
+    case 'SEND_ADOPTION_FEE_CONFIRMATION':
+      return adoptionFeeConfirmation(pugEmail, body);
     case 'AUCTION_ITEM_WINNER':
       return notifyAuctionWinners(pugEmail, body);
     case 'AUCTION_ITEM_ORDER_SHIPPED_CONFIRMATION':
@@ -107,5 +105,7 @@ export const sendEmail = async (body, res, type, token, hasEmailBeenSent) => {
       return orderNotification(pugEmail);
     case 'OUT_BID_NOTIFICATION':
       return outBidNotification(pugEmail, body);
+    case 'THIRD_AUCTION_ITEM_PAYMENT_REMINDER_EMAIL':
+      return thirdAuctionItemPaymentReminderEmail(pugEmail, body);
   }
-};
+}

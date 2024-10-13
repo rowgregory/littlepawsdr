@@ -37,6 +37,7 @@ const bidSchema = mongoose.Schema(
     status: { type: String, enum: BidEnum, default: 'Top Bid' },
     sentWinnerEmail: { type: Boolean, default: false },
     emailCount: { type: Number, default: 0 },
+    outBidEmailSent: { type: Boolean, default: false }
   },
   { timestamps: true }
 );

@@ -60,8 +60,11 @@ const AuctionItemBids = () => {
                       </th>
                       <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
                         <div className=' text-sm flex flex-nowrap items-center gap-2'>
-                          Status
+                          Out Bid Email
                         </div>
+                      </th>
+                      <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
+                        <div className=' text-sm flex flex-nowrap items-center gap-2'>Status</div>
                       </th>
                       <th>
                         <div className='flex flex-nowrap items-center gap-2'></div>
@@ -92,13 +95,27 @@ const AuctionItemBids = () => {
                             </p>
                           </td>
                           <td>
+                            <div className='text-gray-900 text-xs font-Matter-Regular items-center px-4'>
+                              <div
+                                className={`w-4 h-4 rounded-full ${
+                                  bid.status === 'Top Bid'
+                                    ? 'bg-gray-300'
+                                    : bid.outBidEmailSent
+                                    ? 'bg-green-500'
+                                    : 'bg-red-500'
+                                }`}
+                              ></div>
+                            </div>
+                          </td>
+                          <td>
                             <p
-                              className={`${bid?.status === 'Paid'
-                                ? 'bg-green-100 text-green-600'
-                                : bid?.status === 'Top Bid'
+                              className={`${
+                                bid?.status === 'Paid'
+                                  ? 'bg-green-100 text-green-600'
+                                  : bid?.status === 'Top Bid'
                                   ? 'bg-indigo-100 text-indigo-500'
                                   : 'bg-yellow-100 text-yellow-600'
-                                } text-sm font-Matter-Regular items-center ml-6 px-2.5 py-1 rounded-2xl w-fit`}
+                              } text-sm font-Matter-Regular items-center ml-6 px-2.5 py-1 rounded-2xl w-fit`}
                             >
                               {bid?.status}
                             </p>
@@ -106,36 +123,34 @@ const AuctionItemBids = () => {
                         </tr>
                       ))
                       .reverse()}
-                    {campaign?.auctionItem?.instantBuyers?.map(
-                      (instantBuyer: any, i: number) => (
-                        <tr className='z-1 h-[3.25rem] group bg-white' key={i}>
-                          <td>
-                            <div className='m-0 w-full  p-0 decoration-inherit hover:text-inherit hover:decoration-inherit !flex h-[3.25rem] items-center px-4'>
-                              <div className='max-w-[15rem]'>
-                                <span className='text-sm font-Matter-Regular truncate'>
-                                  ${instantBuyer?.totalPrice?.toFixed(2)}
-                                </span>
-                              </div>
+                    {campaign?.auctionItem?.instantBuyers?.map((instantBuyer: any, i: number) => (
+                      <tr className='z-1 h-[3.25rem] group bg-white' key={i}>
+                        <td>
+                          <div className='m-0 w-full  p-0 decoration-inherit hover:text-inherit hover:decoration-inherit !flex h-[3.25rem] items-center px-4'>
+                            <div className='max-w-[15rem]'>
+                              <span className='text-sm font-Matter-Regular truncate'>
+                                ${instantBuyer?.totalPrice?.toFixed(2)}
+                              </span>
                             </div>
-                          </td>
-                          <td>
-                            <p className='text-gray-900 text-sm font-Matter-Regular items-center px-4'>
-                              {instantBuyer?.name}
-                            </p>
-                          </td>
-                          <td>
-                            <p className='text-gray-900 text-xs font-Matter-Regular items-center px-4'>
-                              {formatDateWithTimezone(instantBuyer?.createdAt)}
-                            </p>
-                          </td>
-                          <td>
-                            <p className='bg-green-100 text-green-600 text-sm font-Matter-Regular items-center px-4 py-1 rounded-2xl w-fit'>
-                              {instantBuyer?.paymentStatus}
-                            </p>
-                          </td>
-                        </tr>
-                      )
-                    )}
+                          </div>
+                        </td>
+                        <td>
+                          <p className='text-gray-900 text-sm font-Matter-Regular items-center px-4'>
+                            {instantBuyer?.name}
+                          </p>
+                        </td>
+                        <td>
+                          <p className='text-gray-900 text-xs font-Matter-Regular items-center px-4'>
+                            {formatDateWithTimezone(instantBuyer?.createdAt)}
+                          </p>
+                        </td>
+                        <td>
+                          <p className='bg-green-100 text-green-600 text-sm font-Matter-Regular items-center px-4 py-1 rounded-2xl w-fit'>
+                            {instantBuyer?.paymentStatus}
+                          </p>
+                        </td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>
@@ -144,15 +159,15 @@ const AuctionItemBids = () => {
         </Fragment>
       )}
       <div className='bg-white w-full border border-slate-100 rounded-xl p-4'>
-        <p className='text-zinc-400 text-sm font-Matter-Regular mb-2.5'>
-          #{auctionItemId}
-        </p>
+        <p className='text-zinc-400 text-sm font-Matter-Regular mb-2.5'>#{auctionItemId}</p>
         <h1 className='text-2xl font-Matter-Medium mb-4'>{item?.name}</h1>
         <h6 className='font-Matter-Medium mb-2'>Description</h6>
         <h5 className='font-Matter-Regular mb-5'>{item?.description}</h5>
         <div className='flex w-full max-w-48 justify-between mb-5'>
           <div className='flex flex-col'>
-            <p className='font-Matter-Regular mb-1'>{item?.sellingFormat === 'auction' ? 'Current bid' : 'Buy it now'}</p>
+            <p className='font-Matter-Regular mb-1'>
+              {item?.sellingFormat === 'auction' ? 'Current bid' : 'Buy it now'}
+            </p>
             <p className='font-Matter-Medium text-lg'>
               ${item?.buyNowPrice?.toFixed(2) ?? item?.currentBid}
             </p>
@@ -173,9 +188,7 @@ const AuctionItemBids = () => {
             {formatDateWithTimezone(settings?.startDate)}
           </p>
           <i className='fa-solid fa-arrow-right mx-3'></i>
-          <p className='font-Matter-Medium text-lg'>
-            {formatDateWithTimezone(settings?.endDate)}
-          </p>
+          <p className='font-Matter-Medium text-lg'>{formatDateWithTimezone(settings?.endDate)}</p>
         </div>
       </div>
     </Fragment>

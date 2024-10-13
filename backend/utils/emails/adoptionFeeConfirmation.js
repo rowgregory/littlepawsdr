@@ -1,7 +1,9 @@
+import AdoptionFee from '../../models/adoptionFeeModel.js';
+import Error from '../../models/errorModel.js';
 import { formatDate } from '../../utils/formatDate.js';
 
-const adoptionFeeConfirmation = (pugEmail, body) => {
-  pugEmail
+const adoptionFeeConfirmation = async (pugEmail, body) => {
+  await pugEmail
     .send({
       template: 'adoptionfeeconfirmation',
       message: {
@@ -25,14 +27,20 @@ const adoptionFeeConfirmation = (pugEmail, body) => {
       },
     })
     .then(async () => {
-      body.confirmationEmailHasBeenSent = true;
-
-      await body.save();
-      console.log(
-        `Email has been sent to ${body.emailAddress} and model has been updated`
+      await AdoptionFee.findByIdAndUpdate(
+        body._id,
+        { confirmationEmailHasBeenSent: true },
+        { new: true }
       );
     })
-    .catch((err) => console.log('ERROR: ', err));
+    .catch(
+      async (err) =>
+        await Error.create({
+          functionName: 'ADOPTION FEE CONFIRMATION EMAIL ERROR',
+          name: err.name,
+          message: err.message,
+        })
+    );
 };
 
 export default adoptionFeeConfirmation;

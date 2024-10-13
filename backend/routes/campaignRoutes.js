@@ -1,26 +1,24 @@
 import express from 'express';
-import {
-  createCampaign,
-  getCampaign,
-  updateCampaign,
-  updateAuction,
-  getAuctionItem,
-  createAuctionItem,
-  updateAuctionItem,
-  deleteAuctionItemPhoto,
-  getCampaigns,
-  getCampaignsForAdminView,
-  getCampaignByCustomLinkId,
-  createOneTimeAuctionDonation,
-  createAuctionItemInstantBuy,
-  createBid,
-  getWinningBidder,
-  updateItemFulfillment,
-  updateAuctionWinningBidder,
-  deleteAuctionItem,
-  getCustomCampaignLinkName,
-} from '../controllers/campaignController.js';
 import { admin, protect } from '../middleware/authMiddleware.js';
+import createCampaign from '../controllers/campaign/post/createCampaign.js';
+import getCampaign from '../controllers/campaign/get/getCampaign.js';
+import updateCampaign from '../controllers/campaign/put/updateCampaign.js';
+import updateAuction from '../controllers/campaign/put/updateAuction.js';
+import getAuctionItemById from '../controllers/campaign/get/getAuctionById.js';
+import createAuctionItem from '../controllers/campaign/post/createAuctionItem.js';
+import updateAuctionItem from '../controllers/campaign/put/updateAuctionItem.js';
+import deleteAuctionItemPhoto from '../controllers/campaign/delete/deleteAuctionItemPhoto.js';
+import getCampaigns from '../controllers/campaign/get/getCampaigns.js';
+import getCampaignsForAdminView from '../controllers/campaign/get/getCampaignsForAdminView.js';
+import getCampaignByCustomLinkId from '../controllers/campaign/get/getCampaignByCustomLinkId.js';
+import createOneTimeAuctionDonation from '../controllers/campaign/post/createOneTimeAuctionDonation.js';
+import createAuctionItemInstantBuy from '../controllers/campaign/post/createAuctionItemInstantBuy.js';
+import createBid from '../controllers/campaign/post/createBid.js';
+import getWinningBidder from '../controllers/campaign/get/getWinningBidder.js';
+import updateItemFulfillment from '../controllers/campaign/patch/updateItemFulfillment.js';
+import updateAuctionWinningBidder from '../controllers/campaign/patch/updateAuctionWinningBidder.js';
+import deleteAuctionItem from '../controllers/campaign/delete/deleteAuctionItem.js';
+import getCustomCampaignLinkName from '../controllers/campaign/get/getCustomCampaignLinkName.js';
 const router = express.Router();
 
 router
@@ -33,7 +31,7 @@ router.route('/:id').get(getCampaign);
 router.route('/auction').put(protect, admin, updateAuction);
 router
   .route('/auction/item/:auctionItemId')
-  .get(getAuctionItem)
+  .get(getAuctionItemById)
   .delete(protect, admin, deleteAuctionItem);
 router.route('/admin/view').get(protect, admin, getCampaignsForAdminView);
 router.route('/custom-link/:id').get(getCampaignByCustomLinkId);
