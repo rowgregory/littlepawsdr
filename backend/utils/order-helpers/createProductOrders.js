@@ -4,13 +4,12 @@ import { sendEmail } from '../sendEmail.js';
 import updateProductStock from './updateProductStock.js';
 
 async function createProductOrders(data, order, log) {
-  logEvent(log, 'BEGINNING CREATE PRODUCT ORDER');
+  logEvent(log, 'INITIATE CREATE PRODUCT ORDER');
 
   const products = data.orderItems.filter((item) => item.isProduct);
 
   if (products?.length === 0) {
     logEvent(log, 'NO PRODUCTS', products?.length);
-    await log.save();
     return;
   }
 
@@ -27,14 +26,12 @@ async function createProductOrders(data, order, log) {
     await order.save();
 
     logEvent(log, 'ORDER SAVED, SENDING ADMIN EMAIL');
-    await log.save();
 
-    await sendEmail({}, {}, 'ADMIN_ORDER_NOTIFICATION');
+    await sendEmail({}, 'ADMIN_ORDER_NOTIFICATION');
 
     await updateProductStock(data, log);
   } catch (err) {
     logEvent(log, 'ERROR_CREATING_PRODUCT_ORDERS', { message: err.message, name: err.name });
-    await log.save();
   }
 }
 
@@ -53,7 +50,6 @@ async function createProductOrder(item, order, log) {
   });
 
   logEvent(log, 'SUCCESSFULLY CREATED PRODUCT ORDER', productOrder?._id);
-  await log.save();
   return productOrder;
 }
 

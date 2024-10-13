@@ -18,14 +18,12 @@ async function handleTopBids(auction, log) {
 
   if (!topBids) {
     logEvent(log, 'No top bids', topBids);
-    await log.save()
     return
   }
 
   logEvent(log, 'TOP BIDS UPDATED');
-  await log.save()
 
-  sendEmail(topBids, {}, 'AUCTION_ITEM_WINNER', '', false);
+  sendEmail(topBids, 'AUCTION_ITEM_WINNER');
 }
 
 export default handleTopBids;

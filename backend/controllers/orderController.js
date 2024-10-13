@@ -121,10 +121,7 @@ const getOrders = asyncHandler(async (req, res) => {
 */
 const updateOrderWithTrackingNumber = asyncHandler(async (req, res) => {
   const log = await prepareLog('UPDATE ORDER WITH TRACKING NUMBER');
-  logEvent(log, 'BEGINNING UPDATE ORDER WITH TRACKING NUMBER', {
-    orderId: req?.body?.id,
-    trackingNumber: req.body?.trackingNumber,
-  });
+  logEvent(log, 'INITIATE UPDATE ORDER WITH TRACKING NUMBER');
 
   try {
     const { id, trackingNumber } = req.body;
@@ -140,7 +137,7 @@ const updateOrderWithTrackingNumber = asyncHandler(async (req, res) => {
       },
       { new: true }
     );
-    logEvent(log, 'ORDER UPDATED');
+    logEvent(log, 'ORDER UPDATED', order);
 
     const updatedProductOrder = await ProductOrder.findOneAndUpdate(
       { orderId: id },
@@ -149,14 +146,17 @@ const updateOrderWithTrackingNumber = asyncHandler(async (req, res) => {
     );
     logEvent(log, 'PRODUCT ORDER UPDATED', updatedProductOrder);
 
-    await sendEmail(order, {}, 'sendOrderShippedConfirmationEmail');
+    sendEmail(order, 'SEND_ORDER_SHIPPED_CONFIRMATION_EMAIL');
 
-    logEvent(log, 'END UPDATE ORDER WITH TRACKING NUMBER SUCCESSFULLY');
+    logEvent(log, 'END UPDATE ORDER WITH TRACKING NUMBER');
+
     res.status(200).json({
       message: 'Order updated and shipping confirmation email has been sent',
       sliceName: 'orderApi',
     });
   } catch (err) {
+    logEvent(log, 'ERROR UPDATE ORDER WITH TRACKING NUMBER');
+
     await Error.create({
       functionName: 'UPDATE_ORDER_WITH_TRACKING_NUMBER',
       name: err.name,

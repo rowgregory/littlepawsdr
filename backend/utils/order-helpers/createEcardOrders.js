@@ -3,11 +3,12 @@ import { logEvent } from '../logHelpers.js';
 import { sendEmail } from '../sendEmail.js';
 
 async function createEcardOrders(data, order, log) {
-  logEvent(log, 'BEGINNING CREATE ECARD ORDER DOCUMENT', data);
+  logEvent(log, 'INITIATE CREATE ECARD ORDER DOCUMENT', data);
 
   const ecards = data.orderItems.filter((item) => item.isEcard);
 
   if (ecards.length === 0) {
+    logEvent(log, 'END NO ECARDS');
     return; // Exit early if there are no eCards
   }
 
@@ -27,10 +28,10 @@ async function createEcardOrders(data, order, log) {
 
     // Push all ecard IDs to the order and save once
     order.ecards.push(...ecardOrderIds);
+    logEvent(log, 'END CREATE ECARD ORDERS');
     await order.save();
   } catch (err) {
-    logEvent(log, 'ERROR_CREATING_ECARDORDER_DOCUMENT', { message: err.message, name: err.name });
-    await log.save();
+    logEvent(log, 'ERROR CREATING ECARD ORDER', { message: err.message, name: err.name });
   }
 }
 
@@ -54,25 +55,16 @@ async function createEcardOrder(item, order, log) {
   });
 
   logEvent(log, 'ECARD ORDER CREATED', ecardOrder);
-  await log.save();
   return ecardOrder;
 }
 
 async function handleInstantSend(ecardOrder, log) {
-  logEvent(log, 'ECARD ORDER SENDING INSTANTLY', {
-    ecardOrderId: ecardOrder._id,
-    sendNow: ecardOrder.sendNow,
-  });
-  await log.save();
-  sendEmail({}, {}, 'ecard', '', false);
+  logEvent(log, 'ECARD ORDER SENDING INSTANTLY', ecardOrder);
+  sendEmail({},'ECARD');
 }
 
 async function handleDelayedSend(ecardOrder, log) {
-  logEvent(log, 'ECARD SENDING LATER', {
-    ecardOrderId: ecardOrder._id,
-    sendNow: ecardOrder.sendNow,
-  });
-  await log.save();
+  logEvent(log, 'ECARD SENDING LATER', ecardOrder);
 }
 
 export default createEcardOrders;

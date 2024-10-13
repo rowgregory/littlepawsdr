@@ -12,7 +12,7 @@ import handleTopBids from './cron-utils/handleTopBids.js';
 export const cronJobs = (io) => {
   return {
     // Every day at 9:00AM
-    sendEcard: cron.schedule('0 9 * * *', () => sendEmail({}, {}, 'ecard'), {
+    sendEcard: cron.schedule('0 9 * * *', () => sendEmail({}, 'ECARD'), {
       scheduled: true,
       timezone: 'America/New_York',
     }),
@@ -83,13 +83,13 @@ export const cronJobs = (io) => {
     sendOutPaymentReminderEmailForWinningBidAuctionItem: cron.schedule(
       '0 9 * * *',
       async () => {
-        const log = await prepareLog(
-          'SEND_OUT_PAYMENT_REMINDER_EMAIL_FOR_WINNING_BID_ACUTION_ITEM'
-        );
-        logEvent(log, 'INITIATE SENDING OUT EMAILS TO REMAINING AUCTION WINNING BIDDERS');
+        const log = await prepareLog('SECOND AUCION ITEM PAYMENT REMINDER EMAIL');
+        logEvent(log, 'INITIATE SECOND AUCTION ITEM PAYMENT REMINDER EMAIL');
+        
 
         const twoDaysAgo = new Date();
         twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+        logEvent(log, 'TWO DAYS AGO',twoDaysAgo);
 
         const auctionWinningBidders = await AuctionWinningBidder.find({
           auctionPaymentNotificationEmailHasBeenSent: true,
@@ -101,9 +101,40 @@ export const cronJobs = (io) => {
 
         if (auctionWinningBidders.length > 0) {
           logEvent(log, 'EMAILS TO SEND');
-          sendEmail(auctionWinningBidders, {}, 'REMINDER_PAYMENT_EMAIL_AUCTION_ITEM_WINNER');
+          sendEmail(auctionWinningBidders, 'REMINDER_PAYMENT_EMAIL_AUCTION_ITEM_WINNER');
         } else {
-          logEvent(log, 'THERE ARE NO EMAILS TO SEND');
+          logEvent(log, 'NO EMAILS TO SEND');
+        }
+      },
+      {
+        scheduled: true,
+        timezone: 'America/New_York',
+      }
+    ),
+    // Every day at 9:00AM
+    sendOutThirdPaymentReminderEmailForWinningBidAuctionItem: cron.schedule(
+      '0 9 * * *',
+      async () => {
+        const log = await prepareLog('THIRD_AUCTION_ITEM_PAYMENT_REMINDER_EMAIL');
+        logEvent(log, 'INITIATE THIRD AUCTION ITEM PAYMENT REMINDER');
+
+        const fourDaysAgo = new Date();
+        fourDaysAgo.setDate(fourDaysAgo.getDate() - 4);
+        logEvent(log, 'FOUR DAYS AGO',fourDaysAgo);
+
+        const auctionWinningBidders = await AuctionWinningBidder.find({
+          auctionPaymentNotificationEmailHasBeenSent: true,
+          emailNotificationCount: 2,
+          winningBidPaymentStatus: 'Awaiting Payment',
+          auctionItemPaymentStatus: 'Pending',
+          createdAt: { $lte: fourDaysAgo },
+        }).populate([{ path: 'auctionItem', populate: [[{ path: 'photos' }]] }, { path: 'user' }]);
+
+        if (auctionWinningBidders.length > 0) {
+          logEvent(log, 'EMAILS TO SEND');
+          sendEmail(auctionWinningBidders, 'THIRD_AUCTION_ITEM_PAYMENT_REMINDER_EMAIL');
+        } else {
+          logEvent(log, 'NO EMAILS TO SEND');
         }
       },
       {
