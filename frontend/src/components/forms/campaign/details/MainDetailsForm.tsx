@@ -56,13 +56,13 @@ const MainDetailsForm = ({
       </div>
       <div className='flex flex-col  w-full mt-2 my-3'>
         <div className='flex flex-wrap gap-0.5 h-fit'>
-          {themeColors.map((obj: any, i: number) => (
+          {themeColors?.map((obj: any, i: number) => (
             <div
               onClick={() => setInputs((prev: any) => ({ ...prev, themeColor: obj }))}
               key={i}
-              className={`${obj.dark} rounded-md h-8 w-8 flex items-center justify-center cursor-pointer`}
+              className={`${obj?.dark} rounded-md h-8 w-8 flex items-center justify-center cursor-pointer`}
             >
-              {inputs.themeColor.dark === obj.dark && (
+              {inputs?.themeColor?.dark === obj?.dark && (
                 <div className='bg-white h-2 w-2 rounded-full'></div>
               )}
             </div>
