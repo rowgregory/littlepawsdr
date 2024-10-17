@@ -1,6 +1,6 @@
 const quickOptionArrData = [
   {
-    linkKey: '/available',
+    linkKey: '/dachshunds/available',
     mb: '0.4rem',
     fontSize_1: '0.75rem',
     fontWeight: 'bold',
@@ -9,13 +9,13 @@ const quickOptionArrData = [
     textKey_2: 'Dachshunds',
   },
   {
-    linkKey: '/about/sanctuary',
+    linkKey: '/dachshunds/surrender',
     mb: '0.4rem',
     fontSize_1: '0.75rem',
     fontWeight: 'bold',
-    textKey_1: 'GIVE HELP TO THOSE IN NEED',
+    textKey_1: 'FIND YOUR DACHSHUND A HOME',
     fontSize_2: '2rem',
-    textKey_2: 'Sanctuary',
+    textKey_2: 'Surrender',
   },
   {
     linkKey: '/volunteer/volunteer-application',

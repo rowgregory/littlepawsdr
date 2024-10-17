@@ -6,14 +6,12 @@ import {
   useGetCampaignsForAdminViewQuery,
 } from '../../../redux/services/campaignApi';
 import { RootState } from '../../../redux/toolkitStore';
-import GreenRotatingTransparentCircle from '../../../components/Loaders/GreenRotatingTransparentCircle';
 import CreateCampaignModal from '../../../components/modals/CreateCampaignModal';
 import CampaignTableAdmin from '../../../components/tables/CampaignTableAdmin';
-import MagnifyingGlass from '../../../components/svg/MagnifyingGlass';
 
 const Navbar = ({ handleOpen, campaigns }: { handleOpen: any; campaigns: number }) => (
-  <header className='d-flex justify-content-between align-items-center w-100 mb-3'>
-    <div className='d-flex align-items-center'>
+  <header className='flex flex-col sm:flex-row sm:justify-between sm:items-center w-full mb-3'>
+    <div className='flex items-center'>
       <h1 className='text-2xl font-Matter-Medium mb-0'>Campaigns</h1>
       <div className='bg-gray-300 mx-3 w-[1px] h-6'></div>
       <p className='font-Matter-Medium mb-0'>{campaigns}</p>
@@ -35,7 +33,7 @@ const Campaigns = () => {
   const handleOpen = () => showModal(true);
   const handleClose = () => showModal(false);
   const noCampaigns = campaign?.campaignsForAdminView?.length === 0;
-  const { isLoading, refetch } = useGetCampaignsForAdminViewQuery();
+  const { refetch } = useGetCampaignsForAdminViewQuery();
   const [createCampaign, { isLoading: loadingCreate }] = useCreateCampaignMutation();
 
   const handleCreateCampaign = async (e: FormEvent) => {
@@ -52,7 +50,6 @@ const Campaigns = () => {
 
   return (
     <Fragment>
-      {isLoading && <GreenRotatingTransparentCircle />}
       <CreateCampaignModal
         show={show}
         handleClose={handleClose}
@@ -68,7 +65,7 @@ const Campaigns = () => {
             {noCampaigns ? (
               <div className='flex flex-col justify-center max-w-48 w-full items-center mx-auto  py-10'>
                 <div className='rounded-xl bg-gray-100 h-12 w-12 flex justify-center items-center'>
-                  <MagnifyingGlass />
+                  <i className='fas fa-search text-gray-300 text-sm'></i>
                 </div>
                 <div className='font-Matter-Medium my-2'>No campaigns</div>
                 <button
@@ -82,7 +79,7 @@ const Campaigns = () => {
               <Fragment>
                 <div className='grid grid-cols-6 p-3'>
                   <div className='col-span-4 md:col-span-2 flex items-center font-Matter-Light border-[1px] border-slate-200 rounded-md bg-white py-2 px-3'>
-                    <MagnifyingGlass />
+                    <i className='fas fa-search text-gray-300 text-sm'></i>
                     <input
                       className='w-full h-full focus:outline-0 rounded-md ml-2'
                       placeholder='Search'

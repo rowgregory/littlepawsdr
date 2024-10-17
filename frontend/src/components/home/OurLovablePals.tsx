@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-import RightArrow from '../svg/RightArrow';
 import { LoadingImg } from '../LoadingImg';
 import { useGetDachshundsByStatusMutation } from '../../redux/services/rescueGroupsApi';
 import styled from 'styled-components';
@@ -74,27 +73,31 @@ const OurLovablePals = () => {
 
   return (
     <section className='max-w-screen-xl w-full mb-60 mx-auto px-3 flex flex-col items-center'>
-      <Link className='text-3xl font-Matter-Medium flex justify-center mb-8 cursor-pointer duration-300 text-teal-500 :hover:no-underline hover:text-teal-500' to='/available'>Meet our dachshunds</Link>
+      <Link
+        className='text-3xl font-Matter-Medium flex justify-center mb-8 cursor-pointer duration-300 text-teal-500 :hover:no-underline hover:text-teal-500'
+        to='/dachshunds'
+      >
+        Meet our dachshunds
+      </Link>
       <DogContainer className='mx-0 mb-5'>
         {isLoading
           ? [1, 2, 3].map((_: any, i: number) => (
-            <LoadingImg w='100%' h='100%' maxw='500px' key={i} />
-          ))
-          : dachshund?.dachshunds
-            ?.map((dachshund: any, i: number) => (
-              <Link key={i} to={`/about/type/${dachshund?.id}`}>
-                <ImageContainer>
-                  <img
-                    src={dachshund?.attributes?.photos[1]}
-                    alt={`${dachshund?.attributes?.name}`}
-                    loading='lazy'
-                  />
-                </ImageContainer>
-              </Link>
+              <LoadingImg w='100%' h='100%' maxw='500px' key={i} />
             ))
-            .filter((_: any, i: number) => i < 9)}
+          : dachshund?.dachshunds
+              ?.map((dachshund: any, i: number) => (
+                <Link key={i} to={`/dachshunds/${dachshund?.id}`}>
+                  <ImageContainer>
+                    <img
+                      src={dachshund?.attributes?.photos[1]}
+                      alt={`${dachshund?.attributes?.name}`}
+                      loading='lazy'
+                    />
+                  </ImageContainer>
+                </Link>
+              ))
+              .filter((_: any, i: number) => i < 9)}
       </DogContainer>
-      <RightArrow text='See All Available Dachshunds' url='/available' />
     </section>
   );
 };

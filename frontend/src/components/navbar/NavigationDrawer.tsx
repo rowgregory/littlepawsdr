@@ -1,50 +1,46 @@
 import { Fragment, useCallback, useRef } from 'react';
-import { CloseSideBarBtn, Container } from '../styles/left-navigation/styles';
-import LinkContent from '../left-navigation/LinkContent';
+import LinkContent from '../navigation-drawer/LinkContent';
 import useOutsideDetect from '../../utils/useOutsideDetect';
 import { RootState, useAppDispatch } from '../../redux/toolkitStore';
-import { toggleLeftDrawer } from '../../redux/features/navbar/navbarSlice';
 import { useSelector } from 'react-redux';
-import { useGetCustomCampaignLinkQuery } from '../../redux/services/campaignApi';
-import useScrollToTop from '../../utils/hooks/useScrollToTop';
+import AuthUserDisplay from '../navigation-drawer/AuthUserDisplay';
+import BlackPageOverlay from '../common/BlackPageOverlay';
+import { toggleNavigationDrawer } from '../../redux/features/navbar/navbarSlice';
 
 const NavigationDrawer = () => {
   const dispatch = useAppDispatch();
   const overlayRef = useRef(null) as any;
   const navbar = useSelector((state: RootState) => state.navbar);
-  const campaign = useSelector((state: any) => state.campaign);
-  const open = navbar.toggle.leftDrawer;
-
-  const { data: customCampaignLink } = useGetCustomCampaignLinkQuery();
+  const open = navbar.toggle.navigationDrawer;
 
   const handleClose = useCallback(() => {
-    if (navbar.toggle.leftDrawer) {
-      dispatch(toggleLeftDrawer({ leftDrawer: false }));
+    if (navbar.toggle.navigationDrawer) {
+      dispatch(toggleNavigationDrawer({ navigationDrawer: false }));
     }
-  }, [dispatch, navbar.toggle.leftDrawer]);
+  }, [dispatch, navbar.toggle.navigationDrawer]);
 
   useOutsideDetect(overlayRef, handleClose);
 
-  useScrollToTop();
-
-  const campaignLinkKey = campaign?.status === 'LIVE' && customCampaignLink
-    ? `/campaigns/${customCampaignLink}/auction`
-    : '/campaigns';
-
   return (
     <Fragment>
+      <BlackPageOverlay open={open} />
       <div
+        ref={overlayRef}
         className={`${
-          open ? 'block' : 'hidden'
-        } fixed top-0 left-0 h-screen w-screen  bg-black/80 z-[3000] animate-fadeIn`}
-      ></div>
-      <Container ref={overlayRef} open={open}>
-        <CloseSideBarBtn
-          className='fas fa-chevron-left fa-sm'
-          onClick={handleClose}
-        ></CloseSideBarBtn>
-        <LinkContent closeMenu={handleClose} error={''} campaignLinkKey={campaignLinkKey} />
-      </Container>
+          open
+            ? 'left-0 w-screen sm:left-2 sm:w-[380px]'
+            : `left-[-135vw] w-screen sm:w-[380px] sm:left-[-380px]`
+        } py-6 overflow-y-scroll h-screen sm:h-[calc(100vh-16px)] rounded-3xl fixed z-[60] top-0 sm:top-2 bottom:0 sm:bottom-2 bg-[#171b20] transition-all duration-300 no-scrollbar`}
+      >
+        <div className='px-8 mb-7 relative flex items-center justify-end gap-2'>
+          <i onClick={handleClose} className='fas fa-times fa-xs text-white cursor-pointer'></i>
+        </div>
+        <AuthUserDisplay />
+        <div className='mx-auto px-8 my-7'>
+          <div className='w-full h-[1px] bg-[#565b5e]'></div>
+        </div>
+        <LinkContent closeMenu={handleClose} />
+      </div>
     </Fragment>
   );
 };

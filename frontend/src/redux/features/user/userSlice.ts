@@ -1,60 +1,13 @@
 import { Reducer, createSlice } from '@reduxjs/toolkit';
 import { userApi } from '../../services/userApi';
+import { UserStatePayload } from '../../../types/user-types';
 
-export interface ShippingAddress {
-  address: string;
-  city: string;
-  state: string;
-  zipPostalCode: string;
-}
-
-export interface User {
-  _id: string;
-  name: string;
-  email: string;
-  isAdmin: boolean;
-  avatar: string;
-  online: boolean;
-  token: string;
-  confirmed: boolean;
-  lastLoginTime: string;
-  onlineStatus: string;
-  theme: string;
-  anonymousBidding: boolean;
-  firstName: string;
-  lastName: string;
-  firstNameFirstInitial: string;
-  lastNameFirstInitial: string;
-  shippingAddress?: ShippingAddress;
-}
-
-export interface UserStatePayload {
-  loading: boolean;
-  error: null;
-  success: boolean;
-  message: string | null;
-  users: [];
-  boardMembers: [];
-  newsletterEmails: [];
-  user: User | null;
-  type: string;
-  bids: [];
-  auctionDonations: [];
-  donations: [];
-  instantBuys: [];
-  orders: [] | null;
-  winningBids: [] | null;
-  adoptionApplicationFees: [] | null;
-  hasShippingAddress: boolean;
-}
-
-export const initialUserState: UserStatePayload = {
+const initialUserState: UserStatePayload = {
   loading: false,
   success: false,
   error: null,
   message: '',
   users: [],
-  boardMembers: [],
   newsletterEmails: [],
   user: null,
   type: '',
@@ -113,6 +66,15 @@ export const userSlice = createSlice({
         state.adoptionApplicationFees = payload.adoptionApplicationFees;
         state.user = payload.user;
         state.donations = payload.donations;
+      })
+      .addMatcher(userApi.endpoints.updateUserProfileDetails.matchFulfilled, (state, { payload }: any) => {
+        state.user = {
+          ...state.user,
+          ...payload.user,
+        };
+      })
+      .addMatcher(userApi.endpoints.fetchUserProfileDetails.matchFulfilled, (state, { payload }: any) => {
+        state.user = payload.user;
       })
       .addMatcher(
         (action: any) =>

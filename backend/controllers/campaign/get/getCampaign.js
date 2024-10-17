@@ -1,5 +1,4 @@
 import asyncHandler from 'express-async-handler';
-
 import { Campaign } from '../../../models/campaignModel.js';
 import Error from '../../../models/errorModel.js';
 

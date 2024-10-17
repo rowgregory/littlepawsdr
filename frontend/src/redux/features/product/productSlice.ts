@@ -38,38 +38,23 @@ export const productSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addMatcher(
-        productApi.endpoints.getProducts.matchFulfilled,
-        (state, { payload }: any) => {
-          state.products = payload.products;
-        }
-      )
-      .addMatcher(
-        productApi.endpoints.getProduct.matchFulfilled,
-        (state, { payload }: any) => {
-          state.product = payload.product;
-        }
-      )
-      .addMatcher(
-        productApi.endpoints.updateProduct.matchFulfilled,
-        (state, { payload }: any) => {
-          state.message = payload.message;
-          state.success = true;
-          state.type = payload.type;
-        }
-      )
-      .addMatcher(
-        productApi.endpoints.createProduct.matchFulfilled,
-        (state, { payload }: any) => {
-          state.message = payload.message;
-        }
-      )
-      .addMatcher(
-        productApi.endpoints.deleteProduct.matchFulfilled,
-        (state, { payload }: any) => {
-          state.message = payload.message;
-        }
-      )
+      .addMatcher(productApi.endpoints.getProducts.matchFulfilled, (state, { payload }: any) => {
+        state.products = payload.products;
+      })
+      .addMatcher(productApi.endpoints.getProduct.matchFulfilled, (state, { payload }: any) => {
+        state.product = payload.product;
+      })
+      .addMatcher(productApi.endpoints.updateProduct.matchFulfilled, (state, { payload }: any) => {
+        state.message = payload.message;
+        state.success = true;
+        state.type = payload.type;
+      })
+      .addMatcher(productApi.endpoints.createProduct.matchFulfilled, (state, { payload }: any) => {
+        state.message = payload.message;
+      })
+      .addMatcher(productApi.endpoints.deleteProduct.matchFulfilled, (state, { payload }: any) => {
+        state.message = payload.message;
+      })
       .addMatcher(
         productApi.endpoints.deleteProductPhoto.matchFulfilled,
         (state, { payload }: any) => {
@@ -78,8 +63,7 @@ export const productSlice = createSlice({
       )
       .addMatcher(
         (action: any) =>
-          action.type.endsWith('/rejected') &&
-          action.payload?.data?.sliceName === 'productApi',
+          action.type.endsWith('/rejected') && action.payload?.data?.sliceName === 'productApi',
         (state: any, action: any) => {
           state.loading = false;
           state.error = action.payload.data;

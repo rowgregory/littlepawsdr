@@ -1,4 +1,3 @@
-import React from 'react';
 import { useLocation } from 'react-router-dom';
 import styled, { keyframes, css } from 'styled-components';
 
@@ -61,15 +60,7 @@ const Loader = styled.div<{ path: string }>`
 const HorizontalLoader = () => {
   const { pathname } = useLocation();
   return (
-    <div
-      style={{
-        position:
-          pathname === '/settings/security' || pathname === '/register'
-            ? 'relative'
-            : 'static',
-        overflow: 'hidden',
-      }}
-    >
+    <div className='overflow-hidden relative'>
       <Loader className='loader' path={pathname}>
         <div className='bar'></div>
       </Loader>

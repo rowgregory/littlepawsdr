@@ -37,7 +37,7 @@ const Shop = () => {
     <Container>
       <ContentContainer>
         <CheckOutText>Check out our latest merchandise</CheckOutText>
-        <MaskBtn linkKey='/merch' textKey='MERCH' />
+        <MaskBtn linkKey='/store' textKey='STORE' />
       </ContentContainer>
     </Container>
   );

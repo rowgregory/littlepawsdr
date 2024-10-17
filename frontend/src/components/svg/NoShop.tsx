@@ -1,14 +1,6 @@
-import React from 'react';
-
 const NoShop = ({ color }: any) => {
   return (
-    <svg
-      xmlns='http://www.w3.org/2000/svg'
-      x='0px'
-      y='0px'
-      viewBox='0 0 219 219'
-      width='40pt'
-    >
+    <svg xmlns='http://www.w3.org/2000/svg' x='0px' y='0px' viewBox='0 0 219 219' width='40pt'>
       <path
         fill={color ? color : '#9761aa'}
         d='M211.5,16.941H7.5c-4.143,0-7.5,3.358-7.5,7.5v63.301c0,4.142,3.357,7.5,7.5,7.5h8.174v99.317

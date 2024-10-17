@@ -27,10 +27,6 @@ export const api = createApi({
     'Product',
     'User',
     'Newsletter-Email',
-    'Board-Member',
-    'Blog',
-    'Education-Tip',
-    'Event',
     'Cart',
     'Campaign',
     'Auction-Item',
@@ -38,6 +34,7 @@ export const api = createApi({
     'Item-Fulfillment',
     'Adoption-Application-Fee',
     'Dachshund',
+    'Merch-And-Ecards'
   ],
   endpoints: () => ({}),
 }) as any;

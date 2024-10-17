@@ -1,39 +1,16 @@
-import React from 'react';
-import styled from 'styled-components';
-import { Text } from '../components/styles/Styles';
-
-const Container = styled.div`
-  maxwidth: 1450px;
-  width: 100%;
-  padding-inline: 16px;
-  margin-block: 128px;
-`;
-
 const ReturnPolicy = () => {
   return (
-    <Container>
-      <Text fontSize='30px' fontWeight={600} marginBottom='20px'>
-        RETURN POLICY
-      </Text>
-      <Text fontSize='15px' fontWeight={400} marginBottom='48px'>
-        Last updated December 03, 2022
-      </Text>
-      <Text fontSize='22px' fontWeight={600} marginBottom='20px'>
-        REFUNDS
-      </Text>
-      <Text fontSize='15px' fontWeight={400} marginBottom='48px'>
-        All sales are final and no refund will be issued.
-      </Text>
-      <Text fontSize='22px' fontWeight={600} marginBottom='20px'>
-        QUESTIONS
-      </Text>
-      <Text fontSize='15px' fontWeight={400} marginBottom='18px'>
+    <div className='max-w-screen-2xl w-full px-4 my-32'>
+      <p className='text-3xl font-Matter-Bold mb-5'>RETURN POLICY</p>
+      <p className='mb-12'>Last updated December 03, 2022</p>
+      <p className='text-2xl mb-5 font-bold'>REFUNDS</p>
+      <p className='mb-12'>All sales are final and no refund will be issued.</p>
+      <p className='text-2xl font-bold mb-5'>QUESTIONS</p>
+      <p className='text-xl'>
         If you have any questions concerning our return policy, contact us at:
-      </Text>
-      <Text fontSize='15px' fontWeight={400} marginBottom='18px'>
-        lpdr@littlepawsdr.org
-      </Text>
-    </Container>
+      </p>
+      <p className='text-xl'>lpdr@littlepawsdr.org</p>
+    </div>
   );
 };
 

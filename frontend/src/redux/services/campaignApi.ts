@@ -1,3 +1,4 @@
+import { setCampaign } from '../features/campaign/campaignSlice';
 import { api } from './api';
 
 const BASE_URL = '/campaign';
@@ -125,6 +126,28 @@ export const campaignApi = api.injectEndpoints({
       query: () => `${BASE_URL}/custom-campaign-link`,
       providesTags: ['Campaign'],
     }),
+    fetchLiveCampaign: build.query({
+      query: () => `${BASE_URL}/live`,
+      providesTags: ['Campaign'],
+      async onQueryStarted(_: any, { dispatch, queryFulfilled }: any) {
+        try {
+          const { data } = await queryFulfilled;
+          dispatch(setCampaign(data.campaign));
+        } catch (error) {
+          console.error('Error fetching live campaign:', error);
+        }
+      },
+    }),
+    trackAuctionModalButtonClick: build.mutation({
+      query: (campaignId: any) => {
+        return {
+          url: `${BASE_URL}/clicks`,
+          method: 'PATCH',
+          body: {campaignId},
+        };
+      },
+      invalidatesTags: ['Campaign'],
+    }),
   }),
 });
 
@@ -148,4 +171,6 @@ export const {
   useUpdateAuctionWinningBidderMutation,
   useDeleteAuctionItemMutation,
   useGetCustomCampaignLinkQuery,
+  useFetchLiveCampaignQuery,
+  useTrackAuctionModalButtonClickMutation,
 } = campaignApi;

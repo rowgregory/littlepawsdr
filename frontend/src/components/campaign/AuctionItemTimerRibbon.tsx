@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { dateFnFormatDistanceToNow } from '../../utils/date-fns-helpers';
-import { AuctionItemTimerRibbonProps } from '../types/campaign-types';
+import { AuctionItemTimerRibbonProps } from '../../types/campaign-types';
 
 const AuctionItemTimerRibbon: FC<AuctionItemTimerRibbonProps> = ({
   item,

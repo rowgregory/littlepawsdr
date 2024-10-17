@@ -49,9 +49,9 @@ const Purchases = () => {
       <div className='font-Matter-Medium my-2'>No purchases</div>
       <Link
         className='hover:no-underline font-Matter-Regular text-teal-500 hover:text-teal-600 text-center'
-        to='/merch'
+        to='/store'
       >
-        Buy merch
+        Visit Store
       </Link>
     </div>
   ) : (

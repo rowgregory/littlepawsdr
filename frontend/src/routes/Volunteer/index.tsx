@@ -1,33 +1,17 @@
-import { FC, useEffect, useState } from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
-import styled from 'styled-components';
+import { Routes, Route } from 'react-router-dom';
 import FosterApplication from './FosterApplication';
 import VolunteerApplication from './VolunteerApplication';
+import TransportApplication from './TransportApplication';
 
-const Container = styled.div`
-  width: 100%;
-  margin-inline: auto;
-`;
-
-const VolunteerRoutes: FC = () => {
-  const { pathname } = useLocation();
-  const currentRoute = pathname.split('/')[2];
-  const [tabCategory, setTabCategory] = useState('Volunteer Application');
-
-  useEffect(() => {
-    setTabCategory(currentRoute);
-  }, [currentRoute, tabCategory]);
-
+const VolunteerRoutes = () => {
   return (
-    <Container>
+    <div className='min-h-[calc(100vh-401px)] pb-60 mt-[65px]'>
       <Routes>
-        <Route
-          path='volunteer-application'
-          element={<VolunteerApplication />}
-        />
+        <Route path='volunteer-application' element={<VolunteerApplication />} />
         <Route path='foster-application' element={<FosterApplication />} />
+        <Route path='transport-application' element={<TransportApplication />} />
       </Routes>
-    </Container>
+    </div>
   );
 };
 

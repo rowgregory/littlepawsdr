@@ -1,21 +1,6 @@
 import { Reducer, createSlice } from '@reduxjs/toolkit';
 import { authApi } from '../../services/authApi';
-import { User } from '../user/userSlice';
-
-export interface AuthStatePayload {
-  loading: boolean;
-  success: boolean;
-  error: string | false | null;
-  user: User | null;
-  message: string | null;
-  validations: any[];
-  strength: number;
-  isExpired: boolean | null;
-  statusCode?: number | null;
-  refreshToken: string | null;
-  tokenIsValid: boolean;
-  passwordsMatch: boolean;
-}
+import { AuthStatePayload } from '../../../types/auth-types';
 
 export const initialAuthState: AuthStatePayload = {
   loading: false,
@@ -60,6 +45,12 @@ export const authSlice = createSlice({
 
       state.validations = newValidations;
       state.strength = newValidations.reduce((acc, cur) => acc + cur, 0);
+    },
+    hydrateAuthUserState: (state, { payload }) => {
+      state.user = {
+        ...state.user,
+        ...payload,
+      };
     },
   },
   extraReducers: (builder) => {
@@ -126,5 +117,10 @@ export const authSlice = createSlice({
 
 export const authReducer = authSlice.reducer as Reducer<AuthStatePayload>;
 
-export const { setPasswordStrength, resetPasswordStrength, resetAuthSuccess, resetAuthError } =
-  authSlice.actions;
+export const {
+  setPasswordStrength,
+  resetPasswordStrength,
+  resetAuthSuccess,
+  resetAuthError,
+  hydrateAuthUserState,
+} = authSlice.actions;

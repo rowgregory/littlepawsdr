@@ -1,4 +1,3 @@
-import React from 'react';
 import styled, { keyframes } from 'styled-components';
 
 const stroke = keyframes`
@@ -31,8 +30,7 @@ const CheckmarkSVG = styled.svg`
   stroke-width: 4;
   stroke: #fff;
   stroke-miterlimit: 10;
-  animation: ${fill} 0.4s ease-in-out 0.4s forwards,
-    ${scale} 0.3s ease-in-out 0.9s both;
+  animation: ${fill} 0.4s ease-in-out 0.4s forwards, ${scale} 0.3s ease-in-out 0.9s both;
   circle {
     stroke-dasharray: 166;
     stroke-dashoffset: 166;
@@ -53,23 +51,9 @@ const CheckmarkSVG = styled.svg`
 
 const Checkmark = () => {
   return (
-    <CheckmarkSVG
-      className='checkmark'
-      xmlns='http://www.w3.org/2000/svg'
-      viewBox='0 0 52 52'
-    >
-      <circle
-        className='checkmark__circle'
-        cx='26'
-        cy='26'
-        r='25'
-        fill='none'
-      />
-      <path
-        className='checkmark__check'
-        fill='none'
-        d='M14.1 27.2l7.1 7.2 16.7-16.8'
-      />
+    <CheckmarkSVG className='checkmark' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 52 52'>
+      <circle className='checkmark__circle' cx='26' cy='26' r='25' fill='none' />
+      <path className='checkmark__check' fill='none' d='M14.1 27.2l7.1 7.2 16.7-16.8' />
     </CheckmarkSVG>
   );
 };

@@ -6,7 +6,6 @@ import {
   quickLinks,
   termsOfServiceLinkKey,
 } from '../utils/footerUtils';
-import { HomeDog } from './assets';
 import { scrollToTop } from '../utils/scrollToTop';
 import { Fragment, useState } from 'react';
 import { SMData } from '../utils/sociaMediaData';
@@ -21,16 +20,15 @@ const Footer = () => {
   return (
     <Fragment>
       <InstagramModal show={show} handleClose={handleClose} />
-      <div className={`${pagesToExclude(pathname) ? 'hidden' : 'block'}`}>
+      <div className={`bg-[#191a20] ${pagesToExclude(pathname) ? 'hidden' : 'block'}`}>
+        <i
+          onClick={scrollToTop}
+          className='w-full text-[#fff] py-2 fa-solid fa-chevron-up text-center cursor-pointer duration-200 hover:bg-teal-600 bg-teal-500 relative z-1'
+        ></i>
         <footer
-          className={`w-full bg-bottom flex flex-col justify-between items-center mx-auto max-w-[2000px] bg-cover bg-no-reapeat relative before:content-['*'] z-0 before:bg-black/60 before:absolute before:top-0 before:bottom-0 before:right-0 before:left-0`}
-          style={{ backgroundImage: `url(${HomeDog})` }}
+          className={`w-full bg-bottom flex flex-col justify-between items-center mx-auto max-w-screen-xl py-3.5`}
         >
           <div className='w-full flex flex-col'>
-            <i
-              onClick={scrollToTop}
-              className='w-full text-[#fff] py-2 fa-solid fa-chevron-up text-center cursor-pointer duration-200 hover:bg-teal-600 bg-teal-500 relative z-1'
-            ></i>
             <div className='flex sm:justify-center  w-full mx-auto relative z-1 mt-2 pl-3 sm:pl-0'>
               {SMData().map((obj: any, i: number) => (
                 <i

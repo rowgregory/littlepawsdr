@@ -147,19 +147,19 @@ const SplitTextToChars: React.FC<SplitTextToCharsProps> = ({
       {isComplete && page === 'cart' && (
         <div className='mt-4'>
           <LinkContainer>
-            <Link to='/merch' className='link-item'>
+            <Link to='/store' className='link-item'>
               Merchandise
               <span>
                 <i className='fas fa-arrow-right'></i>
               </span>
             </Link>
-            <Link to='/ecards' className='link-item'>
+            <Link to='/store' className='link-item'>
               Ecards
               <span>
                 <i className='fas fa-arrow-right'></i>
               </span>
             </Link>
-            <Link to='/welcome-wieners' className='link-item'>
+            <Link to='/donate/welcome-wieners' className='link-item'>
               Welcome Wieners
               <span>
                 <i className='fas fa-arrow-right'></i>

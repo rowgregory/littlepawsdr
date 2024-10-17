@@ -1,149 +1,7 @@
-import { Reducer, createSlice } from '@reduxjs/toolkit';
+import { PayloadAction, Reducer, createSlice } from '@reduxjs/toolkit';
 import { campaignApi } from '../../services/campaignApi';
-import { CampaignStatePayload } from '../../../components/types/campaign-types';
-
-export const initialCampaignState: CampaignStatePayload = {
-  loading: false,
-  success: false,
-  error: null,
-  message: '',
-  campaignId: '',
-  detailsId: '',
-  sharingId: '',
-  auctionId: '',
-  settingsId: '',
-  campaigns: {
-    upcoming: [],
-    active: [],
-    past: [],
-  },
-  campaignsForAdminView: [],
-  campaign: {
-    _id: '',
-    title: '',
-    subtitle: '',
-    goal: 0,
-    themeColor: {
-      xlight: '',
-      light: '',
-      dark: '',
-      darker: '',
-      text: '',
-      text2: '',
-      gradient: '',
-      border: '',
-      border2: '',
-      fill: '',
-    },
-    coverPhoto: '',
-    coverPhotoName: '',
-    maintainAspectRatio: false,
-    totalCampaignRevenue: 0,
-    supporters: 0,
-    story: '',
-    customCampaignLink: '',
-    isCampaignPublished: false,
-    isMoneyRaisedVisible: false,
-    isTipsEnabled: false,
-    campaignStatus: '',
-    auction: {
-      _id: '',
-      settings: {
-        startDate: '',
-        endDate: '',
-        isAuctionPublished: false,
-        anonymousBidding: false,
-        hasBegun: false,
-        hasEnded: false,
-        auctionStatus: '',
-      },
-      donations: [],
-      items: [],
-      bidders: [],
-      winningBids: [],
-      itemFulfillments: [],
-    },
-    imgPreference: '',
-  },
-  auctionItem: {
-    _id: '',
-    name: '',
-    description: '',
-    photos: [
-      {
-        _id: '',
-        url: '',
-        name: '',
-        size: '',
-      },
-    ],
-    instantBuyers: [],
-    sellingFormat: 'auction',
-    startingPrice: 1,
-    buyNowPrice: 5,
-    totalQuantity: 1,
-    requiresShipping: false,
-    shippingCosts: 0,
-    currentBid: 0,
-    minimumBid: 0,
-    totalBids: 0,
-    bidIncrement: 0,
-    retailValue: 0,
-    highestBidAmount: 0,
-    bids: [],
-    total: 0,
-    topBidder: '',
-    soldPrice: 0,
-  },
-  instantBuy: {},
-  confirmedBidAmount: 0,
-  type: '',
-  winner: {
-    _id: '',
-    auctionItemPaymentStatus: '',
-    hasShippingAddress: false,
-    itemSoldPrice: 0,
-    shipping: 0,
-    totalPrice: 0,
-    theme: {} as any,
-    user: {
-      name: '',
-    },
-    auctionItem: {
-      _id: '',
-      photos: [
-        {
-          _id: '',
-          url: '',
-          name: '',
-          size: '',
-        },
-      ],
-      name: '',
-      description: '',
-      instantBuyers: [],
-      sellingFormat: '',
-      startingPrice: 0,
-      buyNowPrice: 0,
-      totalQuantity: 0,
-      requiresShipping: false,
-      shippingCosts: 0,
-      currentBid: 0,
-      minimumBid: 0,
-      totalBids: 0,
-      bidIncrement: 0,
-      retailValue: 0,
-      highestBidAmount: 0,
-      bids: [],
-      total: 0,
-      topBidder: '',
-      soldPrice: 0,
-    },
-    customCampaignLink: '',
-  },
-  customCampaignLink: '',
-  status: ''
-};
+import { CampaignStatePayload } from '../../../types/campaign-types';
+import initialCampaignState from './campaign-initial-state';
 
 export const campaignSlice = createSlice({
   name: 'campaign',
@@ -155,6 +13,36 @@ export const campaignSlice = createSlice({
     resetCampaignError: (state) => {
       state.error = null;
       state.message = null;
+    },
+    saveHasHandledAuctionModalToLocalStorage: (state) => {
+      state.hasHandledAuctionModal = true;
+      localStorage.setItem('handledAuctionModal', JSON.stringify(true));
+    },
+    setCampaign(state, action: PayloadAction<any>) {
+      state.campaign = {...state.campaign, ...action.payload}
+
+      const handledAuctionModal = JSON.parse(
+        localStorage.getItem('handledAuctionModal') || 'false'
+      );
+
+      state.hasHandledAuctionModal = handledAuctionModal;
+
+      if (action.payload?.campaignStatus === 'Active Campaign' && !handledAuctionModal) {
+        if (!handledAuctionModal) {
+          state.isAuctionModalOpen = true;
+        } else {
+          state.isAuctionModalOpen = false;
+        }
+      }
+
+      if (Object.keys(action.payload).length === 0) {
+        localStorage.removeItem('handledAuctionModal');
+        state.hasHandledAuctionModal = false;
+        state.isAuctionModalOpen = false;
+      }
+    },
+    closeAuctionModal(state) {
+      state.isAuctionModalOpen = false;
     },
   },
   extraReducers: (builder) => {
@@ -278,7 +166,19 @@ export const campaignSlice = createSlice({
         campaignApi.endpoints.getCustomCampaignLink.matchFulfilled,
         (state, { payload }: any) => {
           state.customCampaignLink = payload.customCampaignLink;
-          state.status = payload.status;
+          state.campaignStatus = payload.campaignStatus;
+        }
+      )
+      .addMatcher(
+        campaignApi.endpoints.fetchLiveCampaign.matchFulfilled,
+        (state, { payload }: any) => {
+          state.campaign = payload.campaign;
+        }
+      )
+      .addMatcher(
+        campaignApi.endpoints.trackAuctionModalButtonClick.matchFulfilled,
+        (state, { payload }: any) => {
+          state.message = payload.message;
         }
       )
       .addMatcher(
@@ -294,4 +194,10 @@ export const campaignSlice = createSlice({
 
 export const campaignReducer = campaignSlice.reducer as Reducer<CampaignStatePayload>;
 
-export const { resetSuccess, resetCampaignError } = campaignSlice.actions;
+export const {
+  resetSuccess,
+  resetCampaignError,
+  saveHasHandledAuctionModalToLocalStorage,
+  setCampaign,
+  closeAuctionModal,
+} = campaignSlice.actions;

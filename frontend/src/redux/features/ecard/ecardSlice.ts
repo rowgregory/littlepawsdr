@@ -1,15 +1,17 @@
 import { Reducer, createSlice } from '@reduxjs/toolkit';
 import { ecardApi } from '../../services/ecardApi';
+import { EcardProps, EcardStatePayload } from '../../../types/ecard-types';
 
-interface EcardStatePayload {
-  loading: boolean;
-  success: boolean;
-  error: string | false | null;
-  message: string | null;
-  ecards: [] | any;
-  ecard: {};
-  categories: [];
-}
+const ecardState: EcardProps = {
+  _id: '',
+  category: '',
+  price: 0,
+  image: '',
+  name: '',
+  isEcard: true,
+  thumb: '',
+  sendNow: true,
+};
 
 const initialEcardState: EcardStatePayload = {
   loading: false,
@@ -17,7 +19,7 @@ const initialEcardState: EcardStatePayload = {
   error: null,
   message: '',
   ecards: [],
-  ecard: {},
+  ecard: ecardState,
   categories: [],
 };
 

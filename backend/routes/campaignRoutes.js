@@ -19,6 +19,8 @@ import updateItemFulfillment from '../controllers/campaign/patch/updateItemFulfi
 import updateAuctionWinningBidder from '../controllers/campaign/patch/updateAuctionWinningBidder.js';
 import deleteAuctionItem from '../controllers/campaign/delete/deleteAuctionItem.js';
 import getCustomCampaignLinkName from '../controllers/campaign/get/getCustomCampaignLinkName.js';
+import getLiveCampaign from '../controllers/campaign/get/getLiveCampaign.js';
+import trackAuctionModalButtonClick from '../controllers/campaign/patch/trackingAuctionModalButtonClick.js';
 const router = express.Router();
 
 router
@@ -27,8 +29,10 @@ router
   .post(protect, admin, createCampaign)
   .put(protect, admin, updateCampaign);
 router.route('/custom-campaign-link').get(getCustomCampaignLinkName);
-router.route('/:id').get(getCampaign);
+router.route('/live').get(getLiveCampaign);
 router.route('/auction').put(protect, admin, updateAuction);
+router.route('/clicks').patch(trackAuctionModalButtonClick);
+router.route('/:id').get(getCampaign);
 router
   .route('/auction/item/:auctionItemId')
   .get(getAuctionItemById)

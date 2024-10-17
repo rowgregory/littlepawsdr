@@ -1,7 +1,6 @@
 import { Image } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import styled, { css, keyframes } from 'styled-components';
-import { Flex } from '../components/styles/Styles';
 import BackgroundImage from '../components/assets/404-bg.png';
 import SilverPawsSad from '../components/assets/silver-paws-sad.png';
 import SilverPawsHello from '../components/assets/archive-kitty.png';
@@ -128,7 +127,7 @@ to {
   transform: rotate(360deg);
 }
 `;
-const GreenCircleImage = styled(Image) <{ rotate: string }>`
+const GreenCircleImage = styled(Image)<{ rotate: string }>`
   position: absolute;
   max-width: 47px;
   top: 49px;
@@ -136,8 +135,8 @@ const GreenCircleImage = styled(Image) <{ rotate: string }>`
   animation: ${({ rotate }) =>
     rotate === 'true'
       ? css`
-        ${rotateGreenCircle} 5000ms linear infinite
-      `
+          ${rotateGreenCircle} 5000ms linear infinite
+        `
       : ''};
   @media screen and (min-width: 353px) {
     max-width: 54px;
@@ -153,7 +152,6 @@ const GreenCircleImage = styled(Image) <{ rotate: string }>`
     max-width: 80px;
     top: 74px;
     left: -450px;
-
   }
 `;
 
@@ -235,7 +233,7 @@ const WindowPieceImage = styled(Image)`
     width: 89px;
   }
 `;
-const GreenCircleImage2 = styled(Image) <{ rotate: string }>`
+const GreenCircleImage2 = styled(Image)<{ rotate: string }>`
   position: absolute;
   max-width: 47px;
   top: -105px;
@@ -243,8 +241,8 @@ const GreenCircleImage2 = styled(Image) <{ rotate: string }>`
   animation: ${({ rotate }) =>
     rotate === 'true'
       ? css`
-      ${rotateGreenCircle} 5000ms linear infinite
-    `
+          ${rotateGreenCircle} 5000ms linear infinite
+        `
       : ''};
   @media screen and (min-width: 353px) {
     max-width: 54px;
@@ -290,14 +288,7 @@ const PageNotFound = () => {
 
   return (
     <Container>
-      <Flex
-        height='100%'
-        flexDirection='column'
-        alignItems='center'
-        justifyContent='center'
-        position='relative'
-        flex='0'
-      >
+      <div className='flex h-full flex-col items-center justify-center relative flex-0'>
         <OopsText>OOPS!</OopsText>
         <Text404>404</Text404>
         <SilverPawsSadImage
@@ -308,10 +299,7 @@ const PageNotFound = () => {
         <WindowTileLeft src={WindowBottomTileLeft} />
         <BackLink to='/'>
           <div>
-            <GreenCircleImage
-              rotate={helloSilverPaws.toString()}
-              src={GreenCircleBtn}
-            />
+            <GreenCircleImage rotate={helloSilverPaws.toString()} src={GreenCircleBtn} />
             <BlueBackBtnImage src={BlueBackBtn} />
           </div>
         </BackLink>
@@ -323,9 +311,9 @@ const PageNotFound = () => {
             <BlueBackBtnImage2 src={BlueBackBtn} />
           </div>
         </BackLink>
-      </Flex>
+      </div>
       {helloSilverPaws && (
-        <Flex position='absolute'>
+        <div className='flex absolute'>
           <SplitTextToChars
             text={`Click on the blue arrows to go home`}
             fontSize='12px'
@@ -335,12 +323,9 @@ const PageNotFound = () => {
             width='280px'
             justifyContent='center'
           />
-        </Flex>
+        </div>
       )}
-      <Illustrator
-        target='_blank'
-        href='https://icons8.com/illustrations/author/GrbQqWBEhaDS'
-      >
+      <Illustrator target='_blank' href='https://icons8.com/illustrations/author/GrbQqWBEhaDS'>
         Illustration by Liam Moore
       </Illustrator>
     </Container>

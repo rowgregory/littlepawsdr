@@ -37,7 +37,7 @@ const bidSchema = mongoose.Schema(
     status: { type: String, enum: BidEnum, default: 'Top Bid' },
     sentWinnerEmail: { type: Boolean, default: false },
     emailCount: { type: Number, default: 0 },
-    outBidEmailSent: { type: Boolean, default: false }
+    outBidEmailSent: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
@@ -285,7 +285,7 @@ const auctionSchema = mongoose.Schema(
         const startDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 1 week from current date
         const endDate = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000); // 2 week from current date
         endDate.setHours(17, 0, 0, 0); // Set time to 5:00 PM (17:00) with zero minutes, seconds, and milliseconds
-        startDate.setHours(9, 0, 0, 0)
+        startDate.setHours(9, 0, 0, 0);
         return {
           startDate,
           endDate,
@@ -303,6 +303,16 @@ const auctionSchema = mongoose.Schema(
     timestamps: true,
   }
 );
+
+const AuctionButtonStatsSchema = new mongoose.Schema({
+  clickCount: {
+    type: Number,
+    default: 0,
+  },
+  campaignTitle: {
+    type: String,
+  },
+});
 
 const campaignSchema = mongoose.Schema(
   {
@@ -342,6 +352,7 @@ const campaignSchema = mongoose.Schema(
     isCampaignPublished: { type: Boolean, default: true },
     isMoneyRaisedVisible: { type: Boolean, default: true },
     imgPreference: { type: String },
+    modalButtonClicks: AuctionButtonStatsSchema,
   },
   {
     timestamps: true,

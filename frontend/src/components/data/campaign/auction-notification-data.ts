@@ -4,15 +4,15 @@ const auctionNotificationsData = [
     freq: 'Immediate',
   },
   {
-    textKey: 'Winning Bidder Confirmation',
+    textKey: 'First Payment Reminder',
     freq: 'Immediate',
   },
   {
-    textKey: 'First Payment Reminder',
+    textKey: 'Second Payment Reminder',
     freq: '2 Days',
   },
   {
-    textKey: 'Second Payment Reminder',
+    textKey: 'Third Payment Reminder',
     freq: '4 Days',
   },
 ];

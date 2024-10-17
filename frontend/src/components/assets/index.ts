@@ -59,6 +59,8 @@ import PineappleCut from './pineapple-cut.png';
 import SmoothWallDark from './smooth-wall-dark.png';
 import Triangles from './triangles.png';
 import AiCartDog2 from './empty-cart-dachshund-1.jpeg';
+import NotAvaiableForAdoptionYet from './sanctuary-low.jpg';
+import SurrenderToUsImg from './surrender.jpg';
 
 export {
   Icon1,
@@ -122,4 +124,6 @@ export {
   SmoothWallDark,
   Triangles,
   AiCartDog2,
+  NotAvaiableForAdoptionYet,
+  SurrenderToUsImg
 };

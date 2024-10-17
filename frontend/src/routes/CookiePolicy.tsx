@@ -1,21 +1,11 @@
-import React from 'react';
-import styled from 'styled-components';
-import { Text } from '../components/styles/Styles';
-
-const Container = styled.div`
-  maxwidth: 1450px;
-  width: 100%;
-  padding-inline: 16px;
-  margin-block: 128px;
-`;
-
 const CookiePolicy = () => {
   return (
-    <Container>
-      <Text fontSize='30px' fontWeight={600} marginBottom='20px'>
+    <div className='max-w-[1450px] w-full px-4 my-32'>
+      <p className='text-3xl font-bold mb-5'>
         Cookies Policy
-      </Text>
+      </p>
       <p>Last updated: December 07, 2022</p>
+
       <p>
         This Cookies Policy explains what Cookies are and how We use them. You
         should read this policy so You can understand what type of cookies We
@@ -33,21 +23,21 @@ const CookiePolicy = () => {
         We do not store sensitive personal information, such as mailing
         addresses, account passwords, etc. in the Cookies We use.
       </p>
-      <Text fontSize='30px' fontWeight={600} marginBottom='20px'>
+      <p className='text-3xl font-bold mb-5'>
         Interpretation and Definitions
-      </Text>
-      <Text fontSize='20px' fontWeight={600} marginBottom='20px'>
+      </p>
+      <p className='text-xl font-bold mb-5'>
         Interpretation
-      </Text>
+      </p>
       <p>
         The words of which the initial letter is capitalized have meanings
         defined under the following conditions. The following definitions shall
         have the same meaning regardless of whether they appear in singular or
         in plural.
       </p>
-      <Text fontSize='20px' fontWeight={600} marginBottom='20px'>
+      <p className='text-xl font-bold mb-5'>
         Definitions
-      </Text>
+      </p>
       <p>For the purposes of this Cookies Policy:</p>
       <ul>
         <li>
@@ -79,12 +69,12 @@ const CookiePolicy = () => {
           individual is accessing or using the Website, as applicable.
         </li>
       </ul>
-      <Text fontSize='30px' fontWeight={600} marginBottom='20px'>
+      <p className='text-3xl font-bold mb-5'>
         The use of the Cookies
-      </Text>
-      <Text fontSize='20px' fontWeight={600} marginBottom='20px'>
+      </p>
+      <p className='text-xl font-bold mb-5'>
         Type of Cookies We Use
-      </Text>
+      </p>
       <p>
         Cookies can be &quot;Persistent&quot; or &quot;Session&quot; Cookies.
         Persistent Cookies remain on your personal computer or mobile device
@@ -126,9 +116,9 @@ const CookiePolicy = () => {
           </p>
         </li>
       </ul>
-      <Text fontSize='20px' fontWeight={600} marginBottom='20px'>
+      <p className='text-xl font-bold mb-5'>
         Your Choices Regarding Cookies
-      </Text>
+      </p>
       <p>
         If You prefer to avoid the use of Cookies on the Website, first You must
         disable the use of Cookies in your browser and then delete the Cookies
@@ -198,9 +188,9 @@ const CookiePolicy = () => {
         For any other web browser, please visit your web browser's official web
         pages.
       </p>
-      <Text fontSize='20px' fontWeight={600} marginBottom='20px'>
+      <p className='text-xl font-bold mb-5'>
         More Information about Cookies
-      </Text>
+      </p>
       <p>
         You can learn more about cookies:{' '}
         <a
@@ -212,16 +202,16 @@ const CookiePolicy = () => {
         </a>
         .
       </p>
-      <Text fontSize='20px' fontWeight={600} marginBottom='20px'>
+      <p className='text-xl font-bold mb-5'>
         Contact Us
-      </Text>
+      </p>
       <p>
         If you have any questions about this Cookies Policy, You can contact us:
       </p>
       <ul>
         <li>By email: LPDR@littlepawsdr.org</li>
       </ul>
-    </Container>
+    </div>
   );
 };
 

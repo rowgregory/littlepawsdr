@@ -1,137 +1,74 @@
-import styled from 'styled-components';
-import { Text } from '../../components/styles/Styles';
-import FosterHigh from '../../components/assets/foster-high.jpeg';
-import FosterLow from '../../components/assets/foster-low.jpg';
-import LeftArrow from '../../components/svg/LeftArrow';
-import RightArrow from '../../components/svg/RightArrow';
-import Hero from '../../components/Hero';
 import { Fragment } from 'react';
-
-const FosterApplicationIFrame = styled.iframe`
-  border: none;
-  height: 7800px;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
-    height: 7000px;
-  }
-  @media screen and (orientation: landscape) {
-    height: 7000px;
-  }
-  @media screen and (orientation: portrait) and (min-device-width: 768px) and (max-device-width: 1024px) {
-    height: 7000px;
-  }
-`;
+import FosterHigh from '../../components/assets/foster-high.jpeg';
+import Hero from '../../components/Hero';
 
 const FosterApplication = () => {
   return (
     <Fragment>
       <Hero
-        low={FosterLow}
-        high={FosterHigh}
+        src={FosterHigh}
         title='Foster Application'
         link='https://unsplash.com/@chelsea777?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText'
         photographer='Kojirou Sasaki'
       />
-      <div className='max-w-screen-xl w-full mx-auto mb-24 px-3'>
-        <div className='w-100 d-flex justify-content-between mt-3'>
-          <LeftArrow
-            text='Home'
-            url='/'
-            text2='Volunteer Application'
-            url2='/volunteer/volunteer-application'
-          />
-          <RightArrow text='Merch' url='/merch' />
-        </div>
-        <Text
-          fontSize='32px'
-          marginTop='56px'
-          fontWeight={400}
-          textAlign='center'
-          marginBottom='24px'
-        >
-          Fostering is our transitional step from a shelter/surrender to a
-          forever home.
-        </Text>
-        <Text maxWidth='680px' fontSize='16px' className='mb-4 mx-auto'>
-          During this time it’s important that we give each dachshund a safe
-          environment where it can learn to trust again, to heal and to learn
-          how to become a loving family member. Many of the dachshunds that we
-          pull from shelters or receive from an owner surrender just need a
-          temporary home until their new furever home can be found.
-        </Text>
-        <Text
-          fontSize='24px'
-          marginTop='56px'
-          fontWeight={400}
-          marginBottom='24px'
-          maxWidth='680px'
-          className='mx-auto'
-        >
-          It is the responsibility of the foster parent to provide the
-          dachshund(s) with food, monthly flea/tick medication, training and
-          love.{' '}
-        </Text>
-        <Text maxWidth='680px' fontSize='16px' className='mb-4 mx-auto'>
-          The rescue will provide a handbook on all policy and procedures, pay
-          for all vetting care (as outlined in the handbook), monthly heartworm
-          preventative, education and support.
-        </Text>
-        <Text maxWidth='680px' fontSize='16px' className='mb-4 mx-auto'>
-          Thank you for wanting to foster for Little Paws Dachshund Rescue
-          (LPDR).
-        </Text>
-        <Text maxWidth='680px' fontSize='16px' className='mb-4 mx-auto'>
+      <div className='max-w-screen-lg w-full mx-auto mt-12 px-3'>
+        <h1 className='font-Matter-Bold text-5xl text-teal-400 text-center mb-24'>
+          Fostering is our transitional step from a shelter/surrender to a forever home.
+        </h1>
+        <p className='font-Matter-Light text-lg text-center mb-3'>
+          During this time it’s important that we give each dachshund a safe environment where it
+          can learn to trust again, to heal and to learn how to become a loving family member. Many
+          of the dachshunds that we pull from shelters or receive from an owner surrender just need
+          a temporary home until their new furever home can be found.
+        </p>
+
+        <h3 className='font-Matter-Bold text-3xl text-zinc-700 text-center mb-6'>
+          It is the responsibility of the foster parent to provide the dachshund(s) with food,
+          monthly flea/tick medication, training and love.{' '}
+        </h3>
+        <p className='font-Matter-Light text-lg mb-3'>
+          The rescue will provide a handbook on all policy and procedures, pay for all vetting care
+          (as outlined in the handbook), monthly heartworm preventative, education and support.
+        </p>
+        <p className='font-Matter-Light text-lg mb-3'>
+          Thank you for wanting to foster for Little Paws Dachshund Rescue (LPDR).
+        </p>
+        <p className='font-Matter-Light text-lg mb-3'>
           This application can take 15 - 30 minutes to complete.
-        </Text>
-        <Text
-          fontSize='24px'
-          marginTop='56px'
-          fontWeight={400}
-          marginBottom='24px'
-          maxWidth='680px'
-          className='mx-auto'
-        >
-          Once we receive your application, we will contact your vet and
-          personal references.
-        </Text>
-        <Text maxWidth='680px' fontSize='16px' className='mb-4 mx-auto'>
-          After you have passed those criteria's we will ask a volunteer to set
-          up a time for a homevisit. A homevisit volunteer will come to your
-          home and look at the places that a foster dog will eat, play and
-          sleep. We require that everyone in your home be present at the time of
-          the homevisit.
-        </Text>
-        <Text maxWidth='680px' fontSize='16px' className='mb-4 mx-auto'>
-          LPDR is responsible for all vetting for foster dogs. We will also
-          provide you with a handbook to answer many of your questions about our
-          foster policies and procedures.
-        </Text>
-        <Text maxWidth='680px' fontSize='16px' className='mb-4 mx-auto'>
-          Fostering is a rewarding experience but is a commitment for any
-          person. You will be asked to bring home a dog that may have just been
-          pulled out of the shelter into your home or one that was surrendered
-          by their owner. Some fosters do not get along with your dogs while
-          others will warm up very quickly. There will be some that are sick and
-          will need your attention. But the reward when they go to their forever
-          home is something you will never forget.
-        </Text>
-        <Text maxWidth='680px' fontSize='16px' className='mb-4 mx-auto'>
+        </p>
+        <h3 className='font-Matter-Bold text-3xl text-zinc-700 text-center mb-6'>
+          Once we receive your application, we will contact your vet and personal references.
+        </h3>
+        <p className='font-Matter-Light text-lg mb-3'>
+          After you have passed those criteria's we will ask a volunteer to set up a time for a
+          homevisit. A homevisit volunteer will come to your home and look at the places that a
+          foster dog will eat, play and sleep. We require that everyone in your home be present at
+          the time of the homevisit.
+        </p>
+        <p className='font-Matter-Light text-lg mb-3'>
+          LPDR is responsible for all vetting for foster dogs. We will also provide you with a
+          handbook to answer many of your questions about our foster policies and procedures.
+        </p>
+        <p className='font-Matter-Light text-lg mb-3'>
+          Fostering is a rewarding experience but is a commitment for any person. You will be asked
+          to bring home a dog that may have just been pulled out of the shelter into your home or
+          one that was surrendered by their owner. Some fosters do not get along with your dogs
+          while others will warm up very quickly. There will be some that are sick and will need
+          your attention. But the reward when they go to their forever home is something you will
+          never forget.
+        </p>
+        <p className='font-Matter-Light text-lg text-center mb-3'>
           We look forward to having you on the LPDR Foster Team!
-        </Text>
-        <Text
-          maxWidth='680px'
-          fontSize='16px'
-          className='mb-4 mx-auto'
-          color='#9761aa'
-        >
-          Little Paws Dachshund Rescue Board of Directors
-        </Text>
-        <Text maxWidth='680px' className='mx-auto'>
-          <FosterApplicationIFrame
+        </p>
+
+        <div className='border-[1px] border-gray-200 rounded-xl py-4'>
+          <iframe
+            className='h-[600px] overflow-y-scroll'
             title='Foster-Application'
             width='100%'
             src='https://toolkit.rescuegroups.org/of/f?c=DGKQZWCQ'
-          ></FosterApplicationIFrame>
-        </Text>
+          ></iframe>
+        </div>
       </div>
     </Fragment>
   );

@@ -121,7 +121,9 @@ const updateUser = asyncHandler(async (req, res) => {
       objToUpdate = { ...rest.data };
     }
 
-    const user = await User.findByIdAndUpdate(req.params.id, objToUpdate, { new: true });
+    const user = await User.findByIdAndUpdate(req.params.id, objToUpdate, { new: true }).select(
+      'name email shippingAddress'
+    );
 
     await AuctionDonation.updateMany(
       { email: user.email },
