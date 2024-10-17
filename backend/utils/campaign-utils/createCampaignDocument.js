@@ -6,7 +6,7 @@ async function createCampaignDocument(log, title, auctionId) {
     const campaign = await Campaign.create({
       auction: auctionId,
       title,
-      customCampaignLink: title.substring(0, 6).toUpperCase(),
+      customCampaignLink: title.substring(0, 6).toUpperCase().replace(/\s+/g, ''),
     });
     logEvent(log, 'CAMPAIGN DOCUMENT CREATED', campaign);
 

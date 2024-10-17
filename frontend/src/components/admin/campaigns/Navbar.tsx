@@ -38,7 +38,7 @@ const AuctionLink = ({ campaign }: { campaign: any }) => (
         to={`/campaigns/${campaign?.campaign?.customCampaignLink}`}
         className='hidden md:flex items-center bg-[#fff] px-3 py-1.5 rounded-tr-3xl rounded-br-3xl duration-100 hover:bg-gray-50 hover:no-underline'
       >
-        <i className={`fa-regular fa-sm fa-eye ${campaign?.campaign.themeColor?.text} mr-1`}></i>
+        <i className={`fa-regular fa-sm fa-eye ${campaign?.campaign?.themeColor?.text} mr-1`}></i>
         <p className={`font-Matter-Regular ${campaign?.campaign?.themeColor?.text} text-sm`}>View</p>
       </Link>
     </div>
