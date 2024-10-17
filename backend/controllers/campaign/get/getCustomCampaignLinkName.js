@@ -13,23 +13,20 @@ const getCustomCampaignLinkName = asyncHandler(async (req, res) => {
       { path: 'auction', populate: [{ path: 'settings' }] },
     ]);
 
-    const responseData = [];
+    let responseData = {}
 
     campaigns.forEach((campaign) => {
-      const { status } = campaign.auction?.settings || {};
-
-      if (status === 'LIVE') {
-        responseData.push({
+      const { campaignStatus } = campaign || {};
+      
+      if (campaignStatus === 'Active Campaign') {
+        responseData = {
           customCampaignLink: campaign.customCampaignLink,
-          status,
+          campaignStatus,
           sliceName: 'campaignApi',
-        });
-      } else {
-        responseData.push({ sliceName: 'campaignApi' });
+        };
       }
     });
 
-    // Send a single response after processing all campaigns
     res.status(200).json(responseData);
   } catch (err) {
     await Error.create({

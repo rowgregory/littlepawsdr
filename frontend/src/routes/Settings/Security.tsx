@@ -2,8 +2,15 @@ import { Fragment, useEffect, useState } from 'react';
 import TailwindSpinner from '../../components/Loaders/TailwindSpinner';
 import { useSelector } from 'react-redux';
 import { RootState, useAppDispatch } from '../../redux/toolkitStore';
-import { useResetPasswordMutation, useValidateCurrentPasswordMutation } from '../../redux/services/authApi';
-import { resetAuthSuccess, resetPasswordStrength, setPasswordStrength } from '../../redux/features/auth/authSlice';
+import {
+  useResetPasswordMutation,
+  useValidateCurrentPasswordMutation,
+} from '../../redux/services/authApi';
+import {
+  resetAuthSuccess,
+  resetPasswordStrength,
+  setPasswordStrength,
+} from '../../redux/features/auth/authSlice';
 import { resetUserSuccess } from '../../redux/features/user/userSlice';
 import AccountSecurityModal from '../../components/modals/AccountSecurityModal';
 
@@ -40,7 +47,8 @@ const Settings = () => {
   const state = useSelector((state: RootState) => state);
   const auth = state.auth;
 
-  const [verifyCurrentPassword, { isLoading: loadingVerify }] = useValidateCurrentPasswordMutation();
+  const [verifyCurrentPassword, { isLoading: loadingVerify }] =
+    useValidateCurrentPasswordMutation();
   const [resetPassword, { isLoading: loadingReset }] = useResetPasswordMutation();
 
   const handleVerifyPassword = async (e: any) => {
@@ -70,9 +78,9 @@ const Settings = () => {
       .unwrap()
       .then(() => {
         openModal('reset-success', false);
-        dispatch(resetUserSuccess())
-        dispatch(resetAuthSuccess())
-        setInputs({ ...values })
+        dispatch(resetUserSuccess());
+        dispatch(resetAuthSuccess());
+        setInputs({ ...values });
       })
       .catch((err: any) => openModal(err, false));
   };
@@ -90,10 +98,10 @@ const Settings = () => {
 
   useEffect(() => {
     return () => {
-      dispatch(resetUserSuccess())
-      dispatch(resetAuthSuccess())
-    }
-  }, [dispatch])
+      dispatch(resetUserSuccess());
+      dispatch(resetAuthSuccess());
+    };
+  }, [dispatch]);
 
   return (
     <Fragment>
@@ -137,82 +145,88 @@ const Settings = () => {
             </form>
           </div>
         </div>
-        {auth.passwordsMatch && (<Fragment>
-          <div className='border-b border-[1px] border-gray-50 w-full my-10'></div>
-          <div className='grid grid-cols-12 gap-3'>
-            <div className='col-span-12 md:col-span-4'>
-              <p className='text-lg font-Matter-Medium text-slate-900 dark:text-white'></p>
-              <p className='font-Matter-Light text-sm tracking-wid text-slate-900 dark:text-slate-400'>Reset your password</p>
-            </div>
-            <div className='col-span-12 md:col-span-8 md:col-start-6'>
-              <form className='flex flex-col gap-3'>
-                <label className='font-Matter-Medium text-sm mb-0' htmlFor='newPassword'>
-                  New password
-                  <i
-                    onClick={() => setModal({ toggle: true, text: '', help: true })}
-                    className='fa-solid fa-circle-exclamation text-sm text-teal-300 cursor-pointer'
-                  ></i>
-                </label>
+        {auth.passwordsMatch && (
+          <Fragment>
+            <div className='border-b border-[1px] border-gray-50 w-full my-10'></div>
+            <div className='grid grid-cols-12 gap-3'>
+              <div className='col-span-12 md:col-span-4'>
+                <p className='text-lg font-Matter-Medium text-slate-900 dark:text-white'></p>
+                <p className='font-Matter-Light text-sm tracking-wid text-slate-900 dark:text-slate-400'>
+                  Reset your password
+                </p>
+              </div>
+              <div className='col-span-12 md:col-span-8 md:col-start-6'>
+                <form className='flex flex-col gap-3'>
+                  <label className='font-Matter-Medium text-sm mb-0' htmlFor='newPassword'>
+                    New password
+                    <i
+                      onClick={() => setModal({ toggle: true, text: '', help: true })}
+                      className='fa-solid fa-circle-exclamation text-sm text-teal-300 cursor-pointer'
+                    ></i>
+                  </label>
 
-                <div className='flex relative'>
-                  <input
-                    className='bg-white border-[1px] w-full border-gray-200 rounded-md mb-4 py-2.5 px-4 font-Matter-Regular focus:outline-none'
-                    name='newPassword'
-                    onChange={handleInput}
-                    type={showPassword.newPassword ? 'text' : 'password'}
-                    alt='Confirm Password'
-                    value={inputs.newPassword}
-                  />
-                  <i
-                    onClick={() =>
-                      setShowPassword((prev: any) => ({
-                        ...prev,
-                        newPassword: !showPassword.newPassword,
-                      }))
-                    }
-                    className={`fa-solid ${showPassword.newPassword ? 'fa-eye' : 'fa-eye-slash'
+                  <div className='flex relative'>
+                    <input
+                      className='bg-white border-[1px] w-full border-gray-200 rounded-md mb-4 py-2.5 px-4 font-Matter-Regular focus:outline-none'
+                      name='newPassword'
+                      onChange={handleInput}
+                      type={showPassword.newPassword ? 'text' : 'password'}
+                      alt='Confirm Password'
+                      value={inputs.newPassword}
+                    />
+                    <i
+                      onClick={() =>
+                        setShowPassword((prev: any) => ({
+                          ...prev,
+                          newPassword: !showPassword.newPassword,
+                        }))
+                      }
+                      className={`fa-solid ${
+                        showPassword.newPassword ? 'fa-eye' : 'fa-eye-slash'
                       } absolute top-4 right-2 cursor-pointer`}
-                  ></i>
-                </div>
-                <label className='font-Matter-Medium text-sm mb-0' htmlFor='confirmNewPassword'>
-                  Confirm new password
-                </label>
-                <div className='flex relative'>
-                  <input
-                    className='bg-white border-[1px] w-full border-gray-200 rounded-md mb-4 py-2.5 px-4 font-Matter-Regular focus:outline-none'
-                    name='confirmNewPassword'
-                    onChange={handleInput}
-                    type={showPassword.confirmNewPassword ? 'text' : 'password'}
-                    alt='Confirm new Password'
-                    value={inputs.confirmNewPassword}
-                  />
-                  <i
-                    onClick={() =>
-                      setShowPassword((prev: any) => ({
-                        ...prev,
-                        confirmNewPassword: !showPassword.confirmNewPassword,
-                      }))
-                    }
-                    className={`fa-solid ${showPassword.confirmNewPassword ? 'fa-eye' : 'fa-eye-slash'
+                    ></i>
+                  </div>
+                  <label className='font-Matter-Medium text-sm mb-0' htmlFor='confirmNewPassword'>
+                    Confirm new password
+                  </label>
+                  <div className='flex relative'>
+                    <input
+                      className='bg-white border-[1px] w-full border-gray-200 rounded-md mb-4 py-2.5 px-4 font-Matter-Regular focus:outline-none'
+                      name='confirmNewPassword'
+                      onChange={handleInput}
+                      type={showPassword.confirmNewPassword ? 'text' : 'password'}
+                      alt='Confirm new Password'
+                      value={inputs.confirmNewPassword}
+                    />
+                    <i
+                      onClick={() =>
+                        setShowPassword((prev: any) => ({
+                          ...prev,
+                          confirmNewPassword: !showPassword.confirmNewPassword,
+                        }))
+                      }
+                      className={`fa-solid ${
+                        showPassword.confirmNewPassword ? 'fa-eye' : 'fa-eye-slash'
                       } absolute top-4 right-2 cursor-pointer`}
-                  ></i>
-                </div>
-                <button
-                  className='flex justify-center items-center px-3 py-2 bg-yellow-to-green text-white w-24 h-10 rounded-lg font-Matter-Regular cursor-pointer'
-                  onClick={handleResetPassword}
-                >
-                  {auth?.success ? (
-                    <i className='fas fa-check text-white'></i>
-                  ) : loadingReset ? (
-                    <TailwindSpinner color='fill-white' />
-                  ) : (
-                    'Reset'
-                  )}
-                </button>
-              </form>
+                    ></i>
+                  </div>
+                  <button
+                    className='flex justify-center items-center px-3 py-2 bg-yellow-to-green text-white w-24 h-10 rounded-lg font-Matter-Regular cursor-pointer'
+                    onClick={handleResetPassword}
+                  >
+                    {auth?.success ? (
+                      <i className='fas fa-check text-white'></i>
+                    ) : loadingReset ? (
+                      <TailwindSpinner color='fill-white' />
+                    ) : (
+                      'Reset'
+                    )}
+                  </button>
+                </form>
+              </div>
             </div>
-          </div>
-        </Fragment>)}
+          </Fragment>
+        )}
       </div>
     </Fragment>
   );

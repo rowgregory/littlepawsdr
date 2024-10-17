@@ -7,7 +7,7 @@ interface WelcomeWienerStatePayload {
   error: string | false | null;
   message: string;
   welcomeWieners: [] | any;
-  welcomeWiener: {};
+  welcomeWiener: {} | any | null;
   welcomeWienerProducts: [];
   welcomeWienerProduct: {};
 }

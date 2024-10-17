@@ -107,14 +107,6 @@ input[type='month'] .ecard, input[type='date'] .ecard {
   outline: none !important;
 }
 
-.accordion .faq:hover {
-  background: ${({ theme }) => theme.colors.quinary};
-  transition: 300ms;
-  border-radius: 0 !important;
-}
-.accordion .faq:hover div {
-  color: #fff;
-}
 thead tr:nth-child(1) th {
   position: sticky;
   top: 0;
@@ -170,11 +162,6 @@ input#image.img-link,
 .form-control-range {
   display: none;
 }
-
-
-
-
-
 
 /* removes blue box shadow */
 .custom-file-input:focus ~ .custom-file-label {

@@ -3,8 +3,6 @@ import UserList from './UserList';
 import { ReactNode } from 'react';
 import NewsletterEmailList from './NewsletterEmailList';
 import UserEdit from './UserEdit';
-import BoardMemberList from './BoardMemberList';
-import BoardMemberEdit from './BoardMemberEdit';
 import { Link } from 'react-router-dom';
 
 const ContactsLayout = ({ navbar, children }: { navbar: ReactNode; children: ReactNode }) => (
@@ -62,8 +60,6 @@ const ContactRoutes = () => {
         <Route path='/users' element={<UserList />} />
         <Route path='/users/:create?/:id' element={<UserEdit />} />
         <Route path='/newsletter-emails' element={<NewsletterEmailList />} />
-        <Route path='/board-members' element={<BoardMemberList />} />
-        <Route path='/board-members/:create?/:id' element={<BoardMemberEdit />} />
       </Routes>
     </ContactsLayout>
   );

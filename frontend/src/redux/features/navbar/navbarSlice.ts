@@ -3,7 +3,7 @@ import { Reducer, createSlice } from '@reduxjs/toolkit';
 interface NavbarStatePayload {
   loading: boolean;
   toggle: {
-    leftDrawer: boolean;
+    navigationDrawer: boolean;
     bgColor: boolean;
     userDropdown: boolean;
   };
@@ -12,7 +12,7 @@ interface NavbarStatePayload {
 const initialNavbarState = {
   loading: false,
   toggle: {
-    leftDrawer: false,
+    navigationDrawer: false,
     bgColor: false,
     userDropdown: false,
   },
@@ -22,8 +22,8 @@ export const navbarSlice = createSlice({
   name: 'navbar',
   initialState: initialNavbarState,
   reducers: {
-    toggleLeftDrawer: (state, { payload }) => {
-      state.toggle.leftDrawer = payload.leftDrawer;
+    toggleNavigationDrawer: (state, { payload }) => {
+      state.toggle.navigationDrawer = payload.navigationDrawer;
     },
     toggleBgColor: (state, { payload }) => {
       state.toggle.bgColor = payload.bgColor;
@@ -36,5 +36,5 @@ export const navbarSlice = createSlice({
 
 export const navbarReducer = navbarSlice.reducer as Reducer<NavbarStatePayload>;
 
-export const { toggleLeftDrawer, toggleBgColor, toggleUserDropdown } =
+export const { toggleNavigationDrawer, toggleBgColor, toggleUserDropdown } =
   navbarSlice.actions;

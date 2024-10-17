@@ -40,23 +40,23 @@ const CartItem = ({ item }: { item: any }) => {
   };
 
   return (
-    <div className='grid grid-cols-12 items-center bg-slate-100 mb-3 pl-2.5 sm:pl-3'>
-      <div className='col-span-1'>
+    <div className='grid grid-cols-12 items-center bg-slate-100 mb-3 gap-3 pl-2.5 sm:pl-3'>
+      <div className='col-span-2 xs:col-span-1'>
         <img
           src={item?.dachshundImage ?? item?.productImage}
           alt={item?.name}
-          className='w-10 sm:w-16 aspect-square rounded-full object-cover'
+          className='w-full h-full xs:w-16 aspect-square rounded-full object-cover'
         />
       </div>
-      <div className='col-span-5 flex flex-col max-w-72 w-full'>
+      <div className='col-span-4 xs:col-span-5 flex flex-col max-w-72 w-full'>
         <Link
           className='text-sm font-Matter-Light text-slate-800 truncate'
           to={
             item?.dachshundId
-              ? `/welcome-wieners/${item?.dachshundId}`
+              ? `/donate/welcome-wieners/${item?.dachshundId}`
               : item?.isEcard
-              ? `/ecards/personalize/${item?.ecardId}`
-              : `/merch/${item?.productId}`
+              ? `/store/ecards/personalize/${item?.ecardId}`
+              : `/store/${item?.productId}`
           }
           onClick={() => dispatch(toggleCartDrawer(false))}
         >
@@ -91,10 +91,10 @@ const CartItem = ({ item }: { item: any }) => {
           </div>
         )}
       </div>
-      <div className='col-span-3 flex justify-center'>
+      <div className='col-span-2 xs:col-span-3 flex justify-center'>
         <p className='pr-2 font-Matter-Regular text-slate-800'>${toFixed(item?.price)}</p>
       </div>
-      <div className='col-span-1 h-20 flex items-center justify-center bg-slate-100 sm:bg-slate-50'>
+      <div className='col-span-2 xs:col-span-1 h-20 flex items-center justify-center bg-slate-100 sm:bg-slate-50'>
         <i
           className='fas fa-times fa-sm ml-3'
           onClick={() => dispatch(removeFromCart({ item }))}

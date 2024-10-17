@@ -5,12 +5,12 @@ import Security from './Security';
 import { Link } from 'react-router-dom';
 import UserAuctionSettings from './UserAuctionSettings';
 import Bids from './Bids';
-import { useFetchPersonalDataQuery } from '../../redux/services/userApi';
+// import { useFetchPersonalDataQuery } from '../../redux/services/userApi';
 import AuctionDonations from './AuctionDonations';
 import InstantBuys from './InstantBuys';
 import WinningBids from './WinningBids';
 import AdoptionApplicationFees from './AdoptionApplicationFees';
-import GreenRotatingTransparentCircle from '../../components/Loaders/GreenRotatingTransparentCircle';
+// import GreenRotatingTransparentCircle from '../../components/Loaders/GreenRotatingTransparentCircle';
 import Purchases from './Purchases';
 import Donations from './Donations';
 
@@ -89,8 +89,11 @@ const Navbar = () => {
     <div className='mb-8 p-1 bg-white border border-gray-100 rounded-lg w-full flex font-Matter-Regular overflow-x-scroll sm:overflow-x-hidden'>
       {navbarLinkData.map((obj: any, i: number) => (
         <Link
-          className={`py-2.5 px-4 rounded-md hover:no-underline hover:text-teal-500 whitespace-nowrap ${obj.linkKey === key || key?.includes(obj.urlKey) ? 'bg-teal-50 text-teal-500' : 'bg-white text-gray-800'
-            }`}
+          className={`py-2.5 px-4 rounded-md hover:no-underline hover:text-teal-500 whitespace-nowrap ${
+            obj.linkKey === key || key?.includes(obj.urlKey)
+              ? 'bg-teal-50 text-teal-500'
+              : 'bg-white text-gray-800'
+          }`}
           to={obj.linkKey}
           key={i}
         >
@@ -104,12 +107,12 @@ const Navbar = () => {
 const Sidebar = ({ links }: { links: { textKey: string; linkKey: string; urlKey: string }[] }) => {
   const key = useParams()['*'];
   return (
-
     <div className='flex sm:flex-col mb-8 p-1 bg-[#fff] border border-gray-100 rounded-lg w-full font-Matter-Regular overflow-x-scroll sm:overflow-hidden'>
       {links.map((obj: any, i: number) => (
         <Link
-          className={`py-2.5 px-4 rounded-md hover:no-underline hover:text-teal-500 whitespace-nowrap ${obj.urlKey === key ? 'bg-teal-50 text-teal-400' : 'bg-[#fff] text-gray-800'
-            }`}
+          className={`py-2.5 px-4 rounded-md hover:no-underline hover:text-teal-500 whitespace-nowrap ${
+            obj.urlKey === key ? 'bg-teal-50 text-teal-400' : 'bg-[#fff] text-gray-800'
+          }`}
           to={obj.linkKey}
           key={i}
         >
@@ -120,20 +123,32 @@ const Sidebar = ({ links }: { links: { textKey: string; linkKey: string; urlKey:
   );
 };
 
-const SettingsLayoutWithNavbar = ({ children, navbar }: { children: ReactNode; navbar: ReactNode }) => {
-  const { error, isLoading } = useFetchPersonalDataQuery();
+const SettingsLayoutWithNavbar = ({
+  children,
+  navbar,
+}: {
+  children: ReactNode;
+  navbar: ReactNode;
+}) => {
+  // const { error, isLoading } = useFetchPersonalDataQuery();
   return (
     <div className='bg-gray-50 min-h-screen pt-24 md:pt-28 px-2.5 md:px-8 pb-3'>
       <div className='w-full mx-auto max-w-screen-xl'>
         <nav>{navbar}</nav>
-        {isLoading && <GreenRotatingTransparentCircle />}
-        {!error && <main>{children}</main>}
+        {/* {isLoading && <GreenRotatingTransparentCircle />} */}
+        <main>{children}</main>
       </div>
     </div>
   );
 };
 
-const InnerLayoutWithSideBar = ({ sidebar, children }: { sidebar: ReactNode; children: ReactNode }) => {
+const InnerLayoutWithSideBar = ({
+  sidebar,
+  children,
+}: {
+  sidebar: ReactNode;
+  children: ReactNode;
+}) => {
   return (
     <div className='mx-auto w-full grid grid-cols-12 gap-4 '>
       <aside className='col-span-12 md:col-span-3'>{sidebar}</aside>
@@ -170,7 +185,6 @@ const SettingsRoutes = () => {
                 <Route path='adoption-application-fees' element={<AdoptionApplicationFees />} />
                 <Route path='purchases' element={<Purchases />} />
                 <Route path='donations' element={<Donations />} />
-
               </Routes>
             </InnerLayoutWithSideBar>
           }

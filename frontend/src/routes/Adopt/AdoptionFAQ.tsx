@@ -1,105 +1,54 @@
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import { Card, Button, Accordion } from 'react-bootstrap';
-import { Text } from '../../components/styles/Styles';
 import { faq } from '../../utils/faq';
-import styled from 'styled-components';
 import AdoptFaqHigh from '../../components/assets/adopt-faq-high.jpeg';
-import AdoptFaqLow from '../../components/assets/adopt-faq-low.jpg';
-import LeftArrow from '../../components/svg/LeftArrow';
-import RightArrow from '../../components/svg/RightArrow';
 import Hero from '../../components/Hero';
-
-const StyledAccordion = styled(Accordion) <{ isopen?: string }>`
-  border: 1px solid ${({ theme }) => theme.text};
-  button {
-    background: ${({ theme, isopen }) =>
-    isopen === 'true' ? theme.colors.quinary : theme.input.bg};
-    div {
-      color: ${({ theme, isopen }) =>
-    isopen === 'true' ? theme.input.bg : ''};
-    }
-  }
-  :hover {
-    border: 1px solid ${({ theme }) => theme.colors.quinary};
-  }
-`;
 
 const AdoptionFAQ = () => {
   const [idx, setIdx] = useState([]) as any;
   return (
-    <>
+    <Fragment>
       <Hero
-        low={AdoptFaqLow}
-        high={AdoptFaqHigh}
+        src={AdoptFaqHigh}
         title='Frequently Asked Questions'
         link='https://unsplash.com/@matias_ristenpart?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText'
         photographer='MATÍAS ALEJANDRO'
       />
-      <div
-        style={{
-          maxWidth: '980px',
-          width: '100%',
-          marginInline: 'auto',
-          marginBottom: '128px',
-          paddingInline: '16px',
-        }}
-      >
-        <div
-          className='w-100 d-flex justify-content-between mt-3'
-          style={{ marginBottom: '96px' }}
-        >
-          <LeftArrow text='Home' url='/' text2='Fees' url2='/adopt/fees' />
-          <RightArrow
-            text='Transport Application'
-            url='/adopt/transport-application'
-          />
-        </div>
+      <div className='max-w-screen-lg w-full mx-auto mt-12 px-3'>
         {faq().map((obj, index) => (
-          <StyledAccordion
-            key={index}
-            className='mb-3'
-            isopen={idx.includes(index).toString()}
-          >
+          <Accordion key={index} className={`border-[1px] border-zinc-200 hover:border-teal-400 mb-3 rounded-2xl`}>
             <Accordion.Toggle
               as={Button}
-              style={{ borderRadius: 'none !important' }}
-              className='py-0 d-flex align-items-center justify-content-between w-100 faq'
+              className={`${
+                idx.includes(index) ? 'bg-teal-400 text-white rounded-tl-2xl rounded-tr-2xl rounded-br-0 rounded-bl-0 hover:bg-teal-500' : 'rounded-2xl'
+              } duration-0 py-0 flex items-center justify-between w-full border-none hover:no-underline focus:outline-none focus:shadow-none hover:bg-teal-400 hover:shadow-lg group`}
               variant='none'
               eventKey={`${index}`}
               onClick={() => {
-                if (idx.includes(index))
-                  setIdx(idx.filter((i: any) => i !== index));
+                if (idx.includes(index)) setIdx(idx.filter((i: any) => i !== index));
                 else setIdx([...idx, index]);
               }}
             >
-              <p className='mr-3 font-Matter-Medium uppercase tracking-wide max-w-2xl mx-auto'>{obj.q}</p>
-              <Text className='p-3'>
-                <i
-                  className={`fas fa-chevron-${!idx.includes(index) ? 'down' : 'up'
-                    }`}
-                ></i>
-              </Text>
+              <p
+                className={`${
+                  idx.includes(index) ? 'text-white' : ''
+                } mr-3 font-Matter-Regular tracking-wide mx-auto group-hover:text-white`}
+              >
+                {obj.q}
+              </p>
+              <p className='p-3'>
+                <i className={`fas fa-chevron-${!idx.includes(index) ? 'down' : 'up text-white'} group-hover:text-white`}></i>
+              </p>
             </Accordion.Toggle>
             <Accordion.Collapse eventKey={`${index}`}>
-              <Card.Body
-                className='w-100 pt-4 px-2 mx-auto'
-                style={{ maxWidth: '600px' }}
-              >
-                <Text
-                  fontWeight={300}
-                  style={{
-                    fontStyle: 'italic',
-                    fontFamily: 'Montseratt, sans-serif',
-                  }}
-                >
-                  {obj.a}
-                </Text>
+              <Card.Body className='w-full pt-4 px-2 mx-auto max-w-screen-sm'>
+                <p className='font-Matter-Light'>{obj.a}</p>
               </Card.Body>
             </Accordion.Collapse>
-          </StyledAccordion>
+          </Accordion>
         ))}
       </div>
-    </>
+    </Fragment>
   );
 };
 

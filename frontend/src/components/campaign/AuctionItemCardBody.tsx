@@ -4,7 +4,7 @@ import AuctionButton from './action-item-card-body/AuctionBtn';
 import AuctionSoldOutOrEnded from './action-item-card-body/AuctionSoldOrEnded';
 import ViewDetailsLink from './action-item-card-body/ViewDetailsLink';
 import { FC } from 'react';
-import { AuctionItemCardBodyProps } from '../types/campaign-types';
+import { AuctionItemCardBodyProps } from '../../types/campaign-types';
 
 const AuctionItemCardBody: FC<AuctionItemCardBodyProps> = ({
   item,

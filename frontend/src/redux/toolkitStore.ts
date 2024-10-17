@@ -25,36 +25,24 @@ import {
 } from './features/adoptionApllicationFee/adoptionApplicationFeeSlice';
 import { resetUserError, userReducuer } from './features/user/userSlice';
 import {
-  boardMemberReducuer,
-  resetBoardMemberError,
-} from './features/board-member/boardMemberSlice';
-import {
   newsletterEmailReducuer,
   resetNewsletterEmailError,
 } from './features/newsletter-email/newsletterEmailSlice';
-import { blogReducer, resetBlogError } from './features/blog/blogSlice';
-import { eventReducer, resetEventError } from './features/event/eventSlice';
 import { cartReducer } from './features/cart/cartSlice';
 import { campaignReducer, resetCampaignError } from './features/campaign/campaignSlice';
 import { navbarReducer } from './features/navbar/navbarSlice';
-import {
-  educationTipReducer,
-  resetEducationTipError,
-} from './features/education-tip/educationTipSlice';
+
 import { formReducer } from './features/form/formSlice';
+import { merchAndEcardsReducuer } from './features/merchAndEcardSlice';
 
 const errorHandlerMiddleware = (store: any) => (next: any) => (action: any) => {
   const resetErrorActions: { [key: string]: () => void } = {
-    boardMemberApi: resetBoardMemberError,
     userApi: resetUserError,
     authApi: resetAuthError,
     actionHistoryApi: resetActionHistory,
     adoptionApplicationFeeApi: resetAdoptionFee,
-    blogApi: resetBlogError,
     campaignApi: resetCampaignError,
     ecardApi: resetEcardError,
-    educationTipApi: resetEducationTipError,
-    eventApi: resetEventError,
     newsletterEmailApi: resetNewsletterEmailError,
     orderApi: resetOrderError,
     productApi: resetProductError,
@@ -109,15 +97,12 @@ const rootReducer = combineReducers({
   product: productReducuer,
   adoptionApplicationFee: adoptionApplicationFeeReducuer,
   user: userReducuer,
-  boardMember: boardMemberReducuer,
   newsletterEmail: newsletterEmailReducuer,
-  blog: blogReducer,
-  educationTip: educationTipReducer,
-  event: eventReducer,
   campaign: campaignReducer,
   cart: persistReducer(cartPersistConfig, cartReducer),
   navbar: navbarReducer,
   form: formReducer,
+  merchAndEcards: merchAndEcardsReducuer,
   [rescueGroupsApi.reducerPath]: rescueGroupsApi.reducer,
   [api.reducerPath]: api.reducer,
 });

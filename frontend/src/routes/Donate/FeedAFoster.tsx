@@ -1,97 +1,33 @@
 import { Image } from 'react-bootstrap';
-import { Text } from '../../components/styles/Styles';
 import CanOfWetFood from '../../components/assets/can-of-wet-food.png';
 import BagOfDryFood from '../../components/assets/bag-of-dry-food.jpeg';
 import CaseOfWetFood from '../../components/assets/case-of-wet-food.png';
 import styled from 'styled-components';
 import useCountDown from '../../utils/hooks/useCountDown';
 import FloatingWords from '../../components/Loaders/floating-words/FloatingWords';
+import { Fragment } from 'react';
+import Hero from '../../components/Hero';
+import FeedAFosterImg from '../../components/assets/ecards-high.jpg';
 
 const CountDownContainer = styled.section`
-  background: linear-gradient(
-    90deg,
-    hsla(284, 30%, 52%, 1) 0%,
-    hsla(284, 33%, 73%, 1) 100%
-  );
-  background: -moz-linear-gradient(
-    90deg,
-    hsla(284, 30%, 52%, 1) 0%,
-    hsla(284, 33%, 73%, 1) 100%
-  );
+  background: linear-gradient(90deg, hsla(284, 30%, 52%, 1) 0%, hsla(284, 33%, 73%, 1) 100%);
+  background: -moz-linear-gradient(90deg, hsla(284, 30%, 52%, 1) 0%, hsla(284, 33%, 73%, 1) 100%);
   background: -webkit-linear-gradient(
     90deg,
     hsla(284, 30%, 52%, 1) 0%,
     hsla(284, 33%, 73%, 1) 100%
   );
-
-  padding-block: 200px;
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  align-items: center;
 `;
 
 const ContestTitle = styled.h3`
   text-transform: uppercase;
   font-family: 'Paytone One';
   text-align: center;
-  font-size: 80px;
+  font-size: 60px;
   line-height: 80px;
   color: #5a2b6b;
   text-shadow: 0 20px 15px #6f3b82, 0 -2px 1px #5a2b6b;
   letter-spacing: -4px;
-`;
-
-const Timer = styled.h1`
-  font-size: calc(60px + 16 * ((100vw - 700px) / 700));
-`;
-
-const Colon = styled.div`
-  font-size: calc(60px + 16 * ((100vw - 700px) / 700));
-  color: #fff;
-`;
-
-const Container = styled.div`
-  padding: 128px 16px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  max-width: 768px;
-  width: 100%;
-  margin-inline: auto;
-`;
-
-const ItemContainer = styled.div`
-  flex-direction: column;
-  display: flex;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    flex-direction: row;
-    div {
-      margin-left: 2rem;
-    }
-  }
-`;
-
-const FeedAFosterInput = styled.input`
-  height: 75px !important;
-`;
-
-const FeedAFosterForm = styled.form`
-  :hover {
-    box-shadow: 0 -10px 0 -5px ${({ theme }) => theme.smcontainer.bg} inset;
-  }
-  :focus {
-    box-shadow: 10px 0 0 -5px ${({ theme }) => theme.smcontainer.bg} inset;
-  }
-`;
-
-export const TimerComponentsContainer = styled.div`
-  display: grid;
-  grid-template-columns: fit-content(8ch) fit-content(8ch) fit-content(8ch) fit-content(
-      8ch
-    );
-  width: 100%;
-  justify-content: center;
 `;
 
 const FeedAFoster = () => {
@@ -102,205 +38,139 @@ const FeedAFoster = () => {
     `${year + 1}/07/01`
   );
 
-  if (!status.active) {
-    return (
-      <CountDownContainer>
-        <div style={{ position: 'relative' }}>
-          <h3
-            style={{
-              color: '#fff',
-              fontWeight: 'bold',
-              textAlign: 'center',
-              marginBottom: '32px',
-            }}
-          >
-            {status.past
-              ? 'Thank you to everybody who participated. See you next year!'
-              : 'Coming This July!'}
-          </h3>
-          <ContestTitle>Feed A Foster</ContestTitle>
-          <TimerComponentsContainer>
-            {loading ? (
-              <FloatingWords />
-            ) : (
-              timerComponents?.map((obj: any, i: number) => (
-                <div className='d-flex flex-column justify-content-end' key={i}>
-                  <div className='d-flex align-items-baseline'>
-                    <div className='d-flex flex-column'>
-                      <Timer
-                        className='d-flex font-weight-bold text-white'
-                        style={{
-                          filter: 'drop-shadow(0px 10px 10px rgb(0 0 0/0.4))',
-                        }}
+  return (
+    <Fragment>
+      <Hero src={FeedAFosterImg} title='Feed a Foster' />
+      {status.active ? (
+        <div className='max-w-screen-lg w-full mx-auto mt-12 px-3 gap-y-6'>
+          <h1 className='font-Matter-Bold text-5xl text-teal-400 text-center mb-24'>
+            July is Foster Appreciation Month at LPDR!
+          </h1>
+          <h2 className='font-Matter-Medium text-zinc-700 text-3xl text-center mb-4'>
+            We are hosting our Annual Feed a Foster Fundraiser,
+            <br /> right here, online!
+          </h2>
+          <p className='font-Matter-Light text-lg mb-10'>
+            Volunteering to foster a dog is a huge, rewarding commitment. Fostering really does save
+            lives! When a family decides to take in a dachshund to foster, Little Paws provides all
+            medical care. The family is responsible for love, comfort, and food. We have many foster
+            moms and dads that take in special needs doxies and have fostered entire litters of
+            puppies! And then we have our exceptional Sanctuary Foster Homes, providing care for
+            dogs that are determined to be un-adoptable. These doxies are usually in sanctuary homes
+            due to illness or age, requiring an extraordinary amount of care.
+          </p>
+          <p className='font-Matter-Light text-lg mb-10'>Please join us and help Feed A Foster!</p>
+          <p className='font-Matter-Light text-lg mb-20'>
+            You can choose how much food you would like to donate. Please know that EVERY bit
+            counts. We currently have 40 dogs in foster homes! Tomorrow will likely bring more.
+            Simply click the Paypal links below, or we also accept Venmo @LittlePawsDR and checks.
+          </p>
+          <div className='grid grid-cols-12 gap-7'>
+            <div className='col-span-12 sm:col-span-4 flex items-center flex-col justify-center border-[1px] border-gray-200 rounded-2xl p-3'>
+              <Image
+                src={CanOfWetFood}
+                alt='LPDR Feed A Foster Can of Wet Food'
+                className='w-full max-w-72 aspect-square object-cover'
+              />
+              <div className='flex flex-col items-center'>
+                <p className='mb-4 text-lg mt-8 font-Matter-Regular'>One can of wet food $3</p>
+                <form action='https://www.paypal.com/donate' method='post' target='_top'>
+                  <input type='hidden' name='hosted_button_id' value='NARBGDNZ39KHG' />
+                  <input
+                    type='image'
+                    src='https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif'
+                    name='submit'
+                    title='PayPal - The safer, easier way to pay online!'
+                    alt='Donate with PayPal button'
+                    className='w-full object-cover'
+                  />
+                </form>
+              </div>
+            </div>
+            <div className='col-span-12 sm:col-span-4 flex items-center flex-col justify-center border-[1px] border-gray-200 rounded-2xl p-3'>
+              <Image
+                src={BagOfDryFood}
+                alt='LPDR Feed A Foster Bag Of Dry Food'
+                className='w-full max-w-72 aspect-square object-cover'
+              />
+              <div className='flex flex-col items-center'>
+                <p className='mb-4 text-lg mt-8 font-Matter-Regular'>One bag of dry food $12</p>
+                <form action='https://www.paypal.com/donate' method='post' target='_top'>
+                  <input type='hidden' name='hosted_button_id' value='E39725T3HKKVY' />
+                  <input
+                    type='image'
+                    src='https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif'
+                    name='submit'
+                    title='PayPal - The safer, easier way to pay online!'
+                    alt='Donate with PayPal button'
+                    className='w-full object-cover'
+                  />
+                </form>
+              </div>
+            </div>
+            <div className='col-span-12 sm:col-span-4 flex items-center flex-col justify-center border-[1px] border-gray-200 rounded-2xl p-3'>
+              <Image
+                src={CaseOfWetFood}
+                alt='LPDR Feed A Foster One Case of Wet Food'
+                className='w-full max-w-72 aspect-square object-cover'
+              />
+              <div className='flex flex-col items-center'>
+                <p className='mb-4 text-lg mt-8 font-Matter-Regular'>One case of wet food $35</p>
+
+                <form action='https://www.paypal.com/donate' method='post' target='_top'>
+                  <input type='hidden' name='hosted_button_id' value='KYKXTQ8DTQZYW' />
+                  <input
+                    type='image'
+                    src='https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif'
+                    name='submit'
+                    title='PayPal - The safer, easier way to pay online!'
+                    alt='Donate with PayPal button'
+                    className='w-full object-cover'
+                  />
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <CountDownContainer className='min-h-[calc(100vh-701px)] py-12 flex justify-center flex-col items-center'>
+          <div className='relative'>
+            <h3 className='text-white font-bold text-center mb-8'>
+              {status.past
+                ? 'Thank you to everybody who participated. See you next year!'
+                : 'Coming This July!'}
+            </h3>
+            <ContestTitle>Feed A Foster</ContestTitle>
+            <div className='grid grid-cols-4 justify-center items-center w-full'>
+              {loading ? (
+                <FloatingWords />
+              ) : (
+                timerComponents?.map((obj: any, i: number) => (
+                  <div className='col-span-1 flex justify-center items-baseline' key={i}>
+                    <div className='flex flex-col items-center mr-2'>
+                      <h1
+                        className='text-white font-bold text-lg'
                       >
                         {obj?.time}
-                      </Timer>
-                      <Text textAlign='center' color='#fff'>
-                        {obj?.tag}
-                      </Text>
+                      </h1>
+                      <p className='text-center text-white text-sm'>{obj?.tag}</p>
                     </div>
-                    <Colon
-                      style={{
-                        display: obj?.tag === 'SECONDS' ? 'none' : 'block',
-                      }}
+                    <div
+                      className={`text-white text-lg ${
+                        obj?.tag === 'SECONDS' ? 'hidden' : 'block'
+                      }`}
                     >
                       &nbsp;:&nbsp;
-                    </Colon>
+                    </div>
                   </div>
-                </div>
-              ))
-            )}
-          </TimerComponentsContainer>
-          <div
-            className='d-flex'
-            style={{ justifyContent: 'space-evenly' }}
-          ></div>
-        </div>
-      </CountDownContainer>
-    );
-  }
-  return (
-    <Container>
-      <Text marginBottom='1rem' fontSize='28px'>
-        July is Foster Appreciation Month at LPDR!
-      </Text>
-      <Text marginBottom='1rem' fontSize='16px'>
-        We are hosting our Second Annual Feed a Foster Fundraiser, right here,
-        online!
-      </Text>
-      <Text marginBottom='1rem' fontSize='16px'>
-        Volunteering to foster a dog is a huge, rewarding commitment. Fostering
-        really does save lives! When a family decides to take in a dachshund to
-        foster, Little Paws provides all medical care. The family is responsible
-        for love, comfort, and food. We have many foster moms and dads that take
-        in special needs doxies and have fostered entire litters of puppies! And
-        then we have our exceptional Sanctuary Foster Homes, providing care for
-        dogs that are determined to be un-adoptable. These doxies are usually in
-        sanctuary homes due to illness or age, requiring an extraordinary amount
-        of care.
-      </Text>
-      <Text marginBottom='1rem' fontSize='16px' fontWeight={400}>
-        Please join us and help Feed A Foster!
-      </Text>
-      <Text marginBottom='1rem' fontSize='16px'>
-        You can choose how much food you would like to donate. Please know that
-        EVERY bit counts. We currently have 40 dogs in foster homes! Tomorrow
-        will likely bring more. Simply click the Paypal links below, or we also
-        accept Venmo @LittlePawsDR and checks.
-      </Text>
-      <div className='d-flex-flex-column mt-5'>
-        <ItemContainer className='align-items-center'>
-          <Image
-            src={CanOfWetFood}
-            alt='LPDR Feed A Foster Can of Wet Food'
-            width='100%'
-            style={{
-              maxWidth: '300px',
-              aspectRatio: '1/1',
-              objectFit: 'cover',
-            }}
-          />
-          <div className='d-flex flex-column align-items-center'>
-            <Text marginBottom='16px' fontSize='1.5rem' marginTop='32px'>
-              One can of wet food $3
-            </Text>
-            <FeedAFosterForm
-              action='https://www.paypal.com/donate'
-              method='post'
-              target='_top'
-            >
-              <input
-                type='hidden'
-                name='hosted_button_id'
-                value='NARBGDNZ39KHG'
-              />
-              <FeedAFosterInput
-                type='image'
-                src='https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif'
-                name='submit'
-                title='PayPal - The safer, easier way to pay online!'
-                alt='Donate with PayPal button'
-              />
-            </FeedAFosterForm>
+                ))
+              )}
+            </div>
+            <div className='flex justify-evenly'></div>
           </div>
-        </ItemContainer>
-      </div>
-      <div className='d-flex-flex-column'>
-        <ItemContainer className='align-items-center'>
-          <Image
-            src={BagOfDryFood}
-            alt='LPDR Feed A Foster Bag Of Dry Food'
-            width='100%'
-            style={{
-              maxWidth: '300px',
-              aspectRatio: '1/1',
-              objectFit: 'cover',
-            }}
-          />{' '}
-          <div className='d-flex flex-column align-items-center'>
-            <Text marginBottom='1rem' fontSize='1.5rem'>
-              One bag of dry food $12
-            </Text>
-            <FeedAFosterForm
-              action='https://www.paypal.com/donate'
-              method='post'
-              target='_top'
-            >
-              <input
-                type='hidden'
-                name='hosted_button_id'
-                value='E39725T3HKKVY'
-              />
-              <FeedAFosterInput
-                type='image'
-                src='https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif'
-                name='submit'
-                title='PayPal - The safer, easier way to pay online!'
-                alt='Donate with PayPal button'
-              />
-            </FeedAFosterForm>
-          </div>
-        </ItemContainer>
-      </div>
-      <div className='d-flex-flex-column'>
-        <ItemContainer className='align-items-center'>
-          <Image
-            src={CaseOfWetFood}
-            alt='LPDR Feed A Foster One Case of Wet Food'
-            width='100%'
-            style={{
-              maxWidth: '300px',
-              aspectRatio: '1/1',
-              objectFit: 'cover',
-            }}
-          />
-          <div className='d-flex flex-column align-items-center'>
-            <Text marginBottom='1rem' fontSize='1.5rem'>
-              One case of wet food $35
-            </Text>
-
-            <FeedAFosterForm
-              action='https://www.paypal.com/donate'
-              method='post'
-              target='_top'
-            >
-              <input
-                type='hidden'
-                name='hosted_button_id'
-                value='KYKXTQ8DTQZYW'
-              />
-              <FeedAFosterInput
-                type='image'
-                src='https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif'
-                name='submit'
-                title='PayPal - The safer, easier way to pay online!'
-                alt='Donate with PayPal button'
-              />
-            </FeedAFosterForm>
-          </div>
-        </ItemContainer>
-      </div>
-    </Container>
+        </CountDownContainer>
+      )}
+    </Fragment>
   );
 };
 

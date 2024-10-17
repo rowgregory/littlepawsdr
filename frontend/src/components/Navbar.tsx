@@ -3,7 +3,7 @@ import LPDRLogo from '../components/assets/logo-white2.png';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useAppDispatch } from '../redux/toolkitStore';
-import { toggleLeftDrawer, toggleUserDropdown } from '../redux/features/navbar/navbarSlice';
+import { toggleNavigationDrawer, toggleUserDropdown } from '../redux/features/navbar/navbarSlice';
 import { NoImgDog, TransparentPurpleLogo } from './assets';
 import { navbarBtnStyles, useSetShowNavbarBackground } from './navbar/navbarHelpers';
 import { urlsToExclude } from '../utils/navbar-helpers';
@@ -11,11 +11,9 @@ import { urlsToExclude } from '../utils/navbar-helpers';
 const Navbar = () => {
   const dispatch = useAppDispatch();
   const { pathname } = useLocation();
-  const state = useSelector((state: any) => state);
-  const user = state.auth?.user;
-  const cart = state.cart;
-  const navbar = state.navbar;
-
+  const { user } = useSelector((state: any) => state.auth);
+  const cart = useSelector((state: any) => state.cart);
+  const navbar = useSelector((state: any) => state.navbar);
   useSetShowNavbarBackground();
 
   return (
@@ -26,11 +24,11 @@ const Navbar = () => {
           : 'bg-none border-b-white/50'
       } ${
         urlsToExclude(pathname) ? 'block' : 'hidden'
-      } border-b-[0.5px] fixed z-[1000] w-full duration-200 h-[65px] top-0 flex items-center justify-between px-3.5`}
+      } border-b-[0.5px] fixed z-40 w-full duration-200 h-[65px] top-0 flex items-center justify-between px-3.5`}
     >
       <div className='d-flex justify-content-center align-items-center'>
         <div
-          onClick={() => dispatch(toggleLeftDrawer({ leftDrawer: true }))}
+          onClick={() => dispatch(toggleNavigationDrawer({ navigationDrawer: true }))}
           className={navbarBtnStyles}
         >
           <i className='fas fa-bars text-gray-800'></i>

@@ -1,101 +1,50 @@
-import React, { useState } from 'react';
-import { Image } from 'react-bootstrap';
-import styled from 'styled-components';
-import GradientText from './GradientText';
-import { Text } from './styles/Styles';
+import { Fragment } from 'react';
+import useVideo from '../utils/hooks/useVideo';
+import TailwindSpinner from './Loaders/TailwindSpinner';
+import { HomeDog } from './assets';
 
-const HeroImg = styled(Image)`
-  object-fit: cover;
-  width: 100%;
-  margin-top: 75px;
-  height: 300px;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
-    margin-top: 0;
-    height: 575px;
-  }
-`;
-
-const HeroTitle = styled.div`
-  font-weight: 500;
-  color: #fff;
-  zindex: 2;
-  position: absolute;
-  font-size: 10px;
-  bottom: 8px;
-  left: 8px;
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  background: rgb(0 0 0/0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 4px;
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
-    display: none;
-  }
-`;
-
-const GradientWrapper = styled.div`
-  display: none;
-
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[0]}) {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    font-family: 'Paytone One';
-    font-size: clamp(30px, calc(54px + 16 * ((100vw - 1000px) / 1000)), 60px);
-    left: 50px;
-    width: 100%;
-    max-width: 500px;
-    height: auto;
-    text-align: left;
-    justify-content: flex-start;
-    background: none;
-    color: ${({ theme }) => theme.white};
-    bottom: auto;
-    height: 100%;
-    filter: drop-shadow(0 35px 10px rgb(0 0 0 / 0.5));
-  }
-`;
-
-const Hero = ({ low, high, title, link, photographer, gradient }: any) => {
-  const [showImageLoader, setShowImageLoader] = useState(true);
+const Hero = ({ src, title, link, photographer }: any) => {
+  const { loading, videoRef } = useVideo();
+  const showVideo = src?.includes('mp4') ? true : false;
 
   return (
-    <div style={{ position: 'relative', height: '100%' }}>
-      <HeroTitle onClick={() => window.scrollTo(0, 300)}>{title}</HeroTitle>
-      <GradientWrapper>
-        <GradientText
-          text={title}
-          gradient={gradient ?? '#22c2b7, #fff, #9761aa, #fff, #22c2b7'}
-          fontSize='clamp(30px, calc(54px + 16 * ((100vw - 1000px) / 1000)), 60px)'
-          fontFamily='Paytone One'
-        />
-      </GradientWrapper>
-      <HeroImg
-        onLoad={() => setShowImageLoader(false)}
-        src={showImageLoader ? low : high}
-        alt={`Page title: ${title}`}
-      />
-      <Text
-        onClick={() => window.open(link, '_blank')}
-        fontWeight={500}
-        fontSize='10px'
-        color='#fff'
-        cursor='pointer'
-        style={{
-          mixBlendMode: 'difference',
-          position: 'absolute',
-          bottom: '10px',
-          right: '10px',
-          zIndex: 2,
-        }}
-      >
-        Photo by {photographer}
-      </Text>
+    <div className={`relative w-full ${showVideo ? 'h-[300px] md:h-[450px]' : 'h-[150px] md:h-[300px]'}  `}>
+      {showVideo ? (
+        <Fragment>
+          <div
+            className={`${
+              !loading ? 'hidden' : 'block'
+            } spinner absolute z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2`}
+          >
+            <TailwindSpinner color='fill-slate-900' wAndH='w-10 h-10' />
+          </div>
+          <video
+            ref={videoRef}
+            className='fade-in block w-full h-full object-cover absolute top-0 left-0 z-0'
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload='auto'
+          >
+            <source src={src} type='video/mp4' />
+            Your browser does not support the video tag.
+          </video>
+        </Fragment>
+      ) : (
+        <img
+          src={src || HomeDog}
+          alt='Little Paws Dachshund Rescue Hero'
+          className='fade-in block w-full h-full object-cover absolute top-0 left-0 z-0'
+        ></img>
+      )}
+      <div className='absolute z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center flex-col w-full h-full flex items-center justify-center bg-[#1c1c1c]/60'>
+        <div className='max-w-screen-lg'>
+          <h1 className='text-center scale-in text-4xl md:text-6xl text-white font-bold uppercase'>
+            {title}
+          </h1>
+        </div>
+      </div>
     </div>
   );
 };

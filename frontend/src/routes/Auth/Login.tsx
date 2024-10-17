@@ -3,7 +3,6 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import useLoginForm from '../../utils/hooks/useLoginForm';
 import { useLoginMutation } from '../../redux/services/authApi';
 import { Logo2024 } from '../../components/assets';
-import { User } from '../../redux/features/user/userSlice';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -14,7 +13,7 @@ const Login = () => {
   const loginFormCallback = async () => {
     await login({ email: inputs.email.toLowerCase(), password: inputs.password })
       .unwrap()
-      .then((payload: User) => {
+      .then((payload: any) => {
         if (state?.cameFromAuction) {
           navigate(`/campaigns/${state?.customCampaignLink}/auction`);
         } else if (payload?.isAdmin) {

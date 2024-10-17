@@ -25,8 +25,8 @@ export const quickLinks = () => {
       path: 'Foster application',
     },
     {
-      linkKey: 'Merch',
-      linkPath: '/merch',
+      linkKey: 'Merch & Ecards',
+      linkPath: '/store',
     },
     {
       linkKey: 'Contact Us',

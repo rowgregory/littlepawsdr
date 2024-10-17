@@ -3,7 +3,7 @@ import { NoImgDog } from './assets';
 
 const DachshundCard = ({ dachshund }: any) => (
   <Link
-    to={`/about/type/${dachshund.id}`}
+    to={`/dachshunds/${dachshund.id}`}
     key={dachshund.id}
     className='rounded-lg flex flex-col justify-center h-full relative hover:no-underline'
   >
