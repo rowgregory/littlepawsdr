@@ -2,18 +2,16 @@ import { FormEvent, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import cartItemType from '../../utils/shop-utils/cartItemType';
 import useForm from '../../utils/hooks/useForm';
-import { setStep } from '../../redux/features/cart/cartSlice';
+import { decryptFormData, setStep, updateFormData } from '../../redux/features/cart/cartSlice';
 import { useAppDispatch } from '../../redux/toolkitStore';
 import { useNavigate } from 'react-router-dom';
 import validateCheckoutCustomerInfoForm from '../../validations/validateCheckoutCustomterInfoForm';
-import { decryptFormData, updateFormData } from '../../redux/features/form/formSlice';
 
 const CustomerInfo = () => {
   const [errors, setErrors] = useState({}) as any;
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { cartItems } = useSelector((state: any) => state.cart);
-  const { fields } = useSelector((state: any) => state.form);
+  const { cartItems, fields } = useSelector((state: any) => state.cart);
   const { isProduct } = cartItemType(cartItems);
   const { inputs, handleInput } = useForm(['name', 'email'], fields);
 

@@ -31,8 +31,6 @@ import {
 import { cartReducer } from './features/cart/cartSlice';
 import { campaignReducer, resetCampaignError } from './features/campaign/campaignSlice';
 import { navbarReducer } from './features/navbar/navbarSlice';
-
-import { formReducer } from './features/form/formSlice';
 import { merchAndEcardsReducuer } from './features/merchAndEcardSlice';
 
 const errorHandlerMiddleware = (store: any) => (next: any) => (action: any) => {
@@ -101,7 +99,6 @@ const rootReducer = combineReducers({
   campaign: campaignReducer,
   cart: persistReducer(cartPersistConfig, cartReducer),
   navbar: navbarReducer,
-  form: formReducer,
   merchAndEcards: merchAndEcardsReducuer,
   [rescueGroupsApi.reducerPath]: rescueGroupsApi.reducer,
   [api.reducerPath]: api.reducer,

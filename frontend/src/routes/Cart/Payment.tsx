@@ -7,19 +7,28 @@ import ContactLoader from '../../components/Loaders/ContactLoader/ContactLoader'
 import { PayPalButtons } from '@paypal/react-paypal-js';
 import toFixed from '../../utils/toFixed';
 import cartItemType from '../../utils/shop-utils/cartItemType';
-import { resetCart, setStep } from '../../redux/features/cart/cartSlice';
-import { decryptFormData } from '../../redux/features/form/formSlice';
+import { decryptFormData, resetCart, setStep } from '../../redux/features/cart/cartSlice';
+
+interface FieldsType {
+  name: string;
+  email: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  zipPostalCode?: string;
+}
 
 const Payment = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [orderLoader, setOrderLoader] = useState(false);
-  const { cartItemsAmount, subtotal, totalPrice, shippingPrice, cartItems, step } = useSelector(
-    (state: RootState) => state.cart
-  );
-  const { fields } = useSelector((state: RootState) => state.form);
+  const { cartItemsAmount, subtotal, totalPrice, shippingPrice, cartItems, step, fields } =
+    useSelector((state: RootState) => state.cart);
   const { isProduct, isWelcomeWiener, isEcard } = cartItemType(cartItems);
   const hasRun = useRef(false);
+  const fieldsRef = useRef<FieldsType | null>(null);
+
+  const [createOrder] = useCreateOrderMutation();
 
   useEffect(() => {
     if (!hasRun.current) {
@@ -29,7 +38,9 @@ const Payment = () => {
     }
   }, [dispatch]);
 
-  const [createOrder] = useCreateOrderMutation();
+  useEffect(() => {
+    fieldsRef.current = fields;
+  }, [fields]);
 
   const payPalComponents = {
     style: { layout: 'vertical' },
@@ -51,26 +62,20 @@ const Payment = () => {
     onApprove: (data: any, actions: any) => {
       setOrderLoader(true);
       return actions.order.capture().then(async (details: any) => {
-        if (!fields) {
-          console.error('Fields are missing after PayPal approval', fields);
-          setOrderLoader(false);
-          return;
-        }
-
         const shippingAddress = {
-          address: fields?.address,
-          city: fields?.city,
-          state: fields?.state,
-          zipPostalCode: fields?.zipPostalCode,
+          address: fieldsRef.current?.address,
+          city: fieldsRef.current?.city,
+          state: fieldsRef.current?.state,
+          zipPostalCode: fieldsRef.current?.zipPostalCode,
         };
 
         await createOrder({
-          name: fields?.name,
+          name: fieldsRef.current?.name,
           orderItems: cartItems,
           subtotal,
           totalPrice,
           paypalOrderId: details.id,
-          email: fields?.email,
+          email: fieldsRef.current?.email,
           ...(isProduct && { shippingAddress }),
           ...(isProduct && { shippingPrice }),
           totalItems: cartItemsAmount,

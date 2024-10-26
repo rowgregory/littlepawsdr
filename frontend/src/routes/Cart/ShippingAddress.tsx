@@ -2,15 +2,14 @@ import { FormEvent, useEffect, useState } from 'react';
 import useForm from '../../utils/hooks/useForm';
 import { STATES } from '../../utils/states';
 import { RootState, useAppDispatch } from '../../redux/toolkitStore';
-import { setStep } from '../../redux/features/cart/cartSlice';
+import { decryptFormData, setStep, updateFormData } from '../../redux/features/cart/cartSlice';
 import validateShippingAddressForm from '../../validations/validateShippingAddressForm';
-import { decryptFormData, updateFormData } from '../../redux/features/form/formSlice';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 const ShippingAddress = () => {
   const navigate = useNavigate();
-  const { fields } = useSelector((state: RootState) => state.form);
+  const { fields } = useSelector((state: RootState) => state.cart);
   const [errors, setErrors] = useState({}) as any;
   const dispatch = useAppDispatch();
   const { inputs, handleInput, handleSelect } = useForm(
