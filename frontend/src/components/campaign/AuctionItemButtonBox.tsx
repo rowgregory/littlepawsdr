@@ -10,6 +10,7 @@ const AuctionItemButtonBox = ({
   customLinkId,
   setOpenBidModal,
   setOpenAddressModal,
+  user,
 }: any) => {
   const navigate = useNavigate();
   return (
@@ -54,7 +55,7 @@ const AuctionItemButtonBox = ({
             ifCampaignIsOver ? 'bg-gray-600 text-gray-200' : campaign?.campaign.themeColor.dark
           } py-3.5 w-full rounded-lg flex items-center justify-center mb-5 duration-200 hover:no-underline`}
           onClick={() => {
-            if (!auth?.user?.shippingAddress) {
+            if (!user?.hasShippingAddress) {
               setOpenAddressModal({ open: true, auctionItemId: auctionItem._id });
             } else {
               navigate(`/campaigns/${customLinkId}/auction/item/${auctionItem?._id}/buy`);
@@ -70,7 +71,9 @@ const AuctionItemButtonBox = ({
           disabled={!campaign?.campaign?.auction?.settings?.hasBegun || ifCampaignIsOver}
           onClick={() => setOpenBidModal(true)}
           className={`${campaign?.campaign.themeColor.dark} ${
-            campaign?.campaign?.campaignStatus === 'Active Campaign' ? 'cursor-pointer' : 'cursor-not-allowed'
+            campaign?.campaign?.campaignStatus === 'Active Campaign'
+              ? 'cursor-pointer'
+              : 'cursor-not-allowed'
           } py-3.5 w-full rounded-lg flex items-center justify-center mb-5`}
         >
           <i className='fa-solid fa-arrow-up-from-bracket text-white text-2xl'></i>

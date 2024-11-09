@@ -12,12 +12,14 @@ import AuctionItemImgAndDescSection from '../Admin/Campaigns/Auction/AuctionItem
 import useScrollToTop from '../../utils/hooks/useScrollToTop';
 import AuctionItemDetailsSection from '../../components/campaign/AuctionItemDetailsSection';
 import AuctionItemBidHistory from '../../components/campaign/AuctionItemBidHistory';
+import { useGetUserShippingAddressQuery } from '../../redux/services/userApi';
 
 const AuctionItem = () => {
   const params = useParams();
   const { pathname } = useLocation();
   const campaign = useSelector((state: RootState) => state.campaign);
   const auth = useSelector((state: RootState) => state.auth);
+  const user = useSelector((state: RootState) => state.user);
   const customLinkId = params.customLinkId;
   const readyToBid = params.bid;
   const auctionItemId = params.auctionItemId;
@@ -26,6 +28,7 @@ const AuctionItem = () => {
   const [openAddressModal, setOpenAddressModal] = useState({ open: false, auctionItemId: '' });
   const theme = campaign?.campaign?.themeColor;
   const ifCampaignIsOver = campaign?.campaign?.auction?.settings?.hasEnded;
+  useGetUserShippingAddressQuery();
 
   const handleCloseBidModal = () => {
     setOpenBidModal(false);
@@ -127,6 +130,7 @@ const AuctionItem = () => {
                 customLinkId={customLinkId}
                 setOpenBidModal={setOpenBidModal}
                 setOpenAddressModal={setOpenAddressModal}
+                user={user}
               />
               <AuctionItemDetailsSection campaign={campaign} auctionItem={auctionItem} />
               <AuctionItemBidHistory auctionItem={auctionItem} theme={theme} />

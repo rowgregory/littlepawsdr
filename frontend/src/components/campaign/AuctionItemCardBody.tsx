@@ -5,6 +5,9 @@ import AuctionSoldOutOrEnded from './action-item-card-body/AuctionSoldOrEnded';
 import ViewDetailsLink from './action-item-card-body/ViewDetailsLink';
 import { FC } from 'react';
 import { AuctionItemCardBodyProps } from '../../types/campaign-types';
+import { useGetUserShippingAddressQuery } from '../../redux/services/userApi';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../redux/toolkitStore';
 
 const AuctionItemCardBody: FC<AuctionItemCardBodyProps> = ({
   item,
@@ -19,9 +22,12 @@ const AuctionItemCardBody: FC<AuctionItemCardBodyProps> = ({
   const navigate = useNavigate();
   const userLoggedIn = !!auth?.user?._id;
   const auctionActive = hasBegun && !hasEnded;
+  const user = useSelector((state: RootState) => state.user);
+
+  useGetUserShippingAddressQuery();
 
   const handleButtonClick = () => {
-    if (item.isFixed && !auth?.user?.shippingAddress) {
+    if (item.isFixed && !user?.hasShippingAddress) {
       setOpenShippingAddressModal({ open: true, auctionItemId: item._id });
     } else {
       navigate(`${pathname}/item/${item?._id}/${item?.isFixed ? 'buy' : 'bid'}`);

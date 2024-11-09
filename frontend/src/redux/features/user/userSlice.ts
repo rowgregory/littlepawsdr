@@ -42,9 +42,12 @@ export const userSlice = createSlice({
       .addMatcher(userApi.endpoints.getUser.matchFulfilled, (state, { payload }: any) => {
         state.user = payload.user;
       })
-      .addMatcher(userApi.endpoints.getUserShippingAddress.matchFulfilled, (state, { payload }: any) => {
-        state.hasShippingAddress = payload.hasShippingAddress;
-      })
+      .addMatcher(
+        userApi.endpoints.getUserShippingAddress.matchFulfilled,
+        (state, { payload }: any) => {
+          state.hasShippingAddress = payload.hasShippingAddress;
+        }
+      )
       .addMatcher(userApi.endpoints.updateUser.matchFulfilled, (state, { payload }: any) => {
         state.user = payload.user;
         state.success = true;
@@ -67,15 +70,27 @@ export const userSlice = createSlice({
         state.user = payload.user;
         state.donations = payload.donations;
       })
-      .addMatcher(userApi.endpoints.updateUserProfileDetails.matchFulfilled, (state, { payload }: any) => {
-        state.user = {
-          ...state.user,
-          ...payload.user,
-        };
-      })
-      .addMatcher(userApi.endpoints.fetchUserProfileDetails.matchFulfilled, (state, { payload }: any) => {
-        state.user = payload.user;
-      })
+      .addMatcher(
+        userApi.endpoints.updateUserProfileDetails.matchFulfilled,
+        (state, { payload }: any) => {
+          state.user = {
+            ...state.user,
+            ...payload.user,
+          };
+        }
+      )
+      .addMatcher(
+        userApi.endpoints.fetchUserProfileDetails.matchFulfilled,
+        (state, { payload }: any) => {
+          state.user = payload.user;
+        }
+      )
+      .addMatcher(
+        userApi.endpoints.fetchUserAnonStatusAndShippingAddressDetails.matchFulfilled,
+        (state, { payload }: any) => {
+          state.user = payload.user;
+        }
+      )
       .addMatcher(
         (action: any) =>
           action.type.endsWith('/rejected') && action?.payload?.data?.sliceName === 'userApi',

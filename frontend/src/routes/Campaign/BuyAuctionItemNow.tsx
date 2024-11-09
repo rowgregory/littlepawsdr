@@ -52,7 +52,7 @@ const BuyAuctionItemNow = () => {
         const instantBuyObj = {
           auction: auctionItem?.auction,
           auctionItem: auctionItem,
-          payPalId: details.id,
+          payPalId: details?.id,
           buyNowPrice: auctionItem?.buyNowPrice,
           totalPrice: auctionItem?.total,
         };

@@ -22,7 +22,9 @@ const Profile = () => {
   const closeModal = () => setToggleModal(false);
 
   const [updateUserProfileDetails, { isLoading }] = useUpdateUserProfileDetailsMutation();
-  useFetchUserProfileDetailsQuery(auth?.user?._id);
+  useFetchUserProfileDetailsQuery(auth?.user?._id, {
+    refetchOnMountOrArgChange: true,
+  });
 
   const handleUpdateUser = async (e: FormEvent) => {
     e.preventDefault();

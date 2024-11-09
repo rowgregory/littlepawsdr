@@ -1,6 +1,9 @@
 import { Fragment, useEffect, useState } from 'react';
 import { Form } from 'react-bootstrap';
-import { useUpdateUserMutation } from '../../redux/services/userApi';
+import {
+  useFetchUserAnonStatusAndShippingAddressDetailsQuery,
+  useUpdateUserMutation,
+} from '../../redux/services/userApi';
 import { useSelector } from 'react-redux';
 import { RootState, useAppDispatch } from '../../redux/toolkitStore';
 import { resetUserSuccess } from '../../redux/features/user/userSlice';
@@ -20,12 +23,17 @@ const UserAuctionSettings = () => {
   const cameFromAuction = location?.state?.cameFromAuction === 'true';
   const customCampaignLink = location?.state?.customCampaignLink;
   const user = useSelector((state: RootState) => state.user);
+  const auth = useSelector((state: RootState) => state.auth);
   const [modal, setModal] = useState({ open: false, open2: false, text: '' });
   const openAddressModal = (text: string) => setModal({ open: true, open2: false, text });
   const openAuctionModal = (text: string) => setModal({ open: false, open2: true, text });
   const closeModal = () => {
     setModal({ open: false, open2: false, text: '' });
   };
+
+  useFetchUserAnonStatusAndShippingAddressDetailsQuery(auth?.user?._id, {
+    refetchOnMountOrArgChange: true,
+  });
 
   const handleUpdateUser = async (e: any, section: string, data: any) => {
     e.preventDefault();

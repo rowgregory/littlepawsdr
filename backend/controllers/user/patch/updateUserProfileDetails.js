@@ -9,7 +9,7 @@ const updateUserProfileDetails = asyncHandler(async (req, res) => {
 
   const data = {
     firstName: req.body.firstName,
-    lastSName: req.body.lastName,
+    lastName: req.body.lastName,
     name: `${req.body.firstName} ${req.body.lastName}`,
     firstNameFirstInitial: req.body.firstName.charAt(0),
     lastNameFirstInitial: req.body.lastName.charAt(0),

@@ -8,15 +8,14 @@ async function findOneAndUpdateAuctionEnd(log) {
 
   const isDaylightSavings = isDaylightSavingTime(now);
 
-  // Set the time to 5 PM UTC
   now.setUTCHours(isDaylightSavings ? 21 : 22, 0, 0, 0);
 
-  const today = now.toISOString().replace('Z', '+00:00');
+  const today = now.toISOString();
   logEvent(log, 'TODAY', today);
 
   const auction = await Auction.findOneAndUpdate(
     {
-      'settings.endDate': { $lte: new Date(today) },
+      'settings.endDate': { $lte: today },
       'settings.hasBegun': true,
       'settings.hasEnded': false,
       'settings.status': 'LIVE',

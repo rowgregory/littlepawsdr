@@ -13,7 +13,7 @@ export const userApi = api.injectEndpoints({
       providesTags: (result: any, error: any, arg: any) => [{ type: 'User', id: arg }],
     }),
     getUserShippingAddress: build.query({
-      query: (userId: string) => `${BASE_URL}/shipping-address`,
+      query: () => `${BASE_URL}/shipping-address`,
       providesTags: (result: any, error: any, arg: any) => [{ type: 'User', id: arg }],
     }),
     updateUser: build.mutation({
@@ -53,7 +53,13 @@ export const userApi = api.injectEndpoints({
     }),
     fetchUserProfileDetails: build.query({
       query: (userId: string) => {
-        return `${BASE_URL}/profile/details/${userId}`; 
+        return `${BASE_URL}/profile/details/${userId}`;
+      },
+      providesTags: (result: any, error: any, arg: string) => [{ type: 'User', id: arg }],
+    }),
+    fetchUserAnonStatusAndShippingAddressDetails: build.query({
+      query: (userId: string) => {
+        return `${BASE_URL}/anon-status-shipping-address/details/${userId}`;
       },
       providesTags: (result: any, error: any, arg: string) => [{ type: 'User', id: arg }],
     }),
@@ -69,5 +75,6 @@ export const {
   useDeleteUserMutation,
   useFetchPersonalDataQuery,
   useUpdateUserProfileDetailsMutation,
-  useFetchUserProfileDetailsQuery
+  useFetchUserProfileDetailsQuery,
+  useFetchUserAnonStatusAndShippingAddressDetailsQuery,
 } = userApi;

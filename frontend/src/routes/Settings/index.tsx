@@ -5,12 +5,12 @@ import Security from './Security';
 import { Link } from 'react-router-dom';
 import UserAuctionSettings from './UserAuctionSettings';
 import Bids from './Bids';
-// import { useFetchPersonalDataQuery } from '../../redux/services/userApi';
+import { useFetchPersonalDataQuery } from '../../redux/services/userApi';
 import AuctionDonations from './AuctionDonations';
 import InstantBuys from './InstantBuys';
 import WinningBids from './WinningBids';
 import AdoptionApplicationFees from './AdoptionApplicationFees';
-// import GreenRotatingTransparentCircle from '../../components/Loaders/GreenRotatingTransparentCircle';
+import GreenRotatingTransparentCircle from '../../components/Loaders/GreenRotatingTransparentCircle';
 import Purchases from './Purchases';
 import Donations from './Donations';
 
@@ -130,12 +130,12 @@ const SettingsLayoutWithNavbar = ({
   children: ReactNode;
   navbar: ReactNode;
 }) => {
-  // const { error, isLoading } = useFetchPersonalDataQuery();
+  const { isLoading } = useFetchPersonalDataQuery();
   return (
     <div className='bg-gray-50 min-h-screen pt-24 md:pt-28 px-2.5 md:px-8 pb-3'>
       <div className='w-full mx-auto max-w-screen-xl'>
         <nav>{navbar}</nav>
-        {/* {isLoading && <GreenRotatingTransparentCircle />} */}
+        {isLoading && <GreenRotatingTransparentCircle />}
         <main>{children}</main>
       </div>
     </div>
