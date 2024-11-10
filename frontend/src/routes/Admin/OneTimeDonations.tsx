@@ -83,16 +83,14 @@ const OneTimeDonations = () => {
                         key={donation?._id}
                       >
                         <td>
-                          <div className='m-0 w-full  p-0 decoration-inherit hover:text-inherit hover:decoration-inherit !flex h-[3.25rem] items-center px-4 whitespace-nowrap'>
-                            <div className='max-w-[15rem]'>
-                              <span className='text-sm font-Matter-Regular truncate'>
-                                {donation?.firstName}
-                              </span>
-                            </div>
+                          <div className='m-0 w-full decoration-inherit p-0 !flex h-[3.25rem] items-center'>
+                            <p className='text-sm font-Matter-Regular max-w-32 truncate px-4 whitespace-nowrap'>
+                              {donation?.firstName}
+                            </p>
                           </div>
                         </td>
                         <td>
-                          <p className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>
+                          <p className='text-gray-900 max-w-32 truncate text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>
                             {donation?.lastName}
                           </p>
                         </td>

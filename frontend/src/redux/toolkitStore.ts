@@ -32,6 +32,7 @@ import { cartReducer } from './features/cart/cartSlice';
 import { campaignReducer, resetCampaignError } from './features/campaign/campaignSlice';
 import { navbarReducer } from './features/navbar/navbarSlice';
 import { merchAndEcardsReducuer } from './features/merchAndEcardSlice';
+import { toastReducer } from './features/toastSlice';
 
 const errorHandlerMiddleware = (store: any) => (next: any) => (action: any) => {
   const resetErrorActions: { [key: string]: () => void } = {
@@ -100,6 +101,7 @@ const rootReducer = combineReducers({
   cart: persistReducer(cartPersistConfig, cartReducer),
   navbar: navbarReducer,
   merchAndEcards: merchAndEcardsReducuer,
+  toast: toastReducer,
   [rescueGroupsApi.reducerPath]: rescueGroupsApi.reducer,
   [api.reducerPath]: api.reducer,
 });

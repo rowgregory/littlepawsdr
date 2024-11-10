@@ -35,7 +35,7 @@ const AuctionItemBids = () => {
       {(isBids || isNoInstantBuyers) && (
         <Fragment>
           <div className='font-Matter-Medium text-2xl mb-3'>
-            {item?.sellingFormat === 'fixed' ? 'Purchases' : 'Bids'}
+            {item?.sellingFormat === 'fixed' ? 'Instant Buys' : 'Bids'}
           </div>
           <div className='bg-white w-full border border-slate-100 rounded-xl mb-14'>
             <div className='relative'>
@@ -142,6 +142,11 @@ const AuctionItemBids = () => {
                         <td>
                           <p className='text-gray-900 text-xs font-Matter-Regular items-center px-4'>
                             {formatDateWithTimezone(instantBuyer?.createdAt)}
+                          </p>
+                        </td>
+                        <td>
+                          <p className='text-gray-900 text-xs font-Matter-Regular items-center px-4'>
+                            N/A
                           </p>
                         </td>
                         <td>

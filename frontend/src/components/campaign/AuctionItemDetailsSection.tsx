@@ -29,7 +29,13 @@ const AuctionItemDetailsSection: FC<AuctionItemDetailsSectionProps> = ({
               <p className='font-Matter-Regular text-xs text-gray-400'>BID INCREMENT:</p>
             </Fragment>
           )}
-          {auctionItem?.shippingCosts && (
+          {auctionItem?.isFixed && (
+            <Fragment>
+              <p className='font-Matter-Regular text-xs text-gray-400'>BUY NOW PRICE:</p>
+              <p className='font-Matter-Regular text-xs text-gray-400'>ITEMS REMAINING:</p>
+            </Fragment>
+          )}
+          {auctionItem?.shippingCosts > 0 && (
             <p className='font-Matter-Regular text-xs text-gray-400'>SHIPPING COSTS:</p>
           )}
           <p className='font-Matter-Regular text-xs text-gray-400'>START DATE:</p>
@@ -43,8 +49,14 @@ const AuctionItemDetailsSection: FC<AuctionItemDetailsSectionProps> = ({
               <p className='font-Matter-Medium text-xs'>$1</p>
             </Fragment>
           )}
-          {auctionItem?.shippingCosts && (
-            <p className='font-Matter-Medium text-xs '>${auctionItem?.shippingCosts}</p>
+          {auctionItem?.isFixed && (
+            <Fragment>
+              <p className='font-Matter-Medium text-xs'>${auctionItem?.buyNowPrice}</p>
+              <p className='font-Matter-Medium text-xs'>{auctionItem?.totalQuantity}</p>
+            </Fragment>
+          )}
+          {auctionItem?.shippingCosts > 0 && (
+            <p className='font-Matter-Medium text-xs'>${auctionItem?.shippingCosts}</p>
           )}
           <p className='font-Matter-Medium text-xs'>
             {formatDateWithTimezone(campaign?.campaign?.auction?.settings?.startDate)}

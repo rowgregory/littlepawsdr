@@ -60,7 +60,9 @@ const NewsletterEmailList = () => {
         loading={loadingDelete}
         hook={{ openModal, show, closeModal }}
       />
-      <div className='font-Matter-Medium text-2xl mb-3.5'>Newsletter emails</div>
+      <div className='font-Matter-Medium text-2xl mb-3.5'>
+        Newsletter Emails<span className='ml-1'>({newsletterEmails?.length})</span>
+      </div>
       <div className='grid grid-cols-12 h-10 justify-between'>
         <div className='col-span-7 md:col-span-6 flex items-center font-Matter-Light border border-grey-200 rounded-md bg-white py-2 px-[16px] '>
           <MagnifyingGlass />

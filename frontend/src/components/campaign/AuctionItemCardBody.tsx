@@ -39,6 +39,11 @@ const AuctionItemCardBody: FC<AuctionItemCardBodyProps> = ({
       <div className='flex flex-col'>
         <p className='font-Matter-Medium text-lg'>{item?.name}</p>
         {item.isAuction && auctionActive && <AuctionDetails item={item} />}
+        {item.isFixed && auctionActive && (
+          <p className='text-xs text-gray-400 font-Matter-Regular'>
+            Items Remaining: {item.totalQuantity}
+          </p>
+        )}
       </div>
       {userLoggedIn ? (
         auctionActive ? (

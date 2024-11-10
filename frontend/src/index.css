@@ -168,7 +168,7 @@ input[type='radio'].personalize-ecard {
 }
 
 .curve::before {
-  content: "";
+  content: '';
   position: absolute;
   height: 100%;
   width: 100%;
@@ -181,11 +181,11 @@ input[type='radio'].personalize-ecard {
 }
 
 .shine-button::before {
-  content: "";
+  content: '';
   position: absolute;
   top: 0;
   left: 0%;
-  width:20%;
+  width: 20%;
   height: 100%;
   background: linear-gradient(
     120deg,
@@ -204,4 +204,19 @@ input[type='radio'].personalize-ecard {
   100% {
     left: 120%;
   }
+}
+
+@keyframes slideInFromRight {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.slide-in-from-right {
+  animation: slideInFromRight 0.4s ease-out;
 }

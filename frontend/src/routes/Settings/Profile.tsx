@@ -11,6 +11,7 @@ import { hydrateAuthUserState } from '../../redux/features/auth/authSlice';
 import UserProfileDetailsForm from '../../components/forms/UserProfileDetailsForm';
 import useForm from '../../utils/hooks/useForm';
 import validateProfileDetailsForm from '../../validations/validateProfileDetailsForm';
+import { openToast } from '../../redux/features/toastSlice';
 
 const Profile = () => {
   const dispatch = useAppDispatch();
@@ -40,6 +41,10 @@ const Profile = () => {
         .unwrap()
         .then((data: any) => {
           dispatch(hydrateAuthUserState(data.user));
+          dispatch(openToast({ message: 'User profile updated', success: true, open: true }));
+        })
+        .catch(() => {
+          dispatch(openToast({ message: 'Error, please try again', success: false, open: true }));
         });
     }
   };

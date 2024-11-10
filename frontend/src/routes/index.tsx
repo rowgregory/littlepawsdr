@@ -17,7 +17,8 @@ import { useSelector } from 'react-redux';
 import Toast from '../components/common/Toast';
 import ContactUs from './ContactUs';
 import LiveAuctionModal from '../components/modals/LiveAuctionModal';
-import {  useScrollToTop } from '../utils/scrollToTop';
+import { useScrollToTop } from '../utils/scrollToTop';
+import Toast2 from '../components/common/Toast2';
 
 type LazyModulePromise<T = {}> = Promise<{ default: ComponentType<T> }>;
 
@@ -80,6 +81,7 @@ export const MainRoutes: FC = () => {
             />
           )
       )}
+      <Toast2 />
       <GlobalStyles />
       <CookiePolicyPopUp />
       <CartDrawer />
