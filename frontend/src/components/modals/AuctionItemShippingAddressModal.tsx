@@ -1,5 +1,5 @@
-import { Modal } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import Modal from '../common/Modal';
 
 const AuctionItemShippingAddressModal = ({
   open,
@@ -9,11 +9,7 @@ const AuctionItemShippingAddressModal = ({
   customLinkId,
 }: any) => {
   return (
-    <Modal
-      show={open}
-      onHide={() => setOpenAddressModal({ open: false, auctionItemId: '' })}
-      centered
-    >
+    <Modal show={open} onClose={() => setOpenAddressModal({ open: false, auctionItemId: '' })}>
       <div className='bg-white p-8 rounded-xl flex flex-col justify-center items-center'>
         <i
           className={`fa-solid fa-truck-fast ${theme.text} fa-xl transform rounded-md h-12 w-12 ${theme.xlight} flex items-center justify-center p-2`}

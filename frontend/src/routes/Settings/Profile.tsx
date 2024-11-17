@@ -9,7 +9,7 @@ import { useLocation } from 'react-router-dom';
 import AccountCreatedModal from '../../components/modals/AccountCreatedModal';
 import { hydrateAuthUserState } from '../../redux/features/auth/authSlice';
 import UserProfileDetailsForm from '../../components/forms/UserProfileDetailsForm';
-import useForm from '../../utils/hooks/useForm';
+import useForm from '../../hooks/useForm';
 import validateProfileDetailsForm from '../../validations/validateProfileDetailsForm';
 import { openToast } from '../../redux/features/toastSlice';
 

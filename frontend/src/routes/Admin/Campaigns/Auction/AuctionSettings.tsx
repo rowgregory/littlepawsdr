@@ -4,7 +4,7 @@ import { RootState, useAppDispatch } from '../../../../redux/toolkitStore';
 import { useUpdateAuctionMutation } from '../../../../redux/services/campaignApi';
 import { resetSuccess } from '../../../../redux/features/campaign/campaignSlice';
 import AuctionSettingsForm from '../../../../components/forms/campaign/details/AuctionSettingsForm';
-import useAuctionSettingsForm from '../../../../utils/hooks/useAuctionSettingsForm';
+import useAuctionSettingsForm from '../../../../hooks/form-hooks/useAuctionSettingsForm';
 
 const AuctionSettings = () => {
   const dispatch = useAppDispatch();

@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import useWelcomeWienerDachshundForm from '../../../utils/hooks/useWelcomeWienerDachshundForm';
+import useWelcomeWienerDachshundForm from '../../../hooks/form-hooks/useWelcomeWienerDachshundForm';
 import { uploadMultipleFilesToFirebase } from '../../../utils/uploadToFirebase';
-import WelcomeWienerProduct from '../../../components/welcome-wiener/WelcomeWienerProduct';
+import WelcomeWienerProduct from '../../../components/admin/welcome-wiener/WelcomeWienerProduct';
 import {
   useCreateWelcomeWienerMutation,
   useGetWelcomeWienerProductsQuery,
@@ -75,14 +75,17 @@ const WelcomeWienerDachshundEdit = () => {
       <div className='bg-white border border-slate-100 rounded-xl p-8 grid gap-y-8'>
         <div className='font-Matter-Medium text-2xl'>Welcome Wiener Details</div>
         <div>
-          <label className='font-Matter-Medium text-sm'>
-            Digital products
-          </label>
+          <label className='font-Matter-Medium text-sm'>Digital products</label>
           <p className='font-Matter-Light text-sm mb-2'>Click products to offer</p>
           <div className='border border-slate-100 border-dashed rounded-lg p-4'>
             <div className='flex flex-col'>
               {noWelcomeWienerProducts ? (
-                <Link to='/admin/store/welcome-wieners/digital/create' className='border-dashed border-2 border-gray-100 w-28 h-28 flex justify-center items-center rounded-md relative hover:bg-gray-100 p-2 cursor-pointer font-Matter-Regular text-center hover:no-underline text-sm hover:text-gray-800'>Add new digial product</Link>
+                <Link
+                  to='/admin/store/welcome-wieners/digital/create'
+                  className='border-dashed border-2 border-gray-100 w-28 h-28 flex justify-center items-center rounded-md relative hover:bg-gray-100 p-2 cursor-pointer font-Matter-Regular text-center hover:no-underline text-sm hover:text-gray-800'
+                >
+                  Add new digial product
+                </Link>
               ) : (
                 <div className='flex flex-wrap gap-3'>
                   {welcomeWienerProducts?.map((obj: any, i: number) => (
@@ -93,7 +96,12 @@ const WelcomeWienerDachshundEdit = () => {
                       addToAssociatedProducts={addToAssociatedProducts}
                     />
                   ))}
-                  <Link to='/admin/store/welcome-wieners/digital/create' className='border-dashed border-2 border-gray-100 w-28 h-28 flex justify-center items-center rounded-md relative hover:bg-gray-100 p-2 cursor-pointer font-Matter-Regular text-center hover:no-underline text-sm hover:text-gray-800'>Add new digial product</Link>
+                  <Link
+                    to='/admin/store/welcome-wieners/digital/create'
+                    className='border-dashed border-2 border-gray-100 w-28 h-28 flex justify-center items-center rounded-md relative hover:bg-gray-100 p-2 cursor-pointer font-Matter-Regular text-center hover:no-underline text-sm hover:text-gray-800'
+                  >
+                    Add new digial product
+                  </Link>
                 </div>
               )}
             </div>
@@ -144,9 +152,7 @@ const WelcomeWienerDachshundEdit = () => {
             ></textarea>
           </div>
           <div>
-            <label className='font-Matter-Medium text-sm'>
-              Photos
-            </label>
+            <label className='font-Matter-Medium text-sm'>Photos</label>
             <div className='border border-slate-100 border-dashed rounded-lg'>
               <Form.File
                 className='auction-item'
@@ -185,11 +191,7 @@ const WelcomeWienerDachshundEdit = () => {
                       className='fas fa-times fa-sm text-white absolute top-5 left-3.5 z-2 cursor-pointer'
                     ></i>
 
-                    <img
-                      className='w-full h-full object-cover'
-                      src={file}
-                      alt='auction-item'
-                    />
+                    <img className='w-full h-full object-cover' src={file} alt='auction-item' />
                   </div>
                 ))}
                 {inputs.photoAmount > 0 &&

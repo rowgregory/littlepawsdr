@@ -1,5 +1,5 @@
 import { Fragment, useCallback, useRef, useState } from 'react';
-import DeleteModal, { useDeleteModal } from '../../../components/DeleteModal';
+import DeleteModal from '../../../components/DeleteModal';
 import { Link } from 'react-router-dom';
 import {
   useDeleteWelcomeWienerMutation,
@@ -8,8 +8,9 @@ import {
 } from '../../../redux/services/welcomeWienerApi';
 import MagnifyingGlass from '../../../components/svg/MagnifyingGlass';
 import GreenRotatingTransparentCircle from '../../../components/Loaders/GreenRotatingTransparentCircle';
-import useOutsideDetect from '../../../utils/useOutsideDetect';
+import useOutsideDetect from '../../../hooks/useOutsideDetect';
 import Pagination from '../../../components/common/Pagination';
+import useDeleteModal from '../../../hooks/useDeleteModal';
 
 const WelcomeWienerDachshundList = () => {
   const [id, setId] = useState('');
@@ -131,10 +132,11 @@ const WelcomeWienerDachshundList = () => {
                           <td>
                             <div onClick={() => toggleLive({ id: wiener?._id })} className='px-4'>
                               <p
-                                className={`cursor-pointer text-gray-900 text-sm font-Matter-Regular items-center whitespace-nowrap border-2 rounded-3xl px-2 py-1 w-fit ${wiener?.isLive
-                                  ? 'text-green-700 bg-green-50 border-green-500'
-                                  : 'text-gray-700 bg-gray-50 border-gray-700'
-                                  }`}
+                                className={`cursor-pointer text-gray-900 text-sm font-Matter-Regular items-center whitespace-nowrap border-2 rounded-3xl px-2 py-1 w-fit ${
+                                  wiener?.isLive
+                                    ? 'text-green-700 bg-green-50 border-green-500'
+                                    : 'text-gray-700 bg-gray-50 border-gray-700'
+                                }`}
                               >
                                 {wiener.isLive ? 'Online' : 'Offline'}
                               </p>

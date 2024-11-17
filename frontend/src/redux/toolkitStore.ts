@@ -4,7 +4,7 @@ import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import { authReducer, resetAuthError } from './features/auth/authSlice';
 import { dashboardReducer } from './features/dashboard/dashboardSlice';
-import { useDispatch } from 'react-redux';
+import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import { dachshundReducer } from './features/dachshund/dachshundSlice';
 import { ordersReducer, resetOrderError } from './features/order/ordersSlice';
 import {
@@ -79,11 +79,6 @@ const authPersistConfig = {
   storage: storage,
   blacklist: ['auth'],
 };
-const cartPersistConfig = {
-  key: 'cart',
-  storage: storage,
-  blacklist: ['cart'],
-};
 
 const rootReducer = combineReducers({
   auth: persistReducer(authPersistConfig, authReducer),
@@ -98,7 +93,7 @@ const rootReducer = combineReducers({
   user: userReducuer,
   newsletterEmail: newsletterEmailReducuer,
   campaign: campaignReducer,
-  cart: persistReducer(cartPersistConfig, cartReducer),
+  cart: cartReducer,
   navbar: navbarReducer,
   merchAndEcards: merchAndEcardsReducuer,
   toast: toastReducer,
@@ -124,4 +119,8 @@ export type RootState = ReturnType<typeof toolkitStore.getState>;
 
 export type AppDispatch = typeof toolkitStore.dispatch;
 
+export type AppSelector = typeof toolkitStore.getState;
+
 export const useAppDispatch: () => AppDispatch = useDispatch;
+
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;

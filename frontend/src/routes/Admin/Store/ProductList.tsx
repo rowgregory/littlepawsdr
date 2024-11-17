@@ -1,11 +1,12 @@
 import { Fragment, useCallback, useRef, useState } from 'react';
-import DeleteModal, { useDeleteModal } from '../../../components/DeleteModal';
+import DeleteModal from '../../../components/DeleteModal';
 import { Link } from 'react-router-dom';
 import { useDeleteProductMutation, useGetProductsQuery } from '../../../redux/services/productApi';
 import GreenRotatingTransparentCircle from '../../../components/Loaders/GreenRotatingTransparentCircle';
 import MagnifyingGlass from '../../../components/svg/MagnifyingGlass';
-import useOutsideDetect from '../../../utils/useOutsideDetect';
+import useOutsideDetect from '../../../hooks/useOutsideDetect';
 import Pagination from '../../../components/common/Pagination';
+import useDeleteModal from '../../../hooks/useDeleteModal';
 
 const ProductList = () => {
   const [id, setId] = useState('');

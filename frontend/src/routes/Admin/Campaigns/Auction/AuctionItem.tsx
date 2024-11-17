@@ -7,7 +7,7 @@ import {
   useDeleteAuctionItemPhotoMutation,
   useUpdateAuctionItemMutation,
 } from '../../../../redux/services/campaignApi';
-import useAuctionItemForm from '../../../../utils/hooks/useAuctionItemForm';
+import useAuctionItemForm from '../../../../hooks/form-hooks/useAuctionItemForm';
 import AuctionItemForm from '../../../../components/forms/campaign/AuctionItemForm';
 
 const AuctionItem = () => {

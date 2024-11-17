@@ -1,4 +1,4 @@
-import { Modal } from 'react-bootstrap';
+import Modal from '../common/Modal';
 
 const BidConfirmationModal = ({
   openConfirmationModal,
@@ -8,7 +8,7 @@ const BidConfirmationModal = ({
   setOpenConfirmationModal,
 }: any) => {
   return (
-    <Modal show={openConfirmationModal} centered onHide={handleCloseConfirmationModal}>
+    <Modal show={openConfirmationModal} onClose={handleCloseConfirmationModal}>
       <div className='bg-white p-8 rounded-xl flex flex-col justify-center items-center'>
         <i
           className={`fa-solid fa-right-to-bracket ${theme.text} fa-xl transform rotate-[270deg] rounded-md h-12 w-12 ${theme.xlight} flex items-center justify-center p-2`}

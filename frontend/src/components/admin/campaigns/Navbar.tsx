@@ -39,7 +39,9 @@ const AuctionLink = ({ campaign }: { campaign: any }) => (
         className='hidden md:flex items-center bg-[#fff] px-3 py-1.5 rounded-tr-3xl rounded-br-3xl duration-100 hover:bg-gray-50 hover:no-underline'
       >
         <i className={`fa-regular fa-sm fa-eye ${campaign?.campaign?.themeColor?.text} mr-1`}></i>
-        <p className={`font-Matter-Regular ${campaign?.campaign?.themeColor?.text} text-sm`}>View</p>
+        <p className={`font-Matter-Regular ${campaign?.campaign?.themeColor?.text} text-sm`}>
+          View
+        </p>
       </Link>
     </div>
   </div>
@@ -88,7 +90,7 @@ const Navbar = ({ id, pathname, isLoading }: { id: string; pathname: string; isL
   const status = campaign?.campaign?.campaignStatus;
 
   return (
-    <div className='d-flex flex-column mb-3'>
+    <div className='flex flex-col mb-3'>
       <div className='grid grid-cols-12 gap-3 md:mb-3'>
         <StatusAndTitleSection isLoading={isLoading} campaign={campaign} status={status} />
         <AuctionLink campaign={campaign} />

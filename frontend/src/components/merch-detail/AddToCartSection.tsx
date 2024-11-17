@@ -1,4 +1,4 @@
-import { AddToCartBtn, Quantity, SelectInput, SelectSizeContainer } from '../styles/product-details/Styles';
+import { Quantity, SelectInput, SelectSizeContainer } from '../styles/product-details/Styles';
 import { LoadingImg } from '../LoadingImg';
 import { FC } from 'react';
 
@@ -11,7 +11,14 @@ interface AddToCartSectionProps {
   size: string;
 }
 
-const AddToCartSection: FC<AddToCartSectionProps> = ({ product, qty, setQty, addToCartHandler, loading, size }) => {
+const AddToCartSection: FC<AddToCartSectionProps> = ({
+  product,
+  qty,
+  setQty,
+  addToCartHandler,
+  loading,
+  size,
+}) => {
   const stock = product?.hasSizes
     ? product?.sizes.find((itemSize: any) => itemSize.size === size)?.amount
     : product?.countInStock;
@@ -23,12 +30,14 @@ const AddToCartSection: FC<AddToCartSectionProps> = ({ product, qty, setQty, add
   return loading ? (
     <LoadingImg w='100%' h='272px' />
   ) : (
-    <div className='w-full col-span-12 rounded-lg h-fit flex flex-col pv-4 px-3.5 md:col-span-4 md:px-0'>
+    <div className='w-full col-span-12 rounded-lg h-fit flex flex-col py-4 sm:px-3.5 md:col-span-4 md:px-0'>
       <div className='flex relative'>
         <p className='absolute top-1 font-Matter-Medium'>$</p>
         <p className='text-4xl ml-2.5 mt-1 mb-2 font-Matter-Medium'>{product?.price}</p>
       </div>
-      <p className={`text-2xl font-Matter-Medium ${outOfStock ? 'text-red-500' : 'text-green-600'}`}>
+      <p
+        className={`text-2xl font-Matter-Medium ${outOfStock ? 'text-red-500' : 'text-green-600'}`}
+      >
         {outOfStock ? 'Not in stock' : 'In stock'}
       </p>
       {!outOfStock && (
@@ -46,9 +55,13 @@ const AddToCartSection: FC<AddToCartSectionProps> = ({ product, qty, setQty, add
           </SelectSizeContainer>
         </>
       )}
-      <AddToCartBtn disabled={outOfStock} onClick={() => addToCartHandler(product)}>
+      <button
+        className='bg-yellow-300 text-zinc-800 py-2 rounded-lg w-full duration-300 hover:bg-yellow-400'
+        disabled={outOfStock}
+        onClick={() => addToCartHandler(product)}
+      >
         Add To Cart
-      </AddToCartBtn>
+      </button>
     </div>
   );
 };

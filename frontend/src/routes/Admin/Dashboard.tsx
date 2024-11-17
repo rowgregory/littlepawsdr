@@ -29,9 +29,9 @@ const Dashboard = () => {
   }, [dispatch]);
 
   return (
-    <div className='bg-zinc-50 pt-16 md:pt-20 px-[8px] md:px-[20px] pb-10 min-h-screen'>
+    <div className='bg-zinc-50 pt-16 md:pt-20 px-[8px] md:px-5 pb-10 min-h-screen'>
       <div className='max-w-screen-lg w-full mx-auto'>
-        <div className='flex items-center justify-between mb-9'>
+        <div className='flex flex-col sm:flex-row sm:items-center justify-between mb-9'>
           <h1 className='font-Matter-Medium text-2xl'>Welcome, {auth?.user?.firstName}!</h1>
           <h2 className='font-Matter-Regular'>Bypass code: {dashboard?.bypassCode}</h2>
         </div>

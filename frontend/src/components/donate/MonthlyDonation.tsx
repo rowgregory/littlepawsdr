@@ -9,7 +9,6 @@ const monthlyDonationOptions = [
   { amount: 100, value: 'Option 6' },
 ];
 
-
 export const MonthlyDonationProgressTracker = ({ type }: any) => (
   <div className={`${type === 'monthly' ? 'block' : 'hidden'}`}>
     <div className='flex mt-4 mb-8 gap-4'>
@@ -19,18 +18,17 @@ export const MonthlyDonationProgressTracker = ({ type }: any) => (
         1. Gift Amount
       </div>
     </div>
-
   </div>
 );
 
 export const MonthlyDonationForm = ({ type }: any) => {
-  const [amount, setAmount] = useState(25)
+  const [amount, setAmount] = useState(25);
 
   return (
     <div className={`${type === 'monthly' ? 'flex flex-col' : 'hidden'}`}>
       <div className='flex flex-wrap gap-4'>
         <form
-          className='d-flex flex-column justify-content-between align-items-center'
+          className='flex flex-col justify-between items-center'
           action='https://www.paypal.com/cgi-bin/webscr'
           method='post'
           target='_top'
@@ -41,10 +39,13 @@ export const MonthlyDonationForm = ({ type }: any) => {
             {monthlyDonationOptions.map((obj: any, i: any) => {
               return (
                 <Fragment key={i}>
-                  <button onMouseEnter={() => setAmount(obj.amount)}
+                  <button
+                    onMouseEnter={() => setAmount(obj.amount)}
                     name='os0'
                     value={obj.value}
-                    className={`${obj.amount === amount ? 'bg-teal-500' : 'bg-gray-300'} px-[22px] h-[60px] rounded-lg flex items-center justify-center text-white font-Matter-Medium cursor-pointer`}
+                    className={`${
+                      obj.amount === amount ? 'bg-teal-500' : 'bg-gray-300'
+                    } px-[22px] h-[60px] rounded-lg flex items-center justify-center text-white font-Matter-Medium cursor-pointer`}
                   >
                     ${obj.amount}
                   </button>
@@ -55,8 +56,10 @@ export const MonthlyDonationForm = ({ type }: any) => {
             <input type='hidden' name='currency_code' value='USD' />
           </div>
         </form>
-        <p className='font-Matter-Light text-xs mt-5 italic'>These buttons redirect you from this site to PayPal for processing</p>
+        <p className='font-Matter-Light text-xs mt-5 italic'>
+          These buttons redirect you from this site to PayPal for processing
+        </p>
       </div>
     </div>
-  )
+  );
 };

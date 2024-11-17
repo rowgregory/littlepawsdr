@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { STATES } from '../../utils/states';
+import { STATES } from '../data/states';
 import TailwindSpinner from '../Loaders/TailwindSpinner';
 import { FC } from 'react';
 

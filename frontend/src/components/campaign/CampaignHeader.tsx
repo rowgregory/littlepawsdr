@@ -1,11 +1,12 @@
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { useLocation, useParams } from 'react-router-dom';
-import { NoImgDog, TransparentPurpleLogo } from '../assets';
-import { navbarBtnStyles } from '../navbar/navbarHelpers';
+import { TransparentPurpleLogo } from '../assets';
 import { RootState, useAppDispatch } from '../../redux/toolkitStore';
 import { pastelColorRandomizer } from '../../utils/pastelColorRandomizer';
 import { toggleUserDropdown } from '../../redux/features/navbar/navbarSlice';
+
+const navbarBtnStyles = `bg-gray-300 text-slate-200 h-10 w-10 rounded-full flex justify-center items-center cursor-pointer duration-300 hover:bg-gray-400 hover:no-underline`;
 
 const CampaignHeader = () => {
   const dispatch = useAppDispatch();
@@ -55,14 +56,7 @@ const CampaignHeader = () => {
         )}
       </div>
       <div className='flex items-center'>
-        {user?.isAdmin ? (
-          <img
-            src={user?.avatar || NoImgDog}
-            className='w-8 h-8 sm:h-10 sm:w-10 rounded-full cursor-pointer object-cover duration-200'
-            onClick={() => dispatch(toggleUserDropdown({ userDropdown: true }))}
-            alt={user?.name}
-          />
-        ) : user?._id ? (
+        {user?._id ? (
           <div
             style={{ background: color }}
             className={`uppercase cursor-pointer w-8 h-8 sm:h-10 sm:w-10 rounded-full flex items-center justify-center`}

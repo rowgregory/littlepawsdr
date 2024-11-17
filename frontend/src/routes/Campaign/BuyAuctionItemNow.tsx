@@ -9,8 +9,8 @@ import {
 import { Fragment, useState } from 'react';
 import toFixed from '../../utils/toFixed';
 import GreenRotatingTransparentCircle from '../../components/Loaders/GreenRotatingTransparentCircle';
-import { Modal } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import BuyAuctionItemNowModal from '../../components/modals/BuyAuctionItemNowModal';
 
 const BuyAuctionItemNow = () => {
   const params = useParams();
@@ -74,26 +74,7 @@ const BuyAuctionItemNow = () => {
   return (
     <Fragment>
       {orderLoader && <GreenRotatingTransparentCircle />}
-      <Modal show={instantBuy !== undefined} centered>
-        <div className='bg-white p-6 rounded-xl'>
-          <div className='flex flex-col justify-center items-center'>
-            <i
-              className={`fa-solid fa-check ${theme.text} ${theme.border} rounded-full flex items-center justify-center h-8 w-8 border-[2px] mb-3`}
-            ></i>
-            <p className='text-4xl font-Matter-Medium mb-4'>Thank you!</p>
-            <p className='text-gray-500 text-center'>
-              A confirmation of your payment has been <br />
-              sent to your email.
-            </p>
-            <Link
-              to='/settings/campaign/instant-buys'
-              className={`text-[#fff] ${theme?.dark} font-Matter-Medium px-4 py-2.5 rounded-lg mt-4 hover:text-[#fff] hover:no-underline`}
-            >
-              See my instant buys
-            </Link>
-          </div>
-        </div>
-      </Modal>
+      <BuyAuctionItemNowModal instantBuy={instantBuy} theme={theme} />
       <div className='flex justify-between flex-col md:flex-row md:min-h-screen'>
         <div
           className={`flex md:fixed flex-col justify-between h-full md:w-[327px] md:min-h-screen p-[12px] md:px-6 md:py-8 ${theme?.dark} `}

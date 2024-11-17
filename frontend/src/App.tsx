@@ -1,7 +1,6 @@
 import { Suspense } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MainRoutes } from './routes';
-import GlobalStyles from './GlobalStyles';
 import { ThemeProvider } from 'styled-components';
 import { themes } from './utils/theme';
 import { PayPalScriptProvider } from '@paypal/react-paypal-js';
@@ -21,7 +20,6 @@ const App = () => (
     <PersistGate loading={null} persistor={persistor}>
       <Router>
         <ThemeProvider theme={themes['light']}>
-          <GlobalStyles />
           <Suspense fallback={<></>}>
             <MainRoutes />
           </Suspense>

@@ -8,7 +8,12 @@ interface MerchNamePriceDescriptionProps {
   loading: boolean;
 }
 
-const MerchNamePriceDescription: FC<MerchNamePriceDescriptionProps> = ({ product, size, setSize, loading }) => {
+const MerchNamePriceDescription: FC<MerchNamePriceDescriptionProps> = ({
+  product,
+  size,
+  setSize,
+  loading,
+}) => {
   return loading ? (
     <LoadingImg w='100%' h='42px' />
   ) : (
@@ -39,7 +44,7 @@ const MerchNamePriceDescription: FC<MerchNamePriceDescriptionProps> = ({ product
         <>
           <div className='border-b border-[1px] h-[1px] border-gray-100 w-full my-4'></div>
           <p className='mb-3 font-Matter-SemiBold'>About this item</p>
-          <ul className='pl-4'>
+          <ul className='sm:pl-4'>
             {product?.description?.split('|').map((item: any, i: number) => (
               <li key={i} className='font-Matter-Regular'>
                 {item}

@@ -12,4 +12,8 @@ interface LayoutWithSidebarProps {
 
 type LazyModulePromise<T = {}> = Promise<{ default: ComponentType<T> }>;
 
-export type { LayoutWithHeaderProps, LayoutWithSidebarProps, LazyModulePromise };
+interface ChildrenProps {
+  children: ReactNode;
+}
+
+export type { LayoutWithHeaderProps, LayoutWithSidebarProps, LazyModulePromise, ChildrenProps };

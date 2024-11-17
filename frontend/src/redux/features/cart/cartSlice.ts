@@ -175,6 +175,10 @@ export const cartSlice = createSlice({
       state.success = false;
       state.fields = null;
     },
+    setCartFromStorage: (state, { payload }) => {
+      state.cartItems = payload;
+      state.cartItemsAmount = payload.length;
+    },
   },
 });
 
@@ -192,4 +196,5 @@ export const {
   updateFormData,
   decryptFormData,
   resetForm,
+  setCartFromStorage,
 } = cartSlice.actions;

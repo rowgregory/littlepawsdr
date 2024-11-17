@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react';
-import { Modal } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Logo2024 } from '../../components/assets';
 import { RootState, useAppDispatch } from '../../redux/toolkitStore';
-import { useResetPasswordMutation, useValidateForgotPasswordTokenQuery } from '../../redux/services/authApi';
+import {
+  useResetPasswordMutation,
+  useValidateForgotPasswordTokenQuery,
+} from '../../redux/services/authApi';
 import { setPasswordStrength } from '../../redux/features/auth/authSlice';
+import ResetPasswordModal from '../../components/modals/ResetPasswordModal';
 
 const ResetPassword = () => {
   const dispatch = useAppDispatch();
@@ -53,7 +56,9 @@ const ResetPassword = () => {
         <div className='max-w-md w-full'>
           <div className='flex flex-col items-center justify-center shadow-lg rounded-3xl py-5 px-3.5'>
             <i className='fa-solid fa-circle-exclamation text-red-500 fa-4x flex justify-center mb-3'></i>
-            <p className='text-red-500 text-lg font-Matter-Medium text-center mb-2'>{error?.data?.message}</p>
+            <p className='text-red-500 text-lg font-Matter-Medium text-center mb-2'>
+              {error?.data?.message}
+            </p>
             <p className='text-sm text-gray-400 font-Matter-Light text-center mb-3.5'>
               Please log in again to continue accessing our services
             </p>
@@ -71,23 +76,14 @@ const ResetPassword = () => {
 
   return (
     <>
-      <Modal show={modal.open} onHide={handleClose} centered>
-        <div className='bg-white rounded-xl p-8 w-full'>
-          <i onClick={handleClose} className='fa-solid fa-xmark fa-sm text-gray-500 flex justify-end mb-4 cursor-pointer'></i>
-          {message && <p className='text-red-500 font-Matter-Medium'>{message}</p>}
-          {modal.help && (
-            <>
-              <p className='font-Matter-Regular text-gray-700'>must contain a capital letter</p>
-              <p className='font-Matter-Regular text-gray-700'>must contain a number</p>
-              <p className='font-Matter-Regular text-gray-700'>must contain one symbol ~`!-@#$%^ &*()_+={ }|:;"',.?</p>
-              <p className='font-Matter-Regular text-gray-700'>must be at least 9 characters</p>
-            </>
-          )}
-        </div>
-      </Modal>
+      <ResetPasswordModal modal={modal} handleClose={handleClose} message={message} />
       <div className='bg-white min-h-screen flex items-center justify-center p-8'>
         <div className='max-w-md w-full'>
-          <img src={Logo2024} alt='Little Paws Dachshund Rescue Logo' className='w-44 mb-4 mx-auto' />
+          <img
+            src={Logo2024}
+            alt='Little Paws Dachshund Rescue Logo'
+            className='w-44 mb-4 mx-auto'
+          />
           <p className='font-Matter-Medium text-2xl text-center mb-2.5'>Reset Password</p>
           <form className='flex flex-col w-full'>
             <label className='font-Matter-Medium text-sm mb-1' htmlFor='password'>
@@ -107,8 +103,12 @@ const ResetPassword = () => {
                 value={password || ''}
               />
               <i
-                onClick={() => setShowPassword((prev: any) => ({ ...prev, password: !showPassword.password }))}
-                className={`fa-solid ${showPassword.password ? 'fa-eye' : 'fa-eye-slash'} absolute top-4 right-2`}
+                onClick={() =>
+                  setShowPassword((prev: any) => ({ ...prev, password: !showPassword.password }))
+                }
+                className={`fa-solid ${
+                  showPassword.password ? 'fa-eye' : 'fa-eye-slash'
+                } absolute top-4 right-2`}
               ></i>
             </div>
 

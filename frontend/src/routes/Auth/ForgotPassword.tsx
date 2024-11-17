@@ -1,13 +1,14 @@
-import { Modal } from 'react-bootstrap';
-import useForgotPasswordForm from '../../utils/hooks/useForgotPasswordForm';
-import { Link } from 'react-router-dom';
-import { useForgotPasswordEmailMutation } from '../../redux/services/authApi';
 import { useEffect, useState } from 'react';
-import { Logo2024 } from '../../components/assets';
+import { Link } from 'react-router-dom';
+import useForgotPasswordForm from '../../hooks/form-hooks/useForgotPasswordForm';
+import { useForgotPasswordEmailMutation } from '../../redux/services/authApi';
+import ForgotPasswordModal from '../../components/modals/ForgotPasswordModal';
+import Logo from '../../components/common/Logo';
 
 const ForgotPassword = () => {
   const [modal, setModal] = useState(false);
-  const [forgotPasswordEmail, { isLoading, error, reset, data, isError }] = useForgotPasswordEmailMutation();
+  const [forgotPasswordEmail, { isLoading, error, reset, data, isError }] =
+    useForgotPasswordEmailMutation();
 
   const handleClose = () => {
     setModal(false);
@@ -28,26 +29,10 @@ const ForgotPassword = () => {
 
   return (
     <>
-      <Modal show={modal} onHide={handleClose} centered>
-        <div className='bg-white rounded-xl p-8 w-full'>
-          <i onClick={handleClose} className='fa-solid fa-xmark fa-sm text-gray-500 flex justify-end mb-4 cursor-pointer'></i>
-          {error && (
-            <>
-              <i className='fa-solid fa-circle-exclamation text-red-500 fa-2x flex justify-center mb-3'></i>
-              <p className='text-red-500 text-sm font-Matter-Medium text-center mb-2'>{error?.data?.message}</p>
-            </>
-          )}
-          {data?.message && (
-            <>
-              <i className='fa-solid fa-check text-green-500 fa-2x flex justify-center mb-3'></i>
-              <p className='text-green-500 text-sm font-Matter-Medium text-center mb-2'>{data?.message}</p>
-            </>
-          )}
-        </div>
-      </Modal>
+      <ForgotPasswordModal modal={modal} handleClose={handleClose} error={error} data={data} />
       <div className='bg-white min-h-screen flex items-center justify-center p-8'>
         <div className='max-w-md w-full'>
-          <img src={Logo2024} alt='Little Paws Dachshund Rescue Logo' className='w-44 mb-4 mx-auto' />
+          <Logo className='w-44' />
           <p className='font-Matter-Medium text-2xl text-center mb-2.5'>Forgot Password</p>
           <form className='flex flex-col w-full'>
             <label className='font-Matter-Medium text-sm mb-1' htmlFor='email'>

@@ -4,7 +4,7 @@ import { RootState, useAppDispatch } from '../../redux/toolkitStore';
 import { setCloseFilterDrawer, setFilterCategory } from '../../redux/features/merchAndEcardSlice';
 import { Fragment, useCallback, useRef } from 'react';
 import BlackPageOverlay from '../common/BlackPageOverlay';
-import useOutsideDetect from '../../utils/useOutsideDetect';
+import useOutsideDetect from '../../hooks/useOutsideDetect';
 
 const FilterDrawer = () => {
   const dispatch = useAppDispatch();
@@ -41,7 +41,7 @@ const FilterDrawer = () => {
       >
         <i
           className='fas fa-times text-zinc-700 absolute top-4 right-4 cursor-pointer'
-           onClick={handleClose}
+          onClick={handleClose}
         ></i>
         <div className='p-7'>
           <p className='font-Matter-Medium mb-6 text-xl'>Product categories</p>

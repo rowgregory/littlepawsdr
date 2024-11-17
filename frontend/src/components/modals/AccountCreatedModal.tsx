@@ -1,14 +1,14 @@
 import { FC } from 'react';
-import { Modal } from 'react-bootstrap';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { AccountCreatedModalProps } from '../../types/auth-types';
+import Modal from '../common/Modal';
 
 const AccountCreatedModal: FC<AccountCreatedModalProps> = ({ accountCreated, closeModal }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  
+
   return (
-    <Modal show={accountCreated} onHide={closeModal} centered>
+    <Modal show={accountCreated} onClose={closeModal}>
       <div className='bg-white rounded-xl p-8 w-full'>
         <i
           onClick={closeModal}

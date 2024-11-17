@@ -11,5 +11,22 @@ interface ReasonsToAdoptASeniorProps {
   title: string;
   reason: string;
 }
+interface StepTwoProps {
+  setStep: (step: any) => void;
+}
 
-export type { FiveStepProcessProps, ReasonsToAdoptASeniorProps };
+interface ProgressTrackerProps {
+  step: {
+    step1: boolean;
+    step2: boolean;
+    step3: boolean;
+    step4: boolean;
+  };
+}
+
+export type {
+  FiveStepProcessProps,
+  ReasonsToAdoptASeniorProps,
+  StepTwoProps,
+  ProgressTrackerProps,
+};

@@ -1,24 +1,23 @@
-import { ComponentType, FC, Fragment, lazy } from 'react';
+import { ComponentType, FC, Fragment, lazy, useEffect } from 'react';
 import { Route, Routes, Navigate } from 'react-router-dom';
 import Home from './Home';
 import OrderReceipt from './OrderReceipt';
 import PageNotFound from './PageNotFound';
-import GlobalStyles from '../GlobalStyles';
 import Footer from '../components/Footer';
-import Navbar from '../components/Navbar';
 import ReturnPolicy from './ReturnPolicy';
 import CookiePolicyPopUp from '../components/CookiePolicyPopUp';
 import CookiePolicy from './CookiePolicy';
 import CartDrawer from '../components/CartDrawer';
 import AuctionItemWinner from './AuctionItemWinner';
-import { UserDropdown } from '../components/navbar/UserDropdown';
-import NavigationDrawer from '../components/navbar/NavigationDrawer';
+import NavigationDrawer from '../components/NavigationDrawer';
 import { useSelector } from 'react-redux';
 import Toast from '../components/common/Toast';
-import ContactUs from './ContactUs';
 import LiveAuctionModal from '../components/modals/LiveAuctionModal';
-import { useScrollToTop } from '../utils/scrollToTop';
 import Toast2 from '../components/common/Toast2';
+import Header from '../components/header/Header';
+import useScrollToTop from '../hooks/useScrollToTop';
+import { useAppDispatch } from '../redux/toolkitStore';
+import { setCartFromStorage } from '../redux/features/cart/cartSlice';
 
 type LazyModulePromise<T = {}> = Promise<{ default: ComponentType<T> }>;
 
@@ -51,8 +50,16 @@ const selectSuccess = (state: any) => {
 export const MainRoutes: FC = () => {
   const error = useSelector(selectError);
   const success = useSelector(selectSuccess);
+  const dispatch = useAppDispatch();
 
   useScrollToTop();
+
+  useEffect(() => {
+    const cartData = localStorage.getItem('cartData');
+    if (cartData) {
+      dispatch(setCartFromStorage(JSON.parse(cartData)));
+    }
+  }, [dispatch]);
 
   const errorMessages: any = {};
   Object.keys(error).forEach((sliceName: any) => {
@@ -82,12 +89,10 @@ export const MainRoutes: FC = () => {
           )
       )}
       <Toast2 />
-      <GlobalStyles />
       <CookiePolicyPopUp />
       <CartDrawer />
-      <UserDropdown />
       <NavigationDrawer />
-      <Navbar />
+      <Header />
       <LiveAuctionModal />
       <Routes>
         <Route path='/' element={<Home />} />
@@ -98,7 +103,6 @@ export const MainRoutes: FC = () => {
         <Route path='/donate/*' element={<Donate />} />
         <Route path='/volunteer/*' element={<Volunteer />} />
         <Route path='/cookie-policy' element={<CookiePolicy />} />
-        <Route path='/contact-us' element={<ContactUs />} />
         <Route path='/return-policy' element={<ReturnPolicy />} />
         <Route path='/auction-items/winner/:id' element={<AuctionItemWinner />}></Route>
         <Route path='/admin/*' element={<Admin />} />

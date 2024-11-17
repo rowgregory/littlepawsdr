@@ -1,13 +1,8 @@
-import { Modal } from 'react-bootstrap';
+import Modal from '../common/Modal';
 
-const UserAuctionSettingsModal = ({
-  modal,
-  closeModal,
-  navigate,
-  customCampaignLink,
-}: any) => {
+const UserAuctionSettingsModal = ({ modal, closeModal, navigate, customCampaignLink }: any) => {
   return (
-    <Modal show={modal.open || modal.open2} onHide={closeModal} centered>
+    <Modal show={modal.open || modal.open2} onClose={closeModal}>
       <div className='bg-white rounded-xl p-8 w-full'>
         <i
           onClick={closeModal}
@@ -19,9 +14,7 @@ const UserAuctionSettingsModal = ({
             <p className='font-Matter-Medium text-center text-lg text-green-600 mb-2'>
               {modal.open2 ? 'Address added' : 'Email confirmed'}
             </p>
-            <p className='font-Matter-Regular text-center mb-4 max-w-72 w-full'>
-              {modal.text}
-            </p>
+            <p className='font-Matter-Regular text-center mb-4 max-w-72 w-full'>{modal.text}</p>
             <button
               className='duration-200 px-4 py-1.5 rounded-sm w-fit bg-gray-200 mx-auto hover:bg-gray-300'
               onClick={() => {

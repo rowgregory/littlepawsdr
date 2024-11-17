@@ -1,12 +1,13 @@
 import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
-import DeleteModal, { useDeleteModal } from '../../../components/DeleteModal';
+import DeleteModal from '../../../components/DeleteModal';
 import { Link } from 'react-router-dom';
 import { useDeleteUserMutation, useGetUsersQuery } from '../../../redux/services/userApi';
 import GreenRotatingTransparentCircle from '../../../components/Loaders/GreenRotatingTransparentCircle';
 import MagnifyingGlass from '../../../components/svg/MagnifyingGlass';
-import useOutsideDetect from '../../../utils/useOutsideDetect';
+import useOutsideDetect from '../../../hooks/useOutsideDetect';
 import { formatDateWithTimezone } from '../../../utils/dateFunctions';
 import Pagination from '../../../components/common/Pagination';
+import useDeleteModal from '../../../hooks/useDeleteModal';
 
 const UserList = () => {
   const [id, setId] = useState('');
@@ -69,8 +70,8 @@ const UserList = () => {
         hook={{ openModal, show, closeModal }}
       />
       {isLoading && <GreenRotatingTransparentCircle />}
-      <div className='font-Matter-Medium text-2xl mb-3.5'>
-        Users<span className='ml-1'>({users?.length})</span>
+      <div className='font-Matter-Medium text-charcoal text-2xl mb-3.5'>
+        Users<span className='ml-1 text-sm'>(&nbsp;{users?.length}&nbsp;)</span>
       </div>
       <div className='grid grid-cols-12 h-10 justify-between'>
         <div className='col-span-7 md:col-span-6 flex items-center font-Matter-Light border border-grey-200 rounded-md bg-white py-2 px-[16px] '>

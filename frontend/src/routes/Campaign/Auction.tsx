@@ -5,7 +5,6 @@ import AuctionItemCard from '../../components/campaign/AuctionItemCard';
 import { Fragment, useState } from 'react';
 import { formatDateWithTimezone } from '../../utils/dateFunctions';
 import VerifiedBadge from '../Admin/Campaigns/Auction/VerifiedBadge';
-import useScrollToTop from '../../utils/hooks/useScrollToTop';
 import AuctionRegisterModal from '../../components/modals/AuctionRegisterModal';
 
 const Auction = () => {
@@ -18,8 +17,6 @@ const Auction = () => {
   const items = auction?.items;
   const settings = auction?.settings;
   const hasBegun = settings?.hasBegun;
-
-  useScrollToTop();
 
   return (
     <Fragment>

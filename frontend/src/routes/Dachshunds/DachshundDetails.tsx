@@ -1,120 +1,110 @@
-import BottomInfo from '../../components/dachshund-details/BottomInfo';
-import { useParams } from 'react-router-dom';
+import BottomInfo from '../../components/dachshund/BottomInfo';
+import { useNavigate, useParams } from 'react-router-dom';
 import { NoImgDog } from '../../components/assets';
-import { Carousel } from 'react-bootstrap';
 import { dachshundDetailsGridData } from '../../utils/dachchsundDetailsGridData';
 import { Link } from 'react-router-dom';
-import { rescueGroupsApi } from '../../redux/services/rescueGroupsApi';
-import { useEffect } from 'react';
-import { scrollToTop } from '../../utils/scrollToTop';
-import { LoadingImg } from '../../components/LoadingImg';
+import { useGetDachshundByIdQuery } from '../../redux/services/rescueGroupsApi';
+import useSingleItemCarousel from '../../hooks/useSingleItemCarousel';
+import { RootState, useAppSelector } from '../../redux/toolkitStore';
+import SingleItemCarousel from '../../components/common/SingleItemCarousel';
+import AwesomeIcon from '../../components/common/AwesomeIcon';
+import { chevronLeftIcon, chevronRightIcon, heartIcon } from '../../icons';
 
 const DachshundDetails = () => {
   const { id } = useParams() as any;
-  const { useGetDachshundByIdQuery } = rescueGroupsApi;
-  const { data, isLoading } = useGetDachshundByIdQuery(id);
-  const dachshund = data && data?.data[0];
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    scrollToTop();
-  }, []);
+  const { isLoading } = useGetDachshundByIdQuery(id, { refetchOnMountOrArgChange: true });
+  const { dachshund, dogStatusId } = useAppSelector((state: RootState) => state.dachshund);
 
-  const dogStatusId: string = dachshund?.relationships?.statuses?.data[0]?.id;
+  const { next, previous, currentIndex, totalItems, setCurrentIndex } = useSingleItemCarousel(
+    dachshund?.attributes.photos || []
+  );
+
+  if (isLoading) {
+    return (
+      <div className='w-full my-20 flex justify-center'>
+        <div className='dot-spinner'></div>
+      </div>
+    );
+  }
 
   return (
-    <div className='max-w-screen-lg min-h-[calc(100vh-500px)] w-full mx-auto mt-28 px-3.5 lg:px-0'>
-      <div className='grid grid-cols-12 gap-6 mt-4'>
-        <div className='col-span-12 sm:col-span-6 md:col-span-8 w-full'>
-          {isLoading ? (
-            <LoadingImg maxw='672.66px' ar='1/1' w='100%' />
-          ) : dachshund?.attributes?.photos?.length === 0 ? (
-            <img
-              className='aspect-square max-w-[425px] w-full object-cover'
-              src={NoImgDog}
-              alt={`${dachshund?.attributes?.name}`}
-            />
-          ) : (
-            <Carousel
-              className='bg-white border-[1px] border-gray-100 rounded-md w-full h-full aspect-sqaure'
-              pause='hover'
-            >
-              {dachshund?.attributes?.photos?.map((photo: string, i: number) => (
-                <Carousel.Item key={i} interval={4000}>
-                  <img src={photo} alt={`${photo}-${i}`} className='aspect-square' />
-                </Carousel.Item>
-              ))}
-            </Carousel>
-          )}
+    <div className='max-w-screen-lg w-full mx-auto my-32 px-4'>
+      <button onClick={() => navigate(-1)} className='font-QBook flex items-center gap-x-2 mb-3'>
+        <AwesomeIcon icon={chevronLeftIcon} className='text-teal-400 w-4 h-4' />
+        Back
+      </button>
+
+      <section className='relative h-full flex items-center justify-center mb-16'>
+        <div
+          onClick={previous}
+          className='absolute z-10 left-4 md:-left-10 top-1/2 cursor-pointer transform -translate-y-1/2 flex items-center justify-center bg-white/60 rounded-xl w-10 h-10'
+        >
+          <AwesomeIcon icon={chevronLeftIcon} className='text-teal-400' />
         </div>
-        <div className='col-span-12 sm:col-span-6 md:col-span-4'>
-          <div className='text-3xl font-Matter-Bold mb-1'>
-            {isLoading ? (
-              <LoadingImg h='36px' maxw='325.33px' w='100%' />
-            ) : (
-              dachshund?.attributes?.name
-            )}
+        <SingleItemCarousel
+          items={dachshund?.attributes.photos || [NoImgDog]}
+          setCurrentIndex={setCurrentIndex}
+          currentIndex={currentIndex}
+          totalItems={totalItems}
+        />
+        <div
+          onClick={next}
+          className='absolute z-10 right-4 md:-right-10 top-1/2 cursor-pointer transform -translate-y-1/2 flex items-center justify-center bg-white/60 rounded-xl w-10 h-10'
+        >
+          <AwesomeIcon icon={chevronRightIcon} className='text-teal-400' />
+        </div>
+      </section>
+      <section className='flex flex-col sm:flex-row gap-12 max-w-screen-md mx-auto mb-16'>
+        <div>
+          <div className='border-[1px] border-gray-200 rounded-md w-10 h-10 flex items-center justify-center'>
+            <AwesomeIcon icon={heartIcon} className='w-3 h-3 text-teal-400' />
           </div>
-          <div className='mb-2'>
-            {isLoading ? (
-              <LoadingImg h='48px' maxw='325.33px' w='100%' />
-            ) : (
-              <p className='mb-6 font-Matter-Regular'>
-                {dachshund?.attributes?.ageGroup} {dachshund?.attributes?.sex}{' '}
-                {dachshund?.attributes?.breedString}
-              </p>
-            )}
-          </div>
-          {isLoading ? (
-            <LoadingImg h='56px' maxw='325.33px' w='100%' />
-          ) : (
-            dogStatusId === '1' && (
+        </div>
+        <div className='flex flex-col'>
+          <div className='flex md:items-center flex-col md:flex-row md:justify-between mb-8'>
+            <h1 className='text-4xl text-charcoal font-QBold mb-3 md:mb-0'>
+              {dachshund?.attributes?.name}
+            </h1>
+            {dogStatusId === '1' && (
               <Link
-                className='text-[#fff] border-none text-3xl w-full flex justify-center items-center border-[2.5px] bg-teal-400 rounded-md py-2.5 duration-300 cursor-pointer hover:bg-teal-500 hover:text-white hover:no-underline font-Matter-Bold tracking-wider'
+                className='text-white font-QBook w-fit bg-teal-400 rounded-md py-3 px-7 duration-300 cursor-pointer hover:bg-teal-500'
                 to='/adopt'
                 type='button'
               >
-                ADOPT
+                Adopt
               </Link>
-            )
-          )}
-        </div>
-      </div>
-      <div className='my-12 w-full h-[0.5px] bg-gray-200'></div>
-      <div className='flex flex-col mt-8 mb-ml-16 gap-4 md:gap-12 md:flex-row'>
-        <div className='flex flex-col  w-full lg:w-1/2'>
-          <div className='font-Matter-Bold text-2xl mb-10'>
-            About{' '}
-            {isLoading ? (
-              <LoadingImg h='32px' maxw='488px' w='100%' />
-            ) : (
-              dachshund?.attributes?.name
             )}
           </div>
-          {isLoading ? (
-            <LoadingImg h='300px' maxw='488px' w='100%' />
-          ) : (
-            <p
-              className='mb-12 font-Matter-Regular'
-              dangerouslySetInnerHTML={{
-                __html: dachshund?.attributes?.descriptionHtml,
-              }}
-            ></p>
-          )}
-        </div>
-        <div className='flex flex-col w-full lg:w-1/2'>
-          <p className='font-Matter-Bold text-2xl mb-10'>Details</p>
-          <div className='grid grid-cols-3 gap-6'>
-            {data &&
-              dachshundDetailsGridData(data?.data).map((obj: any, i: number) => (
-                <div className='d-flex flex-column' key={i}>
-                  <p className='text-sm font-Matter-Regular'>{obj.title}</p>
-                  <p className='text-sm font-Matter-Bold'>{obj.textKey}</p>
-                </div>
-              ))}
+          <div className='grid grid-cols-3 md:grid-cols-4 gap-6'>
+            {dachshundDetailsGridData(dachshund?.attributes).map((obj: any, i: number) => (
+              <div className='flex flex-col' key={i}>
+                <p className='text-sm font-QLight mb-1'>{obj.title}</p>
+                <p className='text-sm font-QBook'>{obj.textKey}</p>
+              </div>
+            ))}
           </div>
         </div>
-      </div>
-      <BottomInfo />
+      </section>
+      <section className='max-w-screen-md mx-auto w-full'>
+        <h1 className='text-2xl text-charcoal font-QBold mb-5'>
+          {dachshund?.attributes?.ageGroup} {dachshund?.attributes?.sex}{' '}
+          {dachshund?.attributes?.breedString}
+        </h1>
+        <p
+          className='font-QLight'
+          dangerouslySetInnerHTML={{
+            __html: dachshund?.attributes?.descriptionHtml || '',
+          }}
+        ></p>
+      </section>
+      <section className='max-w-screen-md mx-auto w-full'>
+        <h1 className='text-charcoal font-QBold text-2xl mb-5'>
+          Adoption Fees, Transportation, and Health Certificate Costs
+        </h1>
+        <BottomInfo />
+      </section>
     </div>
   );
 };

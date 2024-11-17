@@ -24,7 +24,7 @@ const NavigationDrawerAccordion: FC<NavigationDrawerAccordionProps> = ({
         <div
           className={`${
             isOpen
-              ? `bg-[#323338] after:absolute after:left-0 after:w-0 after:h-0 after:border-t-[20px] after:border-b-[20px] after:border-l-[10px] after:border-t-transparent after:border-b-transparent after:border-l-[#62e638]`
+              ? `bg-[#323338] after:absolute after:left-0 after:w-0 after:h-0 after:border-t-[20px] after:border-b-[20px] after:border-l-[10px] after:border-t-transparent after:border-b-transparent after:border-l-teal-400`
               : ''
           } grid grid-cols-12 gap-2 items-center text-left h-full rounded-xl group-hover:bg-[#323338] -mx-4 pl-3`}
         >
@@ -60,7 +60,8 @@ const NavigationDrawerAccordion: FC<NavigationDrawerAccordionProps> = ({
           className={`absolute top-0 left-10 w-[2px] bg-[#6c6c75] z-20`}
           style={{
             height: `${
-              (item.links.length === 5 ? 50 : item.links.length === 4 ? 47.5 : 45) * item.links.length
+              (item.links.length === 5 ? 50 : item.links.length === 4 ? 47.5 : 45) *
+              item.links.length
             }px`,
           }}
         ></div>

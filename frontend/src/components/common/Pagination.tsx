@@ -1,5 +1,5 @@
-import { Fragment, useRef, useState } from 'react';
-import Draggable from '../../utils/hooks/Draggable';
+import { useRef, useState } from 'react';
+import Draggable from './Draggable';
 
 const usePagination = (totalItems: number) => {
   const itemsPerPage = 20;
@@ -34,8 +34,7 @@ const usePagination = (totalItems: number) => {
 };
 
 const Pagination = ({ render, totalItems }: any) => {
-  const { currentPage, nextPage, prevPage, goToPage, totalPages } =
-    usePagination(totalItems ?? 0);
+  const { currentPage, nextPage, prevPage, goToPage, totalPages } = usePagination(totalItems ?? 0);
   const startIndex = (currentPage - 1) * 20;
   const endIndex = startIndex + 20;
   const scrollRef = useRef(null) as any;
@@ -50,7 +49,9 @@ const Pagination = ({ render, totalItems }: any) => {
         <button
           key={i}
           onClick={() => goToPage(i + 1)}
-          className={`font-Matter-Regular text-gray-800 mr-1 w-8 h-8 border border-gray-100 hover:bg-gray-100 ${i + 1 === currentPage ? 'bg-gray-200' : ''}`}
+          className={`font-Matter-Regular text-gray-800 mr-1 w-8 h-8 border border-gray-100 hover:bg-gray-100 ${
+            i + 1 === currentPage ? 'bg-gray-200' : ''
+          }`}
         >
           {i + 1}
         </button>
@@ -59,16 +60,18 @@ const Pagination = ({ render, totalItems }: any) => {
 
     // Render the "..." if there are more than 10 pages
     if (totalPages > 10) {
-      buttons.push(<span key="ellipsis">...</span>);
+      buttons.push(<span key='ellipsis'>...</span>);
     }
 
     // Render the last page button
     if (totalPages > 40) {
       buttons.push(
         <button
-          key="lastPage"
+          key='lastPage'
           onClick={() => goToPage(totalPages)}
-          className={`font-Matter-Regular text-gray-800 mr-1 w-8 h-8 border border-gray-100 hover:bg-gray-100 ${totalPages === currentPage ? 'bg-gray-200' : ''}`}
+          className={`font-Matter-Regular text-gray-800 mr-1 w-8 h-8 border border-gray-100 hover:bg-gray-100 ${
+            totalPages === currentPage ? 'bg-gray-200' : ''
+          }`}
         >
           {totalPages}
         </button>
@@ -80,10 +83,12 @@ const Pagination = ({ render, totalItems }: any) => {
 
   return (
     <>
-      <Draggable scrollRef={scrollRef}>
-        {render(startIndex, endIndex)}
-      </Draggable>
-      <div className={`${totalItems <= 20 ? 'hidden' : 'block'} centered-content flex justify-center items-center w-full mt-5 mb-3.5`}>
+      <Draggable scrollRef={scrollRef}>{render(startIndex, endIndex)}</Draggable>
+      <div
+        className={`${
+          totalItems <= 20 ? 'hidden' : 'block'
+        } centered-content flex justify-center items-center w-full mt-5 mb-3.5`}
+      >
         <button
           onClick={prevPage}
           disabled={currentPage === 1}

@@ -23,7 +23,7 @@ router
   .route('/anon-status-shipping-address/details/:id?')
   .get(protect, fetchUserAnonStatusAndShippingAddressDetails);
 
-router.route('/shipping-address').get(protect, getUserShippingAddress);
+router.route('/shipping-address/:userId?').get(getUserShippingAddress);
 router.route('/personal-data').get(protect, fetchPersonalData);
 router.route('/role/:id').put(protect, admin, updateUserRole);
 router

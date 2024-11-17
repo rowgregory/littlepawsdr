@@ -12,7 +12,7 @@ const Toast2 = () => {
     if (toast.message) {
       const timer = setTimeout(() => {
         dispatch(closeToast());
-      }, 4000);
+      }, 5000);
       return () => clearTimeout(timer);
     }
   }, [dispatch, toast]);
@@ -20,12 +20,12 @@ const Toast2 = () => {
   if (toast.success) {
     return (
       <T
-        className={`slide-in-from-right fixed z-[5002] top-20 right-4 shadow-xl rounded-lg bg-[#fff] border-[1px] border-green-500`}
+        className={`slide-in-from-right fixed z-[5002] px-5 py-2 top-20 right-4 shadow-xl rounded-lg bg-[#fff] border-[3px] border-green-600`}
         show={toast.open}
       >
         <T.Body className='text-gray-800 font-Matter-Regular text-sm flex items-center w-fit '>
           <i
-            className={`fa-check fa-solid fa-xs border-[1px] rounded-full h-4 w-4 flex items-center justify-center border-green-500 text-green-500 mr-2`}
+            className={`fa-check fa-solid fa-xs border-[1px] rounded-full h-4 w-4 flex items-center justify-center border-green-600 text-green-600 mr-2`}
           ></i>
           {toast.message}
         </T.Body>
@@ -34,7 +34,7 @@ const Toast2 = () => {
   } else if (toast.success === false) {
     return (
       <T
-        className={`slide-in-from-right fixed z-[5002] top-20 right-4 shadow-xl rounded-lg bg-[#fff] border-[1px] border-red-500`}
+        className={`slide-in-from-right fixed z-[5002] px-5 py-2 top-20 right-4 shadow-xl rounded-lg bg-[#fff] border-[1px] border-red-500`}
         show={toast.open}
       >
         <T.Body className='text-gray-800 font-Matter-Regular text-sm flex items-center w-fit '>

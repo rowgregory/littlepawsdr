@@ -2,10 +2,11 @@ import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import MagnifyingGlass from '../../../../components/svg/MagnifyingGlass';
 import { useSelector } from 'react-redux';
 import { Fragment, useCallback, useRef, useState } from 'react';
-import useOutsideDetect from '../../../../utils/useOutsideDetect';
+import useOutsideDetect from '../../../../hooks/useOutsideDetect';
 import { RootState } from '../../../../redux/toolkitStore';
-import DeleteModal, { useDeleteModal } from '../../../../components/DeleteModal';
+import DeleteModal from '../../../../components/DeleteModal';
 import { useDeleteAuctionItemMutation } from '../../../../redux/services/campaignApi';
+import useDeleteModal from '../../../../hooks/useDeleteModal';
 
 const AuctionItems = () => {
   const navigate = useNavigate();

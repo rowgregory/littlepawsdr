@@ -1,6 +1,6 @@
-import { Modal } from 'react-bootstrap';
 import DayGram from '../../components/assets/littlepawsdr_qr 3.png';
 import styled, { keyframes } from 'styled-components';
+import Modal from '../common/Modal';
 
 const InstagramBtn = styled.div`
   width: 200px;
@@ -38,7 +38,7 @@ const InstaArrow = styled.i`
 
 const InstagramModal = ({ show, handleClose }: any) => {
   return (
-    <Modal show={show} centered onHide={handleClose}>
+    <Modal show={show} onClose={handleClose}>
       <div className='bg-white p-6 rounded-xl flex flex-col justify-center items-center'>
         <InstagramBtn
           onClick={() => window.open('https://www.instagram.com/littlepawsdr/?hl=en', '_blank')}

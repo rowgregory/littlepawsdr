@@ -1,4 +1,3 @@
-import { Modal } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import { RootState, useAppDispatch } from '../../redux/toolkitStore';
 import {
@@ -10,6 +9,7 @@ import {
   closeAuctionModal,
   saveHasHandledAuctionModalToLocalStorage,
 } from '../../redux/features/campaign/campaignSlice';
+import Modal from '../common/Modal';
 
 const LiveAuctionModal = () => {
   const dispatch = useAppDispatch();
@@ -20,8 +20,8 @@ const LiveAuctionModal = () => {
   useFetchLiveCampaignQuery();
 
   return (
-    <Modal show={isAuctionModalOpen} onHide={setClose} centered>
-      <div className='bg-white px-8 py-12 rounded-xl relative flex flex-col items-center justify-center'>
+    <Modal show={isAuctionModalOpen} onClose={setClose}>
+      <div className='bg-white py-4 rounded-xl relative flex flex-col items-center justify-center'>
         <div className='flex items-center p-6'>
           <i className={`fa-solid fa-gavel text-xl ${campaign?.campaign?.themeColor?.text}`}></i>
           <p className='font-Matter-Medium text-4xl mx-2 text-center w-fit'>
@@ -31,10 +31,6 @@ const LiveAuctionModal = () => {
             className={`fa-solid fa-gavel text-xl rotate-[270deg] ${campaign?.campaign?.themeColor?.text}`}
           ></i>
         </div>
-        <i
-          onClick={setClose}
-          className='fa-solid fa-xmark absolute top-2 right-2 cursor-pointer'
-        ></i>
         <p className='font-Matter-Medium mb-5 text-center'>
           🐾 Don’t miss out—place your bid now to help adorable dachshunds find their forever homes!
         </p>

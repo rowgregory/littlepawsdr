@@ -72,12 +72,19 @@ const getUser = asyncHandler(async (req, res) => {
 
 /**
  @desc    Get user shipping address
- @route   GET /api/users/:id/shipping-address
- @access  Private
+ @route   GET /api/users/shipping-address
+ @access  Public
 */
 const getUserShippingAddress = asyncHandler(async (req, res) => {
   try {
-    const user = await User.findById(req.user._id).select('shippingAddress');
+    if (req.params.userId === undefined) {
+      return res.json({ hasShippingAddress: false });
+    }
+    const user = await User.findById(req.params.userId).select('shippingAddress');
+
+    if (!user) {
+      return res.json({ hasShippingAddress: false });
+    }
 
     const isValid = validateShippingAddress(user.shippingAddress);
     if (isValid) {

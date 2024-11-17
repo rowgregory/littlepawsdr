@@ -89,6 +89,16 @@ interface PersonalizeEcardFormProps {
   personalizeCallback: (e: FormEvent<HTMLFormElement> | MouseEvent<HTMLButtonElement>) => void;
 }
 
+interface ApplicantInfoFormProps {
+  onSubmit: (e: FormEvent<HTMLFormElement>) => void;
+  handleInput: (e: ChangeEvent<HTMLInputElement>) => void;
+  handleSelect: (e: ChangeEvent<HTMLSelectElement>) => void;
+  inputs: Inputs;
+  errors: Errors;
+  openBasic: boolean;
+  isLoading: boolean;
+}
+
 export type {
   Inputs,
   Errors,
@@ -101,4 +111,5 @@ export type {
   OneTimeStepThreeProps,
   InputsContainerProps,
   PersonalizeEcardFormProps,
+  ApplicantInfoFormProps,
 };

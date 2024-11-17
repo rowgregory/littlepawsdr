@@ -1,61 +1,38 @@
-import styled from 'styled-components';
-import React from 'react';
+import { FC } from 'react';
+import { ProgressTrackerProps } from '../../../types/adopt-types';
 
-const Step = styled.div<{ step: string }>`
-  height: 27px;
-  width: 27px;
-  border-radius: 50%;
-  background: ${({ step }) => (step === 'true' ? '#4cb71a' : '#eeeeee')};
-  margin-bottom: 4px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 12px;
-  color: #fff;
-  z-index: 10;
-`;
+const styles = (step: boolean) => ({
+  line: `h-[3px] w-1/3 absolute top-1/2 -translate-1/2 ${step ? 'bg-teal-400' : 'bg-gray-200'}`,
+  p: `absolute text-sm font-QBook top-8`,
+  step: `h-7 w-7 rounded-full flex items-center justify-center text-xs text-white z-10 ${
+    step ? 'bg-teal-400' : 'bg-gray-200'
+  }`,
+});
 
-const Line = styled.div<{ step: string }>`
-  height: 3px;
-  background: ${({ step }) => (step === 'true' ? '#4cb71a' : '#eeeeee')};
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-`;
-
-interface ProgressTrackerProps extends React.HTMLAttributes<HTMLDivElement> {
-  step: {
-    step1: boolean;
-    step2: boolean;
-    step3: boolean;
-    step4: boolean;
-  }
-}
-
-const ProgressTracker = (props: ProgressTrackerProps) => {
-  const { step } = props as any;
-
+const ProgressTracker: FC<ProgressTrackerProps> = ({ step: { step1, step2, step3, step4 } }) => {
   return (
-    <div className='max-w-[400px] w-full flex justify-between items-center relative mx-auto mt-6 mb-10 px-[20px]'>
-      <Step step={step.step1.toString()}>
-        {step.step2 ? <i className='fas fa-check text-white'></i> : '1'}
-      </Step>
-      <p className='absolute text-sm font-Matter-Light top-[29px] left-[13px]'>Terms</p>
-      <Line step={step.step2.toString()} style={{ left: '10%', width: '25%' }} />
-      <Step step={step.step2.toString()}>
-        {step.step3 ? <i className='fas fa-check text-white'></i> : '2'}
-      </Step>
-      <p className='absolute text-sm font-Matter-Light top-[29px] left-[101px]'>Applicant Info</p>
-      <Line step={step.step3.toString()} style={{ left: '38%', width: '25%' }} />
-      <Step step={step.step3.toString()}>
-        {step.step4 ? <i className='fas fa-check text-white'></i> : '3'}
-      </Step>
-      <p className='absolute text-sm font-Matter-Light top-[29px] right-[116px]'>Payment</p>
-      <Line step={step.step4.toString()} style={{ left: '66%', width: '25%' }} />
-      <Step step={step.step4.toString()}>
-        {step.step4 ? <i className='fas fa-check text-white'></i> : '4'}
-      </Step>
-      <p className='absolute text-sm font-Matter-Light top-[29px] right-[-3px]'>Application</p>
+    <div className='sm:px-3'>
+      <div className='px-2.5 max-w-screen-sm w-full flex justify-between items-center relative mx-auto mt-6 mb-10'>
+        <span className={styles(step1).step}>
+          {step2 ? <i className='fas fa-check text-white'></i> : '1'}
+        </span>
+        <p className={`${styles(step1).p} left-0`}>Terms</p>
+        <div className={`${styles(step2).line} left-[5%]`} />
+        <span className={styles(step2).step}>
+          {step3 ? <i className='fas fa-check text-white'></i> : '2'}
+        </span>
+        <p className={`${styles(step2).p} left-[32%] sm:left-[32.5%]`}>Info</p>
+        <div className={`${styles(step3).line} left-[35%]`} />
+        <span className={styles(step3).step}>
+          {step4 ? <i className='fas fa-check text-white'></i> : '3'}
+        </span>
+        <p className={`${styles(step3).p} right-[26%] sm:right-[30%]`}>Payment</p>
+        <div className={`${styles(step4).line} left-[63%]`} />
+        <span className={styles(step4).step}>
+          {step4 ? <i className='fas fa-check text-white'></i> : '4'}
+        </span>
+        <p className={`${styles(step4).p} right-0`}>Access</p>
+      </div>
     </div>
   );
 };

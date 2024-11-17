@@ -21,77 +21,6 @@
   }
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Oswald&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Maven+Pro:wght@900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=EB+Garamond&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Paytone+One&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Rowdies&display=swap');
-
-@font-face {
-  font-family: 'Hyperspace'; /* Choose a name for your font */
-  src: url('./components/assets/fonts/Hyperspace.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
-@font-face {
-  font-family: 'Hyperspace-Bold'; /* Choose a name for your font */
-  src: url('./components/assets/fonts/HyperspaceBold.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
-@font-face {
-  font-family: 'Rust'; /* Choose a name for your font */
-  src: url('./components/assets/fonts/introheadr-base.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
-@font-face {
-  font-family: 'Matter-Medium'; /* Choose a name for your font */
-  src: url('./components/assets/fonts/MatterMedium.otf') format('opentype');
-  font-weight: normal;
-  font-style: normal;
-}
-@font-face {
-  font-family: 'Matter-Regular'; /* Choose a name for your font */
-  src: url('./components/assets/fonts/MatterRegular.otf') format('opentype');
-  font-weight: normal;
-  font-style: normal;
-}
-@font-face {
-  font-family: 'Matter-SemiBold'; /* Choose a name for your font */
-  src: url('./components/assets/fonts/MatterSemiBold.otf') format('opentype');
-  font-weight: normal;
-  font-style: normal;
-}
-@font-face {
-  font-family: 'Matter-Light'; /* Choose a name for your font */
-  src: url('./components/assets/fonts/MatterLight.otf') format('opentype');
-  font-weight: normal;
-  font-style: normal;
-}
-@font-face {
-  font-family: 'Matter-Bold'; /* Choose a name for your font */
-  src: url('./components/assets/fonts/MatterBold.otf') format('opentype');
-  font-weight: normal;
-  font-style: normal;
-}
-@font-face {
-  font-family: 'Museo-Slab-1000'; /* Choose a name for your font */
-  src: url('./components/assets/fonts/Museo_Slab_1000.otf') format('opentype');
-  font-weight: normal;
-  font-style: normal;
-}
-@font-face {
-  font-family: 'Museo-Slab-700'; /* Choose a name for your font */
-  src: url('./components/assets/fonts/Museo_Slab_700.otf') format('opentype');
-  font-weight: normal;
-  font-style: normal;
-}
-
-@import '~react-image-gallery/styles/css/image-gallery.css';
-
 html,
 body,
 * {
@@ -123,14 +52,6 @@ tr:first-child td:last-child {
   border-bottom-right-radius: 5px !important;
 }
 
-.image-gallery-slide img {
-  width: 100%;
-  aspect-ratio: 16/9;
-  background: rgb(238, 238, 238);
-  object-fit: cover;
-  object-position: center center;
-}
-
 .dashboard-sidebar-links.isActive:after {
   clip-path: polygon(100% 100%, 0% 100%, 100% 0%);
   background-image: linear-gradient(
@@ -153,10 +74,6 @@ tr:first-child td:last-child {
   background: linear-gradient(86deg, rgba(183, 217, 43, 1) 66%, rgba(183, 214, 49, 1) 100%);
 }
 
-.modal-content {
-  border-radius: 12px !important;
-}
-
 input[type='radio'].personalize-ecard {
   accent-color: #9863a7 !important;
 }
@@ -175,48 +92,17 @@ input[type='radio'].personalize-ecard {
   border: 2px solid transparent;
   border-bottom-color: #75767b;
   top: -10px;
-  left: 8px;
+  left: 12px;
   border-radius: 50%;
   transform: rotate(45deg);
 }
 
-.shine-button::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0%;
-  width: 20%;
-  height: 100%;
-  background: linear-gradient(
-    120deg,
-    rgba(255, 255, 255, 0.6) 0%,
-    rgba(255, 255, 255, 0.8) 20%,
-    rgba(255, 255, 255, 0.6) 40%
-  );
-  transform: skewX(-30deg);
-  animation: shine 3s infinite;
+ul {
+  list-style-type: disc;
+  padding-left: 0.5rem;
 }
 
-@keyframes shine {
-  0% {
-    left: -100%;
-  }
-  100% {
-    left: 120%;
-  }
-}
-
-@keyframes slideInFromRight {
-  0% {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-  100% {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-
-.slide-in-from-right {
-  animation: slideInFromRight 0.4s ease-out;
+input#image-file.form-control-file,
+input#multiple-images.form-control-file {
+  display: none;
 }

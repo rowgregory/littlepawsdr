@@ -1,5 +1,5 @@
-import { Modal } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import Modal from '../common/Modal';
 
 const AuctionItemWinnerSuccessPaymentModal = ({
   campaign,
@@ -9,7 +9,7 @@ const AuctionItemWinnerSuccessPaymentModal = ({
   winningBid: any;
 }) => {
   return (
-    <Modal show={campaign?.success} centered>
+    <Modal show={campaign?.success} onClose={() => {}}>
       <div className='bg-white p-6 rounded-xl'>
         <div className='flex flex-col justify-center items-center'>
           <i className='fa-solid fa-check text-green-500 rounded-full flex items-center justify-center h-8 w-8 border-[2px] border-green-500 mb-3'></i>

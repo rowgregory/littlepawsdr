@@ -17,6 +17,8 @@ const cartRemoveItem = (item: any, state: any) => {
 
   const isPhysicalProduct = cartItems?.some((item: any) => item.isPhysicalProduct);
 
+  localStorage.setItem('cartData', JSON.stringify(cartItems));
+
   state.loading = false;
   state.cartItem = {};
   state.cartItems = cartItems;

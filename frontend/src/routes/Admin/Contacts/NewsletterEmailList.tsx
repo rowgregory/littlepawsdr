@@ -1,5 +1,5 @@
 import { Fragment, useCallback, useRef, useState } from 'react';
-import DeleteModal, { useDeleteModal } from '../../../components/DeleteModal';
+import DeleteModal from '../../../components/DeleteModal';
 import {
   useDeleteNewsletterEmailMutation,
   useGetNewsletterEmailsQuery,
@@ -7,8 +7,9 @@ import {
 import GreenRotatingTransparentCircle from '../../../components/Loaders/GreenRotatingTransparentCircle';
 import MagnifyingGlass from '../../../components/svg/MagnifyingGlass';
 import Pagination from '../../../components/common/Pagination';
-import useOutsideDetect from '../../../utils/useOutsideDetect';
+import useOutsideDetect from '../../../hooks/useOutsideDetect';
 import { formatDateWithTimezone } from '../../../utils/dateFunctions';
+import useDeleteModal from '../../../hooks/useDeleteModal';
 
 const NewsletterEmailList = () => {
   const [id, setId] = useState('');
@@ -60,8 +61,9 @@ const NewsletterEmailList = () => {
         loading={loadingDelete}
         hook={{ openModal, show, closeModal }}
       />
-      <div className='font-Matter-Medium text-2xl mb-3.5'>
-        Newsletter Emails<span className='ml-1'>({newsletterEmails?.length})</span>
+      <div className='font-Matter-Medium text-charcoal text-2xl mb-3.5'>
+        Newsletter Emails
+        <span className='ml-1 text-sm'>(&nbsp;{newsletterEmails?.length}&nbsp;)</span>
       </div>
       <div className='grid grid-cols-12 h-10 justify-between'>
         <div className='col-span-7 md:col-span-6 flex items-center font-Matter-Light border border-grey-200 rounded-md bg-white py-2 px-[16px] '>

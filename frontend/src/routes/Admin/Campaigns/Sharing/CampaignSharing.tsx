@@ -6,11 +6,11 @@ import { RootState, useAppDispatch } from '../../../../redux/toolkitStore';
 import { useUpdateCampaignMutation } from '../../../../redux/services/campaignApi';
 import { resetSuccess } from '../../../../redux/features/campaign/campaignSlice';
 import TailwindSpinner from '../../../../components/Loaders/TailwindSpinner';
-import useForm from '../../../../utils/hooks/useForm';
+import useForm from '../../../../hooks/useForm';
 
 const sectionLoadingStates = {
   general: false,
-  copy: false
+  copy: false,
 };
 
 const CampaignSharing = () => {
@@ -41,24 +41,27 @@ const CampaignSharing = () => {
       )
       .catch(() => setLoading({ ...sectionLoadingStates }));
   };
-  const BASE_URL = 'https://www.littlepawsdr.org'
+  const BASE_URL = 'https://www.littlepawsdr.org';
   const copyLink = () => {
     setLoading((prev: any) => ({ ...prev, copy: true }));
-    navigator.clipboard.writeText(`${BASE_URL}/campaigns/${inputs.customCampaignLink}`).then(async () => {
-      setTimeout(() => setLoading((prev: any) => ({ ...prev, copy: false })), 3000)
-    });
+    navigator.clipboard
+      .writeText(`${BASE_URL}/campaigns/${inputs.customCampaignLink}`)
+      .then(async () => {
+        setTimeout(() => setLoading((prev: any) => ({ ...prev, copy: false })), 3000);
+      });
   };
-
 
   return (
     <div className='bg-white border-[1px] border-gray-200 rounded-xl w-full p-8 grid grid-cols-12'>
       <div className='col-span-full md:col-span-4'>
         <p className='font-Matter-Medium text-lg'>General</p>
-        <p className='font-Matter-Light text-sm tracking-wide'>Choose a custom sharing link to personalize your campaign.</p>
+        <p className='font-Matter-Light text-sm tracking-wide'>
+          Choose a custom sharing link to personalize your campaign.
+        </p>
       </div>
       <div className='col-span-full md:col-span-8 md:col-start-6'>
         <div className='flex flex-col'>
-          <form className='d-flex flex-column'>
+          <form className='flex flex-col'>
             <div className='flex flex-col w-full mb-2'>
               <label className='font-Matter-Medium mb-0'>Custom campaign link*</label>
               <div className='mb-3 flex items-center h-full'>
@@ -73,7 +76,14 @@ const CampaignSharing = () => {
                     className='w-full focus:outline-none rounded-tr-lg rounded-br-lg font-Matter-Regular'
                     onChange={handleInput}
                   />
-                  <i onClick={() => copyLink()} className={`${loading.copy ? `fas fa-check ${campaign?.campaign?.themeColor?.text}` : 'fas fa-copy'} cursor-pointer`}></i>
+                  <i
+                    onClick={() => copyLink()}
+                    className={`${
+                      loading.copy
+                        ? `fas fa-check ${campaign?.campaign?.themeColor?.text}`
+                        : 'fas fa-copy'
+                    } cursor-pointer`}
+                  ></i>
                 </div>
               </div>
             </div>
@@ -99,11 +109,18 @@ const CampaignSharing = () => {
       <div className='w-full h-px bg-slate-100 my-5 col-span-12'></div>
       <div className='col-span-full md:col-span-4'>
         <p className='font-Matter-Medium text-lg'>Scan-to-donate</p>
-        <p className='font-Matter-Light text-sm tracking-wide'>Scan this QR code to be linked directly to your campaign page.</p>
+        <p className='font-Matter-Light text-sm tracking-wide'>
+          Scan this QR code to be linked directly to your campaign page.
+        </p>
       </div>
       <div className='col-span-full md:col-span-8 md:col-start-6'>
         <div className='h-auto max-w-36 w-full'>
-          <QRCode size={256} value={`${BASE_URL}/campaigns/${inputs?.customCampaignLink}`} viewBox={`0 0 256 256`} className='h-auto max-w-full w-full' />
+          <QRCode
+            size={256}
+            value={`${BASE_URL}/campaigns/${inputs?.customCampaignLink}`}
+            viewBox={`0 0 256 256`}
+            className='h-auto max-w-full w-full'
+          />
         </div>
       </div>
     </div>

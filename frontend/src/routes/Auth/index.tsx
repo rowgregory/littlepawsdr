@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Login from './Login';
 import Register from './Register';
 import EmailConfirmation from './EmailConfirmation';
@@ -7,10 +7,8 @@ import ResetPassword from './ResetPassword';
 import ForgotPassword from './ForgotPassword';
 import ResetPasswordSuccess from './ResetPasswordSuccess';
 import AuctionRegister from './AuctionRegister';
-import useScrollToTop from '../../utils/hooks/useScrollToTop';
 
 const AuthRoutes: FC = () => {
-  useScrollToTop();
   return (
     <Routes>
       <Route path='/login' element={<Login />} />
@@ -23,7 +21,7 @@ const AuthRoutes: FC = () => {
       <Route path='/reset-password/success' element={<ResetPasswordSuccess />} />
       <Route path='/forgot-password' element={<ForgotPassword />} />
       <Route path='/auction/register' element={<AuctionRegister />} />
-      {/* <Route path='*' element={<Navigate to='/404' replace />} /> */}
+      <Route path='*' element={<Navigate to='/404' replace />} />
     </Routes>
   );
 };

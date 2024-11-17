@@ -51,7 +51,7 @@ export const PasswordRequirements = ({ validations, open }: any) => {
   const color = useLocation().pathname === '/settings/security' ? '#171919' : '#fff';
   return (
     <Accordion toggle={open} maxheight='110px' style={{ padding: '0 0.5rem' }}>
-      <div className='d-flex align-items-start flex-column'>
+      <div className='flex items-start flex-col'>
         <p className='text-sm' style={{ color }}>
           {validations[0] ? (
             <i className='fas fa-check' style={{ color: '#77b300' }}></i>

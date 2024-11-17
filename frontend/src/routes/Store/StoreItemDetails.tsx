@@ -6,7 +6,6 @@ import { useParams } from 'react-router-dom';
 import { useGetProductQuery } from '../../redux/services/productApi';
 import { addToCart, toggleCartDrawer } from '../../redux/features/cart/cartSlice';
 import { useAppDispatch } from '../../redux/toolkitStore';
-import { scrollToTop } from '../../utils/scrollToTop';
 import { Link } from 'react-router-dom';
 
 const StoreItemDetails = () => {
@@ -19,7 +18,6 @@ const StoreItemDetails = () => {
   const product = data?.product;
 
   useEffect(() => {
-    scrollToTop();
     if (!product) return;
 
     const objIndex = product?.sizes?.findIndex((obj: any) => obj?.size === size);
@@ -49,7 +47,7 @@ const StoreItemDetails = () => {
   };
 
   return (
-    <div className='pt-24 px-3 max-w-screen-xl w-full mx-auto'>
+    <div className='py-24 px-3 max-w-screen-xl w-full mx-auto'>
       <div className='flex items-center mb-12 '>
         <Link
           to='/store'
@@ -59,7 +57,7 @@ const StoreItemDetails = () => {
           <p>Go Back</p>
         </Link>
       </div>
-      <div className='grid grid-cols-12 gap-8 mt-3'>
+      <div className='grid grid-cols-12 gap-y-8 sm:gap-8 mt-3'>
         <MerchImages loading={isLoading} product={product} />
         <MerchNamePriceDescription
           product={product}

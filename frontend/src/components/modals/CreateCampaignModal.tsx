@@ -1,4 +1,4 @@
-import { Modal } from 'react-bootstrap';
+import Modal from '../common/Modal';
 import TailwindSpinner from '../Loaders/TailwindSpinner';
 
 const CreateCampaignModal = ({
@@ -10,12 +10,12 @@ const CreateCampaignModal = ({
   loadingCreate,
 }: any) => {
   return (
-    <Modal show={show} onHide={handleClose} centered>
+    <Modal show={show} onClose={handleClose}>
       <div className='bg-white p-6 rounded-xl flex flex-col'>
-        <Modal.Title onClick={handleClose} className='flex items-center mb-4 cursor-pointer w-fit'>
+        <div onClick={handleClose} className='flex items-center mb-4 cursor-pointer w-fit'>
           <i className='fa-solid fa-arrow-left mr-2 text-gray-300 text-sm'></i>
           <p className='text-gray-400 text-sm'>Start Over</p>
-        </Modal.Title>
+        </div>
         <p className='text-sm font-Matter-Regular'>Campaign Title</p>
         <form onSubmit={handleCreateCampaign}>
           <input

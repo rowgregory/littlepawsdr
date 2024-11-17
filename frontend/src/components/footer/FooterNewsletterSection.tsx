@@ -1,0 +1,81 @@
+import { FormEvent, useState } from 'react';
+import useForm from '../../hooks/useForm';
+import { useCreateNewsletterEmailMutation } from '../../redux/services/newsletterEmailApi';
+import TailwindSpinner from '../Loaders/TailwindSpinner';
+import { openToast } from '../../redux/features/toastSlice';
+import { useAppDispatch } from '../../redux/toolkitStore';
+import { validateEmailRegex } from '../../utils/regex';
+
+const FooterNewsletterSection = () => {
+  const dispatch = useAppDispatch();
+  const { inputs, handleInput } = useForm(['email']);
+  const [createNewsletterEmail, { isLoading }] = useCreateNewsletterEmailMutation();
+  const [success, setSuccess] = useState<boolean>(false);
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+
+    if (validateEmailRegex.test(inputs.email)) {
+      await createNewsletterEmail({ email: inputs.email })
+        .unwrap()
+        .then(() => {
+          setSuccess(true);
+          dispatch(
+            openToast({ message: 'Email submitted for newsletter', success: true, open: true })
+          );
+        })
+        .catch(() =>
+          dispatch(openToast({ message: 'Error, please try again', success: false, open: true }))
+        );
+    } else {
+      dispatch(openToast({ message: 'Invalid email', success: false, open: true }));
+    }
+  };
+
+  return (
+    <div className='grid grid-cols-12 col-span-9 bg-[#1e1e29] rounded-2xl w-full p-4 sm:p-10  text-white items-center'>
+      <div className='col-span-12 sm:col-span-6'>
+        <h5 className='text-lg mb-3 font-QBold text-center sm:text-left text-white'>
+          Join, Support, Rescue
+        </h5>
+        <p className='font-QLight text-sm mb-6 sm:mb-0 text-white'>
+          Stay updated on rescues, events, and <br /> dachshund adoption opportunities!
+        </p>
+      </div>
+
+      {success ? (
+        <div className='col-span-12 sm:col-span-6 flex items-center'>
+          <p className='text-white font-QBook'>
+            Thank you for subscribing! You’re now part of the Little Paws family!
+          </p>
+        </div>
+      ) : (
+        <form
+          onSubmit={handleSubmit}
+          className='col-span-12 sm:col-span-6 flex items-center gap-1.5 sm:gap-3'
+        >
+          <input
+            name='email'
+            type='text'
+            className='rounded-xl focus:outline-none text-charcoal p-3 w-full font-QBook placeholder:font-QBook'
+            onChange={handleInput}
+            value={inputs.email || ''}
+            placeholder='Enter email here!'
+          />
+          <button
+            type='submit'
+            className='h-12 max-w-[56px] w-full rounded-xl bg-teal-400 text-white flex items-center justify-center'
+          >
+            {isLoading ? (
+              <TailwindSpinner color='fill-[#fff]' />
+            ) : (
+              <i className='fas fa-paper-plane fa-xs' />
+            )}
+          </button>
+        </form>
+      )}
+    </div>
+  );
+};
+
+export default FooterNewsletterSection;

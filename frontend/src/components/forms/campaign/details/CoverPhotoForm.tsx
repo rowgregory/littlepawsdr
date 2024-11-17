@@ -1,4 +1,5 @@
-import { Button, Form, FormFile } from 'react-bootstrap';
+import FileInput from '../../../common/FileInput';
+import Switch from '../../../common/Switch';
 import TailwindSpinner from '../../../Loaders/TailwindSpinner';
 import { Fragment } from 'react';
 
@@ -12,7 +13,7 @@ const CoverPhotoForm = ({
 }: any) => {
   return (
     <form className='flex flex-col'>
-      <FormFile
+      <FileInput
         id='image-file'
         label={
           <div className='w-64 h-64 aspect-square rounded-xl border-dashed border-2 border-gray-200 flex flex-col items-center justify-center p-4 cursor-pointer'>
@@ -35,32 +36,27 @@ const CoverPhotoForm = ({
           </div>
         }
         onChange={editPhotoHandler}
-      ></FormFile>
+      />
       {inputs.coverPhoto && (
-        <Button
-          variant='danger'
+        <button
           onClick={(e: any) =>
             genericUpdateCampaign(e, 'cover-photo', {
               coverPhoto: '',
               coverPhotoName: '',
             })
           }
-          className='bg-red-500 text-white font-Matter-Medium w-fit rounded-lg'
+          className='bg-red-500 mt-2 px-3 py-1.5 text-white font-Matter-Medium w-fit rounded-lg'
         >
           Remove cover photo
-        </Button>
+        </button>
       )}
       <div className='flex justify-between items-center w-full h-6 mt-2 my-3'>
-        <p className=' font-Matter-Medium'>Maintain aspect ratio</p>
-        <Form.Group controlId='maintainAspectRatio' className='mb-0'>
-          <Form.Check
-            className='auction'
-            type='switch'
-            checked={inputs.maintainAspectRatio || false}
-            onChange={handleSwitch}
-            name='maintainAspectRatio'
-          ></Form.Check>
-        </Form.Group>
+        <p className='font-Matter-Medium'>Maintain aspect ratio</p>
+        <Switch
+          name='maintainAspectRatio'
+          checked={inputs.maintainAspectRatio || false}
+          onChange={handleSwitch}
+        ></Switch>
       </div>
       <button
         className='mt-4 flex justify-center items-center px-3 py-2 bg-yellow-to-green text-white w-16 h-10 rounded-lg font-Matter-Regular cursor-pointer'

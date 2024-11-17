@@ -11,7 +11,7 @@ const getAllWelcomeWienerDogs = async (req, res) => {
   try {
     const welcomeWieners = await WelcomeWienerDog.find({}).populate({
       path: 'associatedProducts',
-      select: 'name',
+      select: 'name price icon',
       model: 'WelcomeWienerProduct',
     });
 
@@ -80,9 +80,7 @@ const createWelcomeWienerDog = async (req, res) => {
       images,
     });
 
-    res
-      .status(201)
-      .json({ message: 'Welcome Wiener created', sliceName: 'welcomeWienerApi' });
+    res.status(201).json({ message: 'Welcome Wiener created', sliceName: 'welcomeWienerApi' });
   } catch (err) {
     await Error.create({
       functionName: 'CREATE_WELCOME_WIENER_DOG_PRIVATE_ADMIN',
@@ -113,9 +111,7 @@ const updateWelcomeWienerDog = async (req, res) => {
       { displayUrl, name, bio, age, associatedProducts, images },
       { new: true }
     );
-    res
-      .status(200)
-      .json({ message: 'Welcome Wiener updated', sliceName: 'welcomeWienerApi' });
+    res.status(200).json({ message: 'Welcome Wiener updated', sliceName: 'welcomeWienerApi' });
   } catch (err) {
     await Error.create({
       functionName: 'UPDATE_WELCOME_WIENER_DOG_PRIVATE_ADMIN',
@@ -173,9 +169,9 @@ const toggleWelcomeWienerDog = async (req, res) => {
   try {
     const wiener = await WelcomeWienerDog.findByIdAndUpdate(
       id,
-      [{ $set: { isLive: { $not: "$isLive" } } }],
+      [{ $set: { isLive: { $not: '$isLive' } } }],
       { new: true }
-    )
+    );
 
     res.status(200).json({ message: `Welcome Wiener is ${wiener.isLive ? 'ONLINE' : 'OFFLINE'}` });
   } catch (err) {

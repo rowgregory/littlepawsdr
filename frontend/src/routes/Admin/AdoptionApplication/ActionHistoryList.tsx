@@ -47,14 +47,12 @@ const ActionHistoryList = () => {
                   <thead className='whitespace-nowrap px-4 pb-4 pt-2'>
                     <tr className='bg-zinc-50'>
                       <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
-                        <div className=' text-sm cursor-pointer -mx-1.5 -my-1 w-fit px-1.5 py-1 rounded-md hover:bg-gray-200 flex flex-nowrap items-center gap-2'>
+                        <div className=' text-sm  -mx-1.5 -my-1 w-fit px-1.5 py-1 rounded-md hover:bg-gray-200 flex flex-nowrap items-center gap-2'>
                           Name
                         </div>
                       </th>
                       <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
-                        <div className=' text-sm flex flex-nowrap items-center gap-2'>
-                          Email
-                        </div>
+                        <div className=' text-sm flex flex-nowrap items-center gap-2'>Email</div>
                       </th>
 
                       <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
@@ -75,7 +73,7 @@ const ActionHistoryList = () => {
                   <tbody>
                     {filteredActionHistories?.slice(startIndex, endIndex)?.map((history: any) => (
                       <tr
-                        className='z-1 h-[3.25rem] group bg-white [&_td]:focus-within:bg-gray-100 [&_td]:hover:cursor-pointer [&_td]:hover:bg-gray-100 relative'
+                        className='z-1 h-[3.25rem] group bg-white [&_td]:focus-within:bg-gray-100 [&_td]:hover:bg-gray-100 relative'
                         key={history?._id}
                       >
                         <td>

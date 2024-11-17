@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import addDecimals from '../utils/addDecimals';
-import useOutsideDetect from '../utils/useOutsideDetect';
+import useOutsideDetect from '../hooks/useOutsideDetect';
 import { toggleCartDrawer } from '../redux/features/cart/cartSlice';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
@@ -60,11 +60,14 @@ const CartDrawer = () => {
   const animation = cartDrawer ? 'move-down' : '';
 
   const handleClose = () => dispatch(toggleCartDrawer(false));
-  useOutsideDetect(cartRef, cartDrawer ? handleClose : () => { });
+  useOutsideDetect(cartRef, cartDrawer ? handleClose : () => {});
 
   return (
     <Container ref={cartRef} className={animation} h={window.innerHeight}>
-      <i onClick={() => dispatch(toggleCartDrawer(false))} className='fas fa-times absolute top-3 right-3'></i>
+      <i
+        onClick={() => dispatch(toggleCartDrawer(false))}
+        className='fas fa-times absolute top-3 right-3'
+      ></i>
       <div className='grid grid-cols-12 gap-12 h-full w-full md:max-w-5xl'>
         <div className='col-span-12 md:col-span-7'>
           <div className='w-full flex flex-col gap-3.5'>
@@ -100,9 +103,7 @@ const CartDrawer = () => {
           </div>
           <div className='flex justify-between w-full mt-2'>
             <p className='font-Matter-Medium text-sm'>Subtotal: </p>
-            <p className='font-Matter-Medium text-sm'>
-              {addDecimals(subtotal)}
-            </p>
+            <p className='font-Matter-Medium text-sm'>{addDecimals(subtotal)}</p>
           </div>
           <div className='w-full flex justify-between mt-3'>
             <Link

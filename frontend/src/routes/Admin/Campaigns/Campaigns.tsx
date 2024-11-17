@@ -58,7 +58,7 @@ const Campaigns = () => {
         handleCreateCampaign={handleCreateCampaign}
         loadingCreate={loadingCreate}
       />
-      <div className='bg-zinc-50 pt-16 md:pt-20 px-[8px] md:px-[20px] pb-3 min-h-screen'>
+      <div className='bg-zinc-50 pt-16 md:pt-20 px-[8px] md:px-5 pb-3 min-h-screen'>
         <div className='max-w-screen-lg w-full mx-auto'>
           <Navbar handleOpen={handleOpen} campaigns={campaign?.campaignsForAdminView?.length} />
           <div className='bg-white w-full mt-3 border-[1px] border-slate-200 rounded-xl'>

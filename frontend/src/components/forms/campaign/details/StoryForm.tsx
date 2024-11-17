@@ -1,5 +1,4 @@
 import TailwindSpinner from '../../../Loaders/TailwindSpinner';
-import { Form } from 'react-bootstrap';
 
 const StoryForm = ({ genericUpdateCampaign, inputs, campaign, loading, handleInput }: any) => {
   return (
@@ -28,14 +27,13 @@ const StoryForm = ({ genericUpdateCampaign, inputs, campaign, loading, handleInp
           )}
         </button>
       </div>
-      <Form.Control
-        as='textarea'
+      <textarea
         name='story'
         rows={10}
         value={inputs.story || ''}
         placeholder='Tell your story...'
         onChange={handleInput}
-        className='font-Matter-Light placeholder:font-Matter-Light placeholder:text-sm border rounded-lg'
+        className='font-Matter-Light placeholder:font-Matter-Light py-4 px-3 placeholder:text-sm border rounded-lg'
       />
     </form>
   );

@@ -1,6 +1,6 @@
 import { FC } from 'react';
-import { Modal } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import Modal from '../common/Modal';
 
 type AuctionRegisterModalProps = {
   open: boolean;
@@ -16,7 +16,7 @@ const AuctionRegisterModal: FC<AuctionRegisterModalProps> = ({
   customCampaignLink,
 }) => {
   return (
-    <Modal show={open} onHide={handleClose} centered>
+    <Modal show={open} onClose={handleClose}>
       <div className='bg-white rounded-xl p-4 sm:p-8 w-full relative'>
         <div className='flex items-center justify-between mb-4'>
           <div className='flex items-center'>
@@ -30,7 +30,7 @@ const AuctionRegisterModal: FC<AuctionRegisterModalProps> = ({
         </div>
         <div className='flex flex-col sm:flex-row items-center gap-5'>
           <Link
-            className={`${theme?.border} border-4  ${theme?.darker} text-white text-center w-full rounded-lg py-2.5 font-Matter-Medium text-xl cursor-pointer duration-300 hover:no-underline hover:${theme?.text}`}
+            className={`${theme?.border} border-4  ${theme?.darker} text-white text-center w-full rounded-lg py-2.5 font-Matter-Medium text-xl cursor-pointer duration-300 hover:no-underline`}
             to='/auth/login'
             state={{
               cameFromAuction: true,
@@ -40,7 +40,7 @@ const AuctionRegisterModal: FC<AuctionRegisterModalProps> = ({
             Login
           </Link>
           <Link
-            className={`${theme?.border} border-4 ${theme?.text} text-center w-full rounded-lg py-2.5 font-Matter-Medium text-xl cursor-pointer duration-300 hover:no-underline hover:${theme?.text}`}
+            className={`${theme?.border} border-4 ${theme?.text} text-center w-full rounded-lg py-2.5 font-Matter-Medium text-xl cursor-pointer duration-300 hover:no-underline`}
             to='/auth/register'
             state={{
               cameFromAuction: true,

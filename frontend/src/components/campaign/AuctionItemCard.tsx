@@ -28,7 +28,7 @@ const AuctionItemCard = ({ item, auth, campaign }: any) => {
       />
       <div
         key={item?._id}
-        className='bg-white h-92 shadow-sm rounded-2xl relative hover:no-underline animate-fadeIn'
+        className='bg-white h-92 shadow-sm rounded-2xl relative hover:no-underline fade-in'
       >
         <img
           onClick={() => navigate(`${pathname}/item/${item?._id}`)}

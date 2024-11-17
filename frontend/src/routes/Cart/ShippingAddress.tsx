@@ -1,6 +1,6 @@
 import { FormEvent, useEffect, useState } from 'react';
-import useForm from '../../utils/hooks/useForm';
-import { STATES } from '../../utils/states';
+import useForm from '../../hooks/useForm';
+import { STATES } from '../../components/data/states';
 import { RootState, useAppDispatch } from '../../redux/toolkitStore';
 import { decryptFormData, setStep, updateFormData } from '../../redux/features/cart/cartSlice';
 import validateShippingAddressForm from '../../validations/validateShippingAddressForm';

@@ -30,8 +30,6 @@ interface NavigationLinkBtnProps {
   closeMenu: () => void;
   item: { title: string; icon: string; link: string };
   isActive: boolean;
-  setOpenIndex: (index: any) => void;
-  campaignLinkKey: string;
 }
 
 interface NavigationDrawerAccordionProps {

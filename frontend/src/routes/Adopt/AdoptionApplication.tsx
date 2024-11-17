@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Image } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import NothingHere from '../../components/assets/404_dog01.png';
 import SessionExpired from '../../components/assets/session-expired.png';
@@ -33,10 +32,6 @@ const ExpiredContainer = styled.div`
     height: fit-content;
     box-shadow: 0 1px 20px 10px rgba(0, 0, 0, 0.12);
 
-    img {
-      max-width: 200pt;
-      width: 100%;
-    }
     h1 {
       margin-top: 28px;
       font-size: 32px;
@@ -115,7 +110,11 @@ const AdoptionApplication = () => {
     return (
       <ExpiredContainer>
         <div className='outer-container'>
-          <Image src={data?.statusCode === 404 ? NothingHere : SessionExpired} />
+          <img
+            className='max-w-48 w-full'
+            src={data?.statusCode === 404 ? NothingHere : SessionExpired}
+            alt='404 Error'
+          />
           <h1>{data?.message}</h1>
           <p>{error}</p>
           <h6>Return to the adoption terms and conditions.</h6>
@@ -128,13 +127,22 @@ const AdoptionApplication = () => {
   }
 
   return (
-    <div className='w-full px-[20px] mx-auto md:px-[24px] lg:px-8 pt-8 animate-fadeIn'>
+    <div className='w-full px-3 pt-16 pb-32 fade-in'>
       {iFrameLoaded && <ContactLoader text='Loading your application' />}
-      {data?.exp && <CountdownTimer exp={data?.exp} setCountdownEnded={setCountdownEnded} />}
-      <h1 className='font-Matter-Medium text-xl md:text-2xl mb-3 text-center'>Little Paws Dachshund Rescue {new Date().getFullYear()} Adoption Application</h1>
+      <h1 className='font-QBold text-charcoal text-xl sm:text-2xl mb-3 text-center'>
+        Little Paws Dachshund Rescue {new Date().getFullYear()} Adoption Application
+      </h1>
+      {data?.exp && (
+        <CountdownTimer
+          exp={data?.exp}
+          setCountdownEnded={setCountdownEnded}
+          styles='relative text-charcoal font-QBold text-center'
+        />
+      )}
       <ProgressTracker step={{ step1: true, step2: true, step3: true, step4: true }} />
-      <div className='max-w-screen-md mx-auto border-[1px] border-gray-200 rounded-xl'>
-        <iframe className='h-[600px] overflow-y-scroll'
+      <div className='max-w-screen-md mx-auto border-[1px] border-gray-200 rounded-xl mt-6'>
+        <iframe
+          className='h-[600px] overflow-y-scroll'
           onLoad={() => setIFrameLoaded(false)}
           title='Adoption Application'
           width='100%'

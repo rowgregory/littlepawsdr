@@ -1,48 +1,39 @@
-import { Fragment, useState } from 'react';
+import { FC, useState } from 'react';
 import { Accordion } from '../../styles/place-order/Styles';
 import { PayPalButtons } from '@paypal/react-paypal-js';
-import ApplicantInfoForm, { validateAdoptionApplicationApplicantInfo } from './ApplicantInfoForm';
+import ApplicantInfoForm from './ApplicantInfoForm';
 import { useNavigate } from 'react-router-dom';
-import GearLoader from '../../Loaders/Gear';
-import ContactLoader from '../../Loaders/ContactLoader/ContactLoader';
 import {
   useCheckIfUserHasActiveAdoptionFeeSessionMutation,
   useCreateAdoptionApplicationFeeMutation,
 } from '../../../redux/services/adoptionApplicationFeeApi';
+import validateAdoptionApplicationApplicantInfo from '../../../validations/validateAdoptionApplicationApplicantInfo';
+import useForm from '../../../hooks/useForm';
+import { StepTwoProps } from '../../../types/adopt-types';
+import { ADOPTION_APPLICATION_STEP_TWO_FIELDS } from '../../data/form-fields';
+import AwesomeIcon from '../../common/AwesomeIcon';
+import { chevronDownIcon } from '../../../icons';
 
-interface CustomerInfoProps {
-  firstName: string;
-  lastName: string;
-  email: string;
-  state: string;
-  bypassCode: string;
-}
-
-const StepTwo = ({ setOrderLoader, orderLoader, setStep }: any) => {
+const StepTwo: FC<StepTwoProps> = ({ setStep }) => {
+  const [orderLoader, setOrderLoader] = useState(false);
   const navigate = useNavigate();
   const [paymentStep, setPaymentStep] = useState('basic-info');
   const [openBasic, setOpenBasic] = useState(true);
   const [openPayment, setOpenPayment] = useState(false);
-  const [inputs, setInputs] = useState<CustomerInfoProps>({
-    firstName: '',
-    lastName: '',
-    email: '',
-    state: '',
-    bypassCode: '',
-  });
-  const [errors, setErrors] = useState({}) as any;
+  const { inputs, errors, handleInput, handleSelect, setInputs, setErrors } = useForm(
+    ADOPTION_APPLICATION_STEP_TWO_FIELDS
+  );
 
   const [checkIfUserHasActiveAdoptionFeeSession, { isLoading }] =
     useCheckIfUserHasActiveAdoptionFeeSessionMutation();
+
   const [createAdoptionFee] = useCreateAdoptionApplicationFeeMutation();
 
   const onSubmit = async (e: any) => {
     e.preventDefault();
     const errors = validateAdoptionApplicationApplicantInfo(inputs);
-    if (Object.keys(errors).length > 0) {
-      setErrors((prev: any) => ({ ...prev, ...errors }));
-    } else {
-      setErrors({});
+    setErrors(errors);
+    if (Object.keys(errors).length === 0) {
       await checkIfUserHasActiveAdoptionFeeSession(inputs)
         .unwrap()
         .then((data: any) => {
@@ -111,74 +102,63 @@ const StepTwo = ({ setOrderLoader, orderLoader, setStep }: any) => {
     },
   } as any;
 
-  const handleInput = (e: any) => {
-    setInputs((inputs: any) => ({
-      ...inputs,
-      [e.target.name]: e.target.value,
-    }));
-  };
-
   return (
-    <Fragment>
-      {orderLoader && <ContactLoader text='Creating your application' />}
-      <div className='grid grid-cols-12 p-3 gap-4 w-full px-[20px] mx-auto md:px-[24px] lg:px-8 pt-12 animate-fadeIn'>
-        <div className='col-span-12 md:col-span-7'>
-          <div>
-            <div className='py-3 w-full h-fit flex flex-col border-t-[1px] border-gray-100'>
-              <div className='flex items-center justify-between w-full'>
-                <p className='text-gray-700 font-Matter-Medium'>Applicant</p>
-                {openPayment && (
-                  <i
-                    onClick={() => {
-                      setOpenBasic(true);
-                      setOpenPayment(false);
-                      setStep((prev: any) => ({ ...prev, step2: true, step3: false }));
-                    }}
-                    className='fas fa-chevron-down fa-sm cursor-pointer'
-                  ></i>
-                )}
-              </div>
-              {paymentStep === 'payment' && (
-                <div className='flex items-center'>
-                  <p className='text-sm flex items-center h-6'>
-                    {`${inputs.firstName} ${inputs.lastName}, ${inputs.state}`}{' '}
-                  </p>
-                  <span className='ml-2'>
-                    {orderLoader ? <GearLoader color='#121212' size='' /> : ''}
-                  </span>
-                </div>
-              )}
+    <div className='flex flex-col gap-y-5 w-full fade-in'>
+      {orderLoader && (
+        <div className='fade-in fixed top-0 left-0 right-0 bottom-0 flex justify-center items-center z-[5000] bg-black/50'>
+          <div className='dot-spinner'></div>
+        </div>
+      )}
+      <section>
+        <div className='py-3 w-full h-fit flex flex-col'>
+          <div className='flex items-center justify-between w-full'>
+            <h1 className='text-charcoal font-QBold text-5xl mt-4 mb-3 flex flex-col sm:flex-row sm:items-baseline'>
+              $15.00
+              <span className='text-xs text-charcoal font-QBook ml-1'>
+                One time fee valid for seven days.
+              </span>
+            </h1>
+            {openPayment && (
+              <AwesomeIcon
+                icon={chevronDownIcon}
+                onClick={() => {
+                  setOpenBasic(true);
+                  setOpenPayment(false);
+                  setStep((prev: any) => ({ ...prev, step2: true, step3: false }));
+                }}
+                className='w-4 h-4 text-teal-500 cursor-pointer'
+              />
+            )}
+          </div>
+          {paymentStep === 'payment' && (
+            <div className='flex items-center'>
+              <p className='text-sm flex items-center h-6 font-QBook text-charcoal'>
+                {`${inputs.firstName} ${inputs.lastName}, ${inputs.email}`}
+              </p>
             </div>
-            <ApplicantInfoForm
-              onSubmit={onSubmit}
-              handleInput={handleInput}
-              inputs={inputs}
-              errors={errors}
-              openBasic={openBasic}
-              isLoading={isLoading}
-            />
-          </div>
-          <div>
-            <Accordion toggle={openPayment} maxheight='685px'>
-              <div className='px-[16px] md:px-0'>
-                <PayPalButtons
-                  style={payPalComponents.style}
-                  forceReRender={payPalComponents.forceRerender}
-                  createOrder={payPalComponents.createOrder}
-                  onApprove={payPalComponents.onApprove}
-                />
-              </div>
-            </Accordion>
-          </div>
+          )}
         </div>
-        <div className='col-span-12 md:col-span-5 shadow-lg h-fit'>
-          <div className='flex items-center justify-between h-fit px-3 py-1.5 w-full bg-gray-100 rounded-lg'>
-            <p className='font-Matter-Regular'>Application Fee</p>
-            <p className='font-Matter-Regular'>$15.00</p>
-          </div>
-        </div>
-      </div>
-    </Fragment>
+        <ApplicantInfoForm
+          onSubmit={onSubmit}
+          handleInput={handleInput}
+          handleSelect={handleSelect}
+          inputs={inputs}
+          errors={errors}
+          openBasic={openBasic}
+          isLoading={isLoading}
+        />
+      </section>
+      <section>
+        <Accordion toggle={openPayment} maxheight='685px'>
+          <PayPalButtons
+            style={payPalComponents.style}
+            forceReRender={payPalComponents.forceRerender}
+            createOrder={payPalComponents.createOrder}
+            onApprove={payPalComponents.onApprove}
+          />
+        </Accordion>
+      </section>
+    </div>
   );
 };
 

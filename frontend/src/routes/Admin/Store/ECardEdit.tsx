@@ -4,7 +4,7 @@ import { useCreateEcardMutation, useUpdateEcardMutation } from '../../../redux/s
 import { Link } from 'react-router-dom';
 import { FormFile } from 'react-bootstrap';
 import TailwindSpinner from '../../../components/Loaders/TailwindSpinner';
-import useEcardEditForm from '../../../utils/hooks/useEcardEditForm';
+import useEcardEditForm from '../../../hooks/form-hooks/useEcardEditForm';
 import ecardCategories from '../../../components/data/merch-and-ecards/ecard-categories-data';
 
 const ECardEdit = () => {

@@ -1,4 +1,3 @@
-import { Modal } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/toolkitStore';
 import { useCreateOneTimeAuctionDonationMutation } from '../../redux/services/campaignApi';
@@ -8,6 +7,7 @@ import GreenRotatingTransparentCircle from '../Loaders/GreenRotatingTransparentC
 import StepThree from '../campaign/auction-donation-modal/StepThree';
 import StepTwo from '../campaign/auction-donation-modal/StepTwo';
 import StepOne from '../campaign/auction-donation-modal/StepOne';
+import Modal from '../common/Modal';
 
 const AuctionDonationModal = ({
   openModal,
@@ -96,7 +96,7 @@ const AuctionDonationModal = ({
   return (
     <Fragment>
       {orderLoader && <GreenRotatingTransparentCircle />}
-      <Modal show={openModal.donate} onHide={handleClose} centered>
+      <Modal show={openModal.donate} onClose={handleClose}>
         <div className='bg-white rounded-xl flex flex-col justify-center items-center'>
           <div className='flex bg-gray-100 px-3 py-2.5 border-0 relative rounded-tl-xl rounded-tr-xl h-11 w-full justify-between items-center'>
             <div className='flex items-center'>

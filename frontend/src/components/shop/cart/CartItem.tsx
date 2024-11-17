@@ -67,12 +67,12 @@ const CartItem = ({ item }: { item: any }) => {
       </div>
       <div className='col-span-2'>
         {!item?.isEcard && (
-          <div className='d-flex align-items-center'>
+          <div className='flex items-center'>
             <p className='mr-2 font-Matter-Medium text-slate-400 w-3'>
               {item.qty ?? item?.quantity}
             </p>
 
-            <div className='d-flex flex-column'>
+            <div className='flex flex-col'>
               <div
                 className='h-5 w-5 rounded-full bg-slate-600 text-white flex items-center justify-center duration-200 cursor-pointer mr-1 mb-1.5'
                 onClick={() => addOneItem({ ...item, from: 'cart' })}

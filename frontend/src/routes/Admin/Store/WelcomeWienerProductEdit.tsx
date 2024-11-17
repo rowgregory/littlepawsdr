@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import useWelcomeWienerProductForm from '../../../utils/hooks/useWelcomeWienerProductForm';
+import useWelcomeWienerProductForm from '../../../hooks/form-hooks/useWelcomeWienerProductForm';
 import {
   useCreateWelcomeWienerProductMutation,
   useUpdateWelcomeWienerProductMutation,

@@ -1,13 +1,12 @@
 import { useSelector } from 'react-redux';
-import Hero from '../../components/Hero';
 import DachshundCard from '../../components/DachshundCard';
 import { RootState } from '../../redux/toolkitStore';
 import { Fragment, useRef } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { Link } from 'react-router-dom';
-import { AquaTile, NotAvaiableForAdoptionYet } from '../../components/assets';
+import { AquaTile, NotAvaiableForAdoptionYet, NotAvailableYet } from '../../components/assets';
 import { useGetDachshundsByStatusMutation } from '../../redux/services/rescueGroupsApi';
-import { NotAvailableForAdotionVideo } from '../../components/assets/videos';
+import PageBanner from '../../components/common/PageBanner';
 
 const MoveLeft = keyframes`
  0% {
@@ -64,8 +63,8 @@ const NotAvailableForAdoptionYet = () => {
 
   return (
     <Fragment>
-      <Hero src={NotAvailableForAdotionVideo} title='Not Available For Adoption Yet' />
-      <div className='max-w-screen-lg w-full mx-auto mt-12 px-3'>
+      <PageBanner imgSrc={NotAvailableYet} title='Not Available For Adoption Yet' />
+      <div className='max-w-screen-lg w-full mx-auto mt-12 px-3 mb-32'>
         <h1 className='font-Matter-Medium text-4xl text-teal-400 text-center mb-24'>
           In addition to our Dog&apos;s Available for Adoption page we&apos;re also sharing our dogs
           in foster homes being evaluated for future adoptions.

@@ -1,4 +1,3 @@
-import { Image } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import styled, { css, keyframes } from 'styled-components';
 import BackgroundImage from '../components/assets/404-bg.png';
@@ -10,7 +9,6 @@ import BlueBackBtn from '../components/assets/blue_back_btn.png';
 import Pole from '../components/assets/pole.png';
 import WindowPiece from '../components/assets/window_top_tile_right_piece.png';
 import { useState } from 'react';
-import SplitTextToChars from '../utils/SplitTextToChars';
 
 const Container = styled.div`
   display: flex;
@@ -22,7 +20,7 @@ const Container = styled.div`
   position: fixed;
   width: 100%;
 `;
-const SilverPawsSadImage = styled(Image)`
+const SilverPawsSadImage = styled.img`
   with: 100%;
   object-fit: cover;
   z-index: 10;
@@ -88,7 +86,7 @@ const OopsText = styled.div`
     top: -156px;
   }
 `;
-const WindowTileLeft = styled(Image)`
+const WindowTileLeft = styled.img`
   position: absolute;
   padding-inline: 16px;
   max-width: 298px;
@@ -127,7 +125,7 @@ to {
   transform: rotate(360deg);
 }
 `;
-const GreenCircleImage = styled(Image)<{ rotate: string }>`
+const GreenCircleImage = styled.img<{ rotate: string }>`
   position: absolute;
   max-width: 47px;
   top: 49px;
@@ -155,7 +153,7 @@ const GreenCircleImage = styled(Image)<{ rotate: string }>`
   }
 `;
 
-const BlueBackBtnImage = styled(Image)`
+const BlueBackBtnImage = styled.img`
   position: absolute;
   animation: ${moveArrow} 1s linear infinite;
   max-width: 25px;
@@ -176,7 +174,7 @@ const BlueBackBtnImage = styled(Image)`
     left: -435px;
   }
 `;
-const PoleImage = styled(Image)`
+const PoleImage = styled.img`
   left: 128px;
   top: -124px;
   height: 169px;
@@ -212,7 +210,7 @@ const Illustrator = styled.a`
   mix-blend-mode: hard-light;
 `;
 
-const WindowPieceImage = styled(Image)`
+const WindowPieceImage = styled.img`
   position: absolute;
   left: 94.5px;
   top: -139px;
@@ -233,7 +231,7 @@ const WindowPieceImage = styled(Image)`
     width: 89px;
   }
 `;
-const GreenCircleImage2 = styled(Image)<{ rotate: string }>`
+const GreenCircleImage2 = styled.img<{ rotate: string }>`
   position: absolute;
   max-width: 47px;
   top: -105px;
@@ -261,7 +259,7 @@ const GreenCircleImage2 = styled(Image)<{ rotate: string }>`
   }
 `;
 
-const BlueBackBtnImage2 = styled(Image)`
+const BlueBackBtnImage2 = styled.img`
   position: absolute;
   animation: ${moveArrow} 1s linear infinite;
   max-width: 25px;
@@ -312,19 +310,6 @@ const PageNotFound = () => {
           </div>
         </BackLink>
       </div>
-      {helloSilverPaws && (
-        <div className='flex absolute'>
-          <SplitTextToChars
-            text={`Click on the blue arrows to go home`}
-            fontSize='12px'
-            fontFamily={`'Hyperspace-Bold', sans-serif`}
-            color='#fff'
-            mt='321px'
-            width='280px'
-            justifyContent='center'
-          />
-        </div>
-      )}
       <Illustrator target='_blank' href='https://icons8.com/illustrations/author/GrbQqWBEhaDS'>
         Illustration by Liam Moore
       </Illustrator>

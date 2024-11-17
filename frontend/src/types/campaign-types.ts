@@ -19,6 +19,7 @@ interface AuctionItemCardBodyProps {
     user?: {
       _id: string;
       shippingAddress?: string;
+      hasShippingAddress: boolean;
     };
   };
   pathname: string;

@@ -1,9 +1,7 @@
 import asyncHandler from 'express-async-handler';
 import Newsletter from '../models/newsLetterModel.js';
 import Error from '../models/errorModel.js';
-
-const validateEmailRegex =
-  /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
+import { validateEmailRegex } from '../utils/regex-utils.js';
 
 /**
 @desc    Create newsletter email
@@ -16,20 +14,14 @@ const addNewsletterEmail = asyncHandler(async (req, res) => {
     const emailExists = await Newsletter.findOne({ newsletterEmail: email });
 
     if (emailExists) {
-      res
-        .status(400)
-        .json({ message: 'Email already exists', sliceName: 'newsletterEmailApi' });
+      res.status(400).json({ message: 'Email already exists' });
     } else {
       if (validateEmailRegex.test(email)) {
         await Newsletter.create({ newsletterEmail: email });
 
-        res
-          .status(201)
-          .json({ message: 'Newsletter email created', sliceName: 'newsletterEmailApi' });
+        res.status(201).json({ sucess: true });
       } else {
-        res
-          .status(404)
-          .json({ message: 'Enter valid email', sliceName: 'newsletterEmailApi' });
+        res.status(404).json({ message: 'Enter valid email' });
       }
     }
   } catch (err) {
@@ -82,7 +74,7 @@ const deleteNewsletterEmail = asyncHandler(async (req, res) => {
     const newsletterEmail = await Newsletter.findById(req.params.id);
 
     await newsletterEmail.deleteOne();
-    res.status(200).json({ message: 'Newsletter email removed', sliceName: 'newsletterEmailApi' });
+    res.status(200).json({ message: 'Newsletter email removed' });
   } catch (err) {
     await Error.create({
       functionName: 'DELETE_A_NEWSLETTER_EMAIL_ADMIN',

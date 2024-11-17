@@ -1,17 +1,17 @@
 import AdoptionInfoHigh from '../../components/assets/adopt-info-high.jpeg';
-import Hero from '../../components/Hero';
 import { Fragment } from 'react';
-import { AdoptoinInfoVideo } from '../../components/assets/videos';
 import adoptionGuidelinesAndRequirements from '../../components/data/adopt/adoption-guidelines-and-requirements';
 import fiveStepProcess from '../../components/data/adopt/adoption-five-step-process';
 import { FiveStepProcessProps } from '../../types/adopt-types';
 import ProcessStep from '../../components/adopt/info/ProcessStep';
 import statesWeRescue from '../../components/data/dachshunds/states-we-rescue-data';
+import PageBanner from '../../components/common/PageBanner';
+import { AdoptionInfo } from '../../components/assets';
 
 const AdoptionInformation = () => {
   return (
     <Fragment>
-      <Hero src={AdoptoinInfoVideo} title='Adoption Information' />
+      <PageBanner imgSrc={AdoptionInfo} title='Adoption Information' />
       <div className='max-w-screen-lg w-full mx-auto mt-12 px-3'>
         <h1 className='font-Matter-Bold text-5xl text-teal-400 text-center mb-24'>
           Adopting is a Big Decision

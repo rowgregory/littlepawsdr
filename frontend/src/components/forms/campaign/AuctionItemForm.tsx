@@ -266,7 +266,7 @@ const AuctionItemForm = ({
       <div>
         <div className='font-Matter-Medium mb-2.5'>Visibility</div>
         <div className='border-[1px] border-sky-500 rounded-lg p-3 flex items-baseline bg-[#eff4ff]'>
-          <label htmlFor='visibility' className='d-flex mb-0'>
+          <label htmlFor='visibility' className='flex mb-0'>
             <div className='w-9 mr-1'>
               <input
                 type='radio'

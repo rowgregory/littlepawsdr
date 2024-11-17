@@ -3,7 +3,7 @@ const BlackPageOverlay = ({ open }: { open: boolean }) => {
     <div
       className={`${
         open ? 'block' : 'hidden'
-      } fixed top-0 left-0 h-screen w-screen  bg-black/80 z-50 animate-fadeIn`}
+      } fixed top-0 left-0 h-screen w-screen bg-black/80 z-[60] fade-in`}
     ></div>
   );
 };

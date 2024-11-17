@@ -1,12 +1,11 @@
 import { Fragment } from 'react';
-import Hero from '../../components/Hero';
-import { SurrenderVideo } from '../../components/assets/videos';
-import { SurrenderToUsImg } from '../../components/assets';
+import { SurrenderBannerImg, SurrenderToUsImg } from '../../components/assets';
+import PageBanner from '../../components/common/PageBanner';
 
 const SurrenderToUs = () => {
   return (
     <Fragment>
-      <Hero src={SurrenderVideo} title='Surrender to Us' />
+      <PageBanner imgSrc={SurrenderBannerImg} title='Surrender to Us' />
       <div className='max-w-screen-lg w-full mx-auto mt-12 px-3'>
         <h1 className='font-Matter-Medium text-4xl text-teal-400 text-center mb-24'>
           Ideally, all dogs live in one loving home from puppyhood until death.

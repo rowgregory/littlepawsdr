@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import ProgressTracker from '../../components/adopt/application/ProgressTracker';
 import StepOne from '../../components/adopt/application/StepOne';
 import StepTwo from '../../components/adopt/application/StepTwo';
+import PageBanner from '../../components/common/PageBanner';
+import { AdoptionApplicationImg } from '../../components/assets';
 
 const AdoptionApplicationTermsAndPayment = () => {
-  let [orderLoader, setOrderLoader] = useState(false);
   const [step, setStep] = useState({
     step1: true,
     step2: false,
@@ -17,16 +18,19 @@ const AdoptionApplicationTermsAndPayment = () => {
   }, [step]);
 
   return (
-    <div className='w-full max-w-screen-lg px-[20px] mx-auto md:px-[24px] lg:px-8 pt-12 animate-fadeIn'>
-      <p className='text-2xl mb-8 font-Matter-Medium text-center'>Adoption Application Process</p>
-      <ProgressTracker step={step} />
-      <div className='w-full max-w-screen-sm mx-auto'>
-        {step.step1 && !step.step2 && !step.step3 && <StepOne setStep={setStep} />}
-        {step.step1 && (step.step2 || step.step3) && !step.step4 && (
-          <StepTwo setOrderLoader={setOrderLoader} orderLoader={orderLoader} setStep={setStep} />
-        )}
+    <Fragment>
+      <PageBanner imgSrc={AdoptionApplicationImg} title='Adoption Application' />
+      <div className='px-3 py-20 min-h-[calc(100vh-812px)] fade-in'>
+        <div className='w-full max-w-screen-sm mx-auto'>
+          <p className='text-xl sm:text-2xl mb-8 font-QBold text-charcoal text-center'>
+            Adoption Application Process
+          </p>
+          <ProgressTracker step={step} />
+          {step.step1 && !step.step2 && !step.step3 && <StepOne setStep={setStep} />}
+          {step.step1 && (step.step2 || step.step3) && !step.step4 && <StepTwo setStep={setStep} />}
+        </div>
       </div>
-    </div>
+    </Fragment>
   );
 };
 

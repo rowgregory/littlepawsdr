@@ -26,7 +26,7 @@ const AdminStoreHeader = () => {
   const { pathname } = useLocation();
 
   return (
-    <div className='d-flex flex-column mb-3'>
+    <div className='flex flex-col mb-3'>
       <div className='p-1 bg-white border border-gray-100 rounded-lg w-full grid grid-cols-12 font-Matter-Regular overflow-x-scroll sm:overflow-auto'>
         {navbarLinksData.map((obj: any, i: number) => (
           <Link

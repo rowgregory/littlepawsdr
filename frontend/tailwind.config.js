@@ -13,13 +13,22 @@ module.exports = {
       'Museo-Slab-1000': ['Museo-Slab-1000'],
       'Museo-Slab-700': ['Museo-Slab-700'],
       Montserrat: [`Montserrat, sans-serif`],
+      QBold: ['Quicksand_Bold'],
+      QLight: ['Quicksand_Light'],
+      QBook: ['Quicksand_Book'],
     },
     extend: {
       screens: {
-        'xs': '480px',
+        xs: '480px',
       },
       boxShadow: {
         'right-side': '0 35px 60px -15px rgba(0, 0, 0, 0.3)',
+      },
+      colors: {
+        charcoal: '#454647',
+      },
+      fontSize: {
+        17: '1.0625rem',
       },
       backgroundImage: {
         'g-indigo': 'linear-gradient(263deg, rgba(79, 70, 229, 1) 18%, rgba(70, 229, 92, 1) 100%)',

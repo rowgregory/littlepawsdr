@@ -1,42 +1,12 @@
-import { Form } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
-import { useEffect, useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState, useAppDispatch } from '../../../redux/toolkitStore';
 import { useUpdateCampaignMutation } from '../../../redux/services/campaignApi';
 import { resetSuccess } from '../../../redux/features/campaign/campaignSlice';
 import TailwindSpinner from '../../../components/Loaders/TailwindSpinner';
-
-export const useCampaignSettingsForm = (data?: any) => {
-  const initialValues = useMemo(
-    () => ({
-      isCampaignPublished: data?.isCampaignPublished || false,
-      isMoneyRaisedVisible: data?.isMoneyRaisedVisible || false,
-    }),
-    [data]
-  );
-  const [inputs, setInputs] = useState(initialValues);
-
-  useEffect(() => {
-    if (data) {
-      setInputs((inputs: any) => ({
-        ...inputs,
-        isCampaignPublished: data?.isCampaignPublished,
-        isMoneyRaisedVisible: data?.isMoneyRaisedVisible,
-      }));
-    }
-  }, [data]);
-
-  const handleSwitch = (e: any) => {
-    const { name, checked } = e.target;
-    setInputs((inputs: any) => ({
-      ...inputs,
-      [name]: checked,
-    }));
-  };
-
-  return { inputs, handleSwitch };
-};
+import useForm from '../../../hooks/useForm';
+import Switch from '../../../components/common/Switch';
 
 const sectionLoadingStates = {
   general: false,
@@ -71,7 +41,10 @@ const Settings = () => {
       .catch(() => setLoading({ ...sectionLoadingStates }));
   };
 
-  const { inputs, handleSwitch } = useCampaignSettingsForm(campaign?.campaign);
+  const { inputs, handleToggle } = useForm(
+    ['isCampaignPublished', 'isMoneyRaisedVisible'],
+    campaign?.campaign
+  );
 
   return (
     <div className='bg-white border-[1px] border-slate-200 rounded-xl w-full p-8'>
@@ -84,18 +57,14 @@ const Settings = () => {
         </div>
         <div className='col-span-full md:col-span-8 md:col-start-6'>
           <div className='flex flex-col'>
-            <form className='d-flex flex-column'>
+            <form className='flex flex-col'>
               <div className='flex justify-between items-center w-full h-6 mb-2'>
                 <p className=' font-Matter-Medium'>Publish campaign</p>
-                <Form.Group controlId='isCampaignPublished' className='mb-0'>
-                  <Form.Check
-                    className='auction'
-                    type='switch'
-                    checked={inputs.isCampaignPublished || false}
-                    onChange={handleSwitch}
-                    name='isCampaignPublished'
-                  ></Form.Check>
-                </Form.Group>
+                <Switch
+                  name='isCampaignPublished'
+                  checked={inputs.isCampaignPublished || false}
+                  onChange={handleToggle}
+                ></Switch>
               </div>
               <p className='text-sm font-Matter-Light'>
                 Make this campaign publicly viewable and live.
@@ -139,18 +108,14 @@ const Settings = () => {
               <i className='fas fa-check' />
             </div>
             <div className='w-full h-px bg-slate-100 my-3'></div>
-            <form className='d-flex flex-column'>
+            <form className='flex flex-col'>
               <div className='flex justify-between items-center w-full h-6 mb-2'>
                 <p className=' font-Matter-Medium'>Hide money raised</p>
-                <Form.Group controlId='isMoneyRaisedVisible' className='mb-0'>
-                  <Form.Check
-                    className='auction'
-                    type='switch'
-                    checked={inputs.isMoneyRaisedVisible || false}
-                    onChange={handleSwitch}
-                    name='isMoneyRaisedVisible'
-                  ></Form.Check>
-                </Form.Group>
+                <Switch
+                  name='isMoneyRaisedVisible'
+                  checked={inputs.isMoneyRaisedVisible || false}
+                  onChange={handleToggle}
+                ></Switch>
               </div>
               <p className='text-sm font-Matter-Light'>
                 Hide the amount of money raised on your campaign from public view.

@@ -3,7 +3,10 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import ProductSizes from '../../../components/admin/products/ProductSizes';
 import { uploadMultipleFilesToFirebase } from '../../../utils/uploadToFirebase';
 import { Form } from 'react-bootstrap';
-import { useProductEditForm, validateProductCreate } from '../../../utils/hooks/useProductEditForm';
+import {
+  useProductEditForm,
+  validateProductCreate,
+} from '../../../hooks/form-hooks/useProductEditForm';
 import {
   useCreateProductMutation,
   useDeleteProductPhotoMutation,

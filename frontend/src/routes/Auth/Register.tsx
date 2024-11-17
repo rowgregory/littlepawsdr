@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useState } from 'react';
 import { privacyPolicyLinkKey, termsOfServiceLinkKey } from '../../utils/footerUtils';
 import { Link, useLocation } from 'react-router-dom';
-import useRegisterForm from '../../utils/hooks/useRegisterForm';
+import useRegisterForm from '../../hooks/form-hooks/useRegisterForm';
 import { RootState, useAppDispatch } from '../../redux/toolkitStore';
 import { setPasswordStrength } from '../../redux/features/auth/authSlice';
 import { Logo2024 } from '../../components/assets';
@@ -131,8 +131,9 @@ const Register = () => {
                     password: !showPassword.password,
                   }))
                 }
-                className={`fa-solid ${showPassword.password ? 'fa-eye' : 'fa-eye-slash'
-                  } absolute top-4 right-2`}
+                className={`fa-solid ${
+                  showPassword.password ? 'fa-eye' : 'fa-eye-slash'
+                } absolute top-4 right-2`}
               ></i>
             </div>
             <label className='font-Matter-Medium text-sm mb-1' htmlFor='confirmPassword'>
@@ -154,8 +155,9 @@ const Register = () => {
                     confirmPassword: !showPassword.confirmPassword,
                   }))
                 }
-                className={`fa-solid ${showPassword.confirmPassword ? 'fa-eye' : 'fa-eye-slash'
-                  } absolute top-4 right-2`}
+                className={`fa-solid ${
+                  showPassword.confirmPassword ? 'fa-eye' : 'fa-eye-slash'
+                } absolute top-4 right-2`}
               ></i>
             </div>
             <button
@@ -185,7 +187,7 @@ const Register = () => {
           <p className='text-sm text-gray-700 text-center mt-3'>
             Already have an account?{' '}
             <Link className='text-teal-500' to='/auth/login'>
-              Sign in.
+              Log In.
             </Link>
           </p>
         </div>

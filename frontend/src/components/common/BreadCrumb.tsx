@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 
 export const HomeBreadCrumb = () => {
   return (
-    <div className='flex items-center my-3 max-w-[1340px] w-full px-[20px] mx-auto md:px-[24px] lg:px-8'>
+    <div className='flex items-center my-3 max-w-[1340px] w-full px-5 mx-auto md:px-[24px] lg:px-8'>
       <Link to='/'>
         <i className='fa-solid fa-home text-teal-500'></i>
       </Link>
@@ -11,7 +11,7 @@ export const HomeBreadCrumb = () => {
 };
 
 const BreadCrumb = ({ link, text }: any) => (
-  <div className='flex items-center my-3 max-w-[1340px] w-full px-[20px] mx-auto md:px-[24px] lg:px-8'>
+  <div className='flex items-center my-3 max-w-[1340px] w-full px-5 mx-auto md:px-[24px] lg:px-8'>
     <Link to='/'>
       <i className='fa-solid fa-home text-teal-500'></i>
     </Link>

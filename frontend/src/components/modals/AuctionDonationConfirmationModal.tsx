@@ -1,13 +1,13 @@
 import { useState } from 'react';
-import { Modal } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import Modal from '../common/Modal';
 
 const AuctionDonationConfirmationModal = ({ openModal, handleClose, theme, user }: any) => {
   const navigate = useNavigate();
   const [userNeedsToCreateAccount, setUserNeedsToCreateAccount] = useState(false);
 
   return (
-    <Modal show={openModal.confirmation} centered onHide={handleClose}>
+    <Modal show={openModal.confirmation} onClose={handleClose}>
       <div className='bg-white p-8 rounded-xl flex flex-col justify-center items-center'>
         <i
           onClick={handleClose}

@@ -1,5 +1,4 @@
 import { Fragment, useEffect, useState } from 'react';
-import { Form } from 'react-bootstrap';
 import {
   useFetchUserAnonStatusAndShippingAddressDetailsQuery,
   useUpdateUserMutation,
@@ -10,9 +9,10 @@ import { resetUserSuccess } from '../../redux/features/user/userSlice';
 import { useLocation, useNavigate } from 'react-router-dom';
 import useUserAuctionSettingsForm, {
   sectionLoadingStates,
-} from '../../utils/hooks/useUserAuctionSettingsForm';
+} from '../../hooks/form-hooks/useUserAuctionSettingsForm';
 import UserAuctionSettingsModal from '../../components/modals/UserAuctionSettingsModal';
 import ShippingAddressForm from '../../components/forms/ShippingAddressForm';
+import Switch from '../../components/common/Switch';
 
 const UserAuctionSettings = () => {
   const navigate = useNavigate();
@@ -89,19 +89,15 @@ const UserAuctionSettings = () => {
             </div>
             <div className='col-span-3 lg:col-span-8'>
               <form className='flex flex-col gap-3 items-end'>
-                <Form.Group controlId='anonymousBidding' className='mb-0'>
-                  <Form.Check
-                    type='switch'
-                    checked={inputs.anonymousBidding || false}
-                    onChange={(e: any) =>
-                      handleUpdateUser(e, 'user', {
-                        anonymousBidding: !inputs.anonymousBidding,
-                      })
-                    }
-                    name='anonymousBidding'
-                    id='anonymousBidding'
-                  ></Form.Check>
-                </Form.Group>
+                <Switch
+                  name='anonymousBidding'
+                  checked={inputs.anonymousBidding || false}
+                  onChange={(e: any) =>
+                    handleUpdateUser(e, 'user', {
+                      anonymousBidding: !inputs.anonymousBidding,
+                    })
+                  }
+                ></Switch>
               </form>
             </div>
           </div>

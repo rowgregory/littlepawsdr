@@ -65,7 +65,7 @@ const Overview = () => {
         />
       )}
       <div className='grid grid-cols-12 gap-3 lg:gap-8 max-w-[1340px] w-full mx-auto p-2.5 lg:p-6 md:p-8'>
-        <div className='col-span-12 lg:col-span-8 animate-fadeIn'>
+        <div className='col-span-12 lg:col-span-8 fade-in'>
           <CampaignOverviewHero campaign={campaign} theme={theme} />
           <hr className='border-b border-gray-100 w-full my-4' />
           <GoalAndStorySection campaign={campaign} theme={theme} openModal={openModal} />

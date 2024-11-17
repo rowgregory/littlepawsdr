@@ -1,13 +1,13 @@
-import Hero from '../../components/Hero';
 import { Fragment } from 'react';
-import { AdoptionFeesVideo } from '../../components/assets/videos';
 import AdoptFeesHigh from '../../components/assets/adopt-fees-high.jpeg';
 import adoptionFeeData from '../../components/data/adopt/adoption-fees-data';
+import PageBanner from '../../components/common/PageBanner';
+import { Fees } from '../../components/assets';
 
 const AdoptionFees = () => {
   return (
     <Fragment>
-      <Hero src={AdoptionFeesVideo} title='Adoption Fees' />
+      <PageBanner imgSrc={Fees} title='Adoption Fees' />
       <div className='max-w-screen-lg w-full mx-auto mt-12 px-3'>
         <h1 className='font-Matter-Bold text-4xl text-teal-400 text-center mb-24'>
           Affordable Adoption: Comprehensive Vetting Costs for All Dachshund Breeds and Mixes
@@ -34,9 +34,9 @@ const AdoptionFees = () => {
         <p className='text-lg font-Matter-Light'>
           Adopting a fully vetted dog costs significantly less than buying one and covering the
           vetting expenses yourself. The Adoption Fee for each of our adoptable dogs can be found in
-          their biography. Find each dog&quot;s biography by clicking on Dachshunds then Available in our
-          Menu dropdown list found on our home page. In addition to the Adoption Fee the cost of a
-          Health Certificate is also the responsibility of the adopter. A health certificate is
+          their biography. Find each dog&quot;s biography by clicking on Dachshunds then Available
+          in our Menu dropdown list found on our home page. In addition to the Adoption Fee the cost
+          of a Health Certificate is also the responsibility of the adopter. A health certificate is
           required by law when a dog is adopted and must travel over state lines. The cost depends
           upon what the veterinarian charges LPDR.
         </p>

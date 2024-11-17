@@ -1,123 +1,62 @@
-import { useLocation, Link } from 'react-router-dom';
-import WhiteLogo from '../components/assets/logo-white2.png';
-import {
-  pagesToExclude,
-  privacyPolicyLinkKey,
-  quickLinks,
-  termsOfServiceLinkKey,
-} from '../utils/footerUtils';
-import { scrollToTop } from '../utils/scrollToTop';
-import { Fragment, useState } from 'react';
-import { SMData } from '../utils/sociaMediaData';
-import InstagramModal from './modals/InstagramModal';
+import { useLocation } from 'react-router-dom';
+import urlsToExclude from '../utils/urlsToExclude';
+import { footerSections } from './data/footer-data';
+import FooterBtn from './footer/FooterBtn';
+import FooterCredits from './footer/FooterCredits';
+import FooterLink from './footer/FooterLink';
+import FooterLocationText from './footer/FooterLocationText';
+import FooterNewsletterSection from './footer/FooterNewsletterSection';
 
 const Footer = () => {
-  const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
   const { pathname } = useLocation();
+  const shouldExclude = urlsToExclude(pathname);
 
   return (
-    <Fragment>
-      <InstagramModal show={show} handleClose={handleClose} />
-      <div className={`bg-[#191a20] ${pagesToExclude(pathname) ? 'hidden' : 'block'}`}>
-        <i
-          onClick={scrollToTop}
-          className='w-full text-[#fff] py-2 fa-solid fa-chevron-up text-center cursor-pointer duration-200 hover:bg-teal-600 bg-teal-500 relative z-1'
-        ></i>
-        <footer
-          className={`w-full bg-bottom flex flex-col justify-between items-center mx-auto max-w-screen-xl py-3.5`}
-        >
-          <div className='w-full flex flex-col'>
-            <div className='flex sm:justify-center  w-full mx-auto relative z-1 mt-2 pl-3 sm:pl-0'>
-              {SMData().map((obj: any, i: number) => (
-                <i
-                  className={`${obj.className} flex items-center justify-center rounded-full bg-teal-500/40 hover:bg-teal-500 text-[#fff] h-8 w-8 duration-200 cursor-pointer`}
-                  key={i}
-                  onClick={() =>
-                    obj.popTag === 'Instagram' ? handleShow() : window.open(obj.linkKey, '_blank')
-                  }
-                ></i>
-              ))}
-            </div>
-          </div>
-          <div className='p-3 z-1 relative w-full flex flex-wrap justify-start sm:justify-center gap-6 md:grid md:max-w-[1000px] md:grid-cols-4'>
-            <section className='md:mb-0 hidden md:block'>
-              <img
-                className='w-24 -ml-6 md:w-56 mb-6 md:mb-0'
-                src={WhiteLogo}
-                alt={`Little Paws Dachshund Rescue ${new Date().getFullYear()} `}
-              />
-            </section>
-            <section className='md:mb-0'>
-              <p className='font-Matter-Medium text-[#fff] text-lg mb-1.5'>Our Address</p>
-              <p className='text-[#fff] font-Matter-Regular text-xs mb-1'>
-                Little Paws Dachshund Rescue
+    <footer className={`w-full bg-[#1C1E29] relative ${shouldExclude ? 'hidden' : 'block'}`}>
+      <div className='footer-bg'></div>
+      <div className='px-3'>
+        <div className='max-w-[1150px] py-20 w-full mx-auto relative z-10'>
+          <div className='grid grid-cols-12 gap-y-8 sm:gap-8'>
+            <div className='col-span-12 lg:col-span-3'>
+              <h4 className='text-2xl mb-5 font-QBold text-white'>About</h4>
+              <p className='font-QLight text-sm text-white leading-6'>
+                LITTLE PAWS DACHSHUND RESCUE is an east coast based 501(c)3 exempt nonprofit
+                dedicated to the rescue and re-homing of our favorite short legged breed
               </p>
-              <p className='text-[#fff] font-Matter-Regular text-xs mb-1'>P.O. Box 108</p>
-              <p className='text-[#fff] font-Matter-Regular text-xs mb-1'>Brookfield, CT 06804</p>
-            </section>
-            <section className='md:mb-0'>
-              <p className='font-Matter-Medium text-[#fff] text-lg mb-1.5'>Quick Links</p>
-              <div className='d-flex flex-column'>
-                {quickLinks().map((l: any, i: number) => (
-                  <Link
-                    onClick={scrollToTop}
-                    className='text-[#fff] font-Matter-Regular text-xs mb-1 duration-200 hover:no-underline hover:text-gray-300'
-                    key={i}
-                    to={l.linkPath}
-                    state={l.path}
-                  >
-                    {l.linkKey}
-                  </Link>
-                ))}
+              <div className='border border-[#898b97] opacity-20 my-8'></div>
+              <h5 className='text-xl mb-5 text-white'>Social Media</h5>
+              <div className='flex items-center gap-3'>
+                <div className='bg-teal-400 group flex items-center justify-center w-12 h-12 cursor-pointer aspect-square rounded-lg hover:bg-white hover:scale-90 duration-200'>
+                  <i className='fab fa-facebook fa-lg text-white group-hover:text-teal-400'></i>
+                </div>
+                <div className='bg-teal-400 group flex items-center justify-center w-12 h-12 cursor-pointer aspect-square rounded-lg hover:bg-white hover:scale-90 duration-200'>
+                  <i className='fab fa-instagram fa-lg text-white group-hover:text-teal-400'></i>
+                </div>
               </div>
-            </section>
-            <section className='md:mb-0 flex flex-col items-start'>
-              <p className='font-Matter-Medium text-[#fff] text-lg mb-1.5'>Legal</p>
-              <p className='text-[#fff] font-Matter-Regular text-xs mb-1 duration-200 hover:text-gray-300'>
-                &copy; {new Date().getFullYear()} Little Paws Dachshund Rescue.
-              </p>
-              <p className='text-[#fff] font-Matter-Regular text-xs mb-1 duration-200 hover:text-gray-300'>
-                All Rights Reserved.
-              </p>
-              <button
-                className='text-[#fff] font-Matter-Regular text-xs mb-1 duration-200 hover:text-gray-300'
-                onClick={() => window.open(privacyPolicyLinkKey, '_blank')}
-              >
-                Privacy Policy
-              </button>
-              <button
-                className='text-[#fff] font-Matter-Regular text-xs mb-1 duration-200 hover:text-gray-300'
-                onClick={() => window.open('https://oag.ca.gov/privacy/ccpa', '_blank')}
-              >
-                California Consumer Privacy Act
-              </button>
-              <button
-                className='text-[#fff] font-Matter-Regular text-xs mb-1 duration-200 hover:text-gray-300'
-                onClick={() => window.open(termsOfServiceLinkKey, '_blank')}
-              >
-                Terns & Conditions
-              </button>
-              <Link
-                className='text-[#fff] font-Matter-Regular text-xs mb-1 hover:no-underline duration-200 hover:text-gray-300'
-                to='/return-policy'
-              >
-                Return Policy
-              </Link>
-            </section>
-          </div>
-          <section className='relative z-1 flex justify-center w-full pb-3.5'>
-            <div
-              className='text-[#fff] font-Matter-Medium text-xs cursor-pointer duration-200 hover:text-gray-300'
-              onClick={() => window.open('https://gregoryrow.vercel.app/', '_blank')}
-            >
-              - Developed with 💜 by Gregory Row -
             </div>
-          </section>
-        </footer>
+            <div className='col-span-12 lg:col-span-9 text-white'>
+              <div className='grid grid-cols-9 gap-y-8 sm:gap-8'>
+                {footerSections.map((section, i) => (
+                  <div key={i} className='col-span-12 sm:col-span-3'>
+                    <h4 className='text-2xl mb-5 font-QBold text-white'>{section.title}</h4>
+                    <div className='flex flex-col gap-3'>
+                      {section.type === 'link' &&
+                        section.data.map((obj, j) => <FooterLink key={j} obj={obj} />)}
+                      {section.type === 'button' &&
+                        section.data.map((obj, j) => <FooterBtn key={j} obj={obj} />)}
+                      {section.type === 'location' &&
+                        section.data.map((obj, j) => <FooterLocationText key={j} obj={obj} />)}
+                    </div>
+                  </div>
+                ))}
+                <FooterNewsletterSection />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    </Fragment>
+      <FooterCredits />
+    </footer>
   );
 };
 

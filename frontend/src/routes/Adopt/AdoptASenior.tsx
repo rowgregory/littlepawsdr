@@ -2,15 +2,15 @@ import { Link } from 'react-router-dom';
 import SeniorHigh from '../../components/assets/senior-high.jpeg';
 import { Senior2 } from '../../components/assets';
 import { Fragment } from 'react';
-import Hero from '../../components/Hero';
 import reasonsToAdoptASeniorData from '../../components/data/adopt/reasons-to-adopt-senior-data';
 import { ReasonsToAdoptASeniorProps } from '../../types/adopt-types';
+import PageBanner from '../../components/common/PageBanner';
 
 const AdoptASenior = () => {
   return (
     <Fragment>
-      <Hero src={SeniorHigh} title='Adopt a Senior' link='' photographer='Magdalena Smolnicka' />
-      <div className='max-w-screen-lg w-full mx-auto mt-12 px-3'>
+      <PageBanner imgSrc={SeniorHigh} title='Adopt a Senior' />
+      <div className='max-w-screen-lg w-full mx-auto my-12 px-3'>
         <h1 className='font-Matter-Bold text-4xl text-teal-400 text-center mb-24 overflow-wrap break-words hyphens-auto'>
           The Long on Love Senior Program is a way for those more experienced pet owners (age 60 and
           older) to find a loving senior dachshund/dachshund mix to join their home.
@@ -24,8 +24,8 @@ const AdoptASenior = () => {
               to give.
             </h2>
             <p className='font-Matter-Light text-lg text-center'>
-              Little Paws Dachshund Rescue would like to encourage experienced pet owners to
-              adopt by offering an adoption discount fee to Seniors, 60 years and older, who adopt a
+              Little Paws Dachshund Rescue would like to encourage experienced pet owners to adopt
+              by offering an adoption discount fee to Seniors, 60 years and older, who adopt a
               senior dachshund/dachshund mix from our rescue. This fee includes spay/neutering, all
               shots (Rabies and Distemper) and a microchip implant. We will also ensure they receive
               a dental if needed.{' '}

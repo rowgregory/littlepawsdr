@@ -23,7 +23,7 @@ const LinkContent: FC<LinkContentProps> = ({ closeMenu }) => {
       : '/campaigns';
 
   return (
-    <div className='list-none w-full overflow-y-scroll flex flex-col no-scrollbar gap-y-2.5'>
+    <div className='list-none w-full overflow-y-scroll flex flex-col no-scrollbar pr-3 gap-y-2.5'>
       {navigationDrawerLinks(campaignLinkKey).map((item, index) => {
         if (item?.links) {
           return (
@@ -42,8 +42,6 @@ const LinkContent: FC<LinkContentProps> = ({ closeMenu }) => {
               closeMenu={closeMenu}
               item={item}
               isActive={pathname === item?.link}
-              setOpenIndex={setOpenIndex}
-              campaignLinkKey={campaignLinkKey}
             />
           );
         }

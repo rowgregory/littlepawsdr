@@ -5,14 +5,12 @@ import { Link } from 'react-router-dom';
 import { RootState } from '../../redux/toolkitStore';
 import { formatDateWithTimezone } from '../../utils/dateFunctions';
 import BidConfirmationModal from '../../components/modals/BidConfirmationModal';
-import BidModal from '../../components/campaign/BidModal';
+import BidModal from '../../components/modals/BidModal';
 import AuctionItemButtonBox from '../../components/campaign/AuctionItemButtonBox';
 import AuctionItemShippingAddressModal from '../../components/modals/AuctionItemShippingAddressModal';
 import AuctionItemImgAndDescSection from '../Admin/Campaigns/Auction/AuctionItemImgAndDescSection';
-import useScrollToTop from '../../utils/hooks/useScrollToTop';
 import AuctionItemDetailsSection from '../../components/campaign/AuctionItemDetailsSection';
 import AuctionItemBidHistory from '../../components/campaign/AuctionItemBidHistory';
-import { useGetUserShippingAddressQuery } from '../../redux/services/userApi';
 
 const AuctionItem = () => {
   const params = useParams();
@@ -28,7 +26,6 @@ const AuctionItem = () => {
   const [openAddressModal, setOpenAddressModal] = useState({ open: false, auctionItemId: '' });
   const theme = campaign?.campaign?.themeColor;
   const ifCampaignIsOver = campaign?.campaign?.auction?.settings?.hasEnded;
-  useGetUserShippingAddressQuery();
 
   const handleCloseBidModal = () => {
     setOpenBidModal(false);
@@ -40,8 +37,6 @@ const AuctionItem = () => {
   const auctionItem = campaign?.campaign?.auction?.items?.find(
     (item: any) => item?._id === auctionItemId
   ) as any;
-
-  useScrollToTop();
 
   return (
     <Fragment>

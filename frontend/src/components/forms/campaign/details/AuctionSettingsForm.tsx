@@ -1,6 +1,6 @@
-import { Form } from 'react-bootstrap';
 import TailwindSpinner from '../../../Loaders/TailwindSpinner';
 import { formatDateForCalendar, formatDateForEstTimezone } from '../../../../utils/dateFunctions';
+import Switch from '../../../common/Switch';
 
 const AuctionSettingsForm = ({
   handleInput,
@@ -39,15 +39,11 @@ const AuctionSettingsForm = ({
         <div className='flex flex-col mt-8'>
           <div className='flex justify-between items-center w-full h-6'>
             <p className='text-sm font-Matter-Medium'>Publish Auction</p>
-            <Form.Group controlId='isAuctionPublished' className='mb-0'>
-              <Form.Check
-                className='auction'
-                type='switch'
-                checked={inputs.isAuctionPublished || false}
-                onChange={handleSwitch}
-                name='isAuctionPublished'
-              ></Form.Check>
-            </Form.Group>
+            <Switch
+              name='isAuctionPublished'
+              checked={inputs.isAuctionPublished || false}
+              onChange={handleSwitch}
+            ></Switch>
           </div>
           <p className='text-sm font-Matter-Light'>
             When enabled, your auction will be publicly viewable from your campaign. When disabled

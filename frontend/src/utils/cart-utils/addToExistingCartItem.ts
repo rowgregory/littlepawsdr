@@ -22,6 +22,8 @@ const addToExistingCartItem = (item: any, state: any, existingItem: any) => {
 
   const isPhysicalProduct = updatedCartItems?.some((item: any) => item?.isPhysicalProduct);
 
+  localStorage.setItem('cartData', JSON.stringify(updatedCartItems));
+
   state.loading = false;
   state.cartItem = item;
   state.cartItems = updatedCartItems;

@@ -13,7 +13,7 @@ export const userApi = api.injectEndpoints({
       providesTags: (result: any, error: any, arg: any) => [{ type: 'User', id: arg }],
     }),
     getUserShippingAddress: build.query({
-      query: () => `${BASE_URL}/shipping-address`,
+      query: (userId: string) => `${BASE_URL}/shipping-address/${userId}`,
       providesTags: (result: any, error: any, arg: any) => [{ type: 'User', id: arg }],
     }),
     updateUser: build.mutation({

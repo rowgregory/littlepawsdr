@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import useLoginForm from '../../utils/hooks/useLoginForm';
+import useLoginForm from '../../hooks/form-hooks/useLoginForm';
 import { useLoginMutation } from '../../redux/services/authApi';
 import { Logo2024 } from '../../components/assets';
 
@@ -74,7 +74,7 @@ const Login = () => {
             onClick={onSubmit}
             className='py-2 w-full bg-teal-300 text-white font-Matter-Regular rounded-md mt-4 flex items-center justify-center'
           >
-            Sign{isLoading && 'ing'} in{isLoading && '...'}
+            Log{isLoading && 'ing'} in{isLoading && '...'}
           </button>
         </form>
         <p className='text-sm text-gray-700 text-center mt-3'>

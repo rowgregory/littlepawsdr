@@ -1,41 +1,6 @@
 import { Reducer, createSlice } from '@reduxjs/toolkit';
 import { rescueGroupsApi } from '../../services/rescueGroupsApi';
 
-interface DachshundDetailsPayload {
-  data: [
-    {
-      attributes: {
-        photos: string[];
-        name: string;
-        ageGroup: number;
-        sex: string;
-        breedString: string;
-        descriptionHtml: string;
-        adoptionFeeString: string;
-      };
-      id: string;
-      relationships: {
-        statuses: {
-          data: [
-            {
-              type: string;
-              id: string;
-            }
-          ];
-        };
-      };
-    }
-  ];
-  included: any[];
-  meta: {
-    count: number;
-    countReturned: number;
-    pageReturned: number;
-    limit: number;
-    pages: number;
-  };
-}
-
 interface DachshundStatePayload {
   loading: boolean;
   success: boolean;
@@ -45,38 +10,24 @@ interface DachshundStatePayload {
   searchBarData: [] | null;
   available: [] | null;
   allDogs: any[] | null;
-  dachshund: DachshundDetailsPayload | null;
+  dachshund: {
+    attributes: {
+      photos: [];
+      name: string;
+      ageGroup: string;
+      sex: string;
+      breedString: string;
+      descriptionHtml: string;
+    };
+  } | null;
   searchBar: {
     list: [];
   };
   initialData: {} | null | unknown;
   dachshunds: [];
   totalCount: number;
+  dogStatusId: string;
 }
-
-const initialDachshundDetailsPayload: DachshundDetailsPayload = {
-  data: [
-    {
-      id: '',
-      attributes: {
-        photos: [],
-        name: '',
-        ageGroup: 0,
-        sex: '',
-        breedString: '',
-        descriptionHtml: '',
-        adoptionFeeString: '',
-      },
-      relationships: {
-        statuses: {
-          data: [{ type: '', id: '' }],
-        },
-      },
-    },
-  ],
-  included: [],
-  meta: { count: 0, countReturned: 0, pageReturned: 0, limit: 0, pages: 0 },
-};
 
 const initialDachshundState: DachshundStatePayload = {
   loading: false,
@@ -87,13 +38,23 @@ const initialDachshundState: DachshundStatePayload = {
   searchBarData: [],
   available: [],
   allDogs: [] as any,
-  dachshund: initialDachshundDetailsPayload,
+  dachshund: {
+    attributes: {
+      photos: [],
+      name: '',
+      ageGroup: '',
+      sex: '',
+      breedString: '',
+      descriptionHtml: '',
+    },
+  },
   searchBar: {
     list: [],
   },
   initialData: null,
   dachshunds: [],
   totalCount: 0,
+  dogStatusId: '',
 };
 
 export const dachshundSlice = createSlice({
@@ -110,7 +71,8 @@ export const dachshundSlice = createSlice({
       .addMatcher(
         rescueGroupsApi.endpoints.getDachshundById.matchFulfilled,
         (state, action: any) => {
-          state.available = action.payload.dachshunds;
+          state.dachshund = action.payload.data[0];
+          state.dogStatusId = action.payload.data[0].relationships?.statuses?.data[0]?.id;
         }
       )
       .addMatcher(

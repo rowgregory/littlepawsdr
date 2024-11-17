@@ -1,9 +1,9 @@
 import { Fragment } from 'react';
-import { Modal } from 'react-bootstrap';
+import Modal from '../common/Modal';
 
 const RegisterModal = ({ modal, handleClose, auth }: any) => {
   return (
-    <Modal show={modal?.open} onHide={handleClose} centered>
+    <Modal show={modal?.open} onClose={handleClose}>
       <div className='bg-white rounded-xl p-8 w-full'>
         <i
           onClick={handleClose}
@@ -25,40 +25,44 @@ const RegisterModal = ({ modal, handleClose, auth }: any) => {
             <h3 className='font-Matter-Medium mb-4 text-lg'>Password requirements</h3>
             <div className='flex items-center'>
               <i
-                className={`${auth?.validations[0] === 1
+                className={`${
+                  auth?.validations[0] === 1
                     ? 'fas fa-check text-green-500'
                     : 'fas fa-times text-red-500'
-                  }  mr-2`}
+                }  mr-2`}
               ></i>
               <p className='font-Matter-Regular text-gray-700'>must be at least 9 characters</p>
             </div>
             <div className='flex items-center'>
               <i
-                className={`${auth?.validations[1] === 1
+                className={`${
+                  auth?.validations[1] === 1
                     ? 'fas fa-check text-green-500'
                     : 'fas fa-times text-red-500'
-                  } text-green-500 mr-2`}
+                } text-green-500 mr-2`}
               ></i>
               <p className='font-Matter-Regular text-gray-700'>must contain a capital letter</p>
             </div>
             <div className='flex items-center'>
               <i
-                className={`${auth?.validations[2] === 1
+                className={`${
+                  auth?.validations[2] === 1
                     ? 'fas fa-check text-green-500'
                     : 'fas fa-times text-red-500'
-                  } text-green-500 mr-2`}
+                } text-green-500 mr-2`}
               ></i>
               <p className='font-Matter-Regular text-gray-700'>must contain a number</p>
             </div>
             <div className='flex items-center'>
               <i
-                className={`${auth?.validations[3] === 1
+                className={`${
+                  auth?.validations[3] === 1
                     ? 'fas fa-check text-green-500'
                     : 'fas fa-times text-red-500'
-                  } text-green-500 mr-2`}
+                } text-green-500 mr-2`}
               ></i>
               <p className='font-Matter-Regular text-gray-700'>
-                must contain one symbol ~`!-@#$%^ &*()_+={ }|:;"',.?
+                must contain one symbol ~`!-@#$%^ &*()_+={}|:;"',.?
               </p>
             </div>
           </Fragment>

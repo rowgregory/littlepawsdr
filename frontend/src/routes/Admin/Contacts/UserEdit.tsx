@@ -1,9 +1,6 @@
 import { Form } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
-import {
-  useGetUserQuery,
-  useUpdateUserRoleMutation,
-} from '../../../redux/services/userApi';
+import { useGetUserQuery, useUpdateUserRoleMutation } from '../../../redux/services/userApi';
 import TailwindSpinner from '../../../components/Loaders/TailwindSpinner';
 import { Link } from 'react-router-dom';
 import { formatDateWithTimezone } from '../../../utils/dateFunctions';
@@ -74,9 +71,7 @@ const UserEdit = () => {
         <div className='grid grid-cols-12 gap-3'>
           <div className='col-span-12 md:col-span-4'>
             <p className='text-lg font-Matter-Medium'>Admin privileges</p>
-            <p className='font-Matter-Light text-sm tracking-wide'>
-              Allow access to the dashboard
-            </p>
+            <p className='font-Matter-Light text-sm tracking-wide'>Allow access to the dashboard</p>
           </div>
           <div className='col-span-12 md:col-span-8 md:col-start-6'>
             <div className='flex flex-col gap-3'>
@@ -84,7 +79,7 @@ const UserEdit = () => {
                 {loadingUpdate ? (
                   <TailwindSpinner />
                 ) : (
-                  <Form.Group className='d-flex align-items-center' controlId='isAdmin'>
+                  <Form.Group className='flex items-center' controlId='isAdmin'>
                     <Form.Check
                       type='switch'
                       checked={data?.isAdmin || false}

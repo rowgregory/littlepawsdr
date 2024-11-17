@@ -108,10 +108,11 @@ const AdoptionApplicationFees = () => {
                   </td>
                   <td className='px-4'>
                     <p
-                      className={`${fee?.exp === null
+                      className={`${
+                        fee?.exp === null
                           ? 'text-orange-500 bg-orange-100'
                           : 'text-green-500 bg-green-100'
-                        } px-2.5 py-0.5 font-Matter-Medium rounded-3xl text-sm w-fit whitespace-nowrap`}
+                      } px-2.5 py-0.5 font-Matter-Medium rounded-3xl text-sm w-fit whitespace-nowrap`}
                     >
                       {fee?.applicationStatus}
                     </p>

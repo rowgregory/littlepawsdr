@@ -5,7 +5,7 @@ import { RootState, useAppDispatch } from '../../../redux/toolkitStore';
 import { useParams } from 'react-router-dom';
 import { useUpdateCampaignMutation } from '../../../redux/services/campaignApi';
 import { resetSuccess } from '../../../redux/features/campaign/campaignSlice';
-import useCampaignDetailsForm from '../../../utils/hooks/useCampaignDetailsForm';
+import useCampaignDetailsForm from '../../../hooks/form-hooks/useCampaignDetailsForm';
 import MainDetailsForm from '../../../components/forms/campaign/details/MainDetailsForm';
 import CoverPhotoForm from '../../../components/forms/campaign/details/CoverPhotoForm';
 import StoryForm from '../../../components/forms/campaign/details/StoryForm';

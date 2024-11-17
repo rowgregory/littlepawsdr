@@ -96,7 +96,7 @@ const processSessions = async (sessions, res, req, hasBypassCode) => {
 
 const createAdoptionApplicationFee = async (res, req) => {
   const log = await prepareLog('CREATE_ADOPTION_APPLICATION_FEE');
-  logEvent(log, 'INITIATE CREATE ADOPTION APPLICATION FEE DOCUMENT')
+  logEvent(log, 'INITIATE CREATE ADOPTION APPLICATION FEE DOCUMENT');
   try {
     const fee = await AdoptionFee.create({
       firstName: req.body.firstName,
@@ -107,7 +107,10 @@ const createAdoptionApplicationFee = async (res, req) => {
       paypalOrderId: req.body.paypalOrderId,
       bypassCode: req.body.bypassCode,
     });
-    logEvent(log, 'ADOPTION APPLICATION FEE DOCUMENT CREATED - GENERATING JWT', { id: fee._id, email: fee.emailAddress })
+    logEvent(log, 'ADOPTION APPLICATION FEE DOCUMENT CREATED - GENERATING JWT', {
+      id: fee._id,
+      email: fee.emailAddress,
+    });
     fee.token = generateToken(
       {
         id: fee._id,
@@ -116,13 +119,16 @@ const createAdoptionApplicationFee = async (res, req) => {
       },
       '7d'
     );
-    logEvent(log, 'JWT CREATED')
-    logEvent(log, 'DECODEDING JWT TO GET EXP')
+    logEvent(log, 'JWT CREATED');
+    logEvent(log, 'DECODEDING JWT TO GET EXP');
     const decodedToken = jwt.verify(fee.token, process.env.JWT_SECRET);
     fee.exp = decodedToken.exp;
-    logEvent(log, 'JWT EXP', { exp: fee.exp })
+    logEvent(log, 'JWT EXP', { exp: fee.exp });
     const savedAdoptionFee = await fee.save();
-    logEvent(log, 'ADOPTION APPLICATION FEE SAVED WITH TOKEN - SENDING ADOPTION APPLICATION FEE CONFIRMATION EMAIL')
+    logEvent(
+      log,
+      'ADOPTION APPLICATION FEE SAVED WITH TOKEN - SENDING ADOPTION APPLICATION FEE CONFIRMATION EMAIL'
+    );
     await sendEmail(savedAdoptionFee, 'SEND_ADOPTION_FEE_CONFIRMATION');
 
     createActionHistoryLog({
@@ -139,8 +145,8 @@ const createAdoptionApplicationFee = async (res, req) => {
       ip: req.ip,
       deviceInfo: req.userAgent,
     });
-    logEvent(log, 'CREATE ADOPTION APPLICATION FEE DOCUMENT END')
-    await log.save()
+    logEvent(log, 'CREATE ADOPTION APPLICATION FEE DOCUMENT END');
+    await log.save();
     return res.status(200).json({
       token: savedAdoptionFee.token,
       success: true,
@@ -148,8 +154,11 @@ const createAdoptionApplicationFee = async (res, req) => {
       sliceName: 'adoptionApplicationFeeApi',
     });
   } catch (err) {
-    logEvent(log, 'CREATE ADOPTION APPLICATION FEE DOCUMENT ERROR', { message: err.message, name: err.name })
-    await log.save()
+    logEvent(log, 'CREATE ADOPTION APPLICATION FEE DOCUMENT ERROR', {
+      message: err.message,
+      name: err.name,
+    });
+    await log.save();
     await Error.create({
       functionName: 'CREATE_ADOPTION_APPLICATION_FEE_PUBLIC',
       detail: err.message,
@@ -253,7 +262,7 @@ const checkJwtValidityAdoptionFee = asyncHandler(async (req, res) => {
     logEvent(log, 'VALID TOKEN', decodedToken);
     logEvent(log, 'END CHECK JWT ADOPTION APPLICATION FEE JWT VALIDITY');
     await log.save();
-    res.status(200).json({ isExpired: false, message: 'Token is valid', exp: decodedToken.exp });
+    res.status(200).json({ isExpired: false, exp: decodedToken.exp });
   } catch (err) {
     await Error.create({
       functionName: 'CHECK_JWT_VALIDITY_ADOPTION_APPLICATION_FEE_PRIVATE',

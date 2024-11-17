@@ -4,7 +4,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import VerticalLogo from '../../components/common/VerticalLogo';
 import { Link } from 'react-router-dom';
 import { formatDateForEstTimezone } from '../../utils/dateFunctions';
-import useECardForm from '../../utils/hooks/useEcardForm';
+import useECardForm from '../../hooks/form-hooks/useEcardForm';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/toolkitStore';
 import PersonalizeEcardForm from '../../components/forms/PersonalizeEcardForm';
