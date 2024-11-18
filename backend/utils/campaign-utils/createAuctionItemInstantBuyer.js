@@ -10,6 +10,8 @@ async function createAuctionItemInstantBuyerDocument(data, user) {
       name: user?.name,
       email: user?.email,
       totalPrice: data.totalPrice,
+      isDigital: data.isDigital,
+      shippingStatus: data.isDigital ? 'Digital' : 'Pending Fulfillment',
     });
 
     await auctionItemInstantBuyer.save();

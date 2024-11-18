@@ -6,7 +6,7 @@ type AuctionRegisterModalProps = {
   open: boolean;
   handleClose: any;
   theme: any;
-  customCampaignLink: string;
+  customCampaignLink: string | undefined;
 };
 
 const AuctionRegisterModal: FC<AuctionRegisterModalProps> = ({

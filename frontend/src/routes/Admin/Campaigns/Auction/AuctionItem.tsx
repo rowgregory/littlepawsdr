@@ -21,8 +21,8 @@ const AuctionItem = () => {
   const [deleteAuctionItemPhoto, { isLoading: loadingDelete }] =
     useDeleteAuctionItemPhotoMutation();
 
-  const auctionItem = campaign.campaign.auction.items.find(
-    (item: any) => item._id === auctionItemId
+  const auctionItem = campaign.campaign.auction?.items?.find(
+    (item: any) => item?._id === auctionItemId
   );
 
   const editPhotoHandler = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -69,13 +69,21 @@ const AuctionItem = () => {
         description: inputs.description,
         photos: inputs.photos,
         sellingFormat: inputs.sellingFormat,
-        totalQuantity: inputs.totalQuantity,
+
         requiresShipping: inputs.requiresShipping,
         shippingCosts: inputs.shippingCosts,
         ...(inputs.sellingFormat === 'fixed' && {
+          startingPrice: null,
+          currentPrice: null,
+          currentBid: null,
+          minimumBid: null,
           buyNowPrice: inputs.buyNowPrice,
           isFixed: true,
           isAuction: false,
+          isDigital: inputs.isDigital,
+          itemBtnText: 'Buy Now',
+          totalBids: null,
+          totalQuantity: inputs.totalQuantity,
         }),
         ...(inputs.sellingFormat === 'auction' && {
           startingPrice: inputs.startingPrice,
@@ -84,8 +92,12 @@ const AuctionItem = () => {
           minimumBid: inputs.startingPrice,
           isFixed: false,
           isAuction: true,
+          isDigital: false,
+          buyNowPrice: null,
+          itemBtnText: 'Place Bid',
+          totalBids: 0,
+          totalQuantity: 1,
         }),
-        itemBtnText: inputs.sellingFormat === 'fixed' ? 'Buy Now' : 'Place Bid',
       })
         .unwrap()
         .then(() => navigate(`/admin/campaigns/${campaign?.campaign?._id}/auction/items`))
@@ -97,14 +109,29 @@ const AuctionItem = () => {
         name: inputs.name,
         description: inputs.description,
         sellingFormat: inputs.sellingFormat,
-        startingPrice: inputs.startingPrice,
-        buyNowPrice: inputs.buyNowPrice,
-        currentPrice: inputs.startingPrice,
-        totalQuantity: inputs.totalQuantity,
         requiresShipping: inputs.requiresShipping,
         shippingCosts: inputs.shippingCosts,
-        currentBid: inputs.startingPrice,
-        minimumBid: inputs.startingPrice,
+        ...(inputs.sellingFormat === 'fixed' && {
+          buyNowPrice: inputs.buyNowPrice,
+          isFixed: true,
+          isAuction: false,
+          isDigital: inputs.isDigital,
+          totalQuantity: inputs.totalQuantity,
+          itemBtnText: 'Buy Now',
+          totalBids: null,
+        }),
+        ...(inputs.sellingFormat === 'auction' && {
+          startingPrice: inputs.startingPrice,
+          currentPrice: inputs.startingPrice,
+          currentBid: inputs.startingPrice,
+          minimumBid: inputs.startingPrice,
+          isFixed: false,
+          isAuction: true,
+          isDigital: false,
+          totalBids: 0,
+          totalQuantity: 1,
+          itemBtnText: 'Place Bid',
+        }),
       })
         .unwrap()
         .then(() => navigate(`/admin/campaigns/${campaign?.campaign?._id}/auction/items`))

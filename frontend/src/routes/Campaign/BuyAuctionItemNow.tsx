@@ -55,6 +55,7 @@ const BuyAuctionItemNow = () => {
           payPalId: details?.id,
           buyNowPrice: auctionItem?.buyNowPrice,
           totalPrice: auctionItem?.total,
+          isDigital: auctionItem?.isDigital,
         };
 
         await createInstantBuy(instantBuyObj)

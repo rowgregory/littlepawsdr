@@ -1,6 +1,7 @@
 import { Fragment } from 'react';
-import { Form, Spinner } from 'react-bootstrap';
 import TailwindSpinner from '../../Loaders/TailwindSpinner';
+import Switch from '../../common/Switch';
+import FileInput from '../../common/FileInput';
 
 const AuctionItemForm = ({
   inputs,
@@ -44,16 +45,13 @@ const AuctionItemForm = ({
           ></textarea>
         </div>
       </div>
-      <div>
+      <section>
         <label htmlFor='multiple-images' className='font-Matter-Medium'>
           Photos
         </label>
         <p className='font-Matter-Light mb-2'>Add detailed images of your auction item.</p>
-        <div className='border border-slate-100 border-dashed rounded-lg'>
-          <Form.File
-            className='auction-item'
-            multiple
-            type='file'
+        <div className='border rounded-lg'>
+          <FileInput
             id='multiple-images'
             label={
               <div className='flex justify-center items-center cursor-pointer pt-8'>
@@ -70,7 +68,8 @@ const AuctionItemForm = ({
               </div>
             }
             onChange={editPhotoHandler}
-          ></Form.File>
+            multiple={true}
+          />
           <div className='flex flex-wrap px-8 pb-4 gap-2'>
             {Array.from(inputs.photos)?.map((file: any, i: number) => (
               <div
@@ -78,11 +77,7 @@ const AuctionItemForm = ({
                 className='w-36 h-36 lg:w-56 lg:h-56 rounded-md border border-dashed border-gray-100 flex items-center justify-center pt-10 pb-6 px-3 lg:px-9 cursor-pointer bg-[#0b0b0b] relative'
               >
                 {loading && file._id === inputs.photoIdToDelete ? (
-                  <Spinner
-                    animation='border'
-                    size='sm'
-                    className='text-teal-400 absolute top-3.5 left-2.5 z-2'
-                  />
+                  <TailwindSpinner color='fill-teal-400' />
                 ) : (
                   <i
                     onClick={() => deleteImageHandler(file)}
@@ -109,8 +104,8 @@ const AuctionItemForm = ({
               })}
           </div>
         </div>
-      </div>
-      <div>
+      </section>
+      <section>
         <div className='font-Matter-Medium mb-3'>Selling Format</div>
         <div className='grid grid-cols-12 gap-3'>
           <label
@@ -135,16 +130,14 @@ const AuctionItemForm = ({
             </div>
             <div className='flex flex-col ml-1'>
               <div className='font-Matter-Medium mb-0.5'>Auction Style</div>
-              <div className='font-Matter-Light'>
-                Item is sold to the highest bidder or purchased at an optional Buy-It-Now price.
-              </div>
+              <div className='font-Matter-Light'>Item is sold to the highest bidder.</div>
             </div>
           </label>
           <label
             htmlFor='fixed'
             className={`${
               inputs.sellingFormat === 'fixed'
-                ? 'border-2 border-sky-600'
+                ? 'border-2 border-teal-600'
                 : 'border-2 border-slate-100'
             } col-span-12 md:col-span-6 bg-slate-50 rounded-lg p-3 flex font-Matter-Medium cursor-pointer`}
           >
@@ -168,11 +161,11 @@ const AuctionItemForm = ({
             </div>
           </label>
           {inputs.sellingFormat === 'auction' ? (
-            <div className='col-span-12 md:col-span-6 '>
+            <div className='col-span-12 md:col-span-6'>
               <label htmlFor='startingPrice' className='font-Matter-Medium'>
                 Starting Price
               </label>
-              <div className='flex items-center border border-slate-100 rounded-lg px-3 py-2'>
+              <div className='flex items-center border rounded-lg px-3 py-2'>
                 <div className='font-Matter-regular mr-2'>$</div>
                 <input
                   autoComplete='off'
@@ -180,8 +173,8 @@ const AuctionItemForm = ({
                   id='startingPrice'
                   min={1}
                   name='startingPrice'
-                  value={inputs.startingPrice}
-                  className='border-0 rounded-xl p-0 focus:outline-0'
+                  value={inputs.startingPrice || ''}
+                  className='border-0 p-0 focus:outline-0 w-full'
                   onChange={handleInput}
                 />
               </div>
@@ -192,7 +185,7 @@ const AuctionItemForm = ({
                 <label htmlFor='buyNowPrice' className='font-Matter-Medium'>
                   Buy Now Price
                 </label>
-                <div className='flex items-center border border-slate-100 rounded-lg px-3 py-2'>
+                <div className='flex items-center border rounded-lg px-3 py-2'>
                   <div className='font-Matter-regular mr-2'>$</div>
                   <input
                     autoComplete='off'
@@ -201,7 +194,7 @@ const AuctionItemForm = ({
                     min={1}
                     name='buyNowPrice'
                     value={inputs.buyNowPrice || ''}
-                    className='border-0 p-0 focus:outline-0'
+                    className='border-0 p-0 focus:outline-0 w-full'
                     onChange={handleInput}
                   />
                 </div>
@@ -210,35 +203,43 @@ const AuctionItemForm = ({
                 <label htmlFor='totalQuantity' className='font-Matter-Medium'>
                   Total Quantity
                 </label>
-                <div className='flex items-center border border-slate-100 rounded-lg px-3 py-2'>
+                <div className='flex items-center border rounded-lg px-3 py-2'>
                   <input
                     type='number'
                     id='totalQuantity'
                     min={1}
                     name='totalQuantity'
                     value={inputs.totalQuantity || ''}
-                    className='border-0 p-0 focus:outline-0'
+                    className='border-0 p-0 focus:outline-0 w-full'
                     onChange={handleInput}
                   />
                 </div>
               </div>
+              <div className='col-span-12'>
+                <div className='flex justify-between items-center w-full h-6'>
+                  <div className='font-Matter-Medium'>Digital Product</div>
+                  <Switch
+                    name='isDigital'
+                    checked={inputs.isDigital || false}
+                    onChange={handleSwitch}
+                  ></Switch>
+                </div>
+                <label htmlFor='isDigital' className='font-Matter-Light'>
+                  Indicates the item does not need to be fulfilled by mail.
+                </label>
+              </div>
             </Fragment>
           )}
         </div>
-      </div>
-      <div className='flex flex-col mt-8'>
+      </section>
+      <section className='flex flex-col mt-8'>
         <div className='flex justify-between items-center w-full h-6'>
           <div className='font-Matter-Medium'>Requires Shipping</div>
-          <Form.Group controlId='requiresShipping' className='mb-0'>
-            <Form.Check
-              className='auction'
-              type='switch'
-              id='requiresShipping'
-              checked={inputs.requiresShipping || false}
-              onChange={handleSwitch}
-              name='requiresShipping'
-            ></Form.Check>
-          </Form.Group>
+          <Switch
+            name='requiresShipping'
+            checked={inputs.requiresShipping || false}
+            onChange={handleSwitch}
+          ></Switch>
         </div>
         <label htmlFor='requiresShipping' className='font-Matter-Light'>
           Indicates the item needs to be fulfilled by mail.
@@ -248,7 +249,7 @@ const AuctionItemForm = ({
             <label htmlFor='shippingCosts' className='font-Matter-Light'>
               Shipping Costs
             </label>
-            <div className='flex items-center border border-slate-100 rounded-lg px-3 py-2'>
+            <div className='flex items-center border rounded-lg px-3 py-2'>
               <div className='font-Matter-regular mr-2'>$</div>
               <input
                 type='number'
@@ -256,35 +257,13 @@ const AuctionItemForm = ({
                 min={0}
                 name='shippingCosts'
                 value={inputs.shippingCosts || ''}
-                className='border-0 p-0 focus:outline-0'
+                className='border-0 p-0 focus:outline-0 w-full'
                 onChange={handleInput}
               />
             </div>
           </div>
         </div>
-      </div>
-      <div>
-        <div className='font-Matter-Medium mb-2.5'>Visibility</div>
-        <div className='border-[1px] border-sky-500 rounded-lg p-3 flex items-baseline bg-[#eff4ff]'>
-          <label htmlFor='visibility' className='flex mb-0'>
-            <div className='w-9 mr-1'>
-              <input
-                type='radio'
-                autoComplete='off'
-                id='visibility'
-                checked={true}
-                value='public'
-                className='selling-format h-fit mt-1'
-                onChange={(e: any) => {}}
-              />
-            </div>
-            <div>
-              <div className='font-Matter-Medium'>Public</div>
-              <div className='font-Matter-Light'>This item will be viewable by everyone.</div>
-            </div>
-          </label>
-        </div>
-      </div>
+      </section>
       <button
         className='mt-4 flex justify-center items-center px-3 py-2 bg-yellow-to-green text-white w-16 h-10 rounded-lg font-Matter-Regular cursor-pointer'
         onClick={saveAuctionItem}

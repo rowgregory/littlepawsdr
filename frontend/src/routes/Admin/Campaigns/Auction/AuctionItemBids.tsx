@@ -43,31 +43,26 @@ const AuctionItemBids = () => {
                 <table className='w-full'>
                   <thead className='whitespace-nowrap px-4 pb-4 pt-2'>
                     <tr className='bg-zinc-50'>
-                      <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
-                        <div className=' text-sm cursor-pointer -mx-1.5 -my-1 w-fit px-1.5 py-1 rounded-md hover:bg-gray-200 flex flex-nowrap items-center gap-2'>
-                          Amount
-                        </div>
+                      <th className='px-4 border-b border-gray-100 font-Matter-Regular py-2'>
+                        <div className='text-sm flex flex-nowrap items-center gap-2'>Amount</div>
                       </th>
-                      <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
-                        <div className=' text-sm flex flex-nowrap items-center gap-2'>
+                      <th className='px-4 border-b border-gray-100 font-Matter-Regular py-2'>
+                        <div className='text-sm flex flex-nowrap items-center gap-2'>
                           Bidder Name
                         </div>
                       </th>
-                      <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
-                        <div className=' text-sm flex flex-nowrap items-center gap-2'>
+                      <th className='px-4 border-b border-gray-100 font-Matter-Regular py-2'>
+                        <div className='text-sm flex flex-nowrap items-center gap-2'>
                           Date & Time
                         </div>
                       </th>
-                      <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
-                        <div className=' text-sm flex flex-nowrap items-center gap-2'>
+                      <th className='px-4 border-b border-gray-100 font-Matter-Regular py-2'>
+                        <div className='text-sm flex flex-nowrap items-center gap-2'>
                           Out Bid Email
                         </div>
                       </th>
-                      <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
-                        <div className=' text-sm flex flex-nowrap items-center gap-2'>Status</div>
-                      </th>
-                      <th>
-                        <div className='flex flex-nowrap items-center gap-2'></div>
+                      <th className='px-4 border-b border-gray-100 font-Matter-Regular py-2'>
+                        <div className='text-sm flex flex-nowrap items-center gap-2'>Status</div>
                       </th>
                     </tr>
                   </thead>
@@ -78,14 +73,14 @@ const AuctionItemBids = () => {
                           <td>
                             <div className='m-0 w-full  p-0 decoration-inherit hover:text-inherit hover:decoration-inherit !flex h-[3.25rem] items-center px-4'>
                               <div className='max-w-[15rem]'>
-                                <span className='text-sm font-Matter-Regular truncate'>
+                                <span className='text-xs font-Matter-Regular truncate'>
                                   ${bid?.bidAmount?.toFixed(2)}
                                 </span>
                               </div>
                             </div>
                           </td>
                           <td>
-                            <p className='text-gray-900 text-sm font-Matter-Regular items-center px-4'>
+                            <p className='text-gray-900 text-xs font-Matter-Regular items-center px-4'>
                               {bid?.bidder}
                             </p>
                           </td>
@@ -108,17 +103,19 @@ const AuctionItemBids = () => {
                             </div>
                           </td>
                           <td>
-                            <p
-                              className={`${
-                                bid?.status === 'Paid'
-                                  ? 'bg-green-100 text-green-600'
-                                  : bid?.status === 'Top Bid'
-                                  ? 'bg-indigo-100 text-indigo-500'
-                                  : 'bg-yellow-100 text-yellow-600'
-                              } text-sm font-Matter-Regular items-center ml-6 px-2.5 py-1 rounded-2xl w-fit`}
-                            >
-                              {bid?.status}
-                            </p>
+                            <div className='items-center px-4'>
+                              <p
+                                className={`${
+                                  bid?.status === 'Paid'
+                                    ? 'bg-green-100 text-green-600'
+                                    : bid?.status === 'Top Bid'
+                                    ? 'bg-indigo-100 text-indigo-500'
+                                    : 'bg-yellow-100 text-yellow-600'
+                                } text-sm font-Matter-Regular items-center px-2.5 py-1 rounded-2xl w-fit`}
+                              >
+                                {bid?.status}
+                              </p>
+                            </div>
                           </td>
                         </tr>
                       ))

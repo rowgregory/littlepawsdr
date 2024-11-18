@@ -20,7 +20,7 @@ const AuctionItemDetailsSection: FC<AuctionItemDetailsSectionProps> = ({
         </p>
         <p className='col-span-11 text-lg font-Matter-Medium'>Item Details</p>
       </div>
-      <div className='bg-white w-full rounded-lg shadow-sm py-1 px-4 grid grid-cols-12 mb-5 p-4'>
+      <div className='bg-white w-full rounded-lg shadow-sm grid grid-cols-12 mb-5 p-4'>
         <div className='grid col-span-6 gap-2'>
           <p className='font-Matter-Regular text-xs text-gray-400'>ITEM ID:</p>
           {auctionItem?.isAuction && (

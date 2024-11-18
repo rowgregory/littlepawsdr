@@ -52,6 +52,10 @@ const AuctionItemButtonBox = ({
             auctionItem?.totalQuantity === 0
           }
           className={`${
+            campaign?.campaign?.campaignStatus === 'Active Campaign'
+              ? 'cursor-pointer'
+              : 'cursor-not-allowed'
+          } ${
             ifCampaignIsOver ? 'bg-gray-600 text-gray-200' : campaign?.campaign.themeColor.dark
           } py-3.5 w-full rounded-lg flex items-center justify-center mb-5 duration-200 hover:no-underline`}
           onClick={() => {

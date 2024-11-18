@@ -21,6 +21,11 @@ const auctionSidebarLinksData = (id: any, auctionItemId: string) => [
     linkKey: `/admin/campaigns/${id}/auction/items`,
   },
   {
+    title: 'Instant Buyers',
+    key: 'instant-buyers',
+    linkKey: `/admin/campaigns/${id}/auction/instant-buyers`,
+  },
+  {
     title: 'Bidders',
     key: 'bidders',
     linkKey: `/admin/campaigns/${id}/auction/bidders`,

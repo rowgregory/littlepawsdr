@@ -21,6 +21,7 @@ const updateAuctionWinningBidder = asyncHandler(async (req, res) => {
         auctionItemPaymentStatus: 'Paid',
         shippingStatus: 'Pending Fulfillment',
         payPalId: req.body?.payPalId,
+        paidOn: new Date(),
       },
       { new: true }
     );

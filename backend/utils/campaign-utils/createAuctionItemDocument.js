@@ -7,56 +7,27 @@ async function createAuctionItemDocument(log, data) {
 
   try {
     const auctionItemPhotos = await Promise.all(
-        data.photos.map(async (photo) => {
-          const auctionItemPhoto = new AuctionItemPhoto({
-            name: photo.name,
-            url: photo.url,
-            size: photo.size,
-          });
-  
-          const savedPhoto = await auctionItemPhoto.save();
-          return savedPhoto; // Return the saved photo document
-        })
-      );
+      data.photos.map(async (photo) => {
+        const auctionItemPhoto = new AuctionItemPhoto({
+          name: photo.name,
+          url: photo.url,
+          size: photo.size,
+        });
 
-    const auctionItemData = {
-        auction: data.auction,
-        name: data.name,
-        description: data.description,
-        photos: auctionItemPhotos.map((photo) => photo._id),
-        requiresShipping: data.requiresShipping,
-        shippingCosts: data.shippingCosts,
-        totalQuantity: data.totalQuantity || 1, // default to 1 for auction items
-      };
+        const savedPhoto = await auctionItemPhoto.save();
+        return savedPhoto;
+      })
+    );
 
-    let auctionItem;
-    if (data.sellingFormat === 'fixed') {
-      auctionItem = new AuctionItem({
-        ...auctionItemData,
-        sellingFormat: 'fixed',
-        buyNowPrice: data.buyNowPrice,
-        itemBtnText: 'Buy Now',
-        isFixed: true,
-      });
-      logEvent(log, 'CREATED FIXED AUCTION ITEM', auctionItem);
-    } else {
-      auctionItem = new AuctionItem({
-        ...auctionItemData,
-        sellingFormat: 'auction',
-        startingPrice: data.startingPrice,
-        currentBid: data.startingPrice,
-        totalBids: 0,
-        itemBtnText: 'Place Bid',
-        minimumBid: data.minimumBid,
-        isAuction: true,
-      });
-      logEvent(log, 'CREATED AUCTION ITEM', auctionItem);
-    }
+    let auctionItem = new AuctionItem({
+      ...data,
+      photos: auctionItemPhotos.map((photo) => photo._id),
+    });
 
-   const savedAuctionItem = await auctionItem.save();
-   logEvent(log, 'AUCTION ITEM SAVED', savedAuctionItem);
+    const savedAuctionItem = await auctionItem.save();
+    logEvent(log, 'AUCTION ITEM SAVED', savedAuctionItem);
 
-   return savedAuctionItem;
+    return savedAuctionItem;
   } catch (err) {
     logEvent(log, 'ERROR CREATING AUCTION ITEM', err);
 

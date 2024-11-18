@@ -82,11 +82,8 @@ const getUserShippingAddress = asyncHandler(async (req, res) => {
     }
     const user = await User.findById(req.params.userId).select('shippingAddress');
 
-    if (!user) {
-      return res.json({ hasShippingAddress: false });
-    }
-
     const isValid = validateShippingAddress(user.shippingAddress);
+
     if (isValid) {
       res.status(200).json({ hasShippingAddress: true });
     } else {

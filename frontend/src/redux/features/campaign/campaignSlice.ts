@@ -19,7 +19,7 @@ export const campaignSlice = createSlice({
       localStorage.setItem('handledAuctionModal', JSON.stringify(true));
     },
     setCampaign(state, action: PayloadAction<any>) {
-      state.campaign = {...state.campaign, ...action.payload}
+      state.campaign = { ...state.campaign, ...action.payload };
 
       const handledAuctionModal = JSON.parse(
         localStorage.getItem('handledAuctionModal') || 'false'
@@ -43,6 +43,71 @@ export const campaignSlice = createSlice({
     },
     closeAuctionModal(state) {
       state.isAuctionModalOpen = false;
+    },
+    setSearchQuery: (state, { payload }) => {
+      state.text = payload?.text;
+
+      const query = payload?.text?.toLowerCase();
+      state.filteredArray = payload?.arrayToFilter?.filter(
+        (data: any) =>
+          data?.auctionItem?.name?.toLowerCase()?.includes(query) ||
+          String(data?.totalPrice)?.includes(query) ||
+          data?.winningBidPaymentStatus?.toLowerCase()?.includes(query) ||
+          data?.name?.toLowerCase()?.includes(query) ||
+          data?.shippingStatus?.toLowerCase()?.includes(query) ||
+          data?.email?.toLowerCase()?.includes(query) ||
+          data?.user?.name?.toLowerCase()?.includes(query) ||
+          data?.user?._id?.toLowerCase()?.includes(query) ||
+          data?.user?.email?.toLowerCase()?.includes(query) ||
+          data?.status?.toLowerCase()?.includes(query) ||
+          String(data?.currentBid)?.includes(query) ||
+          String(data?.buyNowPrice)?.includes(query) ||
+          data?._id?.toLowerCase()?.includes(query) ||
+          data?.sellingFormat?.toLowerCase()?.includes(query) ||
+          String(data?.totalBids)?.includes(query)
+      );
+    },
+    setInitialArray: (state, { payload }) => {
+      state.filteredArray = payload.arrayToFilter;
+    },
+    sortTable: (state, action) => {
+      const { arrayToSort, key } = action.payload;
+
+      const direction = state.sortKey === key && state.sortDirection === 'asc' ? 'desc' : 'asc';
+
+      state.sortKey = key;
+      state.sortDirection = direction;
+
+      const getValueFromObject = (obj: any, key: any) => {
+        const keys = key.split('.');
+        return keys.reduce((acc: any, curr: any) => acc?.[curr], obj);
+      };
+
+      const sortedData = [...arrayToSort].sort((a, b) => {
+        let valueA = a;
+        let valueB = b;
+
+        valueA = getValueFromObject(valueA, key);
+        valueB = getValueFromObject(valueB, key);
+
+        if (key === 'bids') {
+          valueA = +a.bids.length;
+          valueB = +b.bids.length;
+        }
+
+        if (typeof valueA === 'string' && typeof valueB === 'string') {
+          if (valueA.toLowerCase() < valueB.toLowerCase()) return direction === 'asc' ? -1 : 1;
+          if (valueA.toLowerCase() > valueB.toLowerCase()) return direction === 'asc' ? 1 : -1;
+        }
+
+        if (typeof valueA === 'number' && typeof valueB === 'number') {
+          return direction === 'asc' ? valueA - valueB : valueB - valueA;
+        }
+
+        return 0;
+      });
+
+      state.filteredArray = sortedData;
     },
   },
   extraReducers: (builder) => {
@@ -200,4 +265,7 @@ export const {
   saveHasHandledAuctionModalToLocalStorage,
   setCampaign,
   closeAuctionModal,
+  setSearchQuery,
+  setInitialArray,
+  sortTable,
 } = campaignSlice.actions;

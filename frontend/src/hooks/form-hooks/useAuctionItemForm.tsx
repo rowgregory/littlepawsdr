@@ -11,10 +11,11 @@ const useAuctionItemForm = (data?: any) => {
       startingPrice: data?.startingPrice || 1,
       buyNowPrice: data?.buyNowPrice || 0,
       totalQuantity: data?.totalQuantity || 0,
-      requiresShipping: data?.requiresShipping || true,
+      requiresShipping: data?.requiresShipping || false,
       shippingCosts: data?.shippingCosts || 0,
       photoAmount: 0,
       photoIdToDelete: '',
+      isDigital: data?.isDigital || false,
     }),
     [data]
   );
@@ -35,6 +36,7 @@ const useAuctionItemForm = (data?: any) => {
         shippingCosts: data?.shippingCosts,
         photoAmount: 0,
         photoIdToDelete: '',
+        isDigital: data?.isDigital,
       });
     }
   }, [data]);
@@ -58,4 +60,4 @@ const useAuctionItemForm = (data?: any) => {
   return { inputs, handleSwitch, handleInput, setInputs };
 };
 
-export default useAuctionItemForm
+export default useAuctionItemForm;

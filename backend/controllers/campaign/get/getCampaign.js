@@ -3,40 +3,50 @@ import { Campaign } from '../../../models/campaignModel.js';
 import Error from '../../../models/errorModel.js';
 
 const campaignQuery = [
-    {
-      path: 'auction',
-      populate: [
-        {
-          path: 'donations',
-          select: 'donor donorPublicMessage oneTimeDonationAmount email createdAt',
-        },
-        {
-          path: 'items',
-          populate: [
-            { path: 'photos', select: 'url name size' },
-            {
-              path: 'instantBuyers',
-              populate: [{ path: 'user' }, { path: 'auctionItem' }],
-            },
-            { path: 'bids' },
-          ],
-        },
-        { path: 'settings', select: 'endDate startDate status' },
-        {
-          path: 'winningBids',
-          populate: [{ path: 'user' }, { path: 'auctionItem', populate: [{ path: 'photos' }] }],
-        },
-        {
-          path: 'bidders',
-          populate: [{ path: 'user', select: 'name email _id createdAt shippingAddress' }],
-        },
-        {
-          path: 'itemFulfillments',
-          populate: [{ path: 'user' }, { path: 'auctionItem', populate: [{ path: 'photos' }] }],
-        },
-      ],
-    },
-  ]
+  {
+    path: 'auction',
+    populate: [
+      {
+        path: 'donations',
+        select: 'donor donorPublicMessage oneTimeDonationAmount email createdAt',
+      },
+      {
+        path: 'items',
+        populate: [
+          { path: 'photos', select: 'url name size' },
+          {
+            path: 'instantBuyers',
+            populate: [{ path: 'user' }, { path: 'auctionItem' }],
+          },
+          { path: 'bids' },
+        ],
+      },
+      { path: 'settings', select: 'endDate startDate status' },
+      {
+        path: 'winningBids',
+        populate: [{ path: 'user' }, { path: 'auctionItem', populate: [{ path: 'photos' }] }],
+      },
+      {
+        path: 'instantBuyers',
+        populate: [
+          { path: 'user', select: 'name email' },
+          { path: 'auctionItem', populate: [{ path: 'photos' }] },
+        ],
+      },
+      {
+        path: 'bidders',
+        populate: [
+          { path: 'user', select: 'name email _id createdAt shippingAddress' },
+          { path: 'bids', populate: [{ path: 'auctionItem', populate: [{ path: 'photos' }] }] },
+        ],
+      },
+      {
+        path: 'itemFulfillments',
+        populate: [{ path: 'user' }, { path: 'auctionItem', populate: [{ path: 'photos' }] }],
+      },
+    ],
+  },
+];
 
 /**
  @desc    Get campaign

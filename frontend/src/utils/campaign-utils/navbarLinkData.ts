@@ -14,11 +14,6 @@ const navbarLinksData = (id: string) => [
     key: 'auction',
     linkKey: `/admin/campaigns/${id}/auction`,
   },
-  {
-    title: 'Settings',
-    key: 'settings',
-    linkKey: `/admin/campaigns/${id}/settings`,
-  },
 ];
 
 export default navbarLinksData;

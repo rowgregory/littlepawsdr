@@ -1,5 +1,5 @@
-export const capitalizeFirstLetter = (quality: string) => {
-  const firstLetter = quality.charAt(0).toUpperCase();
-  const restOfWord = quality.slice(1);
-  return `${firstLetter}${restOfWord.split(/(?=[A-Z])/).join(" ")}`;
-}
+export const capitalizeFirstLetter = (word: string) => {
+  const firstLetter = word?.charAt(0)?.toUpperCase();
+  const restOfWord = word?.slice(1);
+  return `${firstLetter}${restOfWord?.split(/(?=[A-Z])/).join(' ')}`;
+};

@@ -1,7 +1,6 @@
 import { Routes, Route, useLocation } from 'react-router-dom';
 import Campaigns from './Campaigns';
 import Details from './Details';
-import Settings from './Settings';
 import AuctionSettings from './Auction/AuctionSettings';
 import AuctionItems from './Auction/AuctionItems';
 import Bidders from './Auction/Bidders';
@@ -18,6 +17,7 @@ import sharingSidebarLinksData from '../../../utils/campaign-utils/sharingSideba
 import auctionSidebarLinksData from '../../../utils/campaign-utils/auctionSidebarLinkData';
 import AuctionLayout from '../../../components/layouts/AuctionLayout';
 import PrivateCampaignLayout from '../../../components/layouts/PrivateCampaignLayout';
+import InstantBuyers from './Auction/InstantBuyers';
 
 const CampaignRoutes = () => {
   const { pathname } = useLocation();
@@ -66,6 +66,7 @@ const CampaignRoutes = () => {
                           </Routes>
                         }
                       />
+                      <Route path='instant-buyers' element={<InstantBuyers />} />
                       <Route path='bidders' element={<Bidders />} />
                       <Route path='winning-bids' element={<WinningBids />} />
                       <Route path='item-fulfillment' element={<ItemFulfillment />} />
@@ -73,7 +74,6 @@ const CampaignRoutes = () => {
                   </AuctionLayout>
                 }
               />
-              <Route path='settings' element={<Settings />} />
             </Routes>
           </PrivateCampaignLayout>
         }

@@ -14,7 +14,6 @@ interface AuctionItemCardBodyProps {
     topBidder?: string;
   };
   hasEnded: boolean;
-  hasBegun: boolean;
   auth: {
     user?: {
       _id: string;
@@ -31,6 +30,7 @@ interface AuctionItemCardBodyProps {
   };
   setOpenShippingAddressModal: (args: { open: boolean; auctionItemId: string }) => void;
   status: string;
+  customLinkId: string | undefined;
 }
 
 type AuctionItemTimerRibbonProps = {
@@ -87,6 +87,7 @@ interface CampaignPayload {
     bidders: [];
     winningBids: [];
     itemFulfillments: [];
+    instantBuyers: [];
   };
   imgPreference: string;
 }
@@ -166,6 +167,11 @@ interface CampaignStatePayload {
   hasHandledAuctionModal: boolean;
   isAuctionModalOpen: boolean;
   campaignStatus: string;
+  text: string;
+  filteredArray: {}[];
+  sortKey: string;
+  sortDirection: string;
+  sortedData: {}[];
 }
 
 export type { AuctionItemCardBodyProps, AuctionItemTimerRibbonProps, CampaignStatePayload };

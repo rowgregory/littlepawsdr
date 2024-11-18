@@ -1,24 +1,18 @@
-import {
-  Auction,
-  AuctionBidder,
-  AuctionItem,
-  AuctionWinningBidder,
-  Bid,
-} from '../../models/campaignModel.js';
+import { Auction, AuctionItem, AuctionWinningBidder, Bid } from '../../models/campaignModel.js';
 import { logEvent, prepareLog } from '../logHelpers.js';
 import { io } from '../../server.js';
 
 const sendEmailWithRetry = async (emailOptions, pugEmail, log, retries = 3, delay = 5000) => {
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
-      logEvent(log, 'SENDING EMAIL', emailOptions)
-      await log.save()
+      logEvent(log, 'SENDING EMAIL', emailOptions);
+      await log.save();
       await pugEmail.send(emailOptions);
       return;
     } catch (error) {
-      logEvent(log, 'SENDING EMAIL ERROR', error)
-      await log.save()
-      
+      logEvent(log, 'SENDING EMAIL ERROR', error);
+      await log.save();
+
       if (attempt < retries) {
         console.warn(
           `Email send failed, retrying in ${delay}ms... (Attempt ${attempt} of ${retries})`
@@ -43,9 +37,6 @@ export const notifyAuctionWinners = async (pugEmail, topBids) => {
     }
 
     for (const topBid of topBids) {
-     const auctionBidder = await AuctionBidder.findOneAndUpdate({ user: topBid.user }, { status: 'Winner' }, { new: true });
-     logEvent(log, 'AUCTION BIDDER STATUS UPDATED', auctionBidder);
-
       const auctionItem = await AuctionItem.findByIdAndUpdate(
         topBid.auctionItem,
         { soldPrice: topBid.bidAmount, topBidder: topBid.bidder },
@@ -101,10 +92,14 @@ export const notifyAuctionWinners = async (pugEmail, topBids) => {
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // Update database
-      const auctionWinningBidder = await AuctionWinningBidder.findOneAndUpdate(winningBidder?._id, {
-        auctionPaymentNotificationEmailHasBeenSent: true,
-        emailNotificationCount: 1,
-      }, { new: true });
+      const auctionWinningBidder = await AuctionWinningBidder.findOneAndUpdate(
+        winningBidder?._id,
+        {
+          auctionPaymentNotificationEmailHasBeenSent: true,
+          emailNotificationCount: 1,
+        },
+        { new: true }
+      );
       logEvent(log, 'AUCTION WINNING BIDDER UPDATED', auctionWinningBidder);
 
       await Bid.findByIdAndUpdate(topBid?._id, {

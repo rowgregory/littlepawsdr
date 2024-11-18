@@ -87,6 +87,7 @@ const itemSchema = mongoose.Schema(
     topBidder: { type: String },
     isAuction: { type: Boolean },
     isFixed: { type: Boolean },
+    isDigital: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
@@ -123,10 +124,11 @@ const auctionItemInstantBuyerSchema = mongoose.Schema(
     name: { type: String },
     email: { type: String },
     paymentStatus: { type: String, enum: AuctionItemPaymentStatusEnum, default: 'Paid' },
-    shippingStatus: { type: String, default: 'Pending Fulfillment' },
+    shippingStatus: { type: String },
     shippingProvider: { type: String },
     trackingNumber: { type: String },
     totalPrice: { type: Number },
+    isDigital: { type: Boolean },
   },
   { timestamps: true }
 );
@@ -186,6 +188,7 @@ const auctionWinningBidderSchema = mongoose.Schema(
     itemSoldPrice: { type: Number },
     trackingNumber: { type: String },
     payPalId: { type: String },
+    paidOn: { type: Date },
   },
   { timestamps: true }
 );
@@ -229,11 +232,12 @@ const auctionItemFulfillmentSchema = mongoose.Schema(
     elapsedTimeSinceAuctionItemWon: { type: String },
     totalPrice: { type: Number },
     shipping: { type: Number },
-    shippingStatus: { type: String, default: 'Unfilfilled' },
+    shippingStatus: { type: String, default: 'Unfulfilled' },
     shippingProvider: { type: String },
     itemSoldPrice: { type: Number },
     trackingNumber: { type: String },
     payPalId: { type: String },
+    isDigital: { type: Boolean },
   },
   { timestamps: true }
 );
@@ -256,6 +260,12 @@ const auctionSchema = mongoose.Schema(
         type: mongoose.Schema.Types.ObjectId,
         ref: 'AuctionDonation',
         default: [],
+      },
+    ],
+    instantBuyers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'AuctionItemInstantBuyer',
       },
     ],
     bidders: [

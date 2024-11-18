@@ -5,7 +5,7 @@ const Sidebar = ({ sidebarLinkArr }: any) => {
   const key = useParams()['*'];
   return (
     <div className='flex flex-col mb-3'>
-      <div className='p-1 bg-white border border-gray-100 rounded-lg w-full flex font-Matter-Regular lg:flex-col overflow-x-scroll lg:overflow-hidden'>
+      <div className='p-1 bg-white border border-gray-100 rounded-lg w-full flex font-Matter-Regular xl:flex-col overflow-x-scroll lg:overflow-x-hidden xl:overflow-hidden'>
         {sidebarLinkArr.map((obj: any, i: number) => (
           <Link
             className={`py-2.5 px-4 rounded-md hover:no-underline hover:text-teal-500 whitespace-nowrap ${

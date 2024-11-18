@@ -46,12 +46,12 @@ const AuctionItemCard = ({ item, auth, campaign }: any) => {
         <AuctionItemCardBody
           item={item}
           hasEnded={hasEnded}
-          hasBegun={hasBegun}
           auth={auth}
           pathname={pathname}
           theme={theme}
           setOpenShippingAddressModal={setOpenShippingAddressModal}
-          status={campaign?.auction?.settings?.status}
+          status={campaign?.campaignStatus}
+          customLinkId={customLinkId}
         />
       </div>
     </Fragment>

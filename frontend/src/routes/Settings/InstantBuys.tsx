@@ -77,24 +77,16 @@ const InstantBuys = () => {
                     </div>
                   </th>
                   <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
-                    <div className=' text-sm flex flex-nowrap items-center gap-2'>
-                      Item Name
-                    </div>
+                    <div className=' text-sm flex flex-nowrap items-center gap-2'>Item Name</div>
                   </th>
                   <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
-                    <div className=' text-sm flex flex-nowrap items-center gap-2'>
-                      Auction
-                    </div>
+                    <div className=' text-sm flex flex-nowrap items-center gap-2'>Auction</div>
                   </th>
                   <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
-                    <div className=' text-sm flex flex-nowrap items-center gap-2'>
-                      Date & Time
-                    </div>
+                    <div className=' text-sm flex flex-nowrap items-center gap-2'>Date & Time</div>
                   </th>
                   <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
-                    <div className=' text-sm flex flex-nowrap items-center gap-2'>
-                      Status
-                    </div>
+                    <div className=' text-sm flex flex-nowrap items-center gap-2'>Status</div>
                   </th>
                   <th>
                     <div className='flex flex-nowrap items-center gap-2'></div>
@@ -111,41 +103,45 @@ const InstantBuys = () => {
                     >
                       <td className='w-10 h-10'>
                         <i
-                          className={`text-gray-700 fas fa-chevron-right fa-xs ml-4 duration-300 origin-center ${openRows?.rows.some((row: any) => row.id === instantBuy._id)
-                            ? 'rotate-90'
-                            : ''
-                            }`}
+                          className={`text-gray-700 fas fa-chevron-right fa-xs ml-4 duration-300 origin-center ${
+                            openRows?.rows.some((row: any) => row.id === instantBuy._id)
+                              ? 'rotate-90'
+                              : ''
+                          }`}
                         ></i>
                       </td>
                       <td className='m-0 p-0 decoration-inherit hover:text-inherit hover:decoration-inherit !flex h-[3.25rem] items-center whitespace-nowrap'>
-                        <p className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>
+                        <span className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>
                           ${toFixed(instantBuy?.totalPrice)}
-                        </p>
+                        </span>
                       </td>
                       <td>
-                        <p className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>
+                        <span className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>
                           {instantBuy?.auctionItem?.name}
-                        </p>
+                        </span>
                       </td>
                       <td>
-                        <p className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>
+                        <span className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>
                           {instantBuy?.auctionItem?.auction?.campaign?.title}
-                        </p>
+                        </span>
                       </td>
                       <td>
-                        <p className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>
+                        <span className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>
                           {formatDateWithTimezone(instantBuy?.createdAt)}
-                        </p>
+                        </span>
                       </td>
-                      <td className='px-4'>
-                        <p
-                          className={`${instantBuy?.shippingStatus === 'Complete'
-                            ? 'text-green-500 bg-green-100'
-                            : 'text-gray-900 bg-gray-100'
-                            } text-sm w-fit font-Matter-Regular py-0.5 px-2.5 rounded-2xl items-center whitespace-nowrap`}
+                      <td className='px-4 py-3'>
+                        <span
+                          className={`${
+                            instantBuy?.shippingStatus === 'Complete'
+                              ? 'text-green-500 bg-green-100'
+                              : instantBuy?.shippingStatus === 'Digital'
+                              ? 'text-indigo-500 bg-indigo-100'
+                              : 'text-gray-900 bg-gray-100'
+                          } px-2 py-1 rounded-3xl text-xs font-Matter-Regular flex items-center justify-center whitespace-nowrap`}
                         >
                           {instantBuy?.shippingStatus}
-                        </p>
+                        </span>
                       </td>
                     </tr>
                     {openRows?.rows.map(
@@ -156,9 +152,7 @@ const InstantBuys = () => {
                               <div className='grid grid-cols-12 px-4 pb-4 gap-8'>
                                 <div className='col-span-6'>
                                   <div>
-                                    <p className='font-Matter-Medium mb-1.5'>
-                                      Item Details
-                                    </p>
+                                    <p className='font-Matter-Medium mb-1.5'>Item Details</p>
                                     <div className='flex items-center justify-between py-1.5'>
                                       <div className='flex items-center'>
                                         <img
@@ -170,13 +164,22 @@ const InstantBuys = () => {
                                           {row?.auctionItem?.name}
                                         </p>
                                       </div>
-                                      <p className='font-Matter-Medium text-sm'>
-                                        ${row?.auctionItem?.buyNowPrice}
-                                      </p>
+                                      <div className='flex items-center gap-x-3'>
+                                        <div
+                                          className={`${
+                                            row?.paymentStatus === 'Paid'
+                                              ? 'text-emerald-500 bg-emerald-100'
+                                              : 'text-orange-500 bg-orange-100'
+                                          } py-1.5 px-3 my-3 text-sm w-fit rounded-full font-Matter-Regular text-center`}
+                                        >
+                                          {row?.paymentStatus}
+                                        </div>
+                                        <p className='font-Matter-Medium text-sm'>
+                                          ${instantBuy?.totalPrice}
+                                        </p>
+                                      </div>
                                     </div>
-                                    <p className='bg-green-100 text-green-600 py-1.5 px-3 my-3 text-sm font-Matter-Regular text-center'>
-                                      {row?.paymentStatus}
-                                    </p>
+
                                     {row?.shippingStatus === 'Complete' && (
                                       <Fragment>
                                         <label

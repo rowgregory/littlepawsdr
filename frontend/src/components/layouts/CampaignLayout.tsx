@@ -24,11 +24,11 @@ const CampaignLayout: FC<CampaignLayoutProps> = ({ navbar, children }) => {
   const userId = auth.user?._id;
 
   const { data } = useGetUserShippingAddressQuery(userId, {
-    skip: !userId, // Skip the query if userId is not available
+    skip: !userId,
   });
 
   useEffect(() => {
-    if (data?.hasShippingAddress) {
+    if (data) {
       dispatch(hydrateAuthUserState({ hasShippingAddress: data.hasShippingAddress }));
     }
   }, [data, dispatch]);

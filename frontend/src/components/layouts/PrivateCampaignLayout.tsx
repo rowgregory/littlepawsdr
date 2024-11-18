@@ -21,8 +21,8 @@ const PrivateCampaignLayout = ({ navbar, children }: any) => {
   }, [refetch]);
 
   return (
-    <div className='bg-gray-50 min-h-screen pt-12 md:pt-20 px-2 sm:px-[16px] md:px-8 pb-3'>
-      <div className='max-w-screen-lg w-full mx-auto'>
+    <div className='bg-gray-50 min-h-screen pt-12 md:pt-20 px-2 sm:px-4 md:px-8 pb-3'>
+      <div className='max-w-screen-xl w-full mx-auto'>
         <header>{cloneElement(navbar, { isLoading })}</header>
         <main>{children}</main>
       </div>

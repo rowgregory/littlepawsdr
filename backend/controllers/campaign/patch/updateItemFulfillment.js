@@ -27,35 +27,40 @@ const updateItemFulfillment = asyncHandler(async (req, res) => {
 
     const populateAuctionItemFulfillment = await AuctionItemFulfillment.findById(
       auctionItemFulfillment?._id
-    ).populate([{ path: 'auctionItem', populate: [{ path: 'photos' }] }, { path: 'user' }]);
+    ).populate([
+      { path: 'auctionItem', populate: [{ path: 'photos' }] },
+      { path: 'user' },
+      { path: 'winningBidder' },
+      { path: 'instantBuyer' },
+    ]);
 
-    await AuctionItemInstantBuyer.findByIdAndUpdate(
-      populateAuctionItemFulfillment.instantBuyer,
-      {
+    if (populateAuctionItemFulfillment.instantBuyer) {
+      await AuctionItemInstantBuyer.findByIdAndUpdate(
+        populateAuctionItemFulfillment.instantBuyer,
+        {
+          shippingProvider: populateAuctionItemFulfillment.shippingProvider,
+          trackingNumber: populateAuctionItemFulfillment.trackingNumber,
+          shippingStatus: 'Complete',
+        },
+        { new: true }
+      );
+    }
+
+    if (populateAuctionItemFulfillment.winningBidder) {
+      await AuctionWinningBidder.findOneAndUpdate(populateAuctionItemFulfillment.winningBidder, {
         shippingProvider: populateAuctionItemFulfillment.shippingProvider,
         trackingNumber: populateAuctionItemFulfillment.trackingNumber,
         shippingStatus: 'Complete',
-      },
-      { new: true }
-    );
-
-    await AuctionWinningBidder.findByIdAndUpdate(
-      populateAuctionItemFulfillment.winningBidder,
-      {
-        shippingProvider: populateAuctionItemFulfillment.shippingProvider,
-        trackingNumber: populateAuctionItemFulfillment.trackingNumber,
-        shippingStatus: 'Complete',
-      },
-      { new: true }
-    );
+      });
+    }
 
     const objToSendToEmail = {
-      email: populateAuctionItemFulfillment.email,
-      name: populateAuctionItemFulfillment.auctionItem.name,
-      image: populateAuctionItemFulfillment.auctionItem.photos[0].url,
-      shippingAddress: populateAuctionItemFulfillment.user.shippingAddress,
-      shippingProvider: populateAuctionItemFulfillment.shippingProvider,
-      trackingNumber: populateAuctionItemFulfillment.trackingNumber,
+      email: populateAuctionItemFulfillment?.email,
+      name: populateAuctionItemFulfillment?.auctionItem?.name,
+      image: populateAuctionItemFulfillment?.auctionItem?.photos[0]?.url,
+      shippingAddress: populateAuctionItemFulfillment?.user?.shippingAddress,
+      shippingProvider: populateAuctionItemFulfillment?.shippingProvider,
+      trackingNumber: populateAuctionItemFulfillment?.trackingNumber,
     };
 
     sendEmail(objToSendToEmail, 'AUCTION_ITEM_ORDER_SHIPPED_CONFIRMATION');

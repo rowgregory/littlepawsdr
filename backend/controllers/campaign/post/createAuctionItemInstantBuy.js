@@ -34,7 +34,7 @@ const createAuctionItemInstantBuy = asyncHandler(async (req, res) => {
     await Auction.findByIdAndUpdate(
       instantBuy.auction,
       {
-        $push: { itemFulfillments: auctionItemFulfillment._id },
+        $push: { itemFulfillments: auctionItemFulfillment._id, instantBuyers: instantBuy._id },
       },
       { new: true }
     );

@@ -2,14 +2,14 @@ import auctionNotificationsData from '../../../../components/data/campaign/aucti
 
 const Notifications = () => {
   return (
-    <div className='bg-white border border-gray-300 rounded-md w-full'>
+    <div className='bg-white border border-gray-100 rounded-md w-full'>
       <div className='p-8'>
         <div className='font-Matter-Medium text-2xl'>Bidder notifications</div>
         <div className='font-Matter-Light text-base'>
           Information sent to bidders regarding your auction.
         </div>
       </div>
-      <div className='grid grid-cols-6 place-self-center px-8 py-[20px] border-b border-slate-200'>
+      <div className='grid grid-cols-6 place-self-center px-8 py-[20px] border-b border-gray-100 w-full'>
         <div className='col-span-1 col-start-6 flex flex-col items-center font-Matter-Light'>
           Email
         </div>
@@ -18,7 +18,7 @@ const Notifications = () => {
         <div
           key={i}
           className={`grid grid-cols-6 px-8 py-[20px] ${
-            i !== 3 ? ' border-b border-slate-200' : ''
+            i !== 3 ? ' border-b border-gray-100' : ''
           }`}
         >
           <div className='col-span-4'>

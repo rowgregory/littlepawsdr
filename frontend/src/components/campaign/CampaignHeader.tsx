@@ -3,8 +3,7 @@ import { Link } from 'react-router-dom';
 import { useLocation, useParams } from 'react-router-dom';
 import { TransparentPurpleLogo } from '../assets';
 import { RootState, useAppDispatch } from '../../redux/toolkitStore';
-import { pastelColorRandomizer } from '../../utils/pastelColorRandomizer';
-import { toggleUserDropdown } from '../../redux/features/navbar/navbarSlice';
+import { toggleNavigationDrawer } from '../../redux/features/navbar/navbarSlice';
 
 const navbarBtnStyles = `bg-gray-300 text-slate-200 h-10 w-10 rounded-full flex justify-center items-center cursor-pointer duration-300 hover:bg-gray-400 hover:no-underline`;
 
@@ -20,7 +19,6 @@ const CampaignHeader = () => {
   const user = auth?.user;
   const campaign = campaignState?.campaign;
   const hoverTextColor = campaign?.themeColor?.text;
-  const color = pastelColorRandomizer();
 
   return (
     <div className={`flex items-center justify-between py-2 w-full max-w-[1340px] mx-auto px-2.5`}>
@@ -58,9 +56,8 @@ const CampaignHeader = () => {
       <div className='flex items-center'>
         {user?._id ? (
           <div
-            style={{ background: color }}
-            className={`uppercase cursor-pointer w-8 h-8 sm:h-10 sm:w-10 rounded-full flex items-center justify-center`}
-            onClick={() => dispatch(toggleUserDropdown({ userDropdown: true }))}
+            className={`uppercase cursor-pointer w-8 h-8 sm:h-10 sm:w-10 rounded-full flex items-center font-Matter-Light justify-center ${campaign?.themeColor?.dark}`}
+            onClick={() => dispatch(toggleNavigationDrawer({ navigationDrawer: true }))}
           >
             {user?.firstNameFirstInitial}
             {user?.lastNameFirstInitial}

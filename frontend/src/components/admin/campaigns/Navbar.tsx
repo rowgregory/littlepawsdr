@@ -80,6 +80,9 @@ const StatusAndTitleSection = ({
         <div className='text-2xl font-Matter-Medium h-8 mb-[8px] md:mb-0'>
           {campaign?.campaign?.title}
         </div>
+        <div className='text-xs font-Matter-Light'>
+          Auction Id: {campaign?.campaign?.auction?._id}
+        </div>
       </Fragment>
     )}
   </div>

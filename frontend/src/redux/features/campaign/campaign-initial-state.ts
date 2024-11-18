@@ -60,6 +60,7 @@ const initialCampaignState: CampaignStatePayload = {
       bidders: [],
       winningBids: [],
       itemFulfillments: [],
+      instantBuyers: [],
     },
     imgPreference: '',
   },
@@ -144,6 +145,11 @@ const initialCampaignState: CampaignStatePayload = {
   hasHandledAuctionModal: false,
   isAuctionModalOpen: false,
   campaignStatus: 'Pre-Campaign',
+  text: '',
+  filteredArray: [],
+  sortKey: '',
+  sortDirection: 'asc',
+  sortedData: [],
 };
 
 export default initialCampaignState;
