@@ -20,7 +20,7 @@ const AuctionSoldOutOrEnded = ({ item, theme }: any) => {
         </div>
       );
     } else {
-      <p className='text-gray-400 text-xs'>Bidding ended with no bidding activity</p>;
+      return <p className='text-gray-400 text-xs'>Bidding ended with no bidding activity</p>;
     }
   }
 
