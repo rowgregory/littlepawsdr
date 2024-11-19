@@ -5,6 +5,7 @@ import { useGetCampaignByCustomLinkIdQuery } from '../../redux/services/campaign
 import { useGetUserShippingAddressQuery } from '../../redux/services/userApi';
 import { RootState, useAppDispatch, useAppSelector } from '../../redux/toolkitStore';
 import { hydrateAuthUserState } from '../../redux/features/auth/authSlice';
+import GreenRotatingTransparentCircle from '../Loaders/GreenRotatingTransparentCircle';
 
 interface CampaignLayoutProps {
   navbar: ReactNode;
@@ -19,7 +20,7 @@ const CampaignLayout: FC<CampaignLayoutProps> = ({ navbar, children }) => {
   const params = useParams();
   const { pathname } = useLocation();
   const isBuying = pathname?.split('/')[6] === 'buy';
-  const { refetch } = useGetCampaignByCustomLinkIdQuery(params.customLinkId);
+  const { refetch, isLoading } = useGetCampaignByCustomLinkIdQuery(params.customLinkId);
   const auth = useAppSelector((state: RootState) => state.auth);
   const userId = auth.user?._id;
 
@@ -46,7 +47,7 @@ const CampaignLayout: FC<CampaignLayoutProps> = ({ navbar, children }) => {
   return (
     <Fragment>
       {!isBuying && <header className='border-b border-gray-100'>{navbar}</header>}
-      <main>{children}</main>
+      {isLoading ? <GreenRotatingTransparentCircle /> : <main>{children}</main>}
     </Fragment>
   );
 };

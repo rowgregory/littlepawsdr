@@ -23,10 +23,10 @@ const BidModal = ({
   const user = useSelector((state: RootState) => state.user);
   const auth = useSelector((state: RootState) => state.auth);
   const theme = campaign.campaign.themeColor;
-  const themeText = theme.text;
-  const themeBorder = theme.border;
-  const themeDarker = theme.darker;
-  const themeDark = theme.dark;
+  const themeText = theme?.text;
+  const themeBorder = theme?.border;
+  const themeDarker = theme?.darker;
+  const themeDark = theme?.dark;
   const [updateUser, { isLoading }] = useUpdateUserMutation();
 
   const handleUpdateUser = async (e: any, section: string, data: any) => {

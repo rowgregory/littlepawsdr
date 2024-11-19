@@ -68,8 +68,10 @@ const AuctionItem = () => {
               to={`${pathname.split('item')[0].slice(0, -1)}`}
               className='flex items-center hover:no-underline'
             >
-              <i className={`fa-solid fa-home ${campaign?.campaign.themeColor.text} mr-1.5`}></i>
-              <p className={`font-Matter-Regular ${campaign?.campaign.themeColor.text}`}>Auction</p>
+              <i className={`fa-solid fa-home ${campaign?.campaign?.themeColor?.text} mr-1.5`}></i>
+              <p className={`font-Matter-Regular ${campaign?.campaign?.themeColor?.text}`}>
+                Auction
+              </p>
             </Link>
             <i className='fa-solid fa-chevron-right fa-sm text-gray-300 mx-3'></i>
             <p className='font-Matter-Regular text-black'>{auctionItem?.name}</p>

@@ -11,9 +11,9 @@ const BidConfirmationModal = ({
     <Modal show={openConfirmationModal} onClose={handleCloseConfirmationModal}>
       <div className='bg-white p-8 rounded-xl flex flex-col justify-center items-center'>
         <i
-          className={`fa-solid fa-right-to-bracket ${theme.text} fa-xl transform rotate-[270deg] rounded-md h-12 w-12 ${theme.xlight} flex items-center justify-center p-2`}
+          className={`fa-solid fa-right-to-bracket ${theme?.text} fa-xl transform rotate-[270deg] rounded-md h-12 w-12 ${theme?.xlight} flex items-center justify-center p-2`}
         ></i>
-        <p className={`text-6xl font-Matter-Medium ${theme.text} my-4`}>
+        <p className={`text-6xl font-Matter-Medium ${theme?.text} my-4`}>
           ${campaign?.confirmedBidAmount ?? 0}
         </p>
         <p className='text-3xl font-Matter-SemiBold mb-2'>Your bid is confirmed</p>
@@ -22,7 +22,7 @@ const BidConfirmationModal = ({
         </p>
         <button
           onClick={() => setOpenConfirmationModal(false)}
-          className={`font-Matter-Medium text-xl text-white ${theme.dark} rounded-[8px] px-4 py-2 duration-300 hover:${theme.darker}`}
+          className={`font-Matter-Medium text-xl text-white ${theme?.dark} rounded-[8px] px-4 py-2 duration-300 hover:${theme?.darker}`}
         >
           Back to Auction
         </button>
