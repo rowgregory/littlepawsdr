@@ -85,18 +85,21 @@ export const cronJobs = (io) => {
       async () => {
         const log = await prepareLog('SECOND AUCION ITEM PAYMENT REMINDER EMAIL');
         logEvent(log, 'INITIATE SECOND AUCTION ITEM PAYMENT REMINDER EMAIL');
-        
 
-        const twoDaysAgo = new Date();
-        twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
-        logEvent(log, 'TWO DAYS AGO',twoDaysAgo);
+        const now = new Date();
+
+        // Calculate 24 hours ago from the current time
+        const twentyFourHoursAgo = new Date();
+        twentyFourHoursAgo.setHours(now.getHours() - 24); // Subtract 24 hours from now
+
+        logEvent(log, '24 HOURS AGO', twentyFourHoursAgo);
 
         const auctionWinningBidders = await AuctionWinningBidder.find({
           auctionPaymentNotificationEmailHasBeenSent: true,
           emailNotificationCount: 1,
           winningBidPaymentStatus: 'Awaiting Payment',
           auctionItemPaymentStatus: 'Pending',
-          createdAt: { $lte: twoDaysAgo },
+          createdAt: { $gte: twentyFourHoursAgo },
         }).populate([{ path: 'auctionItem', populate: [[{ path: 'photos' }]] }, { path: 'user' }]);
 
         if (auctionWinningBidders.length > 0) {
@@ -118,16 +121,20 @@ export const cronJobs = (io) => {
         const log = await prepareLog('THIRD_AUCTION_ITEM_PAYMENT_REMINDER_EMAIL');
         logEvent(log, 'INITIATE THIRD AUCTION ITEM PAYMENT REMINDER');
 
-        const fourDaysAgo = new Date();
-        fourDaysAgo.setDate(fourDaysAgo.getDate() - 4);
-        logEvent(log, 'FOUR DAYS AGO',fourDaysAgo);
+        const now = new Date();
+
+        // Calculate 24 hours ago from the current time
+        const seventyTwoHoursAgo = new Date();
+        seventyTwoHoursAgo.setHours(now.getHours() - 72); // Subtract 72 hours from now
+
+        logEvent(log, '72 HOURS AGO', seventyTwoHoursAgo);
 
         const auctionWinningBidders = await AuctionWinningBidder.find({
           auctionPaymentNotificationEmailHasBeenSent: true,
           emailNotificationCount: 2,
           winningBidPaymentStatus: 'Awaiting Payment',
           auctionItemPaymentStatus: 'Pending',
-          createdAt: { $lte: fourDaysAgo },
+          createdAt: { $gte: seventyTwoHoursAgo },
         }).populate([{ path: 'auctionItem', populate: [[{ path: 'photos' }]] }, { path: 'user' }]);
 
         if (auctionWinningBidders.length > 0) {

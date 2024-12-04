@@ -10,7 +10,7 @@ const FooterLink: FC<FooterLinkProps> = ({ obj }) => {
   return (
     <Link to={obj.linkKey || '#'} className='flex items-center cursor-pointer'>
       <i className='fas fa-chevron-right text-teal-400 mr-3 w-5 h-5' />
-      <p className='text-white text-sm font-QLight tracking-wide'>{obj.textKey}</p>
+      <p className='text-white text-[13px] font-QLight tracking-wide'>{obj.textKey}</p>
     </Link>
   );
 };

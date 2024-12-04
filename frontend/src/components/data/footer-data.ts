@@ -71,7 +71,7 @@ const footerSections: FooterSection[] = [
     data: [
       {
         icon: 'fas fa-map-pin',
-        textKey: 'Brookfield, CT 06804',
+        textKey: 'P.O. Box 108, Brookfield, CT 06804',
       },
       {
         icon: 'fas fa-envelope',

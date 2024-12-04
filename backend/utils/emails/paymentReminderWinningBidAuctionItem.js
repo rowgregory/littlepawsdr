@@ -1,10 +1,27 @@
 import { AuctionWinningBidder } from '../../models/campaignModel.js';
-import Error from '../../models/errorModel.js';
+
+const sendEmailWithRetry = async (emailOptions, pugEmail, retries = 3, delay = 5000) => {
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      await pugEmail.send(emailOptions);
+      return;
+    } catch (error) {
+      if (attempt < retries) {
+        console.warn(
+          `Email send failed, retrying in ${delay}ms... (Attempt ${attempt} of ${retries})`
+        );
+        await new Promise((resolve) => setTimeout(resolve, delay));
+      } else {
+        console.error('Email send failed after all retries:', error);
+      }
+    }
+  }
+};
 
 const paymentRedminderWinningBidAuctionItem = async (pugEmail, auctionWinningBidders) => {
   auctionWinningBidders.forEach(async (winningBidder) => {
-    await pugEmail
-      .send({
+    await sendEmailWithRetry(
+      {
         template: 'paymentreminderwinningbidauctionitem',
         message: {
           from: `Little Paws Dachshund Rescue <no-reply@littlepawsdr.org`,
@@ -19,20 +36,15 @@ const paymentRedminderWinningBidAuctionItem = async (pugEmail, auctionWinningBid
           totalPrice: winningBidder.totalPrice?.toFixed(2),
           id: winningBidder._id,
         },
-      })
-      .then(async () => {
-        await AuctionWinningBidder.findOneAndUpdate(winningBidder?._id, {
-          emailNotificationCount: 2,
-        });
-      })
-      .catch(
-        async (err) =>
-          await Error.create({
-            functionName: 'AUCTION_ITEM_PAYMENT_REMINDER_EMAIL',
-            name: err.name,
-            message: err.message,
-          })
-      );
+      },
+      pugEmail
+    );
+
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    await AuctionWinningBidder.findOneAndUpdate(winningBidder?._id, {
+      emailNotificationCount: 2,
+    });
   });
 };
 

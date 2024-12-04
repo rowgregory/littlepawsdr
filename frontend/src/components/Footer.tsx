@@ -16,10 +16,10 @@ const Footer = () => {
       <div className='footer-bg'></div>
       <div className='px-3'>
         <div className='max-w-[1150px] py-20 w-full mx-auto relative z-10'>
-          <div className='grid grid-cols-12 gap-y-8 sm:gap-8'>
+          <div className='grid grid-cols-12 gap-y-8 sm:gap-5'>
             <div className='col-span-12 lg:col-span-3'>
               <h4 className='text-2xl mb-5 font-QBold text-white'>About</h4>
-              <p className='font-QLight text-sm text-white leading-6'>
+              <p className='font-QLight text-[13px] text-white leading-6'>
                 LITTLE PAWS DACHSHUND RESCUE is an east coast based 501(c)3 exempt nonprofit
                 dedicated to the rescue and re-homing of our favorite short legged breed
               </p>
@@ -35,7 +35,7 @@ const Footer = () => {
               </div>
             </div>
             <div className='col-span-12 lg:col-span-9 text-white'>
-              <div className='grid grid-cols-9 gap-y-8 sm:gap-8'>
+              <div className='grid grid-cols-9 gap-y-8 sm:gap-5'>
                 {footerSections.map((section, i) => (
                   <div key={i} className='col-span-12 sm:col-span-3'>
                     <h4 className='text-2xl mb-5 font-QBold text-white'>{section.title}</h4>
