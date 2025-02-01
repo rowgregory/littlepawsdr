@@ -19,10 +19,6 @@ const AvailableDachshundCard = ({ obj }: { obj: any }) => {
           <i className='fas fa-calendar text-teal-400 text-lg mr-2 h-7 w-7'></i>
           <p className='font-QLight'>{obj?.attributes?.ageString}</p>
         </div>
-        <div className='flex items-center'>
-          <i className='fas fa-weight text-teal-400 text-lg h-7 w-7'></i>
-          <p className='font-QLight'>{obj?.attributes?.sex}</p>
-        </div>
       </div>
       <h1 className='font-QBold text-xl text-[#484848] truncate mt-4'>{obj?.attributes?.name}</h1>
       <p className='font-QLight mt-3.5 mb-4'>

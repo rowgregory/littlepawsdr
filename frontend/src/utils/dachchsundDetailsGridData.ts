@@ -8,6 +8,10 @@ export const dachshundDetailsGridData = (data: any) => [
     textKey: data?.ageString,
   },
   {
+    title: 'Location',
+    textKey: data?.location,
+  },
+  {
     title: 'Gender',
     textKey: data?.sex,
   },

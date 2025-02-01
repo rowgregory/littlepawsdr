@@ -6,6 +6,7 @@ export const getPicturesAndVideos = (response: any) => {
     response.data.forEach((obj: any) => {
       obj.attributes.photos = [];
       obj.attributes.videos = [];
+      obj.attributes.location = 'Unknown';
     });
 
     const picturesUrl = response.included
@@ -32,6 +33,15 @@ export const getPicturesAndVideos = (response: any) => {
           videos.push({ objId: obj.id, video });
         }
       });
+
+      const locationId = obj.relationships?.locations?.data?.[0]?.id;
+      const locationObj = response.included?.find(
+        (item: any) => item.type === 'locations' && item.id === locationId
+      );
+
+      if (locationObj) {
+        obj.attributes.location = locationObj.attributes.name || 'Unknown';
+      }
     });
 
     response.data.forEach((obj: any) => {

@@ -1,9 +1,9 @@
 const BottomInfo = () => {
   return (
-    <div className='flex flex-col gap-5'>
+    <div className='flex flex-col gap-5 mt-12'>
       <div className='flex flex-col'>
-        <p className='font-QBook text-lg text-charcoal mb-3'>Dogs Adopted in New England</p>
-        <p className='font-QLight text-sm'>
+        <p className='font-QBold text-lg text-charcoal mb-3'>Dogs Adopted in New England</p>
+        <p className='font-QBook text-sm'>
           Dogs adopted in New England are subject to additional rules and regulations by the state
           departments of agriculture. Complying with these regulations is expensive for our rescue,
           and some dogs adopted in New England states are charged an additional $175.00 to cover
@@ -11,10 +11,10 @@ const BottomInfo = () => {
         </p>
       </div>
       <div className='flex flex-col'>
-        <p className='font-QBook text-lg text-charcoal mb-3'>
+        <p className='font-QBold text-lg text-charcoal mb-3'>
           Transportation Help and Distance Restrictions
         </p>
-        <p className='font-QLight text-sm'>
+        <p className='font-QBook text-sm'>
           Volunteer transport can be arranged if you see a dog that is a good match for your family.
           The cost for volunteer transport includes a health certificate (required by law and issued
           by a veterinarian), a crate (which all dogs must travel in for safety), and a collar,
@@ -26,8 +26,8 @@ const BottomInfo = () => {
         </p>
       </div>
       <div className='flex flex-col'>
-        <p className='font-QBook text-lg text-charcoal mb-3'>Adopting across state costs extra</p>
-        <p className='font-QLight text-sm'>
+        <p className='font-QBold text-lg text-charcoal mb-3'>Adopting across state costs extra</p>
+        <p className='font-QBook text-sm'>
           If the dog is adopted over a state line, there will be an additional charge for a health
           certificate (required by law). The cost of the health certificate is the responsibility of
           the adopter. The amount depends upon what the veterinarian charges LPDR. The cost of a
