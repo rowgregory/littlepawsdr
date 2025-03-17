@@ -18,7 +18,7 @@ const PayPalOptions = {
 const App = () => (
   <PayPalScriptProvider options={PayPalOptions}>
     <PersistGate loading={null} persistor={persistor}>
-      <Router>
+      <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true}}>
         <ThemeProvider theme={themes['light']}>
           <Suspense fallback={<></>}>
             <MainRoutes />

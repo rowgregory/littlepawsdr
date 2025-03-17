@@ -5,10 +5,7 @@ import './fonts.css';
 import './animations.css';
 import './bg-images.css';
 import App from './App';
-import smoothscroll from 'smoothscroll-polyfill';
 import { toolkitStore } from './redux/toolkitStore';
-
-smoothscroll.polyfill();
 
 const container = document.getElementById('root');
 const root = createRoot(container!);

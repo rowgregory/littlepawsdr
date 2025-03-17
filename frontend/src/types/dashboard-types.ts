@@ -1,5 +1,3 @@
-import { ReactNode } from 'react';
-
 interface ErrorPayload {
   message: string;
   errorCode: string;

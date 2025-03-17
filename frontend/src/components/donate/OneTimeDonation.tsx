@@ -289,10 +289,9 @@ export const OneTimeDonationForm = ({ type, step, setStep, setOpenModal }: any) 
             ))}
             <input
               name='otherAmount'
-              type='number'
               onChange={handleInput}
               placeholder='Other'
-              className='border-2 border-gray-300 py-[16px] px-[22px] w-[100px] rounded-lg focus:outline-none font-Matter-Medium'
+              className='border-2 border-gray-300 py-[16px] px-[18px] w-[100px] rounded-lg focus:outline-none font-Matter-Medium'
               value={inputs.otherAmount || ''}
               onClick={() => setInputs((prev: any) => ({ ...prev, donationAmount: 0 }))}
             />

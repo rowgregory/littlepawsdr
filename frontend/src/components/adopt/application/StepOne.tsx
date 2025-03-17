@@ -57,6 +57,9 @@ const StepOne = ({ setStep }: { setStep: (step: any) => void }) => {
           <li className='mb-3.5 pl-3 font-QBook'>
             You must be at least 21 years old to be considered to adopt one of our dogs.
           </li>
+          <li className='mb-3.5 pl-3 font-QBook'>
+          You must be able to take possession of the dog within 2 weeks of being approved.
+          </li>
         </ul>
         <h5 className='font-QBold text-charcoal mb-1'>The Adoption Application Process</h5>
         <p className='font-QBook'>
