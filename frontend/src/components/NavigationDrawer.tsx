@@ -30,7 +30,7 @@ const NavigationDrawer = () => {
           open
             ? 'left-0 w-screen sm:left-2 sm:w-[380px]'
             : `left-[-135vw] w-screen sm:w-[380px] sm:left-[-380px]`
-        } py-6 overflow-y-scroll h-screen sm:h-[calc(100vh-16px)] sm:rounded-3xl fixed z-[60] top-0 sm:top-2 bottom:0 sm:bottom-2 bg-[#171b20] transition-all duration-300 no-scrollbar`}
+        } py-6 overflow-y-scroll h-screen sm:h-[calc(100vh-16px)] sm:rounded-3xl fixed z-[110] top-0 sm:top-2 bottom:0 sm:bottom-2 bg-[#171b20] transition-all duration-300 no-scrollbar`}
       >
         <div className='px-8 mb-7 relative flex items-center justify-end gap-2'>
           <i onClick={handleClose} className='fas fa-times fa-xs text-white cursor-pointer'></i>
