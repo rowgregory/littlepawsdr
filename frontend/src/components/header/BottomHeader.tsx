@@ -25,7 +25,7 @@ const BottomHeader = () => {
   };
 
   return (
-    <div className={`top-0 px-3 z-50 ${shouldExclude ? 'hidden' : 'sticky block'}`}>
+    <div className={`top-0 px-3 z-[100] ${shouldExclude ? 'hidden' : 'sticky block'}`}>
       <div className='max-w-screen-xl mx-auto w-full bg-white rounded-2xl -mt-10 shadow-lg z-50'>
         <div className='h-24 flex items-center justify-between px-6 sm:px-5 md:px-7 lg:px-9 xl:px-12'>
           <AwesomeIcon

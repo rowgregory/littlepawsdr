@@ -4,7 +4,7 @@ import TailwindSpinner from '../../Loaders/TailwindSpinner';
 import { ApplicantInfoFormProps } from '../../../types/form-types';
 
 const styles = {
-  input: `user-input bg-white border-[1px] text-zinc-900 border-gray-200 rounded-md py-2.5 px-4 font-QBook focus:border-teal-400 focus:outline-none h-12`,
+  input: `user-input bg-white border-[1px] text-zinc-900 border-gray-200 rounded-md py-2.5 px-4 focus:border-teal-400 focus:outline-none h-12`,
   error: `font-QBold text-sm text-red-500`,
 };
 

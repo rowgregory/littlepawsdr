@@ -103,7 +103,7 @@ const StepTwo: FC<StepTwoProps> = ({ setStep }) => {
   } as any;
 
   return (
-    <div className='flex flex-col gap-y-5 w-full fade-in'>
+    <div className='flex flex-col gap-y-5 w-full fade-in relative z-10'>
       {orderLoader && (
         <div className='fade-in fixed top-0 left-0 right-0 bottom-0 flex justify-center items-center z-[5000] bg-black/50'>
           <div className='dot-spinner'></div>
@@ -149,7 +149,7 @@ const StepTwo: FC<StepTwoProps> = ({ setStep }) => {
         />
       </section>
       <section>
-        <Accordion toggle={openPayment} maxheight='685px'>
+        <Accordion toggle={openPayment} maxheight='1000px'>
           <PayPalButtons
             style={payPalComponents.style}
             forceReRender={payPalComponents.forceRerender}
