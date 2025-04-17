@@ -74,7 +74,6 @@ const AuctionItem = () => {
         shippingCosts: inputs.shippingCosts,
         ...(inputs.sellingFormat === 'fixed' && {
           startingPrice: null,
-          currentPrice: null,
           currentBid: null,
           minimumBid: null,
           buyNowPrice: inputs.buyNowPrice,
@@ -87,15 +86,12 @@ const AuctionItem = () => {
         }),
         ...(inputs.sellingFormat === 'auction' && {
           startingPrice: inputs.startingPrice,
-          currentPrice: inputs.startingPrice,
-          currentBid: inputs.startingPrice,
           minimumBid: inputs.startingPrice,
           isFixed: false,
           isAuction: true,
           isDigital: false,
           buyNowPrice: null,
           itemBtnText: 'Place Bid',
-          totalBids: 0,
           totalQuantity: 1,
         }),
       })
@@ -122,7 +118,6 @@ const AuctionItem = () => {
         }),
         ...(inputs.sellingFormat === 'auction' && {
           startingPrice: inputs.startingPrice,
-          currentPrice: inputs.startingPrice,
           currentBid: inputs.startingPrice,
           minimumBid: inputs.startingPrice,
           isFixed: false,

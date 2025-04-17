@@ -1,12 +1,11 @@
-import { Fragment } from 'react';
 import FosterHigh from '../../components/assets/foster-high.jpeg';
 import PageBanner from '../../components/common/PageBanner';
 
 const FosterApplication = () => {
   return (
-    <Fragment>
+    <>
       <PageBanner imgSrc={FosterHigh} title='Foster Application' />
-      <div className='px-3'>
+      <div className='px-3 pb-20'>
         <div className='max-w-screen-lg w-full mx-auto mt-12'>
           <h1 className='font-Matter-Bold text-5xl text-teal-400 text-center mb-24'>
             Fostering is our transitional step from a shelter/surrender to a forever home.
@@ -68,7 +67,7 @@ const FosterApplication = () => {
           </div>
         </div>
       </div>
-    </Fragment>
+    </>
   );
 };
 

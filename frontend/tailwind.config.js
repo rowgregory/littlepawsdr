@@ -20,6 +20,7 @@ module.exports = {
     extend: {
       screens: {
         xs: '480px',
+        1190: '1190px',
       },
       boxShadow: {
         'right-side': '0 35px 60px -15px rgba(0, 0, 0, 0.3)',

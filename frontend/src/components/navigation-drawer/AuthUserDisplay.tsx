@@ -5,6 +5,8 @@ import { toggleNavigationDrawer } from '../../redux/features/navbar/navbarSlice'
 import NavigationLinkBtn from './NavigationLinkBtn';
 import { MouseEvent } from 'react';
 import { useLogoutMutation } from '../../redux/services/authApi';
+import { shoppingCartIcon } from '../../icons';
+import AwesomeIcon from '../common/AwesomeIcon';
 
 const AuthUserDisplay = ({ closeMenu }: { closeMenu: () => void }) => {
   const dispatch = useAppDispatch();
@@ -90,6 +92,22 @@ const AuthUserDisplay = ({ closeMenu }: { closeMenu: () => void }) => {
           </p>
         </div>
       )}
+
+      <div className='pr-3 flex items-start h-fit mt-2.5'>
+        <div className='flex flex-col w-full gap-y-2.5'>
+          <Link to='/cart' className={`group px-8 h-12 hover:no-underline w-full`}>
+            <div
+              className={`grid grid-cols-12 gap-2 items-center text-left h-full rounded-xl group-hover:bg-[#323338] -mx-4 pl-3`}
+            >
+              <AwesomeIcon
+                icon={shoppingCartIcon}
+                className='w-4 h-4 text-white col-span-1 group-hover:-mr-1'
+              />
+              <p className={`text-[#75767b] col-span-10 font-Montserrat font-medium`}>Cart</p>
+            </div>
+          </Link>
+        </div>
+      </div>
     </div>
   );
 };

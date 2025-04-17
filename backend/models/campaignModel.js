@@ -72,7 +72,6 @@ const itemSchema = mongoose.Schema(
     sellingFormat: { type: String, enum: SellingFormatEnum },
     startingPrice: { type: Number },
     buyNowPrice: { type: Number },
-    currentPrice: { type: Number },
     totalQuantity: { type: Number },
     requiresShipping: { type: Boolean, default: true },
     shippingCosts: { type: Number },

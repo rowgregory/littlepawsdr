@@ -16,7 +16,7 @@ const TopHeader = () => {
   return (
     <div className='w-full bg-[#1a1f28] px-3'>
       <div
-        className={`max-w-screen-xl relative mx-auto w-full pt-1 lg:pt-4 pb-12 flex flex-col lg:flex-row items-center justify-center lg:justify-between ${
+        className={`max-w-screen-2xl relative mx-auto w-full pt-1 lg:pt-4 pb-12 flex flex-col lg:flex-row items-center justify-center lg:justify-between ${
           shouldExclude ? 'hidden' : 'block'
         }`}
       >

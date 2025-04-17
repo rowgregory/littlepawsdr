@@ -26,19 +26,21 @@ const BottomHeader = () => {
 
   return (
     <div className={`top-0 px-3 z-[100] ${shouldExclude ? 'hidden' : 'sticky block'}`}>
-      <div className='max-w-screen-xl mx-auto w-full bg-white rounded-2xl -mt-10 shadow-lg z-50'>
+      <div className='max-w-screen-2xl mx-auto w-full bg-white rounded-2xl -mt-10 shadow-lg z-50'>
         <div className='h-24 flex items-center justify-between px-6 sm:px-5 md:px-7 lg:px-9 xl:px-12'>
           <AwesomeIcon
             icon={barsIcon}
             className='w-6 h-6 text-teal-400 cursor-pointer'
             onClick={() => dispatch(toggleNavigationDrawer({ navigationDrawer: true }))}
           />
-          <div className='hidden lg:flex items-center lg:gap-x-7 xl:gap-x-12'>
+          <div className='hidden 1190:flex items-center lg:gap-x-7'>
             {bottomHeaderLinks(pathname).map((link, i) => (
               <Link
                 key={i}
                 to={link.linkKey}
-                className={`${link.active ? 'text-teal-400' : 'text-charcoal'} font-QBook`}
+                className={`${
+                  link.active ? 'text-teal-400' : 'text-charcoal'
+                } font-QBook hover:text-teal-400 duration-300 text-sm lg:text-base`}
               >
                 {link.linkText}
               </Link>

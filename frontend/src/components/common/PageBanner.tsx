@@ -9,7 +9,7 @@ const PageBanner = ({ imgSrc, title }: { imgSrc: string; title: string }) => {
       className='relative -mt-14 bg-no-repeat bg-cover bg-center h-[350px] px-3 flex items-center bg-teal-500'
     >
       <div className='w-full h-[350px] bg-[#1c1c1c]/30 absolute z-0 top-0 left-0 px-4'>
-        <div className='max-w-screen-xl mx-auto w-full h-full flex flex-col lg:gap-x-10 lg:flex-row items-center justify-center lg:justify-between relative z-10'>
+        <div className='max-w-screen-2xl mx-auto w-full h-full flex flex-col lg:gap-x-10 lg:flex-row items-center justify-center lg:justify-between relative z-10'>
           <h1 className='text-3xl sm:text-4xl lg:text-[41px] xl:text-6xl font-QBold text-white text-center lg:text-left mb-3 lg:mb-0 max-w-screen-sm w-full whitespace-nowrap'>
             {title}
           </h1>

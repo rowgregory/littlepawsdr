@@ -50,14 +50,17 @@ const bottomHeaderLinks = (pathname: string) => [
   {
     linkKey: '/dachshunds/hold',
     linkText: 'Not Available For Adoption Yet',
-
     active: pathname === '/dachshunds/hold',
   },
   {
     linkKey: '/adopt',
     linkText: 'Adoption Application',
-
     active: pathname === '/adopt',
+  },
+  {
+    linkKey: '/volunteer/foster-application',
+    linkText: 'Foster Application',
+    active: pathname === '/volunteer/foster-application',
   },
   {
     linkKey: '/store',
