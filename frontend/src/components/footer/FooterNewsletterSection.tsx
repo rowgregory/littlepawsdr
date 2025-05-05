@@ -36,7 +36,7 @@ const FooterNewsletterSection = () => {
     <div className='grid grid-cols-12 col-span-9 bg-[#1e1e29] rounded-2xl w-full p-4 sm:p-10  text-white items-center'>
       <div className='col-span-12 sm:col-span-6'>
         <h5 className='text-lg mb-3 font-QBold text-center sm:text-left text-white'>
-          Join, Support, Rescue
+          Subscribe, Support, Rescue
         </h5>
         <p className='font-QLight text-sm mb-6 sm:mb-0 text-white'>
           Stay updated on rescues, events, and <br /> dachshund adoption opportunities!
@@ -64,12 +64,15 @@ const FooterNewsletterSection = () => {
           />
           <button
             type='submit'
-            className='h-12 max-w-[56px] w-full rounded-xl bg-teal-400 text-white flex items-center justify-center'
+            className='h-12 max-w-[56px] w-full rounded-xl bg-teal-400 text-white flex items-center justify-center group relative overflow-hidden'
           >
             {isLoading ? (
               <TailwindSpinner color='fill-[#fff]' />
             ) : (
-              <i className='fas fa-paper-plane fa-xs' />
+              <>
+                <i className='fas fa-paper-plane fa-xs absolute -translate-x-10 translate-y-10 group-hover:translate-x-0 group-hover:translate-y-0 duration-500' />
+                <i className='fas fa-paper-plane fa-xs absolute translate-x-0 translate-y-0 group-hover:translate-x-10 group-hover:-translate-y-10 duration-500' />
+              </>
             )}
           </button>
         </form>

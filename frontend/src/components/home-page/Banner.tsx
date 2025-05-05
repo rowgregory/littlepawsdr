@@ -18,7 +18,7 @@ const Banner = () => {
         <source src={LandingVideo} type='video/mp4' />
         Your browser does not support the video tag.
       </video>
-      <div className='pt-14 absolute z-0 top-0 left-0 flex-col w-full h-[600px] sm:h-[850px] flex justify-center bg-[#1c1c1c]/30'>
+      <div className='px-3 pt-14 absolute z-0 top-0 left-0 flex-col w-full h-[600px] sm:h-[850px] flex justify-center bg-[#1c1c1c]/30'>
         <div className='max-w-screen-2xl w-full mx-auto px-3 xl:px-0 flex flex-col gap-5'>
           <h1 className='hidden sm:block mb-5 slide-down text-white font-QLight'>
             Your compassion can turn their world around. By supporting us, <br />

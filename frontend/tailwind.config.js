@@ -21,6 +21,7 @@ module.exports = {
       screens: {
         xs: '480px',
         1190: '1190px',
+        1230: '1230px',
       },
       boxShadow: {
         'right-side': '0 35px 60px -15px rgba(0, 0, 0, 0.3)',
