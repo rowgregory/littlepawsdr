@@ -1,6 +1,6 @@
 import ECardOrder from '../../models/eCardOrderModel.js';
 import { logEvent } from '../logHelpers.js';
-import sendEmail from '../sendEmail.ts';
+import sendEmail from '../sendEmail.js';
 
 async function createEcardOrders(data, order, log) {
   logEvent(log, 'INITIATE CREATE ECARD ORDER DOCUMENT', data);

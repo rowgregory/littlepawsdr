@@ -1,6 +1,6 @@
 import asyncHandler from 'express-async-handler';
 import Order from '../models/orderModel.js';
-import sendEmail from '../utils/sendEmail.ts';
+import sendEmail from '../utils/sendEmail.js';
 import Error from '../models/errorModel.js';
 import ProductOrder from '../models/productOrderModel.js';
 import getTrackingService from '../utils/getTrackingService.js';
@@ -59,11 +59,7 @@ const createOrder = asyncHandler(async (req, res) => {
 */
 const getOrderById = asyncHandler(async (req, res) => {
   try {
-    const order = await Order.findById(req.params.id).populate([
-      { path: 'ecards' },
-      { path: 'welcomeWieners' },
-      { path: 'products' },
-    ]);
+    const order = await Order.findById(req.params.id).populate([{ path: 'ecards' }, { path: 'welcomeWieners' }, { path: 'products' }]);
     if (!order) return res.status(404).json({ message: 'Order not found' });
 
     res.status(200).json({ order });
@@ -91,12 +87,7 @@ const getOrders = asyncHandler(async (req, res) => {
   try {
     const orders = await Order.find({})
       .sort({ createdAt: -1 })
-      .populate([
-        { path: 'user' },
-        { path: 'ecards' },
-        { path: 'welcomeWieners' },
-        { path: 'products' },
-      ]);
+      .populate([{ path: 'user' }, { path: 'ecards' }, { path: 'welcomeWieners' }, { path: 'products' }]);
 
     res.status(200).json({ orders });
   } catch (err) {
@@ -139,11 +130,7 @@ const updateOrderWithTrackingNumber = asyncHandler(async (req, res) => {
     );
     logEvent(log, 'ORDER UPDATED', order);
 
-    const updatedProductOrder = await ProductOrder.findOneAndUpdate(
-      { orderId: id },
-      { status: 'Shipped' },
-      { new: true }
-    );
+    const updatedProductOrder = await ProductOrder.findOneAndUpdate({ orderId: id }, { status: 'Shipped' }, { new: true });
     logEvent(log, 'PRODUCT ORDER UPDATED', updatedProductOrder);
 
     sendEmail(order, 'SEND_ORDER_SHIPPED_CONFIRMATION_EMAIL');

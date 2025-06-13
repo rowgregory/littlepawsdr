@@ -1,24 +1,6 @@
 import { AuctionWinningBidder } from '../../models/campaignModel.js';
 
-interface EmailOptionsProps {
-  template: string;
-  message: { from: string; to: any };
-  locals: {
-    photo: any;
-    itemName: any;
-    desc: any;
-    subtotal: any;
-    shipping: any;
-    totalPrice: any;
-    id: any;
-  };
-}
-
-interface IPugEmail {
-  send: (arg0: any) => any;
-}
-
-const sendEmailWithRetry = async (emailOptions: EmailOptionsProps, pugEmail: IPugEmail, retries = 3, delay = 5000) => {
+const sendEmailWithRetry = async (emailOptions, pugEmail, retries = 3, delay = 5000) => {
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
       await pugEmail.send(emailOptions);
@@ -34,7 +16,7 @@ const sendEmailWithRetry = async (emailOptions: EmailOptionsProps, pugEmail: IPu
   }
 };
 
-const paymentRedminderWinningBidAuctionItem = async (pugEmail: any, auctionWinningBidders: any[]) => {
+const paymentRedminderWinningBidAuctionItem = async (pugEmail, auctionWinningBidders) => {
   auctionWinningBidders.forEach(async (winningBidder) => {
     await sendEmailWithRetry(
       {

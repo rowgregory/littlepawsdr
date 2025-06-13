@@ -1,16 +1,7 @@
 import Error from '../../models/errorModel.js';
 import { logEvent, prepareLog } from '../logHelpers.js';
 
-interface IPugEmail {
-  send: (options: { template: string; message: { from: string; to: string }; locals: { resetUrl: string } }) => Promise<void>;
-}
-
-interface IUser {
-  email: string;
-  resetUrl: string;
-}
-
-const forgotPassword = async (pugEmail: IPugEmail, user: IUser) => {
+const forgotPassword = async (pugEmail, user) => {
   const log = await prepareLog('FORGOT PASSWORD EMAIL');
 
   if (!user?.email || !user?.resetUrl) {

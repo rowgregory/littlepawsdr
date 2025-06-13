@@ -1,6 +1,6 @@
 import asyncHandler from 'express-async-handler';
 import User from '../../../models/userModel.js';
-import Address from '../../../models/addressModel.ts'; // Fixed extension
+import Address from '../../../models/addressModel.js';
 import { logEvent, prepareLog } from '../../../utils/logHelpers.js';
 import { Bid } from '../../../models/campaignModel.js';
 

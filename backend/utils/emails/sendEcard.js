@@ -2,7 +2,7 @@ import ECardOrder from '../../models/eCardOrderModel.js';
 import isDaylightSavingTime from '../isDaylightSavingsTime.js';
 import { logEvent, prepareLog } from '../logHelpers.js';
 
-const sendEcard = async (pugEmail: { send: any }) => {
+const sendEcard = async (pugEmail) => {
   const log = await prepareLog('SEND ECARD');
   logEvent(log, 'BEGINNING SEND EMAIL CRONJOB');
 
@@ -59,7 +59,7 @@ const sendEcard = async (pugEmail: { send: any }) => {
           logEvent(log, 'ERROR SENDING ECARDS', { message: err.message, name: err.name });
         }
       })
-      .catch(async (err: { message: any; name: any }) => {
+      .catch(async (err) => {
         logEvent(log, 'ERROR SENDING ECARDS', { message: err.message, name: err.name });
       });
   });

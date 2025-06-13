@@ -1,7 +1,7 @@
 import { Campaign } from '../../models/campaignModel.js';
 import { logEvent } from '../logHelpers.js';
 
-const updateCampaignStatusToEnd = async (auction: { campaign: any }, log: any) => {
+const updateCampaignStatusToEnd = async (auction, log) => {
   try {
     if (!auction) return null;
 

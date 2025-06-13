@@ -1,16 +1,16 @@
 import Error from '../models/errorModel.js';
-import createPugEmailClient from './emailClients.ts';
-import adoptionFeeConfirmation from './emails/adoptionFeeConfirmation.ts';
-import forgotPassword from './emails/forgotPassword.ts';
-import notifyAuctionWinners from './emails/notifyAuctionWinners.ts';
-import orderNotification from './emails/orderNotification.ts';
-import outBidNotification from './emails/outBidNotification.ts';
-import paymentRedminderWinningBidAuctionItem from './emails/paymentReminderWinningBidAuctionItem.ts';
-import sendEcard from './emails/sendEcard.ts';
-import thirdAuctionItemPaymentReminderEmail from './emails/thirdAuctionItemPaymentReminderEmail.ts';
+import createPugEmailClient from './emailClients.js';
+import adoptionFeeConfirmation from './emails/adoptionFeeConfirmation.js';
+import forgotPassword from './emails/forgotPassword.js';
+import notifyAuctionWinners from './emails/notifyAuctionWinners.js';
+import orderNotification from './emails/orderNotification.js';
+import outBidNotification from './emails/outBidNotification.js';
+import paymentRedminderWinningBidAuctionItem from './emails/paymentReminderWinningBidAuctionItem.js';
+import sendEcard from './emails/sendEcard.js';
+import thirdAuctionItemPaymentReminderEmail from './emails/thirdAuctionItemPaymentReminderEmail.js';
 import { logEvent, prepareLog } from './logHelpers.js';
 
-const sendEmail = async (body: any, type: any) => {
+const sendEmail = async (body, type) => {
   const pugEmail = await createPugEmailClient();
 
   try {

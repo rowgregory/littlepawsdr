@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import Error from '../../../models/errorModel.js';
 import { prepareLog, logEvent } from '../../../utils/logHelpers.js';
 import User from '../../../models/userModel.js';
-import Address from '../../../models/addressModel.ts'; // Fixed extension
+import Address from '../../../models/addressModel.js';
 import asyncHandler from 'express-async-handler';
 
 /**

@@ -1,17 +1,17 @@
 import cron from 'node-cron';
-import sendEmail from './sendEmail.ts';
+import sendEmail from './sendEmail.js';
 import AdoptionApplicationBypassCode from '../models/adoptionApplicationBypassCodeModel.js';
 import { AuctionWinningBidder, Campaign } from '../models/campaignModel.js';
 import { logEvent, prepareLog } from './logHelpers.js';
 import findOneAndUpdateAuctionStart from './cron/findOneAndUpdateAuctionStart.js';
-import updateAuctionSettingsToEnd from './cron/updateAuctionSettingsToEnd.ts';
+import updateAuctionSettingsToEnd from './cron/updateAuctionSettingsToEnd.js';
 import resolveUnsoldAuctionItems from './cron/resolveUnsoldAuctionItems.js';
 import generateAdoptionApplicationFeeBypassCode from './cron/generateAdoptionApplicationBypassCode.js';
-import fetchTopBids from './cron/fetchTopBids.ts';
-import groupBidsByUser from './cron/groupBidsByUser.ts';
-import sendEmailsAndUpdateBids from './cron/sendEmailsAndUpdateBids.ts';
-import updateCampaignStatusToEnd from './cron/updateCampaignStatusToEnd.ts';
-import updateAuctionBidderStatuses from './cron/updateAuctionBidderStatuses.ts';
+import fetchTopBids from './cron/fetchTopBids.js';
+import groupBidsByUser from './cron/groupBidsByUser.js';
+import sendEmailsAndUpdateBids from './cron/sendEmailsAndUpdateBids.js';
+import updateCampaignStatusToEnd from './cron/updateCampaignStatusToEnd.js';
+import updateAuctionBidderStatuses from './cron/updateAuctionBidderStatuses.js';
 
 const cronJobs = (io) => {
   return {

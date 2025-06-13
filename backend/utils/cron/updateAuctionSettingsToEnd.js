@@ -2,7 +2,7 @@ import { Auction } from '../../models/campaignModel.js';
 import isDaylightSavingTime from '../isDaylightSavingsTime.js';
 import { logEvent } from '../logHelpers.js';
 
-function getAuctionClosingTime(log: any) {
+function getAuctionClosingTime(log) {
   const now = new Date();
   const isDST = isDaylightSavingTime(now);
   now.setUTCHours(isDST ? 21 : 22, 0, 0, 0);
@@ -12,7 +12,7 @@ function getAuctionClosingTime(log: any) {
   return closingTime;
 }
 
-const updateAuctionSettingsToEnd = async (log: any) => {
+const updateAuctionSettingsToEnd = async (log) => {
   const closingTime = getAuctionClosingTime(log);
 
   const auction = await Auction.findOneAndUpdate(

@@ -2,25 +2,7 @@ import { Bid } from '../../models/campaignModel.js';
 import Error from '../../models/errorModel.js';
 import { logEvent, prepareLog } from '../logHelpers.js';
 
-interface PugEmailProps {
-  send: (arg0: {
-    template: string;
-    message: { from: string; to: any };
-    locals: { itemImage: any; itemName: any; previousTopBid: any; topBid: any; link: any };
-  }) => Promise<any>;
-}
-
-interface DataProps {
-  email: any;
-  itemImage: any;
-  itemName: any;
-  previousTopBid: any;
-  topBid: any;
-  link: any;
-  previousTopBidId: any;
-}
-
-const outBidNotification = async (pugEmail: PugEmailProps, data: DataProps) => {
+const outBidNotification = async (pugEmail, data) => {
   const log = await prepareLog('INITIATE OUT BID NOTIFICATION EMAIL');
   logEvent(log, 'OUT BID NOTIFICATION EMAIL', data);
   await pugEmail

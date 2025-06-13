@@ -5,7 +5,7 @@ import { io } from '../../server.js';
 /**
  * Update AuctionItem with sold price and top bidder info
  */
-async function updateAuctionItemSoldPriceAndTopBidder(bid: { auctionItem: { _id: any }; _bid: { bidAmount: any; bidder: any } }, log: any) {
+async function updateAuctionItemSoldPriceAndTopBidder(bid, log) {
   try {
     const updated = await AuctionItem.findByIdAndUpdate(
       bid.auctionItem._id,
@@ -14,12 +14,12 @@ async function updateAuctionItemSoldPriceAndTopBidder(bid: { auctionItem: { _id:
     );
     logEvent(log, 'SUCCESS UPDATE AUCTION ITEM SOLD PRICE AND TOB BIDDER', updated);
     return updated;
-  } catch (err: any) {
+  } catch (err) {
     logEvent(log, 'FAILED TO UPDATE AUCTION ITEM SOLD PRICE AND TOP BIDDER', JSON.stringify(err));
   }
 }
 
-async function createWinningBidder({ bids, auctionId, userId, log }: { bids: any[]; auctionId: any; userId: any; log: any }) {
+async function createWinningBidder({ bids, auctionId, userId, log }) {
   try {
     const auctionItemsIds = bids.map((b) => b.auctionItem._id);
     const shippingTotal = bids.reduce((sum, b) => sum + (b.auctionItem.shippingCosts || 0), 0);
@@ -40,12 +40,12 @@ async function createWinningBidder({ bids, auctionId, userId, log }: { bids: any
 
     logEvent(log, 'SUCCESS CREATE AUCTION WINNING BIDDER', winningBidder);
     return winningBidder;
-  } catch (err: any) {
+  } catch (err) {
     logEvent(log, 'FAILED TO CREATE WINNING BIDDER', JSON.stringify(err));
   }
 }
 
-async function updateAuctionWithWinningBidder(auctionId: any, winningBidderId: any, log: any) {
+async function updateAuctionWithWinningBidder(auctionId, winningBidderId, log) {
   await Auction.findByIdAndUpdate(auctionId, {
     $push: { winningBids: winningBidderId },
   });
@@ -57,10 +57,10 @@ async function updateAuctionWithWinningBidder(auctionId: any, winningBidderId: a
  * Send notification email about auction winning bidder
  */
 async function notifyWinnerEmail(
-  winningBidder: any, // AuctionWinningBidder document
-  pugEmail: { send: (arg0: any) => any },
-  log: any
-): Promise<boolean> {
+  winningBidder, // AuctionWinningBidder document
+  pugEmail,
+  log
+) {
   await sendEmailWithRetry(
     {
       template: 'auctionItemWinningBidder',
@@ -87,27 +87,9 @@ async function notifyWinnerEmail(
   return true; // Indicate success
 }
 
-const delay = (ms: number | undefined) => new Promise((resolve) => setTimeout(resolve, ms));
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-async function sendEmailWithRetry(
-  emailOptions: {
-    template: string;
-    message: { from: string; to: string };
-    locals: {
-      itemCount: number;
-      shipping: string;
-      subtotal: string;
-      totalPrice: string;
-      id: string;
-      auctionItems?: any[]; // <-- new optional field for template rendering
-      name: string;
-    };
-  },
-  pugEmail: { send: (arg0: any) => any },
-  log: { save: () => any },
-  retries = 3,
-  delayMs = 5000
-) {
+async function sendEmailWithRetry(emailOptions, pugEmail, log, retries = 3, delayMs = 5000) {
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
       logEvent(log, 'SENDING EMAIL', emailOptions);
@@ -130,7 +112,7 @@ async function sendEmailWithRetry(
 /**
  * Update AuctionWinningBidder after email sent
  */
-async function updateWinningBidderAfterEmail(winningBidder: { _id: any }, log: any) {
+async function updateWinningBidderAfterEmail(winningBidder, log) {
   const updated = await AuctionWinningBidder.findByIdAndUpdate(
     winningBidder._id,
     {
@@ -144,7 +126,7 @@ async function updateWinningBidderAfterEmail(winningBidder: { _id: any }, log: a
   return updated;
 }
 
-export const notifyAuctionWinners = async (pugEmail: any, grouped: { [key: string]: { user: any; bids: any; auction: any } }) => {
+export const notifyAuctionWinners = async (pugEmail, grouped) => {
   const log = await prepareLog('NOTIFY AUCTION WINNERS');
   try {
     for (const userId in grouped) {

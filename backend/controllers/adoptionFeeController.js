@@ -3,7 +3,7 @@ import AdoptionFee from '../models/adoptionFeeModel.js';
 import Error from '../models/errorModel.js';
 import { generateToken } from '../utils/generateToken.js';
 import jwt from 'jsonwebtoken';
-import sendEmail from '../utils/sendEmail.ts';
+import sendEmail from '../utils/sendEmail.js';
 import AdoptionApplicationBypassCode from '../models/adoptionApplicationBypassCodeModel.js';
 import { createActionHistoryLog } from './actionHistoryController.js';
 import { logEvent, prepareLog } from '../utils/logHelpers.js';

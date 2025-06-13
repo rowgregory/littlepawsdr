@@ -4,7 +4,7 @@ import { logEvent } from '../logHelpers.js';
 /**
  * Fetch all top bids that haven’t received winner emails yet
  */
-const fetchTopBids = async (auction: { _id: any }, log: any) => {
+const fetchTopBids = async (auction, log) => {
   logEvent(log, 'Fetching top bids');
 
   const bids = await Bid.find({
@@ -12,11 +12,7 @@ const fetchTopBids = async (auction: { _id: any }, log: any) => {
     status: 'Top Bid',
     sentWinnerEmail: false,
     emailCount: 0,
-  }).populate([
-    { path: 'auction' },
-    { path: 'user' },
-    { path: 'auctionItem', populate: [{ path: 'photos' }] },
-  ]);
+  }).populate([{ path: 'auction' }, { path: 'user' }, { path: 'auctionItem', populate: [{ path: 'photos' }] }]);
 
   if (!bids || bids.length === 0) {
     logEvent(log, 'No top bids found');

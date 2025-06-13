@@ -2,26 +2,7 @@ import { AuctionWinningBidder } from '../../models/campaignModel.js';
 import Error from '../../models/errorModel.js';
 import { logEvent, prepareLog } from '../logHelpers.js';
 
-interface PugEmailProps {
-  send: (arg0: {
-    template: string;
-    message: { from: string; to: any };
-    locals: {
-      photo: any;
-      itemName: any;
-      desc: any;
-      subtotal: any;
-      shipping: any;
-      totalPrice: any;
-      id: any;
-    };
-  }) => Promise<any>;
-}
-
-const thirdAuctionItemPaymentReminderEmail = async (
-  pugEmail: PugEmailProps,
-  auctionWinningBidders: any[]
-) => {
+const thirdAuctionItemPaymentReminderEmail = async (pugEmail, auctionWinningBidders) => {
   const log = await prepareLog('THIRD AUCTION ITEM PAYMENT REMINDER EMAIL');
   logEvent(log, 'INITIATE THIRD AUCTION ITEM PAYMENT REMINDER EMAIL', auctionWinningBidders);
 
@@ -44,10 +25,7 @@ const thirdAuctionItemPaymentReminderEmail = async (
         },
       })
       .then(async () => {
-        logEvent(
-          log,
-          `THIRD AUCTION ITEM PAYMENT REMINDER EMAIL SUCCESSFULLY SENT TO ${winningBidder.user.email}`
-        );
+        logEvent(log, `THIRD AUCTION ITEM PAYMENT REMINDER EMAIL SUCCESSFULLY SENT TO ${winningBidder.user.email}`);
 
         await AuctionWinningBidder.findOneAndUpdate(winningBidder?._id, {
           emailNotificationCount: 3,

@@ -1,5 +1,5 @@
 import User from '../models/userModel.js';
-import sendEmail from '../utils/sendEmail.ts';
+import sendEmail from '../utils/sendEmail.js';
 import asyncHandler from 'express-async-handler';
 import Error from '../models/errorModel.js';
 import { validateEmailRegex } from '../utils/regex.js';

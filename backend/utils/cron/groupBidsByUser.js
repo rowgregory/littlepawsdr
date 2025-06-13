@@ -3,7 +3,7 @@ import { logEvent } from '../logHelpers.js';
 /**
  * Group top bids by user and calculate totals
  */
-const groupBidsByUser = (topBids: any, log: any) => {
+const groupBidsByUser = (topBids, log) => {
   const grouped = {};
 
   for (const bid of topBids) {

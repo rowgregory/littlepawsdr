@@ -1,7 +1,7 @@
 import asyncHandler from 'express-async-handler';
 import { logEvent, prepareLog } from '../../../utils/logHelpers.js';
 import User from '../../../models/userModel.js';
-import Address from '../../../models/addressModel.ts';
+import Address from '../../../models/addressModel.js';
 import Error from '../../../models/errorModel.js';
 
 /**

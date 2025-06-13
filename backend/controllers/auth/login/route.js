@@ -2,7 +2,7 @@ import asyncHandler from 'express-async-handler';
 import mongoose from 'mongoose';
 import Error from '../../../models/errorModel.js';
 import User from '../../../models/userModel.js';
-import Address from '../../../models/addressModel.ts';
+import Address from '../../../models/addressModel.js';
 import { generateToken } from '../../../utils/generateToken.js';
 import { prepareLog, logEvent } from '../../../utils/logHelpers.js';
 

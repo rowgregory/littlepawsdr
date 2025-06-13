@@ -3,7 +3,7 @@ import Error from '../../../models/errorModel.js';
 import { Auction, AuctionBidder, AuctionItem, Bid, Campaign } from '../../../models/campaignModel.js';
 import createBidDocument from '../../../utils/campaign/createBidDocument.js';
 import { logEvent, prepareLog } from '../../../utils/logHelpers.js';
-import sendEmail from '../../../utils/sendEmail.ts';
+import sendEmail from '../../../utils/sendEmail.js';
 import getPreviousTopBid from '../../../utils/campaign/getPreviousTopBid.js';
 import updateOtherBidsStatus from '../../../utils/campaign/updateOtherBidsStatus.js';
 import User from '../../../models/userModel.js';

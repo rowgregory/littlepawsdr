@@ -2,40 +2,7 @@ import AdoptionFee from '../../models/adoptionFeeModel.js';
 import Error from '../../models/errorModel.js';
 import { formatDate } from '../formatDate.js';
 
-interface PugEmailProps {
-  send: (arg0: {
-    template: string;
-    message: { from: string; to: any };
-    locals: {
-      firstName: any;
-      lastName: any;
-      email: any;
-      feeAmount: any;
-      state: any;
-      paypalOrderId: any;
-      id: any;
-      createdAt: string;
-      token: any;
-      image: string;
-      productName: string;
-      quantity: number;
-    };
-  }) => Promise<any>;
-}
-
-interface BodyProps {
-  emailAddress: any;
-  firstName: any;
-  lastName: any;
-  feeAmount: any;
-  state: any;
-  paypalOrderId: any;
-  _id: any;
-  createdAt: any;
-  token: any;
-}
-
-const adoptionFeeConfirmation = async (pugEmail: PugEmailProps, body: BodyProps) => {
+const adoptionFeeConfirmation = async (pugEmail, body) => {
   await pugEmail
     .send({
       template: 'adoptionfeeconfirmation',
@@ -60,11 +27,7 @@ const adoptionFeeConfirmation = async (pugEmail: PugEmailProps, body: BodyProps)
       },
     })
     .then(async () => {
-      await AdoptionFee.findByIdAndUpdate(
-        body._id,
-        { confirmationEmailHasBeenSent: true },
-        { new: true }
-      );
+      await AdoptionFee.findByIdAndUpdate(body._id, { confirmationEmailHasBeenSent: true }, { new: true });
     })
     .catch(
       async (err) =>

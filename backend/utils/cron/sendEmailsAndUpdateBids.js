@@ -1,11 +1,7 @@
 import { logEvent } from '../logHelpers.js';
-import sendEmail from '../sendEmail.ts';
+import sendEmail from '../sendEmail.js';
 
-interface GroupedProps {
-  [x: string]: { user: any; bids: any; auction: any };
-}
-
-const sendEmailsAndUpdateBids = async (grouped: GroupedProps, log: any) => {
+const sendEmailsAndUpdateBids = async (grouped, log) => {
   try {
     // Send one email with all winners - no loop needed
     await sendEmail(grouped, 'AUCTION_USER_WINNER_SUMMARY');

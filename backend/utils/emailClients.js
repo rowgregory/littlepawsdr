@@ -1,13 +1,13 @@
 import pug from 'pug';
 import path from 'path';
-import { createTransporter } from '../config/emailConfig.ts';
+import { createTransporter } from '../config/emailConfig.js';
 import fs from 'fs';
 
 const createPugEmailClient = async () => {
   const transporter = await createTransporter();
 
   return {
-    send: async (emailOptions: { template: string; message: { from: string; to: string; subject?: string }; locals: any }) => {
+    send: async (emailOptions) => {
       try {
         const templateDir = path.join(path.resolve('emails'), emailOptions.template);
 
@@ -23,7 +23,7 @@ const createPugEmailClient = async () => {
         }
 
         // Render text version (optional)
-        let text: string | undefined = undefined;
+        let text = undefined;
         const textPath = path.join(templateDir, 'text.pug');
         if (fs.existsSync(textPath)) {
           text = pug.renderFile(textPath, emailOptions.locals);

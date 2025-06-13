@@ -1,6 +1,6 @@
 import ProductOrder from '../../models/productOrderModel.js';
 import { logEvent } from '../logHelpers.js';
-import sendEmail from '../sendEmail.ts';
+import sendEmail from '../sendEmail.js';
 import updateProductStock from './updateProductStock.js';
 
 async function createProductOrders(data, order, log) {
