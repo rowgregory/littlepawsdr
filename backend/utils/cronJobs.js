@@ -13,7 +13,7 @@ import sendEmailsAndUpdateBids from './cron/sendEmailsAndUpdateBids.ts';
 import updateCampaignStatusToEnd from './cron/updateCampaignStatusToEnd.ts';
 import updateAuctionBidderStatuses from './cron/updateAuctionBidderStatuses.ts';
 
-const cronJobs = (io: any) => {
+const cronJobs = (io) => {
   return {
     // Every day at 9:00AM
     sendEcard: cron.schedule('0 9 * * *', () => sendEmail({}, 'ECARD'), {

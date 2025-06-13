@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import colors from 'colors';
 import morgan from 'morgan';
 import connectDB from './config/db.js';
-import cronJobs from './utils/cronJobs.ts';
+import cronJobs from './utils/cronJobs.js';
 import userRoutes from './routes/userRoutes.js';
 import productRoutes from './routes/productRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
