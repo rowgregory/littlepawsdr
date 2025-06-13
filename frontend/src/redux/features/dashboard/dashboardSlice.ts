@@ -89,32 +89,25 @@ export const dashboardSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addMatcher(dashboardApi.endpoints.getAdoptionApplicationBypassCode.matchFulfilled, (state, { payload }: any) => {
+        state.bypassCode = payload.bypassCode;
+      })
+      .addMatcher(dashboardApi.endpoints.getWelcomeWienerOrders.matchFulfilled, (state, { payload }: any) => {
+        state.welcomeWienerOrders = payload.welcomeWienerOrders;
+        state.welcomeWienerRevenue = payload.welcomeWienerRevenue;
+        state.totalWelcomeWieners = payload.totalWelcomeWieners;
+        state.firstWelcomeWienerOrderCreatedAt = payload.firstWelcomeWienerOrderCreatedAt;
+      })
+      .addMatcher(dashboardApi.endpoints.getEcardOrders.matchFulfilled, (state, { payload }: any) => {
+        state.ecardOrders = payload.ecardOrders;
+        state.ecardOrderRevenue = payload.ecardOrderRevenue;
+        state.totalEcardOrders = payload.totalEcardOrders;
+      })
+      .addMatcher(dashboardApi.endpoints.fetchDashboardData.matchFulfilled, (state, { payload }: any) => {
+        state.success = true;
+      })
       .addMatcher(
-        dashboardApi.endpoints.getAdoptionApplicationBypassCode.matchFulfilled,
-        (state, { payload }: any) => {
-          state.bypassCode = payload.bypassCode;
-        }
-      )
-      .addMatcher(
-        dashboardApi.endpoints.getWelcomeWienerOrders.matchFulfilled,
-        (state, { payload }: any) => {
-          state.welcomeWienerOrders = payload.welcomeWienerOrders;
-          state.welcomeWienerRevenue = payload.welcomeWienerRevenue;
-          state.totalWelcomeWieners = payload.totalWelcomeWieners;
-          state.firstWelcomeWienerOrderCreatedAt = payload.firstWelcomeWienerOrderCreatedAt;
-        }
-      )
-      .addMatcher(
-        dashboardApi.endpoints.getEcardOrders.matchFulfilled,
-        (state, { payload }: any) => {
-          state.ecardOrders = payload.ecardOrders;
-          state.ecardOrderRevenue = payload.ecardOrderRevenue;
-          state.totalEcardOrders = payload.totalEcardOrders;
-        }
-      )
-      .addMatcher(
-        (action: any) =>
-          action.type.endsWith('/rejected') && action.payload?.data?.sliceName === 'dashboardApi',
+        (action: any) => action.type.endsWith('/rejected') && action.payload?.data?.sliceName === 'dashboardApi',
         (state: any, action: any) => {
           state.loading = false;
           state.error = action.payload.data;
@@ -125,9 +118,5 @@ export const dashboardSlice = createSlice({
 
 export const dashboardReducer = dashboardSlice.reducer as Reducer<DashboardStatePayload>;
 
-export const {
-  openCloseDashboardModal,
-  setAdoptionApplicationBypassCode,
-  closeAdminMobileNavigation,
-  openAdminMobileNavigation
-} = dashboardSlice.actions;
+export const { openCloseDashboardModal, setAdoptionApplicationBypassCode, closeAdminMobileNavigation, openAdminMobileNavigation } =
+  dashboardSlice.actions;

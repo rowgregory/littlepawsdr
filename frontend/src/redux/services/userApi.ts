@@ -12,18 +12,6 @@ export const userApi = api.injectEndpoints({
       query: (userId: string) => `${BASE_URL}/${userId}`,
       providesTags: (result: any, error: any, arg: any) => [{ type: 'User', id: arg }],
     }),
-    getUserShippingAddress: build.query({
-      query: (userId: string) => `${BASE_URL}/shipping-address/${userId}`,
-      providesTags: (result: any, error: any, arg: any) => [{ type: 'User', id: arg }],
-    }),
-    updateUser: build.mutation({
-      query: (user: any) => ({
-        url: `${BASE_URL}/${user.id}`,
-        method: 'PUT',
-        body: user,
-      }),
-      invalidatesTags: ['User', 'Campaign'],
-    }),
     updateUserRole: build.mutation({
       query: (user: any) => ({
         url: `${BASE_URL}/role/${user.id}`,
@@ -39,29 +27,24 @@ export const userApi = api.injectEndpoints({
       }),
       invalidatesTags: ['User'],
     }),
-    fetchPersonalData: build.query({
-      query: () => `${BASE_URL}/personal-data`,
+    fetchUserProfile: build.query({
+      query: () => `${BASE_URL}/fetch-user-profile`,
       providesTags: ['User', 'Campaign', 'Adoption-Application-Fee'],
     }),
-    updateUserProfileDetails: build.mutation({
+    updateUserProfile: build.mutation({
       query: (user: any) => ({
-        url: `${BASE_URL}/profile/details`,
+        url: `${BASE_URL}/update-user-profile`,
         method: 'PATCH',
         body: user,
       }),
       invalidatesTags: ['User'],
     }),
-    fetchUserProfileDetails: build.query({
-      query: (userId: string) => {
-        return `${BASE_URL}/profile/details/${userId}`;
-      },
-      providesTags: (result: any, error: any, arg: string) => [{ type: 'User', id: arg }],
-    }),
-    fetchUserAnonStatusAndShippingAddressDetails: build.query({
-      query: (userId: string) => {
-        return `${BASE_URL}/anon-status-shipping-address/details/${userId}`;
-      },
-      providesTags: (result: any, error: any, arg: string) => [{ type: 'User', id: arg }],
+    removeUserAddress: build.mutation({
+      query: ({ userId }: { userId: string }) => ({
+        url: `${BASE_URL}/${userId}/address`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['User'],
     }),
   }),
 });
@@ -69,12 +52,9 @@ export const userApi = api.injectEndpoints({
 export const {
   useGetUsersQuery,
   useGetUserQuery,
-  useGetUserShippingAddressQuery,
-  useUpdateUserMutation,
   useUpdateUserRoleMutation,
   useDeleteUserMutation,
-  useFetchPersonalDataQuery,
-  useUpdateUserProfileDetailsMutation,
-  useFetchUserProfileDetailsQuery,
-  useFetchUserAnonStatusAndShippingAddressDetailsQuery,
+  useFetchUserProfileQuery,
+  useUpdateUserProfileMutation,
+  useRemoveUserAddressMutation,
 } = userApi;

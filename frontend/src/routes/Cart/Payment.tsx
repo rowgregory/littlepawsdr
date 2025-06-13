@@ -1,7 +1,6 @@
 import { Fragment, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { RootState, useAppDispatch } from '../../redux/toolkitStore';
-import { useSelector } from 'react-redux';
+import { RootState, useAppDispatch, useAppSelector } from '../../redux/toolkitStore';
 import { useCreateOrderMutation } from '../../redux/services/orderApi';
 import ContactLoader from '../../components/Loaders/ContactLoader/ContactLoader';
 import { PayPalButtons } from '@paypal/react-paypal-js';
@@ -22,8 +21,7 @@ const Payment = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [orderLoader, setOrderLoader] = useState(false);
-  const { cartItemsAmount, subtotal, totalPrice, shippingPrice, cartItems, step, fields } =
-    useSelector((state: RootState) => state.cart);
+  const { cartItemsAmount, subtotal, totalPrice, shippingPrice, cartItems, step, fields } = useAppSelector((state: RootState) => state.cart);
   const { isProduct, isWelcomeWiener, isEcard } = cartItemType(cartItems);
   const hasRun = useRef(false);
   const fieldsRef = useRef<FieldsType | null>(null);
@@ -87,17 +85,14 @@ const Payment = () => {
         })
           .unwrap()
           .then((data: any) => {
-            dispatch(resetCart());
             navigate(`/order/${data?.order?.orderId}`);
+            dispatch(resetCart());
             setOrderLoader(false);
           })
           .catch((err: any) => {
             setOrderLoader(false);
           });
       });
-    },
-    onError: (err: any) => {
-      console.error('ON ERROR: ', err);
     },
   } as any;
   return (

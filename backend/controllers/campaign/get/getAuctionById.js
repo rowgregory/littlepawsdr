@@ -4,39 +4,39 @@ import { AuctionItem } from '../../../models/campaignModel.js';
 import mongoose from 'mongoose';
 
 const auctionItemAggregate = (auctionItemId) => [
-    { $match: { _id: new mongoose.Types.ObjectId(auctionItemId) } },
-    {
-      $set: {
-        total: {
-          $add: ['$buyNowPrice', '$shippingCosts'],
-        },
+  { $match: { _id: new mongoose.Types.ObjectId(auctionItemId) } },
+  {
+    $set: {
+      total: {
+        $add: ['$buyNowPrice', { $ifNull: ['$shippingCosts', 0] }],
       },
     },
-    {
-      $lookup: {
-        from: 'auctionitemphotos',
-        localField: 'photos',
-        foreignField: '_id',
-        as: 'photos',
-      },
+  },
+  {
+    $lookup: {
+      from: 'auctionitemphotos',
+      localField: 'photos',
+      foreignField: '_id',
+      as: 'photos',
     },
-    {
-      $lookup: {
-        from: 'auctioniteminstantbuyers',
-        localField: 'instantBuyers',
-        foreignField: '_id',
-        as: 'instantBuyers',
-      },
+  },
+  {
+    $lookup: {
+      from: 'auctioniteminstantbuyers',
+      localField: 'instantBuyers',
+      foreignField: '_id',
+      as: 'instantBuyers',
     },
-    {
-      $lookup: {
-        from: 'bids',
-        localField: 'bids',
-        foreignField: '_id',
-        as: 'bids',
-      },
+  },
+  {
+    $lookup: {
+      from: 'bids',
+      localField: 'bids',
+      foreignField: '_id',
+      as: 'bids',
     },
-  ]
+  },
+];
 
 /**
  @desc    Get auction item by id

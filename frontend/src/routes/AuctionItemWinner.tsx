@@ -1,141 +1,188 @@
-import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { RootState } from '../redux/toolkitStore';
-import {
-  useGetWinningBidderQuery,
-  useUpdateAuctionWinningBidderMutation,
-} from '../redux/services/campaignApi';
-import GreenRotatingTransparentCircle from '../components/Loaders/GreenRotatingTransparentCircle';
-import { Fragment, useState } from 'react';
-import { Link } from 'react-router-dom';
-import toFixed from '../utils/toFixed';
-import { PayPalButtons } from '@paypal/react-paypal-js';
+import { useState } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import { useGetWinningBidderQuery, useUpdateAuctionWinningBidderMutation } from '../redux/services/campaignApi';
 import AuctionItemWinnerSuccessPaymentModal from '../components/modals/AuctionItemWinnerSuccessPaymentModal';
-import AuctionItemWinnerLeftPanel from '../components/campaign/AuctionItemWinnerLeftPanel';
-import capitalizeName from '../utils/capitalizeName';
+import AuctionItemWinnerContainer from '../components/campaign/auction-winner/AuctionItemWinnerContainer';
+import DachshundLoader from '../components/Loaders/DachshundLoader';
+import { motion } from 'framer-motion';
+import { Heart, ArrowLeft, Trophy, Crown, Sparkles } from 'lucide-react';
 
 const AuctionItemWinner = () => {
   const [orderLoader, setOrderLoader] = useState(false);
   const params = useParams();
-  const campaign = useSelector((state: RootState) => state.campaign);
-  const [payforAuctionItem] = useUpdateAuctionWinningBidderMutation();
-  const { isLoading } = useGetWinningBidderQuery(params?.id);
-  const winningBid = campaign.winner;
-  const customCampaignLink = winningBid?.customCampaignLink;
-
-  const payPalComponents = {
-    style: { layout: 'vertical' },
-    createOrder: (data: any, actions: any) => {
-      return actions.order.create({
-        purchase_units: [
-          {
-            amount: {
-              value: Number(toFixed(winningBid?.totalPrice)),
-            },
-          },
-        ],
-        application_context: {
-          shipping_preference: 'NO_SHIPPING',
-        },
-      });
-    },
-    onApprove: (data: any, actions: any) => {
-      setOrderLoader(true);
-      return actions.order.capture().then(async (details: any) => {
-        const winningBidder = {
-          id: winningBid?._id,
-          payPalId: details?.id,
-        };
-        await payforAuctionItem(winningBidder)
-          .unwrap()
-          .then(() => {
-            setOrderLoader(false);
-          })
-          .catch(() => {
-            setOrderLoader(false);
-          });
-      });
-    },
-  } as any;
+  const { data: queryData } = useGetWinningBidderQuery(params?.id);
+  const winningBid = queryData?.winningBidder;
+  const [payforAuctionItem, { data }] = useUpdateAuctionWinningBidderMutation();
 
   return (
-    <Fragment>
-      {(orderLoader || isLoading) && <GreenRotatingTransparentCircle />}
-      <AuctionItemWinnerSuccessPaymentModal campaign={campaign} winningBid={winningBid} />
-      <div className='flex justify-between flex-col md:flex-row md:min-h-screen'>
-        <AuctionItemWinnerLeftPanel
-          winningBid={winningBid}
-          customCampaignLink={customCampaignLink}
-        />
-        <div className='flex w-full md:w-[calc((100vw-327px))] justify-center md:justify-start md:ml-[327px] md:min-h-screen p-[12px] md:p-6 lg:p-8'>
-          <div className='w-full max-w-sm flex flex-col'>
-            <h1 className='text-4xl text-center font-bold'>
-              {capitalizeName(campaign?.winner?.user?.name)},
-            </h1>
-            <h4 className={`text-xl font-bold text-center mb-5 ${campaign?.winner?.theme?.text}`}>
-              You're the Winner!
-            </h4>
-            <h6 className='text-center mb-10'>Please Complete Your Payment</h6>
-            {winningBid?.auctionItemPaymentStatus === 'Paid' ? (
-              <div className='text-center flex justify-center items-center flex-col'>
-                <i
-                  className={`fa-solid fa-handshake-angle ${winningBid?.theme?.text} fa-xl rounded-md h-12 w-12 ${winningBid?.theme?.light} flex items-center justify-center p-2 mb-3`}
-                ></i>
-                <p className='font-Matter-Regular text-xl mb-3'>
-                  This item has already been paid for
-                </p>
-                <Link
-                  className={`${winningBid?.theme?.dark} px-4 py-2 rounded-lg text-[#fff] font-Matter-Medium hover:no-underline hover:text-[#fff] hover:shadow-lg`}
-                  to='/campaigns'
+    <>
+      {orderLoader && <DachshundLoader />}
+      <AuctionItemWinnerSuccessPaymentModal open={data?.paymentSuccess} winningBid={winningBid} />
+      <div className='min-h-dvh bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900'>
+        {/* Header */}
+        <motion.div
+          className='relative z-10 px-4 py-6'
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: 'easeOut' }}
+        >
+          <div className='max-w-7xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between'>
+            <div className='flex items-center space-x-4'>
+              {/* Animated logo with winner celebration */}
+              <motion.div
+                className='relative'
+                initial={{ scale: 0.8, rotate: -10 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{
+                  duration: 0.8,
+                  ease: 'easeOut',
+                  delay: 0.2,
+                }}
+              >
+                <motion.div
+                  className='w-12 h-12 bg-gradient-to-r from-orange-400 to-pink-500 rounded-full flex items-center justify-center relative overflow-hidden'
+                  whileHover={{
+                    scale: 1.1,
+                    boxShadow: '0 0 20px rgba(251, 146, 60, 0.5)',
+                  }}
+                  transition={{ duration: 0.3 }}
                 >
-                  Go to campaigns
-                </Link>
-              </div>
-            ) : (
-              winningBid?.auctionItemPaymentStatus === 'Pending' &&
-              !campaign?.success && (
-                <div className='flex flex-col md:mt-5'>
-                  <div className='bg-white rounded-xl w-full mt-3.5 lg:mt-0 mb-4'>
-                    <div className='flex flex-col'>
-                      <div className='flex items-center justify-between my-3'>
-                        <figure className='flex items-center'>
-                          <img
-                            src={winningBid?.auctionItem?.photos[0]?.url}
-                            className='w-16 h-16 rounded-lg object-cover'
-                            alt='Little Paws Dachshund Rescue Auction'
-                          />
-                          <figcaption className='ml-4 font-Matter-Medium'>
-                            {winningBid?.auctionItem?.name}
-                          </figcaption>
-                        </figure>
-                        <p className='font-Matter-Regular'>${toFixed(winningBid?.itemSoldPrice)}</p>
-                      </div>
-                      <div className='w-full h-[0.5px] bg-gray-100 mb-4'></div>
-                      <div className='flex items-center justify-between mb-3'>
-                        <p className='font-Matter-Regular'>Shipping Fee</p>
-                        <p className='font-Matter-Regular'>${toFixed(winningBid?.shipping)}</p>
-                      </div>
-                      <div className='flex items-center justify-between mt-3.5'>
-                        <p className='font-Matter-Medium'>Total</p>
-                        <p className='font-Matter-Medium'>${toFixed(winningBid?.totalPrice)}</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className='bg-white rounded-xl w-full px-6 md:p-0 mt-10'>
-                    <PayPalButtons
-                      style={payPalComponents.style}
-                      forceReRender={payPalComponents.forceRerender}
-                      createOrder={payPalComponents.createOrder}
-                      onApprove={payPalComponents.onApprove}
-                    />
-                  </div>
-                </div>
-              )
-            )}
+                  <motion.div
+                    animate={{
+                      rotate: [0, 5, -5, 0],
+                      scale: [1, 1.1, 1],
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: 'easeInOut',
+                    }}
+                  >
+                    <Heart className='w-6 h-6 text-white' />
+                  </motion.div>
+
+                  {/* Winner sparkle effect */}
+                  <motion.div
+                    className='absolute inset-0 bg-gradient-to-r from-yellow-400/30 to-transparent'
+                    animate={{
+                      opacity: [0, 0.7, 0],
+                      scale: [0.8, 1.2, 0.8],
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: 'easeInOut',
+                    }}
+                  />
+                </motion.div>
+
+                {/* Floating crown for winner */}
+                <motion.div
+                  className='absolute -top-2 -right-2'
+                  initial={{ opacity: 0, scale: 0, rotate: 45 }}
+                  animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                  transition={{
+                    duration: 0.6,
+                    delay: 0.8,
+                    type: 'spring',
+                    stiffness: 200,
+                  }}
+                >
+                  <Crown className='w-5 h-5 text-yellow-400' />
+                </motion.div>
+              </motion.div>
+
+              {/* Animated text content */}
+              <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6, delay: 0.3 }}>
+                <motion.h1
+                  className='text-xl font-bold text-white flex items-center gap-2'
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.5 }}
+                >
+                  Little Paws Dachshund Rescue
+                  <motion.div initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.7, type: 'spring' }}>
+                    <Trophy className='w-5 h-5 text-yellow-400' />
+                  </motion.div>
+                </motion.h1>
+
+                <motion.p
+                  className='text-sm text-white/70 flex items-center gap-1'
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.6 }}
+                >
+                  <Sparkles className='w-3 h-3 text-yellow-400' />
+                  Congratulations on your winning bids!
+                </motion.p>
+              </motion.div>
+            </div>
+
+            {/* Animated back button */}
+            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6, delay: 0.4 }}>
+              <Link to={`/campaigns/${winningBid?.customCampaignLink}/auction`} className='group'>
+                <motion.div
+                  className='flex items-center space-x-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg px-4 py-2 text-white transition-all duration-300 w-fit mt-4 md:mt-0'
+                  whileHover={{
+                    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                    scale: 1.05,
+                    boxShadow: '0 4px 20px rgba(255, 255, 255, 0.1)',
+                  }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <motion.div
+                    animate={{ x: [0, -2, 0] }}
+                    transition={{
+                      duration: 1.5,
+                      repeat: Infinity,
+                      ease: 'easeInOut',
+                    }}
+                    className='group-hover:animate-none'
+                  >
+                    <ArrowLeft className='w-4 h-4' />
+                  </motion.div>
+                  <span className='text-sm font-medium'>Back to auction</span>
+                </motion.div>
+              </Link>
+            </motion.div>
           </div>
+
+          {/* Celebration particles background */}
+          <motion.div
+            className='absolute inset-0 pointer-events-none overflow-hidden'
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1 }}
+          >
+            {[...Array(6)].map((_, i) => (
+              <motion.div
+                key={i}
+                className='absolute w-1 h-1 bg-yellow-400 rounded-full'
+                style={{
+                  left: `${20 + i * 15}%`,
+                  top: `${30 + (i % 2) * 40}%`,
+                }}
+                animate={{
+                  y: [-10, -30, -10],
+                  opacity: [0, 1, 0],
+                  scale: [0, 1, 0],
+                }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  delay: i * 0.5,
+                  ease: 'easeInOut',
+                }}
+              />
+            ))}
+          </motion.div>
+        </motion.div>
+
+        <div className='relative z-10 max-w-6xl mx-auto px-4 pb-8'>
+          <AuctionItemWinnerContainer winningBid={winningBid} setOrderLoader={setOrderLoader} payForAuctionItem={payforAuctionItem} />
         </div>
       </div>
-    </Fragment>
+    </>
   );
 };
 

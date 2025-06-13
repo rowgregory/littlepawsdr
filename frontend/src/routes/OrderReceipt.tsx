@@ -1,51 +1,12 @@
-import styled from 'styled-components';
+import { FC, useEffect, useState } from 'react';
+import { CheckCircle, Package, MapPin, Mail, Heart } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
+import { RootState, useAppSelector } from '../redux/toolkitStore';
 import { useGetOrderQuery } from '../redux/services/orderApi';
-import { Logo2024 } from '../components/assets';
-import toFixed from '../utils/toFixed';
-import OrderItem from '../components/shop/order-receipt/OrderItem';
-import { useSelector } from 'react-redux';
-import { RootState } from '../redux/toolkitStore';
-import { useEffect, useState } from 'react';
-
-const Ticket = styled.div`
-  width: 300px;
-  background: #fff;
-  position: relative;
-  display: inline-block;
-  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
-  :after {
-    position: absolute;
-    content: '';
-    width: 15px;
-    height: 15px;
-    transform: rotate(45deg);
-    transform-origin: 0% 100%;
-    background: #f5f5f5;
-    left: 0;
-    top: -15px;
-    box-shadow: 15px -15px 0 0 #f5f5f5, 30px -30px 0 0 #f5f5f5, 45px -45px 0 0 #f5f5f5,
-      60px -60px 0 0 #f5f5f5, 75px -75px 0 0 #f5f5f5, 90px -90px 0 0 #f5f5f5,
-      105px -105px 0 0 #f5f5f5, 120px -120px 0 0 #f5f5f5, 135px -135px 0 0 #f5f5f5,
-      150px -150px 0 0 #f5f5f5, 165px -165px 0 0 #f5f5f5, 180px -180px 0 0 #f5f5f5,
-      195px -195px 0 0 #f5f5f5;
-  }
-  @media screen and (min-width: 480px) {
-    width: 403px;
-    :after {
-      box-shadow: 15px -15px 0 0 #f5f5f5, 30px -30px 0 0 #f5f5f5, 45px -45px 0 0 #f5f5f5,
-        60px -60px 0 0 #f5f5f5, 75px -75px 0 0 #f5f5f5, 90px -90px 0 0 #f5f5f5,
-        105px -105px 0 0 #f5f5f5, 120px -120px 0 0 #f5f5f5, 135px -135px 0 0 #f5f5f5,
-        150px -150px 0 0 #f5f5f5, 165px -165px 0 0 #f5f5f5, 180px -180px 0 0 #f5f5f5,
-        195px -195px 0 0 #f5f5f5, 210px -210px 0 0 #f5f5f5, 225px -225px 0 0 #f5f5f5,
-        240px -240px 0 0 #f5f5f5, 255px -255px 0 0 #f5f5f5, 270px -270px 0 0 #f5f5f5;
-    }
-  }
-`;
 
 const OrderReceipt = () => {
   const { id } = useParams();
-  const { order } = useSelector((state: RootState) => state.orders);
+  const { order } = useAppSelector((state: RootState) => state.orders);
   const [hasFetched, setHasFetched] = useState(false);
 
   const { data } = useGetOrderQuery(id, {
@@ -58,92 +19,158 @@ const OrderReceipt = () => {
     }
   }, [data, hasFetched]);
 
-  useEffect(() => {
-    if (order && !hasFetched) {
+  const allItems = [...(order?.ecards || []), ...(order?.welcomeWieners || []), ...(order?.products || [])];
 
-      setHasFetched(true);
-    }
-  }, [order, hasFetched]);
+  const OrderItem: FC<{
+    item: { name: string; productName: string; dachshundName: string; quantity: number; price: number; totalPrice: number };
+  }> = ({ item }) => (
+    <div className='flex justify-between items-center py-3 border-b border-gray-100 last:border-b-0'>
+      <div className='flex-1'>
+        <p className='text-sm font-medium text-gray-900'>
+          {item?.productName || item?.name || (order.isWelcomeWiener && `${item?.productName} for ${item?.dachshundName}`)}
+        </p>
+        <p className='text-xs text-gray-500'>
+          Qty: {item.quantity} X {item?.price || item?.totalPrice}
+        </p>
+      </div>
+      <div className='text-sm font-semibold text-gray-900'>${((item.price || item.totalPrice) * item.quantity).toFixed(2)}</div>
+    </div>
+  );
 
   return (
-    <div className='min-h-screen bg-g-receipt w-full flex justify-center mx-auto py-10 sm:py-20 sm:px-0'>
-      <Ticket className={`${order?.shippingAddress ? 'h-[600px]' : 'h-[532px]'}`}>
-        <div className='flex items-center justify-between w-full px-2.5 py-1.5 bg-[#f5f5f5]'>
-          <Link to='/'>
-            <img
-              src={Logo2024}
-              alt='Little Paws Dachshund Rescue order confirmation'
-              className='w-fit h-10 object-contain'
-            />
-          </Link>
-          <p className='font-Matter-Regulat text-xs'>
-            Order No. <span className='font-Matter-Medium text-xs'>{order?._id}</span>
-          </p>
-        </div>
-        <div className='flex flex-col p-2.5'>
-          <p className='font-Matter-Medium text-xl mb-2.5'>Yay! Your Order is Confirmed</p>
-          <p className='font-Matter-Regular mb-2.5'>Hi {order?.name?.split(' ')[0]}</p>
-          <p className='font-Matter-Light text-xs mb-4'>
-            Thank you for your order. We will send you a confirmation when your order ships. Please
-            find below the receipt of your purchase.
-          </p>
-        </div>
-        <div className='h-24 pl-2.5 pb-2.5 no-scrollbar overflow-y-scroll'>
-          {[
-            ...(order?.ecards || []),
-            ...(order?.welcomeWieners || []),
-            ...(order?.products || []),
-          ].map((item: any, i: number) => (
-            <OrderItem key={i} item={item} />
-          ))}
-        </div>
-        <div className='px-4 border-b-[1px] border-gray-100 w-full mb-4'></div>
-        <div className='flex flex-col items-end w-full p-2.5'>
-          <div className='grid grid-cols-12 mb-1.5 gap-4'>
-            <div className='col-span-6 font-Matter-Regular text-xs text-right'>Subtotal:</div>
-            <div className='col-span-6 font-Matter-Regular text-xs text-right'>
-              ${toFixed(order?.subtotal)}
+    <div className='min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4'>
+      {/* Receipt Container */}
+      <div className='bg-white rounded-2xl shadow-2xl overflow-hidden max-w-md w-full relative'>
+        {/* Decorative Top Border */}
+        <div className='h-2 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500'></div>
+
+        {/* Header */}
+        <div className='bg-gray-50 px-6 py-4 border-b border-gray-200'>
+          <div className='flex items-center justify-between'>
+            <Link to='/' className='flex items-center space-x-2'>
+              <Heart className='w-8 h-8 text-red-500 fill-current' />
+              <div>
+                <h1 className='text-lg font-bold text-gray-900'>Little Paws</h1>
+                <p className='text-xs text-gray-600'>Dachshund Rescue</p>
+              </div>
+            </Link>
+            <div className='text-right'>
+              <p className='text-xs text-gray-500'>Order No.</p>
+              <p className='text-sm font-mono font-semibold text-gray-900 truncate'>{order._id}</p>
             </div>
           </div>
-          {order?.isProduct && (
-            <div className='grid grid-cols-12 mb-1.5 gap-4 '>
-              <div className='col-span-6 font-Matter-Regular text-xs text-right'>Shipping Fee:</div>
-              <div className='col-span-6 font-Matter-Regular text-xs text-right'>
-                ${toFixed(order?.shippingPrice)}
+        </div>
+
+        {/* Success Message */}
+        <div className='px-6 py-6 bg-gradient-to-r from-green-50 to-emerald-50 border-b border-gray-200'>
+          <div className='flex items-center space-x-3 mb-3'>
+            <div className='flex-shrink-0'>
+              <CheckCircle className='w-8 h-8 text-green-500' />
+            </div>
+            <div>
+              <h2 className='text-xl font-bold text-gray-900'>Order Confirmed!</h2>
+              <p className='text-sm text-gray-600'>Your purchase is complete</p>
+            </div>
+          </div>
+
+          <div className='bg-white rounded-lg p-4 border border-green-200'>
+            <p className='text-sm font-medium text-gray-900 mb-1'>Hi {order.name?.split(' ')[0]}! 👋</p>
+            <p className='text-xs text-gray-600 leading-relaxed'>
+              Thank you for supporting our rescue mission. Every purchase helps save more dachshund lives!
+            </p>
+          </div>
+        </div>
+
+        {/* Order Items */}
+        <div className='px-6 py-4'>
+          <div className='flex items-center space-x-2 mb-4'>
+            <Package className='w-4 h-4 text-gray-500' />
+            <h3 className='text-sm font-semibold text-gray-900'>Order Details</h3>
+          </div>
+
+          <div className='space-y-1'>
+            {allItems.map((item, i) => (
+              <OrderItem key={i} item={item} />
+            ))}
+          </div>
+        </div>
+
+        {/* Pricing Summary */}
+        <div className='px-6 py-4 bg-gray-50 border-t border-gray-200'>
+          <div className='space-y-2'>
+            <div className='flex justify-between text-sm'>
+              <span className='text-gray-600'>Subtotal</span>
+              <span className='font-medium text-gray-900'>${order.subtotal}</span>
+            </div>
+
+            {order.isProduct && (
+              <div className='flex justify-between text-sm'>
+                <span className='text-gray-600'>Shipping</span>
+                <span className='font-medium text-gray-900'>${order.shippingPrice}</span>
+              </div>
+            )}
+
+            <div className='border-t border-gray-300 pt-2'>
+              <div className='flex justify-between'>
+                <span className='text-base font-semibold text-gray-900'>Total</span>
+                <span className='text-lg font-bold text-gray-900'>${order.totalPrice}</span>
               </div>
             </div>
-          )}
-          <div className='grid grid-cols-12 mb-1.5 gap-4'>
-            <div className='col-span-6 font-Matter-Medium text-xs text-right'>Total: </div>
-            <div className='col-span-6 font-Matter-Medium text-xs text-right'>
-              ${toFixed(order?.totalPrice)}
-            </div>
           </div>
         </div>
-        <div className='p-2.5 mb-5'>
-          {order?.shippingAddress && (
-            <div className='bg-[#f5f5f5] rounded-xl p-2 w-1/2 mb-4'>
-              <p className='font-Matter-Medium text-xs'>Shipping Address</p>
-              <p className='font-Matter-Light text-xs'>
-                {order?.shippingAddress?.address} {order?.shippingAddress?.city}{' '}
-                {order?.shippingAddress?.state} {order?.shippingAddress?.zipPostalCode}
+
+        {/* Shipping Address */}
+        {order.shippingAddress && (
+          <div className='px-6 py-4 border-t border-gray-200'>
+            <div className='flex items-center space-x-2 mb-3'>
+              <MapPin className='w-4 h-4 text-gray-500' />
+              <h3 className='text-sm font-semibold text-gray-900'>Shipping Address</h3>
+            </div>
+
+            <div className='bg-blue-50 rounded-lg p-3 border border-blue-200'>
+              <p className='text-sm text-gray-900 font-medium'>{order.name}</p>
+              <p className='text-sm text-gray-700'>{order.shippingAddress.address}</p>
+              <p className='text-sm text-gray-700'>
+                {order.shippingAddress.city}, {order.shippingAddress.state} {order.shippingAddress.zipPostalCode}
               </p>
             </div>
-          )}
-          <p className='font-Matter-Light mb-1 text-xs'>Hope to see you soon</p>
-          <p className='font-Matter-Medium text-xs'>Little Paws Dachshund Rescue Team</p>
+          </div>
+        )}
+
+        {/* Footer Message */}
+        <div className='px-6 py-4 bg-gradient-to-r from-purple-50 to-pink-50 border-t border-gray-200'>
+          <div className='text-center'>
+            <p className='text-sm text-gray-700 mb-2'>🐕 Hope to see you and your furry friends soon! 🐕</p>
+            <p className='text-xs font-semibold text-gray-900'>— Little Paws Dachshund Rescue Team</p>
+          </div>
         </div>
-        <div className='bg-[#f5f5f5] w-full p-2.5'>
-          <p className='font-Matter-Light text-xs'>
-            Need help? Contact us{' '}
-            <span>
-              <Link className='font-Matter-Light text-xs text-teal-600' to='/contact-us'>
-                here
-              </Link>
-            </span>
-          </p>
+
+        {/* Contact Footer */}
+        <div className='bg-gray-800 px-6 py-4'>
+          <div className='flex items-center justify-center space-x-2'>
+            <Mail className='w-4 h-4 text-gray-400' />
+            <p className='text-xs text-gray-300'>
+              Need help?
+              <button className='text-blue-400 hover:text-blue-300 ml-1 underline transition-colors'>Contact us here</button>
+            </p>
+          </div>
         </div>
-      </Ticket>
+
+        {/* Decorative Bottom Dots */}
+        <div className='absolute -bottom-1 left-0 right-0 flex justify-center space-x-2'>
+          {[...Array(20)].map((_, i) => (
+            <div key={i} className='w-2 h-2 bg-gray-200 rounded-full transform rotate-45'></div>
+          ))}
+        </div>
+      </div>
+
+      {/* Floating Animation Elements */}
+      <div className='absolute top-10 left-10 w-16 h-16 bg-blue-200 rounded-full opacity-20 animate-pulse'></div>
+      <div
+        className='absolute bottom-20 right-10 w-12 h-12 bg-purple-200 rounded-full opacity-20 animate-pulse'
+        style={{ animationDelay: '1s' }}
+      ></div>
+      <div className='absolute top-1/3 right-20 w-8 h-8 bg-pink-200 rounded-full opacity-20 animate-pulse' style={{ animationDelay: '2s' }}></div>
     </div>
   );
 };

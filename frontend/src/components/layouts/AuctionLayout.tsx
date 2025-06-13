@@ -1,10 +1,9 @@
 import { ReactNode } from 'react';
 
-const AuctionLayout = ({ sidebar, children }: { sidebar: any; children: ReactNode }) => {
+const AuctionLayout = ({ children }: { children: ReactNode }) => {
   return (
-    <div className='mx-auto w-full grid grid-cols-12 gap-4 '>
-      <aside className='col-span-12 xl:col-span-2 h-fit'>{sidebar}</aside>
-      <main className='col-span-12 pb-12 xl:col-span-10'>{children}</main>
+    <div className='mx-auto w-full grid grid-cols-12 gap-4'>
+      <main className='col-span-12 pb-12'>{children}</main>
     </div>
   );
 };

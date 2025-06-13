@@ -1,14 +1,13 @@
 import { Fragment } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../redux/toolkitStore';
+import { RootState, useAppSelector } from '../../redux/toolkitStore';
 import { formatDateWithTimezone } from '../../utils/dateFunctions';
 import MagnifyingGlass from '../../components/svg/MagnifyingGlass';
 import toFixed from '../../utils/toFixed';
 
 const Bids = () => {
   const navigate = useNavigate();
-  const user = useSelector((state: RootState) => state.user);
+  const user = useAppSelector((state: RootState) => state.user);
   const bids = user?.bids;
   const noBids = bids?.length === 0;
 
@@ -18,10 +17,7 @@ const Bids = () => {
         <MagnifyingGlass />
       </div>
       <div className='font-Matter-Medium my-2'>No bids</div>
-      <Link
-        className='hover:no-underline font-Matter-Regular text-teal-500 hover:text-teal-600 text-center'
-        to='/campaigns'
-      >
+      <Link className='hover:no-underline font-Matter-Regular text-teal-500 hover:text-teal-600 text-center' to='/campaigns'>
         Visit campaigns
       </Link>
     </div>
@@ -61,27 +57,17 @@ const Bids = () => {
             {bids?.map((bid: any) => (
               <tr
                 key={bid?._id}
-                onClick={() =>
-                  navigate(
-                    `/campaigns/${bid?.auction?.campaign?.customCampaignLink}/auction/item/${bid?.auctionItem?._id}`
-                  )
-                }
+                onClick={() => navigate(`/campaigns/${bid?.auction?.campaign?.customCampaignLink}/auction/item/${bid?.auctionItem?._id}`)}
                 className='z-1 group cursor-pointer bg-white [&_td]:focus-within:bg-gray-100 [&_td]:hover:bg-gray-100 relative'
               >
                 <td className='m-0 p-0 decoration-inherit hover:text-inherit hover:decoration-inherit !flex h-[3.25rem] items-center whitespace-nowrap'>
-                  <p className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>
-                    ${toFixed(bid?.bidAmount)}
-                  </p>
+                  <p className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>${toFixed(bid?.bidAmount)}</p>
                 </td>
                 <td>
-                  <p className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>
-                    {bid?.auctionItem?.name}
-                  </p>
+                  <p className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>{bid?.auctionItem?.name}</p>
                 </td>
                 <td>
-                  <p className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>
-                    {bid?.auction?.campaign?.title}
-                  </p>
+                  <p className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>{bid?.auction?.campaign?.title}</p>
                 </td>
                 <td>
                   <p className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>

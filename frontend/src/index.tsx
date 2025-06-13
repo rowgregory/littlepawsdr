@@ -1,8 +1,8 @@
 import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
 import './index.css';
+import './tailwind.css';
 import './fonts.css';
-import './animations.css';
 import './bg-images.css';
 import App from './App';
 import { toolkitStore } from './redux/toolkitStore';

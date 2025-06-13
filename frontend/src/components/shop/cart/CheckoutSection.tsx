@@ -1,12 +1,11 @@
 import addDecimals from '../../../utils/addDecimals';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../redux/toolkitStore';
+import { RootState, useAppSelector } from '../../../redux/toolkitStore';
 import TailwindSpinner from '../../Loaders/TailwindSpinner';
 import { useNavigate } from 'react-router-dom';
 
 const CheckoutSection = () => {
   const navigate = useNavigate();
-  const { cartItems, cartItemsAmount, subtotal, loading } = useSelector(
+  const { cartItems, cartItemsAmount, subtotal, loading } = useAppSelector(
     (state: RootState) => state.cart
   );
 

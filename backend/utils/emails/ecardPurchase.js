@@ -11,7 +11,7 @@ const ecardPurchase = (pugEmail, body, res) => {
       locals: {
         recipientsFirstName: body.recipientsFirstName,
         recipientsEmail: body.recipientsEmail,
-        dateToSend: new Date(body.dateToSend).toISOString().split('T')[0],
+        dateToSend: new Date(body.dateToSend).toISOString()?.split('T')[0],
         firstName: body.firstName,
         lastName: body.lastName,
         email: body.email,
@@ -26,7 +26,7 @@ const ecardPurchase = (pugEmail, body, res) => {
       },
     })
     .then(() => res.status(201).json(body))
-    .catch(err => console.log('ERROR: ', err));
+    .catch((err) => console.log('ERROR: ', err));
 };
 
 export default ecardPurchase;

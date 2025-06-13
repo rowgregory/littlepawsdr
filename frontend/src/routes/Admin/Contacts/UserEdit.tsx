@@ -1,17 +1,16 @@
-import { Form } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import { useGetUserQuery, useUpdateUserRoleMutation } from '../../../redux/services/userApi';
 import TailwindSpinner from '../../../components/Loaders/TailwindSpinner';
 import { Link } from 'react-router-dom';
 import { formatDateWithTimezone } from '../../../utils/dateFunctions';
+import Switch from '../../../components/common/Switch';
 
 const UserEdit = () => {
   const { id: userId } = useParams<{ id: string }>();
   const { data } = useGetUserQuery(userId);
-
   const [updateUserRole, { isLoading: loadingUpdate }] = useUpdateUserRoleMutation();
 
-  const handleUpdate = async (e: any) => {
+  const handleToggle = async (e: any) => {
     e.preventDefault();
     await updateUserRole({
       id: userId,
@@ -34,13 +33,9 @@ const UserEdit = () => {
             <p className='text-lg font-Matter-Medium'>User details</p>
             <div className='text-gray-900 text-sm font-Matter-Regular items-center whitespace-nowrap'>
               {data?.isAdmin ? (
-                <p className='text-green-500 bg-green-50 px-1.5 py-0.5 rounded-3xl font-Matter-Regular w-fit text-sm'>
-                  Admin
-                </p>
+                <p className='text-green-500 bg-green-50 px-1.5 py-0.5 rounded-3xl font-Matter-Regular w-fit text-sm'>Admin</p>
               ) : (
-                <p className='text-gray-500 bg-gray-50 px-1.5 py-0.5 rounded-3xl font-Matter-Regular w-fit text-sm'>
-                  User
-                </p>
+                <p className='text-gray-500 bg-gray-50 px-1.5 py-0.5 rounded-3xl font-Matter-Regular w-fit text-sm'>User</p>
               )}
             </div>
           </div>
@@ -76,17 +71,7 @@ const UserEdit = () => {
           <div className='col-span-12 md:col-span-8 md:col-start-6'>
             <div className='flex flex-col gap-3'>
               <div className='flex flex-col'>
-                {loadingUpdate ? (
-                  <TailwindSpinner />
-                ) : (
-                  <Form.Group className='flex items-center' controlId='isAdmin'>
-                    <Form.Check
-                      type='switch'
-                      checked={data?.isAdmin || false}
-                      onChange={handleUpdate}
-                    ></Form.Check>
-                  </Form.Group>
-                )}
+                {loadingUpdate ? <TailwindSpinner /> : <Switch checked={data?.isAdmin || false} onChange={handleToggle} name='isAdmin' />}
               </div>
             </div>
           </div>

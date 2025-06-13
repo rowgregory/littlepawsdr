@@ -4,11 +4,7 @@ import { NavigationLinkBtnProps } from '../../types/navigation-drawer-types';
 
 const NavigationLinkBtn: FC<NavigationLinkBtnProps> = ({ closeMenu, item, isActive }) => {
   return (
-    <Link
-      to={item?.link}
-      onClick={() => closeMenu()}
-      className={`group px-8 h-12 hover:no-underline w-full`}
-    >
+    <Link to={item?.link} onClick={() => closeMenu()} className={`group px-8 h-12 hover:no-underline w-full`}>
       <div
         className={`${
           isActive
@@ -17,13 +13,7 @@ const NavigationLinkBtn: FC<NavigationLinkBtnProps> = ({ closeMenu, item, isActi
         } grid grid-cols-12 gap-2 items-center text-left h-full rounded-xl group-hover:bg-[#323338] -mx-4 pl-3`}
       >
         <i className={`${item?.icon} col-span-1 group-hover:-mr-1 text-white`} />
-        <p
-          className={`${
-            isActive ? 'text-white' : 'text-[#75767b]'
-          } col-span-10 font-Montserrat font-medium`}
-        >
-          {item?.title}
-        </p>
+        <div className={`${isActive ? 'text-white' : 'text-[#75767b]'} col-span-10 font-Montserrat font-medium`}>{item?.title}</div>
       </div>
     </Link>
   );

@@ -1,13 +1,13 @@
 import { Fragment } from 'react';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../redux/toolkitStore';
+
+import { RootState, useAppSelector } from '../../../redux/toolkitStore';
 import { setStep } from '../../../redux/features/cart/cartSlice';
 import cartItemType from '../../../utils/shop-utils/cartItemType';
 import { useNavigate } from 'react-router-dom';
 
 const CheckoutProgressTracker = () => {
-  const navigate = useNavigate()
-  const { step, cartItems } = useSelector((state: RootState) => state.cart);
+  const navigate = useNavigate();
+  const { step, cartItems } = useAppSelector((state: RootState) => state.cart);
   const { isProduct } = cartItemType(cartItems);
 
   return (
@@ -17,7 +17,7 @@ const CheckoutProgressTracker = () => {
           onClick={() => {
             if (step.step2 || step.step3) {
               setStep({ step1: true, step2: false, step3: false });
-              navigate('/cart/checkout/customer-info')
+              navigate('/cart/checkout/customer-info');
             }
           }}
           className={`${step.step1 ? 'border-teal-500' : 'border-gray-300 text-gray-300'} ${
@@ -29,12 +29,11 @@ const CheckoutProgressTracker = () => {
         {isProduct && (
           <div
             onClick={() => {
-              if ( step.step3) {
+              if (step.step3) {
                 setStep({ step1: true, step2: true, step3: false });
-                navigate('/cart/checkout/shipping-address')
+                navigate('/cart/checkout/shipping-address');
               }
-            }
-            }
+            }}
             className={`${step.step2 ? 'border-teal-500' : 'border-gray-300 text-gray-300'} ${
               step.step3 ? 'cursor-pointer' : ''
             } border-b-4 text-xl font-Matter-Medium tracking wider px-8 w-full text-center pb-1`}

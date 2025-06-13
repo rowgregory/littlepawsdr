@@ -2,32 +2,10 @@ import { Fragment } from 'react';
 import CanOfWetFood from '../../components/assets/can-of-wet-food.png';
 import BagOfDryFood from '../../components/assets/bag-of-dry-food.jpeg';
 import CaseOfWetFood from '../../components/assets/case-of-wet-food.png';
-import styled from 'styled-components';
 import useCountDown from '../../hooks/useCountDown';
 import FloatingWords from '../../components/Loaders/floating-words/FloatingWords';
 import FeedAFosterImg from '../../components/assets/ecards-high.jpg';
 import PageBanner from '../../components/common/PageBanner';
-
-const CountDownContainer = styled.section`
-  background: linear-gradient(90deg, hsla(284, 30%, 52%, 1) 0%, hsla(284, 33%, 73%, 1) 100%);
-  background: -moz-linear-gradient(90deg, hsla(284, 30%, 52%, 1) 0%, hsla(284, 33%, 73%, 1) 100%);
-  background: -webkit-linear-gradient(
-    90deg,
-    hsla(284, 30%, 52%, 1) 0%,
-    hsla(284, 33%, 73%, 1) 100%
-  );
-`;
-
-const ContestTitle = styled.h3`
-  text-transform: uppercase;
-  font-family: 'Paytone One';
-  text-align: center;
-  font-size: 60px;
-  line-height: 80px;
-  color: #5a2b6b;
-  text-shadow: 0 20px 15px #6f3b82, 0 -2px 1px #5a2b6b;
-  letter-spacing: -4px;
-`;
 
 const FeedAFoster = () => {
   const year = new Date().getFullYear();
@@ -65,14 +43,15 @@ const FeedAFoster = () => {
             Simply click the Paypal links below, or we also accept Venmo @LittlePawsDR and checks.
           </p>
           <div className='grid grid-cols-12 gap-7'>
-            <div className='col-span-12 sm:col-span-4 flex items-center flex-col justify-center border-[1px] border-gray-200 rounded-2xl p-3'>
+            {/* Can of Wet Food */}
+            <div className='col-span-12 sm:col-span-4 flex flex-col items-center justify-center border border-gray-200 rounded-2xl p-3'>
               <img
                 src={CanOfWetFood}
                 alt='LPDR Feed A Foster Can of Wet Food'
-                className='w-full max-w-72 aspect-square object-cover'
+                className='w-full max-w-[18rem] aspect-square object-cover'
               />
               <div className='flex flex-col items-center'>
-                <p className='mb-4 text-lg mt-8 font-Matter-Regular'>One can of wet food $3</p>
+                <p className='mt-8 mb-4 text-lg font-Matter-Regular'>One can of wet food $3</p>
                 <form action='https://www.paypal.com/donate' method='post' target='_top'>
                   <input type='hidden' name='hosted_button_id' value='NARBGDNZ39KHG' />
                   <input
@@ -86,14 +65,16 @@ const FeedAFoster = () => {
                 </form>
               </div>
             </div>
-            <div className='col-span-12 sm:col-span-4 flex items-center flex-col justify-center border-[1px] border-gray-200 rounded-2xl p-3'>
+
+            {/* Bag of Dry Food */}
+            <div className='col-span-12 sm:col-span-4 flex flex-col items-center justify-center border border-gray-200 rounded-2xl p-3'>
               <img
                 src={BagOfDryFood}
                 alt='LPDR Feed A Foster Bag Of Dry Food'
-                className='w-full max-w-72 aspect-square object-cover'
+                className='w-full max-w-[18rem] aspect-square object-cover'
               />
               <div className='flex flex-col items-center'>
-                <p className='mb-4 text-lg mt-8 font-Matter-Regular'>One bag of dry food $12</p>
+                <p className='mt-8 mb-4 text-lg font-Matter-Regular'>One bag of dry food $12</p>
                 <form action='https://www.paypal.com/donate' method='post' target='_top'>
                   <input type='hidden' name='hosted_button_id' value='E39725T3HKKVY' />
                   <input
@@ -107,15 +88,16 @@ const FeedAFoster = () => {
                 </form>
               </div>
             </div>
-            <div className='col-span-12 sm:col-span-4 flex items-center flex-col justify-center border-[1px] border-gray-200 rounded-2xl p-3'>
+
+            {/* Case of Wet Food */}
+            <div className='col-span-12 sm:col-span-4 flex flex-col items-center justify-center border border-gray-200 rounded-2xl p-3'>
               <img
                 src={CaseOfWetFood}
                 alt='LPDR Feed A Foster One Case of Wet Food'
-                className='w-full max-w-72 aspect-square object-cover'
+                className='w-full max-w-[18rem] aspect-square object-cover'
               />
               <div className='flex flex-col items-center'>
-                <p className='mb-4 text-lg mt-8 font-Matter-Regular'>One case of wet food $35</p>
-
+                <p className='mt-8 mb-4 text-lg font-Matter-Regular'>One case of wet food $35</p>
                 <form action='https://www.paypal.com/donate' method='post' target='_top'>
                   <input type='hidden' name='hosted_button_id' value='KYKXTQ8DTQZYW' />
                   <input
@@ -132,14 +114,28 @@ const FeedAFoster = () => {
           </div>
         </div>
       ) : (
-        <CountDownContainer className='min-h-[calc(100vh-1115px)] py-12 flex justify-center flex-col items-center'>
+        <section
+          className='min-h-[calc(100vh-1115px)] py-12 flex justify-center flex-col items-center'
+          style={{
+            background:
+              'linear-gradient(90deg, hsla(284, 30%, 52%, 1) 0%, hsla(284, 33%, 73%, 1) 100%)',
+          }}
+        >
           <div className='relative'>
             <h3 className='text-white font-bold text-center mb-8'>
               {status.past
                 ? 'Thank you to everybody who participated. See you next year!'
                 : 'Coming This July!'}
             </h3>
-            <ContestTitle>Feed A Foster</ContestTitle>
+            <h3
+              className='uppercase text-center text-[60px] leading-[80px] text-[#5a2b6b] font-paytone font-bold tracking-tight'
+              style={{
+                textShadow: '0 20px 15px #6f3b82, 0 -2px 1px #5a2b6b',
+                letterSpacing: '-4px',
+              }}
+            >
+              Feed A Foster
+            </h3>
             <div className='grid grid-cols-4 justify-center items-center w-full'>
               {loading ? (
                 <FloatingWords />
@@ -161,9 +157,8 @@ const FeedAFoster = () => {
                 ))
               )}
             </div>
-            <div className='flex justify-evenly'></div>
           </div>
-        </CountDownContainer>
+        </section>
       )}
     </Fragment>
   );

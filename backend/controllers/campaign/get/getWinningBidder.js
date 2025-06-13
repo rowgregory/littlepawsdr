@@ -10,7 +10,7 @@ import { AuctionWinningBidder, Campaign } from '../../../models/campaignModel.js
 const getWinningBidder = asyncHandler(async (req, res) => {
   try {
     const winner = await AuctionWinningBidder.findById(req.params.id).populate([
-      { path: 'auctionItem', populate: [{ path: 'photos' }] },
+      { path: 'auctionItems', populate: [{ path: 'photos' }] },
       { path: 'user', select: 'name email shippingAddress' },
     ]);
 
@@ -28,7 +28,7 @@ const getWinningBidder = asyncHandler(async (req, res) => {
       functionName: 'GET_WINNING_BIDDER_PRIVATE',
       name: err.name,
       message: err.message,
-      user: { id: req?.user?._id, email: req?.user?.email },
+      user: {},
     });
 
     res.status(500).send({

@@ -1,7 +1,6 @@
 import asyncHandler from 'express-async-handler';
 import Error from '../../../models/errorModel.js';
 import { Auction } from '../../../models/campaignModel.js';
-import { io } from '../../../server.js';
 
 /**
  @desc    Update aution
@@ -12,7 +11,7 @@ const updateAuction = asyncHandler(async (req, res) => {
   try {
     const { type, ...rest } = req.body;
 
-    const auction = await Auction.findById(req.body.id);
+    const auction = await Auction.findById(req.body.id).populate([{ path: 'items', populate: [{ path: 'photos' }] }]);
     if (auction) {
       auction.settings = {
         ...auction.settings, // Keep existing settings
@@ -22,9 +21,7 @@ const updateAuction = asyncHandler(async (req, res) => {
 
     await auction.save();
 
-    io.emit('auction-updated');
-
-    res.status(201).json({ message: 'Auction updated', type, sliceName: 'campaignApi' });
+    res.status(201).json({ auction, message: 'Auction updated', type, sliceName: 'campaignApi' });
   } catch (err) {
     await Error.create({
       functionName: 'ERROR_UPDATE_AUCTION_ADMIN',

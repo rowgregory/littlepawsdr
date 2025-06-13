@@ -2,6 +2,45 @@ import asyncHandler from 'express-async-handler';
 import { Campaign } from '../../../models/campaignModel.js';
 import Error from '../../../models/errorModel.js';
 
+const campaignQuery = [
+  {
+    path: 'auction',
+    populate: [
+      {
+        path: 'items',
+        populate: [
+          { path: 'photos', select: 'url name size' },
+          {
+            path: 'instantBuyers',
+            populate: [{ path: 'user' }, { path: 'auctionItem' }],
+          },
+          { path: 'bids', populate: [{ path: 'user' }] },
+        ],
+      },
+      { path: 'settings', select: 'endDate startDate status' },
+      { path: 'bids', populate: [{ path: 'auctionItem' }, { path: 'user' }] },
+      {
+        path: 'winningBids',
+        populate: [{ path: 'user' }, { path: 'auctionItems', populate: [{ path: 'photos' }] }],
+      },
+      {
+        path: 'instantBuyers',
+        populate: [
+          { path: 'user', select: 'name email' },
+          { path: 'auctionItem', populate: [{ path: 'photos' }] },
+        ],
+      },
+      {
+        path: 'bidders',
+        populate: [
+          { path: 'user', select: 'name email _id createdAt shippingAddress' },
+          { path: 'bids', populate: [{ path: 'auctionItem', populate: [{ path: 'photos' }] }] },
+        ],
+      },
+    ],
+  },
+];
+
 /**
  @desc    Get live campaign
  @route   GET /api/campaign/live
@@ -9,39 +48,22 @@ import Error from '../../../models/errorModel.js';
 */
 const getLiveCampaign = asyncHandler(async (req, res) => {
   try {
-    const campaigns = await Campaign.aggregate([
-      {
-        $match: { campaignStatus: 'Active Campaign' }, // Match the active campaign status
-      },
-      {
-        $lookup: {
-          // Join with the auction collection
-          from: 'auctions', // Ensure this matches your auction collection name
-          localField: 'auction', // Field in the Campaign model
-          foreignField: '_id', // Field in the Auction model
-          as: 'auction', // Name of the output array
-          pipeline: [
-            {
-              $project: { settings: 1 },
-            },
-          ],
-        },
-      },
-      {
-        $project: {
-          title: 1,
-          themeColor: 1,
-          campaignStatus: 1,
-          customCampaignLink: 1,
-          auction: { $arrayElemAt: ['$auction', 0] },
-        },
-      },
-    ]);
+    const campaign = await Campaign.findOne({ campaignStatus: 'Active Campaign' }).populate(campaignQuery);
+    const upcomingCampaign = await Campaign.findOne({ campaignStatus: 'Pre-Campaign' }).select('campaignStatus title customCampaignLink');
+
+    const campaignCombinedWithStatus = {
+      ...campaign?.toObject(),
+      ...(upcomingCampaign && {
+        campaignStatus: upcomingCampaign?.campaignStatus,
+        title: upcomingCampaign?.title,
+        customCampaignLink: upcomingCampaign?.customCampaignLink,
+      }),
+    };
 
     const response = {
-      campaign: campaigns.length > 0 ? campaigns[0] : {},
+      campaign: campaignCombinedWithStatus || {},
       sliceName: 'campaignApi',
-      message: campaigns.length > 0 ? 'Campaign found' : 'No Live Campaigns',
+      message: campaign ? 'Campaign found' : 'No Live Campaigns',
     };
 
     res.status(200).json(response);

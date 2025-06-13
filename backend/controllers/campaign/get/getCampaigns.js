@@ -1,7 +1,7 @@
 import asyncHandler from 'express-async-handler';
 import Error from '../../../models/errorModel.js';
 import { Auction, Campaign } from '../../../models/campaignModel.js';
-import getAuctionStatus from '../../../utils/campaign-utils/getAuctionStatus.js';
+import getAuctionStatus from '../../../utils/campaign/getAuctionStatus.js';
 import { format, formatDistanceToNow } from 'date-fns';
 
 /**

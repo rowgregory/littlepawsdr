@@ -19,10 +19,11 @@ const WinningBidsTable = ({ filteredData }: { filteredData: any }) => {
           ...prev.rows,
           {
             id: bidder?._id,
-            auctionItem: bidder.auctionItem,
+            auctionItems: bidder.auctionItems,
             user: {
               email: bidder.user.email,
               shippingAddress: bidder.user.shippingAddress,
+              addressRef: bidder.user.addressRef,
             },
             totalPrice: bidder.totalPrice,
             auctionItemPaymentStatus: bidder.auctionItemPaymentStatus,
@@ -42,34 +43,22 @@ const WinningBidsTable = ({ filteredData }: { filteredData: any }) => {
       <thead className='whitespace-nowrap px-4 pb-4 pt-2'>
         <tr className='bg-zinc-50'>
           <th className='px-4 border-b border-gray-100 font-Matter-Regular py-2'></th>
-          <th
-            onClick={() => handleSort('user.name')}
-            className='px-4 border-b border-gray-100 font-Matter-Regular py-2'
-          >
+          <th onClick={() => handleSort('user.name')} className='px-4 border-b border-gray-100 font-Matter-Regular py-2'>
             <div className='text-sm flex flex-nowrap items-center gap-2 cursor-pointer -mx-1.5 -my-1 w-fit px-1.5 py-1 rounded-md hover:bg-gray-200'>
               Winner
             </div>
           </th>
-          <th
-            onClick={() => handleSort('auctionItem.name')}
-            className='px-4 border-b border-gray-100 font-Matter-Regular py-2'
-          >
+          <th onClick={() => handleSort('auctionItem.name')} className='px-4 border-b border-gray-100 font-Matter-Regular py-2'>
             <div className='text-sm flex flex-nowrap items-center gap-2 cursor-pointer -mx-1.5 -my-1 w-fit px-1.5 py-1 rounded-md hover:bg-gray-200'>
-              Item
+              Items
             </div>
           </th>
-          <th
-            onClick={() => handleSort('totalPrice')}
-            className='px-4 border-b border-gray-100 font-Matter-Regular py-2'
-          >
+          <th onClick={() => handleSort('totalPrice')} className='px-4 border-b border-gray-100 font-Matter-Regular py-2'>
             <div className='text-sm flex flex-nowrap items-center gap-2 cursor-pointer -mx-1.5 -my-1 w-fit px-1.5 py-1 rounded-md hover:bg-gray-200'>
               Sold price
             </div>
           </th>
-          <th
-            onClick={() => handleSort('emailNotificationCount')}
-            className='px-4 border-b border-gray-100 font-Matter-Regular py-2'
-          >
+          <th onClick={() => handleSort('emailNotificationCount')} className='px-4 border-b border-gray-100 font-Matter-Regular py-2'>
             <div className='text-sm flex flex-nowrap items-center gap-2 cursor-pointer -mx-1.5 -my-1 w-fit px-1.5 py-1 rounded-md hover:bg-gray-200'>
               Reminders
             </div>
@@ -77,10 +66,7 @@ const WinningBidsTable = ({ filteredData }: { filteredData: any }) => {
           <th className='px-4 border-b border-gray-100 font-Matter-Regular py-2'>
             <div className='text-sm flex flex-nowrap items-center gap-2'>Winning Bid Id</div>
           </th>
-          <th
-            onClick={() => handleSort('winningBidPaymentStatus')}
-            className='px-4 border-b border-gray-100 font-Matter-Regular py-2'
-          >
+          <th onClick={() => handleSort('winningBidPaymentStatus')} className='px-4 border-b border-gray-100 font-Matter-Regular py-2'>
             <div className=' text-sm flex flex-nowrap items-center gap-2 cursor-pointer -mx-1.5 -my-1 w-fit px-1.5 py-1 rounded-md hover:bg-gray-200'>
               Status
             </div>
@@ -102,15 +88,11 @@ const WinningBidsTable = ({ filteredData }: { filteredData: any }) => {
                 ></i>
               </td>
               <td>
-                <span className='text-sm font-Matter-Regular px-4 truncate'>
-                  {bidder?.user?.name}
-                </span>
+                <span className='text-sm font-Matter-Regular px-4 truncate'>{bidder?.user?.name}</span>
               </td>
               <td>
                 <span className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap truncate'>
-                  {bidder?.auctionItem?.name?.length >= 20
-                    ? `${bidder?.auctionItem?.name?.substring(0, 20)}...`
-                    : bidder?.auctionItem?.name}
+                  {bidder?.auctionItems?.length}
                 </span>
               </td>
               <td>
@@ -132,9 +114,7 @@ const WinningBidsTable = ({ filteredData }: { filteredData: any }) => {
                 </span>
               </td>
               <td className='px-4'>
-                <span className='text-gray-900 text-xs font-Matter-Regular items-center whitespace-nowrap'>
-                  {bidder?._id}
-                </span>
+                <span className='text-gray-900 text-xs font-Matter-Regular items-center whitespace-nowrap'>{bidder?._id}</span>
               </td>
               <td className='px-4 py-3'>
                 <span

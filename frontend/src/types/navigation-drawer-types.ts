@@ -28,7 +28,7 @@ interface NavigationLinkProps {
 }
 interface NavigationLinkBtnProps {
   closeMenu: () => void;
-  item: { title: string; icon: string; link: string };
+  item: any;
   isActive: boolean;
 }
 
@@ -39,10 +39,4 @@ interface NavigationDrawerAccordionProps {
   closeMenu: () => void;
 }
 
-export type {
-  LinkContentProps,
-  AccordionProps,
-  NavigationLinkProps,
-  NavigationLinkBtnProps,
-  NavigationDrawerAccordionProps,
-};
+export type { LinkContentProps, AccordionProps, NavigationLinkProps, NavigationLinkBtnProps, NavigationDrawerAccordionProps };

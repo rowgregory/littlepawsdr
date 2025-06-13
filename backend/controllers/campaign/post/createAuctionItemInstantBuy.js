@@ -1,8 +1,7 @@
 import asyncHandler from 'express-async-handler';
 import Error from '../../../models/errorModel.js';
 import { Auction, AuctionItem, Campaign } from '../../../models/campaignModel.js';
-import createAuctionItemInstantBuyerDocument from '../../../utils/campaign-utils/createAuctionItemInstantBuyer.js';
-import createAuctionItemFulfillmentDocument from '../../../utils/campaign-utils/createAuctionItemFulfillmentDocument.js';
+import createAuctionItemInstantBuyerDocument from '../../../utils/campaign/createAuctionItemInstantBuyer.js';
 
 /**
  @desc    Create auction item instant buy
@@ -22,27 +21,14 @@ const createAuctionItemInstantBuy = asyncHandler(async (req, res) => {
       { new: true }
     );
 
-    const popoulatedAuctionItem = await AuctionItem.findById(savedAuctionItem._id).populate(
-      'instantBuyers'
-    );
+    await Auction.findByIdAndUpdate(instantBuy.auction, {
+      $push: { instantBuyers: instantBuy._id },
+    });
 
-    const auctionItemFulfillment = await createAuctionItemFulfillmentDocument(
-      { ...req.body, instantBuyer: instantBuy._id },
-      req.user
-    );
-
-    await Auction.findByIdAndUpdate(
-      instantBuy.auction,
-      {
-        $push: { itemFulfillments: auctionItemFulfillment._id, instantBuyers: instantBuy._id },
-      },
-      { new: true }
-    );
+    const popoulatedAuctionItem = await AuctionItem.findById(savedAuctionItem._id).populate('instantBuyers');
 
     const uniqueInstantBuyEmails = new Set(
-      popoulatedAuctionItem.instantBuyers
-        .filter((donation) => donation.email)
-        .map((donation) => donation.email)
+      popoulatedAuctionItem.instantBuyers.filter((donation) => donation.email).map((donation) => donation.email)
     );
 
     const campaign = await Campaign.findOne({ auction: instantBuy.auction._id });
@@ -50,9 +36,7 @@ const createAuctionItemInstantBuy = asyncHandler(async (req, res) => {
 
     const existingSupporterEmails = new Set(campaign.supporterEmails);
 
-    const newSupporterEmails = [...uniqueInstantBuyEmails].filter(
-      (email) => !existingSupporterEmails.has(email)
-    );
+    const newSupporterEmails = [...uniqueInstantBuyEmails].filter((email) => !existingSupporterEmails.has(email));
 
     campaign.supporterEmails.push(...newSupporterEmails);
     campaign.supporters = campaign.supporterEmails.length;
@@ -60,7 +44,7 @@ const createAuctionItemInstantBuy = asyncHandler(async (req, res) => {
 
     await campaign.save();
 
-    res.status(200).json({ instantBuy });
+    res.status(200).json({ instantBuy, instantBuySuccess: true });
   } catch (err) {
     await Error.create({
       functionName: 'CREATE_AUCTION_ITEM_INSTANT_BUYER_PRIVATE',

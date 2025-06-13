@@ -9,13 +9,8 @@ const DonationConfirmationModal = ({ openModal, handleClose, user }: any) => {
   return (
     <Modal show={openModal} onClose={handleClose}>
       <div className='bg-white p-8 rounded-xl flex flex-col justify-center items-center'>
-        <i
-          onClick={handleClose}
-          className='cursor-pointer absolute top-5 right-5 fas fa-times fa-lg text-gray-600'
-        ></i>
-        <i
-          className={`fa-solid fa-heart text-[#9863a8] fa-2xl rounded-md h-16 w-16 bg-[#e5c9ee] flex items-center justify-center p-2 shadow-md`}
-        ></i>
+        <i onClick={handleClose} className='cursor-pointer absolute top-5 right-5 fas fa-times fa-lg text-gray-600'></i>
+        <i className={`fa-solid fa-heart text-[#9863a8] fa-2xl rounded-md h-16 w-16 bg-[#e5c9ee] flex items-center justify-center p-2 shadow-md`}></i>
         <p className='text-xl font-Matter-Medium my-4 text-center'>
           {userNeedsToCreateAccount
             ? 'To access your donation history, you must first have an active registered account'
@@ -28,7 +23,7 @@ const DonationConfirmationModal = ({ openModal, handleClose, user }: any) => {
             } else if (!userNeedsToCreateAccount) {
               setUserNeedsToCreateAccount(true);
             } else {
-              navigate(`/auth/register`);
+              navigate(`/auth/register?conversionSource=donation_confirmation_modal`);
             }
           }}
           className={`text-[#fff] bg-[#9863a8] rounded-lg px-4 py-2.5 font-Matter-Medium duration-400 shadow-lg`}

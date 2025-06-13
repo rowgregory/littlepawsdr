@@ -38,11 +38,6 @@ const campaignLinks = [
     urlKey: 'winning-bids',
   },
   {
-    textKey: ' Donations',
-    linkKey: '/settings/campaign/donations',
-    urlKey: 'donations',
-  },
-  {
     textKey: ' Instant Buys',
     linkKey: '/settings/campaign/instant-buys',
     urlKey: 'instant-buys',

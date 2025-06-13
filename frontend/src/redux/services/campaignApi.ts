@@ -1,4 +1,11 @@
-import { setCampaign } from '../features/campaign/campaignSlice';
+import {
+  addAuctionItemToAuction,
+  setCampaign,
+  updateAuctionInState,
+  updateAuctionItemInAuction,
+  updateCampaignInState,
+} from '../features/campaign/campaignSlice';
+import { setInputs } from '../features/form/formSlice';
 import { api } from './api';
 
 const BASE_URL = '/campaign';
@@ -7,7 +14,11 @@ export const campaignApi = api.injectEndpoints({
   endpoints: (build: any) => ({
     getCampaign: build.query({
       query: (campaignId: string) => `${BASE_URL}/${campaignId}`,
-      providesTags: ['Campaign', 'Item-Fulfillment'],
+      onQueryStarted: async (_: any, { dispatch, queryFulfilled }: any) => {
+        const { data } = await queryFulfilled;
+        const newCampaign = data.campaign;
+        dispatch(updateCampaignInState(newCampaign));
+      },
     }),
     createCampaign: build.mutation({
       query: (campaign: any) => ({
@@ -15,7 +26,11 @@ export const campaignApi = api.injectEndpoints({
         method: 'POST',
         body: campaign,
       }),
-      invalidatesTags: ['Campaign', 'Auction'],
+      onQueryStarted: async (_: any, { dispatch, queryFulfilled }: any) => {
+        const { data } = await queryFulfilled;
+        const newCampaign = data.campaign;
+        dispatch(updateCampaignInState(newCampaign));
+      },
     }),
     updateCampaign: build.mutation({
       query: (campaign: any) => ({
@@ -30,7 +45,12 @@ export const campaignApi = api.injectEndpoints({
         method: 'PUT',
         body: auction,
       }),
-      invalidatesTags: ['Campaign', 'Auction', 'Auction-Item'],
+      onQueryStarted: async (_: any, { dispatch, queryFulfilled }: any) => {
+        const { data } = await queryFulfilled;
+        const newAuction = data.auction;
+        dispatch(updateAuctionInState(newAuction));
+        dispatch(setInputs({ formName: 'campaignAuctionForm', data: newAuction }));
+      },
     }),
     getAuctionItem: build.query({
       query: (item: any) => `${BASE_URL}/auction/item/${item?.auctionItemId}`,
@@ -42,7 +62,13 @@ export const campaignApi = api.injectEndpoints({
         method: 'POST',
         body: auctionItem,
       }),
-      invalidatesTags: ['Campaign', 'Auction-Item'],
+      onQueryStarted: async (_: any, { dispatch, queryFulfilled }: any) => {
+        const { data } = await queryFulfilled;
+
+        const newAuctionItem = data.auctionItem;
+        dispatch(addAuctionItemToAuction({ auctionItem: newAuctionItem }));
+        dispatch(setInputs({ formName: 'campaignAuctionForm', data: null }));
+      },
     }),
     updateAuctionItem: build.mutation({
       query: (auctionItem: any) => ({
@@ -50,7 +76,13 @@ export const campaignApi = api.injectEndpoints({
         method: 'PUT',
         body: auctionItem,
       }),
-      invalidatesTags: ['Auction-Item', 'Campaign'],
+      onQueryStarted: async (_: any, { dispatch, queryFulfilled }: any) => {
+        const { data } = await queryFulfilled;
+
+        const updatedAuctionItem = data.auctionItem;
+        dispatch(updateAuctionItemInAuction({ auctionItem: updatedAuctionItem }));
+        dispatch(setInputs({ formName: 'campaignAuctionForm', data: null }));
+      },
     }),
     deleteAuctionItemPhoto: build.mutation({
       query: (campaign: any) => ({
@@ -71,14 +103,6 @@ export const campaignApi = api.injectEndpoints({
       query: (customLinkId: string) => `${BASE_URL}/custom-link/${customLinkId}`,
       providesTags: (result: any, error: any, arg: any) => [{ type: 'Campaign', id: arg }],
     }),
-    createOneTimeAuctionDonation: build.mutation({
-      query: (auctionDoantion: any) => ({
-        url: `${BASE_URL}/auction/donation`,
-        method: 'POST',
-        body: auctionDoantion,
-      }),
-      invalidatesTags: ['Campaign'],
-    }),
     createInstantBuy: build.mutation({
       query: (instantBuy: any) => ({
         url: `${BASE_URL}/auction/item/instant-buy`,
@@ -93,19 +117,11 @@ export const campaignApi = api.injectEndpoints({
         method: 'POST',
         body: bid,
       }),
-      invalidatesTags: ['Campaign', 'Auction-Item'],
+      invalidatesTags: ['Campaign', 'Auction', 'Auction-Item'],
     }),
     getWinningBidder: build.query({
       query: (id: string) => `${BASE_URL}/auction/winning-bidder/${id}`,
       invalidatesTags: ['Campaign'],
-    }),
-    updateItemFulfillment: build.mutation({
-      query: (itemFulfillment: any) => ({
-        url: `${BASE_URL}/auction/item-fulfillment`,
-        method: 'PATCH',
-        body: itemFulfillment,
-      }),
-      invalidatesTags: ['Campaign', 'Item-Fulfillment'],
     }),
     updateAuctionWinningBidder: build.mutation({
       query: (winningBidder: any) => ({
@@ -133,9 +149,7 @@ export const campaignApi = api.injectEndpoints({
         try {
           const { data } = await queryFulfilled;
           dispatch(setCampaign(data.campaign));
-        } catch (error) {
-          console.error('Error fetching live campaign:', error);
-        }
+        } catch {}
       },
     }),
     trackAuctionModalButtonClick: build.mutation({
@@ -143,7 +157,7 @@ export const campaignApi = api.injectEndpoints({
         return {
           url: `${BASE_URL}/clicks`,
           method: 'PATCH',
-          body: {campaignId},
+          body: { campaignId },
         };
       },
       invalidatesTags: ['Campaign'],
@@ -163,11 +177,9 @@ export const {
   useGetCampaignsQuery,
   useGetCampaignsForAdminViewQuery,
   useGetCampaignByCustomLinkIdQuery,
-  useCreateOneTimeAuctionDonationMutation,
   useCreateInstantBuyMutation,
   usePlaceBidMutation,
   useGetWinningBidderQuery,
-  useUpdateItemFulfillmentMutation,
   useUpdateAuctionWinningBidderMutation,
   useDeleteAuctionItemMutation,
   useGetCustomCampaignLinkQuery,

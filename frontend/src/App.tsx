@@ -1,8 +1,6 @@
 import { Suspense } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MainRoutes } from './routes';
-import { ThemeProvider } from 'styled-components';
-import { themes } from './utils/theme';
 import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistor } from './redux/toolkitStore';
@@ -18,12 +16,10 @@ const PayPalOptions = {
 const App = () => (
   <PayPalScriptProvider options={PayPalOptions}>
     <PersistGate loading={null} persistor={persistor}>
-      <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true}}>
-        <ThemeProvider theme={themes['light']}>
-          <Suspense fallback={<></>}>
-            <MainRoutes />
-          </Suspense>
-        </ThemeProvider>
+      <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+        <Suspense fallback={<></>}>
+          <MainRoutes />
+        </Suspense>
       </Router>
     </PersistGate>
   </PayPalScriptProvider>

@@ -3,7 +3,7 @@ html(xmlns='http://www.w3.org/1999/xhtml')
   head
     meta(name='viewport' content='width=device-width, initial-scale=1.0')
     meta(http-equiv='Content-Type' content='text/html; charset=UTF-8')
-    title You've Been Outbid!
+    title 🐕 Don't Let This Slip Away - You've Been Outbid!
     style(type='text/css').
       * {
         font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -12,95 +12,336 @@ html(xmlns='http://www.w3.org/1999/xhtml')
       body {
         -webkit-font-smoothing: antialiased;
         -webkit-text-size-adjust: none;
-        background-color: #ffffff;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         margin: 0;
         padding: 0;
         width: 100%;
         height: 100%;
+        min-height: 100vh;
       }
       .container {
         width: 100%;
-        background-color: #ffffff;
-        padding: 24px;
+        padding: 40px 24px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       }
       .email-content {
-        background-color: #ffffff;
-        max-width: 600px;
+        background: linear-gradient(145deg, #ffffff 0%, #f8f9ff 100%);
+        max-width: 650px;
         margin: 0 auto;
-        border-radius: 8px;
+        border-radius: 20px;
         overflow: hidden;
-        padding: 24px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        position: relative;
       }
-      h1 {
-        font-size: 22px;
+      .header-section {
+        background: linear-gradient(135deg, #ff6b6b 0%, #ffa500 100%);
+        padding: 32px 24px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+      .header-section::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
+        animation: float 20s linear infinite;
+      }
+      @keyframes float {
+        0% { transform: translateX(0) translateY(0); }
+        100% { transform: translateX(-50px) translateY(-50px); }
+      }
+      .urgency-badge {
+        display: inline-block;
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        color: #ffffff;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 12px;
         font-weight: bold;
-        color: #333333;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+      .main-title {
+        font-size: 28px;
+        font-weight: 800;
+        color: #ffffff;
+        margin: 0;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        position: relative;
+        z-index: 2;
+      }
+      .emoji-reaction {
+        font-size: 48px;
+        margin: 16px 0;
+        display: block;
+        position: relative;
+        z-index: 2;
+      }
+      .content-section {
+        padding: 40px 32px;
+      }
+      .item-showcase {
+        background: linear-gradient(145deg, #f1f3f4 0%, #ffffff 100%);
+        border-radius: 16px;
+        padding: 24px;
+        margin: 24px 0;
+        border: 2px solid #e8eaed;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+      .item-showcase::before {
+        content: '✨';
+        position: absolute;
+        top: 12px;
+        right: 16px;
+        font-size: 20px;
+        opacity: 0.7;
+      }
+      .item-name {
+        font-size: 24px;
+        font-weight: 700;
+        color: #2c3e50;
         margin-bottom: 16px;
         text-align: center;
       }
-      img {
+      .item-image {
         max-width: 100%;
         height: auto;
-        margin: 0 auto 24px auto;
+        margin: 20px auto;
         display: block;
-        border-radius: 8px;
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
       }
-      p {
-        font-size: 16px;
-        color: #666666;
-        line-height: 1.6;
-        margin-bottom: 16px;
+      .item-image:hover {
+        transform: scale(1.02);
       }
-      a.button {
-        display: inline-block;
-        background-color: #38b2a0;
-        color: #ffffff;
-        border-radius: 6px;
-        text-decoration: none;
-        padding: 14px 22px;
-        font-size: 16px;
-        margin-top: 24px;
-        text-align: center;
-        width: 100%;
-        font-weight: bold;
-      }
-      .horizontal-line {
-        border-bottom: 1px solid #eeeeee;
+      .bid-comparison {
+        display: flex;
+        justify-content: space-between;
         margin: 24px 0;
+        background: linear-gradient(145deg, #fff5f5 0%, #ffffff 100%);
+        border-radius: 12px;
+        padding: 20px;
+        border-left: 4px solid #ff6b6b;
+      }
+      .bid-item {
+        text-align: center;
+        flex: 1;
+      }
+      .bid-label {
+        font-size: 12px;
+        color: #666666;
+        text-transform: uppercase;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+      }
+      .bid-amount {
+        font-size: 24px;
+        font-weight: 800;
+        margin: 8px 0;
+      }
+      .your-bid {
+        color: #ff6b6b;
+      }
+      .current-bid {
+        color: #27ae60;
+      }
+      .vs-separator {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        font-weight: bold;
+        color: #666666;
+        margin: 0 16px;
+      }
+      .motivational-text {
+        font-size: 18px;
+        color: #2c3e50;
+        line-height: 1.7;
+        margin: 24px 0;
+        text-align: center;
+        font-weight: 500;
+      }
+      .highlight-text {
+        background: linear-gradient(120deg, #ffeaa7 0%, #fab1a0 100%);
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-weight: 600;
+      }
+      .cta-section {
+        text-align: center;
+        padding: 32px 0;
+        background: linear-gradient(145deg, #f8f9ff 0%, #ffffff 100%);
+        border-radius: 16px;
+        margin: 32px 0;
+        position: relative;
+        overflow: hidden;
+      }
+      .cta-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+      }
+      .cta-button {
+        display: inline-block;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: #ffffff;
+        border-radius: 50px;
+        text-decoration: none;
+        padding: 18px 40px;
+        font-size: 18px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+      .cta-button::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: left 0.5s;
+      }
+      .cta-button:hover::before {
+        left: 100%;
+      }
+      .cta-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+      }
+      .urgency-timer {
+        background: linear-gradient(135deg, #ff7675 0%, #e84393 100%);
+        color: white;
+        padding: 16px;
+        border-radius: 12px;
+        margin: 24px 0;
+        text-align: center;
+        font-weight: 600;
+        box-shadow: 0 4px 15px rgba(255, 118, 117, 0.3);
+      }
+      .paw-prints {
+        text-align: center;
+        margin: 24px 0;
+        font-size: 24px;
+        opacity: 0.6;
+      }
+      .rescue-message {
+        background: linear-gradient(145deg, #e8f5e8 0%, #ffffff 100%);
+        border-left: 4px solid #27ae60;
+        padding: 20px;
+        border-radius: 8px;
+        margin: 24px 0;
+        font-style: italic;
+        color: #2c3e50;
       }
       .footer {
         text-align: center;
-        font-size: 12px;
-        color: #888888;
-        padding: 16px;
+        padding: 24px;
+        background: linear-gradient(145deg, #f8f9fa 0%, #e9ecef 100%);
+        color: #6c757d;
+        font-size: 14px;
+      }
+      .footer-logo {
+        font-size: 20px;
+        margin-bottom: 8px;
       }
       @media only screen and (max-width: 600px) {
-        .email-content {
-          padding: 16px;
+        .container {
+          padding: 20px 16px;
         }
-        h1 {
+        .content-section {
+          padding: 24px 20px;
+        }
+        .main-title {
+          font-size: 24px;
+        }
+        .item-name {
           font-size: 20px;
         }
-        p {
-          font-size: 14px;
+        .bid-comparison {
+          flex-direction: column;
+          gap: 16px;
         }
-        a.button {
-          font-size: 14px;
-          padding: 12px 20px;
+        .vs-separator {
+          margin: 0;
+          transform: rotate(90deg);
+        }
+        .cta-button {
+          font-size: 16px;
+          padding: 16px 32px;
+          color: #fff !important;
+        }
+        .motivational-text {
+          font-size: 16px;
         }
       }
   body
     .container
       .email-content
-        h1 #{itemName}
-        if itemImage
-          .image-container(style="text-align: center; margin: 20px 0;")
-            img(src=itemImage alt=itemName style="max-width: 100%; height: auto;")
-        p Thank you so much for participating in the auction for Little Paws Dachshund Rescue! Your support means the world to us—and to all the dachshunds we're working hard to care for and find loving homes.
-        p We wanted to let you know that you've just been outbid on #{itemName}. The current top bid is $#{topBid}. Your previous bid was $#{previousTopBid}. But don’t worry—there’s still time to jump back in and secure this item while continuing to make a difference for the pups!
-        a.button(href=link) Place Your Next Bid
-        .horizontal-line
-        .footer
-          p Little Paws Dachshund Rescue #{new Date().getFullYear()} All rights reserved.
+        .header-section
+          .urgency-badge ⚡ Action Required
+          .emoji-reaction 😱
+          h1.main-title You've Been Outbid!
 
+        .content-section
+          .item-showcase
+            h2.item-name #{itemName}
+            if itemImage
+              img.item-image(src=itemImage alt=itemName)
+
+            .bid-comparison
+              .bid-item
+                .bid-label Your Previous Bid
+                .bid-amount.your-bid $#{previousTopBid}
+              .vs-separator VS
+              .bid-item
+                .bid-label Current Top Bid
+                .bid-amount.current-bid $#{topBid}
+
+          .cta-section
+            a.cta-button(href=link) 🚀 Bid Again & Win This!
+
+          .urgency-timer
+            | ⏰ Auction ending soon - Don't miss your chance!
+
+          p.motivational-text
+            | Oh no! Someone just swooped in and outbid you on this amazing item! But here's the thing – 
+            span.highlight-text you're so close to winning
+            | , and there's still time to reclaim your victory! 🏆
+
+          .rescue-message
+            | 💙 Remember: Every bid you place helps save precious dachshund lives. These adorable pups are counting on generous hearts like yours to give them a second chance at happiness.
+
+          .paw-prints 🐾 🐾 🐾 🐾 🐾
+
+          p.motivational-text
+            | Don't let this slip away! Jump back in now and show everyone that when you want something for such a great cause, 
+            span.highlight-text you don't give up easily
+            | ! 💪
+
+
+
+        .footer
+          .footer-logo 🐕 Little Paws Dachshund Rescue
+          p Making tails wag since forever • © #{new Date().getFullYear()}
+          p Your support changes lives, one paw at a time ❤️

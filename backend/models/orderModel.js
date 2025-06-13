@@ -35,7 +35,6 @@ const orderSchema = mongoose.Schema(
     orderShippedconfirmationEmailHasBeenSent: { type: Boolean },
     orderNotificationEmailHasBeenSent: { type: Boolean },
 
-    // physical product fields
     shippingAddress: {
       address: { type: String },
       city: { type: String },

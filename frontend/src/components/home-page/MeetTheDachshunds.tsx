@@ -1,13 +1,12 @@
-import { useEffect, useRef } from 'react';
-import { useSelector } from 'react-redux';
+import { Key, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useGetDachshundsByStatusMutation } from '../../redux/services/rescueGroupsApi';
-import { RootState } from '../../redux/toolkitStore';
+import { RootState, useAppSelector } from '../../redux/toolkitStore';
 import AvailableDachshundCard from '../common/AvailableDachshundCard';
 import useIntersectionObserver from '../../hooks/useIntersectionObserver';
 
 const MeetTheDachshunds = () => {
-  const dachshund = useSelector((state: RootState) => state.dachshund);
+  const dachshund = useAppSelector((state: RootState) => state.dachshund);
   const [getDachshunds] = useGetDachshundsByStatusMutation({
     selectFromResult: () => ({}),
   });
@@ -50,7 +49,9 @@ const MeetTheDachshunds = () => {
         </div>
         <div className='grid grid-cols-12 gap-y-12 sm:gap-12'>
           {dachshund?.dachshunds
-            ?.map((obj, i) => <AvailableDachshundCard key={i} obj={obj} />)
+            ?.map((obj: unknown, i: Key | null | undefined) => (
+              <AvailableDachshundCard key={i} obj={obj} />
+            ))
             .filter((_: any, i: number) => i < 4)}
         </div>
       </div>

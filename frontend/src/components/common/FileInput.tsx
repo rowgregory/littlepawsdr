@@ -10,13 +10,7 @@ interface FileInputProps {
 const FileInput: FC<FileInputProps> = ({ id, label, onChange, multiple }) => {
   return (
     <div className='flex flex-col'>
-      <input
-        multiple={multiple ?? false}
-        type='file'
-        id={id}
-        onChange={onChange}
-        className='hidden'
-      />
+      <input name='photos' multiple={multiple ?? false} type='file' id={id} onChange={onChange} className='hidden' />
       <label htmlFor={id} className='cursor-pointer'>
         {label}
       </label>

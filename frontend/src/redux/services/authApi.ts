@@ -11,23 +11,9 @@ export const authApi = api.injectEndpoints({
         body,
       }),
     }),
-    updateAccountToConfirmed: build.mutation({
-      query: (body: any) => ({
-        url: `${BASE_URL}/update-account-to-confirmed`,
-        method: 'POST',
-        body,
-      }),
-    }),
     login: build.mutation({
       query: (body: any) => ({
         url: `${BASE_URL}/login`,
-        method: 'POST',
-        body,
-      }),
-    }),
-    refreshToken: build.mutation({
-      query: (body: any) => ({
-        url: `${BASE_URL}/refresh-token`,
         method: 'POST',
         body,
       }),
@@ -59,9 +45,9 @@ export const authApi = api.injectEndpoints({
         body: user,
       }),
     }),
-    validateCurrentPassword: build.mutation({
+    updatePassword: build.mutation({
       query: (user: any) => ({
-        url: `${BASE_URL}/oldpassword/${user.id}`,
+        url: `${BASE_URL}/update-password/${user.id}`,
         method: 'POST',
         body: user,
       }),
@@ -72,11 +58,9 @@ export const authApi = api.injectEndpoints({
 export const {
   useLoginMutation,
   useRegisterMutation,
-  useUpdateAccountToConfirmedMutation,
-  useRefreshTokenMutation,
   useLogoutMutation,
   useForgotPasswordEmailMutation,
   useValidateForgotPasswordTokenQuery,
   useResetPasswordMutation,
-  useValidateCurrentPasswordMutation,
+  useUpdatePasswordMutation,
 } = authApi;

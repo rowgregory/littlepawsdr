@@ -1,198 +1,130 @@
-import { Fragment, useEffect, useState } from 'react';
-import { privacyPolicyLinkKey, termsOfServiceLinkKey } from '../../utils/footerUtils';
-import { Link, useLocation } from 'react-router-dom';
-import useRegisterForm from '../../hooks/form-hooks/useRegisterForm';
-import { RootState, useAppDispatch } from '../../redux/toolkitStore';
-import { setPasswordStrength } from '../../redux/features/auth/authSlice';
-import { Logo2024 } from '../../components/assets';
+import { useEffect } from 'react';
+import { Heart } from 'lucide-react';
+import { RootState, useAppDispatch, useAppSelector } from '../../redux/toolkitStore';
+import { createFormActions } from '../../redux/features/form/formSlice';
+import validateRegisterForm from '../../validations/validateRegisterForm';
 import { useRegisterMutation } from '../../redux/services/authApi';
-import { useSelector } from 'react-redux';
-import RegisterModal from '../../components/modals/RegisterModal';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import RegisterForm from '../../components/forms/RegisterForm';
+import { openToast } from '../../redux/features/toastSlice';
+import { hydrateUserState } from '../../redux/features/user/userSlice';
 
 const Register = () => {
   const dispatch = useAppDispatch();
-  const { state } = useLocation();
-  const [showPassword, setShowPassword] = useState({
-    password: false,
-    confirmPassword: false,
-  });
-  const [modal, setModal] = useState({ open: false, help: false, text: '' });
-  const openModal = (text: string) => setModal({ open: true, help: false, text });
-  const [register, { isLoading, reset }] = useRegisterMutation();
-  const auth = useSelector((state: RootState) => state.auth);
+  const { registerForm, passwordStrength, showPassword } = useAppSelector((state: RootState) => state.form);
+  const { handleInput, setErrors, setPasswordStrength, setShowPassword } = createFormActions('registerForm', dispatch);
+  const [register, { isLoading }] = useRegisterMutation();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const registerCb = async () => {
-    await register({
-      firstName: inputs.firstName,
-      lastName: inputs.lastName,
-      email: inputs.email,
-      password: inputs.password,
-      confirmPassword: inputs.confirmPassword,
-      strength: auth.strength,
-      cameFromAuction: state?.cameFromAuction,
-      customCampaignLink: state?.customCampaignLink,
-    })
-      .unwrap()
-      .then((data: any) => {
-        openModal(data.message);
-      })
-      .catch(
-        (err: any) =>
-          err.data.message === 'Password is not strong enough' &&
-          setModal({ open: true, help: true, text: err.data.message })
-      );
-  };
-
-  const { inputs, handleInputChange, onSubmit } = useRegisterForm(registerCb, state, setModal);
+  const params = new URLSearchParams(location.search);
+  const customCampaignLink = params.get('customCampaignLink');
+  const auctionItemId = params.get('auctionItemId');
+  const conversionSource = params.get('conversionSource');
 
   useEffect(() => {
-    if (inputs.password) {
-      dispatch(setPasswordStrength(inputs.password));
+    if (registerForm?.inputs?.password) {
+      setPasswordStrength(registerForm?.inputs?.password);
+    } else {
+      setPasswordStrength('0');
     }
-  }, [dispatch, inputs.password]);
+  }, [registerForm, setPasswordStrength]);
 
-  const handleClose = () => {
-    setModal({ open: false, help: false, text: '' });
-    reset();
+  const handleSubmit = async (e: { preventDefault: () => void }) => {
+    e.preventDefault();
+
+    const isValid = validateRegisterForm(registerForm?.inputs, setErrors);
+    if (!isValid) return;
+
+    try {
+      const response = await register({
+        firstName: registerForm?.inputs?.firstName,
+        lastName: registerForm?.inputs?.lastName,
+        email: registerForm?.inputs?.email,
+        confirmEmail: registerForm?.inputs?.confirmEmail,
+        securityQuestion: registerForm?.inputs?.securityQuestion,
+        securityAnswer: registerForm?.inputs?.securityAnswer,
+        password: registerForm?.inputs?.password,
+        ...(customCampaignLink && {
+          shippingAddress: {
+            address: registerForm?.inputs?.address,
+            city: registerForm?.inputs?.city,
+            state: registerForm?.inputs?.state,
+            zipPostalCode: registerForm?.inputs?.zipPostalCode,
+          },
+        }),
+        conversionSource,
+      }).unwrap();
+      dispatch(hydrateUserState({ user: response?.user }));
+
+      if (response?.user?.addressRef && customCampaignLink) {
+        navigate(`/campaigns/${customCampaignLink}/auction`);
+      } else if (response?.user?.addressRef && customCampaignLink && auctionItemId) {
+        navigate(`/campaigns/${customCampaignLink}/auction/item/${auctionItemId}`);
+      } else {
+        const params = new URLSearchParams({ initialLogin: 'true' });
+
+        if (customCampaignLink) params.append('customCampaignLink', customCampaignLink);
+        if (auctionItemId) params.append('auctionItemId', auctionItemId);
+
+        navigate(`/settings/profile?${params.toString()}`);
+      }
+    } catch (err: any) {
+      dispatch(openToast({ message: err?.data?.message, type: 'error', position: 'bc' }));
+    }
   };
 
   return (
-    <Fragment>
-      <RegisterModal modal={modal} handleClose={handleClose} auth={auth} />
-      <div className='bg-white min-h-screen flex items-center justify-center p-8'>
-        <div className='max-w-md w-full'>
-          <Link to='/'>
-            <img src={Logo2024} alt='Little Paws Dachshund Rescue' className='w-44 mb-4 mx-auto' />
-          </Link>
-          <p className='font-Matter-Medium text-2xl text-center mb-2.5'>Register</p>
-          <p className='text-gray-400 text-sm font-Matter-Regular text-center mb-4'>
-            Sign up or sign in to an existing account to start bidding
-          </p>
-          <form className='flex flex-col w-full'>
-            <div className='flex flex-col md:flex-row gap-4'>
-              <div className='flex flex-col'>
-                <label className='font-Matter-Medium text-sm mb-1' htmlFor='firstName'>
-                  First name*
-                </label>
-                <input
-                  className='auth-input bg-white border-[1px] border-gray-200 rounded-md mb-4 py-2.5 px-4 font-Matter-Regular focus:outline-none '
-                  name='firstName'
-                  onChange={handleInputChange}
-                  type='text'
-                  alt='First Name'
-                  value={inputs.firstName || ''}
-                />
-              </div>
-              <div className='flex flex-col'>
-                <label className='font-Matter-Medium text-sm mb-1' htmlFor='lastName'>
-                  Last name*
-                </label>
-                <input
-                  className='auth-input bg-white border-[1px] border-gray-200 rounded-md mb-4 py-2.5 px-4 font-Matter-Regular focus:outline-none '
-                  name='lastName'
-                  onChange={handleInputChange}
-                  type='text'
-                  alt='Last Name'
-                  value={inputs.lastName || ''}
-                />
-              </div>
+    <div className='min-h-dvh bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50 flex items-center justify-center p-4'>
+      <div className='bg-white rounded-3xl shadow-2xl overflow-hidden max-w-2xl w-full'>
+        <Link to='/'>
+          <div className='bg-gradient-to-r from-amber-400 to-orange-400 p-8 text-center'>
+            <div className='bg-white rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center shadow-lg'>
+              <span className='text-4xl'>🐾</span>
             </div>
-            <label className='font-Matter-Medium text-sm mb-1' htmlFor='email'>
-              Email*
-            </label>
-            <input
-              className='auth-input bg-white border-[1px] border-gray-200 rounded-md mb-4 py-2.5 px-4 font-Matter-Regular focus:outline-none '
-              name='email'
-              onChange={handleInputChange}
-              type='email'
-              alt='Email'
-              value={inputs.email || ''}
-            />
-            <label className='font-Matter-Medium text-sm mb-1' htmlFor='password'>
-              Password*{' '}
-              <i
-                onClick={() => setModal({ open: true, help: true, text: '' })}
-                className='fa-solid fa-circle-exclamation text-sm text-teal-300 cursor-pointer'
-              ></i>
-            </label>
-            <div className='flex relative'>
-              <input
-                className='auth-input bg-white border-[1px] w-full border-gray-200 rounded-md mb-4 py-2.5 px-4 font-Matter-Regular focus:outline-none'
-                name='password'
-                onChange={handleInputChange}
-                type={showPassword.password ? 'text' : 'password'}
-                alt='Password'
-                value={inputs.password || ''}
-              />
-              <i
-                onClick={() =>
-                  setShowPassword((prev: any) => ({
-                    ...prev,
-                    password: !showPassword.password,
-                  }))
-                }
-                className={`fa-solid ${
-                  showPassword.password ? 'fa-eye' : 'fa-eye-slash'
-                } absolute top-4 right-2`}
-              ></i>
+            <h1 className='text-2xl font-bold text-white mb-2'>Little Paws Dachshund Rescue</h1>
+            <div className='flex justify-center gap-1 mt-3'>
+              {[...Array(5)].map((_, i) => (
+                <Heart key={i} className='w-4 h-4 text-white fill-current animate-pulse' style={{ animationDelay: `${i * 0.2}s` }} />
+              ))}
             </div>
-            <label className='font-Matter-Medium text-sm mb-1' htmlFor='confirmPassword'>
-              Confirm Password*
-            </label>
-            <div className='flex relative'>
-              <input
-                className='auth-input bg-white border-[1px] w-full border-gray-200 rounded-md mb-4 py-2.5 px-4 font-Matter-Regular focus:outline-none'
-                name='confirmPassword'
-                onChange={handleInputChange}
-                type={showPassword.confirmPassword ? 'text' : 'password'}
-                alt='Confirm Password'
-                value={inputs.confirmPassword || ''}
-              />
-              <i
-                onClick={() =>
-                  setShowPassword((prev: any) => ({
-                    ...prev,
-                    confirmPassword: !showPassword.confirmPassword,
-                  }))
-                }
-                className={`fa-solid ${
-                  showPassword.confirmPassword ? 'fa-eye' : 'fa-eye-slash'
-                } absolute top-4 right-2`}
-              ></i>
-            </div>
-            <button
-              disabled={isLoading}
-              onClick={onSubmit}
-              className='py-2 w-full bg-teal-300 text-white font-Matter-Regular rounded-md mt-4 flex items-center justify-center'
-            >
-              Sign{isLoading && 'ing'} up{isLoading && '...'}
-            </button>
-          </form>
-          <p className='text-xs text-gray-500 text-center mt-2'>
-            By creating an account, you agree to the{' '}
-            <Link
-              className='text-gray-900 font-Matter-Medium hover:text-teal-300'
-              to={termsOfServiceLinkKey}
-            >
-              Terns of Service
-            </Link>{' '}
-            and{' '}
-            <Link
-              className='text-gray-900 font-Matter-Medium hover:text-teal-300'
-              to={privacyPolicyLinkKey}
-            >
-              Privacy Policy
-            </Link>
-          </p>
-          <p className='text-sm text-gray-700 text-center mt-3'>
-            Already have an account?{' '}
-            <Link className='text-teal-500' to='/auth/login'>
-              Log In.
-            </Link>
-          </p>
+          </div>
+        </Link>
+        <div className='p-8'>
+          <div className='text-center mb-6'>
+            <h2 className='text-2xl font-bold text-gray-800 mb-2'>Join Our Pack</h2>
+            <p className='text-gray-600 text-sm'>Create your account to start helping dachshunds in need</p>
+          </div>
+          <RegisterForm
+            handleInput={handleInput}
+            handleSubmit={handleSubmit}
+            isLoading={isLoading}
+            passwordStrength={passwordStrength}
+            registerForm={registerForm}
+            setShowPassword={setShowPassword}
+            showPassword={showPassword}
+          />
+          <div className='mt-6 text-center'>
+            <p className='text-xs text-gray-500 mb-3'>
+              By creating an account, you agree to our{' '}
+              <Link to='#' className='text-amber-600 hover:text-amber-700 font-medium'>
+                Terms of Service
+              </Link>{' '}
+              and{' '}
+              <Link to='/privacy-policy' className='text-amber-600 hover:text-amber-700 font-medium'>
+                Privacy Policy
+              </Link>
+            </p>
+            <p className='text-sm text-gray-600'>
+              Already have an account?{' '}
+              <Link to='/auth/login' className='text-amber-600 hover:text-amber-700 font-medium'>
+                Log In
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
-    </Fragment>
+    </div>
   );
 };
 

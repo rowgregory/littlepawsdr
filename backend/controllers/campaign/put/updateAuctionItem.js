@@ -13,8 +13,7 @@ const updateAuctionItem = asyncHandler(async (req, res) => {
     if (!auctionItem) return res.status(404).json({ message: 'Auction item not found' });
 
     const newPhotosToCreate = req.body.photos.filter(
-      (bodyPhoto) =>
-        !auctionItem.photos.some((auctionItemPhoto) => auctionItemPhoto._id.equals(bodyPhoto._id))
+      (bodyPhoto) => !auctionItem.photos.some((auctionItemPhoto) => auctionItemPhoto._id.equals(bodyPhoto._id))
     );
 
     const auctionItemPhotos = await Promise.all(
@@ -35,16 +34,18 @@ const updateAuctionItem = asyncHandler(async (req, res) => {
 
     const newPhotoIds = auctionItemPhotos.map((photo) => photo._id);
 
-    const updatedPhotoIds = [
-      ...new Set([...auctionItem.photos.map((photo) => photo._id), ...newPhotoIds]),
-    ];
+    const updatedPhotoIds = [...new Set([...auctionItem.photos.map((photo) => photo._id), ...newPhotoIds])];
 
-    await AuctionItem.findByIdAndUpdate(auctionItem._id, {
-      ...req.body,
-      photos: updatedPhotoIds,
-    });
+    const updatedAuctionItem = await AuctionItem.findByIdAndUpdate(
+      auctionItem._id,
+      {
+        ...req.body,
+        photos: updatedPhotoIds,
+      },
+      { new: true }
+    ).populate('photos');
 
-    res.status(200).json({ message: 'Auction item updated', sliceName: 'campaignApi' });
+    res.status(200).json({ auctionItem: updatedAuctionItem, message: 'Auction item updated', sliceName: 'campaignApi' });
   } catch (err) {
     await Error.create({
       functionName: 'UPDATE_AUCTION_ITEM_ADMIN',

@@ -22,7 +22,8 @@ const eCardOrderSchema = mongoose.Schema(
     },
     sendNow: { type: String },
     status: { type: String, default: 'Not sent' },
-    type: { type: String, default: 'ECARD'}
+    type: { type: String, default: 'ECARD' },
+    isEcard: { type: Boolean, default: true },
   },
   {
     timestamps: true,

@@ -1,291 +1,340 @@
-doctype transitional
-html(xmlns='http://www.w3.org/1999/xhtml')
+doctype html
+html(lang="en")
   head
-    meta(name='viewport' content='width=device-width')
-    meta(http-equiv='Content-Type' content='text/html; charset=UTF-8')
-    title auction-item-winning-bidder
-    style(type='text/css').
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Auction Winner - #{id}
+    style.
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
       * {
-        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-      }
-      body {
-        -webkit-font-smoothing: antialiased;
-        -webkit-text-size-adjust: none;
-        align-items: center;
-        height: 100%;
-        background-color: #f6f6f6;
-        padding: 24px;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
       }
 
-      .container {
-        display: block !important;
-        max-width: 600px !important;
-        margin: 0 auto !important;
-        /* makes it centered */
-        clear: both !important;
-        background-color: #fff;
-        padding: 24px;
+      body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        line-height: 1.6;
+        color: #374151;
+        background-color: #f9fafb;
+      }
+
+      .email-container {
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #ffffff;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        border-radius: 12px;
+        overflow: hidden;
+      }
+
+      .header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 40px 30px;
+        text-align: center;
+      }
+
+      .header h1 {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 8px;
+        letter-spacing: -0.5px;
+      }
+
+      .header p {
+        font-size: 16px;
+        opacity: 0.9;
+        font-weight: 300;
+      }
+
+      .order-info {
+        background-color: #f8fafc;
+        padding: 25px 30px;
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      .order-badge {
+        display: inline-block;
+        background-color: #10b981;
+        color: white;
+        padding: 6px 16px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 15px;
+      }
+
+      .order-id {
+        font-size: 18px;
+        font-weight: 600;
+        color: #1f2937;
+        margin-bottom: 5px;
+      }
+
+      .item-count {
+        font-size: 14px;
+        color: #6b7280;
       }
 
       .content {
-        max-width: 800px;
-        margin: 0 auto;
-        display: block;
-        padding: 36px;
+        padding: 30px;
       }
 
-      .footer {
-        height: 20px;
+      .section-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: #1f2937;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #e5e7eb;
       }
 
-      .header-section {
-        margin-bottom: 24px;
+      .auction-items {
+        margin-bottom: 30px;
       }
 
-      h3 {
-        margin-top: 0;
-        margin-bottom: 8px;
-      }
-
-      .secondary-font {
-        color: #dcdde1;
-        margin-bottom: 32px;
-        font-size: 14px;
-      }
-
-      .horizontal-line {
-        border-bottom: 1px solid #f2f2f2;
-
-      }
-
-      table {
-        padding: 24px 0;
-      }
-
-      .table-header {
-        margin-bottom: 8px;
-      }
-
-      div.auction-item {
+      .auction-item {
         display: flex;
-        justify-content: between;
         align-items: center;
-        max-width: 800px;
-        width: 100%;
-        margin-top: 48px;
-        margin-bottom: 32px;
+        padding: 20px;
+        margin-bottom: 15px;
+        background-color: #f9fafb;
+        border-radius: 12px;
+        border: 1px solid #e5e7eb;
+        transition: all 0.3s ease;
       }
 
-      .picture-name-desc {
-        float: left;
-        width: 100%;
+      .auction-item:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
       }
 
-      .total-container {
-        width: 100%;
-        display: block;
-        margin-bottom: 32px;
+      .item-image {
+        width: 80px;
+        height: 80px;
+        border-radius: 8px;
+        object-fit: cover;
+        margin-right: 20px;
+        border: 2px solid #e5e7eb;
+        flex-shrink: 0;
       }
 
-      .total-block {
-        float: right;
-        max-width: 250px;
-        width: 100%;
-        margin: 32px 0;
-      }
-
-      .flex {
+      .item-details {
+        flex: 1;
         display: flex;
+        flex-direction: column;
+        justify-content: center;
+        min-width: 0;
       }
 
-      .total {
-        display: flex;
-        font-weight: 400;
+      .item-name {
         font-size: 16px;
-        padding: 8px 0;
+        font-weight: 600;
+        color: #1f2937;
+        margin-bottom: 5px;
       }
 
-      .clear {
-        clear: both;
-        margin-bottom: 48px;
+      .item-description {
+        font-size: 14px;
+        color: #6b7280;
+        margin-bottom: 8px;
       }
 
-      .thank-you {
-        color: #6c6f79;
+      .item-price {
         font-size: 18px;
-        font-weight: 400;
+        font-weight: 700;
+        color: #059669;
       }
 
-      .lpdr {
-        font-weight: 400;
+      .summary-section {
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        padding: 25px;
+        border-radius: 12px;
+        margin-top: 20px;
       }
 
-      .aligncenter {
-        text-align: center;
+      .summary-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 0;
+        border-bottom: 1px solid #cbd5e1;
+        min-height: 50px;
       }
 
-      .float-right {
-        font-weight: 400;
-        float: right;
-        width: fit-content;
+      .summary-row:last-child {
+        border-bottom: none;
+        padding-top: 20px;
+        margin-top: 10px;
+        border-top: 2px solid #94a3b8;
       }
 
-      .float-left {
-        float: left;
-        width: 75%;
+      .summary-label {
+        font-size: 16px;
+        color: #475569;
+        font-weight: 500;
+        flex: 1;
+      }
+
+      .summary-value {
+        font-size: 16px;
+        color: #1e293b;
+        font-weight: 600;
+        text-align: right;
+        margin-left: auto;
       }
 
       .total-price {
-        float: right;
-        width: fit-content;
+        font-size: 22px !important;
+        font-weight: 800 !important;
+        color: #059669 !important;
       }
 
       .footer {
-        margin-top: 48px;
-        background: #fcfbfe;
-        padding: 20px 36px;
-        max-width: 800px;
-        height: 20px;
-      }
-
-      .help {
-        text-align: center !important;
-      }
-
-      .rescue {
-        float: right;
-      }
-      span {
-        color: #9761aa;
-      }
-
-      .logo {
-        width:85px;
-        height:auto;
-        object-fit: cover;
-        margin-bottom: 24px;
-      }
-
-      div {
-        font-size: 11px;
-      }
-
-      .name {
-        font-size: 16px;
-      }
-      .desc, .details {
-        font-size: 14px;
-      }
-
-      .details {
-        width: fit-content;
-        float: left;
-        font-size: 14px;
-      }
-      .details-data {
-        width: fit-content;
-        float: right;
-        font-size: 14px;
-      }
-      .total {
-        font-weight: 600;
-      }
-
-      .price {
-        font-size: 14px;
-        width: fit-content;
-        float: right;
-      }
-
-      .congrats {
-        font-size: 28px;
-        text-align: center;
-        font-weight: 600;
-      }
-
-      .pay-items-link {
-        background: #22c2b7;
-        padding: 8px 44px;
+        background-color: #1f2937;
         color: white;
-        font-size: 16px;
-        font-weight: 600;
-        margin: 0 auto 24px;
-        border-radius: 6px;
-      }
-
-      .text {
-        font-size: 14px;
-        margin: 0 auto;
-      }
-
-      .align-center {
-        width:100%;
-        margin-inline: auto;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        padding: 30px;
         text-align: center;
       }
 
-      @media only screen and (max-width: 640px) {
-        body {
-          padding: 0 !important;
+      .footer h3 {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 15px;
+      }
+
+      .footer p {
+        font-size: 14px;
+        opacity: 0.8;
+        margin-bottom: 10px;
+      }
+
+      .social-links {
+        margin-top: 20px;
+      }
+
+      .social-link {
+        display: inline-block;
+        margin: 0 10px;
+        color: #9ca3af;
+        text-decoration: none;
+        font-size: 20px;
+        transition: color 0.3s ease;
+      }
+
+      .social-link:hover {
+        color: #ffffff;
+      }
+
+      .no-items {
+        text-align: center;
+        padding: 40px 20px;
+        color: #6b7280;
+        font-style: italic;
+      }
+
+      @media only screen and (max-width: 600px) {
+        .email-container {
+          margin: 10px;
+          border-radius: 8px;
         }
-        h3 {
-          font-size: 16px !important;
+
+        .header {
+          padding: 30px 20px;
         }
-        .container {
-          padding: 0 !important;
-          width: 100% !important;
+
+        .header h1 {
+          font-size: 24px;
         }
+
         .content {
-          padding: 0 !important;
+          padding: 20px;
         }
-        .footer {
-          margin-top: 32px !important;
-          padding: 20px 0 !important;
-          background: #fff !important;
+
+        .auction-item {
+          flex-direction: column;
+          text-align: center;
+        }
+
+        .item-image {
+          margin-right: 0;
+          margin-bottom: 15px;
+        }
+
+        .summary-section {
+          padding: 20px;
+        }
+
+        .summary-row {
+          gap: 10px;
         }
       }
 
-  body(itemscope='' itemtype='http://schema.org/EmailMessage')
-    .container(width='600px')
-      .header-section
-        img.logo(src='https://i.ibb.co/GMWQxTM/logo.png' alt='little paws dachshund rescue')
-        p.congrats Congratulations, you've secured the top bid!
-      .horizontal-line
-      table(width='100%' cellpadding='0' cellspacing='0' style='padding-left:60px; padding-right: 60px')
-        tbody
-          tr
-            td(style='width:76px')
-              img(src=photo, alt='Adoption Fee' style='width:60px; height:60px')
-            td
-              strong.name #{itemName}
-              .desc #{desc}
-            td
-              p.price $#{subtotal}
-      .horizontal-line
-      table(width='100%' cellpadding='0' cellspacing='0' style='padding-left:60px; padding-right: 60px; margin-bottom: 30px')
-        tbody
-          tr
-            td
-              p.details Shipping
-            td
-            td
-              p.details-data $#{shipping}
-          tr
-            td
-              p.details.total Total
-            td
-            td
-              p.details-data.total $#{totalPrice}
-      div.align-center
-        a.pay-items-link(href=`https://www.littlepawsdr.org/auction-items/winner/${id}`) Pay for Items
-      div.align-center
-        .text Or, copy the link below:
-      div.align-center
-        a.text(href=`https://www.littlepawsdr.org/auction-items/winner/${id}` style='color: #22c2b7') #{`https://www.littlepawsdr.org/auction-items/winner/${id}`}
-      .footer
-        -var contactLink = `<a href='https://www.littlepawsdr.org/contact-us')>Contact</a>`;
-        .help Need Help? Visit our <span>!{contactLink}</span> page.
+  body
+    .email-container
+      // Header Section
+      .header
+        h1 🎉 #{name}
+        p Thank you for your participation! Your items have been successfully won and are ready for payment.
 
+      // Order Information
+      .order-info
+        .order-badge Confirmed
+        .order-id Order ##{id}
+        .item-count #{itemCount} item#{itemCount > 1 ? 's' : ''} purchased
+
+      // Main Content
+      .content
+        // Auction Items Section
+        if auctionItems && auctionItems.length > 0
+          .auction-items
+            h2.section-title 📦 Winning Items
+            each item in auctionItems
+              table.auction-item(border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 15px; background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px;")
+                tr
+                  td(style="padding: 20px;")
+                    table(width="100%" cellpadding="0" cellspacing="0")
+                      tr
+                        td(style="vertical-align: top; width: 80px;")
+                          img.item-image(src=item.photos[0].url alt=item.name || 'Auction Item' width="80" height="80" style="border-radius: 8px; border: 2px solid #e5e7eb; display: block;")
+                        td(style="padding-left: 20px; vertical-align: top;")
+                          table(width="100%" cellpadding="0" cellspacing="0")
+                            tr
+                              td(style="font-size: 16px; font-weight: 600; color: #1f2937; padding-bottom: 5px;")
+                                = item.name || 'Auction Item'
+                            tr
+                              td(style="font-size: 18px; font-weight: 700; color: #059669;")
+                                | $#{item.currentBid || '0.00'}
+        else
+          .no-items
+            p No auction items to display
+
+        // Order Summary
+        .summary-section
+          h2.section-title 💰 Order Summary
+          .summary-row
+            .summary-label Subtotal (#{itemCount} items)
+            .summary-value $#{subtotal}
+          .summary-row
+            .summary-label Shipping & Handling
+            .summary-value= shipping === '0.00' || shipping === '0' ? 'FREE' : `$${shipping}`
+          .summary-row
+            .summary-label.total-price Total Amount
+            .summary-value.total-price $#{totalPrice}
+
+          .pay-now(style="text-align: center; margin-top: 30px;")
+            a(href=`https://www.littlepawsdr.org/auction/winner/${id}` target="_blank" style="display: inline-block; padding: 14px 28px; background-color: #2fd4bf; color: #ffffff; text-decoration: none; font-weight: 600; border-radius: 8px; font-size: 16px;") Pay now
+
+      // Footer
+      .footer
+        h3 🐕 Little Paws Dachshund Rescue
+        p Thank you for supporting our cause!
+        p Questions? Contact us at lpdr@littlepaws.org
+
+        .social-links
+          a.social-link(href="https://www.facebook.com/LittlePawsDachshundRescue") 📘
+          a.social-link(href="https://www.instagram.com/littlepawsdr/?hl=en") 📷

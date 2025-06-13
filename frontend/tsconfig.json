@@ -15,8 +15,10 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "typeRoots": ["./node_modules/@types", "./types"],
+    "types": ["node", "express"],
   },
-  "include": ["src", "../backend/utils/crypto.js", "audio.d.ts", "crypto.d.ts", "index.d.ts"],
+  "include": ["src", "../backend/utils/crypto.js", "audio.d.ts", "crypto.d.ts", "index.d.ts", "types/**/*", "declration.d.ts"],
   "exclude": ["node_modules"]
 }

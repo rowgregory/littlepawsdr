@@ -1,70 +1,75 @@
-import { FC, useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { RootState, useAppDispatch } from '../../redux/toolkitStore';
-import { openAdminMobileNavigation } from '../../redux/features/dashboard/dashboardSlice';
-import AdminNavigationPanel from '../admin/admin-navigation/AdminNavigation';
-import { LayoutWithSidebarProps } from '../../types/common-types';
-import { useRefreshTokenMutation } from '../../redux/services/authApi';
+import { FC, ReactNode } from 'react';
+import AdminNavigation from '../admin/navigation/AdminNavigation';
+import { MenuSquare } from 'lucide-react';
+import AdminMobileNavigationDrawer from '../AdminMobileNavigationDrawer';
+import { closeAdminMobileNavigation, openAdminMobileNavigation } from '../../redux/features/dashboard/dashboardSlice';
+import { RootState, useAppDispatch, useAppSelector } from '../../redux/toolkitStore';
+import { motion } from 'framer-motion';
 
-const DashboardLayout: FC<LayoutWithSidebarProps> = ({ sidebar, children }) => {
+const DashboardLayout: FC<{ children: ReactNode }> = ({ children }) => {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-  const { user, loading } = useSelector((state: RootState) => state.auth);
-  const { sidebar: toggleSidebar } = useSelector((state: RootState) => state.dashboard);
-  const [getRefreshToken] = useRefreshTokenMutation();
-
-  useEffect(() => {
-    const checkTokenAndRefresh = () => {
-      if (!user?.isAdmin) {
-        navigate('/');
-        return;
-      }
-
-      try {
-        // Decode the token to get expiration time
-        const decoded = user?.token && JSON.parse(atob(user.token.split('.')[1]));
-        if (decoded && Date.now() >= decoded.exp * 1000) {
-          // Token is expired, refresh it
-          getRefreshToken({ id: user?._id });
-        }
-      } catch (error) {
-        console.error('Error refreshing token:', error);
-      }
-    };
-
-    checkTokenAndRefresh();
-  }, [user, getRefreshToken, navigate]);
-
-  if (!user?.isAdmin) {
-    return null;
-  }
-
-  if (loading) {
-    return <h1 className='font-Matter-Medium'>One Moment...</h1>;
-  }
-
+  const { sidebar } = useAppSelector((state: RootState) => state.dashboard);
   return (
-    <div className='min-h-screen flex'>
-      <div
-        className={`bg-[#151d28] fixed top-0 min-h-screen block md:hidden w-full transition-transform duration-200 ${
-          toggleSidebar ? 'translate-x-0' : '-translate-x-full'
-        } z-50`}
-      >
-        <AdminNavigationPanel />
-      </div>
-      <i
-        onClick={() => dispatch(openAdminMobileNavigation())}
-        className=' bg-gray-50 h-10 w-10 rounded-full flex items-center justify-center fas fa-bars fa-lg text-gray-800 fixed md:hidden top-1 left-1 cursor-pointer duration-200 hover:bg-gray-100 z-[49]'
-      ></i>
+    <div className='min-h-dvh flex'>
+      <AdminMobileNavigationDrawer isOpen={sidebar} onClose={() => dispatch(closeAdminMobileNavigation())} currentPath='/admin/campaigns' />
       <aside
-        className={`hidden md:block md:fixed md:top-0 md:left-0 md:overflow-hidden md:bg-[#151d28] md:w-[75px] md:min-h-screen md:shadow-right-side`}
+        className={`hidden md:block md:fixed md:top-0 md:left-0 md:overflow-visible w-16 md:min-h-dvh md:transition-all md:duration-300 md:z-40`}
       >
-        {sidebar}
+        <AdminNavigation />
       </aside>
-      <main className={`w-screen md:ml-[75px] md:w-[calc(100vw-75px)] overflow-x-hidden`}>
-        {children}
-      </main>
+      <motion.button
+        onClick={() => dispatch(openAdminMobileNavigation())}
+        className='block md:hidden fixed top-4 right-4 z-50 p-3 bg-gradient-to-r from-teal-500 to-teal-600 text-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300'
+        whileHover={{
+          scale: 1.1,
+          boxShadow: '0 10px 25px -5px rgba(20, 184, 166, 0.4)',
+        }}
+        whileTap={{ scale: 0.95 }}
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: 'easeOut' }}
+      >
+        <motion.div
+          animate={{ rotate: [0, 5, -5, 0] }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            repeatDelay: 3,
+            ease: 'easeInOut',
+          }}
+        >
+          <MenuSquare className='w-6 h-6' />
+        </motion.div>
+
+        {/* Pulsing ring effect */}
+        <motion.div
+          className='absolute inset-0 rounded-xl bg-teal-400'
+          initial={{ scale: 1, opacity: 0 }}
+          animate={{
+            scale: [1, 1.2, 1],
+            opacity: [0, 0.3, 0],
+          }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }}
+        />
+
+        {/* Shine effect */}
+        <motion.div
+          className='absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent rounded-xl'
+          initial={{ x: '-100%' }}
+          animate={{ x: '100%' }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            repeatDelay: 4,
+            ease: 'linear',
+          }}
+        />
+      </motion.button>
+      <main className={`w-screen md:ml-16 md:w-[calc(100vw-62px)] overflow-x-hidden transition-all duration-300 bg-white`}>{children}</main>
     </div>
   );
 };

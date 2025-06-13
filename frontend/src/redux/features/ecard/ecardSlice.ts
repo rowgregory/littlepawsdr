@@ -1,6 +1,30 @@
 import { Reducer, createSlice } from '@reduxjs/toolkit';
 import { ecardApi } from '../../services/ecardApi';
-import { EcardProps, EcardStatePayload } from '../../../types/ecard-types';
+
+interface EcardProps {
+  _id: string;
+  category?: string; // Category of the eCard (optional)
+  price?: number; // Price of the eCard (optional)
+  image?: string; // URL of the eCard image (optional)
+  name?: string; // Name of the eCard (optional)
+  isEcard?: boolean; // Indicates if it's an eCard, defaults to true (optional)
+  thumb?: string; // URL of the thumbnail image (optional)
+  sendNow?: boolean; // Indicates if the eCard can be sent immediately, defaults to true (optional)
+  createdAt?: Date; // Timestamp for when the eCard was created (optional)
+  updatedAt?: Date; // Timestamp for when the eCard was last updated (optional)
+}
+
+interface EcardStatePayload {
+  loading: boolean;
+  success: boolean;
+  error: string | false | null;
+  message: string | null;
+  ecards: [EcardProps] | any;
+  ecard: EcardProps;
+  categories: [];
+  toggleEcardUpdateDrawer: boolean;
+  toggleEcardCreateDrawer: boolean;
+}
 
 const ecardState: EcardProps = {
   _id: '',
@@ -21,6 +45,8 @@ const initialEcardState: EcardStatePayload = {
   ecards: [],
   ecard: ecardState,
   categories: [],
+  toggleEcardUpdateDrawer: false,
+  toggleEcardCreateDrawer: false,
 };
 
 export const ecardSlice = createSlice({
@@ -30,6 +56,19 @@ export const ecardSlice = createSlice({
     resetEcardError: (state) => {
       state.error = null;
       state.message = null;
+    },
+    setOpenEcardUpdateDrawer: (state, { payload }) => {
+      state.toggleEcardUpdateDrawer = true;
+      state.ecard = payload?.ecard;
+    },
+    setCloseEcardUpdateDrawer: (state) => {
+      state.toggleEcardUpdateDrawer = false;
+    },
+    setOpenEcardCreateDrawer: (state) => {
+      state.toggleEcardCreateDrawer = true;
+    },
+    setCloseEcardCreateDrawer: (state) => {
+      state.toggleEcardCreateDrawer = false;
     },
   },
   extraReducers: (builder) => {
@@ -52,8 +91,7 @@ export const ecardSlice = createSlice({
       })
 
       .addMatcher(
-        (action) =>
-          action.type.endsWith('/rejected') && action.payload?.data?.sliceName === 'ecardApi',
+        (action) => action.type.endsWith('/rejected') && action.payload?.data?.sliceName === 'ecardApi',
         (state, action: any) => {
           state.loading = false;
           state.error = action.payload.data;
@@ -64,4 +102,5 @@ export const ecardSlice = createSlice({
 
 export const ecardReducer = ecardSlice.reducer as Reducer<EcardStatePayload>;
 
-export const { resetEcardError } = ecardSlice.actions;
+export const { resetEcardError, setOpenEcardUpdateDrawer, setCloseEcardUpdateDrawer, setOpenEcardCreateDrawer, setCloseEcardCreateDrawer } =
+  ecardSlice.actions;

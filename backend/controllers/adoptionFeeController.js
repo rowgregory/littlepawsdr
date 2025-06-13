@@ -3,7 +3,7 @@ import AdoptionFee from '../models/adoptionFeeModel.js';
 import Error from '../models/errorModel.js';
 import { generateToken } from '../utils/generateToken.js';
 import jwt from 'jsonwebtoken';
-import { sendEmail } from '../utils/sendEmail.js';
+import sendEmail from '../utils/sendEmail.ts';
 import AdoptionApplicationBypassCode from '../models/adoptionApplicationBypassCodeModel.js';
 import { createActionHistoryLog } from './actionHistoryController.js';
 import { logEvent, prepareLog } from '../utils/logHelpers.js';
@@ -23,7 +23,6 @@ const decryptToken = (token) => {
     }
 
     // Handle other errors or invalid tokens
-    console.error('Error decoding/verifying token:', error);
     return true; // Assuming any other error is treated as an expired token
   }
 };
@@ -125,16 +124,11 @@ const createAdoptionApplicationFee = async (res, req) => {
     fee.exp = decodedToken.exp;
     logEvent(log, 'JWT EXP', { exp: fee.exp });
     const savedAdoptionFee = await fee.save();
-    logEvent(
-      log,
-      'ADOPTION APPLICATION FEE SAVED WITH TOKEN - SENDING ADOPTION APPLICATION FEE CONFIRMATION EMAIL'
-    );
+    logEvent(log, 'ADOPTION APPLICATION FEE SAVED WITH TOKEN - SENDING ADOPTION APPLICATION FEE CONFIRMATION EMAIL');
     await sendEmail(savedAdoptionFee, 'SEND_ADOPTION_FEE_CONFIRMATION');
 
     createActionHistoryLog({
-      actionType: req.body.feeAmount
-        ? 'Adoption Application Fee Created With Payment'
-        : 'Adoption Application Fee Created Using Bypass Code',
+      actionType: req.body.feeAmount ? 'Adoption Application Fee Created With Payment' : 'Adoption Application Fee Created Using Bypass Code',
       user: {
         name: `${fee.firstName} ${fee.lastName}`,
         email: fee.emailAddress,
@@ -146,7 +140,7 @@ const createAdoptionApplicationFee = async (res, req) => {
       deviceInfo: req.userAgent,
     });
     logEvent(log, 'CREATE ADOPTION APPLICATION FEE DOCUMENT END');
-    await log.save();
+
     return res.status(200).json({
       token: savedAdoptionFee.token,
       success: true,
@@ -158,7 +152,7 @@ const createAdoptionApplicationFee = async (res, req) => {
       message: err.message,
       name: err.name,
     });
-    await log.save();
+
     await Error.create({
       functionName: 'CREATE_ADOPTION_APPLICATION_FEE_PUBLIC',
       detail: err.message,
@@ -201,9 +195,7 @@ const checkUserAdoptionFeeTokenValidity = asyncHandler(async (req, res) => {
         deviceInfo: req.userAgent,
       });
 
-      return res
-        .status(400)
-        .json({ message: 'Invalid code', sliceName: 'adoptionApplicationFeeApi' });
+      return res.status(400).json({ message: 'Invalid code', sliceName: 'adoptionApplicationFeeApi' });
 
       // if user did not enter a bypass code
     } else {
@@ -261,7 +253,7 @@ const checkJwtValidityAdoptionFee = asyncHandler(async (req, res) => {
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
     logEvent(log, 'VALID TOKEN', decodedToken);
     logEvent(log, 'END CHECK JWT ADOPTION APPLICATION FEE JWT VALIDITY');
-    await log.save();
+
     res.status(200).json({ isExpired: false, exp: decodedToken.exp });
   } catch (err) {
     await Error.create({
@@ -271,7 +263,6 @@ const checkJwtValidityAdoptionFee = asyncHandler(async (req, res) => {
     });
     logEvent(log, 'INVALID TOKEN', { message: err.message, name: err.name, token });
 
-    await log.save();
     res.json({
       isExpired: true,
       message: `Your Session has expired`,
@@ -290,11 +281,7 @@ const updateAdoptionApplicationFee = asyncHandler(async (req, res) => {
   const id = req.body.id;
 
   try {
-    await AdoptionFee.findByIdAndUpdate(
-      id,
-      { tokenStatus: 'Expired', applicationStatus: 'Inactive', exp: null, token: null },
-      { new: true }
-    );
+    await AdoptionFee.findByIdAndUpdate(id, { tokenStatus: 'Expired', applicationStatus: 'Inactive', exp: null, token: null }, { new: true });
 
     res.status(200).json({ message: 'Adoption application fee updated' });
   } catch (error) {
@@ -311,10 +298,4 @@ const updateAdoptionApplicationFee = asyncHandler(async (req, res) => {
   }
 });
 
-export {
-  createAdoptionFee,
-  checkUserAdoptionFeeTokenValidity,
-  getAdoptionFees,
-  checkJwtValidityAdoptionFee,
-  updateAdoptionApplicationFee,
-};
+export { createAdoptionFee, checkUserAdoptionFeeTokenValidity, getAdoptionFees, checkJwtValidityAdoptionFee, updateAdoptionApplicationFee };

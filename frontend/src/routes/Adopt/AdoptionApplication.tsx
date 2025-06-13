@@ -1,81 +1,12 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { Link } from 'react-router-dom';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 import NothingHere from '../../components/assets/404_dog01.png';
 import SessionExpired from '../../components/assets/session-expired.png';
-import { LoadingImg } from '../../components/LoadingImg';
 import ProgressTracker from '../../components/adopt/application/ProgressTracker';
 import CountdownTimer from '../../components/CountdownTImer';
 import ContactLoader from '../../components/Loaders/ContactLoader/ContactLoader';
 import { useJwtCheckValidityAdoptionFeeMutation } from '../../redux/services/adoptionApplicationFeeApi';
-import styled from 'styled-components';
-
-const ExpiredContainer = styled.div`
-  height: 100vh;
-  width: 100%;
-  margin-inline: auto;
-  background: linear-gradient(to top, #eadfce, #f4f4f4);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  .outer-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    max-width: 600px;
-    width: 100%;
-    background: #fff;
-    border-radius: 12px;
-    padding: 16px;
-    height: fit-content;
-    box-shadow: 0 1px 20px 10px rgba(0, 0, 0, 0.12);
-
-    h1 {
-      margin-top: 28px;
-      font-size: 32px;
-      color: #5f738b;
-      font-weight: 500;
-      text-align: center;
-    }
-    h2 {
-      margin-top: 28px;
-      font-size: 28px;
-      color: #5f738b;
-      font-weight: 500;
-      text-align: center;
-    }
-    h6 {
-      color: #7f91a6;
-      font-size: 16px;
-      margin-top: 8px;
-      margin-bottom: 28px;
-      font-weight: 400;
-      text-align: center;
-    }
-    a.register {
-      background: linear-gradient(to left, #3ec3a4, #6fd7a3);
-      padding: 8px 28px;
-      color: #fff;
-      font-weight: 400;
-      border-radius: 30px;
-      :hover {
-        text-decoration: none;
-      }
-    }
-    a.enter {
-      background: #6c1ff2;
-      padding: 8px 28px;
-      color: #fff;
-      font-weight: 400;
-      border-radius: 30px;
-      :hover {
-        text-decoration: none;
-      }
-    }
-  }
-`;
+import Skeleton from '../../components/Loaders/Skeleton';
 
 const AdoptionApplication = () => {
   const navigate = useNavigate();
@@ -101,28 +32,33 @@ const AdoptionApplication = () => {
   if (isLoading) {
     return (
       <div className='relative'>
-        <LoadingImg w='100%' h='575px' />
+        <Skeleton w='100%' h='575px' />
       </div>
     );
   }
 
   if (data?.isExpired) {
     return (
-      <ExpiredContainer>
-        <div className='outer-container'>
+      <div className='min-h-screen w-full mx-auto bg-gradient-to-t from-[#eadfce] to-[#f4f4f4] flex justify-center items-center p-4'>
+        <div className='outer-container flex flex-col items-center max-w-xl w-full bg-white rounded-xl p-4 shadow-[0_1px_20px_10px_rgba(0,0,0,0.12)]'>
           <img
             className='max-w-48 w-full'
             src={data?.statusCode === 404 ? NothingHere : SessionExpired}
             alt='404 Error'
           />
-          <h1>{data?.message}</h1>
-          <p>{error}</p>
-          <h6>Return to the adoption terms and conditions.</h6>
-          <Link className='register' to='/adopt'>
+          <h1 className='mt-7 text-2xl text-[#5f738b] font-medium text-center'>{data?.message}</h1>
+          {error && <p className='text-center text-red-600 mt-2'>{error}</p>}
+          <h6 className='mt-2 mb-7 text-center text-[#7f91a6] text-base font-normal'>
+            Return to the adoption terms and conditions.
+          </h6>
+          <Link
+            to='/adopt'
+            className='register bg-gradient-to-l from-[#3ec3a4] to-[#6fd7a3] text-white font-normal px-7 py-2 rounded-full text-center inline-block hover:no-underline'
+          >
             Terms & Conditions
           </Link>
         </div>
-      </ExpiredContainer>
+      </div>
     );
   }
 
@@ -134,20 +70,19 @@ const AdoptionApplication = () => {
       </h1>
       {data?.exp && (
         <CountdownTimer
-          exp={data?.exp}
+          exp={data.exp}
           setCountdownEnded={setCountdownEnded}
           styles='relative text-charcoal font-QBold text-center'
         />
       )}
       <ProgressTracker step={{ step1: true, step2: true, step3: true, step4: true }} />
-      <div className='max-w-screen-md mx-auto border-[1px] border-gray-200 rounded-xl mt-6'>
+      <div className='max-w-screen-md mx-auto border border-gray-200 rounded-xl mt-6'>
         <iframe
-          className='h-[600px] overflow-y-scroll'
+          className='h-[600px] overflow-y-scroll w-full'
           onLoad={() => setIFrameLoaded(false)}
           title='Adoption Application'
-          width='100%'
           src='https://toolkit.rescuegroups.org/of/f?c=WHMQCBRV'
-        ></iframe>
+        />
       </div>
     </div>
   );

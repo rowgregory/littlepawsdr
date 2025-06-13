@@ -1,6 +1,6 @@
 const capitalizeName = (fullName: string) => {
   // Split the full name into an array of names
-  const names = fullName.split(' ');
+  const names = fullName?.split(' ');
 
   // Capitalize the first letter of each name and concatenate
   const capitalizedNames = names.map((name) => {

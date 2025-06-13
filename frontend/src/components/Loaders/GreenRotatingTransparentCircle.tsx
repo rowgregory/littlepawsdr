@@ -1,13 +1,10 @@
-import { useSelector } from 'react-redux';
-import { RootState } from '../../redux/toolkitStore';
-
 const GreenRotatingTransparentCircle = () => {
-  const { campaign } = useSelector((state: RootState) => state.campaign);
   return (
     <div className='bg-white fixed h-48 w-48 top-0 left-0 right-0 m-auto bottom-0 flex items-center justify-center z-[5000] shadow-2xl rounded-xl p-7'>
       <svg
         aria-hidden='true'
-        className={`inline w-12 h-12 text-gray-200 animate-spin ${campaign?.themeColor?.fill || 'fill-teal-700'}`}
+        className={`inline w-12 h-12 text-gray-200 animate-spin fill-teal-500'
+        }`}
         viewBox='0 0 100 101'
         fill='none'
         xmlns='http://www.w3.org/2000/svg'

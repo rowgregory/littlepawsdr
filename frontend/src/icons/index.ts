@@ -72,6 +72,7 @@ import {
   faShoppingCart,
   faShoppingBag,
   faDog,
+  faGear,
 } from '@fortawesome/free-solid-svg-icons';
 
 const calendarIcon = faCalendar;
@@ -150,6 +151,7 @@ const exclamationTriangleIcon = faExclamationTriangle;
 const shoppingCartIcon = faShoppingCart;
 const shoppingBagIcon = faShoppingBag;
 const dogIcon = faDog;
+export const gearIcon = faGear;
 
 export {
   calendarIcon,

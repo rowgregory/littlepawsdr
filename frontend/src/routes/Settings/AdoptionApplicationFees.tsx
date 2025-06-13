@@ -1,7 +1,6 @@
 import { Fragment, useEffect, useState } from 'react';
 import MagnifyingGlass from '../../components/svg/MagnifyingGlass';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../redux/toolkitStore';
+import { RootState, useAppSelector } from '../../redux/toolkitStore';
 import { formatDateWithTimezone } from '../../utils/dateFunctions';
 import toFixed from '../../utils/toFixed';
 import { Link } from 'react-router-dom';
@@ -9,7 +8,7 @@ import CountdownTimer from '../../components/CountdownTImer';
 import { useUpdateAdoptionApplicationFeeMutation } from '../../redux/services/adoptionApplicationFeeApi';
 
 const AdoptionApplicationFees = () => {
-  const user = useSelector((state: RootState) => state.user);
+  const user = useAppSelector((state: RootState) => state.user);
   const adoptionApplicationFees = user?.adoptionApplicationFees;
   const noAdoptionApplicationFees = adoptionApplicationFees?.length === 0;
   const [updateFee, setUpdateFee] = useState({ update: false, id: '' });
@@ -28,10 +27,7 @@ const AdoptionApplicationFees = () => {
         <MagnifyingGlass />
       </div>
       <div className='font-Matter-Medium my-2'>No adoption application fees</div>
-      <Link
-        className='hover:no-underline font-Matter-Regular text-teal-500 hover:text-teal-600 text-center'
-        to='/adopt'
-      >
+      <Link className='hover:no-underline font-Matter-Regular text-teal-500 hover:text-teal-600 text-center' to='/adopt'>
         Fill out an application
       </Link>
     </div>
@@ -60,14 +56,10 @@ const AdoptionApplicationFees = () => {
                 <div className=' text-sm flex flex-nowrap items-center gap-2'>Access Link</div>
               </th>
               <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
-                <div className=' text-sm flex flex-nowrap items-center gap-2 whitespace-nowrap'>
-                  Time Remaining
-                </div>
+                <div className=' text-sm flex flex-nowrap items-center gap-2 whitespace-nowrap'>Time Remaining</div>
               </th>
               <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
-                <div className=' text-sm flex flex-nowrap items-center gap-2 whitespace-nowrap'>
-                  Status
-                </div>
+                <div className=' text-sm flex flex-nowrap items-center gap-2 whitespace-nowrap'>Status</div>
               </th>
             </tr>
           </thead>
@@ -76,9 +68,7 @@ const AdoptionApplicationFees = () => {
               <Fragment key={fee?._id}>
                 <tr className='z-1 group bg-white [&_td]:focus-within:bg-gray-100 [&_td]:hover:bg-gray-100 relative'>
                   <td className='m-0 p-0 decoration-inherit hover:text-inherit hover:decoration-inherit !flex h-[3.25rem] items-center whitespace-nowrap'>
-                    <p className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>
-                      ${toFixed(fee?.feeAmount)}
-                    </p>
+                    <p className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>${toFixed(fee?.feeAmount)}</p>
                   </td>
                   <td>
                     <p className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>
@@ -92,9 +82,7 @@ const AdoptionApplicationFees = () => {
                   </td>
                   <td className='px-4'>
                     {fee.exp === null ? (
-                      <p className='text-purple-500 bg-purple-100 px-2.5 py-0.5 font-Matter-Medium rounded-3xl text-sm w-fit'>
-                        {fee?.tokenStatus}
-                      </p>
+                      <p className='text-purple-500 bg-purple-100 px-2.5 py-0.5 font-Matter-Medium rounded-3xl text-sm w-fit'>{fee?.tokenStatus}</p>
                     ) : (
                       fee.exp && (
                         <CountdownTimer
@@ -109,9 +97,7 @@ const AdoptionApplicationFees = () => {
                   <td className='px-4'>
                     <p
                       className={`${
-                        fee?.exp === null
-                          ? 'text-orange-500 bg-orange-100'
-                          : 'text-green-500 bg-green-100'
+                        fee?.exp === null ? 'text-orange-500 bg-orange-100' : 'text-green-500 bg-green-100'
                       } px-2.5 py-0.5 font-Matter-Medium rounded-3xl text-sm w-fit whitespace-nowrap`}
                     >
                       {fee?.applicationStatus}

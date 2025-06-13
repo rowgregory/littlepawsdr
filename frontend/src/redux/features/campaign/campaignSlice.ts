@@ -1,7 +1,7 @@
 import { PayloadAction, Reducer, createSlice } from '@reduxjs/toolkit';
 import { campaignApi } from '../../services/campaignApi';
 import { CampaignStatePayload } from '../../../types/campaign-types';
-import initialCampaignState from './campaign-initial-state';
+import initialCampaignState, { initialAuctionItem } from './campaign-initial-state';
 
 export const campaignSlice = createSlice({
   name: 'campaign',
@@ -12,7 +12,6 @@ export const campaignSlice = createSlice({
     },
     resetCampaignError: (state) => {
       state.error = null;
-      state.message = null;
     },
     saveHasHandledAuctionModalToLocalStorage: (state) => {
       state.hasHandledAuctionModal = true;
@@ -21,9 +20,7 @@ export const campaignSlice = createSlice({
     setCampaign(state, action: PayloadAction<any>) {
       state.campaign = { ...state.campaign, ...action.payload };
 
-      const handledAuctionModal = JSON.parse(
-        localStorage.getItem('handledAuctionModal') || 'false'
-      );
+      const handledAuctionModal = JSON.parse(localStorage.getItem('handledAuctionModal') || 'false');
 
       state.hasHandledAuctionModal = handledAuctionModal;
 
@@ -43,6 +40,9 @@ export const campaignSlice = createSlice({
     },
     closeAuctionModal(state) {
       state.isAuctionModalOpen = false;
+    },
+    openAuctionModal(state) {
+      state.isAuctionModalOpen = true;
     },
     setSearchQuery: (state, { payload }) => {
       state.text = payload?.text;
@@ -79,7 +79,7 @@ export const campaignSlice = createSlice({
       state.sortDirection = direction;
 
       const getValueFromObject = (obj: any, key: any) => {
-        const keys = key.split('.');
+        const keys = key?.split('.');
         return keys.reduce((acc: any, curr: any) => acc?.[curr], obj);
       };
 
@@ -109,6 +109,48 @@ export const campaignSlice = createSlice({
 
       state.filteredArray = sortedData;
     },
+    updateCampaignInState: (state, action) => {
+      state.campaign = action.payload;
+    },
+    updateAuctionInState: (state, action) => {
+      state.campaign.auction = action.payload;
+    },
+    setCloseAuctionItemCreateDrawer: (state) => {
+      state.toggleAuctionItemCreateDrawer = false;
+    },
+    setOpenAuctionItemCreateDrawer: (state) => {
+      state.toggleAuctionItemCreateDrawer = true;
+    },
+    setCloseAuctionItemUpdateDrawer: (state) => {
+      state.toggleAuctionItemUpdateDrawer = false;
+    },
+    setOpenAuctionItemUpdateDrawer: (state, { payload }) => {
+      state.toggleAuctionItemUpdateDrawer = true;
+      state.auctionItem = payload;
+    },
+    resetAuctionItem: (state) => {
+      state.auctionItem = initialAuctionItem;
+    },
+    addAuctionItemToAuction: (state, { payload }) => {
+      state.campaign.auction.items.push(payload.auctionItem);
+    },
+    updateAuctionItemInAuction: (state, { payload }) => {
+      const auctionItem = payload.auctionItem;
+
+      if (state.campaign?.auction?.items && auctionItem?._id) {
+        const itemIndex = state.campaign.auction.items.findIndex((item) => item._id === auctionItem._id);
+
+        if (itemIndex !== -1) {
+          state.campaign.auction.items = state.campaign.auction.items.map((item, index) => (index === itemIndex ? auctionItem : item));
+        }
+      }
+    },
+    setCampaigns: (state, { payload }) => {
+      state.allCampaigns = payload.campaigns;
+    },
+    resetPlaceBidSuccess: (state) => {
+      state.placeBidSuccess = false;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -124,21 +166,15 @@ export const campaignSlice = createSlice({
           state.loading = false;
         }
       )
-      .addMatcher(
-        campaignApi.endpoints.createCampaign.matchFulfilled,
-        (state, { payload }: any) => {
-          state.campaignId = payload.campaignId;
-        }
-      )
-      .addMatcher(
-        campaignApi.endpoints.updateCampaign.matchFulfilled,
-        (state, { payload }: any) => {
-          state.message = payload.message;
-          state.success = true;
-          state.type = payload.type;
-          state.campaign = payload.campaign;
-        }
-      )
+      .addMatcher(campaignApi.endpoints.createCampaign.matchFulfilled, (state, { payload }: any) => {
+        state.campaignId = payload.campaignId;
+      })
+      .addMatcher(campaignApi.endpoints.updateCampaign.matchFulfilled, (state, { payload }: any) => {
+        state.message = payload.message;
+        state.success = true;
+        state.type = payload.type;
+        state.campaign = payload.campaign;
+      })
       .addMatcher(campaignApi.endpoints.getCampaign.matchFulfilled, (state, { payload }: any) => {
         state.campaign = payload.campaign;
       })
@@ -147,111 +183,62 @@ export const campaignSlice = createSlice({
         state.success = true;
         state.type = payload.type;
       })
-      .addMatcher(
-        campaignApi.endpoints.createAuctionItem.matchFulfilled,
-        (state, { payload }: any) => {
-          state.message = payload.message;
-        }
-      )
-      .addMatcher(
-        campaignApi.endpoints.updateAuctionItem.matchFulfilled,
-        (state, { payload }: any) => {
-          state.message = payload.message;
-        }
-      )
-      .addMatcher(
-        campaignApi.endpoints.getAuctionItem.matchFulfilled,
-        (state, { payload }: any) => {
-          state.auctionItem = payload.auctionItem;
-        }
-      )
-      .addMatcher(
-        campaignApi.endpoints.deleteAuctionItemPhoto.matchFulfilled,
-        (state, { payload }: any) => {
-          state.message = payload.message;
-        }
-      )
+      .addMatcher(campaignApi.endpoints.createAuctionItem.matchFulfilled, (state, { payload }: any) => {
+        state.message = payload.message;
+      })
+      .addMatcher(campaignApi.endpoints.updateAuctionItem.matchFulfilled, (state, { payload }: any) => {
+        state.message = payload.message;
+      })
+      .addMatcher(campaignApi.endpoints.getAuctionItem.matchFulfilled, (state, { payload }: any) => {
+        state.auctionItem = payload.auctionItem;
+      })
+      .addMatcher(campaignApi.endpoints.deleteAuctionItemPhoto.matchFulfilled, (state, { payload }: any) => {
+        state.message = payload.message;
+      })
       .addMatcher(campaignApi.endpoints.getCampaigns.matchFulfilled, (state, { payload }: any) => {
         state.campaigns = payload.campaigns;
       })
-      .addMatcher(
-        campaignApi.endpoints.getCampaignsForAdminView.matchFulfilled,
-        (state, { payload }: any) => {
-          state.campaignsForAdminView = payload.campaigns;
-        }
-      )
-      .addMatcher(
-        campaignApi.endpoints.getCampaignByCustomLinkId.matchFulfilled,
-        (state, { payload }: any) => {
-          state.campaign = payload.campaign;
-        }
-      )
-      .addMatcher(
-        campaignApi.endpoints.createOneTimeAuctionDonation.matchFulfilled,
-        (state, { payload }: any) => {
-          state.message = payload.message;
-        }
-      )
-      .addMatcher(
-        campaignApi.endpoints.createInstantBuy.matchFulfilled,
-        (state, { payload }: any) => {
-          state.instantBuy = payload.instantBuy;
-        }
-      )
+      .addMatcher(campaignApi.endpoints.getCampaignsForAdminView.matchFulfilled, (state, { payload }: any) => {
+        state.campaignsForAdminView = payload.campaigns;
+      })
+      .addMatcher(campaignApi.endpoints.getCampaignByCustomLinkId.matchFulfilled, (state, { payload }: any) => {
+        state.campaign = payload.campaign;
+      })
+      .addMatcher(campaignApi.endpoints.createInstantBuy.matchFulfilled, (state, { payload }: any) => {
+        state.instantBuy = payload.instantBuy;
+      })
       .addMatcher(campaignApi.endpoints.placeBid.matchFulfilled, (state, { payload }: any) => {
         state.message = payload.message;
         state.confirmedBidAmount = payload.confirmedBidAmount;
+        state.placeBidSuccess = true;
+      })
+      .addMatcher(campaignApi.endpoints.getWinningBidder.matchFulfilled, (state, { payload }: any) => {
+        state.winner = payload.winningBidder;
+      })
+      .addMatcher(campaignApi.endpoints.updateAuctionWinningBidder.matchFulfilled, (state, { payload }: any) => {
+        state.message = payload.message;
+        state.hasHandledWinningBidPaymentAndCampaignSync = true;
+      })
+      .addMatcher(campaignApi.endpoints.deleteAuctionItem.matchFulfilled, (state, { payload }: any) => {
+        state.message = payload.message;
+      })
+      .addMatcher(campaignApi.endpoints.getCustomCampaignLink.matchFulfilled, (state, { payload }: any) => {
+        state.customCampaignLink = payload.customCampaignLink;
+        state.campaignStatus = payload.campaignStatus;
+      })
+      .addMatcher(campaignApi.endpoints.fetchLiveCampaign.matchFulfilled, (state, { payload }: any) => {
+        state.campaign = payload.campaign;
+      })
+      .addMatcher(campaignApi.endpoints.trackAuctionModalButtonClick.matchFulfilled, (state, { payload }: any) => {
+        state.message = payload.message;
       })
       .addMatcher(
-        campaignApi.endpoints.getWinningBidder.matchFulfilled,
-        (state, { payload }: any) => {
-          state.winner = payload.winningBidder;
-        }
-      )
-      .addMatcher(
-        campaignApi.endpoints.updateAuctionWinningBidder.matchFulfilled,
-        (state, { payload }: any) => {
-          state.message = payload.message;
-          state.success = true;
-        }
-      )
-      .addMatcher(
-        campaignApi.endpoints.updateItemFulfillment.matchFulfilled,
-        (state, { payload }: any) => {
-          state.message = payload.message;
-        }
-      )
-      .addMatcher(
-        campaignApi.endpoints.deleteAuctionItem.matchFulfilled,
-        (state, { payload }: any) => {
-          state.message = payload.message;
-        }
-      )
-      .addMatcher(
-        campaignApi.endpoints.getCustomCampaignLink.matchFulfilled,
-        (state, { payload }: any) => {
-          state.customCampaignLink = payload.customCampaignLink;
-          state.campaignStatus = payload.campaignStatus;
-        }
-      )
-      .addMatcher(
-        campaignApi.endpoints.fetchLiveCampaign.matchFulfilled,
-        (state, { payload }: any) => {
-          state.campaign = payload.campaign;
-        }
-      )
-      .addMatcher(
-        campaignApi.endpoints.trackAuctionModalButtonClick.matchFulfilled,
-        (state, { payload }: any) => {
-          state.message = payload.message;
-        }
-      )
-      .addMatcher(
-        (action) =>
-          action.type.endsWith('/rejected') && action.payload?.data?.sliceName === 'campaignApi',
+        (action) => action.type.endsWith('/rejected') && action.payload?.data?.sliceName === 'campaignApi',
         (state, action: any) => {
           state.loading = false;
           state.error = action.error.message;
+          state.hasHandledWinningBidPaymentAndCampaignSync = false;
+          state.success = false;
         }
       );
   },
@@ -264,8 +251,20 @@ export const {
   resetCampaignError,
   saveHasHandledAuctionModalToLocalStorage,
   setCampaign,
+  openAuctionModal,
   closeAuctionModal,
   setSearchQuery,
   setInitialArray,
   sortTable,
+  updateCampaignInState,
+  updateAuctionInState,
+  setCloseAuctionItemCreateDrawer,
+  setOpenAuctionItemCreateDrawer,
+  setCloseAuctionItemUpdateDrawer,
+  setOpenAuctionItemUpdateDrawer,
+  resetAuctionItem,
+  addAuctionItemToAuction,
+  updateAuctionItemInAuction,
+  setCampaigns,
+  resetPlaceBidSuccess,
 } = campaignSlice.actions;

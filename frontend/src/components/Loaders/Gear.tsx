@@ -1,24 +1,8 @@
-import styled, { keyframes } from 'styled-components';
+import { gearIcon } from '../../icons';
+import AwesomeIcon from '../common/AwesomeIcon';
 
-const rotate = keyframes`
-from {
-  transform: rotate(0deg);
-}
-to {
-  transform: rotate(360deg);
-}
-`;
+const GearLoader = () => {
+  return <AwesomeIcon icon={gearIcon} className='w-3 h-3 text-teal-400' />;
+};
 
-const Gear = styled.i<{ color: string }>`
-  color: ${({ color }) => (color ? color : '')};
-  animation: ${rotate} 5s linear infinite;
-
-`;
-
-const GearLoader = ({ color, size }: { color: string; size: string }) => {
-  return (
-    <Gear color={color} className={`fas fa-gear ${size}`}></Gear>
-  )
-}
-
-export default GearLoader
+export default GearLoader;

@@ -1,47 +1,20 @@
-interface AuctionItemCardBodyProps {
-  item: {
-    _id: string;
-    name: string;
-    isAuction: boolean;
-    isFixed: boolean;
-    totalBids: number;
-    bids: Array<{ id: string }>;
-    currentBid: number;
-    buyNowPrice: number;
-    totalQuantity: number;
-    soldPrice?: number;
-    itemBtnText: string;
-    topBidder?: string;
-  };
-  hasEnded: boolean;
-  auth: {
-    user?: {
-      _id: string;
-      shippingAddress?: string;
-      hasShippingAddress: boolean;
-    };
-  };
-  pathname: string;
-  theme: {
-    border: string;
-    text: string;
-    darker: string;
-    xlight: string;
-  };
-  setOpenShippingAddressModal: (args: { open: boolean; auctionItemId: string }) => void;
-  status: string;
-  customLinkId: string | undefined;
+// Base utility types
+export type SortDirection = 'asc' | 'desc';
+export type CampaignStatus = 'Pre-Campaign' | 'Active Campaign' | 'Post-Campaign';
+export type SellingFormat = 'auction' | 'fixed';
+export type AuctionStatus = 'UPCOMING' | 'LIVE' | 'CLOSED' | '';
+export type PaymentStatus = 'pending' | 'paid';
+
+// Photo interface
+export interface Photo {
+  _id: string;
+  url: string;
+  name: string;
+  size: string;
 }
 
-type AuctionItemTimerRibbonProps = {
-  item: any;
-  theme: any;
-  hasEnded: boolean;
-  hasBegun: boolean;
-  campaign: any;
-};
-
-interface ThemeProps {
+// Theme color interface
+export interface ThemeColor {
   xlight: string;
   light: string;
   dark: string;
@@ -54,58 +27,39 @@ interface ThemeProps {
   fill: string;
 }
 
-interface CampaignPayload {
-  _id: string;
-  title: string;
-  subtitle: string;
-  goal: number;
-  themeColor: ThemeProps;
-  coverPhoto: string;
-  coverPhotoName: string;
-  maintainAspectRatio: boolean;
-  totalCampaignRevenue: number;
-  supporters: number;
-  story: string;
-  customCampaignLink: string;
-  isCampaignPublished: boolean;
-  isMoneyRaisedVisible: boolean;
-  isTipsEnabled: boolean;
-  campaignStatus: string;
-  auction: {
-    _id: string;
-    settings: {
-      startDate: string;
-      endDate: string;
-      isAuctionPublished: boolean;
-      anonymousBidding: boolean;
-      hasBegun: boolean;
-      hasEnded: boolean;
-      auctionStatus: string;
-    };
-    donations: [];
-    items: [];
-    bidders: [];
-    winningBids: [];
-    itemFulfillments: [];
-    instantBuyers: [];
-  };
-  imgPreference: string;
+// User interface
+export interface User {
+  name: string;
+  // Add more user properties as needed
 }
 
-interface AuctionItemStatePayload {
+// Bid interface
+export interface Bid {
+  _id: string;
+  amount: number;
+  bidder: string;
+  timestamp: string;
+  // Add more bid properties as needed
+}
+
+// Instant buyer interface
+export interface InstantBuyer {
+  _id: string;
+  buyer: string;
+  quantity: number;
+  purchasePrice: number;
+  timestamp: string;
+  // Add more instant buyer properties as needed
+}
+
+// Auction item interface
+export interface AuctionItem {
   _id: string;
   name: string;
   description: string;
-  photos: [
-    {
-      _id: string;
-      url: string;
-      name: string;
-      size: string;
-    }
-  ];
-  instantBuyers: [];
-  sellingFormat: string;
+  photos: Photo[];
+  instantBuyers: InstantBuyer[];
+  sellingFormat: SellingFormat;
   startingPrice: number;
   buyNowPrice: number;
   totalQuantity: number;
@@ -117,61 +71,145 @@ interface AuctionItemStatePayload {
   bidIncrement: number;
   retailValue: number;
   highestBidAmount: number;
-  bids: [];
+  bids: Bid[];
   total: number;
   topBidder: string;
   soldPrice: number;
 }
 
-interface AuctionItemWinnerPayload {
+// Auction settings interface
+export interface AuctionSettings {
+  startDate: string;
+  endDate: string;
+  isAuctionPublished: boolean;
+  anonymousBidding: boolean;
+  hasBegun: boolean;
+  hasEnded: boolean;
+  status: AuctionStatus;
+}
+
+// Bidder interface
+export interface Bidder {
   _id: string;
-  auctionItemPaymentStatus: String;
+  user: User;
+  totalBids: number;
+  highestBid: number;
+  // Add more bidder properties as needed
+}
+
+// Winning bid interface
+export interface WinningBid {
+  _id: string;
+  auctionItem: string;
+  bidder: string;
+  amount: number;
+  timestamp: string;
+  // Add more winning bid properties as needed
+}
+
+// Auction interface
+export interface Auction {
+  _id: string;
+  settings: AuctionSettings;
+  items: AuctionItem[];
+  bidders: Bidder[];
+  winningBids: WinningBid[];
+  instantBuyers: InstantBuyer[];
+  bids: Bid[];
+}
+
+// Winner interface
+export interface Winner {
+  _id: string;
+  auctionItemPaymentStatus: PaymentStatus;
   hasShippingAddress: boolean;
   itemSoldPrice: number;
   shipping: number;
   totalPrice: number;
-  theme: ThemeProps;
-  user: {
-    name: string;
-  };
-  auctionItem: AuctionItemStatePayload;
+  theme: ThemeColor;
+  user: User;
+  auctionItem: AuctionItem;
   customCampaignLink: string;
 }
 
-interface PublicCampaignsPayload {
-  upcoming: [];
-  active: [];
-  past: [];
+// Campaign interface
+export interface Campaign {
+  _id: string;
+  title: string;
+  goal: number;
+  totalCampaignRevenue: number;
+  supporters: number;
+  customCampaignLink: string;
+  isCampaignPublished: boolean;
+  isMoneyRaisedVisible: boolean;
+  campaignStatus: CampaignStatus;
+  auction: Auction;
+  imgPreference: string;
 }
 
-interface CampaignStatePayload {
+// Campaigns grouped by status
+export interface CampaignsByStatus {
+  upcoming: Campaign[];
+  active: Campaign[];
+  past: Campaign[];
+}
+
+// Instant buy interface (currently empty, extend as needed)
+export interface InstantBuy {
+  // Add properties as needed
+}
+
+// Main campaign state payload interface
+export interface CampaignStatePayload {
+  // Loading and status states
   loading: boolean;
   success: boolean;
-  error: string | false | null;
-  message: string | null;
+  error: string | null;
+  message: string;
+
+  // IDs for different sections
   campaignId: string;
   detailsId: string;
   sharingId: string;
   auctionId: string;
   settingsId: string;
-  campaigns: PublicCampaignsPayload;
-  campaignsForAdminView: [];
-  campaign: CampaignPayload;
-  auctionItem: AuctionItemStatePayload;
-  instantBuy: {} | any;
+
+  // Campaign collections
+  campaigns: CampaignsByStatus;
+  campaignsForAdminView: Campaign[];
+
+  // Current campaign and related data
+  campaign: Campaign;
+  auctionItem: AuctionItem;
+  instantBuy: InstantBuy;
+  winner: Winner;
+
+  // Bidding related
   confirmedBidAmount: number;
+  bids: Bid[];
+
+  // Utility fields
   type: string;
-  winner: AuctionItemWinnerPayload;
   customCampaignLink: string;
   status: string;
+
+  // Modal and UI states
   hasHandledAuctionModal: boolean;
   isAuctionModalOpen: boolean;
-  campaignStatus: string;
-  text: string;
-  filteredArray: {}[];
-  sortKey: string;
-  sortDirection: string;
-  sortedData: {}[];
-}
+  campaignStatus: CampaignStatus;
 
-export type { AuctionItemCardBodyProps, AuctionItemTimerRibbonProps, CampaignStatePayload };
+  // Filtering and sorting
+  text: string;
+  filteredArray: any[]; // Consider making this more specific
+  sortKey: string;
+  sortDirection: SortDirection;
+  sortedData: any[]; // Consider making this more specific
+
+  // Payment sync state
+  hasHandledWinningBidPaymentAndCampaignSync: boolean;
+  toggleAuctionItemCreateDrawer: boolean;
+  toggleAuctionItemUpdateDrawer: boolean;
+  allCampaigns: any;
+
+  placeBidSuccess: boolean;
+}

@@ -51,11 +51,11 @@ const useCountDown = (startDate: any, endDate: any, nextYearStartDate: any) => {
   );
 
   const getStatus = useCallback(() => {
-    const today = new Date().toISOString().split('T')[0].replaceAll('-', '/');
+    const today = new Date().toISOString()?.split('T')[0].replaceAll('-', '/');
 
-    const sd = startDate.split('/') as any;
-    const ed = endDate.split('/') as any;
-    const t = today.split('/') as any;
+    const sd = startDate?.split('/') as any;
+    const ed = endDate?.split('/') as any;
+    const t = today?.split('/') as any;
 
     const from = new Date(sd[0], parseInt(sd[1]) - 1, sd[2]);
     const to = new Date(ed[0], parseInt(ed[1]) - 1, ed[2]);

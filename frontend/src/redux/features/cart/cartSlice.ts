@@ -1,4 +1,4 @@
-import { Reducer, createSlice } from '@reduxjs/toolkit';
+import { PayloadAction, Reducer, createSlice } from '@reduxjs/toolkit';
 import addToExistingCartItem from '../../../utils/cart-utils/addToExistingCartItem';
 import addNewCartItem from '../../../utils/cart-utils/addNewCartItem';
 import cartRemoveItem from '../../../utils/cart-utils/cartRemoveItem';
@@ -110,10 +110,7 @@ export const cartSlice = createSlice({
       };
 
       // Encrypt the updated data
-      const newEncryptedData = CryptoJS.AES.encrypt(
-        JSON.stringify(updatedData),
-        secretKey
-      ).toString();
+      const newEncryptedData = CryptoJS.AES.encrypt(JSON.stringify(updatedData), secretKey).toString();
 
       // Save the updated encrypted data to local storage
       localStorage.setItem('formData', newEncryptedData);
@@ -138,10 +135,7 @@ export const cartSlice = createSlice({
       };
 
       // Encrypt the updated data
-      const newEncryptedData = CryptoJS.AES.encrypt(
-        JSON.stringify(updatedData),
-        secretKey
-      ).toString();
+      const newEncryptedData = CryptoJS.AES.encrypt(JSON.stringify(updatedData), secretKey).toString();
 
       // Save the updated encrypted data to local storage
       localStorage.setItem('formData', newEncryptedData);
@@ -179,6 +173,9 @@ export const cartSlice = createSlice({
       state.cartItems = payload;
       state.cartItemsAmount = payload.length;
     },
+    setCart: (state, action: PayloadAction<CartStatePayload>) => {
+      return action.payload; // replace the whole cart state
+    },
   },
 });
 
@@ -197,4 +194,5 @@ export const {
   decryptFormData,
   resetForm,
   setCartFromStorage,
+  setCart,
 } = cartSlice.actions;

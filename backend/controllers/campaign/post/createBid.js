@@ -1,11 +1,12 @@
 import asyncHandler from 'express-async-handler';
 import Error from '../../../models/errorModel.js';
-import { Auction, AuctionBidder, AuctionItem, Bid } from '../../../models/campaignModel.js';
-import createBidDocument from '../../../utils/campaign-utils/createBidDocument.js';
+import { Auction, AuctionBidder, AuctionItem, Bid, Campaign } from '../../../models/campaignModel.js';
+import createBidDocument from '../../../utils/campaign/createBidDocument.js';
 import { logEvent, prepareLog } from '../../../utils/logHelpers.js';
-import { sendEmail } from '../../../utils/sendEmail.js';
-import getPreviousTopBid from '../../../utils/campaign-utils/getPreviousTopBid.js';
-import updateOtherBidsStatus from '../../../utils/campaign-utils/updateOtherBidsStatus.js';
+import sendEmail from '../../../utils/sendEmail.ts';
+import getPreviousTopBid from '../../../utils/campaign/getPreviousTopBid.js';
+import updateOtherBidsStatus from '../../../utils/campaign/updateOtherBidsStatus.js';
+import User from '../../../models/userModel.js';
 
 /**
  @desc    Create bid
@@ -14,14 +15,14 @@ import updateOtherBidsStatus from '../../../utils/campaign-utils/updateOtherBids
 */
 const createBid = asyncHandler(async (req, res) => {
   const log = await prepareLog('INITIATE CREATE BID');
-  logEvent(log, 'CREATE BID');
+
   try {
     // Retrieve the current top bid for the auction item
-    const previousTopBid = await getPreviousTopBid(log, req.body.auctionItemId)
+    const previousTopBid = await getPreviousTopBid(log, req.body.auctionItemId);
 
     const createdBid = await createBidDocument(log, req.body, req.user);
 
-    updateOtherBidsStatus(log, req.body.auctionItemId, createdBid._id)
+    await updateOtherBidsStatus(log, req.body.auctionItemId, createdBid._id);
 
     // Send email notification to the previous top bidder if they exist and were outbid
     if (previousTopBid && previousTopBid.email) {
@@ -59,6 +60,12 @@ const createBid = asyncHandler(async (req, res) => {
 
     logEvent(log, 'RETREIVE AUCTION BY AUCTION ID', auction);
 
+    const campaign = await Campaign.findById(auction.campaign);
+    await User.findByIdAndUpdate(req.user._id, {
+      $addToSet: { campaigns: campaign._id },
+    });
+    logEvent(log, 'ADD CAMPAIGN ID TO USER', auction);
+
     const bidderExists = await AuctionBidder.findOne({
       user: req.user._id,
       auction: auction._id,
@@ -81,6 +88,7 @@ const createBid = asyncHandler(async (req, res) => {
       await auctionBidder.save();
 
       auction.bidders.push(auctionBidder?._id);
+      auction.bids.push(createdBid?._id);
 
       logEvent(log, 'PUSH AUCTION_BIDDER INTO AUCTION BIDDERS', auctionBidder);
 
@@ -89,6 +97,8 @@ const createBid = asyncHandler(async (req, res) => {
       await AuctionBidder.findByIdAndUpdate(bidderExists._id, {
         bids: [...bidderExists.bids, createdBid._id],
       });
+      auction.bids.push(createdBid?._id);
+      await auction.save();
 
       logEvent(log, 'PUSH CREATED BID INTO EXISTING BIDS');
     }

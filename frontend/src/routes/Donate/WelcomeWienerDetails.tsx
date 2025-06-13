@@ -1,11 +1,10 @@
 import { useParams } from 'react-router-dom';
 import { useGetWelcomeWienerQuery } from '../../redux/services/welcomeWienerApi';
-import { RootState, useAppDispatch } from '../../redux/toolkitStore';
+import { useAppDispatch } from '../../redux/toolkitStore';
 import { addToCart, toggleCartDrawer } from '../../redux/features/cart/cartSlice';
 import { Fragment, useState } from 'react';
 import VerticalLogo from '../../components/common/VerticalLogo';
 import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import { WWHigh } from '../../components/assets';
 import PageBanner from '../../components/common/PageBanner';
 import AwesomeIcon from '../../components/common/AwesomeIcon';
@@ -14,8 +13,8 @@ import { chevronLeftIcon } from '../../icons';
 const WelcomeWienerDetails = () => {
   const dispatch = useAppDispatch();
   const { id } = useParams<{ id: string }>();
-  useGetWelcomeWienerQuery(id, { refetchOnMountOrArgChange: true });
-  const { welcomeWiener } = useSelector((state: RootState) => state.welcomeWiener);
+  const { data } = useGetWelcomeWienerQuery(id, { refetchOnMountOrArgChange: true });
+  const welcomeWiener = data?.welcomeWiener;
   const [mainPhoto, setMainPhoto] = useState(null);
 
   const addToCartHandler = (product: any) => {
@@ -44,9 +43,7 @@ const WelcomeWienerDetails = () => {
       <div className='px-3 pb-12'>
         <section className='grid grid-cols-12 gap-5 w-full mx-auto max-w-screen-xl px-3 my-12'>
           <div className='col-span-12 md:col-span-8 lg:col-span-9 pt-1'>
-            <p className='text-4xl mt-24 font-Matter-Medium mb-3 mx-auto'>
-              {welcomeWiener?.bio?.split('.')[0]}
-            </p>
+            <p className='text-4xl mt-24 font-Matter-Medium mb-3 mx-auto'>{welcomeWiener?.bio?.split('.')[0]}</p>
             <div className='grid grid-cols-12 gap-4'>
               <p className='col-span-12 md:col-span-8 lg:col-span-9 text-lg font-Matter-Light w-full'>
                 {(welcomeWiener?.bio?.split('.') || []).slice(1).join('.')}
@@ -57,9 +54,7 @@ const WelcomeWienerDetails = () => {
             <div className='border-[6px] border-slate-100 flex flex-col justify-between h-fit rounded-md w-full p-4 md:aspect-square md:-mt-24 bg-white sticky top-[65px]'>
               <div>
                 <p className='font-Matter-Medium text-2xl mb-4'>Make a Difference</p>
-                <p className='font-Matter-Light text-lg mb-5'>
-                  Every Donation Matters, Every Dachshund is Meaningful
-                </p>
+                <p className='font-Matter-Light text-lg mb-5'>Every Donation Matters, Every Dachshund is Meaningful</p>
               </div>
               <Link
                 to='/donate'
@@ -90,11 +85,7 @@ const WelcomeWienerDetails = () => {
           <div className='col-span-12 md:col-span-7 order-1 md:order-2'>
             <div className='bg-gray-100 col-start-3 col-span-10 rounded-md'>
               <img
-                src={
-                  mainPhoto ??
-                  (welcomeWiener?.images?.length ? welcomeWiener?.images[0] : undefined) ??
-                  welcomeWiener?.displayUrl
-                }
+                src={mainPhoto ?? (welcomeWiener?.images?.length ? welcomeWiener?.images[0] : undefined) ?? welcomeWiener?.displayUrl}
                 className='object-cover w-full aspect-square'
                 alt='Welcome Wiener'
               />
@@ -109,9 +100,7 @@ const WelcomeWienerDetails = () => {
             >
               <div className='mb-2'>
                 <div className='flex items-center'>
-                  <div
-                    className={`bg-[#f8e2ff] text-sm h-12 w-12 rounded-full flex items-center justify-center font-Matter-Medium mr-3`}
-                  >
+                  <div className={`bg-[#f8e2ff] text-sm h-12 w-12 rounded-full flex items-center justify-center font-Matter-Medium mr-3`}>
                     <p className='text-xl text-[#9863a8]'>${Math.round(wiener?.price)}</p>
                   </div>
                   <p className='font-Matter-Light whitespace-nowrap truncate'>

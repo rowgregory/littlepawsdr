@@ -1,90 +1,82 @@
-import { useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import useLoginForm from '../../hooks/form-hooks/useLoginForm';
+import { Link, useNavigate } from 'react-router-dom';
 import { useLoginMutation } from '../../redux/services/authApi';
-import { Logo2024 } from '../../components/assets';
+import { RootState, useAppDispatch, useAppSelector } from '../../redux/toolkitStore';
+import { createFormActions } from '../../redux/features/form/formSlice';
+import { Heart } from 'lucide-react';
+import validateLoginForm from '../../validations/validateLoginForm';
+import LoginForm from '../../components/forms/LoginForm';
+import { openToast } from '../../redux/features/toastSlice';
+import { hydrateUserState } from '../../redux/features/user/userSlice';
 
 const Login = () => {
-  const navigate = useNavigate();
-  const [showPassword, setShowPassword] = useState(false);
+  const dispatch = useAppDispatch();
+  const { loginForm, showPassword } = useAppSelector((state: RootState) => state.form);
+  const { handleInput, setErrors, setShowPassword } = createFormActions('loginForm', dispatch);
   const [login, { isLoading }] = useLoginMutation();
-  const { state } = useLocation();
+  const navigate = useNavigate();
 
-  const loginFormCallback = async () => {
-    await login({ email: inputs.email.toLowerCase(), password: inputs.password })
-      .unwrap()
-      .then((payload: any) => {
-        if (state?.cameFromAuction) {
-          navigate(`/campaigns/${state?.customCampaignLink}/auction`);
-        } else if (payload?.isAdmin) {
-          navigate('/admin');
-        } else if (payload?.token) {
-          navigate('/');
-        }
-      })
-      .catch((err: any) => console.error('LOGIN _FORM_CB_ERR: ', err));
+  const handleSubmit = async (e: { preventDefault: () => void }) => {
+    e.preventDefault();
+
+    const isValid = validateLoginForm(loginForm?.inputs, setErrors);
+    if (!isValid) return;
+
+    try {
+      const response = await login({ email: loginForm?.inputs?.email.toLowerCase(), password: loginForm?.inputs?.password }).unwrap();
+
+      dispatch(hydrateUserState({ user: response?.user }));
+      if (response?.user?.isAdmin) {
+        navigate('/admin');
+      } else {
+        navigate('/settings/profile');
+      }
+    } catch (err: any) {
+      dispatch(openToast({ message: err?.data?.message, type: 'error', position: 'bc' }));
+    }
   };
 
-  const { inputs, handleInputChange, onSubmit } = useLoginForm(loginFormCallback);
-
   return (
-    <div className='bg-white min-h-screen flex items-center justify-center px-2.5 py-8 lg:p-8'>
-      <div className='max-w-md w-full'>
-        <Link to='/'>
-          <img src={Logo2024} alt='Little Paws Dachshund Rescue' className='w-44 mb-4 mx-auto' />
-        </Link>
-        <p className='font-Matter-Medium text-2xl text-center mb-2.5'>Sign In</p>
-        <form className='flex flex-col w-full'>
-          <label className='font-Matter-Medium text-sm mb-1' htmlFor='email'>
-            Email*
-          </label>
-          <input
-            className='auth-input bg-white border-[1px] border-gray-200 rounded-md mb-4 py-2.5 px-4 font-Matter-Regular focus:outline-none'
-            name='email'
-            onChange={handleInputChange}
-            type='email'
-            alt='Email'
-            value={inputs.email || ''}
-          />
-          <label className='font-Matter-Medium text-sm mb-1' htmlFor='password'>
-            Password*
-          </label>
-          <div className='flex relative'>
-            <input
-              className='auth-input bg-white border-[1px] w-full border-gray-200 rounded-md mb-4 py-2.5 px-4 font-Matter-Regular focus:outline-none'
-              name='password'
-              onChange={handleInputChange}
-              type={showPassword ? 'text' : 'password'}
-              alt='Password'
-              value={inputs.password}
+    <>
+      <div className='min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50 flex items-center justify-center p-4'>
+        <div className='bg-white rounded-3xl shadow-2xl overflow-hidden max-w-lg w-full'>
+          <Link to='/'>
+            <div className='bg-gradient-to-r from-amber-400 to-orange-400 p-8 text-center'>
+              <div className='bg-white rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center shadow-lg'>
+                <span className='text-4xl'>🐾</span>
+              </div>
+              <h1 className='text-2xl font-bold text-white mb-2'>Little Paws Dachshund Rescue</h1>
+              <div className='flex justify-center gap-1 mt-3'>
+                {[...Array(5)].map((_, i) => (
+                  <Heart key={i} className='w-4 h-4 text-white fill-current animate-pulse' style={{ animationDelay: `${i * 0.2}s` }} />
+                ))}
+              </div>
+            </div>
+          </Link>
+          <div className='p-8'>
+            <div className='text-center mb-6'>
+              <h2 className='text-2xl font-bold text-gray-800 mb-2'>Welcome Back</h2>
+              <p className='text-gray-600 text-sm'>Log in to continue helping dachshunds in need</p>
+            </div>
+            <LoginForm
+              handleSubmit={handleSubmit}
+              handleInput={handleInput}
+              loginForm={loginForm}
+              showPassword={showPassword}
+              setShowPassword={setShowPassword}
+              isLoading={isLoading}
             />
-            <i
-              onClick={() => setShowPassword(!showPassword)}
-              className={`fa-solid ${
-                showPassword ? 'fa-eye' : 'fa-eye-slash'
-              } absolute top-4 right-2`}
-            ></i>
+            <div className='mt-6 text-center'>
+              <p className='text-sm text-gray-600'>
+                New to Little Paws?{' '}
+                <Link to='/auth/register?conversionSource=organic_signup' className='text-amber-600 hover:text-amber-700 font-medium'>
+                  Sign Up
+                </Link>
+              </p>
+            </div>
           </div>
-
-          <Link className='text-sm text-teal-400' to='/auth/forgot-password'>
-            Forgot password
-          </Link>
-          <button
-            disabled={isLoading}
-            onClick={onSubmit}
-            className='py-2 w-full bg-teal-300 text-white font-Matter-Regular rounded-md mt-4 flex items-center justify-center'
-          >
-            Log{isLoading && 'ing'} in{isLoading && '...'}
-          </button>
-        </form>
-        <p className='text-sm text-gray-700 text-center mt-3'>
-          New to Little Paws Dachshund Rescue?{' '}
-          <Link className='text-teal-500' to='/auth/register'>
-            Sign up.
-          </Link>
-        </p>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

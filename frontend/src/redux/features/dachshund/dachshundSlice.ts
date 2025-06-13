@@ -68,31 +68,21 @@ export const dachshundSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addMatcher(rescueGroupsApi.endpoints.getDachshundById.matchFulfilled, (state, action: any) => {
+        state.dachshund = action.payload?.data[0];
+        state.dogStatusId = action.payload?.data[0]?.relationships?.statuses?.data[0]?.id;
+      })
+      .addMatcher(rescueGroupsApi.endpoints.getTotalDachshundCount.matchFulfilled, (state, action: any) => {
+        state.totalCount = action.payload?.dachshundCount;
+      })
+      .addMatcher(rescueGroupsApi.endpoints.getDachshundsByStatus.matchFulfilled, (state, action: any) => {
+        state.dachshunds = action.payload?.data;
+      })
       .addMatcher(
-        rescueGroupsApi.endpoints.getDachshundById.matchFulfilled,
-        (state, action: any) => {
-          state.dachshund = action.payload.data[0];
-          state.dogStatusId = action.payload.data[0].relationships?.statuses?.data[0]?.id;
-        }
-      )
-      .addMatcher(
-        rescueGroupsApi.endpoints.getTotalDachshundCount.matchFulfilled,
-        (state, action: any) => {
-          state.totalCount = action.payload.dachshundCount;
-        }
-      )
-      .addMatcher(
-        rescueGroupsApi.endpoints.getDachshundsByStatus.matchFulfilled,
-        (state, action: any) => {
-          state.dachshunds = action.payload.data;
-        }
-      )
-      .addMatcher(
-        (action: any) =>
-          action.type.endsWith('/rejected') && action.payload.data.sliceName === 'dachshundApi',
+        (action: any) => action.type.endsWith('/rejected') && action.payload?.data?.sliceName === 'dachshundApi',
         (state: any, action: any) => {
           state.loading = false;
-          state.error = action.payload.data;
+          state.error = action.payload?.data;
         }
       );
   },

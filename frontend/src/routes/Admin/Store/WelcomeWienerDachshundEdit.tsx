@@ -8,7 +8,6 @@ import {
   useUpdateWelcomeWienerMutation,
 } from '../../../redux/services/welcomeWienerApi';
 import { Link } from 'react-router-dom';
-import { Form } from 'react-bootstrap';
 import TailwindSpinner from '../../../components/Loaders/TailwindSpinner';
 
 const WelcomeWienerDachshundEdit = () => {
@@ -49,8 +48,10 @@ const WelcomeWienerDachshundEdit = () => {
     }
   };
 
-  const { onSubmit, handleInput, inputs, addToAssociatedProducts, setInputs } =
-    useWelcomeWienerDachshundForm(updateWelcomeWienerDachshundCallback, wiener);
+  const { onSubmit, handleInput, inputs, addToAssociatedProducts, setInputs } = useWelcomeWienerDachshundForm(
+    updateWelcomeWienerDachshundCallback,
+    wiener
+  );
 
   const editPhotoHandler = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const newFiles = e.target.files ? Array.from(e.target.files) : [];
@@ -89,12 +90,7 @@ const WelcomeWienerDachshundEdit = () => {
               ) : (
                 <div className='flex flex-wrap gap-3'>
                   {welcomeWienerProducts?.map((obj: any, i: number) => (
-                    <WelcomeWienerProduct
-                      key={i}
-                      product={obj}
-                      inputs={inputs}
-                      addToAssociatedProducts={addToAssociatedProducts}
-                    />
+                    <WelcomeWienerProduct key={i} product={obj} inputs={inputs} addToAssociatedProducts={addToAssociatedProducts} />
                   ))}
                   <Link
                     to='/admin/store/welcome-wieners/digital/create'
@@ -154,27 +150,20 @@ const WelcomeWienerDachshundEdit = () => {
           <div>
             <label className='font-Matter-Medium text-sm'>Photos</label>
             <div className='border border-slate-100 border-dashed rounded-lg'>
-              <Form.File
-                className='auction-item'
-                multiple
-                type='file'
-                id='multiple-images'
-                label={
-                  <div className='flex justify-center items-center cursor-pointer pt-8'>
-                    <div className=' w-full text-center'>
-                      <div className='h-32 flex flex-col items-center justify-center'>
-                        <div className='h-12 w-12 rounded-full bg-slate-100 flex justify-center items-center mb-2'>
-                          <i className='fa-solid fa-cloud-arrow-up fa-xl'></i>
-                        </div>
-                        <div className='text-[#3366ff] font-Matter-Regular underline text-base'>
-                          Click to add photos
-                        </div>
+              <label htmlFor='multiple-images' className='block cursor-pointer pt-8'>
+                <div className='flex justify-center items-center'>
+                  <div className='w-full text-center'>
+                    <div className='h-32 flex flex-col items-center justify-center'>
+                      <div className='h-12 w-12 rounded-full bg-slate-100 flex justify-center items-center mb-2'>
+                        <i className='fa-solid fa-cloud-arrow-up fa-xl'></i>
                       </div>
+                      <div className='text-[#3366ff] font-Matter-Regular underline text-base'>Click to add photos</div>
                     </div>
                   </div>
-                }
-                onChange={editPhotoHandler}
-              ></Form.File>
+                </div>
+                <input id='multiple-images' type='file' accept='image/*' multiple onChange={editPhotoHandler} className='hidden' />
+              </label>
+
               <div className='flex flex-wrap px-8 pb-4 gap-2'>
                 {Array.from(inputs.images)?.map((file: any, i: number) => (
                   <div
@@ -194,17 +183,16 @@ const WelcomeWienerDachshundEdit = () => {
                     <img className='w-full h-full object-cover' src={file} alt='auction-item' />
                   </div>
                 ))}
+
                 {inputs.photoAmount > 0 &&
-                  Array.from({ length: inputs.photoAmount })?.map((_: any, i: number) => {
-                    return (
-                      <div
-                        key={i}
-                        className='w-40 h-40 rounded-md border border-dashed border-gray-100 flex items-center justify-center pt-10 pb-6 px-9 cursor-pointer bg-[#0b0b0b] relative'
-                      >
-                        <TailwindSpinner color='fill-teal-400' />
-                      </div>
-                    );
-                  })}
+                  Array.from({ length: inputs.photoAmount })?.map((_, i: number) => (
+                    <div
+                      key={i}
+                      className='w-40 h-40 rounded-md border border-dashed border-gray-100 flex items-center justify-center pt-10 pb-6 px-9 cursor-pointer bg-[#0b0b0b] relative'
+                    >
+                      <TailwindSpinner color='fill-teal-400' />
+                    </div>
+                  ))}
               </div>
             </div>
           </div>

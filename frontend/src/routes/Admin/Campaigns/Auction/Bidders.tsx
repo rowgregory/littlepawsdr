@@ -1,6 +1,5 @@
-import { useSelector } from 'react-redux';
 import MagnifyingGlass from '../../../../components/svg/MagnifyingGlass';
-import { RootState, useAppDispatch } from '../../../../redux/toolkitStore';
+import { RootState, useAppDispatch, useAppSelector } from '../../../../redux/toolkitStore';
 import { Fragment, useEffect } from 'react';
 import BiddersTable from '../../../../components/tables/BiddersTable';
 import EmptyTable from '../../../../components/tables/EmptyTable';
@@ -8,7 +7,7 @@ import { setInitialArray, setSearchQuery } from '../../../../redux/features/camp
 
 const Bidders = () => {
   const dispatch = useAppDispatch();
-  const campaign = useSelector((state: RootState) => state.campaign);
+  const campaign = useAppSelector((state: RootState) => state.campaign);
   const bidders = campaign?.campaign?.auction?.bidders;
   const noBidders = bidders?.length === 0;
   const filteredData = campaign.filteredArray;
@@ -30,11 +29,7 @@ const Bidders = () => {
       <div className='grid grid-cols-6 h-10'>
         <div className='col-span-2 col-start-1 flex items-center font-Matter-Light border-[1px] border-slate-200 rounded-md bg-white py-2 px-3'>
           <MagnifyingGlass />
-          <input
-            onChange={handleSearch}
-            className='w-full h-full focus:outline-0 rounded-md ml-2'
-            placeholder='Search'
-          />
+          <input onChange={handleSearch} className='w-full h-full focus:outline-0 rounded-md ml-2' placeholder='Search' />
         </div>
       </div>
       <div className='bg-white w-full mt-3 border-[1px] border-slate-200 rounded-xl'>

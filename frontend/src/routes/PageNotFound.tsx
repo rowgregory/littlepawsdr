@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import styled, { css, keyframes } from 'styled-components';
+import { useState } from 'react';
 import BackgroundImage from '../components/assets/404-bg.png';
 import SilverPawsSad from '../components/assets/silver-paws-sad.png';
 import SilverPawsHello from '../components/assets/archive-kitty.png';
@@ -8,312 +8,157 @@ import GreenCircleBtn from '../components/assets/green_circle_btn.png';
 import BlueBackBtn from '../components/assets/blue_back_btn.png';
 import Pole from '../components/assets/pole.png';
 import WindowPiece from '../components/assets/window_top_tile_right_piece.png';
-import { useState } from 'react';
-
-const Container = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: url(${BackgroundImage}) no-repeat;
-  background-size: cover;
-  min-height: 100vh;
-  position: fixed;
-  width: 100%;
-`;
-const SilverPawsSadImage = styled.img`
-  with: 100%;
-  object-fit: cover;
-  z-index: 10;
-  transform: scaleX(-1);
-  justify-self: center;
-  position: absolute;
-  margin-right: 16.5px;
-  max-height: 60px;
-  margin-top: 16px;
-  cursor: pointer;
-  @media screen and (min-width: 353px) {
-    margin-right: 24px;
-    max-height: 76px;
-    margin-top: 24px;
-  }
-  @media screen and (min-width: 800px) {
-    margin-right: 50px;
-    margin-top: 50px;
-    max-height: 174px;
-  }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    margin-right: 60px;
-    margin-top: 50px;
-    max-height: 200px;
-  }
-`;
-const Text404 = styled.div`
-  color: #fff;
-  font-size: 91px;
-  font-family: 'Hyperspace-Bold', sans-serif;
-  position: absolute;
-  @media screen and (min-width: 353px) {
-    font-size: 119px;
-  }
-  @media screen and (min-width: 800px) {
-    font-size: 260px;
-  }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    font-size: 300px;
-    line-height: 252px;
-  }
-`;
-const OopsText = styled.div`
-  color: #fff;
-  font-family: 'Hyperspace-Bold', sans-serif;
-  position: absolute;
-  font-size: 14px;
-  left: -85px;
-  top: -54px;
-  @media screen and (min-width: 353px) {
-    font-size: 20px;
-    left: -113px;
-    top: -70px;
-  }
-  @media screen and (min-width: 800px) {
-    font-size: 35px;
-    left: -242px;
-    top: -137px;
-  }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    font-size: 42px;
-    left: -278px;
-    top: -156px;
-  }
-`;
-const WindowTileLeft = styled.img`
-  position: absolute;
-  padding-inline: 16px;
-  max-width: 298px;
-  top: 0px;
-
-  @media screen and (min-width: 353px) {
-    max-width: 380px;
-    top: -3px;
-  }
-  @media screen and (min-width: 800px) {
-    max-width: 700px;
-    top: 10px;
-  }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    max-width: 800px;
-    top: 10px;
-  }
-`;
-
-const moveArrow = keyframes`
-0% {
-  transform: scale(0.7);
-}
-50% {
-  transform: scale(1.15);
-}
-100% {
-  transform: scale(0.7) ;
-  }
-`;
-const rotateGreenCircle = keyframes`
-from {
-  transform: rotate(0deg);
-}
-to {
-  transform: rotate(360deg);
-}
-`;
-const GreenCircleImage = styled.img<{ rotate: string }>`
-  position: absolute;
-  max-width: 47px;
-  top: 49px;
-  left: -134px;
-  animation: ${({ rotate }) =>
-    rotate === 'true'
-      ? css`
-          ${rotateGreenCircle} 5000ms linear infinite
-        `
-      : ''};
-  @media screen and (min-width: 353px) {
-    max-width: 54px;
-    top: 65px;
-    left: -172px;
-  }
-  @media screen and (min-width: 800px) {
-    max-width: 80px;
-    top: 65px;
-    left: -400px;
-  }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    max-width: 80px;
-    top: 74px;
-    left: -450px;
-  }
-`;
-
-const BlueBackBtnImage = styled.img`
-  position: absolute;
-  animation: ${moveArrow} 1s linear infinite;
-  max-width: 25px;
-  top: 61px;
-  left: -125px;
-  @media screen and (min-width: 353px) {
-    max-width: 33px;
-    top: 75px;
-    left: -164px;
-  }
-  @media screen and (min-width: 800px) {
-    max-width: 44px;
-    top: 83px;
-    left: -386px;
-  }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    top: 92px;
-    left: -435px;
-  }
-`;
-const PoleImage = styled.img`
-  left: 128px;
-  top: -124px;
-  height: 169px;
-  position: absolute;
-
-  @media screen and (min-width: 353px) {
-    left: 168px;
-    top: -140px;
-    height: 196px;
-  }
-  @media screen and (min-width: 800px) {
-    left: 323px;
-    top: -227px;
-    height: 349px;
-  }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    left: 371px;
-    top: -262px;
-    height: 400px;
-  }
-`;
-
-const BackLink = styled(Link)`
-  cursor: pointer;
-  position: relative;
-`;
-
-const Illustrator = styled.a`
-  font-size: 10px;
-  position: fixed;
-  bottom: 0;
-  right: 0;
-  mix-blend-mode: hard-light;
-`;
-
-const WindowPieceImage = styled.img`
-  position: absolute;
-  left: 94.5px;
-  top: -139px;
-  width: 37px;
-  @media screen and (min-width: 353px) {
-    left: 131px;
-    top: -156px;
-    width: 41px;
-  }
-  @media screen and (min-width: 800px) {
-    left: 263px;
-    top: -254px;
-    width: 68px;
-  }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    left: 290px;
-    top: -297px;
-    width: 89px;
-  }
-`;
-const GreenCircleImage2 = styled.img<{ rotate: string }>`
-  position: absolute;
-  max-width: 47px;
-  top: -105px;
-  left: 76px;
-  animation: ${({ rotate }) =>
-    rotate === 'true'
-      ? css`
-          ${rotateGreenCircle} 5000ms linear infinite
-        `
-      : ''};
-  @media screen and (min-width: 353px) {
-    max-width: 54px;
-    top: -117px;
-    left: 108px;
-  }
-  @media screen and (min-width: 800px) {
-    max-width: 80px;
-    top: -188px;
-    left: 231px;
-  }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    max-width: 80px;
-    top: -215px;
-    left: 261px;
-  }
-`;
-
-const BlueBackBtnImage2 = styled.img`
-  position: absolute;
-  animation: ${moveArrow} 1s linear infinite;
-  max-width: 25px;
-  top: -94px;
-  left: 85px;
-  @media screen and (min-width: 353px) {
-    max-width: 33px;
-    top: -106px;
-    left: 117px;
-  }
-  @media screen and (min-width: 800px) {
-    max-width: 44px;
-    top: -169px;
-    left: 246px;
-  }
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints[3]}) {
-    top: -196px;
-    left: 277px;
-  }
-`;
 
 const PageNotFound = () => {
   const [helloSilverPaws, setHelloSilverPaws] = useState(false);
 
   return (
-    <Container>
-      <div className='flex h-full flex-col items-center justify-center relative flex-0'>
-        <OopsText>OOPS!</OopsText>
-        <Text404>404</Text404>
-        <SilverPawsSadImage
+    <div
+      className='fixed inset-0 flex justify-center items-center bg-no-repeat bg-cover'
+      style={{ backgroundImage: `url(${BackgroundImage})` }}
+    >
+      <div className='relative flex flex-col items-center justify-center h-full flex-none'>
+        {/* OOPS! Text */}
+        <div
+          className='
+            absolute text-white font-bold 
+            text-[14px] -left-[85px] -top-[54px]
+            sm:text-[20px] sm:-left-[113px] sm:-top-[70px]
+            md:text-[35px] md:-left-[242px] md:-top-[137px]
+            lg:text-[42px] lg:-left-[278px] lg:-top-[156px]
+            font-[Hyperspace-Bold]
+          '
+        >
+          OOPS!
+        </div>
+
+        {/* 404 Text */}
+        <div
+          className='
+            absolute text-white font-bold 
+            text-[91px]
+            sm:text-[119px]
+            md:text-[260px]
+            lg:text-[300px] lg:leading-[252px]
+            font-[Hyperspace-Bold]
+          '
+        >
+          404
+        </div>
+
+        {/* Silver Paws Image */}
+        <img
           onClick={() => setHelloSilverPaws(true)}
           src={helloSilverPaws ? SilverPawsHello : SilverPawsSad}
           alt='404 Error'
+          className='
+            absolute cursor-pointer max-h-[60px] mr-[16.5px] mt-[16px] scale-x-[-1] object-cover z-10 justify-self-center
+            sm:max-h-[76px] sm:mr-[24px] sm:mt-[24px]
+            md:max-h-[174px] md:mr-[50px] md:mt-[50px]
+            lg:max-h-[200px] lg:mr-[60px] lg:mt-[50px]
+          '
         />
-        <WindowTileLeft src={WindowBottomTileLeft} />
-        <BackLink to='/'>
+
+        {/* Window Tile Left */}
+        <img
+          src={WindowBottomTileLeft}
+          alt='Window Tile Left'
+          className='
+            absolute px-4 max-w-[298px] top-0
+            sm:max-w-[380px] sm:top-[-3px]
+            md:max-w-[700px] md:top-[10px]
+            lg:max-w-[800px] lg:top-[10px]
+          '
+        />
+
+        {/* Back Button Left */}
+        <Link to='/' className='relative cursor-pointer'>
           <div>
-            <GreenCircleImage rotate={helloSilverPaws.toString()} src={GreenCircleBtn} />
-            <BlueBackBtnImage src={BlueBackBtn} />
+            <img
+              src={GreenCircleBtn}
+              alt='Green Circle'
+              className={`
+                absolute max-w-[47px] top-[49px] left-[-134px] 
+                ${helloSilverPaws ? 'animate-rotateGreenCircle' : ''}
+                sm:max-w-[54px] sm:top-[65px] sm:left-[-172px]
+                md:max-w-[80px] md:top-[65px] md:left-[-400px]
+                lg:top-[74px] lg:left-[-450px]
+              `}
+            />
+            <img
+              src={BlueBackBtn}
+              alt='Blue Back Button'
+              className='
+                absolute animate-moveArrow max-w-[25px] top-[61px] left-[-125px]
+                sm:max-w-[33px] sm:top-[75px] sm:left-[-164px]
+                md:max-w-[44px] md:top-[83px] md:left-[-386px]
+                lg:top-[92px] lg:left-[-435px]
+              '
+            />
           </div>
-        </BackLink>
-        <PoleImage src={Pole} />
-        <WindowPieceImage src={WindowPiece} />
-        <BackLink to='/'>
+        </Link>
+
+        {/* Pole Image */}
+        <img
+          src={Pole}
+          alt='Pole'
+          className='
+            absolute left-[128px] top-[-124px] h-[169px]
+            sm:left-[168px] sm:top-[-140px] sm:h-[196px]
+            md:left-[323px] md:top-[-227px] md:h-[349px]
+            lg:left-[371px] lg:top-[-262px] lg:h-[400px]
+          '
+        />
+
+        {/* Window Piece Image */}
+        <img
+          src={WindowPiece}
+          alt='Window Piece'
+          className='
+            absolute left-[94.5px] top-[-139px] w-[37px]
+            sm:left-[131px] sm:top-[-156px] sm:w-[41px]
+            md:left-[263px] md:top-[-254px] md:w-[68px]
+            lg:left-[290px] lg:top-[-297px] lg:w-[89px]
+          '
+        />
+
+        {/* Back Button Right */}
+        <Link to='/' className='relative cursor-pointer'>
           <div>
-            <GreenCircleImage2 rotate={helloSilverPaws.toString()} src={GreenCircleBtn} />
-            <BlueBackBtnImage2 src={BlueBackBtn} />
+            <img
+              src={GreenCircleBtn}
+              alt='Green Circle 2'
+              className={`
+                absolute max-w-[47px] top-[-105px] left-[76px]
+                ${helloSilverPaws ? 'animate-rotateGreenCircle' : ''}
+                sm:max-w-[54px] sm:top-[-117px] sm:left-[108px]
+                md:max-w-[80px] md:top-[-188px] md:left-[231px]
+                lg:max-w-[80px] lg:top-[-215px] lg:left-[261px]
+              `}
+            />
+            <img
+              src={BlueBackBtn}
+              alt='Blue Back Button 2'
+              className='
+                absolute animate-moveArrow max-w-[25px] top-[-94px] left-[85px]
+                sm:max-w-[33px] sm:top-[-106px] sm:left-[117px]
+                md:max-w-[44px] md:top-[-169px] md:left-[246px]
+                lg:top-[-196px] lg:left-[277px]
+              '
+            />
           </div>
-        </BackLink>
+        </Link>
       </div>
-      <Illustrator target='_blank' href='https://icons8.com/illustrations/author/GrbQqWBEhaDS'>
+
+      <a
+        href='https://icons8.com/illustrations/author/GrbQqWBEhaDS'
+        target='_blank'
+        rel='noopener noreferrer'
+        className='fixed bottom-0 right-0 text-[10px] mix-blend-hard-light'
+      >
         Illustration by Liam Moore
-      </Illustrator>
-    </Container>
+      </a>
+    </div>
   );
 };
 

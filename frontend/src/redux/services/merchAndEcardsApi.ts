@@ -13,14 +13,10 @@ export const merchAndEcardsApi = api.injectEndpoints({
           const { data } = await queryFulfilled;
 
           dispatch(setMerchAndEcards(data.merchAndEcards));
-        } catch (error) {
-          console.error('Error fetching merch and ecards:', error);
-        }
+        } catch {}
       },
     }),
   }),
 });
 
-export const {
-  useGetMerchAndEcardsQuery,
-} = merchAndEcardsApi;
+export const { useGetMerchAndEcardsQuery } = merchAndEcardsApi;

@@ -1,14 +1,14 @@
 import asyncHandler from 'express-async-handler';
 import Order from '../models/orderModel.js';
-import { sendEmail } from '../utils/sendEmail.js';
+import sendEmail from '../utils/sendEmail.ts';
 import Error from '../models/errorModel.js';
 import ProductOrder from '../models/productOrderModel.js';
 import getTrackingService from '../utils/getTrackingService.js';
 import { logEvent, prepareLog } from '../utils/logHelpers.js';
-import createEcardOrders from '../utils/order-helpers/createEcardOrders.js';
-import createOrderDocument from '../utils/order-helpers/createOrderDocument.js';
-import createWelcomeWienerOrders from '../utils/order-helpers/createWelcomeWienerOrders.js';
-import createProductOrders from '../utils/order-helpers/createProductOrders.js';
+import createEcardOrders from '../utils/order/createEcardOrders.js';
+import createOrderDocument from '../utils/order/createOrderDocument.js';
+import createWelcomeWienerOrders from '../utils/order/createWelcomeWienerOrders.js';
+import createProductOrders from '../utils/order/createProductOrders.js';
 
 /**
 @desc    Create new order

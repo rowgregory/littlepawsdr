@@ -1,12 +1,11 @@
-import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { RootState, useAppDispatch } from '../../redux/toolkitStore';
+import { RootState, useAppDispatch, useAppSelector } from '../../redux/toolkitStore';
 import { setShowModal } from '../../redux/features/cart/cartSlice';
 import Modal from '../common/Modal';
 
 const LeavePlaceOrderModal = () => {
   const dispatch = useAppDispatch();
-  const { showModal } = useSelector((state: RootState) => state.cart);
+  const { showModal } = useAppSelector((state: RootState) => state.cart);
   const closeModal = () => dispatch(setShowModal(false));
 
   return (

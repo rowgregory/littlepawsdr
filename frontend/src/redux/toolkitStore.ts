@@ -2,82 +2,36 @@ import { combineReducers } from 'redux';
 import { configureStore } from '@reduxjs/toolkit';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
-import { authReducer, resetAuthError } from './features/auth/authSlice';
+import { authReducer } from './features/auth/authSlice';
 import { dashboardReducer } from './features/dashboard/dashboardSlice';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import { dachshundReducer } from './features/dachshund/dachshundSlice';
-import { ordersReducer, resetOrderError } from './features/order/ordersSlice';
-import {
-  actionHistoryReducer,
-  resetActionHistory,
-} from './features/actionHistory/actionHistorySlice';
+import { ordersReducer } from './features/order/ordersSlice';
+import { actionHistoryReducer } from './features/actionHistory/actionHistorySlice';
 import { rescueGroupsApi } from './services/rescueGroupsApi';
 import { api } from './services/api';
-import {
-  resetWelcomeWienerError,
-  welcomeWienerReducer,
-} from './features/welcome-wiener/welcomeWienerSlice';
-import { ecardReducer, resetEcardError } from './features/ecard/ecardSlice';
-import { productReducuer, resetProductError } from './features/product/productSlice';
-import {
-  adoptionApplicationFeeReducuer,
-  resetAdoptionFee,
-} from './features/adoptionApllicationFee/adoptionApplicationFeeSlice';
-import { resetUserError, userReducuer } from './features/user/userSlice';
-import {
-  newsletterEmailReducuer,
-  resetNewsletterEmailError,
-} from './features/newsletter-email/newsletterEmailSlice';
+import { welcomeWienerReducer } from './features/welcome-wiener/welcomeWienerSlice';
+import { ecardReducer } from './features/ecard/ecardSlice';
+import { productReducuer } from './features/product/productSlice';
+import { adoptionApplicationFeeReducuer } from './features/adoptionApllicationFee/adoptionApplicationFeeSlice';
+import { userReducuer } from './features/user/userSlice';
+import { newsletterEmailReducuer } from './features/newsletter-email/newsletterEmailSlice';
 import { cartReducer } from './features/cart/cartSlice';
-import { campaignReducer, resetCampaignError } from './features/campaign/campaignSlice';
+import { campaignReducer } from './features/campaign/campaignSlice';
 import { navbarReducer } from './features/navbar/navbarSlice';
 import { merchAndEcardsReducuer } from './features/merchAndEcardSlice';
 import { toastReducer } from './features/toastSlice';
-
-const errorHandlerMiddleware = (store: any) => (next: any) => (action: any) => {
-  const resetErrorActions: { [key: string]: () => void } = {
-    userApi: resetUserError,
-    authApi: resetAuthError,
-    actionHistoryApi: resetActionHistory,
-    adoptionApplicationFeeApi: resetAdoptionFee,
-    campaignApi: resetCampaignError,
-    ecardApi: resetEcardError,
-    newsletterEmailApi: resetNewsletterEmailError,
-    orderApi: resetOrderError,
-    productApi: resetProductError,
-    welcomeWienerApi: resetWelcomeWienerError,
-  };
-
-  const result = next(action);
-
-  if (action.error) {
-    console.error('An error occurred:', action?.payload);
-    const sliceName = action.payload?.data?.sliceName;
-    const resetErrorAction = resetErrorActions[sliceName];
-
-    if (resetErrorAction) {
-      setTimeout(() => {
-        store.dispatch(resetErrorAction());
-      }, 5000);
-    }
-  } else {
-    const sliceName = action.payload?.sliceName;
-    const resetErrorAction = resetErrorActions[sliceName];
-
-    if (resetErrorAction) {
-      setTimeout(() => {
-        store.dispatch(resetErrorAction());
-      }, 5000);
-    }
-  }
-
-  return result;
-};
+import { formReducer } from './features/form/formSlice';
 
 const authPersistConfig = {
   key: 'auth',
   storage: storage,
-  blacklist: ['auth'],
+  whitelist: ['isAuthenticated'],
+};
+const cartPersistConfig = {
+  key: 'cart',
+  storage: storage,
+  whitelist: ['cartItems', 'cartItemsAmount', 'subtotal', 'shippingPrice', 'fields', 'isProduct', 'totalPrice', 'isPhysicalProduct'],
 };
 
 const rootReducer = combineReducers({
@@ -93,10 +47,11 @@ const rootReducer = combineReducers({
   user: userReducuer,
   newsletterEmail: newsletterEmailReducuer,
   campaign: campaignReducer,
-  cart: cartReducer,
+  cart: persistReducer(cartPersistConfig, cartReducer),
   navbar: navbarReducer,
   merchAndEcards: merchAndEcardsReducuer,
   toast: toastReducer,
+  form: formReducer,
   [rescueGroupsApi.reducerPath]: rescueGroupsApi.reducer,
   [api.reducerPath]: api.reducer,
 });
@@ -109,8 +64,7 @@ export const toolkitStore = configureStore({
       serializableCheck: false,
     })
       .concat(rescueGroupsApi.middleware)
-      .concat(api.middleware)
-      .concat(errorHandlerMiddleware),
+      .concat(api.middleware),
 });
 
 export const persistor = persistStore(toolkitStore);

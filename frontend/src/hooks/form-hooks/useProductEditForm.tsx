@@ -1,24 +1,20 @@
 import { useEffect, useState } from 'react';
 
-export const validateField = (
-  field: string,
-  value: string,
-  setErrors: Function
-) => {
+export const validateField = (field: string, value: string, setErrors: Function) => {
   let isValid = true;
   let errorMessage = '';
 
   switch (field) {
     case 'name':
-      isValid = !!value
+      isValid = !!value;
       errorMessage = 'Enter product name.';
       break;
     case 'images':
-      isValid = value?.length > 0
+      isValid = value?.length > 0;
       errorMessage = 'Upload at least one image.';
       break;
     case 'price':
-      isValid = !!value
+      isValid = !!value;
       errorMessage = 'Enter price.';
       break;
     default:
@@ -53,8 +49,22 @@ export const validateProductCreate = (inputs: any, setErrors: Function) => {
   return formIsValid;
 };
 
+type Product = {
+  name: string;
+  price: number;
+  shippingPrice: number;
+  image: string;
+  brand: string;
+  category: string;
+  countInStock: number;
+  description: string;
+  sizes: string[];
+  images: (string | { url: string; name: string; size: number } | null)[];
+  hasSizes: boolean;
+};
+
 export const useProductEditForm = (setErrors: any, data?: any) => {
-  const [inputs, setInputs] = useState({
+  const [inputs, setInputs] = useState<Product>({
     name: '',
     price: 0,
     shippingPrice: 0,
@@ -86,7 +96,6 @@ export const useProductEditForm = (setErrors: any, data?: any) => {
       }));
     }
   }, [data]);
-
 
   const handleInput = (e: any) => {
     const { name, value } = e.target;

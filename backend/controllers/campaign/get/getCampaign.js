@@ -7,10 +7,6 @@ const campaignQuery = [
     path: 'auction',
     populate: [
       {
-        path: 'donations',
-        select: 'donor donorPublicMessage oneTimeDonationAmount email createdAt',
-      },
-      {
         path: 'items',
         populate: [
           { path: 'photos', select: 'url name size' },
@@ -22,9 +18,13 @@ const campaignQuery = [
         ],
       },
       { path: 'settings', select: 'endDate startDate status' },
+      { path: 'bids' },
       {
         path: 'winningBids',
-        populate: [{ path: 'user' }, { path: 'auctionItem', populate: [{ path: 'photos' }] }],
+        populate: [
+          { path: 'user', populate: [{ path: 'addressRef' }] },
+          { path: 'auctionItems', populate: [{ path: 'photos' }] },
+        ],
       },
       {
         path: 'instantBuyers',
@@ -36,13 +36,9 @@ const campaignQuery = [
       {
         path: 'bidders',
         populate: [
-          { path: 'user', select: 'name email _id createdAt shippingAddress' },
+          { path: 'user', select: 'name email _id createdAt shippingAddress', populate: [{ path: 'addressRef' }] },
           { path: 'bids', populate: [{ path: 'auctionItem', populate: [{ path: 'photos' }] }] },
         ],
-      },
-      {
-        path: 'itemFulfillments',
-        populate: [{ path: 'user' }, { path: 'auctionItem', populate: [{ path: 'photos' }] }],
       },
     ],
   },
@@ -56,6 +52,7 @@ const campaignQuery = [
 const getCampaign = asyncHandler(async (req, res) => {
   try {
     const id = req.params.id;
+
     const campaign = await Campaign.findById(id).populate(campaignQuery);
 
     if (!campaign) return res.status(404).json({ message: 'Campaign not found' });

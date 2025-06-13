@@ -14,9 +14,8 @@ const getCampaignByCustomLinkId = asyncHandler(async (req, res) => {
     }).populate([
       {
         path: 'auction',
-        select: '-bidders -itemFulfillments -winningBids',
+        select: '-winningBids',
         populate: [
-          { path: 'donations', select: 'donor donorPublicMessage oneTimeDonationAmount' },
           {
             path: 'items',
             populate: [
@@ -26,6 +25,7 @@ const getCampaignByCustomLinkId = asyncHandler(async (req, res) => {
             ],
           },
           { path: 'settings', select: 'endDate startDate' },
+          { path: 'bids', populate: [{ path: 'auctionItem' }, { path: 'user' }] },
         ],
       },
     ]);

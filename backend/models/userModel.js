@@ -9,6 +9,12 @@ const userSchema = mongoose.Schema(
         ref: 'Campaign',
       },
     ],
+    orders: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Order',
+      },
+    ],
     name: {
       type: String,
       required: true,
@@ -27,29 +33,6 @@ const userSchema = mongoose.Schema(
       required: true,
       default: false,
     },
-    avatar: {
-      type: String,
-    },
-    volunteerTitle: {
-      type: String,
-    },
-    profileCardTheme: {
-      type: String,
-    },
-    online: {
-      type: Boolean,
-      default: false,
-    },
-    theme: {
-      type: String,
-    },
-    confirmed: {
-      type: Boolean,
-      default: false,
-    },
-    token: {
-      type: String,
-    },
     shippingAddress: {
       name: { type: String },
       address: { type: String },
@@ -58,19 +41,35 @@ const userSchema = mongoose.Schema(
       zipPostalCode: { type: String },
       country: { type: String },
     },
-    location: { type: String },
-    bio: { type: String },
+    addressRef: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Address',
+    },
     lastLoginTime: { type: String },
     resetPasswordToken: { type: String },
-    resetPasswordExpires: { type: Number },
-    onlineStatus: { type: String },
-    affiliation: { type: String },
+    resetPasswordExpires: { type: Date },
     firstNameFirstInitial: { type: String },
     lastNameFirstInitial: { type: String },
     firstName: { type: String },
     lastName: { type: String },
+    securityQuestion: { type: String },
+    securityAnswer: { type: String },
     anonymousBidding: { type: Boolean, default: false },
-    registrationConfirmationEmailSent: { type: Boolean, default: false },
+    hasAddress: { type: Boolean, default: false },
+    conversionSource: {
+      type: String,
+      enum: [
+        'organic_signup',
+        'live_auction_modal',
+        'auction_item',
+        'auction_item_card',
+        'header_banner',
+        'auction_header',
+        'auction_item_header',
+        'donation_confirmation_modal',
+      ],
+      default: null,
+    },
   },
   {
     timestamps: true,
@@ -83,11 +82,16 @@ userSchema.methods.matchPassword = async function (enteredPassword) {
 
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) {
-    next();
+    return next();
   }
 
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
+  try {
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt); // ✅ proper await here
+    next(); // ✅ only call next after password is updated
+  } catch (error) {
+    next(error); // ✅ pass errors to next
+  }
 });
 
 const User = mongoose.model('User', userSchema);

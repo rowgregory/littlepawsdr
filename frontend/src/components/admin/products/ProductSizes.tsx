@@ -1,61 +1,67 @@
-import { Accordion } from '../../styles/place-order/Styles';
-import { Form } from 'react-bootstrap';
 import { chooseSizes, sizes_v2 } from '../../../utils/adminProductUtils';
-import { Quantity, SelectInput, SelectInputContainer } from '../../styles/product-details/Styles';
+import Accordion from '../../common/Accordion';
 
-const ProductSizes = ({ doesProductHaveSizes, sizes, setInputs }: any) => {
-  const isSizeSelected = (sizeChosen: any) =>
-    sizes?.some((itemSize: any) => itemSize.size === sizeChosen);
+interface ProductSizesProps {
+  doesProductHaveSizes: boolean;
+  sizes: { size: string; amount: number }[];
+  setInputs: React.Dispatch<React.SetStateAction<any>>;
+}
 
-  const handleAmountChange = (selectedSize: any, selectedQty: any) => {
+const ProductSizes: React.FC<ProductSizesProps> = ({ doesProductHaveSizes, sizes, setInputs }) => {
+  const isSizeSelected = (sizeChosen: string) => sizes?.some(({ size }) => size === sizeChosen);
+
+  const getAmountForSize = (sizeChosen: string) => sizes?.find(({ size }) => size === sizeChosen)?.amount ?? 1;
+
+  const handleAmountChange = (selectedSize: string, selectedQty: number) => {
     setInputs((prev: any) => ({
       ...prev,
-      sizes: sizes?.map((itemSize: any) =>
-        itemSize?.size === selectedSize ? { ...itemSize, amount: selectedQty } : itemSize
-      ),
+      sizes: sizes.map((item) => (item.size === selectedSize ? { ...item, amount: selectedQty } : item)),
     }));
   };
 
   return (
     <Accordion toggle={doesProductHaveSizes} maxheight='453px'>
-      <Form.Group className='flex flex-col' controlId='chooseSizes'>
-        <label className='font-Matter-Medium text-sm mb-2'>
-          Click and select a size and an amount
-        </label>
+      <div className='flex flex-col'>
+        <label className='font-Matter-Medium text-sm mb-2'>Click and select a size and an amount</label>
         <div className='flex flex-col'>
-          {sizes_v2.map((s, i) => (
-            <div key={i} className='flex'>
-              <button
-                className={`duration-300 flex items-center justify-center cursor-pointer w-20 h-16 mt-0 mr-3 mb-2 ml-0 ${
-                  isSizeSelected(s?.size)
-                    ? 'bg-blue-to-purple border-transparent text-white'
-                    : 'border-[1px] border-gray-100'
-                } hover:bg-blue-to-purple hover:text-white`}
-                onClick={(e: any) => chooseSizes(s, sizes, setInputs, e)}
-                key={i}
-              >
-                {s?.size}
-              </button>
-              {isSizeSelected(s.size) && (
-                <SelectInputContainer>
-                  <Quantity>QTY</Quantity>
-                  <SelectInput
-                    value={sizes?.find((itemSize: any) => itemSize?.size === s?.size)?.amount || 1}
-                    as='select'
-                    onChange={(e: any) => handleAmountChange(s.size, +e.target.value)}
-                  >
-                    {[...Array(20).keys()].map((x, i) => (
-                      <option key={i} value={x + 1}>
-                        {i + 1}
-                      </option>
-                    ))}
-                  </SelectInput>
-                </SelectInputContainer>
-              )}
-            </div>
-          ))}
+          {sizes_v2.map(({ size }) => {
+            const selected = isSizeSelected(size);
+
+            return (
+              <div key={size} className='flex items-center mb-2'>
+                <button
+                  className={`duration-300 flex items-center justify-center cursor-pointer w-20 h-16 mr-3 ${
+                    selected ? 'bg-blue-to-purple border-transparent text-white' : 'border border-gray-100'
+                  } hover:bg-blue-to-purple hover:text-white`}
+                  onClick={(e) => chooseSizes({ size }, sizes, setInputs, e)}
+                >
+                  {size}
+                </button>
+
+                {selected && (
+                  <div className='flex flex-col'>
+                    <label htmlFor={`qty-${size}`} className='text-xs mb-1'>
+                      QTY
+                    </label>
+                    <select
+                      id={`qty-${size}`}
+                      value={getAmountForSize(size)}
+                      onChange={(e) => handleAmountChange(size, Number(e.target.value))}
+                      className='border rounded px-2 py-1'
+                    >
+                      {[...Array(20)].map((_, i) => (
+                        <option key={i} value={i + 1}>
+                          {i + 1}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
-      </Form.Group>
+      </div>
     </Accordion>
   );
 };

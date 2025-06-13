@@ -1,9 +1,9 @@
-import { useSelector } from 'react-redux';
 import toFixed from '../../../utils/toFixed';
 import cartItemType from '../../../utils/shop-utils/cartItemType';
+import { useAppSelector } from '../../../redux/toolkitStore';
 
 const ItemsContainer = () => {
-  const { subtotal, totalPrice, shippingPrice, cartItems } = useSelector(
+  const { subtotal, totalPrice, shippingPrice, cartItems } = useAppSelector(
     (state: any) => state.cart
   );
   const { isProduct } = cartItemType(cartItems);

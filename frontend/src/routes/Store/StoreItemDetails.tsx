@@ -47,7 +47,7 @@ const StoreItemDetails = () => {
   };
 
   return (
-    <div className='py-24 px-3 max-w-screen-xl w-full mx-auto'>
+    <div className='py-24 px-3 max-w-screen-2xl w-full mx-auto'>
       <div className='flex items-center mb-12 '>
         <Link
           to='/store'
@@ -57,22 +57,10 @@ const StoreItemDetails = () => {
           <p>Go Back</p>
         </Link>
       </div>
-      <div className='grid grid-cols-12 gap-y-8 sm:gap-8 mt-3'>
+      <div className='grid grid-cols-12 gap-y-8 sm:gap-6 mt-3'>
         <MerchImages loading={isLoading} product={product} />
-        <MerchNamePriceDescription
-          product={product}
-          size={size}
-          setSize={setSize}
-          loading={isLoading}
-        />
-        <AddToCartSection
-          product={product}
-          qty={qty}
-          setQty={setQty}
-          addToCartHandler={addToCartHandler}
-          loading={isLoading}
-          size={size}
-        />
+        <MerchNamePriceDescription product={product} size={size} setSize={setSize} loading={isLoading} />
+        <AddToCartSection product={product} qty={qty} setQty={setQty} addToCartHandler={addToCartHandler} loading={isLoading} size={size} />
       </div>
     </div>
   );

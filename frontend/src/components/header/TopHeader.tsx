@@ -14,7 +14,7 @@ import { openToast } from '../../redux/features/toastSlice';
 const TopHeader = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const auth = useAppSelector((state: RootState) => state.auth);
+  const { user } = useAppSelector((state: RootState) => state.user);
   const { cartItemsAmount } = useAppSelector((state: RootState) => state.cart);
   const { pathname } = useLocation();
   const shouldExclude = urlsToExclude(pathname);
@@ -24,20 +24,19 @@ const TopHeader = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    if (validateEmailRegex.test(inputs.email)) {
-      await createNewsletterEmail({ email: inputs.email })
-        .unwrap()
-        .then(() => {
-          dispatch(
-            openToast({ message: 'Email submitted for newsletter', success: true, open: true })
-          );
-          setInputs({});
-        })
-        .catch(() =>
-          dispatch(openToast({ message: 'Error, please try again', success: false, open: true }))
-        );
-    } else {
-      dispatch(openToast({ message: 'Invalid email', success: false, open: true }));
+    const isValid = validateEmailRegex.test(inputs.email);
+    if (!isValid) {
+      dispatch(openToast({ message: 'Invalid email', type: 'warning' }));
+      return;
+    }
+
+    try {
+      await createNewsletterEmail({ email: inputs.email }).unwrap();
+
+      dispatch(openToast({ message: 'Email submitted for newsletter', type: 'success', position: 'tc' }));
+      setInputs({});
+    } catch (err: any) {
+      dispatch(openToast({ message: 'Error, please try again', type: 'warning', position: 'tc' }));
     }
   };
 
@@ -51,10 +50,7 @@ const TopHeader = () => {
         <Logo className='w-40 md:w-28 lg:w-32 lg:-ml-3 mb-3.5 lg:mb-0' />
         <div className='flex items-center gap-x-12'>
           <div className='w-fit p-4 text-white items-center hidden 1230:block'>
-            <form
-              onSubmit={handleSubmit}
-              className='grid grid-cols-12 items-center gap-1.5 sm:gap-3'
-            >
+            <form onSubmit={handleSubmit} className='grid grid-cols-12 items-center gap-1.5 sm:gap-3'>
               <input
                 name='email'
                 type='text'
@@ -79,7 +75,7 @@ const TopHeader = () => {
             </form>
           </div>
           <div className='hidden md:flex items-center md:mb-3 lg:mb-0 gap-x-12'>
-            {topHeaderLinks(auth, dispatch, navigate, cartItemsAmount).map((obj, i) => (
+            {topHeaderLinks(user, dispatch, navigate, cartItemsAmount).map((obj, i) => (
               <TopHeaderInfoBox key={i} obj={obj} />
             ))}
           </div>

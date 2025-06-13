@@ -6,7 +6,6 @@ const populateFields = [
   {
     path: 'auction',
     populate: [
-      { path: 'donations', select: 'donor donorPublicMessage oneTimeDonationAmount' },
       {
         path: 'items',
         populate: [
@@ -24,10 +23,6 @@ const populateFields = [
         populate: [{ path: 'user' }, { path: 'auctionItem', populate: [{ path: 'photos' }] }],
       },
       { path: 'bidders', populate: [{ path: 'user' }] },
-      {
-        path: 'itemFulfillments',
-        populate: [{ path: 'user' }, { path: 'auctionItem', populate: [{ path: 'photos' }] }],
-      },
     ],
   },
 ];
@@ -39,12 +34,10 @@ const populateFields = [
 */
 const updateCampaign = asyncHandler(async (req, res) => {
   try {
-    const { type, ...rest } = req.body;
-    const id = { _id: req.body.id };
+    const { id, ...rest } = req.body;
+    const campaignId = { _id: id };
 
-    const campaign = await Campaign.findByIdAndUpdate(id, rest.data, { new: true }).populate(
-      populateFields
-    );
+    const campaign = await Campaign.findByIdAndUpdate(campaignId, rest, { new: true }).populate(populateFields);
 
     if (!campaign) {
       return res.status(404).json({
@@ -53,7 +46,7 @@ const updateCampaign = asyncHandler(async (req, res) => {
       });
     }
 
-    res.status(201).json({ message: 'Campaign updated', type, campaign, sliceName: 'campaignApi' });
+    res.status(201).json({ message: 'Campaign updated', campaign, sliceName: 'campaignApi' });
   } catch (err) {
     await Error.create({
       functionName: 'UPDATE_CAMPAIGN_ADMIN',

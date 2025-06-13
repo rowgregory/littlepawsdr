@@ -1,5 +1,4 @@
 import { FC, useState } from 'react';
-import { Accordion } from '../../styles/place-order/Styles';
 import { PayPalButtons } from '@paypal/react-paypal-js';
 import ApplicantInfoForm from './ApplicantInfoForm';
 import { useNavigate } from 'react-router-dom';
@@ -13,6 +12,7 @@ import { StepTwoProps } from '../../../types/adopt-types';
 import { ADOPTION_APPLICATION_STEP_TWO_FIELDS } from '../../data/form-fields';
 import AwesomeIcon from '../../common/AwesomeIcon';
 import { chevronDownIcon } from '../../../icons';
+import Accordion from '../../common/Accordion';
 
 const StepTwo: FC<StepTwoProps> = ({ setStep }) => {
   const [orderLoader, setOrderLoader] = useState(false);

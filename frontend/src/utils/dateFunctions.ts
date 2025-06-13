@@ -1,6 +1,6 @@
 import { format } from 'date-fns';
 
-const formatDateWithTimezone = (dateCreated: any): string => {
+function formatDateWithTimezone(dateCreated: any) {
   if (!dateCreated) {
     return ''; // Return an empty string if dateCreated is undefined or null
   }
@@ -20,7 +20,7 @@ const formatDateWithTimezone = (dateCreated: any): string => {
     hour12: true,
     timeZone: 'America/New_York',
   });
-};
+}
 
 const getShortMonthAndDay = (dateString: any) => {
   const date = new Date(dateString);
@@ -33,28 +33,27 @@ const formatDateForCalendar = (date: any) => {
   if (!date) {
     return; // You could return a default value like the current date here if you prefer
   }
+
   // Try parsing the date
   const parsedDate = new Date(date);
 
   // Check if the parsed date is valid
   if (isNaN(parsedDate.getTime())) {
-    console.error('Invalid date provided:', date);
     // Fallback to the current date in case of an invalid date
     const fallbackDate = new Date();
 
     const year = fallbackDate.getFullYear();
-    const month = String(fallbackDate.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+    const month = String(fallbackDate.getMonth() + 1).padStart(2, '0');
     const day = String(fallbackDate.getDate()).padStart(2, '0');
 
     return `${year}-${month}-${day}`;
   }
 
-  // Extract year, month, and day in the desired format (yyyy-MM-dd)
-  const year = parsedDate.getFullYear();
-  const month = String(parsedDate.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
-  const day = String(parsedDate.getDate()).padStart(2, '0');
+  // Use UTC methods to avoid timezone issues
+  const year = parsedDate.getUTCFullYear();
+  const month = String(parsedDate.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(parsedDate.getUTCDate()).padStart(2, '0');
 
-  // Return the date in the 'yyyy-MM-dd' format
   return `${year}-${month}-${day}`;
 };
 
@@ -86,10 +85,31 @@ const convertToEST = (dateToConvert: any) => {
   return `${formattedDate} ${timeZone}`;
 };
 
-export {
-  formatDateWithTimezone,
-  getShortMonthAndDay,
-  formatDateForCalendar,
-  formatDateForEstTimezone,
-  convertToEST,
+export const formatDateWithTime = (dateString: string, time: string = '9:00 AM', timezone: string = 'EST') => {
+  if (!dateString) return '';
+
+  let date;
+
+  // If it's just a date string (YYYY-MM-DD), create it without timezone conversion
+  if (dateString.match(/^\d{4}-\d{2}-\d{2}$/)) {
+    const [year, month, day] = dateString.split('-');
+    // Create date using local constructor to avoid UTC midnight issue
+    date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+  } else {
+    // For datetime strings, parse normally
+    date = new Date(dateString);
+  }
+
+  // Format the date part
+  const formattedDate = date.toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    timeZone: 'America/New_York',
+  });
+
+  return `${formattedDate} at ${time} ${timezone}`;
 };
+
+export { formatDateWithTimezone, getShortMonthAndDay, formatDateForCalendar, formatDateForEstTimezone, convertToEST };

@@ -1,15 +1,14 @@
 import { Fragment } from 'react';
 import MagnifyingGlass from '../../../../components/svg/MagnifyingGlass';
 import toFixed from '../../../../utils/toFixed';
-import { useSelector } from 'react-redux';
 import useSortableArray from '../../../../hooks/useSortableArray';
 import { formatDateWithTimezone } from '../../../../utils/dateFunctions';
 import { useGetWelcomeWienerOrdersQuery } from '../../../services/dashboardApi';
 import TailwindSpinner from '../../../../components/Loaders/TailwindSpinner';
+import { useAppSelector } from '../../../toolkitStore';
 
 const WelcomeWienerOrderTable = () => {
-  const state = useSelector((state: any) => state);
-  const dashboard = state.dashboard;
+  const dashboard = useAppSelector((state: any) => state.dashboard);
   const noWelcomeWienerOrders = dashboard?.welcomeWienerOrders?.length === 0;
 
   const { isLoading } = useGetWelcomeWienerOrdersQuery();

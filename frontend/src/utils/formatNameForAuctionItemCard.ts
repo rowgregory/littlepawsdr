@@ -4,7 +4,7 @@ const formatNameForAuctionItemCard = (fullName: string) => {
     return '';
   }
 
-  const nameParts = fullName.trim().split(/\s+/);
+  const nameParts = fullName.trim()?.split(/\s+/);
 
   // Get the first name
   const firstName = nameParts[0];

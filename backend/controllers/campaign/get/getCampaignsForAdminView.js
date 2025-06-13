@@ -9,9 +9,10 @@ import { Campaign } from '../../../models/campaignModel.js';
 */
 const getCampaignsForAdminView = asyncHandler(async (req, res) => {
   try {
-    const campaigns = await Campaign.find().select(
-      '_id title supporters totalCampaignRevenue campaignStatus'
-    );
+    const campaigns = await Campaign.find()
+      .select('_id title supporters totalCampaignRevenue campaignStatus goal customCampaignLink')
+      .populate([{ path: 'auction' }]);
+
     if (!campaigns) return res.status(404).json({ message: 'Campaign not found' });
 
     res.status(200).json({ campaigns });

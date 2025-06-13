@@ -14,11 +14,12 @@ export const dashboardApi = api.injectEndpoints({
       query: () => '/dashboard/orders/ecards',
       providesTags: ['Dashboard'],
     }),
+    fetchDashboardData: build.query({
+      query: () => '/dashboard/fetch-dashboard-data',
+      providesTags: ['Dashboard'],
+    }),
   }),
 });
 
-export const {
-  useGetAdoptionApplicationBypassCodeQuery,
-  useGetWelcomeWienerOrdersQuery,
-  useGetEcardOrdersQuery,
-} = dashboardApi;
+export const { useGetAdoptionApplicationBypassCodeQuery, useGetWelcomeWienerOrdersQuery, useGetEcardOrdersQuery, useFetchDashboardDataQuery } =
+  dashboardApi;

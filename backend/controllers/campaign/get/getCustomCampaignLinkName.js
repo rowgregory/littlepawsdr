@@ -9,15 +9,13 @@ import { Campaign } from '../../../models/campaignModel.js';
 */
 const getCustomCampaignLinkName = asyncHandler(async (req, res) => {
   try {
-    const campaigns = await Campaign.find().populate([
-      { path: 'auction', populate: [{ path: 'settings' }] },
-    ]);
+    const campaigns = await Campaign.find().populate([{ path: 'auction', populate: [{ path: 'settings' }, { path: 'bids' }] }]);
 
-    let responseData = {}
+    let responseData = {};
 
     campaigns.forEach((campaign) => {
       const { campaignStatus } = campaign || {};
-      
+
       if (campaignStatus === 'Active Campaign') {
         responseData = {
           customCampaignLink: campaign.customCampaignLink,

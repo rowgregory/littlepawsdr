@@ -91,21 +91,6 @@ const itemSchema = mongoose.Schema(
   { timestamps: true }
 );
 
-const auctionDonationSchema = mongoose.Schema(
-  {
-    auctionId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Auction',
-    },
-    donor: { type: String },
-    email: { type: String },
-    donorPublicMessage: { type: String },
-    oneTimeDonationAmount: { type: Number },
-    paypalId: { type: String },
-  },
-  { timestamps: true }
-);
-
 const auctionItemInstantBuyerSchema = mongoose.Schema(
   {
     auction: {
@@ -163,10 +148,12 @@ const auctionWinningBidderSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
     },
-    auctionItem: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'AuctionItem',
-    },
+    auctionItems: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'AuctionItem',
+      },
+    ],
     winningBidPaymentStatus: {
       type: String,
       enum: WinningBidPaymentStatus,
@@ -180,63 +167,12 @@ const auctionWinningBidderSchema = mongoose.Schema(
     auctionPaymentNotificationEmailHasBeenSent: { type: Boolean, default: false },
     emailNotificationCount: { type: Number, default: 0 },
     elapsedTimeSinceAuctionItemWon: { type: String },
+    subtotal: { type: Number },
     totalPrice: { type: Number },
     shipping: { type: Number },
     shippingStatus: { type: String, default: 'Pending Payment Confirmation' },
-    shippingProvider: { type: String },
-    itemSoldPrice: { type: Number },
-    trackingNumber: { type: String },
-    payPalId: { type: String },
     paidOn: { type: Date },
-  },
-  { timestamps: true }
-);
-
-const auctionItemFulfillmentSchema = mongoose.Schema(
-  {
-    auction: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Auction',
-    },
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-    },
-    auctionItem: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'AuctionItem',
-    },
-    instantBuyer: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'AuctionItemInstantBuyer',
-    },
-    winningBidder: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'AuctionWinningBidder',
-    },
-    name: { type: String },
-    email: { type: String },
-    winningBidPaymentStatus: {
-      type: String,
-      enum: WinningBidPaymentStatus,
-      default: 'Awaiting Payment',
-    },
-    auctionItemPaymentStatus: {
-      type: String,
-      enum: AuctionItemPaymentStatusEnum,
-      default: 'Pending',
-    },
-    auctionPaymentNotificationEmailHasBeenSent: { type: Boolean, default: false },
-    emailNotificationCount: { type: Number, default: 0 },
-    elapsedTimeSinceAuctionItemWon: { type: String },
-    totalPrice: { type: Number },
-    shipping: { type: Number },
-    shippingStatus: { type: String, default: 'Unfulfilled' },
-    shippingProvider: { type: String },
-    itemSoldPrice: { type: Number },
-    trackingNumber: { type: String },
-    payPalId: { type: String },
-    isDigital: { type: Boolean },
+    paypalId: { type: String },
   },
   { timestamps: true }
 );
@@ -251,13 +187,6 @@ const auctionSchema = mongoose.Schema(
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'AuctionItem',
-        default: [],
-      },
-    ],
-    donations: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'AuctionDonation',
         default: [],
       },
     ],
@@ -281,31 +210,21 @@ const auctionSchema = mongoose.Schema(
         default: [],
       },
     ],
-    itemFulfillments: [
+    bids: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'AuctionItemFulfillment',
-        default: [],
+        ref: 'Bid',
       },
     ],
     settings: {
-      type: Object,
-      default: () => {
-        const startDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 1 week from current date
-        const endDate = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000); // 2 week from current date
-        endDate.setHours(17, 0, 0, 0); // Set time to 5:00 PM (17:00) with zero minutes, seconds, and milliseconds
-        startDate.setHours(9, 0, 0, 0);
-        return {
-          startDate,
-          endDate,
-          isAuctionPublished: true,
-          anonymousBidding: true,
-          hasBegun: false,
-          hasEnded: false,
-          auctionStatus: 'Bidding opens',
-          status: 'UPCOMING',
-        };
-      },
+      startDate: Date,
+      endDate: Date,
+      isAuctionPublished: { type: Boolean, default: true },
+      anonymousBidding: { type: Boolean, default: true },
+      hasBegun: { type: Boolean, default: false },
+      hasEnded: { type: Boolean, default: false },
+      auctionStatus: { type: String, default: 'Bidding opens' },
+      status: { type: String, default: 'UPCOMING' },
     },
   },
   {
@@ -370,30 +289,11 @@ const campaignSchema = mongoose.Schema(
 
 const Auction = mongoose.model('Auction', auctionSchema);
 const AuctionItem = mongoose.model('AuctionItem', itemSchema);
-const AuctionItemInstantBuyer = mongoose.model(
-  'AuctionItemInstantBuyer',
-  auctionItemInstantBuyerSchema
-);
+const AuctionItemInstantBuyer = mongoose.model('AuctionItemInstantBuyer', auctionItemInstantBuyerSchema);
 const AuctionItemPhoto = mongoose.model('AuctionItemPhoto', auctionItemPhotoSchema);
-const AuctionDonation = mongoose.model('AuctionDonation', auctionDonationSchema);
 const Campaign = mongoose.model('Campaign', campaignSchema);
 const Bid = mongoose.model('Bid', bidSchema);
 const AuctionBidder = mongoose.model('AuctionBidder', auctionBidderSchema);
 const AuctionWinningBidder = mongoose.model('AuctionWinningBidder', auctionWinningBidderSchema);
-const AuctionItemFulfillment = mongoose.model(
-  'AuctionItemFulfillment',
-  auctionItemFulfillmentSchema
-);
 
-export {
-  Auction,
-  AuctionItemInstantBuyer,
-  AuctionItem,
-  AuctionItemPhoto,
-  AuctionDonation,
-  Bid,
-  Campaign,
-  AuctionBidder,
-  AuctionWinningBidder,
-  AuctionItemFulfillment,
-};
+export { Auction, AuctionItemInstantBuyer, AuctionItem, AuctionItemPhoto, Bid, Campaign, AuctionBidder, AuctionWinningBidder };

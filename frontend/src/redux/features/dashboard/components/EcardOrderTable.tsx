@@ -1,14 +1,13 @@
 import { Fragment } from 'react';
 import MagnifyingGlass from '../../../../components/svg/MagnifyingGlass';
 import toFixed from '../../../../utils/toFixed';
-import { useSelector } from 'react-redux';
 import useSortableArray from '../../../../hooks/useSortableArray';
 import { useGetEcardOrdersQuery } from '../../../services/dashboardApi';
 import TailwindSpinner from '../../../../components/Loaders/TailwindSpinner';
+import { useAppSelector } from '../../../toolkitStore';
 
 const EcardOrderTable = () => {
-  const state = useSelector((state: any) => state);
-  const dashboard = state.dashboard;
+  const dashboard = useAppSelector((state: any) => state.dashboard);
   const noEcardOrders = dashboard?.ecardOrders?.length === 0;
 
   const { isLoading } = useGetEcardOrdersQuery();
@@ -34,12 +33,8 @@ const EcardOrderTable = () => {
         <p className='text-sm font-Matter-Light text-gray-500 mb-2'>Ecard Order Summary</p>
         <div className='flex justify-between items-baseline'>
           <div className='flex  items-baseline'>
-            <h1 className='font-Matter-Medium text-2xl mr-2'>
-              ${toFixed(dashboard?.ecardOrderRevenue)}
-            </h1>
-            <p className='font-Matter-Light text-gray-500 text-sm mr-2'>
-              {dashboard?.totalEcardOrders} orders
-            </p>
+            <h1 className='font-Matter-Medium text-2xl mr-2'>${toFixed(dashboard?.ecardOrderRevenue)}</h1>
+            <p className='font-Matter-Light text-gray-500 text-sm mr-2'>{dashboard?.totalEcardOrders} orders</p>
           </div>
         </div>
       </div>
@@ -50,18 +45,12 @@ const EcardOrderTable = () => {
               <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2'>
                 <div className='text-sm flex whitespace-nowrap items-center gap-2'>Ecard</div>
               </th>
-              <th
-                onClick={() => handleSortColumn('totalSales')}
-                className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2'
-              >
+              <th onClick={() => handleSortColumn('totalSales')} className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2'>
                 <div className='text-sm cursor-pointer -mx-1.5 -my-1 w-fit px-1.5 py-1 rounded-md hover:bg-gray-200 flex flex-nowrap items-center gap-2'>
                   Total Sales
                 </div>
               </th>
-              <th
-                onClick={() => handleSortColumn('totalRevenue')}
-                className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 '
-              >
+              <th onClick={() => handleSortColumn('totalRevenue')} className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 '>
                 <div className='text-sm cursor-pointer -mx-1.5 -my-1 w-fit px-1.5 py-1 rounded-md hover:bg-gray-200 flex flex-nowrap items-center gap-2'>
                   Total Revenue
                 </div>
@@ -70,24 +59,15 @@ const EcardOrderTable = () => {
           </thead>
           <tbody>
             {sortedArray?.map((order: any) => (
-              <tr
-                key={order?._id}
-                className='z-1 group bg-white [&_td]:focus-within:bg-gray-100 [&_td]:hover:bg-gray-100 relative'
-              >
+              <tr key={order?._id} className='z-1 group bg-white [&_td]:focus-within:bg-gray-100 [&_td]:hover:bg-gray-100 relative'>
                 <td className='m-0 p-0 decoration-inherit hover:text-inherit hover:decoration-inherit !flex h-[3.25rem] items-center whitespace-nowrap'>
-                  <p className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>
-                    {order?.productName}
-                  </p>
+                  <p className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>{order?.productName}</p>
                 </td>
                 <td>
-                  <p className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>
-                    {order?.totalSales}
-                  </p>
+                  <p className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>{order?.totalSales}</p>
                 </td>
                 <td>
-                  <p className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>
-                    ${toFixed(order?.totalRevenue)}
-                  </p>
+                  <p className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>${toFixed(order?.totalRevenue)}</p>
                 </td>
               </tr>
             ))}

@@ -1,8 +1,7 @@
 import asyncHandler from 'express-async-handler';
 import Error from '../../../models/errorModel.js';
-import createAuctionItemDocument from '../../../utils/campaign-utils/createAuctionItemDocument.js';
-import findAuctionByIdAndUpdate from '../../../utils/campaign-utils/findAuctionByIdAndUpdate.js';
-import { io } from '../../../server.js';
+import createAuctionItemDocument from '../../../utils/campaign/createAuctionItemDocument.js';
+import findAuctionByIdAndUpdate from '../../../utils/campaign/findAuctionByIdAndUpdate.js';
 import { logEvent, prepareLog } from '../../../utils/logHelpers.js';
 
 /**
@@ -12,6 +11,7 @@ import { logEvent, prepareLog } from '../../../utils/logHelpers.js';
 */
 const createAuctionItem = asyncHandler(async (req, res) => {
   const log = await prepareLog('CREATE AUCTION ITEM');
+
   try {
     const { auction } = req.body;
     const auctionItem = await createAuctionItemDocument(log, req.body);
@@ -21,11 +21,9 @@ const createAuctionItem = asyncHandler(async (req, res) => {
       $push: { items: auctionItem._id },
     });
 
-    io.emit('auction-updated');
-
     logEvent(log, 'END CREATE AUCTION ITEM');
 
-    res.status(201).json({ message: 'Auction item created', sliceName: 'campaignApi' });
+    res.status(201).json({ auctionItem, message: 'Auction item created', sliceName: 'campaignApi' });
   } catch (err) {
     await Error.create({
       functionName: 'ERROR_CREATE_AUCTION_ITEM_ADMIN',

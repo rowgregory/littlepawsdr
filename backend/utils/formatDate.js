@@ -1,8 +1,7 @@
-export const formatDate = date => {
-  // const newDate = new Date(date).toLocaleString().split(',')[0]
+export const formatDate = (date) => {
   const firstPartOfDate = new Date(date).toString().slice(0, 15);
   const newDate = new Date(date).toString().slice(0, 24);
-  let time = newDate.slice(16, 24).split(':');
+  let time = newDate.slice(16, 24)?.split(':');
   const hours = Number(time[0]);
   const minutes = Number(time[1]);
   const seconds = Number(time[2]);

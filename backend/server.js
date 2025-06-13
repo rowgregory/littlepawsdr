@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import colors from 'colors';
 import morgan from 'morgan';
 import connectDB from './config/db.js';
-import { cronJobs } from './utils/cronJobs.js';
+import cronJobs from './utils/cronJobs.ts';
 import userRoutes from './routes/userRoutes.js';
 import productRoutes from './routes/productRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
@@ -23,9 +23,13 @@ import merchAndEcardsRoutes from './routes/merchAndEcardsRoutes.js';
 import cors from 'cors';
 import http from 'http';
 import { Server } from 'socket.io';
+import cookieParser from 'cookie-parser';
+import { forceLogoutMiddleware } from './middleware/authMiddleware.js';
 
 const app = express();
 app.use(express.json());
+app.use(cookieParser());
+app.use(forceLogoutMiddleware);
 
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -40,12 +44,6 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     console.log('User disconnected');
-  });
-
-  socket.on('message', (data) => {
-    console.log('Message received:', data);
-    // Broadcast message to all connected clients
-    io.emit('message', data);
   });
 });
 
@@ -92,9 +90,7 @@ const __dirname = path.resolve();
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '/frontend/build')));
 
-  app.get('*', (req, res) =>
-    res.sendFile(path.resolve(__dirname, 'frontend', 'build', 'index.html'))
-  );
+  app.get('*', (req, res) => res.sendFile(path.resolve(__dirname, 'frontend', 'build', 'index.html')));
 }
 
 server.listen(PORT, console.log(`⚡ Server running on port`.gray + `${PORT}`.white));

@@ -9,14 +9,8 @@ export const useCampaignDetailsForm = (data?: any) => {
       setInputs((inputs: any) => ({
         ...inputs,
         title: data?.title,
-        subtitle: data?.subtitle,
         goal: data?.goal,
-        themeColor: data?.themeColor,
-        coverPhoto: data?.coverPhoto,
-        coverPhotoName: data?.coverPhotoName,
-        maintainAspectRatio: data?.maintainAspectRatio,
-        story: data?.story,
-        imgPreference: data.imgPreference,
+        customCampaignLink: data?.customCampaignLink,
       }));
     }
   }, [data]);

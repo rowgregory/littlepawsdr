@@ -1,18 +1,39 @@
-const navbarLinksData = (id: string) => [
+const navbarLinksData = (id: string, auctionItemId: string) => [
   {
     title: 'Details',
     key: 'details',
     linkKey: `/admin/campaigns/${id}/details`,
   },
   {
-    title: 'Sharing',
-    key: 'sharing',
-    linkKey: `/admin/campaigns/${id}/sharing`,
+    title: 'Schedule',
+    key: '',
+    linkKey: `/admin/campaigns/${id}/auction`,
   },
   {
-    title: 'Auction',
-    key: 'auction',
-    linkKey: `/admin/campaigns/${id}/auction`,
+    title: 'Notifications',
+    key: 'notifications',
+    linkKey: `/admin/campaigns/${id}/auction/notifications`,
+  },
+  {
+    title: 'Items',
+    key: 'items',
+    key2: `items/${auctionItemId}/bids`,
+    linkKey: `/admin/campaigns/${id}/auction/items`,
+  },
+  {
+    title: 'Instant Buyers',
+    key: 'instant-buyers',
+    linkKey: `/admin/campaigns/${id}/auction/instant-buyers`,
+  },
+  {
+    title: 'Bidders',
+    key: 'bidders',
+    linkKey: `/admin/campaigns/${id}/auction/bidders`,
+  },
+  {
+    title: 'Winning bids',
+    key: 'winning-bids',
+    linkKey: `/admin/campaigns/${id}/auction/winning-bids`,
   },
 ];
 

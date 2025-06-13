@@ -1,69 +1,12 @@
 import { useLocation } from 'react-router-dom';
-import styled, { keyframes, css } from 'styled-components';
-
-const securityLoader = keyframes`
-  0% {
-    left: -25%;
-  }
-  49% {
-    left: 100%;
-  }
-  50% {
-    left: 100%;
-  }
-  100% {
-    left: -25%;
-  }
-`;
-
-const popupLoader = keyframes`
-  0% {
-    left: 8%;
-    background: #fff;
-  }
-  49% {
-    left: 100%;
-    
-  }
-  50% {
-    left: 100%;
-  }
-  100% {
-    left: 8%;
-    background: #fff;
-  }
-`;
-
-const Loader = styled.div<{ path: string }>`
-  height: 3px;
-  width: 25%;
-  .bar {
-    width: 25%;
-    position: absolute;
-    height: 3px;
-
-    background-color: ${({ theme }) => theme.colors.secondary};
-    animation-name: ${({ path }) =>
-      path === '/'
-        ? css`
-            ${popupLoader}
-          `
-        : css`
-            ${securityLoader}
-          `};
-    animation-duration: 3s;
-    animation-iteration-count: infinite;
-    animation-timing-function: ease-in-out;
-  }
-`;
 
 const HorizontalLoader = () => {
   const { pathname } = useLocation();
+  const animationClass = pathname === '/' ? 'animate-popup-loader' : 'animate-security-loader';
+
   return (
-    <div className='overflow-hidden relative'>
-      <Loader className='loader' path={pathname}>
-        <div className='bar'></div>
-      </Loader>
+    <div className='overflow-hidden relative h-[3px] w-1/4'>
+      <div className={`absolute h-[3px] w-1/4 bg-secondary ${animationClass}`}></div>
     </div>
   );
 };

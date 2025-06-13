@@ -1,88 +1,112 @@
-import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../redux/toolkitStore';
-import AuctionItemCard from '../../components/campaign/AuctionItemCard';
-import { Fragment, useState } from 'react';
-import { formatDateWithTimezone } from '../../utils/dateFunctions';
-import VerifiedBadge from '../Admin/Campaigns/Auction/VerifiedBadge';
-import AuctionRegisterModal from '../../components/modals/AuctionRegisterModal';
+import { useEffect, useState } from 'react';
+import { RootState, useAppDispatch, useAppSelector } from '../../redux/toolkitStore';
+import LiveActivity from '../../components/campaign/auction/LiveActivity';
+import AuctionItemCard from '../../components/campaign/auction/AuctionItemCard';
+import FloatingParticles from '../../components/campaign/auction/FloatingParticles';
+import AuctionHeader from '../../components/campaign/auction/AuctionHeader';
+import { LiveStats } from '../../components/campaign/auction/AuctionBadges';
+import AuctionCountdownTimer from '../../components/campaign/auction/AuctionCountdownTimer';
+import { motion } from 'framer-motion';
+import ConfettiPop from '../../components/ConfettiPop';
+import { resetPlaceBidSuccess } from '../../redux/features/campaign/campaignSlice';
 
 const Auction = () => {
-  const [modal, setModal] = useState(false);
-  const handleClose = () => setModal(false);
-  const auth = useSelector((state: RootState) => state.auth);
-  let { campaign } = useSelector((state: RootState) => state.campaign);
-  const theme = campaign?.themeColor;
+  const dispatch = useAppDispatch();
+  const campaignState = useAppSelector((state: RootState) => state.campaign);
+  const campaign = campaignState?.campaign;
   const auction = campaign?.auction;
-  const items = auction?.items;
-  const settings = auction?.settings;
-  const hasBegun = settings?.hasBegun;
+  const customCampaignLink = campaign?.customCampaignLink;
+  const { user } = useAppSelector((state: RootState) => state.user);
+  const [popTrigger, setPopTrigger] = useState(0);
+
+  const latestBids = campaign?.auction?.bids;
+
+  const calculateIncrementalTotal = (bids: any) => {
+    if (!bids || bids.length === 0) return 0;
+
+    // Sort bids by bidAmount (lowest to highest)
+    const sortedBids = [...bids].sort((a, b) => a.bidAmount - b.bidAmount);
+
+    let total = 0;
+
+    for (let i = 0; i < sortedBids.length; i++) {
+      if (i === 0) {
+        // First bid is the full amount
+        total += sortedBids[i].bidAmount;
+      } else {
+        // Add only the difference from the previous bid
+        const increment = sortedBids[i].bidAmount - sortedBids[i - 1].bidAmount;
+        total += increment;
+      }
+    }
+
+    return total;
+  };
+  const moneySecured = calculateIncrementalTotal(latestBids);
+
+  const status = campaign?.auction?.settings?.status;
+
+  const triggerPop = () => {
+    setPopTrigger((prev) => prev + 1);
+  };
+
+  useEffect(() => {
+    if (campaignState?.placeBidSuccess) {
+      triggerPop();
+      setTimeout(() => {
+        dispatch(resetPlaceBidSuccess());
+      }, 3000);
+    }
+  }, [latestBids, campaignState?.placeBidSuccess, dispatch]);
 
   return (
-    <Fragment>
-      <AuctionRegisterModal
-        open={modal}
-        handleClose={handleClose}
-        theme={theme}
-        customCampaignLink={campaign?.customCampaignLink}
-      />
-      <div className='bg-gray-100 min-h-[calc(100vh-66px)]'>
-        <div className='max-w-[1340px] w-full mx-auto px-2.5 py-4 sm:p-6 md:p-8'>
-          <div className='flex flex-col md:flex-row'>
-            <div className='flex flex-col sm:w-full md:w-8/12'>
-              <p className='font-Matter-Medium self-center sm:self-start text-3xl sm:text-4xl mb-2 h-10'>
-                {campaign?.title}
-              </p>
-              <div className='flex items-center mb-4 md:mb-0'>
-                <VerifiedBadge theme={theme} />
-                <p className='text-sm ml-1'>
-                  By
-                  <span>
-                    <Link
-                      to='/campaigns'
-                      className={`${theme?.text} ml-0.5 text-sm font-Matter-Medium hover:${theme?.text}`}
-                    >
-                      Little Paws Dachshund Rescue
-                    </Link>
-                  </span>
-                </p>
-                <div
-                  className={`hidden sm:flex h-5 w-5 rounded-full ml-1 items-center justify-center ${theme?.darker} `}
-                >
-                  <i className='fa-solid fa-arrow-right text-white text-xs'></i>
-                </div>
-              </div>
-            </div>
-            <div className='sm:w-full md:w-4/12'>
-              {!settings?.hasEnded && (
-                <div className='bg-white py-[12px] px-3 rounded-xl h-fit flex flex-col'>
-                  <Fragment>
-                    <p className='text-gray-400 font-Matter-Regular'>{settings?.auctionStatus}</p>
-                    <p className='text-xl font-Matter-Medium mt-1'>
-                      {formatDateWithTimezone(!hasBegun ? settings?.startDate : settings?.endDate)}
-                    </p>
-                  </Fragment>
-                </div>
-              )}
-              {!auth?.user && (
-                <button onClick={() => setModal(true)} className='hover:no-underline w-full'>
-                  <p
-                    className={`${theme?.darker} text-white font-Matter-Medium text-2xl rounded-xl py-3.5 mt-4 w-full text-center h-fit duration-300`}
-                  >
-                    Register to Bid
-                  </p>
-                </button>
-              )}
-            </div>
-          </div>
-          <div className='grid gap-y-10 lg:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mt-16'>
-            {items?.map((item: any) => (
-              <AuctionItemCard key={item?._id} item={item} auth={auth} campaign={campaign} />
-            ))}
-          </div>
+    <div className='min-h-dvh pb-60 bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 relative overflow-hidden'>
+      <ConfettiPop trigger={popTrigger} particleCount={150} duration={3000} />
+      <FloatingParticles />
+
+      <div className='relative z-10 container mx-auto px-4 pt-8 pb-40 max-w-screen-2xl'>
+        <AuctionHeader user={user} customCampaignLink={campaign?.customCampaignLink} />
+        <AuctionCountdownTimer startDate={auction?.settings?.startDate} endDate={auction?.settings?.endDate} title={campaign?.title} />
+
+        <LiveStats totalBidders={auction?.bidders?.length} moneySecured={moneySecured?.toString()} status={status} />
+
+        {/* Main auction grid */}
+        <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-8 mb-12'>
+          {auction?.items?.map((item: any, index: number) => (
+            <AuctionItemCard
+              key={index}
+              item={item}
+              index={index}
+              settings={auction?.settings}
+              customCampaignLink={customCampaignLink}
+              status={status}
+              user={user}
+            />
+          ))}
+        </div>
+
+        {/* Call to action */}
+        <div className='flex justify-center mt-40'>
+          <motion.div
+            className='bg-gradient-to-r from-orange-500 via-amber-500 to-red-500 text-white font-semibold text-base px-6 py-2 rounded-md inline-flex items-center gap-2 shadow-sm border border-teal-300/30'
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2, ease: 'easeOut' }}
+          >
+            <motion.div
+              className='w-2 h-2 bg-white rounded-full'
+              animate={{ rotate: [0, 180, 360] }}
+              transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
+            ></motion.div>
+            <span>
+              {Math.round(((moneySecured || 0) / (campaign?.goal || 1)) * 100)}% of ${campaign?.goal?.toLocaleString()} Goal
+            </span>
+          </motion.div>
         </div>
       </div>
-    </Fragment>
+
+      <LiveActivity latestBids={latestBids} status={status} />
+    </div>
   );
 };
 

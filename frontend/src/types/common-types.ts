@@ -7,7 +7,7 @@ interface LayoutWithHeaderProps {
 
 interface LayoutWithSidebarProps {
   sidebar: ReactNode;
-  children: ReactNode;
+  children: ReactNode | any;
 }
 
 type LazyModulePromise<T = {}> = Promise<{ default: ComponentType<T> }>;

@@ -1,36 +1,35 @@
-import { FormEvent, useEffect, useState } from 'react';
-import useForm from '../../hooks/useForm';
+import { FormEvent, useEffect } from 'react';
 import { STATES } from '../../components/data/states';
-import { RootState, useAppDispatch } from '../../redux/toolkitStore';
+import { RootState, useAppDispatch, useAppSelector } from '../../redux/toolkitStore';
 import { decryptFormData, setStep, updateFormData } from '../../redux/features/cart/cartSlice';
-import validateShippingAddressForm from '../../validations/validateShippingAddressForm';
-import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import validateAddressForm from '../../validations/validateAddressForm';
+import { createFormActions, setInputs } from '../../redux/features/form/formSlice';
 
 const ShippingAddress = () => {
   const navigate = useNavigate();
-  const { fields } = useSelector((state: RootState) => state.cart);
-  const [errors, setErrors] = useState({}) as any;
+  const { addressForm } = useAppSelector((state: RootState) => state.form);
+  const { user } = useAppSelector((state: RootState) => state.user);
   const dispatch = useAppDispatch();
-  const { inputs, handleInput, handleSelect } = useForm(
-    ['address', 'city', 'state', 'zipPostalCode'],
-    fields
-  );
+  const { handleInput, setErrors } = createFormActions('adddressForm', dispatch);
 
   useEffect(() => {
     dispatch(decryptFormData());
     dispatch(setStep({ step1: true, step2: true, step3: false }));
-  }, [dispatch]);
+    if (user?.addressRef || user?.shippingAddress) {
+      dispatch(setInputs({ formName: 'addressForm', data: user?.addressRef || user?.shippingAddress }));
+    }
+  }, [dispatch, user?.addressRef, user?.shippingAddress]);
 
   const submitShippingAddress = (e: FormEvent) => {
     e.preventDefault();
-    const errors = validateShippingAddressForm(inputs);
-    setErrors(errors);
-    if (Object.keys(errors).length === 0) {
-      navigate('/cart/checkout/payment');
-      dispatch(setStep({ step1: true, step2: true, step3: true }));
-      dispatch(updateFormData({ inputs }));
-    }
+
+    const isValid = validateAddressForm(addressForm?.inputs, setErrors);
+    if (!isValid) return;
+
+    navigate('/cart/checkout/payment');
+    dispatch(setStep({ step1: true, step2: true, step3: true }));
+    dispatch(updateFormData({ inputs: addressForm?.inputs }));
   };
 
   return (
@@ -44,9 +43,9 @@ const ShippingAddress = () => {
         onChange={handleInput}
         type='text'
         alt='Address'
-        value={inputs.address || ''}
+        value={addressForm?.inputs.address || ''}
       />
-      <p className='text-xs text-red-500 mb-4'>{errors?.address}</p>
+      <p className='text-xs text-red-500 mb-4'>{addressForm?.errors?.address}</p>
       <div className='grid grid-cols-12 gap-3 w-full'>
         <div className='col-span-12 md:col-span-4'>
           <label className='font-Matter-Medium text-sm mb-1' htmlFor='city'>
@@ -58,9 +57,9 @@ const ShippingAddress = () => {
             onChange={handleInput}
             type='text'
             alt='City'
-            value={inputs.city || ''}
+            value={addressForm?.inputs.city || ''}
           />
-          <p className='text-xs text-red-500 mb-4'>{errors?.city}</p>
+          <p className='text-xs text-red-500 mb-4'>{addressForm?.errors?.city}</p>
         </div>
         <div className='col-span-12 md:col-span-4'>
           <label className='font-Matter-Medium text-sm mb-1' htmlFor='state'>
@@ -70,8 +69,8 @@ const ShippingAddress = () => {
             className='uer-input bg-white border-[1px] border-gray-200 rounded-md h-[46px] py-2.5 px-3.5 font-Matter-Regular focus:outline-none w-full'
             id='state'
             name='state'
-            value={inputs.state || ''}
-            onChange={handleSelect}
+            value={addressForm?.inputs.state || ''}
+            onChange={handleInput}
             aria-label='Select state'
           >
             {STATES.map((state: any, i: number) => (
@@ -80,7 +79,7 @@ const ShippingAddress = () => {
               </option>
             ))}
           </select>
-          <p className='text-xs text-red-500 mb-4'>{errors?.state}</p>
+          <p className='text-xs text-red-500 mb-4'>{addressForm?.errors?.state}</p>
         </div>
         <div className='col-span-12 md:col-span-4'>
           <label className='font-Matter-Medium text-sm mb-1' htmlFor='zipPostalCode'>
@@ -92,9 +91,9 @@ const ShippingAddress = () => {
             onChange={handleInput}
             type='text'
             alt='Zip code'
-            value={inputs.zipPostalCode || ''}
+            value={addressForm?.inputs.zipPostalCode || ''}
           />
-          <p className='text-xs text-red-500 mb-4'>{errors?.zipPostalCode}</p>
+          <p className='text-xs text-red-500 mb-4'>{addressForm?.errors?.zipPostalCode}</p>
         </div>
       </div>
       <button
