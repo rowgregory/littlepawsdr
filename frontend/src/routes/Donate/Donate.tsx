@@ -17,7 +17,7 @@ const Donate = () => {
   return (
     <>
       <DonationConfirmationModal openModal={openModal} handleClose={handleClose} user={user} />
-      <div className='mx-auto w-full mt-[-56px]'>
+      <div className='mx-auto w-full mt-[-68px]'>
         <div style={{ backgroundImage: `url(${AquaTile})` }} className='h-[272px] sm:h-[350px] bg-repeat border-b-[7px] border-teal-500'></div>
         <div className='flex flex-col mx-auto relative bg-slate-100 min-h-[calc(100vh-732px)] md:min-h-[calc(100vh-780px)] pb-40'>
           <div className='grid grid-cols-12 gap-4 md:gap-8  sm:px-6 mt-[-192px] md:mt-[-240px] max-w-screen-xl w-full mx-auto h-full'>

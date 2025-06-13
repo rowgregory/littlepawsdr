@@ -136,14 +136,14 @@ const login = asyncHandler(async (req, res) => {
       logEvent(log, 'hasAddress FIELD UPDATED', updatedUser.hasAddress);
     }
 
-    const token = generateToken({ id: userToReturn._id, isAdmin: userToReturn.isAdmin }, '3d');
+    const token = generateToken({ id: userToReturn._id, isAdmin: userToReturn.isAdmin }, '7d');
     logEvent(log, 'TOKEN GENERATED', userToReturn._id);
 
     res.cookie('authToken', token, {
       httpOnly: false,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
-      maxAge: 3 * 24 * 60 * 60 * 1000, // 3 days
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 3 days
     });
 
     logEvent(log, 'LOGIN SUCCESSFUL', {

@@ -138,7 +138,7 @@ const register = asyncHandler(async (req, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production', // only send over HTTPS in production
       sameSite: 'Strict',
-      maxAge: 3 * 24 * 60 * 60 * 1000, // 3 days
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 3 days
     });
 
     logEvent(log, 'REGISTER COMPLETE');

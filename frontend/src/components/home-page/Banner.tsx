@@ -7,7 +7,7 @@ const Banner = () => {
   const { videoRef } = useVideo();
 
   return (
-    <div className='w-full relative -mt-14'>
+    <div className='w-full relative mt-[-68px]'>
       <motion.video
         ref={videoRef}
         className='w-full h-[600px] sm:h-[850px] block object-cover z-0'

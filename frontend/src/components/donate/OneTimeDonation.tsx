@@ -52,9 +52,7 @@ export const OneTimeDonationProgressTracker = ({ step, setStep, type }: any) => 
   <div className={`${type === 'one-time' ? 'block' : 'hidden'}`}>
     <div className='hidden md:flex justify-evenly mt-4 mb-8 gap-4'>
       <div
-        onClick={() =>
-          step.step2 || step.step3 ? setStep({ step1: true, step2: false, step3: false }) : {}
-        }
+        onClick={() => (step.step2 || step.step3 ? setStep({ step1: true, step2: false, step3: false }) : {})}
         className={`${step.step1 ? 'border-teal-500' : 'border-gray-300 text-gray-300'} ${
           step.step2 || step.step3 ? 'cursor-pointer' : ''
         } border-b-4 text-xl font-Matter-Medium tracking wider px-8 w-full text-center pb-1 whitespace-nowrap`}
@@ -62,9 +60,7 @@ export const OneTimeDonationProgressTracker = ({ step, setStep, type }: any) => 
         1. Gift Amount
       </div>
       <div
-        onClick={() =>
-          step.step3 ? setStep((prev: any) => ({ ...prev, step2: true, step3: false })) : {}
-        }
+        onClick={() => (step.step3 ? setStep((prev: any) => ({ ...prev, step2: true, step3: false })) : {})}
         className={`${step.step2 ? 'border-teal-500' : 'border-gray-300 text-gray-300'} ${
           step.step3 ? 'cursor-pointer' : ''
         } border-b-4 text-xl font-Matter-Medium tracking wider px-8 w-full text-center pb-1`}
@@ -81,9 +77,7 @@ export const OneTimeDonationProgressTracker = ({ step, setStep, type }: any) => 
     </div>
     <div className='flex justify-between w-72 mx-auto md:hidden mt-4 mb-8'>
       <div className='relative'>
-        <p className='font-Matter-Medium text-gray-300 text-center absolute -top-6 -left-4 whitespace-nowrap'>
-          Gift Amount
-        </p>
+        <p className='font-Matter-Medium text-gray-300 text-center absolute -top-6 -left-4 whitespace-nowrap'>Gift Amount</p>
         <div
           className={`${
             step.step1 ? 'bg-teal-500' : 'bg-gray-300'
@@ -93,9 +87,7 @@ export const OneTimeDonationProgressTracker = ({ step, setStep, type }: any) => 
         </div>
       </div>
       <div className='relative'>
-        <p className='font-Matter-Medium text-gray-300 text-center absolute -top-6 -left-1 whitespace-nowrap'>
-          Identity
-        </p>
+        <p className='font-Matter-Medium text-gray-300 text-center absolute -top-6 -left-1 whitespace-nowrap'>Identity</p>
         <div
           className={`${
             step.step2 ? 'bg-teal-500' : 'bg-gray-300'
@@ -105,9 +97,7 @@ export const OneTimeDonationProgressTracker = ({ step, setStep, type }: any) => 
         </div>
       </div>
       <div className='relative'>
-        <p className='font-Matter-Medium text-gray-300 text-center absolute -top-6 -left-2 whitespace-nowrap'>
-          Payment
-        </p>
+        <p className='font-Matter-Medium text-gray-300 text-center absolute -top-6 -left-2 whitespace-nowrap'>Payment</p>
         <div
           className={`${
             step.step3 ? 'bg-teal-500' : 'bg-gray-300'
@@ -142,10 +132,10 @@ export const OneTimeDonationForm = ({ type, step, setStep, setOpenModal }: any) 
   const handleStep1 = (e: any) => {
     e.preventDefault();
 
-    if (inputs.donationAmount === 0 && +inputs.otherAmount <= 0.99) {
+    if (inputs.donationAmount === 0 && +inputs.otherAmount < 10) {
       setErrors((prev: any) => ({
         ...prev,
-        donationAmount: 'Amount needs to be greater than or equal to 1',
+        donationAmount: 'Amount needs to be greater than or equal to 10',
       }));
     } else {
       setErrors({});
@@ -210,10 +200,7 @@ export const OneTimeDonationForm = ({ type, step, setStep, setOpenModal }: any) 
       ) : step.step2 ? (
         <div className='grid grid-cols-12 gap-4'>
           <p className='col-span-12 font-Matter-Light text-sm'>
-            Donation Amount:{' '}
-            <span className='text-sm font-Matter-Medium'>
-              ${toFixed(inputs.donationAmount || +inputs.otherAmount)}
-            </span>
+            Donation Amount: <span className='text-sm font-Matter-Medium'>${toFixed(inputs.donationAmount || +inputs.otherAmount)}</span>
           </p>
           <div className='col-span-12 md:col-span-6'>
             <label className='font-Matter-Medium text-sm mb-1' htmlFor='firstName'>
@@ -226,9 +213,7 @@ export const OneTimeDonationForm = ({ type, step, setStep, setOpenModal }: any) 
               className='auth-input bg-white border-[1px] w-full border-gray-300 rounded-md py-2.5 px-4 font-Matter-Regular focus:outline-none'
               value={inputs?.firstName || ''}
             />
-            {errors?.firstName && (
-              <p className='font-Matter-Regular text-sm text-red-500'>{errors?.firstName}</p>
-            )}
+            {errors?.firstName && <p className='font-Matter-Regular text-sm text-red-500'>{errors?.firstName}</p>}
           </div>
           <div className='col-span-12 md:col-span-6'>
             <label className='font-Matter-Medium text-sm mb-1' htmlFor='lastName'>
@@ -241,9 +226,7 @@ export const OneTimeDonationForm = ({ type, step, setStep, setOpenModal }: any) 
               className='auth-input bg-white border-[1px] w-full border-gray-300 rounded-md py-2.5 px-4 font-Matter-Regular focus:outline-none'
               value={inputs.lastName || ''}
             />
-            {errors?.lastName && (
-              <p className='font-Matter-Regular text-sm text-red-500'>{errors?.lastName}</p>
-            )}
+            {errors?.lastName && <p className='font-Matter-Regular text-sm text-red-500'>{errors?.lastName}</p>}
           </div>
           <div className='col-span-12'>
             <label className='font-Matter-Medium text-sm mb-1' htmlFor='firstName'>
@@ -256,9 +239,7 @@ export const OneTimeDonationForm = ({ type, step, setStep, setOpenModal }: any) 
               className='auth-input bg-white border-[1px] w-full border-gray-300 rounded-md py-2.5 px-4 font-Matter-Regular focus:outline-none'
               value={inputs.email || ''}
             />
-            {errors?.email && (
-              <p className='font-Matter-Regular text-sm text-red-500'>{errors?.email}</p>
-            )}
+            {errors?.email && <p className='font-Matter-Regular text-sm text-red-500'>{errors?.email}</p>}
           </div>
           <button
             onClick={handleStep2}
@@ -296,11 +277,7 @@ export const OneTimeDonationForm = ({ type, step, setStep, setOpenModal }: any) 
               onClick={() => setInputs((prev: any) => ({ ...prev, donationAmount: 0 }))}
             />
           </div>
-          {errors?.donationAmount && (
-            <p className='font-Matter-Regular text-sm text-red-500 mt-0.5'>
-              {errors?.donationAmount}
-            </p>
-          )}
+          {errors?.donationAmount && <p className='font-Matter-Regular text-sm text-red-500 mt-0.5'>{errors?.donationAmount}</p>}
           <button
             onClick={handleStep1}
             className='bg-teal-500 text-white px-16 h-24 flex items-center justify-center font-Matter-Bold text-3xl mx-auto my-16'

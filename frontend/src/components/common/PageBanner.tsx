@@ -6,7 +6,7 @@ const PageBanner = ({ imgSrc, title }: { imgSrc: string; title: string }) => {
   return (
     <div
       style={{ backgroundImage: `url(${imgSrc})`, backgroundPositionY: '30%' }}
-      className='relative -mt-14 bg-no-repeat bg-cover bg-center h-[350px] px-3 flex items-center bg-teal-500'
+      className='relative mt-[-68px] bg-no-repeat bg-cover bg-center h-[350px] px-3 flex items-center bg-teal-500'
     >
       <div className='w-full h-[350px] bg-[#1c1c1c]/30 absolute z-0 top-0 left-0 px-4'>
         <div className='max-w-screen-2xl mx-auto w-full h-full flex flex-col lg:gap-x-10 lg:flex-row items-center justify-center lg:justify-between relative z-10'>
