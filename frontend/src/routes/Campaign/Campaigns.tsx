@@ -246,7 +246,7 @@ const Campaigns: React.FC = () => {
           </section>
 
           {/* Past Campaigns */}
-          <section className='mb-12'>
+          {/* <section className='mb-12'>
             <div className='flex items-center gap-3 mb-8'>
               <Trophy className='w-7 h-7 text-amber-500' />
               <h2 className='text-3xl font-bold text-gray-800'>Past Campaigns</h2>
@@ -261,7 +261,7 @@ const Campaigns: React.FC = () => {
                 ))}
               </div>
             )}
-          </section>
+          </section> */}
 
           {/* Call to Action */}
           <section className='text-center'>
