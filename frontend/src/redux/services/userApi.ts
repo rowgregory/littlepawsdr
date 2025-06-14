@@ -37,7 +37,7 @@ export const userApi = api.injectEndpoints({
         method: 'PATCH',
         body: user,
       }),
-      invalidatesTags: ['User'],
+      invalidatesTags: ['User', 'Campaign'],
     }),
     removeUserAddress: build.mutation({
       query: ({ userId }: { userId: string }) => ({

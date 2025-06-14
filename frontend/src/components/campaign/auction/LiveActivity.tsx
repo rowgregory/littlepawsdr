@@ -1,9 +1,10 @@
 import { formatDistanceToNow } from 'date-fns';
 import { Heart, Minus } from 'lucide-react';
 import { FC, useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 // // Live activity feed
-const LiveActivity: FC<{ latestBids: any; status: string }> = ({ latestBids, status }) => {
+const LiveActivity: FC<{ latestBids: any; status: string; customCampaignLink: string }> = ({ latestBids, status, customCampaignLink }) => {
   const [activities, setActivities] = useState([]);
   const [minimized, setMinimized] = useState(false);
 
@@ -15,6 +16,7 @@ const LiveActivity: FC<{ latestBids: any; status: string }> = ({ latestBids, sta
           action: `placed a bid of $${bid.bidAmount}`,
           item: bid.auctionItem?.name || 'Unknown Item',
           time: formatDistanceToNow(new Date(bid.createdAt), { addSuffix: true }),
+          auctionItemId: bid?.auctionItem?._id,
         }))
         .reverse();
       setActivities(newActivities);
@@ -45,14 +47,15 @@ const LiveActivity: FC<{ latestBids: any; status: string }> = ({ latestBids, sta
         {!minimized && (
           <div className='h-80 lg:h-96 overflow-y-auto space-y-2 mt-3'>
             {activities.map((activity: any, index) => (
-              <div
+              <Link
+                to={`/campaigns/${customCampaignLink}/auction/item/${activity?.auctionItemId}`}
                 key={index}
-                className={`text-white/80 text-sm p-2 rounded-lg bg-white/5 ${index === 0 ? 'animate-fade-in border border-green-400/30' : ''}`}
+                className={`block text-white/80 text-sm p-2 rounded-lg bg-white/5 ${index === 0 ? 'animate-fade-in border border-green-400/30' : ''}`}
               >
                 <span className='font-semibold text-blue-400'>{activity.user}</span> {activity.action} on{' '}
                 <span className='font-semibold text-purple-400'>{activity.item}</span>
                 <div className='text-white/50 text-xs mt-1'>{activity.time}</div>
-              </div>
+              </Link>
             ))}
           </div>
         )}

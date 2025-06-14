@@ -1,4 +1,4 @@
-import { CheckCircle, Clock, Flame, Lock, TrendingUp, UserCheck, Users } from 'lucide-react';
+import { CheckCircle, Clock, Flame, Gavel, Lock, ShoppingBag, TrendingUp, UserCheck, Users } from 'lucide-react';
 import { FC } from 'react';
 import { motion } from 'framer-motion';
 
@@ -177,8 +177,98 @@ export const BidderBadge = ({ status, totalBidders }: { status: string; totalBid
   );
 };
 
+export const FilterButtons: FC<{
+  activeFilter: string;
+  onFilterChange: (filter: 'auction' | 'instant' | 'all') => void;
+  auctionCount?: number;
+  instantCount?: number;
+}> = ({ activeFilter, onFilterChange, auctionCount = 0, instantCount = 0 }) => {
+  const getButtonClasses = (filter: string) => {
+    const isActive = activeFilter === filter;
+
+    // Color themes for each filter
+    const colorMap: any = {
+      all: isActive
+        ? 'bg-orange-500/20 text-orange-300 border-orange-400/50'
+        : 'bg-transparent text-white/70 border-orange-400/30 hover:bg-orange-500/10 hover:text-orange-300',
+      auction: isActive
+        ? 'bg-blue-500/20 text-blue-300 border-blue-400/50'
+        : 'bg-transparent text-white/70 border-blue-400/30 hover:bg-blue-500/10 hover:text-blue-300',
+      instant: isActive
+        ? 'bg-green-500/20 text-green-300 border-green-400/50'
+        : 'bg-transparent text-white/70 border-green-400/30 hover:bg-green-500/10 hover:text-green-300',
+    };
+
+    return `px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 flex items-center gap-2 border ${colorMap[filter]}`;
+  };
+
+  const getCountBadgeClasses = (filter: string) => {
+    const isActive = activeFilter === filter;
+    const colorMap: any = {
+      all: isActive ? 'bg-orange-400/30 text-orange-200' : 'bg-white/20 text-white/70',
+      auction: isActive ? 'bg-blue-400/30 text-blue-200' : 'bg-white/20 text-white/70',
+      instant: isActive ? 'bg-green-400/30 text-green-200' : 'bg-white/20 text-white/70',
+    };
+
+    return `text-xs px-2 py-0.5 rounded-full min-w-[20px] text-center ${colorMap[filter]}`;
+  };
+
+  return (
+    <motion.div
+      className='flex justify-center mt-4 gap-2'
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.3 }}
+    >
+      {/* All Items Button */}
+      <motion.button
+        onClick={() => onFilterChange('all')}
+        className={getButtonClasses('all')}
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+      >
+        <Flame className='w-4 h-4' />
+        <span>All Items</span>
+        <span className={getCountBadgeClasses('all')}>{auctionCount + instantCount}</span>
+      </motion.button>
+
+      {/* Auction Items Button */}
+      <motion.button
+        onClick={() => onFilterChange('auction')}
+        className={getButtonClasses('auction')}
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+      >
+        <Gavel className='w-4 h-4' />
+        <span>Auction Items</span>
+        <span className={getCountBadgeClasses('auction')}>{auctionCount}</span>
+      </motion.button>
+
+      {/* Instant Buy Button */}
+      <motion.button
+        onClick={() => onFilterChange('instant')}
+        className={getButtonClasses('instant')}
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+      >
+        <ShoppingBag className='w-4 h-4' />
+        <span>Instant Buy</span>
+        <span className={getCountBadgeClasses('instant')}>{instantCount}</span>
+      </motion.button>
+    </motion.div>
+  );
+};
+
 // Live stats ticker
-export const LiveStats: FC<{ totalBidders: number; moneySecured: string; status: string }> = ({ totalBidders, moneySecured, status }) => {
+export const LiveStats: FC<{
+  totalBidders: number;
+  moneySecured: string;
+  status: string;
+  activeFilter: string;
+  onFilterChange: (filter: 'auction' | 'instant' | 'all') => void;
+  auctionCount?: number;
+  instantCount?: number;
+}> = ({ totalBidders, moneySecured, status, activeFilter, onFilterChange, auctionCount = 0, instantCount = 0 }) => {
   return (
     <motion.div className='max-w-4xl mx-auto mb-12 px-4' initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
       {/* Desktop Layout */}
@@ -214,6 +304,7 @@ export const LiveStats: FC<{ totalBidders: number; moneySecured: string; status:
         <BidderBadge status={status} totalBidders={totalBidders} />
         <MoneySecuredBadge status={status} moneySecured={moneySecured} />
       </motion.div>
+      <FilterButtons activeFilter={activeFilter} onFilterChange={onFilterChange} auctionCount={auctionCount} instantCount={instantCount} />
     </motion.div>
   );
 };

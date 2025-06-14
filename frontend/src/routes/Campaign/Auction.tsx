@@ -18,29 +18,47 @@ const Auction = () => {
   const customCampaignLink = campaign?.customCampaignLink;
   const { user } = useAppSelector((state: RootState) => state.user);
   const [popTrigger, setPopTrigger] = useState(0);
+  const [activeFilter, setActiveFilter] = useState('all');
 
   const latestBids = campaign?.auction?.bids;
 
   const calculateIncrementalTotal = (bids: any) => {
     if (!bids || bids.length === 0) return 0;
 
-    // Sort bids by bidAmount (lowest to highest)
-    const sortedBids = [...bids].sort((a, b) => a.bidAmount - b.bidAmount);
-
-    let total = 0;
-
-    for (let i = 0; i < sortedBids.length; i++) {
-      if (i === 0) {
-        // First bid is the full amount
-        total += sortedBids[i].bidAmount;
-      } else {
-        // Add only the difference from the previous bid
-        const increment = sortedBids[i].bidAmount - sortedBids[i - 1].bidAmount;
-        total += increment;
+    // Group bids by auction item
+    const bidsByItem = bids.reduce((acc: any, bid: any) => {
+      const itemId = bid.auctionItem._id.toString();
+      if (!acc[itemId]) {
+        acc[itemId] = [];
       }
-    }
+      acc[itemId].push(bid);
+      return acc;
+    }, {});
 
-    return total;
+    let grandTotal = 0;
+    // Process each item separately
+    Object.values(bidsByItem).forEach((itemBids: any) => {
+      // Sort bids for this item by bidAmount (lowest to highest)
+      const sortedBids = [...itemBids].sort((a, b) => a.bidAmount - b.bidAmount);
+
+      let itemTotal = 0;
+
+      for (let i = 0; i < sortedBids.length; i++) {
+        if (i === 0) {
+          // First bid for this item is the full amount
+          itemTotal += sortedBids[i].bidAmount;
+        } else {
+          // Add only the difference from the previous bid for this item
+          const increment = sortedBids[i].bidAmount - sortedBids[i - 1].bidAmount;
+          itemTotal += increment;
+        }
+      }
+
+      // Add this item's total to the grand total
+      grandTotal += itemTotal;
+    });
+
+    return grandTotal;
   };
   const moneySecured = calculateIncrementalTotal(latestBids);
 
@@ -59,6 +77,9 @@ const Auction = () => {
     }
   }, [latestBids, campaignState?.placeBidSuccess, dispatch]);
 
+  const auctionCount = campaign?.auction?.items?.filter((item) => item.sellingFormat === 'auction').length;
+  const fixedCount = campaign?.auction?.items?.filter((item) => item.sellingFormat === 'fixed').length;
+
   return (
     <div className='min-h-dvh pb-60 bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 relative overflow-hidden'>
       <ConfettiPop trigger={popTrigger} particleCount={150} duration={3000} />
@@ -68,21 +89,36 @@ const Auction = () => {
         <AuctionHeader user={user} customCampaignLink={campaign?.customCampaignLink} />
         <AuctionCountdownTimer startDate={auction?.settings?.startDate} endDate={auction?.settings?.endDate} title={campaign?.title} />
 
-        <LiveStats totalBidders={auction?.bidders?.length} moneySecured={moneySecured?.toString()} status={status} />
+        <LiveStats
+          totalBidders={auction?.bidders?.length}
+          moneySecured={moneySecured?.toString()}
+          status={status}
+          activeFilter={activeFilter}
+          onFilterChange={setActiveFilter}
+          auctionCount={auctionCount}
+          instantCount={fixedCount}
+        />
 
         {/* Main auction grid */}
         <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-8 mb-12'>
-          {auction?.items?.map((item: any, index: number) => (
-            <AuctionItemCard
-              key={index}
-              item={item}
-              index={index}
-              settings={auction?.settings}
-              customCampaignLink={customCampaignLink}
-              status={status}
-              user={user}
-            />
-          ))}
+          {auction?.items
+            ?.filter((item: any) => {
+              if (activeFilter === 'all') return true;
+              if (activeFilter === 'auction') return item.sellingFormat === 'auction' || !item.instantBuyPrice;
+              if (activeFilter === 'instant') return item.sellingFormat === 'fixed' || item.instantBuyPrice;
+              return true;
+            })
+            ?.map((item: any, index: number) => (
+              <AuctionItemCard
+                key={index}
+                item={item}
+                index={index}
+                settings={auction?.settings}
+                customCampaignLink={customCampaignLink}
+                status={status}
+                user={user}
+              />
+            ))}
         </div>
 
         {/* Call to action */}
@@ -105,7 +141,7 @@ const Auction = () => {
         </div>
       </div>
 
-      <LiveActivity latestBids={latestBids} status={status} />
+      <LiveActivity latestBids={latestBids} status={status} customCampaignLink={customCampaignLink} />
     </div>
   );
 };

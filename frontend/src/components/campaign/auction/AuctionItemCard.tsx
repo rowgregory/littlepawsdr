@@ -179,7 +179,7 @@ const AuctionItemCard = ({ item, index, settings, customCampaignLink, status, us
 
         {/* Content section */}
         <div className='p-6'>
-          <h3 className={`text-xl font-bold mb-3 ${isAuctionClosed ? 'text-gray-300' : isAuctionUpcoming ? 'text-blue-200' : 'text-white'}`}>
+          <h3 className={`text-xl font-bold mb-3 truncate ${isAuctionClosed ? 'text-gray-300' : isAuctionUpcoming ? 'text-blue-200' : 'text-white'}`}>
             {item?.name}
           </h3>
 
