@@ -40,14 +40,8 @@ const admin = (req, res, next) => {
 };
 
 const forceLogoutMiddleware = async (req, res, next) => {
-  const skipPaths = [
-    '/static/',
-    '/assets/',
-    '/favicon.ico',
-    '/robots.txt',
-    '/manifest.json',
-    // Add any other static paths your app uses
-  ];
+  // Skip middleware entirely for static assets
+  const skipPaths = ['/static/', '/assets/', '/favicon.ico', '/robots.txt', '/manifest.json', '/.well-known'];
 
   const shouldSkip = skipPaths.some((path) => req.path.startsWith(path)) || req.path.match(/\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot)$/);
 
@@ -56,34 +50,24 @@ const forceLogoutMiddleware = async (req, res, next) => {
   }
 
   try {
-    const log = await prepareLog('FORCE_LOGOUT_CHECK');
-    // Check if user has old token-based auth but no cookie
     const hasOldAuth = req.headers.authorization && req.headers.authorization.startsWith('Bearer');
     const hasCookie = req.cookies.authToken;
 
-    logEvent(log, 'MIDDLEWARE CHECK', {
-      hasOldAuth: !!hasOldAuth,
-      hasCookie: !!hasCookie,
-      path: req.path,
-      method: req.method,
-      userAgent: req.get('User-Agent')?.substring(0, 100), // Truncate for logs
-    });
-
+    // ONLY log and act when there's actually a security issue
     if (hasOldAuth && !hasCookie) {
+      const log = await prepareLog('FORCE_LOGOUT_CHECK');
+
       logEvent(log, 'OLD AUTH DETECTED - FORCING LOGOUT', {
-        authHeader: req.headers.authorization?.substring(0, 20) + '...', // Partial token for security
+        authHeader: req.headers.authorization?.substring(0, 20) + '...',
         path: req.path,
         ip: req.ip || req.connection.remoteAddress,
       });
 
-      // Clear any existing cookies and force logout
       res.clearCookie('authToken', {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
       });
-
-      logEvent(log, 'FORCE LOGOUT RESPONSE SENT');
 
       return res.status(401).json({
         message: 'Session expired due to security update. Please log in again.',
@@ -92,12 +76,10 @@ const forceLogoutMiddleware = async (req, res, next) => {
       });
     }
 
-    logEvent(log, 'AUTH CHECK PASSED - CONTINUING');
+    // No logging at all for normal requests - just continue silently
     next();
   } catch (error) {
-    logEvent(log, 'FORCE LOGOUT MIDDLEWARE ERROR', error.message);
-
-    // Don't block the request on logging errors
+    console.error('Force logout middleware error:', error.message);
     next();
   }
 };
