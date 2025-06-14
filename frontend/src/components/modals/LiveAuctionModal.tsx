@@ -101,10 +101,10 @@ const LiveAuctionModal = () => {
                   setClose();
                   navigate(
                     user?._id && user?.hasAddress
-                      ? `/campaigns/${campaign?.customCampaignLink}/auction`
+                      ? `/campaigns/${campaign?.campaign?.customCampaignLink}/auction`
                       : user?._id && !user?.hasAddress
                       ? '/settings/profile'
-                      : `/auth/register?customCampaignLink=${campaign?.customCampaignLink}&conversionSource=live_auction_modal`
+                      : `/auth/register?customCampaignLink=${campaign?.campaign?.customCampaignLink}&conversionSource=live_auction_modal`
                   );
                 }}
                 className='w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg'
