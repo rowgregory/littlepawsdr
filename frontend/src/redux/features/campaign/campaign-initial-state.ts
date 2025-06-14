@@ -55,10 +55,10 @@ export const initialBid: Bid = {
 
 export const initialInstantBuyer: InstantBuyer = {
   _id: '',
-  buyer: '',
-  quantity: 0,
-  purchasePrice: 0,
-  timestamp: '',
+  name: '',
+  email: '',
+  totalPrice: 0,
+  isDigital: false,
 };
 
 export const initialAuctionSettings: AuctionSettings = {
@@ -169,7 +169,7 @@ export const initialWinner: Winner = {
   customCampaignLink: '',
 };
 
-export const initialInstantBuy: InstantBuy = {};
+export const initialInstantBuy: InstantBuy = { totalPrice: 0 };
 
 export const initialCampaignState: CampaignStatePayload = {
   // Loading and status states

@@ -21,13 +21,14 @@ const Auction = () => {
   const [activeFilter, setActiveFilter] = useState('all');
 
   const latestBids = campaign?.auction?.bids;
+  const lastestInstantBuyers = campaign?.auction?.instantBuyers;
 
   const calculateIncrementalTotal = (bids: any) => {
     if (!bids || bids.length === 0) return 0;
 
     // Group bids by auction item
     const bidsByItem = bids.reduce((acc: any, bid: any) => {
-      const itemId = bid.auctionItem._id.toString();
+      const itemId = bid?.auctionItem?._id?.toString();
       if (!acc[itemId]) {
         acc[itemId] = [];
       }
@@ -60,7 +61,12 @@ const Auction = () => {
 
     return grandTotal;
   };
-  const moneySecured = calculateIncrementalTotal(latestBids);
+
+  const totalFromInstantBuys = campaign?.auction?.instantBuyers?.length
+    ? campaign.auction.instantBuyers.reduce((acc, item) => acc + (item.totalPrice || 0), 0)
+    : 0;
+
+  const moneySecured = calculateIncrementalTotal(latestBids) + totalFromInstantBuys;
 
   const status = campaign?.auction?.settings?.status;
 
@@ -141,7 +147,7 @@ const Auction = () => {
         </div>
       </div>
 
-      <LiveActivity latestBids={latestBids} status={status} customCampaignLink={customCampaignLink} />
+      <LiveActivity latestBids={latestBids} status={status} customCampaignLink={customCampaignLink} lastestInstantBuyers={lastestInstantBuyers} />
     </div>
   );
 };

@@ -45,10 +45,10 @@ export interface Bid {
 // Instant buyer interface
 export interface InstantBuyer {
   _id: string;
-  buyer: string;
-  quantity: number;
-  purchasePrice: number;
-  timestamp: string;
+  name: string;
+  email: string;
+  totalPrice: number;
+  isDigital: boolean;
   // Add more instant buyer properties as needed
 }
 
@@ -157,6 +157,7 @@ export interface CampaignsByStatus {
 // Instant buy interface (currently empty, extend as needed)
 export interface InstantBuy {
   // Add properties as needed
+  totalPrice: number;
 }
 
 // Main campaign state payload interface

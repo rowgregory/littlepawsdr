@@ -26,6 +26,7 @@ const getCampaignByCustomLinkId = asyncHandler(async (req, res) => {
           },
           { path: 'settings', select: 'endDate startDate' },
           { path: 'bids', populate: [{ path: 'auctionItem' }, { path: 'user' }] },
+          { path: 'instantBuyers', populate: [{ path: 'auctionItem' }, { path: 'user' }] },
         ],
       },
     ]);

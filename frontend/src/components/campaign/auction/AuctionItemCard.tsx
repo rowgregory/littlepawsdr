@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { usePlaceBidMutation } from '../../../redux/services/campaignApi';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Calendar, Clock, Crown, Eye, Flame, Gavel, MapPin, Package2, Star, Sunrise, Trophy, UserPlus, Users, Zap } from 'lucide-react';
+import { Calendar, Clock, Crown, Eye, Flame, Gavel, MapPin, Package2, Star, Sunrise, TrendingUp, Trophy, UserPlus, Users, Zap } from 'lucide-react';
 import AuctionTiming from './AuctionTiming';
 import ConfirmBidModal from '../../modals/bid/ConfirmBidModal';
 import { useLightningTransition } from '../../transitions/LightningTransition';
@@ -73,6 +73,10 @@ const AuctionItemCard = ({ item, index, settings, customCampaignLink, status, us
               ? 'bg-blue-600 text-blue-100 border border-blue-400 animate-pulse'
               : item?.bids?.length > 5
               ? 'bg-red-500 text-white animate-pulse'
+              : item?.bids?.length >= 2 || item?.instantBuyers?.length >= 2
+              ? 'bg-orange-500 text-white animate-bounce'
+              : item?.bids?.length >= 1 || item?.instantBuyers?.length >= 1
+              ? 'bg-yellow-500 text-white'
               : 'bg-sky-500 text-white'
           }`}
         >
@@ -90,6 +94,16 @@ const AuctionItemCard = ({ item, index, settings, customCampaignLink, status, us
             <>
               <Flame className='inline w-3 h-3 mr-1' />
               HOT
+            </>
+          ) : item?.bids?.length >= 2 || item?.instantBuyers?.length >= 2 ? (
+            <>
+              <TrendingUp className='inline w-3 h-3 mr-1' />
+              TRENDING
+            </>
+          ) : item?.bids?.length >= 1 || item?.instantBuyers?.length >= 1 ? (
+            <>
+              <Zap className='inline w-3 h-3 mr-1' />
+              ACTIVE
             </>
           ) : (
             <>
