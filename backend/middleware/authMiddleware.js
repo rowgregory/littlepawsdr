@@ -40,9 +40,23 @@ const admin = (req, res, next) => {
 };
 
 const forceLogoutMiddleware = async (req, res, next) => {
-  const log = await prepareLog('FORCE_LOGOUT_CHECK');
+  const skipPaths = [
+    '/static/',
+    '/assets/',
+    '/favicon.ico',
+    '/robots.txt',
+    '/manifest.json',
+    // Add any other static paths your app uses
+  ];
+
+  const shouldSkip = skipPaths.some((path) => req.path.startsWith(path)) || req.path.match(/\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot)$/);
+
+  if (shouldSkip) {
+    return next();
+  }
 
   try {
+    const log = await prepareLog('FORCE_LOGOUT_CHECK');
     // Check if user has old token-based auth but no cookie
     const hasOldAuth = req.headers.authorization && req.headers.authorization.startsWith('Bearer');
     const hasCookie = req.cookies.authToken;
