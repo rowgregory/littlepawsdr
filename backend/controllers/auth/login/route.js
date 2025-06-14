@@ -125,7 +125,9 @@ const login = asyncHandler(async (req, res) => {
     // Fetch the updated user with populated address
     const userToReturn = await User.findById(user._id)
       .populate('addressRef')
-      .select('_id name email isAdmin lastLoginTime firstNameFirstInitial lastNameFirstInitial firstName lastName updatedAt hasAddress');
+      .select(
+        '_id name email isAdmin lastLoginTime firstNameFirstInitial lastNameFirstInitial firstName lastName updatedAt hasAddress anonymousBidding'
+      );
 
     logEvent(log, 'USER DATA FETCHED', userToReturn._id);
 

@@ -11,7 +11,7 @@ const LiveActivity: FC<{ latestBids: any; status: string }> = ({ latestBids, sta
     if (latestBids?.length > 0) {
       const newActivities = latestBids
         .map((bid: any) => ({
-          user: bid.user?.firstName && bid.user?.lastName ? `${bid.user.firstName} ${bid.user.lastName[0]}.` : bid.user?.name || 'Anonymous',
+          user: bid?.bidder || 'Anonymous',
           action: `placed a bid of $${bid.bidAmount}`,
           item: bid.auctionItem?.name || 'Unknown Item',
           time: formatDistanceToNow(new Date(bid.createdAt), { addSuffix: true }),
