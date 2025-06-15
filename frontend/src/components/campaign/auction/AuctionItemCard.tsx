@@ -292,7 +292,13 @@ const AuctionItemCard = ({ item, index, settings, customCampaignLink, status, us
               {/* Current bid display */}
               <div className='mb-4'>
                 <div className='flex justify-between items-end mb-1'>
-                  <p className='text-white/70 text-sm'>{item?.sellingFormat === 'auction' ? 'Current Bid' : 'Buy Now Price'}</p>
+                  <p className='text-white/70 text-sm'>
+                    {item?.sellingFormat === 'auction'
+                      ? item?.totalBids === 0 || item?.bids?.length === 0
+                        ? 'Starting Bid'
+                        : 'Current Bid'
+                      : 'Buy Now Price'}
+                  </p>
                 </div>
                 <p className={`text-3xl font-black ${justBid ? 'text-green-400 animate-pulse' : 'text-yellow-400'}`}>
                   ${item?.isFixed ? item?.buyNowPrice?.toLocaleString() : item?.currentBid?.toLocaleString()}

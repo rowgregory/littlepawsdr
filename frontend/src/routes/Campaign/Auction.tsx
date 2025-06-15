@@ -85,6 +85,7 @@ const Auction = () => {
 
   const auctionCount = campaign?.auction?.items?.filter((item) => item.sellingFormat === 'auction').length;
   const fixedCount = campaign?.auction?.items?.filter((item) => item.sellingFormat === 'fixed').length;
+  const noBidsCount = campaign?.auction?.items?.filter((item) => (item.bids?.length || 0) === 0).length || 0;
 
   return (
     <div className='min-h-dvh pb-60 bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 relative overflow-hidden'>
@@ -103,6 +104,7 @@ const Auction = () => {
           onFilterChange={setActiveFilter}
           auctionCount={auctionCount}
           instantCount={fixedCount}
+          noBidsCounts={noBidsCount}
         />
 
         {/* Main auction grid */}
@@ -112,6 +114,8 @@ const Auction = () => {
               if (activeFilter === 'all') return true;
               if (activeFilter === 'auction') return item.sellingFormat === 'auction' || !item.instantBuyPrice;
               if (activeFilter === 'instant') return item.sellingFormat === 'fixed' || item.instantBuyPrice;
+              if (activeFilter === 'no-bids')
+                return (item.sellingFormat === 'auction' || !item.instantBuyPrice) && (!item.bids || item.bids.length === 0);
               return true;
             })
             ?.map((item: any, index: number) => (

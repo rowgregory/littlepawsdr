@@ -179,10 +179,11 @@ export const BidderBadge = ({ status, totalBidders }: { status: string; totalBid
 
 export const FilterButtons: FC<{
   activeFilter: string;
-  onFilterChange: (filter: 'auction' | 'instant' | 'all') => void;
+  onFilterChange: (filter: 'auction' | 'instant' | 'all' | 'no-bids') => void;
   auctionCount?: number;
   instantCount?: number;
-}> = ({ activeFilter, onFilterChange, auctionCount = 0, instantCount = 0 }) => {
+  noBidsCount?: number;
+}> = ({ activeFilter, onFilterChange, auctionCount = 0, instantCount = 0, noBidsCount = 0 }) => {
   const getButtonClasses = (filter: string) => {
     const isActive = activeFilter === filter;
 
@@ -197,6 +198,9 @@ export const FilterButtons: FC<{
       instant: isActive
         ? 'bg-green-500/20 text-green-300 border-green-400/50'
         : 'bg-transparent text-white/70 border-green-400/30 hover:bg-green-500/10 hover:text-green-300',
+      'no-bids': isActive
+        ? 'bg-purple-500/20 text-purple-300 border-purple-400/50'
+        : 'bg-transparent text-white/70 border-purple-400/30 hover:bg-purple-500/10 hover:text-purple-300',
     };
 
     return `px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 flex items-center gap-2 border ${colorMap[filter]}`;
@@ -208,6 +212,7 @@ export const FilterButtons: FC<{
       all: isActive ? 'bg-orange-400/30 text-orange-200' : 'bg-white/20 text-white/70',
       auction: isActive ? 'bg-blue-400/30 text-blue-200' : 'bg-white/20 text-white/70',
       instant: isActive ? 'bg-green-400/30 text-green-200' : 'bg-white/20 text-white/70',
+      'no-bids': isActive ? 'bg-purple-400/30 text-purple-200' : 'bg-white/20 text-white/70',
     };
 
     return `text-xs px-2 py-0.5 rounded-full min-w-[20px] text-center ${colorMap[filter]}`;
@@ -255,6 +260,18 @@ export const FilterButtons: FC<{
         <span>Instant Buy</span>
         <span className={getCountBadgeClasses('instant')}>{instantCount}</span>
       </motion.button>
+
+      {/* No Bids Button */}
+      <motion.button
+        onClick={() => onFilterChange('no-bids')}
+        className={getButtonClasses('no-bids')}
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+      >
+        <Clock className='w-4 h-4' />
+        <span>No Bids</span>
+        <span className={getCountBadgeClasses('no-bids')}>{noBidsCount}</span>
+      </motion.button>
     </motion.div>
   );
 };
@@ -265,10 +282,11 @@ export const LiveStats: FC<{
   moneySecured: string;
   status: string;
   activeFilter: string;
-  onFilterChange: (filter: 'auction' | 'instant' | 'all') => void;
+  onFilterChange: (filter: 'auction' | 'instant' | 'all' | 'no-bids') => void;
   auctionCount?: number;
   instantCount?: number;
-}> = ({ totalBidders, moneySecured, status, activeFilter, onFilterChange, auctionCount = 0, instantCount = 0 }) => {
+  noBidsCounts?: number;
+}> = ({ totalBidders, moneySecured, status, activeFilter, onFilterChange, auctionCount = 0, instantCount = 0, noBidsCounts = 0 }) => {
   return (
     <motion.div className='max-w-4xl mx-auto mb-12 px-4' initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
       {/* Desktop Layout */}
@@ -304,7 +322,13 @@ export const LiveStats: FC<{
         <BidderBadge status={status} totalBidders={totalBidders} />
         <MoneySecuredBadge status={status} moneySecured={moneySecured} />
       </motion.div>
-      <FilterButtons activeFilter={activeFilter} onFilterChange={onFilterChange} auctionCount={auctionCount} instantCount={instantCount} />
+      <FilterButtons
+        activeFilter={activeFilter}
+        onFilterChange={onFilterChange}
+        auctionCount={auctionCount}
+        instantCount={instantCount}
+        noBidsCount={noBidsCounts}
+      />
     </motion.div>
   );
 };
