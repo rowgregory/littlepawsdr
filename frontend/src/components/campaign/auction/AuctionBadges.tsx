@@ -203,7 +203,12 @@ export const FilterButtons: FC<{
         : 'bg-transparent text-white/70 border-purple-400/30 hover:bg-purple-500/10 hover:text-purple-300',
     };
 
-    return `px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 flex items-center gap-2 border ${colorMap[filter]}`;
+    return `
+      px-3 py-2 rounded-md text-sm font-medium 
+      transition-all duration-300 flex items-center gap-2 border 
+      w-full justify-center
+      ${colorMap[filter]}
+    `;
   };
 
   const getCountBadgeClasses = (filter: string) => {
@@ -220,7 +225,7 @@ export const FilterButtons: FC<{
 
   return (
     <motion.div
-      className='flex justify-center mt-4 gap-2'
+      className='flex flex-col sm:flex-row justify-center mt-4 gap-2 px-4 sm:px-0 max-w-sm sm:max-w-none mx-auto'
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.3 }}
