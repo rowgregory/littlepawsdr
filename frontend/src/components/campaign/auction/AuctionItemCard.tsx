@@ -1,7 +1,25 @@
 import { useState } from 'react';
 import { usePlaceBidMutation } from '../../../redux/services/campaignApi';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Calendar, Clock, Crown, Eye, Flame, Gavel, MapPin, Package2, Star, Sunrise, TrendingUp, Trophy, UserPlus, Users, Zap } from 'lucide-react';
+import {
+  Calendar,
+  Check,
+  Clock,
+  Crown,
+  Eye,
+  Flame,
+  Gavel,
+  MapPin,
+  Package2,
+  ShoppingCart,
+  Star,
+  Sunrise,
+  TrendingUp,
+  Trophy,
+  UserPlus,
+  Users,
+  Zap,
+} from 'lucide-react';
 import AuctionTiming from './AuctionTiming';
 import ConfirmBidModal from '../../modals/bid/ConfirmBidModal';
 import { useLightningTransition } from '../../transitions/LightningTransition';
@@ -259,13 +277,32 @@ const AuctionItemCard = ({ item, index, settings, customCampaignLink, status, us
                   </div>
                 </div>
               )}
+              {item?.isFixed && (
+                <div className='bg-gradient-to-r from-green-600/20 to-emerald-600/20 border border-green-500/30 rounded-2xl p-4'>
+                  <div className='flex items-center gap-2 mb-2'>
+                    <ShoppingCart className='w-5 h-5 text-green-400' />
+                    <p className='text-green-400 font-bold text-sm uppercase tracking-wide'>Available Instantly</p>
+                  </div>
+                  <div className='flex items-center gap-3'>
+                    <div className='w-10 h-10 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center font-bold text-white text-sm'>
+                      <Check className='w-5 h-5' />
+                    </div>
+                    <div>
+                      <p className='text-white font-semibold'>{item?.instantBuyers?.length} Instantly Bought</p>
+                      <p className='text-gray-400 text-sm'>Direct Purchase</p>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* Final result */}
               <div className='text-center'>
                 {item?.status === 'Sold' ? (
                   <>
-                    <p className='text-gray-400 text-sm mb-1'>Final Winning Bid</p>
-                    <p className='text-4xl font-black text-yellow-400'>${winningBidAmount?.toLocaleString()}</p>
+                    <p className='text-gray-400 text-sm mb-1'>Final {item.isFixed ? 'Purchase Count' : 'Winning Bid'}</p>
+                    <p className='text-4xl font-black text-yellow-400'>
+                      {item?.isFixed ? item?.instantBuyers?.length : `$${winningBidAmount?.toLocaleString()}`}
+                    </p>
                   </>
                 ) : (
                   <>
