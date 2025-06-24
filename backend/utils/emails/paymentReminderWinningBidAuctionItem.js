@@ -20,19 +20,19 @@ const paymentRedminderWinningBidAuctionItem = async (pugEmail, auctionWinningBid
   auctionWinningBidders.forEach(async (winningBidder) => {
     await sendEmailWithRetry(
       {
-        template: 'paymentreminderwinningbidauctionitem',
+        template: 'auctionItemWinningBidder',
         message: {
           from: `Little Paws Dachshund Rescue <no-reply@littlepawsdr.org`,
           to: winningBidder.user.email,
         },
         locals: {
-          photo: winningBidder.auctionItem.photos[0].url,
-          itemName: winningBidder.auctionItem.name,
-          desc: winningBidder.auctionItem.description,
-          subtotal: winningBidder.itemSoldPrice?.toFixed(2),
-          shipping: winningBidder.shipping?.toFixed(2),
-          totalPrice: winningBidder.totalPrice?.toFixed(2),
+          itemCount: winningBidder.auctionItems.length,
+          shipping: winningBidder.shipping,
+          subtotal: winningBidder.subtotal,
+          totalPrice: winningBidder.totalPrice,
+          auctionItems: winningBidder.auctionItems,
           id: winningBidder._id,
+          name: winningBidder.user.name,
         },
       },
       pugEmail

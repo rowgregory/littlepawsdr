@@ -124,8 +124,7 @@ const cronJobs = (io) => {
         const now = new Date();
 
         // Calculate 24 hours ago from the current time
-        const twentyFourHoursAgo = new Date();
-        twentyFourHoursAgo.setHours(now.getHours() - 24); // Subtract 24 hours from now
+        const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
 
         logEvent(log, '24 HOURS AGO', twentyFourHoursAgo);
 
@@ -135,7 +134,7 @@ const cronJobs = (io) => {
           winningBidPaymentStatus: 'Awaiting Payment',
           auctionItemPaymentStatus: 'Pending',
           createdAt: { $gte: twentyFourHoursAgo },
-        }).populate([{ path: 'auctionItem', populate: [[{ path: 'photos' }]] }, { path: 'user' }]);
+        }).populate([{ path: 'auctionItems', populate: [[{ path: 'photos' }]] }, { path: 'user' }]);
 
         if (auctionWinningBidders.length > 0) {
           logEvent(log, 'EMAILS TO SEND');
@@ -157,9 +156,8 @@ const cronJobs = (io) => {
 
         const now = new Date();
 
-        // Calculate 24 hours ago from the current time
-        const seventyTwoHoursAgo = new Date();
-        seventyTwoHoursAgo.setHours(now.getHours() - 72); // Subtract 72 hours from now
+        // Calculate 72 hours ago from the current time
+        const seventyTwoHoursAgo = new Date(now.getTime() - 72 * 60 * 60 * 1000); // Subtract 72 hours from now
 
         logEvent(log, '72 HOURS AGO', seventyTwoHoursAgo);
 
@@ -169,7 +167,7 @@ const cronJobs = (io) => {
           winningBidPaymentStatus: 'Awaiting Payment',
           auctionItemPaymentStatus: 'Pending',
           createdAt: { $gte: seventyTwoHoursAgo },
-        }).populate([{ path: 'auctionItem', populate: [[{ path: 'photos' }]] }, { path: 'user' }]);
+        }).populate([{ path: 'auctionItems', populate: [[{ path: 'photos' }]] }, { path: 'user' }]);
 
         if (auctionWinningBidders.length > 0) {
           logEvent(log, 'EMAILS TO SEND');

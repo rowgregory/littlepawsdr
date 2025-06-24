@@ -1,9 +1,6 @@
 import asyncHandler from 'express-async-handler';
 import Order from '../models/orderModel.js';
-import sendEmail from '../utils/sendEmail.js';
 import Error from '../models/errorModel.js';
-import ProductOrder from '../models/productOrderModel.js';
-import getTrackingService from '../utils/getTrackingService.js';
 import { logEvent, prepareLog } from '../utils/logHelpers.js';
 import createEcardOrders from '../utils/order/createEcardOrders.js';
 import createOrderDocument from '../utils/order/createOrderDocument.js';
@@ -105,57 +102,4 @@ const getOrders = asyncHandler(async (req, res) => {
   }
 });
 
-/**
-@desc    Update order with tracking number
-@route   PUT /api/order/:id/tracking-number
-@access  Private/Admin
-*/
-const updateOrderWithTrackingNumber = asyncHandler(async (req, res) => {
-  const log = await prepareLog('UPDATE ORDER WITH TRACKING NUMBER');
-  logEvent(log, 'INITIATE UPDATE ORDER WITH TRACKING NUMBER');
-
-  try {
-    const { id, trackingNumber } = req.body;
-
-    const order = await Order.findByIdAndUpdate(
-      id,
-      {
-        trackingNumber,
-        shippingProvider: getTrackingService(trackingNumber),
-        isShipped: true,
-        shippedOn: Date.now(),
-        status: 'Complete',
-      },
-      { new: true }
-    );
-    logEvent(log, 'ORDER UPDATED', order);
-
-    const updatedProductOrder = await ProductOrder.findOneAndUpdate({ orderId: id }, { status: 'Shipped' }, { new: true });
-    logEvent(log, 'PRODUCT ORDER UPDATED', updatedProductOrder);
-
-    sendEmail(order, 'SEND_ORDER_SHIPPED_CONFIRMATION_EMAIL');
-
-    logEvent(log, 'END UPDATE ORDER WITH TRACKING NUMBER');
-
-    res.status(200).json({
-      message: 'Order updated and shipping confirmation email has been sent',
-      sliceName: 'orderApi',
-    });
-  } catch (err) {
-    logEvent(log, 'ERROR UPDATE ORDER WITH TRACKING NUMBER');
-
-    await Error.create({
-      functionName: 'UPDATE_ORDER_WITH_TRACKING_NUMBER',
-      name: err.name,
-      message: err.message,
-      user: { id: req?.user?._id, email: req?.user?.email },
-    });
-
-    res.status(500).json({
-      message: `Error updating order tracking number`,
-      sliceName: 'orderApi',
-    });
-  }
-});
-
-export { createOrder, getOrderById, getOrders, updateOrderWithTrackingNumber };
+export { createOrder, getOrderById, getOrders };
