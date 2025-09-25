@@ -8,6 +8,7 @@ import TopHeaderInfoBox from './TopHeaderInfoBox';
 import { formatDateTime } from '../../utils/formatDateTime';
 import { motion } from 'framer-motion';
 import RainbowBurgerMenu from '../RainbowBurgerMenu';
+import MotionLink from '../common/MotionLink';
 
 const BottomHeader = () => {
   const navigate = useNavigate();
@@ -144,32 +145,119 @@ const BottomHeader = () => {
               />
             </section>
 
-            <motion.button
-              onClick={() => navigate('/donate')}
-              className='relative flex flex-col justify-between cursor-pointer  text-white'
-              whileHover={{ scale: 1.1 }}
+            <MotionLink
+              href='/donate'
+              className='relative flex flex-col justify-between cursor-pointer text-white group'
+              whileHover={{ scale: 1.1, y: -2 }}
               whileTap={{ scale: 0.95 }}
               transition={{ duration: 0.2 }}
             >
               <motion.div
-                className='rounded-full shadow-sm px-9 py-3 w-fit h-fit text-lg font-bold'
+                className='rounded-full shadow-lg px-9 py-3 w-fit h-fit text-lg font-bold relative overflow-hidden border-2 border-green-400/50'
                 style={{
-                  background: 'linear-gradient(90deg, #22c55e, #3b82f6, #8b5cf6, #ef4444, #f97316, #eab308, #22c55e)',
-                  backgroundSize: '200% 100%',
+                  background: 'linear-gradient(90deg, #065f46, #581c87, #22c55e, #7c3aed, #16a34a, #9333ea, #065f46)',
+                  backgroundSize: '300% 100%',
                 }}
                 animate={{
                   backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
                 }}
                 transition={{
-                  rotate: { duration: 0.3, ease: 'easeInOut' },
-                  y: { duration: 0.3, ease: 'easeInOut' },
-                  scaleX: { duration: 0.3, ease: 'easeInOut' },
-                  backgroundPosition: { duration: 10, repeat: Infinity, ease: 'linear', delay: 0 },
+                  backgroundPosition: {
+                    duration: 8,
+                    repeat: Infinity,
+                    ease: 'linear',
+                  },
+                }}
+                whileHover={{
+                  boxShadow: ['0 0 20px rgba(34, 197, 94, 0.5)', '0 0 30px rgba(147, 51, 234, 0.7)', '0 0 20px rgba(34, 197, 94, 0.5)'],
                 }}
               >
-                Donate
+                {/* Flickering overlay */}
+                <motion.div
+                  className='absolute inset-0 bg-white'
+                  animate={{
+                    opacity: [0, 0, 0, 0.3, 0, 0, 0, 0, 0.2, 0],
+                  }}
+                  transition={{
+                    duration: 0.8,
+                    repeat: Infinity,
+                    repeatDelay: 3,
+                    times: [0, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4, 0.7, 0.75, 1],
+                  }}
+                />
+
+                {/* Eerie glow effect */}
+                <motion.div
+                  className='absolute inset-0 bg-gradient-to-r from-transparent via-green-300/20 to-transparent'
+                  animate={{
+                    x: ['-100%', '100%'],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    repeatDelay: 1,
+                    ease: 'linear',
+                  }}
+                />
+
+                <motion.span
+                  className='relative z-10 flex items-center gap-2'
+                  animate={{
+                    textShadow: ['0 0 5px rgba(34, 197, 94, 0.8)', '0 0 15px rgba(147, 51, 234, 0.8)', '0 0 5px rgba(34, 197, 94, 0.8)'],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: 'easeInOut',
+                  }}
+                >
+                  Donate
+                </motion.span>
               </motion.div>
-            </motion.button>
+
+              {/* Creepy particles */}
+              <motion.div
+                className='absolute -bottom-1 left-4 w-1 h-1 bg-green-400 rounded-full'
+                animate={{
+                  y: [0, -20, 0],
+                  x: [0, 5, -5, 0],
+                  opacity: [0, 1, 0],
+                }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  delay: 0,
+                }}
+              />
+
+              <motion.div
+                className='absolute -bottom-1 right-6 w-1 h-1 bg-purple-400 rounded-full'
+                animate={{
+                  y: [0, -15, 0],
+                  x: [0, -3, 3, 0],
+                  opacity: [0, 1, 0],
+                }}
+                transition={{
+                  duration: 2.5,
+                  repeat: Infinity,
+                  delay: 1,
+                }}
+              />
+
+              <motion.div
+                className='absolute -top-1 left-8 w-0.5 h-0.5 bg-green-300 rounded-full'
+                animate={{
+                  y: [0, 15, 0],
+                  x: [0, -8, 4, 0],
+                  opacity: [0, 0.8, 0],
+                }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  delay: 2,
+                }}
+              />
+            </MotionLink>
           </div>
         </div>
       </div>
