@@ -1,6 +1,6 @@
 import { FormEvent, useEffect } from 'react';
 import { STATES } from '../../components/data/states';
-import { RootState, useAppDispatch, useAppSelector } from '../../redux/toolkitStore';
+import { RootState, useAppDispatch, useAppSelector, useFormSelector } from '../../redux/toolkitStore';
 import { decryptFormData, setStep, updateFormData } from '../../redux/features/cart/cartSlice';
 import { useNavigate } from 'react-router-dom';
 import validateAddressForm from '../../validations/validateAddressForm';
@@ -8,10 +8,10 @@ import { createFormActions, setInputs } from '../../redux/features/form/formSlic
 
 const ShippingAddress = () => {
   const navigate = useNavigate();
-  const { addressForm } = useAppSelector((state: RootState) => state.form);
+  const { addressForm } = useFormSelector();
   const { user } = useAppSelector((state: RootState) => state.user);
   const dispatch = useAppDispatch();
-  const { handleInput, setErrors } = createFormActions('adddressForm', dispatch);
+  const { handleInput, setErrors } = createFormActions('addressForm', dispatch);
 
   useEffect(() => {
     dispatch(decryptFormData());
