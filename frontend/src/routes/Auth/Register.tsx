@@ -40,7 +40,7 @@ const Register = () => {
       const response = await register({
         firstName: registerForm?.inputs?.firstName,
         lastName: registerForm?.inputs?.lastName,
-        email: registerForm?.inputs?.email,
+        email: registerForm?.inputs?.email?.toLowerCase(),
         confirmEmail: registerForm?.inputs?.confirmEmail,
         securityQuestion: registerForm?.inputs?.securityQuestion,
         securityAnswer: registerForm?.inputs?.securityAnswer,

@@ -17,7 +17,7 @@ const register = asyncHandler(async (req, res) => {
   try {
     const { firstName, lastName, email, confirmEmail, securityQuestion, securityAnswer, password, shippingAddress, conversionSource } = req.body;
 
-    const userExists = await User.findOne({ email });
+    const userExists = await User.findOne({ email: email?.toLowerCase() });
 
     if (userExists) {
       logEvent(log, 'USER FOUND', userExists?.email);

@@ -18,7 +18,7 @@ const login = asyncHandler(async (req, res) => {
   try {
     logEvent(log, 'LOGIN ATTEMPT', email);
 
-    const user = await User.findOne({ email }).populate('addressRef');
+    const user = await User.findOne({ email: email?.toLowerCase() }).populate('addressRef');
 
     if (!user || !(await user.matchPassword(password))) {
       logEvent(log, 'LOGIN FAILED - INVALID CREDENTIALS', email);
