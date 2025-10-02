@@ -1,6 +1,6 @@
 {
   "name": "lpdr",
-  "version": "2.0.15",
+  "version": "2.0.16",
   "description": "Dachshund Rescue",
   "main": "server.js",
   "type": "module",
@@ -11,7 +11,8 @@
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix frontend && npm run build --prefix frontend",
     "build": "NPM_CONFIG_PRODUCTION=true npm install --prefix frontend && npm run build --prefix frontend",
-    "data:import": "node backend/seeder"
+    "data:import": "node backend/seeder",
+    "lowercase-emails": "node backend/lowercase-all-emails.js"
   },
   "author": "Gregory Row",
   "license": "MIT",
