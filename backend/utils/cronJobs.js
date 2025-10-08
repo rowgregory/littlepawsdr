@@ -90,30 +90,31 @@ const cronJobs = (io) => {
     finalizeAuctionEvent: cron.schedule(
       '0 17 * * *',
       async () => {
-        const log = await prepareLog('UPDATE_AUCTION_TO_END');
+        try {
+          const log = await prepareLog('UPDATE_AUCTION_TO_END');
 
-        const auction = await updateAuctionSettingsToEnd(log);
+          const auction = await updateAuctionSettingsToEnd(log);
+          await updateCampaignStatusToEnd(auction, log);
 
-        await updateCampaignStatusToEnd(auction, log);
+          if (auction) {
+            const topBids = await fetchTopBids(auction, log);
+            if (topBids.length === 0) return;
 
-        if (auction) {
-          const topBids = await fetchTopBids(auction, log);
-          if (topBids.length === 0) return;
+            await updateAuctionBidderStatuses(auction._id, log);
 
-          await updateAuctionBidderStatuses(auction._id, log);
+            const grouped = groupBidsByUser(topBids, log);
 
-          const grouped = groupBidsByUser(topBids, log);
+            await sendEmailsAndUpdateBids(grouped, log);
 
-          await sendEmailsAndUpdateBids(grouped, log);
+            await resolveUnsoldAuctionItems(log);
 
-          await resolveUnsoldAuctionItems(log);
-
-          io.emit('auction-updated');
+            io.emit('auction-updated');
+          }
+        } catch (error) {
+          console.error('❌ Cron job failed:', error);
         }
       },
-      {
-        timezone: 'America/New_York',
-      }
+      { timezone: 'America/New_York' }
     ),
     // Every day at 9:00AM
     sendOutPaymentReminderEmailForWinningBidAuctionItem: cron.schedule(

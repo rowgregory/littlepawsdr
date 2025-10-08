@@ -6,10 +6,9 @@ function getAuctionClosingTime(log) {
   const now = new Date();
   const isDST = isDaylightSavingTime(now);
   now.setUTCHours(isDST ? 21 : 22, 0, 0, 0);
-  const closingTime = now.toISOString();
 
-  logEvent(log, 'CALCULATED CLOSING TIME', closingTime);
-  return closingTime;
+  logEvent(log, 'CALCULATED CLOSING TIME', now);
+  return now; // Return Date object, not string
 }
 
 const updateAuctionSettingsToEnd = async (log) => {

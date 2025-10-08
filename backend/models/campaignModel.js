@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 const SellingFormatEnum = ['auction', 'fixed'];
 const WinningBidPaymentStatus = ['Pending Fulfillment', 'Complete', 'Awaiting Payment'];
 const CampaignStatusEnum = ['Pre-Campaign', 'Active Campaign', 'Post-Campaign'];
-const BidderStatusEnum = ['Registered', 'Bidding', 'Winner'];
+const BidderStatusEnum = ['Registered', 'Bidding', 'Winner', 'Lost'];
 const BidEnum = ['Outbid', 'Top Bid'];
 const AuctionItemStatusEnum = ['Sold', 'Unsold'];
 const AuctionItemPaymentStatusEnum = ['Pending', 'Paid'];
