@@ -38,31 +38,20 @@ export const orderSlide = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addMatcher(orderApi.endpoints.getOrders.matchFulfilled, (state, { payload }: any) => {
+        state.orders = payload.orders;
+        state.ecardOrders = payload.ecardOrders;
+        state.welcomeWienerOrders = payload.welcomeWienerOrders;
+        state.productOrders = payload.productOrders;
+      })
+      .addMatcher(orderApi.endpoints.getOrder.matchFulfilled, (state, { payload }: any) => {
+        state.order = payload.order;
+      })
+      .addMatcher(orderApi.endpoints.updateOrderStatus.matchFulfilled, (state, { payload }: any) => {
+        state.message = payload.message;
+      })
       .addMatcher(
-        orderApi.endpoints.getOrders.matchFulfilled,
-        (state, { payload }: any) => {
-          state.orders = payload.orders;
-          state.ecardOrders = payload.ecardOrders;
-          state.welcomeWienerOrders = payload.welcomeWienerOrders;
-          state.productOrders = payload.productOrders;
-        }
-      )
-      .addMatcher(
-        orderApi.endpoints.getOrder.matchFulfilled,
-        (state, { payload }: any) => {
-          state.order = payload.order;
-        }
-      )
-      .addMatcher(
-        orderApi.endpoints.updateTrackingNumber.matchFulfilled,
-        (state, { payload }: any) => {
-          state.message = payload.message;
-        }
-      )
-      .addMatcher(
-        (action: any) =>
-          action.type.endsWith('/rejected') &&
-          action.payload?.data?.sliceName === 'orderApi',
+        (action: any) => action.type.endsWith('/rejected') && action.payload?.data?.sliceName === 'orderApi',
         (state: any, action: any) => {
           state.loading = false;
           state.error = action.payload.data;

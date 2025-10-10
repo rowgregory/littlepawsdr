@@ -12,10 +12,10 @@ export const orderApi = api.injectEndpoints({
       query: (orderId: string) => `${BASE_URL}/${orderId}`,
       providesTags: (result: any, error: any, arg: any) => [{ type: 'Order', id: arg }],
     }),
-    updateTrackingNumber: build.mutation({
+    updateOrderStatus: build.mutation({
       query: (body: any) => ({
-        url: `${BASE_URL}/tracking-number`,
-        method: 'PUT',
+        url: `${BASE_URL}/update-order-status`,
+        method: 'PATCH',
         body,
       }),
       invalidatesTags: ['Order', 'User'],
@@ -34,10 +34,4 @@ export const orderApi = api.injectEndpoints({
   }),
 });
 
-export const {
-  useGetOrdersQuery,
-  useGetOrderQuery,
-  useUpdateTrackingNumberMutation,
-  useCreateOrderMutation,
-  useGetMyOrdersQuery,
-} = orderApi;
+export const { useGetOrdersQuery, useGetOrderQuery, useUpdateOrderStatusMutation, useCreateOrderMutation, useGetMyOrdersQuery } = orderApi;

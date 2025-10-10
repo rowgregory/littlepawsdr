@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useGetOrdersQuery, useUpdateTrackingNumberMutation } from '../../redux/services/orderApi';
+import { useGetOrdersQuery, useUpdateOrderStatusMutation } from '../../redux/services/orderApi';
 import MagnifyingGlass from '../../components/svg/MagnifyingGlass';
 import Pagination from '../../components/common/Pagination';
 import { formatDateWithTimezone } from '../../utils/dateFunctions';
@@ -7,30 +7,19 @@ import toFixed from '../../utils/toFixed';
 import OrderDrawer from '../../components/admin/orders/OrderDrawer';
 import { useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { openToast } from '../../redux/features/toastSlice';
+import { useAppDispatch } from '../../redux/toolkitStore';
 
 const Orders = () => {
   const [searchParams] = useSearchParams();
   const [orderOpened, setOrderOpened] = useState({}) as any;
-  const [trackingNumber, setTrackingNumber] = useState('');
   const [text, setText] = useState('');
   const { data } = useGetOrdersQuery();
   const orders = data?.orders;
   const noOrders = orders?.length === 0;
-
-  let [updateTrackingNumber, { isLoading: loadingUpdate }] = useUpdateTrackingNumberMutation();
-
-  const handleTrackingNumber = async () => {
-    await updateTrackingNumber({ id: orderOpened?.order?._id, trackingNumber })
-      .unwrap()
-      .then(() => setOrderOpened({}))
-      .catch((err: any) => err);
-  };
-
-  useEffect(() => {
-    if (orderOpened?.order?.trackingNumber !== '') {
-      setTrackingNumber(orderOpened?.order?.trackingNumber);
-    }
-  }, [orderOpened]);
+  const [updateOrderStatus] = useUpdateOrderStatusMutation();
+  const dispatch = useAppDispatch();
+  const [isLoading, setIsLoading] = useState<Record<string, boolean>>({});
 
   const filteredOrders = orders?.filter((order: any) => {
     const searchText = text?.toLowerCase();
@@ -50,16 +39,21 @@ const Orders = () => {
     }
   }, [orders, searchParams]);
 
+  const handleCompleteOrder = async (orderId: string) => {
+    try {
+      setIsLoading({ [orderId]: true });
+      await updateOrderStatus({ orderId }).unwrap();
+      dispatch(openToast({ message: 'Order Status Updated', type: 'success', position: 'tr' }));
+    } catch (error) {
+      dispatch(openToast({ message: 'An error occurred', type: 'error', position: 'tr' }));
+    } finally {
+      setIsLoading({ [orderId]: false });
+    }
+  };
+
   return (
     <>
-      <OrderDrawer
-        setOrderOpened={setOrderOpened}
-        orderOpened={orderOpened}
-        setTrackingNumber={setTrackingNumber}
-        trackingNumber={trackingNumber}
-        loadingUpdate={loadingUpdate}
-        handleTrackingNumber={handleTrackingNumber}
-      />
+      <OrderDrawer setOrderOpened={setOrderOpened} orderOpened={orderOpened} />
       <div className='min-h-dvh w-full p-6'>
         <div className='max-w-7xl mx-auto'>
           <div
@@ -120,19 +114,22 @@ const Orders = () => {
                         <thead className='whitespace-nowrap px-4 pb-4 pt-2'>
                           <tr className='bg-zinc-50'>
                             <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
-                              <div className=' text-sm  -mx-1.5 -my-1 w-fit px-1.5 py-1 rounded-md flex flex-nowrap items-center gap-2'>Customer</div>
+                              <div className='text-sm -mx-1.5 -my-1 w-fit px-1.5 py-1 rounded-md flex flex-nowrap items-center gap-2'>Customer</div>
                             </th>
                             <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
-                              <div className=' text-sm flex flex-nowrap items-center gap-2'>Email</div>
+                              <div className='text-sm flex flex-nowrap items-center gap-2'>Email</div>
                             </th>
                             <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
-                              <div className=' text-sm flex flex-nowrap items-center gap-2'>Total</div>
+                              <div className='text-sm flex flex-nowrap items-center gap-2'>Total</div>
                             </th>
                             <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
-                              <div className=' text-sm flex flex-nowrap items-center gap-2'>Date & Time</div>
+                              <div className='text-sm flex flex-nowrap items-center gap-2'>Date & Time</div>
                             </th>
                             <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
-                              <div className=' text-sm flex flex-nowrap items-center gap-2'>Status</div>
+                              <div className='text-sm flex flex-nowrap items-center gap-2'>Status</div>
+                            </th>
+                            <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
+                              <div className='text-sm flex flex-nowrap items-center gap-2'>Action</div>
                             </th>
                             <th>
                               <div className='flex flex-nowrap items-center gap-2'></div>
@@ -143,7 +140,7 @@ const Orders = () => {
                           {filteredOrders?.slice(startIndex, endIndex).map((order: any, i: number) => (
                             <tr className='z-1 h-[3.25rem] group bg-white [&_td]:focus-within:bg-gray-100 [&_td]:hover:bg-gray-100 relative' key={i}>
                               <td>
-                                <div className='m-0 w-full  p-0 decoration-inherit hover:text-inherit hover:decoration-inherit !flex h-[3.25rem] items-center px-4 whitespace-nowrap'>
+                                <div className='m-0 w-full p-0 decoration-inherit hover:text-inherit hover:decoration-inherit !flex h-[3.25rem] items-center px-4 whitespace-nowrap'>
                                   <div className='max-w-[15rem]'>
                                     <span className='text-sm font-Matter-Regular truncate'>{order?.name}</span>
                                   </div>
@@ -174,6 +171,33 @@ const Orders = () => {
                                 >
                                   {order?.status}
                                 </p>
+                              </td>
+                              <td>
+                                <div className='flex items-center px-4 whitespace-nowrap'>
+                                  {order?.isProduct ? (
+                                    order?.status !== 'Complete' ? (
+                                      <>
+                                        {isLoading[order?._id] ? (
+                                          <div className='w-4 h-4 rounded-full border-2 border-teal-400 border-t-0 animate-spin' />
+                                        ) : (
+                                          <button
+                                            onClick={() => handleCompleteOrder(order._id)}
+                                            className='text-sm text-gray-600 hover:text-green-600 hover:bg-green-50 px-2 py-1 rounded transition-colors'
+                                          >
+                                            <i className='fa-solid fa-check mr-1.5'></i>
+                                            Complete
+                                          </button>
+                                        )}
+                                      </>
+                                    ) : (
+                                      <span className='text-sm text-gray-400'>
+                                        <i className='fa-solid fa-check mr-1'></i>
+                                      </span>
+                                    )
+                                  ) : (
+                                    <></>
+                                  )}
+                                </div>
                               </td>
                               <td>
                                 <div className='relative'>
