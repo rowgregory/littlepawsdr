@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useUpdateAuctionItemMutation } from '../../redux/services/campaignApi';
 import AuctionItemForm from '../forms/campaign/AuctionItemForm';
 import { resetAuctionItem, setCloseAuctionItemUpdateDrawer } from '../../redux/features/campaign/campaignSlice';
+import { openToast } from '../../redux/features/toastSlice';
 
 const AuctionItemUpdateDrawer = () => {
   const dispatch = useAppDispatch();
@@ -28,41 +29,57 @@ const AuctionItemUpdateDrawer = () => {
     e.preventDefault();
 
     try {
-      await updateAuctionItem({
+      // Check if auction is currently live
+      const isAuctionLive = campaign.campaign.auction.settings.status === 'LIVE';
+
+      // Base update fields that are always allowed
+      const baseUpdate = {
         id: auctionItemUpdateForm?.inputs?._id,
         auction: campaign.campaign.auction._id,
         name: auctionItemUpdateForm?.inputs?.name,
         description: auctionItemUpdateForm?.inputs?.description,
         photos: auctionItemUpdateForm?.inputs?.photos,
-        sellingFormat: auctionItemUpdateForm?.inputs?.sellingFormat,
-        requiresShipping: auctionItemUpdateForm?.inputs?.requiresShipping,
-        shippingCosts: auctionItemUpdateForm?.inputs?.shippingCosts,
-        ...(auctionItemUpdateForm?.inputs?.sellingFormat === 'fixed' && {
-          startingPrice: null,
-          currentBid: null,
-          minimumBid: null,
-          buyNowPrice: auctionItemUpdateForm?.inputs?.buyNowPrice,
-          isFixed: true,
-          isAuction: false,
-          isDigital: auctionItemUpdateForm?.inputs?.isDigital,
-          itemBtnText: 'Buy Now',
-          totalBids: null,
-          totalQuantity: auctionItemUpdateForm?.inputs?.totalQuantity,
-        }),
-        ...(auctionItemUpdateForm?.inputs?.sellingFormat === 'auction' && {
-          startingPrice: auctionItemUpdateForm?.inputs?.startingPrice,
-          minimumBid: auctionItemUpdateForm?.inputs?.startingPrice,
-          currentBid: auctionItemUpdateForm?.inputs?.startingPrice,
-          isFixed: false,
-          isAuction: true,
-          isDigital: false,
-          itemBtnText: 'Place Bid',
-          totalQuantity: 1,
-        }),
-      }).unwrap();
+      };
+
+      // If auction is NOT live, allow full updates
+      if (!isAuctionLive) {
+        await updateAuctionItem({
+          ...baseUpdate,
+          sellingFormat: auctionItemUpdateForm?.inputs?.sellingFormat,
+          requiresShipping: auctionItemUpdateForm?.inputs?.requiresShipping,
+          shippingCosts: auctionItemUpdateForm?.inputs?.shippingCosts,
+          ...(auctionItemUpdateForm?.inputs?.sellingFormat === 'fixed' && {
+            startingPrice: null,
+            currentBid: null,
+            minimumBid: null,
+            buyNowPrice: auctionItemUpdateForm?.inputs?.buyNowPrice,
+            isFixed: true,
+            isAuction: false,
+            isDigital: auctionItemUpdateForm?.inputs?.isDigital,
+            itemBtnText: 'Buy Now',
+            totalBids: null,
+            totalQuantity: auctionItemUpdateForm?.inputs?.totalQuantity,
+          }),
+          ...(auctionItemUpdateForm?.inputs?.sellingFormat === 'auction' && {
+            startingPrice: auctionItemUpdateForm?.inputs?.startingPrice,
+            minimumBid: auctionItemUpdateForm?.inputs?.startingPrice,
+            currentBid: auctionItemUpdateForm?.inputs?.startingPrice,
+            isFixed: false,
+            isAuction: true,
+            isDigital: false,
+            itemBtnText: 'Place Bid',
+            totalQuantity: 1,
+          }),
+        }).unwrap();
+      } else {
+        // If auction IS live, only allow safe updates
+        await updateAuctionItem(baseUpdate).unwrap();
+      }
 
       closeAuctionItemDrawer();
-    } catch (error) {}
+    } catch (error) {
+      dispatch(openToast({ message: JSON.stringify(error), type: 'error', position: 'tr' }));
+    }
   };
 
   const closeAuctionItemDrawer = () => {

@@ -77,19 +77,18 @@ const AuctionItems = () => {
 
   const CreateAuctionItemButton = () => (
     <motion.button
-      disabled={isActiveCampaign}
       onClick={() => {
         dispatch(setInputs({ formName: 'auctionItemCreateForm', data: { requiresShipping: true } }));
         dispatch(setOpenAuctionItemCreateDrawer());
       }}
       className='bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-6 py-3 rounded-xl font-semibold flex items-center space-x-2 shadow-lg hover:shadow-xl transition-all duration-200 w-fit disabled:bg-gradient-to-r disabled:from-zinc-500 disabled:to-zinc-800 disabled:cursor-not-allowed disabled:shadow-none disabled:opacity-60 disabled:hover:from-gray-300 disabled:hover:to-gray-300'
-      whileHover={!isActiveCampaign ? { scale: 1.02, y: -2 } : {}}
-      whileTap={!isActiveCampaign ? { scale: 0.98 } : {}}
+      whileHover={{ scale: 1.02, y: -2 }}
+      whileTap={{ scale: 0.98 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay: 0.3, duration: 0.5 }}
     >
       <Plus className='w-5 h-5 disabled:text-gray-400' />
-      <span>{isActiveCampaign ? 'Campaign Active' : 'New Auction Item'}</span>
+      <span>New Auction Item</span>
     </motion.button>
   );
 
@@ -233,7 +232,6 @@ const AuctionItems = () => {
                         <Eye className='w-4 h-4' />
                       </Link>
                       <button
-                        disabled={isActiveCampaign}
                         onClick={() => dispatch(setOpenAuctionItemUpdateDrawer(item))}
                         className='p-2 hover:bg-gray-100 disabled:hover:bg-gray-50 rounded-lg transition-colors text-gray-600 hover:text-gray-700 disabled:cursor-not-allowed'
                         title='Edit Item'
