@@ -52,7 +52,11 @@ const formInitialState = {
     errors: {},
   },
   auctionItemCreateForm: {
-    inputs: { requiresShipping: true },
+    inputs: { requiresShipping: true, sellingFormat: 'auction' },
+    errors: {},
+  },
+  auctionItemUpdateForm: {
+    inputs: {},
     errors: {},
   },
   adddressForm: {

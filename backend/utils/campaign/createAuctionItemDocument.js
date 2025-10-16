@@ -6,18 +6,23 @@ async function createAuctionItemDocument(log, data) {
   logEvent(log, 'INITIATE CREATE AUCTION ITEM', data);
 
   try {
-    const auctionItemPhotos = await Promise.all(
-      data.photos.map(async (photo) => {
-        const auctionItemPhoto = new AuctionItemPhoto({
-          name: photo.name,
-          url: photo.url,
-          size: photo.size,
-        });
+    let auctionItemPhotos = [];
 
-        const savedPhoto = await auctionItemPhoto.save();
-        return savedPhoto;
-      })
-    );
+    // Only process photos if they exist and the array is not empty
+    if (data.photos && data.photos.length > 0) {
+      auctionItemPhotos = await Promise.all(
+        data.photos.map(async (photo) => {
+          const auctionItemPhoto = new AuctionItemPhoto({
+            name: photo.name,
+            url: photo.url,
+            size: photo.size,
+          });
+
+          const savedPhoto = await auctionItemPhoto.save();
+          return savedPhoto;
+        })
+      );
+    }
 
     const auctionItem = new AuctionItem({
       ...data,
@@ -27,17 +32,20 @@ async function createAuctionItemDocument(log, data) {
     const savedAuctionItem = await auctionItem.save();
     logEvent(log, 'AUCTION ITEM SAVED', savedAuctionItem);
 
-    const populatedAuctionItem = savedAuctionItem.populate('photos');
+    const populatedAuctionItem = await savedAuctionItem.populate('photos');
 
     return populatedAuctionItem;
   } catch (err) {
     logEvent(log, 'ERROR CREATING AUCTION ITEM', err);
 
     await Error.create({
-      functionName: 'CREATE_AUCTION_ITEM_DOCUMENT_FUCNTION_PRIVATE_ADMIN',
+      functionName: 'CREATE_AUCTION_ITEM_DOCUMENT_FUNCTION_PRIVATE_ADMIN',
       name: err.name,
       message: err.message,
     });
+
+    // Re-throw the error so the caller knows the operation failed
+    throw err;
   }
 }
 

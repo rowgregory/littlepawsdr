@@ -227,7 +227,9 @@ export const campaignSlice = createSlice({
         state.campaignStatus = payload.campaignStatus;
       })
       .addMatcher(campaignApi.endpoints.fetchLiveCampaign.matchFulfilled, (state, { payload }: any) => {
-        state.campaign = payload.campaign;
+        state.campaign.campaignStatus = payload.campaign.campaignStatus;
+        state.campaign.title = payload.campaign.title;
+        state.campaign.customCampaignLink = payload.campaign.customCampaignLink;
       })
       .addMatcher(campaignApi.endpoints.trackAuctionModalButtonClick.matchFulfilled, (state, { payload }: any) => {
         state.message = payload.message;

@@ -169,26 +169,31 @@ const AuctionItemBids = () => {
             <p className='text-gray-600 text-sm mb-1'>{item?.sellingFormat === 'auction' ? 'Current Bid' : 'Buy It Now Price'}</p>
             <p className='text-2xl font-bold text-gray-900'>{formatPrice(item?.buyNowPrice || item?.currentBid || 0)}</p>
           </div>
-          <div className='bg-gray-50 rounded-lg p-4'>
-            <p className='text-gray-600 text-sm mb-1'>Quantity Available</p>
-            <p className='text-2xl font-bold text-gray-900'>{item?.totalQuantity}</p>
-          </div>
         </div>
 
-        {/* Item Image */}
+        {/* Item Images */}
         <div className='mb-6'>
-          <h3 className='font-semibold text-gray-900 mb-3'>Item Photo</h3>
-          {item?.photos?.[0]?.url ? (
-            <img
-              src={item.photos[0].url}
-              alt={`${item.name} - ${item._id}`}
-              className='max-w-sm w-full rounded-lg border border-gray-200 shadow-sm'
-            />
+          <h3 className='font-semibold text-gray-900 mb-3'>Item Photos</h3>
+          {item?.photos && item.photos.length > 0 ? (
+            <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>
+              {item.photos.map((photo, index) => (
+                <div key={photo._id || index} className='relative group'>
+                  <img
+                    src={photo.url}
+                    alt={`${item.name} - ${index + 1}`}
+                    className='w-full h-80 object-cover rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow cursor-pointer'
+                  />
+                  <div className='absolute bottom-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity'>
+                    {index + 1}/{item.photos.length}
+                  </div>
+                </div>
+              ))}
+            </div>
           ) : (
             <div className='max-w-sm w-full h-64 bg-gray-100 rounded-lg border border-gray-200 flex items-center justify-center'>
               <div className='text-center'>
                 <ImageIcon className='w-12 h-12 text-gray-400 mx-auto mb-2' />
-                <p className='text-gray-500 text-sm'>No image available</p>
+                <p className='text-gray-500 text-sm'>No images available</p>
               </div>
             </div>
           )}

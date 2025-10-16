@@ -116,6 +116,7 @@ const AuctionItemUpdateDrawer = () => {
               setInputs={setInputs}
               handleSubmit={handleSubmit}
               onClose={closeAuctionItemDrawer}
+              isUpdating
             />
           </motion.div>
         </>

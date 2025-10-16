@@ -144,7 +144,7 @@ const AuctionItems = () => {
                   <div className='col-span-1'>Bids/Qty</div>
                   <div className='col-span-2'>Current Price</div>
                   <div className='col-span-2'>Status</div>
-                  <div className='col-span-1'>Details</div>
+                  <div className='col-span-1'>Shipping</div>
                   <div className='col-span-1'>Actions</div>
                 </div>
               </div>
@@ -216,10 +216,7 @@ const AuctionItems = () => {
 
                     {/* Details */}
                     <div className='col-span-1 flex items-center'>
-                      <div className='text-sm text-gray-600'>
-                        <div>Qty: {item.totalQuantity || 1}</div>
-                        {item.shippingCosts > 0 && <div>Ship: {formatPrice(item.shippingCosts)}</div>}
-                      </div>
+                      <div className='text-sm text-gray-600'>{item.shippingCosts > 0 && <div>{formatPrice(item.shippingCosts)}</div>}</div>
                     </div>
 
                     {/* Actions */}

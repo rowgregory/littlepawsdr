@@ -19,6 +19,7 @@ export const campaignApi = api.injectEndpoints({
         const newCampaign = data.campaign;
         dispatch(updateCampaignInState(newCampaign));
       },
+      providesTags: ['Campaign'],
     }),
     createCampaign: build.mutation({
       query: (campaign: any) => ({

@@ -32,7 +32,7 @@ const Dachshunds = lazy((): LazyModulePromise => import('./Dachshunds'));
 
 export const MainRoutes = () => {
   useScrollToTop();
-  useFetchLiveCampaignQuery(undefined, { refetchOnMountOrArgChange: true });
+  useFetchLiveCampaignQuery();
 
   return (
     <>
