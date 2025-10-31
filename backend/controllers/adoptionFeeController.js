@@ -195,7 +195,7 @@ const checkUserAdoptionFeeTokenValidity = asyncHandler(async (req, res) => {
         deviceInfo: req.userAgent,
       });
 
-      return res.status(400).json({ message: 'Invalid code', sliceName: 'adoptionApplicationFeeApi' });
+      return res.status(400).json({ message: 'Invalid bypass code', sliceName: 'adoptionApplicationFeeApi' });
 
       // if user did not enter a bypass code
     } else {

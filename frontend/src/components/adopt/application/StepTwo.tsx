@@ -13,6 +13,8 @@ import { ADOPTION_APPLICATION_STEP_TWO_FIELDS } from '../../data/form-fields';
 import AwesomeIcon from '../../common/AwesomeIcon';
 import { chevronDownIcon } from '../../../icons';
 import Accordion from '../../common/Accordion';
+import { openToast } from '../../../redux/features/toastSlice';
+import { useAppDispatch } from '../../../redux/toolkitStore';
 
 const StepTwo: FC<StepTwoProps> = ({ setStep }) => {
   const [orderLoader, setOrderLoader] = useState(false);
@@ -20,12 +22,10 @@ const StepTwo: FC<StepTwoProps> = ({ setStep }) => {
   const [paymentStep, setPaymentStep] = useState('basic-info');
   const [openBasic, setOpenBasic] = useState(true);
   const [openPayment, setOpenPayment] = useState(false);
-  const { inputs, errors, handleInput, handleSelect, setInputs, setErrors } = useForm(
-    ADOPTION_APPLICATION_STEP_TWO_FIELDS
-  );
+  const { inputs, errors, handleInput, handleSelect, setInputs, setErrors } = useForm(ADOPTION_APPLICATION_STEP_TWO_FIELDS);
+  const dispatch = useAppDispatch();
 
-  const [checkIfUserHasActiveAdoptionFeeSession, { isLoading }] =
-    useCheckIfUserHasActiveAdoptionFeeSessionMutation();
+  const [checkIfUserHasActiveAdoptionFeeSession, { isLoading }] = useCheckIfUserHasActiveAdoptionFeeSessionMutation();
 
   const [createAdoptionFee] = useCreateAdoptionApplicationFeeMutation();
 
@@ -56,7 +56,10 @@ const StepTwo: FC<StepTwoProps> = ({ setStep }) => {
             navigate(`/adopt/application/verified/${data?.token}`);
           }
         })
-        .catch(() => setOrderLoader(false));
+        .catch((err: any) => {
+          dispatch(openToast({ message: err?.data?.message, type: 'error', position: 'tr' }));
+          setOrderLoader(false);
+        });
     }
   };
 
@@ -114,9 +117,7 @@ const StepTwo: FC<StepTwoProps> = ({ setStep }) => {
           <div className='flex items-center justify-between w-full'>
             <h1 className='text-charcoal font-QBold text-5xl mt-4 mb-3 flex flex-col sm:flex-row sm:items-baseline'>
               $15.00
-              <span className='text-xs text-charcoal font-QBook ml-1'>
-                One time fee valid for seven days.
-              </span>
+              <span className='text-xs text-charcoal font-QBook ml-1'>One time fee valid for seven days.</span>
             </h1>
             {openPayment && (
               <AwesomeIcon
@@ -132,9 +133,7 @@ const StepTwo: FC<StepTwoProps> = ({ setStep }) => {
           </div>
           {paymentStep === 'payment' && (
             <div className='flex items-center'>
-              <p className='text-sm flex items-center h-6 font-QBook text-charcoal'>
-                {`${inputs.firstName} ${inputs.lastName}, ${inputs.email}`}
-              </p>
+              <p className='text-sm flex items-center h-6 font-QBook text-charcoal'>{`${inputs.firstName} ${inputs.lastName}, ${inputs.email}`}</p>
             </div>
           )}
         </div>
