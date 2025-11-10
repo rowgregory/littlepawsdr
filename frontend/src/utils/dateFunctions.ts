@@ -85,7 +85,7 @@ const convertToEST = (dateToConvert: any) => {
   return `${formattedDate} ${timeZone}`;
 };
 
-export const formatDateWithTime = (dateString: string, time: string = '9:00 AM', timezone: string = 'EST') => {
+const formatDateWithTime = (dateString: string, time: string = '9:00 AM', timezone: string = 'EST') => {
   if (!dateString) return '';
 
   let date;
@@ -112,4 +112,17 @@ export const formatDateWithTime = (dateString: string, time: string = '9:00 AM',
   return `${formattedDate} at ${time} ${timezone}`;
 };
 
-export { formatDateWithTimezone, getShortMonthAndDay, formatDateForCalendar, formatDateForEstTimezone, convertToEST };
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  return date.toLocaleString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+    timeZoneName: 'short',
+  });
+};
+
+export { formatDateWithTimezone, getShortMonthAndDay, formatDateForCalendar, formatDateForEstTimezone, convertToEST, formatDateWithTime, formatDate };

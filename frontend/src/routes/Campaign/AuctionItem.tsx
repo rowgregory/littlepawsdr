@@ -10,9 +10,9 @@ import AuctionItemBidHistory from '../../components/campaign/AuctionItemBidHisto
 import { useTimeUntil } from '../../hooks/useUntilTime';
 import { useLightningTransition } from '../../components/transitions/LightningTransition';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { formatDateWithTime } from '../../utils/dateFunctions';
 import ConfettiPop from '../../components/ConfettiPop';
 import { resetPlaceBidSuccess } from '../../redux/features/campaign/campaignSlice';
+import { formatDate } from '../../utils/dateFunctions';
 
 const AuctionItem = () => {
   const params = useParams();
@@ -342,7 +342,7 @@ const AuctionItem = () => {
                       ? timeUntilEndDate
                       : ''}
                   </div>
-                  <div className='text-red-200 text-sm'>Ends {formatDateWithTime(campaign?.campaign?.auction?.settings?.endDate)}</div>
+                  <div className='text-red-200 text-sm'>Ends {formatDate(campaign?.campaign?.auction?.settings?.endDate)}</div>
                 </div>
               </div>
 
