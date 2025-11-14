@@ -6,6 +6,16 @@ import { LandingVideo } from '../assets/videos';
 const Banner = () => {
   const { videoRef } = useVideo();
 
+  // Generate snowflakes
+  const snowflakes = Array.from({ length: 50 }, (_, i) => ({
+    id: i,
+    left: Math.random() * 100,
+    delay: Math.random() * 5,
+    duration: 5 + Math.random() * 10,
+    size: 2 + Math.random() * 4,
+    opacity: 0.3 + Math.random() * 0.7,
+  }));
+
   return (
     <div className='w-full relative mt-[-68px]'>
       <motion.video
@@ -24,8 +34,42 @@ const Banner = () => {
         Your browser does not support the video tag.
       </motion.video>
 
+      {/* Falling Snow Layer */}
+      <div className='absolute inset-0 overflow-hidden pointer-events-none z-10'>
+        {snowflakes.map((flake) => (
+          <motion.div
+            key={flake.id}
+            className='absolute rounded-full bg-white'
+            style={{
+              left: `${flake.left}%`,
+              width: `${flake.size}px`,
+              height: `${flake.size}px`,
+              opacity: flake.opacity,
+            }}
+            initial={{ y: -20, x: 0 }}
+            animate={{
+              y: '110vh',
+              x: [0, 20, -20, 20, 0],
+            }}
+            transition={{
+              y: {
+                duration: flake.duration,
+                repeat: Infinity,
+                delay: flake.delay,
+                ease: 'linear',
+              },
+              x: {
+                duration: 3,
+                repeat: Infinity,
+                ease: 'easeInOut',
+              },
+            }}
+          />
+        ))}
+      </div>
+
       <motion.div
-        className='px-3 pt-14 absolute z-0 top-0 left-0 flex-col w-full h-[600px] sm:h-[850px] flex justify-center bg-[#1c1c1c]/30'
+        className='px-3 pt-14 absolute z-20 top-0 left-0 flex-col w-full h-[600px] sm:h-[850px] flex justify-center bg-[#1c1c1c]/30'
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8, delay: 0.3 }}

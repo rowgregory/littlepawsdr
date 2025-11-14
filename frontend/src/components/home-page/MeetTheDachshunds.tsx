@@ -1,9 +1,11 @@
-import { Key, useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useGetDachshundsByStatusMutation } from '../../redux/services/rescueGroupsApi';
 import { RootState, useAppSelector } from '../../redux/toolkitStore';
 import AvailableDachshundCard from '../common/AvailableDachshundCard';
-import useIntersectionObserver from '../../hooks/useIntersectionObserver';
+
+import { motion } from 'framer-motion';
+import { Snowflake, Gift, Heart } from 'lucide-react';
 
 const MeetTheDachshunds = () => {
   const dachshund = useAppSelector((state: RootState) => state.dachshund);
@@ -15,45 +17,248 @@ const MeetTheDachshunds = () => {
     getDachshunds({ status: 'Available' });
   }, [getDachshunds]);
 
-  const subtitleRef = useRef(null) as any;
-  const animateSubtitle = useIntersectionObserver(subtitleRef);
-  const titleRef = useRef(null) as any;
-  const animateTitle = useIntersectionObserver(titleRef);
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.15,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        ease: 'easeOut',
+      },
+    },
+  };
+
+  const cardVariants = {
+    hidden: { opacity: 0, scale: 0.9 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      transition: {
+        duration: 0.5,
+      },
+    },
+  };
 
   return (
-    <div className='px-3'>
-      <div className='max-w-screen-xl w-full mx-auto mt-32 mb-40'>
-        <p
-          ref={subtitleRef}
-          className={`${
-            animateSubtitle ? 'translate-left-left-x' : 'translate-x-[-150px] opacity-0'
-          } text-teal-400 text-xl font-QBold mb-5`}
+    <div className='px-3 sm:px-6 relative overflow-hidden'>
+      {/* Decorative Christmas elements */}
+      <motion.div
+        className='absolute top-10 left-10 text-red-200/20'
+        animate={{
+          rotate: [0, 360],
+          scale: [1, 1.2, 1],
+        }}
+        transition={{
+          duration: 20,
+          repeat: Infinity,
+          ease: 'linear',
+        }}
+      >
+        <Snowflake className='w-32 h-32' />
+      </motion.div>
+
+      <motion.div
+        className='absolute bottom-20 right-10 text-green-200/20'
+        animate={{
+          rotate: [0, -360],
+          scale: [1, 1.1, 1],
+        }}
+        transition={{
+          duration: 25,
+          repeat: Infinity,
+          ease: 'linear',
+        }}
+      >
+        <Gift className='w-28 h-28' />
+      </motion.div>
+
+      <div className='max-w-screen-xl w-full mx-auto mt-20 sm:mt-32 mb-32 sm:mb-40 relative z-10'>
+        <motion.div
+          initial='hidden'
+          whileInView='visible'
+          viewport={{ once: true, margin: '-100px' }}
+          variants={containerVariants}
+          className='space-y-8'
         >
-          Meet The Dachshunds
-        </p>
-        <div className='flex flex-col md:flex-row items-start md:items-center justify-between mb-16'>
-          <p
-            ref={titleRef}
-            className={`${
-              animateTitle ? 'translate-left-left-x' : 'translate-x-[-150px] opacity-0'
-            } text-5xl text-[#484848] font-QBold mb-4 md:mb-0`}
+          {/* Subtitle with Christmas accent */}
+          <motion.div variants={itemVariants} className='relative inline-block'>
+            <div className='flex items-center gap-3'>
+              <motion.div
+                animate={{
+                  scale: [1, 1.2, 1],
+                  rotate: [0, 180, 360],
+                }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                }}
+              >
+                <Snowflake className='w-6 h-6 text-red-500' />
+              </motion.div>
+              <h3 className='text-xl sm:text-2xl font-QBold bg-gradient-to-r from-red-600 to-green-600 bg-clip-text text-transparent'>
+                Meet The Dachshunds
+              </h3>
+              <motion.div
+                animate={{
+                  scale: [1, 1.2, 1],
+                  rotate: [0, 180, 360],
+                }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                  delay: 1.5,
+                }}
+              >
+                <Snowflake className='w-6 h-6 text-green-600' />
+              </motion.div>
+            </div>
+            <motion.div
+              className='absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-red-500 via-green-500 to-red-500'
+              initial={{ scaleX: 0 }}
+              whileInView={{ scaleX: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              style={{ originX: 0 }}
+            />
+          </motion.div>
+
+          {/* Header Section */}
+          <motion.div variants={itemVariants} className='flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 lg:gap-8'>
+            <div className='flex-1'>
+              <h2 className='text-3xl sm:text-4xl lg:text-5xl text-gray-800 font-QBold mb-3 leading-tight'>Give the Gift of Love This Christmas</h2>
+              <p className='text-base sm:text-lg text-gray-600 font-QBook flex items-center gap-2'>
+                <Heart className='w-5 h-5 text-red-500' />
+                These precious pups are hoping for a forever home this holiday season
+              </p>
+            </div>
+
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Link
+                to='/dachshunds'
+                className='relative group inline-flex items-center gap-2 px-8 py-4 font-QBold text-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300'
+                style={{
+                  background: 'linear-gradient(135deg, #dc2626, #059669, #ef4444, #10b981)',
+                  backgroundSize: '300% 300%',
+                }}
+              >
+                <motion.div
+                  className='absolute inset-0'
+                  animate={{
+                    backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
+                  }}
+                  transition={{
+                    duration: 5,
+                    repeat: Infinity,
+                    ease: 'linear',
+                  }}
+                  style={{
+                    background: 'linear-gradient(135deg, #dc2626, #059669, #ef4444, #10b981)',
+                    backgroundSize: '300% 300%',
+                  }}
+                />
+                <span className='relative z-10'>View All</span>
+                <motion.div animate={{ x: [0, 5, 0] }} transition={{ duration: 1.5, repeat: Infinity }} className='relative z-10'>
+                  <Gift className='w-5 h-5' />
+                </motion.div>
+
+                {/* Sparkle effect */}
+                <motion.div
+                  className='absolute inset-0 bg-white'
+                  animate={{
+                    opacity: [0, 0.3, 0],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: 'easeInOut',
+                  }}
+                />
+              </Link>
+            </motion.div>
+          </motion.div>
+
+          {/* Cards Grid */}
+          <motion.div variants={containerVariants} className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 pt-8'>
+            {dachshund?.dachshunds?.slice(0, 4).map((obj: unknown, i: number) => (
+              <motion.div
+                key={i}
+                variants={cardVariants}
+                whileHover={{
+                  y: -8,
+                  transition: { duration: 0.3 },
+                }}
+                className='relative'
+              >
+                <AvailableDachshundCard obj={obj} />
+
+                {/* Christmas ribbon corner */}
+                <motion.div
+                  className='absolute -top-2 -right-2 w-12 h-12 bg-gradient-to-br from-red-500 to-green-600 rounded-full flex items-center justify-center shadow-lg z-10'
+                  animate={{
+                    scale: [1, 1.1, 1],
+                    rotate: [0, 5, -5, 0],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: 'easeInOut',
+                  }}
+                >
+                  <Gift className='w-6 h-6 text-white' />
+                </motion.div>
+
+                {/* Falling snow on card */}
+                <motion.div
+                  className='absolute top-0 left-4 w-1 h-1 bg-white rounded-full'
+                  animate={{
+                    y: [0, 100],
+                    opacity: [0, 1, 0],
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    delay: i * 0.5,
+                    ease: 'linear',
+                  }}
+                />
+              </motion.div>
+            ))}
+          </motion.div>
+
+          {/* Bottom decorative element */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.8, duration: 0.6 }}
+            className='flex justify-center mt-12'
           >
-            Patiently Waiting For Adoption
-          </p>
-          <Link
-            to='/dachshunds'
-            className='bg-teal-400 text-white font-QBook py-4 px-9 rounded-lg w-fit hover:shadow-lg hover:bg-teal-500 duration-300'
-          >
-            View All
-          </Link>
-        </div>
-        <div className='grid grid-cols-12 gap-y-12 sm:gap-12'>
-          {dachshund?.dachshunds
-            ?.map((obj: unknown, i: Key | null | undefined) => (
-              <AvailableDachshundCard key={i} obj={obj} />
-            ))
-            .filter((_: any, i: number) => i < 4)}
-        </div>
+            <div className='flex items-center gap-4'>
+              <motion.div animate={{ rotate: [0, 360] }} transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}>
+                <Snowflake className='w-8 h-8 text-red-400' />
+              </motion.div>
+              <div className='h-px w-32 bg-gradient-to-r from-transparent via-red-300 to-transparent' />
+              <Heart className='w-6 h-6 text-red-500 fill-red-500' />
+              <div className='h-px w-32 bg-gradient-to-r from-transparent via-green-300 to-transparent' />
+              <motion.div animate={{ rotate: [360, 0] }} transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}>
+                <Snowflake className='w-8 h-8 text-green-500' />
+              </motion.div>
+            </div>
+          </motion.div>
+        </motion.div>
       </div>
     </div>
   );

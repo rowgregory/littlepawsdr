@@ -63,6 +63,10 @@ const formInitialState = {
     inputs: {},
     errors: {},
   },
+  userForm: {
+    inputs: {},
+    errors: {},
+  },
 } as any;
 
 const formSlice = createSlice({

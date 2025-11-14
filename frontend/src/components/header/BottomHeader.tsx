@@ -147,15 +147,15 @@ const BottomHeader = () => {
 
             <MotionLink
               href='/donate'
-              className='relative flex flex-col justify-between cursor-pointer text-white group'
+              className='relative flex flex-col justify-between cursor-pointer text-white group hover:text-white'
               whileHover={{ scale: 1.1, y: -2 }}
               whileTap={{ scale: 0.95 }}
               transition={{ duration: 0.2 }}
             >
               <motion.div
-                className='rounded-full shadow-lg px-9 py-3 w-fit h-fit text-lg font-bold relative overflow-hidden border-2 border-green-400/50'
+                className='rounded-full shadow-lg px-9 py-3 w-fit h-fit text-lg font-bold relative overflow-hidden border-2 border-red-400/50'
                 style={{
-                  background: 'linear-gradient(90deg, #065f46, #581c87, #22c55e, #7c3aed, #16a34a, #9333ea, #065f46)',
+                  backgroundImage: 'linear-gradient(90deg, #dc2626, #059669, #ef4444, #10b981, #b91c1c, #047857, #dc2626)',
                   backgroundSize: '300% 100%',
                 }}
                 animate={{
@@ -169,41 +169,54 @@ const BottomHeader = () => {
                   },
                 }}
                 whileHover={{
-                  boxShadow: ['0 0 20px rgba(34, 197, 94, 0.5)', '0 0 30px rgba(147, 51, 234, 0.7)', '0 0 20px rgba(34, 197, 94, 0.5)'],
+                  boxShadow: ['0 0 20px rgba(239, 68, 68, 0.6)', '0 0 30px rgba(16, 185, 129, 0.7)', '0 0 20px rgba(239, 68, 68, 0.6)'],
                 }}
               >
-                {/* Flickering overlay */}
+                {/* Twinkling lights overlay */}
                 <motion.div
                   className='absolute inset-0 bg-white'
                   animate={{
-                    opacity: [0, 0, 0, 0.3, 0, 0, 0, 0, 0.2, 0],
+                    opacity: [0, 0, 0, 0.4, 0, 0, 0, 0, 0.3, 0],
                   }}
                   transition={{
-                    duration: 0.8,
+                    duration: 1,
                     repeat: Infinity,
-                    repeatDelay: 3,
+                    repeatDelay: 2,
                     times: [0, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4, 0.7, 0.75, 1],
                   }}
                 />
 
-                {/* Eerie glow effect */}
+                {/* Shimmering gold effect */}
                 <motion.div
-                  className='absolute inset-0 bg-gradient-to-r from-transparent via-green-300/20 to-transparent'
+                  className='absolute inset-0 bg-gradient-to-r from-transparent via-yellow-200/30 to-transparent'
                   animate={{
                     x: ['-100%', '100%'],
                   }}
                   transition={{
-                    duration: 2,
+                    duration: 2.5,
                     repeat: Infinity,
                     repeatDelay: 1,
                     ease: 'linear',
                   }}
                 />
 
+                {/* Snowflake overlay */}
+                <motion.div
+                  className='absolute inset-0 bg-white/10'
+                  animate={{
+                    opacity: [0.1, 0.2, 0.1],
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: 'easeInOut',
+                  }}
+                />
+
                 <motion.span
                   className='relative z-10 flex items-center gap-2'
                   animate={{
-                    textShadow: ['0 0 5px rgba(34, 197, 94, 0.8)', '0 0 15px rgba(147, 51, 234, 0.8)', '0 0 5px rgba(34, 197, 94, 0.8)'],
+                    textShadow: ['0 0 8px rgba(239, 68, 68, 0.9)', '0 0 15px rgba(16, 185, 129, 0.9)', '0 0 8px rgba(239, 68, 68, 0.9)'],
                   }}
                   transition={{
                     duration: 2,
@@ -215,13 +228,14 @@ const BottomHeader = () => {
                 </motion.span>
               </motion.div>
 
-              {/* Creepy particles */}
+              {/* Falling snowflakes */}
               <motion.div
-                className='absolute -bottom-1 left-4 w-1 h-1 bg-green-400 rounded-full'
+                className='absolute -top-2 left-6 w-1.5 h-1.5 bg-white rounded-full shadow-lg'
                 animate={{
-                  y: [0, -20, 0],
-                  x: [0, 5, -5, 0],
-                  opacity: [0, 1, 0],
+                  y: [0, 40, 40],
+                  x: [0, 3, -3],
+                  opacity: [1, 1, 0],
+                  rotate: [0, 180, 360],
                 }}
                 transition={{
                   duration: 3,
@@ -231,30 +245,75 @@ const BottomHeader = () => {
               />
 
               <motion.div
-                className='absolute -bottom-1 right-6 w-1 h-1 bg-purple-400 rounded-full'
+                className='absolute -top-2 right-8 w-1 h-1 bg-red-300 rounded-full shadow-lg'
                 animate={{
-                  y: [0, -15, 0],
-                  x: [0, -3, 3, 0],
-                  opacity: [0, 1, 0],
+                  y: [0, 35, 35],
+                  x: [0, -4, 4],
+                  opacity: [1, 1, 0],
+                  rotate: [0, -180, -360],
                 }}
                 transition={{
                   duration: 2.5,
+                  repeat: Infinity,
+                  delay: 0.5,
+                }}
+              />
+
+              <motion.div
+                className='absolute -top-1 left-12 w-1 h-1 bg-emerald-300 rounded-full shadow-lg'
+                animate={{
+                  y: [0, 30, 30],
+                  x: [0, 5, -2],
+                  opacity: [1, 1, 0],
+                  rotate: [0, 270, 540],
+                }}
+                transition={{
+                  duration: 4,
                   repeat: Infinity,
                   delay: 1,
                 }}
               />
 
               <motion.div
-                className='absolute -top-1 left-8 w-0.5 h-0.5 bg-green-300 rounded-full'
+                className='absolute -top-3 right-4 w-1.5 h-1.5 bg-yellow-200 rounded-full shadow-lg'
                 animate={{
-                  y: [0, 15, 0],
-                  x: [0, -8, 4, 0],
-                  opacity: [0, 0.8, 0],
+                  y: [0, 38, 38],
+                  x: [0, -2, 3],
+                  opacity: [1, 1, 0],
+                  rotate: [0, 360, 720],
+                  scale: [1, 0.8, 1],
                 }}
                 transition={{
-                  duration: 4,
+                  duration: 3.5,
                   repeat: Infinity,
-                  delay: 2,
+                  delay: 1.5,
+                }}
+              />
+
+              {/* Christmas lights sparkles */}
+              <motion.div
+                className='absolute top-1/2 -left-1 w-2 h-2 bg-red-500 rounded-full blur-sm'
+                animate={{
+                  scale: [0, 1.2, 0],
+                  opacity: [0, 1, 0],
+                }}
+                transition={{
+                  duration: 1.5,
+                  repeat: Infinity,
+                  delay: 0,
+                }}
+              />
+
+              <motion.div
+                className='absolute top-1/2 -right-1 w-2 h-2 bg-green-500 rounded-full blur-sm'
+                animate={{
+                  scale: [0, 1.2, 0],
+                  opacity: [0, 1, 0],
+                }}
+                transition={{
+                  duration: 1.5,
+                  repeat: Infinity,
+                  delay: 0.75,
                 }}
               />
             </MotionLink>

@@ -40,6 +40,7 @@ interface UserStatePayload {
   winningBids: [] | null;
   adoptionApplicationFees: [] | null;
   dataReady: boolean;
+  openUserDrawer: boolean;
 }
 
 const initialUserState: UserStatePayload = {
@@ -58,6 +59,7 @@ const initialUserState: UserStatePayload = {
   winningBids: null,
   adoptionApplicationFees: null,
   dataReady: false,
+  openUserDrawer: false,
 };
 
 export const userSlice = createSlice({
@@ -88,6 +90,12 @@ export const userSlice = createSlice({
       state.instantBuys = [];
       state.winningBids = null;
       state.adoptionApplicationFees = null;
+    },
+    setOpenUserDrawer: (state) => {
+      state.openUserDrawer = true;
+    },
+    setCloseUserDrawer: (state) => {
+      state.openUserDrawer = false;
     },
   },
   extraReducers: (build) => {
@@ -134,4 +142,4 @@ export const userSlice = createSlice({
 
 export const userReducuer = userSlice.reducer as Reducer<UserStatePayload>;
 
-export const { resetUserSuccess, resetUserError, hydrateUserState, resetUser } = userSlice.actions;
+export const { resetUserSuccess, resetUserError, hydrateUserState, resetUser, setOpenUserDrawer, setCloseUserDrawer } = userSlice.actions;
