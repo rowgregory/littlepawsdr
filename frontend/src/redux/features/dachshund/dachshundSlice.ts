@@ -65,6 +65,9 @@ export const dachshundSlice = createSlice({
       state.error = null;
       state.message = null;
     },
+    setDachshunds: (state, { payload }) => {
+      state.dachshunds = payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -90,4 +93,4 @@ export const dachshundSlice = createSlice({
 
 export const dachshundReducer = dachshundSlice.reducer as Reducer<DachshundStatePayload>;
 
-export const { resetDachshundError } = dachshundSlice.actions;
+export const { resetDachshundError, setDachshunds } = dachshundSlice.actions;

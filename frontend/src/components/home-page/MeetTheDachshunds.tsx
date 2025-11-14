@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useGetDachshundsByStatusMutation } from '../../redux/services/rescueGroupsApi';
 import { RootState, useAppSelector } from '../../redux/toolkitStore';
@@ -9,12 +9,14 @@ import { Snowflake, Gift, Heart } from 'lucide-react';
 
 const MeetTheDachshunds = () => {
   const dachshund = useAppSelector((state: RootState) => state.dachshund);
-  const [getDachshunds] = useGetDachshundsByStatusMutation({
-    selectFromResult: () => ({}),
-  });
+  const [getDachshunds, { isLoading }] = useGetDachshundsByStatusMutation();
+  const hasFetched = useRef(false);
 
   useEffect(() => {
-    getDachshunds({ status: 'Available' });
+    if (!hasFetched.current) {
+      getDachshunds({ status: 'Available' });
+      hasFetched.current = true;
+    }
   }, [getDachshunds]);
 
   const containerVariants = {
@@ -49,6 +51,44 @@ const MeetTheDachshunds = () => {
       },
     },
   };
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className='px-3 sm:px-6'>
+        <div className='max-w-screen-xl w-full mx-auto mt-20 sm:mt-32 mb-32 sm:mb-40'>
+          <div className='flex justify-center items-center min-h-[400px]'>
+            <div className='text-center'>
+              <motion.div
+                className='w-16 h-16 border-4 border-red-500 border-t-transparent rounded-full mx-auto mb-4'
+                animate={{ rotate: 360 }}
+                transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+              />
+              <p className='text-gray-600 font-QBook'>Loading adorable dachshunds...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Get dachshunds array - it's directly in the state
+  const dachshunds = dachshund?.dachshunds || [];
+
+  // Show empty state if no dachshunds
+  if (dachshunds.length === 0) {
+    return (
+      <div className='px-3 sm:px-6'>
+        <div className='max-w-screen-xl w-full mx-auto mt-20 sm:mt-32 mb-32 sm:mb-40'>
+          <div className='text-center py-20'>
+            <Snowflake className='w-16 h-16 text-gray-300 mx-auto mb-4' />
+            <p className='text-gray-600 font-QBook text-lg'>No dachshunds available at the moment.</p>
+            <p className='text-gray-500 font-QBook text-sm mt-2'>Check back soon for new arrivals!</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className='px-3 sm:px-6 relative overflow-hidden'>
@@ -150,7 +190,7 @@ const MeetTheDachshunds = () => {
                 to='/dachshunds'
                 className='relative group inline-flex items-center gap-2 px-8 py-4 font-QBold text-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300'
                 style={{
-                  background: 'linear-gradient(135deg, #dc2626, #059669, #ef4444, #10b981)',
+                  backgroundImage: 'linear-gradient(135deg, #dc2626, #059669, #ef4444, #10b981)',
                   backgroundSize: '300% 300%',
                 }}
               >
@@ -165,7 +205,7 @@ const MeetTheDachshunds = () => {
                     ease: 'linear',
                   }}
                   style={{
-                    background: 'linear-gradient(135deg, #dc2626, #059669, #ef4444, #10b981)',
+                    backgroundImage: 'linear-gradient(135deg, #dc2626, #059669, #ef4444, #10b981)',
                     backgroundSize: '300% 300%',
                   }}
                 />
@@ -192,9 +232,9 @@ const MeetTheDachshunds = () => {
 
           {/* Cards Grid */}
           <motion.div variants={containerVariants} className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 pt-8'>
-            {dachshund?.dachshunds?.slice(0, 4).map((obj: unknown, i: number) => (
+            {dachshunds?.slice(0, 4).map((obj: any, i: number) => (
               <motion.div
-                key={i}
+                key={obj?.id || i}
                 variants={cardVariants}
                 whileHover={{
                   y: -8,
