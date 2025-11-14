@@ -48,9 +48,7 @@ const UserList = () => {
 
   useEffect(() => {
     if (users) {
-      setFilteredUsers(
-        users?.filter((user: any) => user.email.toLowerCase().includes(text.toLowerCase()))
-      );
+      setFilteredUsers(users?.filter((user: any) => user.email.toLowerCase().includes(text.toLowerCase())));
     }
   }, [users, text]);
 
@@ -62,13 +60,7 @@ const UserList = () => {
 
   return (
     <Fragment>
-      <DeleteModal
-        type='User'
-        id={id}
-        deleteDocument={deleteUser}
-        loading={loadingDelete}
-        hook={{ openModal, show, closeModal }}
-      />
+      <DeleteModal type='User' id={id} deleteDocument={deleteUser} loading={loadingDelete} hook={{ openModal, show, closeModal }} />
       {isLoading && <GreenRotatingTransparentCircle />}
       <div className='font-Matter-Medium text-charcoal text-2xl mb-3.5'>
         Users<span className='ml-1 text-sm'>(&nbsp;{users?.length}&nbsp;)</span>
@@ -76,11 +68,7 @@ const UserList = () => {
       <div className='grid grid-cols-12 h-10 justify-between'>
         <div className='col-span-7 md:col-span-6 flex items-center font-Matter-Light border border-grey-200 rounded-md bg-white py-2 px-[16px] '>
           <MagnifyingGlass />
-          <input
-            onChange={(e: any) => setText(e.target.value)}
-            className='w-full h-full focus:outline-0 rounded-md ml-2'
-            placeholder='Search'
-          />
+          <input onChange={(e: any) => setText(e.target.value)} className='w-full h-full focus:outline-0 rounded-md ml-2' placeholder='Search' />
         </div>
       </div>
 
@@ -100,9 +88,7 @@ const UserList = () => {
                   <thead className='whitespace-nowrap px-4 pb-4 pt-2'>
                     <tr className='bg-zinc-50'>
                       <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
-                        <div className=' text-sm -mx-1.5 -my-1 w-fit px-1.5 py-1 rounded-md flex flex-nowrap items-center gap-2'>
-                          Name
-                        </div>
+                        <div className=' text-sm -mx-1.5 -my-1 w-fit px-1.5 py-1 rounded-md flex flex-nowrap items-center gap-2'>Name</div>
                       </th>
                       <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
                         <div className=' text-sm flex flex-nowrap items-center gap-2'>Email</div>
@@ -116,9 +102,7 @@ const UserList = () => {
                         </div>
                       </th>
                       <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
-                        <div className=' text-sm flex flex-nowrap items-center gap-2'>
-                          Date & Time
-                        </div>
+                        <div className=' text-sm flex flex-nowrap items-center gap-2'>Date & Time</div>
                       </th>
                       <th>
                         <div className='flex flex-nowrap items-center gap-2'></div>
@@ -133,26 +117,18 @@ const UserList = () => {
                       >
                         <td>
                           <div className='m-0 w-full  p-0 decoration-inherit hover:text-inherit hover:decoration-inherit !flex h-[3.25rem] items-center px-4 whitespace-nowrap'>
-                            <span className='text-sm font-Matter-Regular truncate'>
-                              {user?.name}
-                            </span>
+                            <span className='text-sm font-Matter-Regular truncate'>{user?.name}</span>
                           </div>
                         </td>
                         <td>
-                          <p className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>
-                            {user?.email}
-                          </p>
+                          <p className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>{user?.email}</p>
                         </td>
                         <td>
                           <div className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>
                             {user?.isAdmin ? (
-                              <p className='text-green-500 bg-green-50 px-1.5 py-0.5 rounded-3xl font-Matter-Regular w-fit text-sm'>
-                                Admin
-                              </p>
+                              <p className='text-green-500 bg-green-50 px-1.5 py-0.5 rounded-3xl font-Matter-Regular w-fit text-sm'>Admin</p>
                             ) : (
-                              <p className='text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded-3xl font-Matter-Regular w-fit text-sm'>
-                                User
-                              </p>
+                              <p className='text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded-3xl font-Matter-Regular w-fit text-sm'>User</p>
                             )}
                           </div>
                         </td>

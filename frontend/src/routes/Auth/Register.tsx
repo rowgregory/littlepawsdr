@@ -41,7 +41,7 @@ const Register = () => {
         firstName: registerForm?.inputs?.firstName,
         lastName: registerForm?.inputs?.lastName,
         email: registerForm?.inputs?.email?.toLowerCase(),
-        confirmEmail: registerForm?.inputs?.confirmEmail,
+        confirmEmail: registerForm?.inputs?.confirmEmail?.toLowerCase(),
         securityQuestion: registerForm?.inputs?.securityQuestion,
         securityAnswer: registerForm?.inputs?.securityAnswer,
         password: registerForm?.inputs?.password,
@@ -75,22 +75,19 @@ const Register = () => {
   };
 
   return (
-    <div className='min-h-dvh bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50 flex items-center justify-center p-4'>
-      <div className='bg-white rounded-3xl shadow-2xl overflow-hidden max-w-2xl w-full'>
+    <div className='min-h-dvh bg-gradient-to-br from-teal-50 via-cyan-50 to-blue-50 flex items-center justify-center sm:p-4'>
+      <div className='bg-white sm:rounded-3xl shadow-2xl overflow-hidden max-w-2xl w-full'>
         <Link to='/'>
-          <div className='bg-gradient-to-r from-amber-400 to-orange-400 p-8 text-center'>
-            <div className='bg-white rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center shadow-lg'>
-              <span className='text-4xl'>🐾</span>
-            </div>
+          <div className='bg-gradient-to-r from-teal-400 to-cyan-400 p-4 sm:p-8 text-center'>
             <h1 className='text-2xl font-bold text-white mb-2'>Little Paws Dachshund Rescue</h1>
-            <div className='flex justify-center gap-1 mt-3'>
+            <div className='hidden sm:flex justify-center gap-1 mt-3'>
               {[...Array(5)].map((_, i) => (
                 <Heart key={i} className='w-4 h-4 text-white fill-current animate-pulse' style={{ animationDelay: `${i * 0.2}s` }} />
               ))}
             </div>
           </div>
         </Link>
-        <div className='p-8'>
+        <div className='p-6 sm:p-8'>
           <div className='text-center mb-6'>
             <h2 className='text-2xl font-bold text-gray-800 mb-2'>Join Our Pack</h2>
             <p className='text-gray-600 text-sm'>Create your account to start helping dachshunds in need</p>
@@ -107,17 +104,17 @@ const Register = () => {
           <div className='mt-6 text-center'>
             <p className='text-xs text-gray-500 mb-3'>
               By creating an account, you agree to our{' '}
-              <Link to='#' className='text-amber-600 hover:text-amber-700 font-medium'>
+              <Link to='/terms-of-service' className='text-teal-600 hover:text-teal-700 font-medium'>
                 Terms of Service
               </Link>{' '}
               and{' '}
-              <Link to='/privacy-policy' className='text-amber-600 hover:text-amber-700 font-medium'>
+              <Link to='/privacy-policy' className='text-teal-600 hover:text-teal-700 font-medium'>
                 Privacy Policy
               </Link>
             </p>
             <p className='text-sm text-gray-600'>
               Already have an account?{' '}
-              <Link to='/auth/login' className='text-amber-600 hover:text-amber-700 font-medium'>
+              <Link to='/auth/login' className='text-teal-600 hover:text-teal-700 font-medium'>
                 Log In
               </Link>
             </p>

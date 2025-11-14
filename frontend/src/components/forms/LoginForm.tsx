@@ -18,7 +18,7 @@ const LoginForm: FC<ILoginForm> = ({ handleSubmit, handleInput, loginForm, showP
     <form onSubmit={handleSubmit} className='flex flex-col w-full space-y-4'>
       <AuthInput
         label='Email address *'
-        icon={<User className='w-4 h-4 text-amber-500' />}
+        icon={<User className='w-4 h-4 text-teal-500' />}
         name='email'
         value={loginForm?.inputs?.email || ''}
         onChange={handleInput}
@@ -28,13 +28,13 @@ const LoginForm: FC<ILoginForm> = ({ handleSubmit, handleInput, loginForm, showP
       <div>
         <div className='flex justify-between items-center mb-1'>
           <label className='flex items-center gap-2 text-sm font-medium text-gray-700 mb-2'>
-            <Lock className='w-4 h-4 text-amber-500' />
+            <Lock className='w-4 h-4 text-teal-500' />
             Password *
           </label>
           <Link
             to='/auth/forgot-password'
             type='button'
-            className='text-xs text-amber-600 hover:text-amber-700 font-medium hover:underline transition-colors'
+            className='text-xs text-teal-600 hover:text-teal-700 font-medium hover:underline transition-colors'
           >
             Forgot password?
           </Link>
@@ -46,14 +46,14 @@ const LoginForm: FC<ILoginForm> = ({ handleSubmit, handleInput, loginForm, showP
             type={showPassword ? 'text' : 'password'}
             alt='Password'
             value={loginForm?.inputs.password || ''}
-            className={`w-full px-4 py-3 pr-12 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-300 transition-colors ${
-              loginForm?.errors?.password ? 'border-red-300 bg-red-50' : 'border-gray-200 focus:border-amber-400'
+            className={`w-full px-4 py-3 pr-12 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-300 transition-colors ${
+              loginForm?.errors?.password ? 'border-red-300 bg-red-50' : 'border-gray-200 focus:border-teal-400'
             }`}
           />
           <button
             type='button'
             onClick={() => setShowPassword(!showPassword)}
-            className='absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-amber-500 transition-colors'
+            className='absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-teal-500 transition-colors'
           >
             {showPassword ? <EyeOff className='w-5 h-5' /> : <Eye className='w-5 h-5' />}
           </button>
@@ -63,7 +63,7 @@ const LoginForm: FC<ILoginForm> = ({ handleSubmit, handleInput, loginForm, showP
       <button
         type='submit'
         disabled={isLoading}
-        className='mt-2 w-full bg-gradient-to-r from-amber-400 to-orange-400 text-white font-bold py-4 px-6 rounded-xl hover:from-amber-500 hover:to-orange-500 focus:outline-none focus:ring-4 focus:ring-amber-300 transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none'
+        className='mt-2 w-full bg-gradient-to-r from-teal-400 to-blue-400 text-white font-bold py-4 px-6 rounded-xl hover:from-teal-500 hover:to-blue-500 focus:outline-none focus:ring-4 focus:ring-teal-300 transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none'
       >
         {isLoading ? (
           <div className='flex items-center justify-center gap-2'>

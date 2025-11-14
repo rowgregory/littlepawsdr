@@ -24,10 +24,7 @@ const DeleteModal = ({ type, id, deleteDocument, loading, hook }: any) => {
           </p>
         </div>
         <div className='flex items-center justify-between gap-x-3 w-full'>
-          <button
-            className='w-full py-3 text-charcoal bg-zinc-100 rounded-full font-QBold duration-200 hover:shadow-lg'
-            onClick={hook.closeModal}
-          >
+          <button className='w-full py-3 text-charcoal bg-zinc-100 rounded-full font-QBold duration-200 hover:shadow-lg' onClick={hook.closeModal}>
             No, Keep It.
           </button>
           <button

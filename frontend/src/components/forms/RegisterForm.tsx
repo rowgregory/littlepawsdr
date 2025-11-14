@@ -1,4 +1,4 @@
-import { Eye, EyeOff, Heart, HelpCircle, Lock, Shield, User, MapPin, Home, ArrowRight, ArrowLeft } from 'lucide-react';
+import { Eye, EyeOff, HelpCircle, Lock, Shield, User, MapPin, Home, ArrowRight } from 'lucide-react';
 import { FC, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { AuthInput } from '../ui/AuthInput';
@@ -128,37 +128,37 @@ const RegisterForm: FC<RegisterFormProps> = ({
   };
 
   return (
-    <div className='space-y-6'>
+    <div className='space-y-4 sm:space-y-6'>
       {/* Progress Bar (only show if multi-step) */}
       {hasCustomCampaign && (
-        <div className='mb-8'>
+        <div className='mb-6 sm:mb-8'>
           <div className='flex items-center justify-between mb-2'>
-            <span className='text-sm font-medium text-gray-600'>
+            <span className='text-xs sm:text-sm font-medium text-gray-600'>
               Step {currentStep} of {totalSteps}
             </span>
-            <span className='text-sm text-gray-500'>{currentStep === 1 ? 'Account Details' : 'Shipping Address'}</span>
+            <span className='text-xs sm:text-sm text-gray-500'>{currentStep === 1 ? 'Account Details' : 'Shipping Address'}</span>
           </div>
-          <div className='w-full bg-gray-200 rounded-full h-2'>
+          <div className='w-full bg-gray-200 rounded-full h-1.5 sm:h-2'>
             <div
-              className='bg-gradient-to-r from-amber-400 to-orange-400 h-2 rounded-full transition-all duration-500'
+              className='bg-gradient-to-r from-teal-400 to-cyan-400 h-1.5 sm:h-2 rounded-full transition-all duration-500'
               style={{ width: `${(currentStep / totalSteps) * 100}%` }}
             ></div>
           </div>
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className='space-y-4'>
+      <form onSubmit={handleSubmit} className='space-y-3 sm:space-y-4'>
         {/* Step 1: Account Information */}
         {currentStep === 1 && (
-          <div className='space-y-4'>
-            <div className='text-center mb-6'>
-              <h3 className='text-xl font-bold text-gray-800 mb-2'>Create Your Account</h3>
-              <p className='text-gray-600'>Join the Little Paws family today</p>
+          <div className='space-y-3 sm:space-y-4'>
+            <div className='text-center mb-4 sm:mb-6'>
+              <h3 className='text-lg sm:text-xl font-bold text-gray-800 mb-1 sm:mb-2'>Create Your Account</h3>
+              <p className='text-sm sm:text-base text-gray-600'>Join the Little Paws family today</p>
             </div>
 
             <AuthInput
               label='First Name *'
-              icon={<User className='w-4 h-4 text-amber-500' />}
+              icon={<User className='w-4 h-4 text-teal-500' />}
               name='firstName'
               value={registerForm?.inputs?.firstName || ''}
               onChange={handleInput}
@@ -167,7 +167,7 @@ const RegisterForm: FC<RegisterFormProps> = ({
             />
             <AuthInput
               label='Last Name *'
-              icon={<User className='w-4 h-4 text-amber-500' />}
+              icon={<User className='w-4 h-4 text-teal-500' />}
               name='lastName'
               value={registerForm?.inputs?.lastName || ''}
               onChange={handleInput}
@@ -176,7 +176,7 @@ const RegisterForm: FC<RegisterFormProps> = ({
             />
             <AuthInput
               label='Email address *'
-              icon={<User className='w-4 h-4 text-amber-500' />}
+              icon={<User className='w-4 h-4 text-teal-500' />}
               name='email'
               value={registerForm?.inputs?.email || ''}
               onChange={handleInput}
@@ -185,7 +185,7 @@ const RegisterForm: FC<RegisterFormProps> = ({
             />
             <AuthInput
               label='Confirm email address *'
-              icon={<User className='w-4 h-4 text-amber-500' />}
+              icon={<User className='w-4 h-4 text-teal-500' />}
               name='confirmEmail'
               value={registerForm?.inputs?.confirmEmail || ''}
               onChange={handleInput}
@@ -194,16 +194,17 @@ const RegisterForm: FC<RegisterFormProps> = ({
             />
             <AuthSelect
               label='Security Question *'
-              icon={<HelpCircle className='w-4 h-4 text-amber-500' />}
+              icon={<HelpCircle className='w-4 h-4 text-teal-500' />}
               name='securityQuestion'
               value={registerForm?.inputs?.securityQuestion || ''}
               onChange={handleInput}
               error={registerForm?.errors?.securityQuestion}
               options={securityQuestions}
+              optionText='Select a security question'
             />
             <AuthInput
               label='Security Answer *'
-              icon={<Shield className='w-4 h-4 text-amber-500' />}
+              icon={<Shield className='w-4 h-4 text-teal-500' />}
               name='securityAnswer'
               value={registerForm?.inputs?.securityAnswer || ''}
               onChange={handleInput}
@@ -211,8 +212,8 @@ const RegisterForm: FC<RegisterFormProps> = ({
               placeholder='Enter your answer'
             />
             <div>
-              <label className='flex items-center gap-2 text-sm font-medium text-gray-700 mb-2'>
-                <Lock className='w-4 h-4 text-amber-500' />
+              <label className='flex items-center gap-2 text-xs sm:text-sm font-medium text-gray-700 mb-2'>
+                <Lock className='w-4 h-4 text-teal-500' />
                 Password *
               </label>
               <div className='relative'>
@@ -221,17 +222,17 @@ const RegisterForm: FC<RegisterFormProps> = ({
                   name='password'
                   value={registerForm?.inputs?.password || ''}
                   onChange={handleInput}
-                  className={`w-full px-4 py-3 pr-12 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-300 transition-colors ${
-                    registerForm?.errors?.password ? 'border-red-300 bg-red-50' : 'border-gray-200 focus:border-amber-400'
+                  className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 pr-10 sm:pr-12 border-2 rounded-xl text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-teal-300 transition-colors ${
+                    registerForm?.errors?.password ? 'border-red-300 bg-red-50' : 'border-gray-200 focus:border-teal-400'
                   }`}
                   placeholder='Create a strong password'
                 />
                 <button
                   type='button'
                   onClick={() => setShowPassword(!showPassword)}
-                  className='absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-amber-500 transition-colors'
+                  className='absolute right-2 sm:right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-teal-500 transition-colors p-1'
                 >
-                  {showPassword ? <EyeOff className='w-5 h-5' /> : <Eye className='w-5 h-5' />}
+                  {showPassword ? <EyeOff className='w-4 h-4 sm:w-5 sm:h-5' /> : <Eye className='w-4 h-4 sm:w-5 sm:h-5' />}
                 </button>
               </div>
               {registerForm?.inputs?.password && (
@@ -252,9 +253,9 @@ const RegisterForm: FC<RegisterFormProps> = ({
                       {getStrengthText()}
                     </span>
                   </div>
-                  <div className='w-full bg-gray-200 rounded-full h-2'>
+                  <div className='w-full bg-gray-200 rounded-full h-1.5 sm:h-2'>
                     <div
-                      className={`h-2 rounded-full transition-all duration-300 ${getStrengthColor()}`}
+                      className={`h-1.5 sm:h-2 rounded-full transition-all duration-300 ${getStrengthColor()}`}
                       style={{ width: `${passwordStrength}%` }}
                     ></div>
                   </div>
@@ -267,14 +268,14 @@ const RegisterForm: FC<RegisterFormProps> = ({
 
         {/* Step 2: Address Information (only if customCampaignLink exists) */}
         {currentStep === 2 && hasCustomCampaign && (
-          <div className='space-y-4'>
-            <div className='text-center mb-6'>
-              <h3 className='text-xl font-bold text-gray-800 mb-2'>Shipping Address</h3>
-              <p className='text-gray-600'>Where should we send your auction wins?</p>
+          <div className='space-y-3 sm:space-y-4'>
+            <div className='text-center mb-4 sm:mb-6'>
+              <h3 className='text-lg sm:text-xl font-bold text-gray-800 mb-1 sm:mb-2'>Shipping Address</h3>
+              <p className='text-sm sm:text-base text-gray-600'>Where should we send your auction wins?</p>
             </div>
             <AuthInput
               label='Street Address *'
-              icon={<Home className='w-4 h-4 text-amber-500' />}
+              icon={<Home className='w-4 h-4 text-teal-500' />}
               name='address'
               value={registerForm?.inputs?.address || ''}
               onChange={handleInput}
@@ -284,7 +285,7 @@ const RegisterForm: FC<RegisterFormProps> = ({
 
             <AuthInput
               label='City *'
-              icon={<MapPin className='w-4 h-4 text-amber-500' />}
+              icon={<MapPin className='w-4 h-4 text-teal-500' />}
               name='city'
               value={registerForm?.inputs?.city || ''}
               onChange={handleInput}
@@ -293,17 +294,18 @@ const RegisterForm: FC<RegisterFormProps> = ({
             />
             <AuthSelect
               label='State *'
-              icon={<MapPin className='w-4 h-4 text-amber-500' />}
+              icon={<MapPin className='w-4 h-4 text-teal-500' />}
               name='state'
               value={registerForm?.inputs?.state || ''}
               onChange={handleInput}
               error={registerForm?.errors?.['state']}
               options={states}
+              optionText='Select a State'
             />
 
             <AuthInput
               label='ZIP/Postal Code *'
-              icon={<MapPin className='w-4 h-4 text-amber-500' />}
+              icon={<MapPin className='w-4 h-4 text-teal-500' />}
               name='zipPostalCode'
               value={registerForm?.inputs?.zipPostalCode || ''}
               onChange={handleInput}
@@ -314,17 +316,14 @@ const RegisterForm: FC<RegisterFormProps> = ({
         )}
 
         {/* Navigation Buttons */}
-        <div className='flex gap-4 pt-4'>
+        <div className='flex flex-col sm:flex-row gap-2 sm:gap-4 pt-3 sm:pt-4'>
           {hasCustomCampaign && currentStep > 1 && (
             <button
               type='button'
               onClick={handlePrevStep}
-              className='flex-1 bg-gray-200 text-gray-700 font-bold py-4 px-6 rounded-xl hover:bg-gray-300 focus:outline-none focus:ring-4 focus:ring-gray-300 transform hover:scale-105 transition-all duration-200'
+              className='flex-1 order-2 sm:order-1 bg-gray-200 text-gray-700 font-bold py-3 sm:py-4 px-4 sm:px-6 rounded-xl text-sm sm:text-base hover:bg-gray-300 focus:outline-none focus:ring-4 focus:ring-gray-300 transform hover:scale-105 transition-all duration-200 active:scale-95'
             >
-              <div className='flex items-center justify-center gap-2'>
-                <ArrowLeft className='w-5 h-5' />
-                Back
-              </div>
+              Back
             </button>
           )}
 
@@ -333,29 +332,27 @@ const RegisterForm: FC<RegisterFormProps> = ({
               type='button'
               onClick={handleNextStep}
               disabled={!isStep1Valid()}
-              className='flex-1 bg-gradient-to-r from-amber-400 to-orange-400 text-white font-bold py-4 px-6 rounded-xl hover:from-amber-500 hover:to-orange-500 focus:outline-none focus:ring-4 focus:ring-amber-300 transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none'
+              className='flex-1 order-1 sm:order-2 bg-gradient-to-r from-teal-400 to-cyan-400 text-white font-bold py-3 sm:py-4 px-4 sm:px-6 rounded-xl text-sm sm:text-base hover:from-teal-500 hover:to-cyan-500 focus:outline-none focus:ring-4 focus:ring-teal-300 transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none active:scale-95'
             >
-              <div className='flex items-center justify-center gap-2'>
-                Next Step
-                <ArrowRight className='w-5 h-5' />
+              <div className='flex items-center justify-center gap-1.5 sm:gap-2'>
+                <span>Next Step</span>
+                <ArrowRight className='w-4 h-4 sm:w-5 sm:h-5' />
               </div>
             </button>
           ) : (
             <button
               type='submit'
               disabled={isLoading}
-              className='flex-1 bg-gradient-to-r from-amber-400 to-orange-400 text-white font-bold py-4 px-6 rounded-xl hover:from-amber-500 hover:to-orange-500 focus:outline-none focus:ring-4 focus:ring-amber-300 transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none'
+              className='flex-1 order-1 sm:order-2 bg-gradient-to-r from-teal-400 to-cyan-400 text-white font-bold py-3 sm:py-4 px-4 sm:px-6 rounded-xl text-sm sm:text-base hover:from-teal-500 hover:to-cyan-500 focus:outline-none focus:ring-4 focus:ring-teal-300 transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none active:scale-95'
             >
               {isLoading ? (
-                <div className='flex items-center justify-center gap-2'>
-                  <div className='w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin'></div>
-                  Creating Account...
+                <div className='flex items-center justify-center gap-1.5 sm:gap-2'>
+                  <div className='w-4 h-4 sm:w-5 sm:h-5 border-2 border-white border-t-transparent rounded-full animate-spin'></div>
+                  <span className='hidden sm:inline'>Creating Account...</span>
+                  <span className='sm:hidden'>Creating...</span>
                 </div>
               ) : (
-                <div className='flex items-center justify-center gap-2'>
-                  <Heart className='w-5 h-5' />
-                  {hasCustomCampaign ? 'Complete Registration' : 'Join Little Paws Family'}
-                </div>
+                <div className='flex items-center justify-center gap-1.5 sm:gap-2'>{hasCustomCampaign ? 'Complete' : 'Join Now'}</div>
               )}
             </button>
           )}

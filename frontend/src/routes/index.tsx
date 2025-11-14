@@ -16,6 +16,8 @@ import useScrollToTop from '../hooks/useScrollToTop';
 import Toast from '../components/common/Toast';
 import UserInit from '../wrappers/UserInit';
 import { useFetchLiveCampaignQuery } from '../redux/services/campaignApi';
+import TermsOfService from './TermsOfService';
+import PrivacyPolicy from './PrivacyPolicy';
 
 type LazyModulePromise<T = {}> = Promise<{ default: ComponentType<T> }>;
 
@@ -45,6 +47,8 @@ export const MainRoutes = () => {
       <UserInit>
         <Routes>
           <Route path='/' element={<Home />} />
+          <Route path='/terms-of-service' element={<TermsOfService />} />
+          <Route path='/privacy-policy' element={<PrivacyPolicy />} />
           <Route path='/dachshunds/*' element={<Dachshunds />} />
           <Route path='/adopt/*' element={<Adopt />} />
           <Route path='/campaigns/*' element={<Campaign />} />

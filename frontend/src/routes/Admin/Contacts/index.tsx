@@ -53,7 +53,7 @@ const ContactRoutes = () => {
     <ContactsLayout navbar={<Navbar />}>
       <Routes>
         <Route path='/users' element={<UserList />} />
-        <Route path='/users/:create?/:id' element={<UserEdit />} />
+        <Route path='/users/:id' element={<UserEdit />} />
         <Route path='/newsletter-emails' element={<NewsletterEmailList />} />
       </Routes>
     </ContactsLayout>
