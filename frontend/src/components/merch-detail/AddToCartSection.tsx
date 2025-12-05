@@ -90,12 +90,6 @@ const AddToCartSection: FC<AddToCartSectionProps> = ({ product, qty, setQty, add
         <ShoppingCart className='w-5 h-5' />
         {outOfStock ? 'Out of Stock' : 'Add to Cart'}
       </button>
-
-      {!outOfStock && (
-        <div className='mt-4 text-center'>
-          <p className='text-xs text-gray-500'>🔒 Secure checkout • 30-day returns</p>
-        </div>
-      )}
     </div>
   );
 };

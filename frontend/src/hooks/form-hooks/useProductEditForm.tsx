@@ -54,7 +54,6 @@ type Product = {
   price: number;
   shippingPrice: number;
   image: string;
-  brand: string;
   category: string;
   countInStock: number;
   description: string;
@@ -69,7 +68,6 @@ export const useProductEditForm = (setErrors: any, data?: any) => {
     price: 0,
     shippingPrice: 0,
     image: '',
-    brand: '',
     category: 'Clothing',
     countInStock: 0,
     description: '',
@@ -87,7 +85,6 @@ export const useProductEditForm = (setErrors: any, data?: any) => {
         shippingPrice: data.shippingPrice,
         image: data.image,
         images: data.images,
-        brand: data.brand,
         category: data.category,
         countInStock: data.countInStock,
         description: data.description,

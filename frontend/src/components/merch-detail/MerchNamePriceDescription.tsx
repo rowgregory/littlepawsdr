@@ -26,7 +26,6 @@ const MerchNamePriceDescription: FC<MerchNamePriceDescriptionProps> = ({ product
           <span className='text-xl font-semibold text-gray-600'>$</span>
           <span className='text-5xl font-bold text-gray-900 ml-1'>{product?.price}</span>
         </div>
-        <p className='text-sm text-gray-600 mt-1'>Price includes all taxes</p>
       </div>
 
       {/* Size Selector */}

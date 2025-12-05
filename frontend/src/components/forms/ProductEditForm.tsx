@@ -48,16 +48,6 @@ const ProductEditForm: React.FC<ProductEditFormProps> = ({
           />
 
           <FormField
-            label='Brand'
-            id='brand'
-            name='brand'
-            type='text'
-            value={inputs.brand || ''}
-            onChange={onInputChange}
-            placeholder='Enter brand name'
-          />
-
-          <FormField
             label='Description'
             id='description'
             name='description'

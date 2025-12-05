@@ -84,20 +84,7 @@ const deleteProduct = asyncHandler(async (req, res) => {
  @access  Private/Admin
 */
 const createProduct = asyncHandler(async (req, res) => {
-  const {
-    name,
-    price,
-    shippingPrice,
-    image,
-    brand,
-    category,
-    description,
-    size,
-    countInStock,
-    sizes,
-    images,
-    hasSizes,
-  } = req.body;
+  const { name, price, shippingPrice, image, category, description, size, countInStock, sizes, images, hasSizes } = req.body;
   try {
     const product = new Product({
       name,
@@ -105,7 +92,6 @@ const createProduct = asyncHandler(async (req, res) => {
       shippingPrice,
       user: req.user._id,
       image,
-      brand,
       category,
       countInStock,
       description,
@@ -130,49 +116,6 @@ const createProduct = asyncHandler(async (req, res) => {
 
     res.status(500).json({
       message: 'Error creating product',
-      sliceName: 'productApi',
-    });
-  }
-});
-
-/**
- @desc    Update a product
- @route   PUT /api/products/:id
- @access  Private/Admin
-*/
-const updateProduct = asyncHandler(async (req, res) => {
-  const { data } = req.body;
-
-  try {
-    let objToUpdate = {};
-    const itemCount = data.sizes.reduce((acc, item) => acc + item.amount, 0);
-
-    objToUpdate = {
-      ...data,
-      countInStock: data.hasSizes ? itemCount : data.countInStock,
-      isOutofStock: itemCount < 0 || data.countInStock < 0,
-      images: data.images,
-      price: data.price,
-      shippingPrice: data.shippingPrice,
-      name: data.name,
-      brand: data.brand,
-      description: data.description,
-      category: data.category,
-    };
-
-    await Product.findOneAndUpdate({ _id: req.params.id }, objToUpdate, { new: true });
-
-    res.status(200).json({ message: 'Product updated', sliceName: 'productApi' });
-  } catch (err) {
-    await Error.create({
-      functionName: 'UPDATE_PRODUCT_ADMIN',
-      name: err.name,
-      message: err.message,
-      user: { id: req?.user?._id, email: req?.user?.email },
-    });
-
-    res.status(500).json({
-      message: `Error updating product`,
       sliceName: 'productApi',
     });
   }
@@ -210,11 +153,4 @@ const deleteProductPhoto = asyncHandler(async (req, res) => {
   }
 });
 
-export {
-  getProducts,
-  getProductDetails,
-  deleteProduct,
-  createProduct,
-  updateProduct,
-  deleteProductPhoto,
-};
+export { getProducts, getProductDetails, deleteProduct, createProduct, deleteProductPhoto };

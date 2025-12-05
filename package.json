@@ -1,6 +1,6 @@
 {
   "name": "lpdr",
-  "version": "2.0.25",
+  "version": "2.0.26",
   "description": "Dachshund Rescue",
   "main": "server.js",
   "type": "module",

@@ -29,7 +29,6 @@ const ProductEdit = () => {
       name: inputs.name,
       price: inputs.price,
       shippingPrice: inputs.shippingPrice,
-      brand: inputs.brand,
       category: inputs.category,
       description: inputs.description,
       countInStock: inputs.countInStock,

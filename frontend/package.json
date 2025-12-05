@@ -1,7 +1,7 @@
 {
   "name": "frontend",
   "proxy": "http://localhost:5000",
-  "version": "15.7.35",
+  "version": "15.7.36",
   "private": true,
   "scripts": {
     "start": "react-scripts start",
