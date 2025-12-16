@@ -3,6 +3,7 @@ import { useAppDispatch } from '../redux/toolkitStore';
 import { hydrateUserState } from '../redux/features/user/userSlice';
 import { useFetchUserProfileQuery } from '../redux/services/userApi';
 import { hydrateAuthState } from '../redux/features/auth/authSlice';
+import { setOpenChangelogModal } from '../redux/features/dashboard/dashboardSlice';
 
 const UserInit = ({ children }: { children: React.ReactNode }) => {
   const dispatch = useAppDispatch();
@@ -32,8 +33,7 @@ const UserInit = ({ children }: { children: React.ReactNode }) => {
             // Hydrate immediately with cached data for instant UI
             dispatch(hydrateUserState({ user: parsedUser }));
             dispatch(hydrateAuthState({ isAuthenticated: true }));
-          } catch (error) {
-            console.error('Failed to parse cached user:', error);
+          } catch {
             localStorage.removeItem('user');
             localStorage.removeItem('isAuthenticated');
           }
@@ -62,8 +62,11 @@ const UserInit = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     if (data) {
       // Update with fresh data from server
-      dispatch(hydrateUserState({ user: data?.user }));
+      dispatch(hydrateUserState({ user: { ...data?.user, showChangelog: data?.showChangelog, currentVersion: data?.currentVersion } }));
       dispatch(hydrateAuthState({ isAuthenticated: data?.isAuthenticated }));
+      if (data?.user?.lastSeenChangelogVersion === '0.0.0' || data?.user?.lastSeenChangelogVersion < data?.user?.currentVersion) {
+        dispatch(setOpenChangelogModal());
+      }
 
       // Update localStorage cache with fresh data
       if (data?.user && data?.isAuthenticated) {

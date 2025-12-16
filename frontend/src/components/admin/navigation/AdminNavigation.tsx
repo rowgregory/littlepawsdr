@@ -1,4 +1,4 @@
-import { Package, Users, Gavel, Heart, Store, DollarSign, LogOut, Home, LayoutDashboard } from 'lucide-react';
+import { Package, Users, Gavel, Heart, Store, DollarSign, LogOut, Home, LayoutDashboard, History } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 import NavigationLink from './NavigationLink';
 
@@ -14,6 +14,7 @@ const AdminNavigation = () => {
     store: pathname.includes('/store'),
     adoptionApplication: pathname.includes('/adoption-application'),
     people: pathname.includes('/contacts'),
+    changelog: pathname.includes('/changelog'),
     logout: false,
   };
 
@@ -65,6 +66,12 @@ const AdminNavigation = () => {
       linkKey: '/admin/contacts/users',
       icon: <Users className='w-5 h-5' />,
       textKey: 'Contacts',
+    },
+    {
+      active: link.changelog,
+      linkKey: '/admin/changelog',
+      icon: <History className='w-5 h-5' />,
+      textKey: 'Changelog',
     },
     {
       active: link.logout,

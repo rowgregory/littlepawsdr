@@ -5,6 +5,8 @@ import User from '../../../models/userModel.js';
 import Address from '../../../models/addressModel.js';
 import { generateToken } from '../../../utils/generateToken.js';
 import { prepareLog, logEvent } from '../../../utils/logHelpers.js';
+import { CURRENT_VERSION } from '../../../appVersion.js';
+import semver from 'semver';
 
 /**
  @desc    Login user
@@ -126,7 +128,7 @@ const login = asyncHandler(async (req, res) => {
     const userToReturn = await User.findById(user._id)
       .populate('addressRef')
       .select(
-        '_id name email isAdmin lastLoginTime firstNameFirstInitial lastNameFirstInitial firstName lastName updatedAt hasAddress anonymousBidding'
+        '_id name email isAdmin lastLoginTime firstNameFirstInitial lastNameFirstInitial firstName lastName updatedAt hasAddress anonymousBidding lastSeenChangelogVersion'
       );
 
     logEvent(log, 'USER DATA FETCHED', userToReturn._id);
@@ -138,14 +140,16 @@ const login = asyncHandler(async (req, res) => {
       logEvent(log, 'hasAddress FIELD UPDATED', updatedUser.hasAddress);
     }
 
-    const token = generateToken({ id: userToReturn._id, isAdmin: userToReturn.isAdmin }, '7d');
+    const showChangelog = semver.gt(CURRENT_VERSION, userToReturn?.lastSeenChangelogVersion || '0.0.0');
+
+    const token = generateToken({ id: userToReturn._id, isAdmin: userToReturn.isAdmin, showChangelog, currentVersion: CURRENT_VERSION }, '7d');
     logEvent(log, 'TOKEN GENERATED', userToReturn._id);
 
     res.cookie('authToken', token, {
       httpOnly: false,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 3 days
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
     logEvent(log, 'LOGIN SUCCESSFUL', {
@@ -154,7 +158,7 @@ const login = asyncHandler(async (req, res) => {
       addressMigrated: hasEmbeddedShippingAddress,
     });
 
-    res.status(200).json({ user: userToReturn, sliceName: 'authApi' });
+    res.status(200).json({ user: userToReturn, showChangelog, currentVersion: CURRENT_VERSION, sliceName: 'authApi' });
   } catch (err) {
     logEvent(log, 'LOGIN ERROR', err.message);
 

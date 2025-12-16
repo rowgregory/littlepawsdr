@@ -169,7 +169,7 @@ export const OneTimeDonationForm = ({ type, step, setStep, setOpenModal }: any) 
           email: inputs.email,
           donationAmount: Number(inputs.donationAmount || +inputs.otherAmount),
           oneTimeDonationAmount: Number(inputs.donationAmount || +inputs.otherAmount),
-          paypalId: details.id,
+          payPalId: details.id,
         })
           .unwrap()
           .then(() => {

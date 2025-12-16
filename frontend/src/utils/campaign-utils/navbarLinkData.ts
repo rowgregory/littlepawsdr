@@ -1,4 +1,4 @@
-const navbarLinksData = (id: string, auctionItemId: string) => [
+const navbarLinksData = (id: string) => [
   {
     title: 'Details',
     key: 'details',
@@ -6,7 +6,7 @@ const navbarLinksData = (id: string, auctionItemId: string) => [
   },
   {
     title: 'Schedule',
-    key: '',
+    key: 'schedule',
     linkKey: `/admin/campaigns/${id}/auction`,
   },
   {
@@ -17,7 +17,6 @@ const navbarLinksData = (id: string, auctionItemId: string) => [
   {
     title: 'Items',
     key: 'items',
-    key2: `items/${auctionItemId}/bids`,
     linkKey: `/admin/campaigns/${id}/auction/items`,
   },
   {

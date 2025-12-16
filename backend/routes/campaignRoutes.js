@@ -20,6 +20,7 @@ import getCustomCampaignLinkName from '../controllers/campaign/get/getCustomCamp
 import getLiveCampaign from '../controllers/campaign/get/getLiveCampaign.js';
 import trackAuctionModalButtonClick from '../controllers/campaign/patch/trackingAuctionModalButtonClick.js';
 import fetchCampaigns from '../controllers/campaign/fetch-campaigns/route.js';
+import handleAdminMarkWinningBidAsPaid from '../controllers/campaign/patch/handleAdminMarkWinningBidAsPaid.js';
 const router = express.Router();
 
 router.route('/').get(getCampaigns).post(protect, admin, createCampaign).put(protect, admin, updateCampaign);
@@ -37,6 +38,7 @@ router.route('/auction/item/instant-buy').post(protect, createAuctionItemInstant
 router.route('/auction/item/place-bid').post(protect, createBid);
 router.route('/auction/winning-bidder/:id').get(getWinningBidder);
 router.route('/auction/winning-bidder').patch(handleWinningBidPaymentAndCampaignSync);
+router.route('/auction/winning-bidder/mark-paid').patch(protect, admin, handleAdminMarkWinningBidAsPaid);
 router.route('/admin/view').get(protect, admin, getCampaignsForAdminView);
 router.route('/custom-link/:id').get(getCampaignByCustomLinkId);
 router.route('/:id').get(getCampaign);

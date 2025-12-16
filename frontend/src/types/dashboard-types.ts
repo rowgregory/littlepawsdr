@@ -69,6 +69,7 @@ interface DashboardStatePayload {
   ecardOrders: [];
   ecardOrderRevenue: number;
   totalEcardOrders: number;
+  changelogModal: boolean;
 }
 
 export type { ErrorPayload, DashboardStatePayload };

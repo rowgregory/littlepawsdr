@@ -68,6 +68,7 @@ const initialDashboardState: DashboardStatePayload = {
   ecardOrders: [],
   ecardOrderRevenue: 0,
   totalEcardOrders: 0,
+  changelogModal: false,
 };
 
 export const dashboardSlice = createSlice({
@@ -85,6 +86,12 @@ export const dashboardSlice = createSlice({
     },
     openAdminMobileNavigation: (state) => {
       state.sidebar = true;
+    },
+    setOpenChangelogModal: (state) => {
+      state.changelogModal = true;
+    },
+    setCloseChangelogModal: (state) => {
+      state.changelogModal = false;
     },
   },
   extraReducers: (builder) => {
@@ -118,5 +125,11 @@ export const dashboardSlice = createSlice({
 
 export const dashboardReducer = dashboardSlice.reducer as Reducer<DashboardStatePayload>;
 
-export const { openCloseDashboardModal, setAdoptionApplicationBypassCode, closeAdminMobileNavigation, openAdminMobileNavigation } =
-  dashboardSlice.actions;
+export const {
+  openCloseDashboardModal,
+  setAdoptionApplicationBypassCode,
+  closeAdminMobileNavigation,
+  openAdminMobileNavigation,
+  setCloseChangelogModal,
+  setOpenChangelogModal,
+} = dashboardSlice.actions;

@@ -113,6 +113,7 @@ const auctionItemInstantBuyerSchema = mongoose.Schema(
     trackingNumber: { type: String },
     totalPrice: { type: Number },
     isDigital: { type: Boolean },
+    payPalId: { type: String },
   },
   { timestamps: true }
 );
@@ -172,7 +173,9 @@ const auctionWinningBidderSchema = mongoose.Schema(
     shipping: { type: Number },
     shippingStatus: { type: String, default: 'Pending Payment Confirmation' },
     paidOn: { type: Date },
-    paypalId: { type: String },
+    payPalId: { type: String },
+    paymentMethod: { type: String },
+    manualPayment: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

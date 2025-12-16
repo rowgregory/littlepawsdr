@@ -46,6 +46,14 @@ export const userApi = api.injectEndpoints({
       }),
       invalidatesTags: ['User'],
     }),
+    updateLastSeenChangelogVersion: build.mutation({
+      query: ({ lastSeenChangelogVersion }: { lastSeenChangelogVersion: string }) => ({
+        url: `${BASE_URL}/update-last-seen-changelog-version`,
+        method: 'PATCH',
+        body: { lastSeenChangelogVersion },
+      }),
+      invalidatesTags: ['User'],
+    }),
   }),
 });
 
@@ -57,4 +65,5 @@ export const {
   useFetchUserProfileQuery,
   useUpdateUserProfileMutation,
   useRemoveUserAddressMutation,
+  useUpdateLastSeenChangelogVersionMutation,
 } = userApi;

@@ -1,6 +1,6 @@
 {
   "name": "lpdr",
-  "version": "2.0.26",
+  "version": "2.1.0",
   "description": "Dachshund Rescue",
   "main": "server.js",
   "type": "module",
@@ -34,6 +34,7 @@
     "node-fetch": "^2.7.0",
     "nodemailer": "^6.7.2",
     "pug": "^3.0.2",
+    "semver": "^7.7.3",
     "socket.io": "^4.7.2",
     "uuid": "^11.1.0"
   },

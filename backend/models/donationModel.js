@@ -6,12 +6,11 @@ const donationSchema = mongoose.Schema(
     lastName: { type: String },
     email: { type: String },
     donationAmount: { type: Number },
-    paypalId: { type: String },
+    payPalId: { type: String },
   },
   { timestamps: true }
 );
 
-
 const Donation = mongoose.model('Donation', donationSchema);
 
-export default Donation
+export default Donation;

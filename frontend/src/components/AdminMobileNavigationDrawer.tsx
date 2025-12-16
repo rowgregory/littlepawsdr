@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Package, Users, Gavel, Heart, Store, DollarSign, LogOut, Home, LayoutDashboard, X } from 'lucide-react';
+import { Package, Users, Gavel, Heart, Store, DollarSign, LogOut, Home, LayoutDashboard, X, History } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { persistor, RootState, useAppDispatch, useAppSelector } from '../redux/toolkitStore';
 import { useLogoutMutation } from '../redux/services/authApi';
@@ -113,6 +113,12 @@ const AdminMobileNavigationDrawer: React.FC<AdminMobileNavigationDrawerProps> = 
       linkKey: '/admin/contacts/users',
       icon: <Users className='w-6 h-6' />,
       textKey: 'Contacts',
+    },
+    {
+      active: link.changelog,
+      linkKey: '/admin/changelog',
+      icon: <History className='w-6 h-6' />,
+      textKey: 'Changelog',
     },
     {
       active: link.logout,

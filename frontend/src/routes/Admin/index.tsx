@@ -7,6 +7,8 @@ import { LazyModulePromise } from '../../types/common-types';
 import RequireAdmin from '../../components/auth/RequireAdmin';
 import { useFetchDashboardDataQuery } from '../../redux/services/dashboardApi';
 import Orders from './Orders';
+import Changelog from './Changelog';
+import { ChangelogModal } from '../../components/modals/ChangelogModal';
 
 const Campaigns = lazy((): LazyModulePromise => import('./Campaigns'));
 const Contacts = lazy((): LazyModulePromise => import('./Contacts'));
@@ -18,6 +20,7 @@ const AdminRoutes = () => {
 
   return (
     <RequireAdmin>
+      <ChangelogModal />
       <DashboardLayout>
         <Routes>
           <Route path='/' element={<Dashboard data={data} />} />
@@ -27,6 +30,7 @@ const AdminRoutes = () => {
           <Route path='store/*' element={<Store />} />
           <Route path='orders' element={<Orders />} />
           <Route path='adoption-application/*' element={<AdoptionApplication />} />
+          <Route path='changelog' element={<Changelog />} />
           <Route path='*' element={<Navigate to='/404' replace />} />
         </Routes>
       </DashboardLayout>

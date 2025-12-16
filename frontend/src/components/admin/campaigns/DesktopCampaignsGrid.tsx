@@ -24,7 +24,6 @@ const DesktopCampaignsGrid = ({ filteredCampaigns }: any) => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ delay: index * 0.1, duration: 0.5 }}
-            whileHover={{ y: -5 }}
             onHoverStart={() => setHoveredCard(campaign.id)}
             onHoverEnd={() => setHoveredCard(null)}
           >
@@ -116,7 +115,7 @@ const DesktopCampaignsGrid = ({ filteredCampaigns }: any) => {
                     <span>Progress</span>
                     <span>{campaign.progress}%</span>
                   </div>
-                  <div className='w-full bg-gray-200 rounded-full h-2'>
+                  <div className='w-full bg-gray-200 rounded-full h-2 overflow-hidden'>
                     <motion.div
                       className={`h-2 rounded-full ${
                         campaign.isLive ? 'bg-gradient-to-r from-red-500 to-red-600' : 'bg-gradient-to-r from-blue-500 to-purple-600'

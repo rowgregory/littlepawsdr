@@ -14,7 +14,6 @@ import MobileCampaignsList from '../../../components/admin/campaigns/MobileCampa
 const CampaignsDashboard = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('all');
-
   const [show, showModal] = useState(false);
   const [text, setText] = useState('');
   const navigate = useNavigate();
@@ -28,7 +27,6 @@ const CampaignsDashboard = () => {
 
     try {
       const { campaign } = await createCampaign({ text }).unwrap();
-      // refetch();
       navigate(`/admin/campaigns/${campaign._id}/details`);
     } catch {}
   };

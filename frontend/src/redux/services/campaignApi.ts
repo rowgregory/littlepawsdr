@@ -163,6 +163,16 @@ export const campaignApi = api.injectEndpoints({
       },
       invalidatesTags: ['Campaign'],
     }),
+    markWinningBidAsPaid: build.mutation({
+      query: ({ id, paymentMethod }: { id: string; paymentMethod: string }) => {
+        return {
+          url: `${BASE_URL}/auction/winning-bidder/mark-paid`,
+          method: 'PATCH',
+          body: { id, paymentMethod },
+        };
+      },
+      invalidatesTags: ['Campaign'],
+    }),
   }),
 });
 
@@ -186,4 +196,5 @@ export const {
   useGetCustomCampaignLinkQuery,
   useFetchLiveCampaignQuery,
   useTrackAuctionModalButtonClickMutation,
+  useMarkWinningBidAsPaidMutation,
 } = campaignApi;

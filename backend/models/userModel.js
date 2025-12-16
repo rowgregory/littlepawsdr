@@ -72,6 +72,7 @@ const userSchema = mongoose.Schema(
       ],
       default: null,
     },
+    lastSeenChangelogVersion: { type: String, default: '0.0.0' },
   },
   {
     timestamps: true,

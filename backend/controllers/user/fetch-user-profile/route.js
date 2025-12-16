@@ -5,6 +5,8 @@ import Order from '../../../models/orderModel.js';
 import User from '../../../models/userModel.js';
 import Donation from '../../../models/donationModel.js';
 import Error from '../../../models/errorModel.js';
+import { CURRENT_VERSION } from '../../../appVersion.js';
+import semver from 'semver';
 
 /**
  @desc    Get my campaigns
@@ -16,7 +18,7 @@ const fetchUserProfile = asyncHandler(async (req, res) => {
     const user = await User.findById(req.user._id)
       .populate('addressRef')
       .select(
-        'firstName lastName email isAdmin firstNameFirstInitial lastNameFirstInitial shippingAddress hasAddress name anonymousBidding lastLoginTime'
+        'firstName lastName email isAdmin firstNameFirstInitial lastNameFirstInitial shippingAddress hasAddress name anonymousBidding lastLoginTime lastSeenChangelogVersion'
       );
 
     const bids = await Bid.find({ user: req.user._id }).populate([
@@ -53,6 +55,8 @@ const fetchUserProfile = asyncHandler(async (req, res) => {
 
     const donations = await Donation.find({ email: req.user.email });
 
+    const showChangelog = semver.gt(CURRENT_VERSION, user?.lastSeenChangelogVersion || '0.0.0');
+
     res.status(200).json({
       bids,
       instantBuys,
@@ -62,6 +66,8 @@ const fetchUserProfile = asyncHandler(async (req, res) => {
       user,
       donations,
       isAuthenticated: true,
+      showChangelog,
+      currentVersion: CURRENT_VERSION,
     });
   } catch (err) {
     await Error.create({

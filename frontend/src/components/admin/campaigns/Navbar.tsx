@@ -3,16 +3,16 @@ import TailwindSpinner from '../../Loaders/TailwindSpinner';
 import { Fragment, useState } from 'react';
 import { Link } from 'react-router-dom';
 import navbarLinksData from '../../../utils/campaign-utils/navbarLinkData';
-import { Eye, ExternalLink, Copy, CheckCircle, Sparkles, Calendar } from 'lucide-react';
+import { Eye, ExternalLink, Copy, CheckCircle, Calendar, ArrowLeft } from 'lucide-react';
 
-const NavLinkSection = ({ id, pathname, auctionItemId }: { id: string; pathname: string; auctionItemId: string }) => {
-  const navLinks = navbarLinksData(id, auctionItemId);
+const NavLinkSection = ({ id, pathname }: { id: string; pathname: string }) => {
+  const navLinks = navbarLinksData(id);
 
   return (
     <div className='bg-white border border-gray-200 rounded-2xl p-2 w-full shadow-lg'>
       <div className='flex flex-wrap gap-1'>
         {navLinks.map((obj: any, i: number) => {
-          const isActive = obj.linkKey === pathname;
+          const isActive = obj.linkKey === pathname || pathname.includes(obj.key);
           return (
             <Link
               className={`relative group px-4 py-2.5 rounded-xl font-Matter-Medium text-sm transition-all duration-300 hover:no-underline flex-shrink-0 ${
@@ -136,7 +136,6 @@ const StatusAndTitleSection = ({ isLoading, campaign, status }: { isLoading: boo
 
         {/* Campaign Title */}
         <div className='flex items-center gap-3 mb-3'>
-          <Sparkles className='w-6 h-6 text-yellow-500 animate-spin' />
           <h1 className='text-3xl font-Matter-Bold text-gray-900'>{campaign?.campaign?.title}</h1>
         </div>
 
@@ -149,7 +148,7 @@ const StatusAndTitleSection = ({ isLoading, campaign, status }: { isLoading: boo
         </div>
 
         {/* Quick Stats */}
-        <div className='flex items-center gap-4 mt-4'>
+        <div className='flex flex-col xs:flex-row xs:items-center gap-y-4 xs:gap-4 mt-4'>
           {/* Campaign Status with dynamic colors and text */}
           <div
             className={`flex items-center gap-2 px-3 py-1 rounded-full ${
@@ -186,14 +185,21 @@ const StatusAndTitleSection = ({ isLoading, campaign, status }: { isLoading: boo
             </span>
           </div>
 
-          {/* Bidders Count - unchanged */}
+          {/* Total Revenue */}
+          <div className='flex items-center gap-2 bg-emerald-50 px-3 py-1 rounded-full'>
+            <span className='text-emerald-700 text-xs font-Matter-Medium'>
+              ${campaign?.campaign?.totalCampaignRevenue?.toFixed(2) || '0.00'} Revenue
+            </span>
+          </div>
+
+          {/* Bidders Count */}
           <div className='flex items-center gap-2 bg-purple-50 px-3 py-1 rounded-full'>
             <span className='text-purple-700 text-xs font-Matter-Medium'>{campaign?.campaign?.auction?.bidders?.length || 0} Bidders</span>
           </div>
 
-          {/* Items Count - unchanged */}
-          <div className='flex items-center gap-2 bg-green-50 px-3 py-1 rounded-full'>
-            <span className='text-green-700 text-xs font-Matter-Medium'>{campaign?.campaign?.auction?.items?.length || 0} Items</span>
+          {/* Items Count */}
+          <div className='flex items-center gap-2 bg-blue-50 px-3 py-1 rounded-full'>
+            <span className='text-blue-700 text-xs font-Matter-Medium'>{campaign?.campaign?.auction?.items?.length || 0} Items</span>
           </div>
         </div>
       </Fragment>
@@ -204,10 +210,15 @@ const StatusAndTitleSection = ({ isLoading, campaign, status }: { isLoading: boo
 const Navbar = ({ id, pathname, isLoading }: { id: string; pathname: string; isLoading?: any }) => {
   const campaign = useAppSelector((state: RootState) => state.campaign);
   const status = campaign?.campaign?.campaignStatus;
-  const auctionItemId = '123';
 
   return (
     <div className='flex flex-col mb-6 p-6 bg-gradient-to-br from-blue-50 via-white to-purple-50 rounded-2xl border border-gray-200 shadow-lg'>
+      {/* Back Button */}
+      <Link to='/admin/campaigns' className='flex items-center gap-2 mb-4 text-sm font-medium text-gray-600 hover:text-gray-900 w-fit'>
+        <ArrowLeft className='w-4 h-4' />
+        Back to Campaigns
+      </Link>
+
       {/* Header Section */}
       <div className='grid grid-cols-12 gap-6 mb-6'>
         <StatusAndTitleSection isLoading={isLoading} campaign={campaign} status={status} />
@@ -215,7 +226,7 @@ const Navbar = ({ id, pathname, isLoading }: { id: string; pathname: string; isL
       </div>
 
       {/* Navigation Links */}
-      <NavLinkSection id={id} pathname={pathname} auctionItemId={auctionItemId} />
+      <NavLinkSection id={id} pathname={pathname} />
     </div>
   );
 };

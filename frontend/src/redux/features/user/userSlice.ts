@@ -22,6 +22,7 @@ export interface User {
   shippingAddress?: Address;
   addressRef?: Address;
   hasAddress: boolean;
+  currentVersion?: string;
 }
 
 interface UserStatePayload {
