@@ -37,11 +37,7 @@ const forgotPasswordEmail = asyncHandler(async (req, res) => {
 
   const resetUrl = `https://www.littlepawsdr.org/auth/reset-password/${token}`;
 
-  await sendEmailWithRetry(
-    pugEmail,
-    { to: email, email, resetUrl },
-    'forgotPassword' // ✅ Template name
-  );
+  await sendEmailWithRetry(pugEmail, { to: email, email, resetUrl }, 'forgotpassword');
 
   res.status(200).json({
     message: 'An email has been sent if an account exists.',

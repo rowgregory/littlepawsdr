@@ -28,9 +28,9 @@ async function sendEmailWithRetry(pugEmail, data, templateName, maxRetries = 3, 
             locals: data,
           });
           break;
-        case 'forgotPassword':
+        case 'forgotpassword':
           await pugEmail.send({
-            template: 'forgotPassword',
+            template: 'forgotpassword',
             message: {
               to: data.to,
               replyTo: 'no-reply@littlepawsdr.org',
