@@ -1,6 +1,5 @@
+import { ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import AwesomeIcon from './AwesomeIcon';
-import { chevronRightIcon } from '../../icons';
 
 const PageBanner = ({ imgSrc, title }: { imgSrc: string; title: string }) => {
   return (
@@ -15,7 +14,7 @@ const PageBanner = ({ imgSrc, title }: { imgSrc: string; title: string }) => {
           </h1>
           <div className='flex items-center justify-between gap-x-2.5 text-white font-QLight text-sm lg:text-base'>
             <Link to='/'>Home</Link>
-            <AwesomeIcon icon={chevronRightIcon} className='w-4 h-4 text-teal-400' />
+            <ChevronRight className='w-4 h-4 text-teal-400' />
             <p>{title}</p>
           </div>
         </div>

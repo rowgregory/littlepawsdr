@@ -10,17 +10,12 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { containerVariants, itemVariants } from '../../lib/constants/motion';
 import toFixed from '../../utils/toFixed';
-import UIFx from 'uifx';
-import Add from '../../components/sounds/click02.wav';
-import Thump from '../../components/sounds/thump01.mp3';
 import MotionLink from '../../components/common/MotionLink';
 import hasPhysicalProduct from '../../utils/shop-utils/hasPhysicalProduct';
 
 const CartItem = ({ item }: { item: any }) => {
   const dispatch = useAppDispatch();
   const [isRemoving, setIsRemoving] = useState(false);
-  const productAmountChanged = new UIFx(Add);
-  const reachedProductLimit = new UIFx(Thump);
 
   const addOneItem = (item: any) => {
     const productAmount = item?.sizes?.find((p: any) => p.size === item.size)?.amount;
@@ -30,21 +25,17 @@ const CartItem = ({ item }: { item: any }) => {
       item.dachshundId ||
       item.quantity + 1 <= item.countInStock
     ) {
-      productAmountChanged.play();
       dispatch(addToCart({ item }));
     } else {
-      reachedProductLimit.play();
     }
   };
 
   const deleteOneItem = (item: any) => {
     const currentQty = item.qty ?? item?.quantity;
     if (currentQty === 1) {
-      reachedProductLimit.play();
       return;
     }
 
-    productAmountChanged.play();
     dispatch(deleteProductFromCart({ item }));
   };
 

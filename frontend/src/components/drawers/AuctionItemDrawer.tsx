@@ -1,7 +1,7 @@
 import { useAppDispatch, useAuctionSelector, useFormSelector } from '../../redux/toolkitStore';
 import { createFormActions, resetForm, setInputs } from '../../redux/features/form/formSlice';
 import { AnimatePresence, motion } from 'framer-motion';
-import AuctionItemForm from '../forms/auction/AuctionItemForm';
+import AuctionItemForm from '../forms/AuctionItemForm';
 import validateAuctionItemForm from '../../validations/validateAuctionItemForm';
 import { showToast } from '../../redux/features/toastSlice';
 import {

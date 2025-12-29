@@ -8,13 +8,13 @@ import {
   useUserSelector,
 } from '../../redux/toolkitStore';
 import urlsToExclude from '../../utils/urlsToExclude';
-import { shoppingCartIcon, userShieldIcon, usersIcon } from '../../icons';
 import { bottomHeaderLinks } from '../data/navbar-data';
 import TopHeaderInfoBox from './TopHeaderInfoBox';
 import { formatDateTime } from '../../utils/formatDateTime';
 import { motion } from 'framer-motion';
 import RainbowBurgerMenu from './RainbowBurgerMenu';
 import MotionLink from '../common/MotionLink';
+import { Shield, ShoppingCart, User } from 'lucide-react';
 
 const BottomHeader = () => {
   const navigate = useNavigate();
@@ -136,7 +136,7 @@ const BottomHeader = () => {
                 obj={{
                   className: 'cursor-pointer',
                   onClick: () => navigate('/cart'),
-                  icon: shoppingCartIcon,
+                  icon: ShoppingCart,
                   titleKey: 'Cart ITems',
                   textKey: cartItemsAmount,
                 }}
@@ -145,7 +145,7 @@ const BottomHeader = () => {
                 obj={{
                   className: 'cursor-pointer',
                   onClick: handleClick,
-                  icon: user?._id ? userShieldIcon : usersIcon,
+                  icon: user?._id ? Shield : User,
                   titleKey: user?._id
                     ? formatDateTime(user?.lastLoginTime) === 'Invalid Date'
                       ? 'First Time Logged In'

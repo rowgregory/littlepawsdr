@@ -1,15 +1,15 @@
-import { atIcon, shoppingCartIcon, userShieldIcon, usersIcon } from '../../icons';
+import { AtSignIcon, Shield, ShoppingCart, User } from 'lucide-react';
 import { formatDateWithTimezone } from '../../utils/dateFunctions';
 
-const topHeaderLinks = (user: any, dispatch: any, navigate: any, cartItemsAmount: number) => {
+const topHeaderLinks = (user: any, navigate: any, cartItemsAmount: number) => {
   return [
     {
-      icon: atIcon,
+      icon: AtSignIcon,
       titleKey: 'Email Address',
       textKey: 'lpdr@littlepawsdr.org',
     },
     {
-      icon: shoppingCartIcon,
+      icon: ShoppingCart,
       titleKey: 'Cart Items',
       textKey: cartItemsAmount,
       className: 'cursor-pointer',
@@ -18,7 +18,7 @@ const topHeaderLinks = (user: any, dispatch: any, navigate: any, cartItemsAmount
     ...(user?._id
       ? [
           {
-            icon: userShieldIcon,
+            icon: Shield,
             titleKey:
               formatDateWithTimezone(user?.lastLoginTime) === 'Invalid Date'
                 ? 'First Time Logged In'
@@ -30,7 +30,7 @@ const topHeaderLinks = (user: any, dispatch: any, navigate: any, cartItemsAmount
         ]
       : [
           {
-            icon: usersIcon,
+            icon: User,
             titleKey: 'Login',
             textKey: 'Access Your Account',
             className: 'cursor-pointer',

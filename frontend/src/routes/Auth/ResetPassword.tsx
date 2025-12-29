@@ -5,9 +5,10 @@ import {
   useValidateForgotPasswordTokenQuery,
 } from '../../redux/services/authApi';
 import { createFormActions } from '../../redux/features/form/formSlice';
-import { Eye, EyeOff, Heart, Lock } from 'lucide-react';
+import { ArrowLeft, Eye, EyeOff, Lock } from 'lucide-react';
 import { useEffect } from 'react';
 import { showToast } from '../../redux/features/toastSlice';
+import { motion } from 'framer-motion';
 
 const ResetPassword = () => {
   const { token } = useParams();
@@ -61,7 +62,8 @@ const ResetPassword = () => {
           password: resetPasswordForm?.inputs?.password,
         }).unwrap();
 
-        navigate('/auth/reset-password/success');
+        dispatch(showToast({ message: 'Successfully reset password', type: 'success' }));
+        navigate('/auth/login');
       } catch {
         dispatch(showToast({ message: 'Failed to reset password', type: 'error' }));
       }
@@ -71,137 +73,247 @@ const ResetPassword = () => {
   if (loadingTokenValidation) {
     return (
       <div className='min-h-screen flex items-center justify-center bg-white'>
-        <p className='text-gray-500 text-lg font-Matter-Regular'>Checking token...</p>
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+          className='w-12 h-12 border-4 border-gray-200 border-t-teal-400 rounded-full'
+        />
       </div>
     );
   }
 
   if (error || !tokenValidationData?.tokenIsValid) {
     return (
-      <div className='bg-white min-h-screen flex items-center justify-center p-8'>
-        <div className='max-w-md w-full'>
-          <div className='flex flex-col items-center justify-center shadow-lg rounded-3xl py-5 px-3.5'>
-            <i className='fa-solid fa-circle-exclamation text-red-500 fa-4x flex justify-center mb-3'></i>
-            <p className='text-red-500 text-lg font-Matter-Medium text-center mb-2'>
-              {error?.data?.message || 'This reset link has expired.'}
-            </p>
-            <p className='text-sm text-gray-400 font-Matter-Light text-center mb-3.5'>
-              Please request a new reset link to continue.
-            </p>
-            <Link
-              to='/auth/forgot-password'
-              className='text-white text-sm bg-red-500 rounded-md py-1.5 px-8 font-Matter-Regular duration-300 hover:no-underline hover:bg-red-600'
-            >
-              Try again
-            </Link>
-          </div>
-        </div>
+      <div className='min-h-screen bg-white flex items-center justify-center p-4'>
+        <motion.div
+          className='max-w-md w-full bg-white rounded-xl border border-gray-200 p-6 sm:p-8'
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+        >
+          <motion.div
+            className='text-red-500 text-5xl mb-4 text-center'
+            animate={{ scale: [1, 1.1, 1] }}
+            transition={{ duration: 1, repeat: Infinity }}
+          >
+            ⚠️
+          </motion.div>
+          <h2 className='text-xl font-bold text-gray-900 text-center mb-2'>Link Expired</h2>
+          <p className='text-gray-600 text-center mb-6'>
+            {error?.data?.message || 'This reset link has expired. Please request a new one.'}
+          </p>
+          <Link
+            to='/auth/forgot-password'
+            className='w-full inline-block text-center bg-teal-500 hover:bg-teal-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors'
+          >
+            Request New Link
+          </Link>
+        </motion.div>
       </div>
     );
   }
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50 flex items-center justify-center p-4'>
-      <div className='bg-white rounded-3xl shadow-2xl overflow-hidden max-w-lg w-full'>
-        <div className='bg-gradient-to-r from-amber-400 to-orange-400 p-8 text-center'>
-          <div className='bg-white rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center shadow-lg'>
-            <span className='text-4xl'>🐾</span>
+    <div className='min-h-screen bg-white flex overflow-hidden'>
+      {/* Left Side - Branding */}
+      <motion.div
+        className='hidden lg:flex lg:w-1/2 bg-gradient-to-br from-teal-400 via-teal-400 to-sky-500 flex-col items-center justify-center p-12 relative overflow-hidden'
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6 }}
+      >
+        {/* Animated background elements */}
+        <motion.div
+          className='absolute top-20 left-20 w-40 h-40 bg-white/10 rounded-full blur-3xl'
+          animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
+          transition={{ duration: 4, repeat: Infinity }}
+        />
+        <motion.div
+          className='absolute bottom-40 right-20 w-60 h-60 bg-white/10 rounded-full blur-3xl'
+          animate={{ scale: [1.2, 1, 1.2], opacity: [0.3, 0.5, 0.3] }}
+          transition={{ duration: 5, repeat: Infinity, delay: 0.5 }}
+        />
+
+        {/* Content */}
+        <motion.div
+          className='relative z-10 flex items-center justify-center flex-col'
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
+          <motion.div
+            className='w-24 h-24 bg-white rounded-full mx-auto mb-6 flex items-center justify-center shadow-2xl'
+            animate={{ scale: [1, 1.05, 1] }}
+            transition={{ duration: 3, repeat: Infinity }}
+          >
+            <span className='text-5xl'>🐾</span>
+          </motion.div>
+
+          <h1 className='text-4xl lg:text-5xl font-bold text-white mb-4'>
+            Little Paws Dachshund Rescue
+          </h1>
+
+          <p className='text-white/90 text-lg mb-8 max-w-sm text-center'>
+            Secure your account and get back to supporting rescue efforts.
+          </p>
+
+          <div className='space-y-3 text-white/80 text-sm'>
+            <div className='flex items-center gap-2 justify-center'>
+              <Lock className='w-4 h-4' />
+              <span>Extra Secure</span>
+            </div>
+            <div className='flex items-center gap-2 justify-center'>
+              <Lock className='w-4 h-4' />
+              <span>Password Protected</span>
+            </div>
+            <div className='flex items-center gap-2 justify-center'>
+              <Lock className='w-4 h-4' />
+              <span>Your Data is Safe</span>
+            </div>
           </div>
-          <h1 className='text-2xl font-bold text-white mb-2'>Little Paws Dachshund Rescue</h1>
-          <div className='flex justify-center gap-1 mt-3'>
-            {[...Array(5)].map((_, i) => (
-              <Heart
-                key={i}
-                className='w-4 h-4 text-white fill-current animate-pulse'
-                style={{ animationDelay: `${i * 0.2}s` }}
-              />
-            ))}
-          </div>
-        </div>
-        <div className='p-8'>
-          <div className='text-center mb-6'>
-            <h2 className='text-2xl font-bold text-gray-800 mb-2'>Reset Your Password</h2>
-            <p className='text-gray-600 text-sm'>
-              Enter your new password to regain access to your account
-            </p>
-          </div>
-          <form onSubmit={handleSubmit} className='flex flex-col w-full space-y-4'>
+        </motion.div>
+      </motion.div>
+
+      {/* Right Side - Form */}
+      <motion.div
+        className='w-full lg:w-1/2 flex flex-col items-center justify-center p-6 sm:p-12'
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+      >
+        <div className='w-full max-w-md'>
+          {/* Logo for mobile */}
+          <Link to='/' className='lg:hidden flex justify-center mb-8'>
+            <div className='bg-gradient-to-br from-teal-400 to-cyan-400 rounded-full w-16 h-16 flex items-center justify-center shadow-lg'>
+              <span className='text-3xl'>🐾</span>
+            </div>
+          </Link>
+
+          {/* Heading */}
+          <motion.div
+            className='text-center mb-8'
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+          >
+            <h2 className='text-3xl font-bold text-gray-900 mb-2'>Reset Password</h2>
+            <p className='text-gray-600'>Create a new password for your account</p>
+          </motion.div>
+
+          {/* Form */}
+          <motion.form
+            onSubmit={handleSubmit}
+            className='space-y-4'
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          >
+            {/* Password Input */}
             <div>
-              <label className='flex items-center gap-2 text-sm font-medium text-gray-700 mb-2'>
-                <Lock className='w-4 h-4 text-amber-500' />
-                Pasword *
-              </label>
+              <label className='block text-sm font-medium text-gray-700 mb-2'>New Password</label>
               <div className='relative'>
-                <input
+                <motion.input
                   type={showPassword ? 'text' : 'password'}
                   name='password'
                   value={resetPasswordForm?.inputs?.password || ''}
                   onChange={handleInput}
-                  className={`w-full px-4 py-3 pr-12 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-300 transition-colors ${
-                    resetPasswordForm?.errors?.password
-                      ? 'border-red-300 bg-red-50'
-                      : 'border-gray-200 focus:border-amber-400'
-                  }`}
                   placeholder='Create a strong password'
+                  className='w-full px-4 py-3 pr-12 rounded-lg border border-gray-300 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-200 transition-all'
+                  whileFocus={{ scale: 1.02 }}
                 />
-                <button
+                <motion.button
                   type='button'
                   onClick={() => setShowPassword(!showPassword)}
-                  className='absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-amber-500 transition-colors'
+                  className='absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors p-1'
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                  title={showPassword ? 'Hide password' : 'Show password'}
                 >
                   {showPassword ? <EyeOff className='w-5 h-5' /> : <Eye className='w-5 h-5' />}
-                </button>
+                </motion.button>
               </div>
-              {resetPasswordForm?.inputs?.password && (
-                <div className='mt-2'>
-                  <div className='flex justify-between items-center mb-1'>
-                    <span className='text-xs text-gray-600'>Password Strength:</span>
-                    <span
-                      className={`text-xs font-medium ${
-                        passwordStrength <= 40
-                          ? 'text-red-500'
-                          : passwordStrength <= 60
-                          ? 'text-yellow-500'
-                          : passwordStrength <= 80
-                          ? 'text-blue-500'
-                          : 'text-green-500'
-                      }`}
-                    >
-                      {getStrengthText()}
-                    </span>
-                  </div>
-                  <div className='w-full bg-gray-200 rounded-full h-2'>
-                    <div
-                      className={`h-2 rounded-full transition-all duration-300 ${getStrengthColor()}`}
-                      style={{ width: `${passwordStrength}%` }}
-                    ></div>
-                  </div>
-                </div>
-              )}
               {resetPasswordForm?.errors?.password && (
-                <p className='text-red-500 text-xs mt-1'>{resetPasswordForm?.errors?.password}</p>
+                <p className='text-red-500 text-sm mt-1'>{resetPasswordForm.errors.password}</p>
               )}
             </div>
-            <button
+
+            {/* Password Strength */}
+            {resetPasswordForm?.inputs?.password && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+                className='space-y-2'
+              >
+                <div className='flex items-center justify-between'>
+                  <span className='text-sm text-gray-600'>Password Strength:</span>
+                  <span
+                    className={`text-sm font-semibold ${
+                      passwordStrength <= 40
+                        ? 'text-red-500'
+                        : passwordStrength <= 60
+                        ? 'text-yellow-500'
+                        : passwordStrength <= 80
+                        ? 'text-blue-500'
+                        : 'text-green-500'
+                    }`}
+                  >
+                    {getStrengthText()}
+                  </span>
+                </div>
+                <div className='w-full bg-gray-200 rounded-full h-2 overflow-hidden'>
+                  <motion.div
+                    className={`h-full rounded-full transition-all ${getStrengthColor()}`}
+                    initial={{ width: 0 }}
+                    animate={{ width: `${passwordStrength}%` }}
+                    transition={{ duration: 0.5 }}
+                  />
+                </div>
+              </motion.div>
+            )}
+
+            {/* Submit Button */}
+            <motion.button
               type='submit'
-              disabled={loadingReset}
-              className='w-full bg-gradient-to-r from-amber-400 to-orange-400 text-white font-bold py-4 px-6 rounded-xl hover:from-amber-500 hover:to-orange-500 focus:outline-none focus:ring-4 focus:ring-amber-300 transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none'
+              disabled={loadingReset || passwordStrength < 80}
+              className='w-full bg-gradient-to-r from-teal-400 to-cyan-400 hover:from-teal-500 hover:to-cyan-500 disabled:from-gray-300 disabled:to-gray-300 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 disabled:cursor-not-allowed flex items-center justify-center gap-2'
+              whileHover={!loadingReset && passwordStrength >= 80 ? { scale: 1.02 } : {}}
+              whileTap={!loadingReset && passwordStrength >= 80 ? { scale: 0.98 } : {}}
             >
               {loadingReset ? (
-                <div className='flex items-center justify-center gap-2'>
-                  <div className='w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin'></div>
+                <>
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 1, repeat: Infinity }}
+                    className='w-5 h-5 border-2 border-white border-t-transparent rounded-full'
+                  />
                   Resetting Password...
-                </div>
+                </>
               ) : (
-                <div className='flex items-center justify-center gap-2'>
-                  <Heart className='w-5 h-5' />
+                <>
+                  <Lock className='w-4 h-4' />
                   Reset Password
-                </div>
+                </>
               )}
-            </button>
-          </form>
+            </motion.button>
+          </motion.form>
+
+          {/* Back Link */}
+          <motion.div
+            className='mt-6 text-center'
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+          >
+            <Link
+              to='/auth/login'
+              className='inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 font-medium transition-colors'
+            >
+              <ArrowLeft className='w-4 h-4' />
+              Back to Login
+            </Link>
+          </motion.div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

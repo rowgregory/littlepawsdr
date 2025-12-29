@@ -1,200 +1,229 @@
 import { Link } from 'react-router-dom';
 import { useForgotPasswordEmailMutation } from '../../redux/services/authApi';
 import { useAppDispatch, useFormSelector } from '../../redux/toolkitStore';
-import { createFormActions } from '../../redux/features/form/formSlice';
+import { createFormActions, resetForm } from '../../redux/features/form/formSlice';
 import validateForgotPasswordForm from '../../validations/validateForgotPasswordForm';
-import { Heart, User, Mail, CheckCircle, ArrowLeft } from 'lucide-react';
-import { AuthInput } from '../../components/ui/AuthInput';
-import { useState } from 'react';
+import { ArrowRight, Heart, HelpCircle, PawPrint } from 'lucide-react';
 import { showToast } from '../../redux/features/toastSlice';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useState } from 'react';
 
 const ForgotPassword = () => {
   const dispatch = useAppDispatch();
   const { forgotPasswordForm } = useFormSelector();
   const { handleInput, setErrors } = createFormActions('forgotPasswordForm', dispatch);
   const [forgotPassword, { isLoading }] = useForgotPasswordEmailMutation();
-  const [message, setMessage] = useState<string>('');
-  const [isSuccess, setIsSuccess] = useState<boolean>(false);
+  const [showInfo, setShowInfo] = useState(false);
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
 
-    const isValid = validateForgotPasswordForm(forgotPasswordForm?.inputs, setErrors);
-    if (!isValid) return;
+    if (!validateForgotPasswordForm(forgotPasswordForm?.inputs, setErrors)) return;
 
     try {
       await forgotPassword({ email: forgotPasswordForm?.inputs?.email.toLowerCase() }).unwrap();
+      dispatch(showToast({ message: 'Forgot password email sent!', type: 'success' }));
+      dispatch(resetForm('forgotPasswordForm'));
     } catch {
       dispatch(showToast({ message: 'Failed to send forgot password email', type: 'error' }));
     }
   };
 
-  const resetForm = () => {
-    setIsSuccess(false);
-    setMessage('');
-  };
-
   return (
-    <div className='min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50 flex items-center justify-center p-4'>
-      <div className='bg-white rounded-3xl shadow-2xl overflow-hidden max-w-lg w-full'>
-        <Link to='/'>
-          <div className='bg-gradient-to-r from-amber-400 to-orange-400 p-8 text-center'>
-            <div className='bg-white rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center shadow-lg'>
-              <span className='text-4xl'>🐾</span>
+    <div className='min-h-screen bg-white flex overflow-hidden'>
+      {/* Left Side - Branding */}
+      <motion.div
+        className='hidden lg:flex lg:w-1/2 bg-gradient-to-br from-teal-400 via-teal-400 to-sky-500 flex-col items-center justify-center p-12 relative overflow-hidden'
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6 }}
+      >
+        {/* Animated background elements */}
+        <motion.div
+          className='absolute top-20 left-20 w-40 h-40 bg-white/10 rounded-full blur-3xl'
+          animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
+          transition={{ duration: 4, repeat: Infinity }}
+        />
+        <motion.div
+          className='absolute bottom-40 right-20 w-60 h-60 bg-white/10 rounded-full blur-3xl'
+          animate={{ scale: [1.2, 1, 1.2], opacity: [0.3, 0.5, 0.3] }}
+          transition={{ duration: 5, repeat: Infinity, delay: 0.5 }}
+        />
+
+        {/* Content */}
+        <motion.div
+          className='relative z-10 flex items-center justify-center flex-col'
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
+          <Link to='/' className='text-4xl lg:text-5xl font-bold text-white mb-4 text-center'>
+            Little Paws Dachshund Rescue
+          </Link>
+
+          <p className='text-white/90 text-lg mb-8 max-w-sm text-center'>
+            Help us rescue and care for dachshunds in need. Every contribution makes a difference.
+          </p>
+
+          {/* Animated hearts */}
+          <div className='flex justify-center gap-2 mb-8'>
+            {[...Array(5)].map((_, i) => (
+              <motion.div
+                key={i}
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ duration: 1, repeat: Infinity, delay: i * 0.15 }}
+              >
+                <Heart className='w-5 h-5 text-white fill-current' />
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Trust indicators */}
+          <div className='space-y-3 text-white/80 text-sm'>
+            <div className='flex items-center gap-2 justify-center'>
+              <PawPrint className='w-4 h-4' />
+              <span>Secure & Private</span>
             </div>
-            <h1 className='text-2xl font-bold text-white mb-2'>Little Paws Dachshund Rescue</h1>
-            <div className='flex justify-center gap-1 mt-3'>
-              {[...Array(5)].map((_, i) => (
-                <Heart
-                  key={i}
-                  className='w-4 h-4 text-white fill-current animate-pulse'
-                  style={{ animationDelay: `${i * 0.2}s` }}
-                />
-              ))}
+            <div className='flex items-center gap-2 justify-center'>
+              <PawPrint className='w-4 h-4' />
+              <span>15+ Years Experience</span>
+            </div>
+            <div className='flex items-center gap-2 justify-center'>
+              <PawPrint className='w-4 h-4' />
+              <span>Non-Profit Organization</span>
             </div>
           </div>
-        </Link>
-        <div className='p-8'>
-          {!isSuccess ? (
-            <>
-              <div className='text-center mb-6'>
-                <h2 className='text-2xl font-bold text-gray-800 mb-2'>Forgot Your Password?</h2>
-                <p className='text-gray-600 text-sm'>
-                  Enter your email and we&apos;ll send you a link to reset your password.
-                </p>
-              </div>
-              <form onSubmit={handleSubmit} className='flex flex-col w-full space-y-4'>
-                <AuthInput
-                  label='Email address *'
-                  icon={<User className='w-4 h-4 text-amber-500' />}
-                  name='email'
-                  value={forgotPasswordForm?.inputs?.email || ''}
-                  onChange={handleInput}
-                  error={forgotPasswordForm?.errors?.email}
-                  placeholder='Enter email'
-                />
-                <button
-                  type='submit'
-                  disabled={isLoading}
-                  className='w-full bg-gradient-to-r from-amber-400 to-orange-400 text-white font-bold py-4 px-6 rounded-xl hover:from-amber-500 hover:to-orange-500 focus:outline-none focus:ring-4 focus:ring-amber-300 transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none'
-                >
-                  {isLoading ? (
-                    <div className='flex items-center justify-center gap-2'>
-                      <div className='w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin'></div>
-                      Sending Reset Link...
-                    </div>
-                  ) : (
-                    <div className='flex items-center justify-center gap-2'>
-                      <Heart className='w-5 h-5' />
-                      Send Password Reset Email
-                    </div>
-                  )}
-                </button>
-              </form>
-              <div className='mt-6 text-center'>
-                <p className='text-sm text-gray-600'>
-                  Return to{' '}
-                  <Link
-                    to='/auth/login'
-                    className='text-amber-600 hover:text-amber-700 font-medium'
-                  >
-                    Login
-                  </Link>
-                </p>
-              </div>
-            </>
-          ) : (
-            <div className='text-center animate-fade-in'>
-              {/* Success Icon with Animation */}
-              <div className='relative mb-6'>
-                <div className='bg-gradient-to-r from-green-400 to-emerald-500 rounded-full w-24 h-24 mx-auto flex items-center justify-center shadow-lg animate-bounce'>
-                  <CheckCircle className='w-12 h-12 text-white' />
-                </div>
-                <div className='absolute -top-2 -right-2 bg-amber-400 rounded-full w-8 h-8 flex items-center justify-center animate-pulse'>
-                  <Mail className='w-4 h-4 text-white' />
-                </div>
-              </div>
+        </motion.div>
+      </motion.div>
 
-              {/* Success Message */}
-              <h2 className='text-2xl font-bold text-gray-800 mb-3'>Check Your Email!</h2>
-              <div className='bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-2xl p-6 mb-6'>
-                <p className='text-green-800 font-medium mb-2'>Reset link sent successfully! 🎉</p>
-                <p className='text-green-700 text-sm leading-relaxed'>
-                  {message ||
-                    "We've sent a password reset link to your email address. Please check your inbox (and spam folder) and follow the instructions to reset your password."}
-                </p>
-              </div>
-
-              {/* Email sent to display */}
-              {forgotPasswordForm?.inputs?.email && (
-                <div className='bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6'>
-                  <div className='flex items-center justify-center gap-2 text-amber-800'>
-                    <Mail className='w-4 h-4' />
-                    <span className='text-sm font-medium'>Email sent to:</span>
-                  </div>
-                  <p className='text-amber-900 font-semibold mt-1'>
-                    {forgotPasswordForm.inputs.email}
-                  </p>
-                </div>
-              )}
-
-              {/* Helpful Tips */}
-              <div className='bg-gray-50 rounded-xl p-5 mb-6'>
-                <h3 className='font-semibold text-gray-800 mb-3 flex items-center justify-center gap-2'>
-                  <span className='text-amber-500'>💡</span>
-                  Helpful Tips
-                </h3>
-                <ul className='text-sm text-gray-600 space-y-2 text-left'>
-                  <li className='flex items-start gap-2'>
-                    <span className='text-amber-500 mt-0.5'>•</span>
-                    <span>The reset link will expire in 30 minutes for security</span>
-                  </li>
-                  <li className='flex items-start gap-2'>
-                    <span className='text-amber-500 mt-0.5'>•</span>
-                    <span>Check your spam or junk folder if you don't see the email</span>
-                  </li>
-                  <li className='flex items-start gap-2'>
-                    <span className='text-amber-500 mt-0.5'>•</span>
-                    <span>Make sure to use a strong, unique password</span>
-                  </li>
-                </ul>
-              </div>
-
-              {/* Action Buttons */}
-              <div className='space-y-3'>
-                <button
-                  onClick={resetForm}
-                  className='w-full bg-gradient-to-r from-amber-400 to-orange-400 text-white font-bold py-3 px-6 rounded-xl hover:from-amber-500 hover:to-orange-500 focus:outline-none focus:ring-4 focus:ring-amber-300 transform hover:scale-105 transition-all duration-200'
-                >
-                  <div className='flex items-center justify-center gap-2'>
-                    <Mail className='w-4 h-4' />
-                    Send Another Reset Email
-                  </div>
-                </button>
-
-                <Link
-                  to='/auth/login'
-                  className='w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-3 px-6 rounded-xl focus:outline-none focus:ring-4 focus:ring-gray-300 transform hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2'
-                >
-                  <ArrowLeft className='w-4 h-4' />
-                  Back to Login
-                </Link>
-              </div>
-
-              {/* Support Contact */}
-              <div className='mt-6 pt-4 border-t border-gray-200'>
-                <p className='text-xs text-gray-500 mb-2'>Still having trouble?</p>
-                <a
-                  href='mailto:lpdr@littlepawsdr.org'
-                  className='text-amber-600 hover:text-amber-700 font-medium text-sm hover:underline transition-colors inline-block'
-                >
-                  Contact Support Team
-                </a>
-              </div>
+      {/* Right Side - Form */}
+      <motion.div
+        className='w-full lg:w-1/2 flex flex-col items-center justify-center p-6 sm:p-12'
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+      >
+        <div className='w-full max-w-md'>
+          {/* Logo for mobile */}
+          <Link to='/' className='lg:hidden flex justify-center mb-8'>
+            <div className='bg-gradient-to-br from-teal-400 to-sky-400 rounded-full w-16 h-16 flex items-center justify-center shadow-lg'>
+              <span className='text-3xl'>🐾</span>
             </div>
-          )}
+          </Link>
+
+          {/* Heading */}
+          <motion.div
+            className='text-center mb-8'
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+          >
+            <div className='flex items-center justify-center gap-2 mb-2'>
+              <h2 className='text-3xl font-bold text-gray-900'>Forgot Password Reset</h2>
+              <motion.button
+                type='button'
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setShowInfo(!showInfo)}
+                className='p-1.5 hover:bg-gray-100 rounded-full transition-colors text-gray-500 hover:text-gray-700'
+                title='Why reset your password?'
+              >
+                <HelpCircle className='w-5 h-5' />
+              </motion.button>
+            </div>
+
+            <AnimatePresence>
+              {showInfo && (
+                <motion.div
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 10 }}
+                  transition={{ duration: 0.3 }}
+                  className='bg-teal-50 border border-teal-200 rounded-lg p-3 mt-3 text-left'
+                >
+                  <p className='text-teal-900 text-sm leading-relaxed'>
+                    Your password is locked in a super secret box. Even we can't open it! So you
+                    need to create a brand new password. It's like getting a new key to your house -
+                    extra safe!
+                  </p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            <p className='text-gray-600 mt-3'>
+              Enter your email and we&apos;ll send you a link to reset your password.
+            </p>
+          </motion.div>
+
+          {/* Form */}
+          <motion.form
+            onSubmit={handleSubmit}
+            className='space-y-4'
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          >
+            <div>
+              <label className='block text-sm font-medium text-gray-700 mb-2'>Email Address</label>
+              <motion.input
+                type='email'
+                name='email'
+                value={forgotPasswordForm?.inputs?.email || ''}
+                onChange={handleInput}
+                placeholder='you@example.com'
+                className='w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-200 transition-all'
+                whileFocus={{ scale: 1.02 }}
+              />
+              {forgotPasswordForm?.errors?.email && (
+                <p className='text-red-500 text-sm mt-1'>{forgotPasswordForm.errors.email}</p>
+              )}
+            </div>
+
+            {/* Submit Button */}
+            <motion.button
+              type='submit'
+              disabled={isLoading}
+              className='w-full bg-gradient-to-r from-teal-400 to-sky-400 hover:from-teal-500 hover:to-sky-500 disabled:from-gray-300 disabled:to-gray-300 text-white font-bold py-3 px-6 rounded-lg transition-all duration-200 disabled:cursor-not-allowed flex items-center justify-center gap-2'
+              whileHover={!isLoading ? { scale: 1.02 } : {}}
+              whileTap={!isLoading ? { scale: 0.98 } : {}}
+            >
+              {isLoading ? (
+                <>
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 1, repeat: Infinity }}
+                    className='w-5 h-5 border-2 border-white border-t-transparent rounded-full'
+                  />
+                  Sending...
+                </>
+              ) : (
+                <>
+                  Send Reset Link
+                  <ArrowRight className='w-4 h-4' />
+                </>
+              )}
+            </motion.button>
+          </motion.form>
+
+          {/* Footer */}
+          <motion.div
+            className='mt-6 text-center'
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+          >
+            <p className='text-gray-600 text-sm'>
+              Remember your password?{' '}
+              <Link
+                to='/auth/login'
+                className='text-teal-600 hover:text-teal-700 font-semibold transition-colors'
+              >
+                Sign In
+              </Link>
+            </p>
+          </motion.div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

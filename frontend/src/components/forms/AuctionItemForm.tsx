@@ -1,15 +1,14 @@
 import { ArrowLeft, DollarSign, FileText, Truck, Upload, X } from 'lucide-react';
-import TailwindSpinner from '../../Loaders/TailwindSpinner';
-import Switch from '../../common/Switch';
-import FileInput from '../../common/FileInput';
+import Switch from '../common/Switch';
+import FileInput from '../common/FileInput';
 import { FC, useState } from 'react';
-import { uploadMultipleFilesToFirebase } from '../../../utils/uploadToFirebase';
-import { useAppDispatch } from '../../../redux/toolkitStore';
+import { uploadMultipleFilesToFirebase } from '../../utils/uploadToFirebase';
+import { useAppDispatch } from '../../redux/toolkitStore';
 import { motion, AnimatePresence } from 'framer-motion';
-import { containerVariants, itemVariants } from '../../../lib/constants/motion';
-import { useDeleteAuctionItemPhotoMutation } from '../../../redux/services/auctionApi';
-import { setInputs } from '../../../redux/features/form/formSlice';
-import { useFormInitialize } from '../../../hooks/useFormInitialize';
+import { containerVariants, itemVariants } from '../../lib/constants/motion';
+import { useDeleteAuctionItemPhotoMutation } from '../../redux/services/auctionApi';
+import { setInputs } from '../../redux/features/form/formSlice';
+import { useFormInitialize } from '../../hooks/useFormInitialize';
 
 interface IAuctionItemForm {
   inputs: {
@@ -474,7 +473,14 @@ const AuctionItemForm: FC<IAuctionItemForm> = ({
             className='px-6 py-2 bg-gray-900 hover:bg-gray-800 disabled:opacity-50 text-white rounded-lg font-medium transition-colors text-sm flex items-center justify-center gap-2 min-w-[120px]'
           >
             {loading || isLoading ? (
-              <TailwindSpinner color='fill-white' wAndH='w-4 h-4' />
+              <>
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 1, repeat: Infinity }}
+                  className='w-5 h-5 border-2 border-white border-t-transparent rounded-full'
+                />
+                {inputs?._id ? 'Updating' : 'Creating'}...
+              </>
             ) : (
               <>{inputs?._id ? 'Update' : 'Create'} Item</>
             )}

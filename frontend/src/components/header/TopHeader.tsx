@@ -1,21 +1,21 @@
 import { FormEvent } from 'react';
 import useForm from '../../hooks/useForm';
 import { useCreateNewsletterEmailMutation } from '../../redux/services/newsletterEmailApi';
-import { RootState, useAppDispatch, useAppSelector } from '../../redux/toolkitStore';
+import { useAppDispatch, useCartSelector, useUserSelector } from '../../redux/toolkitStore';
 import urlsToExclude from '../../utils/urlsToExclude';
 import Logo from '../common/Logo';
 import { topHeaderLinks } from '../data/navbar-data';
 import TopHeaderInfoBox from './TopHeaderInfoBox';
 import { useLocation, useNavigate } from 'react-router-dom';
-import TailwindSpinner from '../Loaders/TailwindSpinner';
+import { motion } from 'framer-motion';
 import { validateEmailRegex } from '../../utils/regex';
 import { showToast } from '../../redux/features/toastSlice';
 
 const TopHeader = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { user } = useAppSelector((state: RootState) => state.user);
-  const { cartItemsAmount } = useAppSelector((state: RootState) => state.cart);
+  const { user } = useUserSelector();
+  const { cartItemsAmount } = useCartSelector();
   const { pathname } = useLocation();
   const shouldExclude = urlsToExclude(pathname);
   const { inputs, handleInput, setInputs } = useForm(['email']);
@@ -32,7 +32,6 @@ const TopHeader = () => {
 
     try {
       await createNewsletterEmail({ email: inputs.email }).unwrap();
-
       dispatch(showToast({ message: 'Email submitted for newsletter', type: 'success' }));
       setInputs({});
     } catch (err: any) {
@@ -50,7 +49,10 @@ const TopHeader = () => {
         <Logo className='w-40 md:w-28 lg:w-32 lg:-ml-3 mb-3.5 lg:mb-0' />
         <div className='flex items-center gap-x-12'>
           <div className='w-fit p-4 text-white items-center hidden 1230:block'>
-            <form onSubmit={handleSubmit} className='grid grid-cols-12 items-center gap-1.5 sm:gap-3'>
+            <form
+              onSubmit={handleSubmit}
+              className='grid grid-cols-12 items-center gap-1.5 sm:gap-3'
+            >
               <input
                 name='email'
                 type='text'
@@ -64,7 +66,14 @@ const TopHeader = () => {
                 className='col-span-1 h-12 w-14 rounded-xl bg-teal-400 text-white flex items-center justify-center group overflow-hidden relative'
               >
                 {isLoading ? (
-                  <TailwindSpinner color='fill-[#fff]' />
+                  <>
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 1, repeat: Infinity }}
+                      className='w-5 h-5 border-2 border-white border-t-transparent rounded-full'
+                    />
+                    Creating...
+                  </>
                 ) : (
                   <>
                     <i className='fas fa-paper-plane fa-xs absolute -translate-x-10 translate-y-10 group-hover:translate-x-0 group-hover:translate-y-0 duration-500' />
@@ -75,7 +84,7 @@ const TopHeader = () => {
             </form>
           </div>
           <div className='hidden md:flex items-center md:mb-3 lg:mb-0 gap-x-12'>
-            {topHeaderLinks(user, dispatch, navigate, cartItemsAmount).map((obj, i) => (
+            {topHeaderLinks(user, navigate, cartItemsAmount).map((obj, i) => (
               <TopHeaderInfoBox key={i} obj={obj} />
             ))}
           </div>

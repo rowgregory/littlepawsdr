@@ -10,11 +10,10 @@ import validateAdoptionApplicationApplicantInfo from '../../../validations/valid
 import useForm from '../../../hooks/useForm';
 import { StepTwoProps } from '../../../types/adopt-types';
 import { ADOPTION_APPLICATION_STEP_TWO_FIELDS } from '../../data/form-fields';
-import AwesomeIcon from '../../common/AwesomeIcon';
-import { chevronDownIcon } from '../../../icons';
 import Accordion from '../../common/Accordion';
 import { useAppDispatch } from '../../../redux/toolkitStore';
 import { showToast } from '../../../redux/features/toastSlice';
+import { ChevronDown } from 'lucide-react';
 
 const StepTwo: FC<StepTwoProps> = ({ setStep }) => {
   const [orderLoader, setOrderLoader] = useState(false);
@@ -27,7 +26,8 @@ const StepTwo: FC<StepTwoProps> = ({ setStep }) => {
   );
   const dispatch = useAppDispatch();
 
-  const [checkIfUserHasActiveAdoptionFeeSession, { isLoading }] = useCheckIfUserHasActiveAdoptionFeeSessionMutation();
+  const [checkIfUserHasActiveAdoptionFeeSession, { isLoading }] =
+    useCheckIfUserHasActiveAdoptionFeeSessionMutation();
 
   const [createAdoptionFee] = useCreateAdoptionApplicationFeeMutation();
 
@@ -119,11 +119,12 @@ const StepTwo: FC<StepTwoProps> = ({ setStep }) => {
           <div className='flex items-center justify-between w-full'>
             <h1 className='text-charcoal font-QBold text-5xl mt-4 mb-3 flex flex-col sm:flex-row sm:items-baseline'>
               $15.00
-              <span className='text-xs text-charcoal font-QBook ml-1'>One time fee valid for seven days.</span>
+              <span className='text-xs text-charcoal font-QBook ml-1'>
+                One time fee valid for seven days.
+              </span>
             </h1>
             {openPayment && (
-              <AwesomeIcon
-                icon={chevronDownIcon}
+              <ChevronDown
                 onClick={() => {
                   setOpenBasic(true);
                   setOpenPayment(false);

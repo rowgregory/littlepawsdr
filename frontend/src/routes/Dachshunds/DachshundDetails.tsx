@@ -7,8 +7,7 @@ import { useGetDachshundByIdQuery } from '../../redux/services/rescueGroupsApi';
 import useSingleItemCarousel from '../../hooks/useSingleItemCarousel';
 import { RootState, useAppSelector } from '../../redux/toolkitStore';
 import SingleItemCarousel from '../../components/common/SingleItemCarousel';
-import AwesomeIcon from '../../components/common/AwesomeIcon';
-import { chevronLeftIcon, chevronRightIcon, heartIcon } from '../../icons';
+import { ChevronLeft, ChevronRight, Heart } from 'lucide-react';
 
 const DachshundDetails = () => {
   const { id } = useParams() as any;
@@ -32,7 +31,7 @@ const DachshundDetails = () => {
   return (
     <div className='max-w-screen-lg w-full mx-auto my-32 px-4'>
       <button onClick={() => navigate(-1)} className='font-QBook flex items-center gap-x-2 mb-3'>
-        <AwesomeIcon icon={chevronLeftIcon} className='text-teal-400 w-4 h-4' />
+        <ChevronLeft className='text-teal-400 w-4 h-4' />
         Back
       </button>
 
@@ -41,7 +40,7 @@ const DachshundDetails = () => {
           onClick={previous}
           className='absolute z-10 left-4 md:-left-10 top-1/2 cursor-pointer transform -translate-y-1/2 flex items-center justify-center bg-white/60 rounded-xl w-10 h-10'
         >
-          <AwesomeIcon icon={chevronLeftIcon} className='text-teal-400' />
+          <ChevronLeft className='text-teal-400' />
         </div>
         <SingleItemCarousel
           items={dachshund?.attributes.photos || [NoImgDog]}
@@ -53,13 +52,13 @@ const DachshundDetails = () => {
           onClick={next}
           className='absolute z-10 right-4 md:-right-10 top-1/2 cursor-pointer transform -translate-y-1/2 flex items-center justify-center bg-white/60 rounded-xl w-10 h-10'
         >
-          <AwesomeIcon icon={chevronRightIcon} className='text-teal-400' />
+          <ChevronRight className='text-teal-400' />
         </div>
       </section>
       <section className='flex flex-col sm:flex-row gap-12 max-w-screen-md mx-auto mb-16'>
         <div>
           <div className='border-[1px] border-gray-200 rounded-md w-10 h-10 flex items-center justify-center'>
-            <AwesomeIcon icon={heartIcon} className='w-3 h-3 text-teal-400' />
+            <Heart className='w-3 h-3 text-teal-400' />
           </div>
         </div>
         <div className='flex flex-col'>

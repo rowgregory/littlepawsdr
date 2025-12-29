@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import AwesomeIcon from '../common/AwesomeIcon';
 import { hightlightCardData } from '../data/home-page-data';
 import { Gift, Snowflake, Sparkles, Star, Wand2 } from 'lucide-react';
 import { cardVariants, containerVariants, spookyCardVariants } from '../../lib/constants/motion';
@@ -15,52 +14,56 @@ const HighlightCards = () => {
         whileInView='visible'
         viewport={{ once: true, amount: 0.1 }}
       >
-        {hightlightCardData.map((obj, i) => (
-          <motion.div
-            key={i}
-            className={`${
-              i === 0
-                ? 'rounded-2xl sm:rounded-tl-2xl sm:rounded-bl-2xl sm:rounded-br-none sm:rounded-tr-none mb-5 lg:mb-0'
-                : i === 1
-                ? 'rounded-2xl sm:rounded-bl-none sm:rounded-tl-none sm:rounded-tr-2xl sm:rounded-br-2xl mb-5 lg:mb-0 lg:rounded-tr-none lg:rounded-br-none'
-                : 'rounded-2xl mb-5 lg:mb-0 sm:rounded-tl-2xl rounded-bl-2xl sm:rounded-tr-none sm:rounded-br-none lg:rounded-tl-none lg:rounded-bl-none lg:rounded-tr-2xl lg:rounded-br-2xl'
-            } col-span-12 md:col-span-6 lg:col-span-3 shadow-lg gap-3 flex flex-col justify-between items-start p-6 xl:p-8 bg-white z-20 relative overflow-hidden border border-gray-100 hover:border-cyan-200 transition-colors`}
-            variants={cardVariants}
-            whileHover={{
-              y: -8,
-              boxShadow:
-                '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-            }}
-            transition={{ duration: 0.3 }}
-          >
-            <motion.div whileHover={{ scale: 1.1, rotate: 5 }} transition={{ duration: 0.3 }}>
-              <AwesomeIcon icon={obj.icon} className='text-teal-400 w-8 h-8 relative z-10' />
-            </motion.div>
+        {hightlightCardData.map((obj, i) => {
+          const IconComponent = obj.icon;
 
-            <motion.h1
-              className='font-bold text-2xl text-gray-900 relative z-10'
-              whileHover={{ color: '#14b8a6' }}
-              transition={{ duration: 0.2 }}
-            >
-              {obj.titleKey}
-            </motion.h1>
-
-            <p className='font-medium text-gray-600 relative z-10'>{obj.textKey}</p>
-
+          return (
             <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ duration: 0.2 }}
+              key={i}
+              className={`${
+                i === 0
+                  ? 'rounded-2xl sm:rounded-tl-2xl sm:rounded-bl-2xl sm:rounded-br-none sm:rounded-tr-none mb-5 lg:mb-0'
+                  : i === 1
+                  ? 'rounded-2xl sm:rounded-bl-none sm:rounded-tl-none sm:rounded-tr-2xl sm:rounded-br-2xl mb-5 lg:mb-0 lg:rounded-tr-none lg:rounded-br-none'
+                  : 'rounded-2xl mb-5 lg:mb-0 sm:rounded-tl-2xl rounded-bl-2xl sm:rounded-tr-none sm:rounded-br-none lg:rounded-tl-none lg:rounded-bl-none lg:rounded-tr-2xl lg:rounded-br-2xl'
+              } col-span-12 md:col-span-6 lg:col-span-3 shadow-lg gap-3 flex flex-col justify-between items-start p-6 xl:p-8 bg-white z-20 relative overflow-hidden border border-gray-100 hover:border-cyan-200 transition-colors`}
+              variants={cardVariants}
+              whileHover={{
+                y: -8,
+                boxShadow:
+                  '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+              }}
+              transition={{ duration: 0.3 }}
             >
-              <Link
-                to={obj.linkKey}
-                className='font-bold text-teal-400 hover:text-teal-500 duration-300 relative z-10'
+              <motion.div whileHover={{ scale: 1.1, rotate: 5 }} transition={{ duration: 0.3 }}>
+                <IconComponent className='text-teal-400 w-8 h-8 relative z-10' />
+              </motion.div>
+
+              <motion.h1
+                className='font-bold text-2xl text-gray-900 relative z-10'
+                whileHover={{ color: '#14b8a6' }}
+                transition={{ duration: 0.2 }}
               >
-                {obj.btnText} →
-              </Link>
+                {obj.titleKey}
+              </motion.h1>
+
+              <p className='font-medium text-gray-600 relative z-10'>{obj.textKey}</p>
+
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                transition={{ duration: 0.2 }}
+              >
+                <Link
+                  to={obj.linkKey}
+                  className='font-bold text-teal-400 hover:text-teal-500 duration-300 relative z-10'
+                >
+                  {obj.btnText} →
+                </Link>
+              </motion.div>
             </motion.div>
-          </motion.div>
-        ))}
+          );
+        })}
 
         <motion.div
           className='rounded-2xl mb-5 lg:mb-0 md:rounded-tr-2xl md:rounded-tl-none md:rounded-bl-none md:rounded-br-2xl lg:rounded-2xl 

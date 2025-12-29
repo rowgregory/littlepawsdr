@@ -1,163 +1,131 @@
-import { Link } from 'react-router-dom';
-import { useState } from 'react';
-import BackgroundImage from '../components/assets/404-bg.png';
-import SilverPawsSad from '../components/assets/silver-paws-sad.png';
-import SilverPawsHello from '../components/assets/archive-kitty.png';
-import WindowBottomTileLeft from '../components/assets/window_bottom_tile_left.png';
-import GreenCircleBtn from '../components/assets/green_circle_btn.png';
-import BlueBackBtn from '../components/assets/blue_back_btn.png';
-import Pole from '../components/assets/pole.png';
-import WindowPiece from '../components/assets/window_top_tile_right_piece.png';
+import { motion } from 'framer-motion';
+import { Link, useNavigate } from 'react-router-dom';
+import { Home, ArrowLeft, User } from 'lucide-react';
+import MotionLink from '../components/common/MotionLink';
 
 const PageNotFound = () => {
-  const [helloSilverPaws, setHelloSilverPaws] = useState(false);
+  const navigate = useNavigate();
 
   return (
-    <div
-      className='fixed inset-0 flex justify-center items-center bg-no-repeat bg-cover'
-      style={{ backgroundImage: `url(${BackgroundImage})` }}
-    >
-      <div className='relative flex flex-col items-center justify-center h-full flex-none'>
-        {/* OOPS! Text */}
-        <div
-          className='
-            absolute text-white font-bold 
-            text-[14px] -left-[85px] -top-[54px]
-            sm:text-[20px] sm:-left-[113px] sm:-top-[70px]
-            md:text-[35px] md:-left-[242px] md:-top-[137px]
-            lg:text-[42px] lg:-left-[278px] lg:-top-[156px]
-            font-[Hyperspace-Bold]
-          '
-        >
-          OOPS!
-        </div>
-
-        {/* 404 Text */}
-        <div
-          className='
-            absolute text-white font-bold 
-            text-[91px]
-            sm:text-[119px]
-            md:text-[260px]
-            lg:text-[300px] lg:leading-[252px]
-            font-[Hyperspace-Bold]
-          '
-        >
-          404
-        </div>
-
-        {/* Silver Paws Image */}
-        <img
-          onClick={() => setHelloSilverPaws(true)}
-          src={helloSilverPaws ? SilverPawsHello : SilverPawsSad}
-          alt='404 Error'
-          className='
-            absolute cursor-pointer max-h-[60px] mr-[16.5px] mt-[16px] scale-x-[-1] object-cover z-10 justify-self-center
-            sm:max-h-[76px] sm:mr-[24px] sm:mt-[24px]
-            md:max-h-[174px] md:mr-[50px] md:mt-[50px]
-            lg:max-h-[200px] lg:mr-[60px] lg:mt-[50px]
-          '
-        />
-
-        {/* Window Tile Left */}
-        <img
-          src={WindowBottomTileLeft}
-          alt='Window Tile Left'
-          className='
-            absolute px-4 max-w-[298px] top-0
-            sm:max-w-[380px] sm:top-[-3px]
-            md:max-w-[700px] md:top-[10px]
-            lg:max-w-[800px] lg:top-[10px]
-          '
-        />
-
-        {/* Back Button Left */}
-        <Link to='/' className='relative cursor-pointer'>
-          <div>
-            <img
-              src={GreenCircleBtn}
-              alt='Green Circle'
-              className={`
-                absolute max-w-[47px] top-[49px] left-[-134px] 
-                ${helloSilverPaws ? 'animate-rotateGreenCircle' : ''}
-                sm:max-w-[54px] sm:top-[65px] sm:left-[-172px]
-                md:max-w-[80px] md:top-[65px] md:left-[-400px]
-                lg:top-[74px] lg:left-[-450px]
-              `}
-            />
-            <img
-              src={BlueBackBtn}
-              alt='Blue Back Button'
-              className='
-                absolute animate-moveArrow max-w-[25px] top-[61px] left-[-125px]
-                sm:max-w-[33px] sm:top-[75px] sm:left-[-164px]
-                md:max-w-[44px] md:top-[83px] md:left-[-386px]
-                lg:top-[92px] lg:left-[-435px]
-              '
-            />
-          </div>
-        </Link>
-
-        {/* Pole Image */}
-        <img
-          src={Pole}
-          alt='Pole'
-          className='
-            absolute left-[128px] top-[-124px] h-[169px]
-            sm:left-[168px] sm:top-[-140px] sm:h-[196px]
-            md:left-[323px] md:top-[-227px] md:h-[349px]
-            lg:left-[371px] lg:top-[-262px] lg:h-[400px]
-          '
-        />
-
-        {/* Window Piece Image */}
-        <img
-          src={WindowPiece}
-          alt='Window Piece'
-          className='
-            absolute left-[94.5px] top-[-139px] w-[37px]
-            sm:left-[131px] sm:top-[-156px] sm:w-[41px]
-            md:left-[263px] md:top-[-254px] md:w-[68px]
-            lg:left-[290px] lg:top-[-297px] lg:w-[89px]
-          '
-        />
-
-        {/* Back Button Right */}
-        <Link to='/' className='relative cursor-pointer'>
-          <div>
-            <img
-              src={GreenCircleBtn}
-              alt='Green Circle 2'
-              className={`
-                absolute max-w-[47px] top-[-105px] left-[76px]
-                ${helloSilverPaws ? 'animate-rotateGreenCircle' : ''}
-                sm:max-w-[54px] sm:top-[-117px] sm:left-[108px]
-                md:max-w-[80px] md:top-[-188px] md:left-[231px]
-                lg:max-w-[80px] lg:top-[-215px] lg:left-[261px]
-              `}
-            />
-            <img
-              src={BlueBackBtn}
-              alt='Blue Back Button 2'
-              className='
-                absolute animate-moveArrow max-w-[25px] top-[-94px] left-[85px]
-                sm:max-w-[33px] sm:top-[-106px] sm:left-[117px]
-                md:max-w-[44px] md:top-[-169px] md:left-[246px]
-                lg:top-[-196px] lg:left-[277px]
-              '
-            />
-          </div>
-        </Link>
-      </div>
-
-      <a
-        href='https://icons8.com/illustrations/author/GrbQqWBEhaDS'
-        target='_blank'
-        rel='noopener noreferrer'
-        className='fixed bottom-0 right-0 text-[10px] mix-blend-hard-light'
+    <div className='min-h-screen bg-white flex flex-col'>
+      {/* Header */}
+      <motion.header
+        className='bg-gray-50 border-b border-gray-200'
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
       >
-        Illustration by Liam Moore
-      </a>
+        <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between'>
+          <Link to='/' className='flex items-center gap-2 hover:opacity-80 transition-opacity'>
+            <span className='text-2xl'>🐾</span>
+            <span className='font-bold text-lg text-gray-900 hidden sm:inline'>
+              Little Paws Dachshund Rescue
+            </span>
+          </Link>
+
+          <MotionLink
+            to='/auth/login'
+            className='p-2 hover:bg-gray-200 rounded-lg transition-colors'
+          >
+            <User className='w-6 h-6 text-gray-700' />
+          </MotionLink>
+        </div>
+      </motion.header>
+
+      {/* 404 Content */}
+      <motion.main
+        className='flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12'
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.2 }}
+      >
+        <div className='text-center max-w-md'>
+          {/* 404 Illustration */}
+          <motion.div
+            className='mb-8'
+            animate={{ y: [0, -10, 0] }}
+            transition={{ duration: 3, repeat: Infinity }}
+          >
+            <p className='text-7xl font-bold text-gray-900 mb-2'>404</p>
+            <p className='text-gray-500 text-lg'>Oops! This page went to the dog park.</p>
+          </motion.div>
+
+          {/* Message */}
+          <motion.div
+            className='mb-8'
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+          >
+            <h1 className='text-3xl font-bold text-gray-900 mb-3'>Page Not Found</h1>
+            <p className='text-gray-600 mb-2'>
+              We couldn't find the page you're looking for. It might have been moved or deleted.
+            </p>
+            <p className='text-gray-500 text-sm'>
+              Don't worry, our rescue pups are still waiting for you!
+            </p>
+          </motion.div>
+
+          {/* Action Buttons */}
+          <motion.div
+            className='flex flex-col sm:flex-row gap-3 justify-center'
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+          >
+            <motion.button
+              onClick={() => navigate(-1)}
+              className='flex items-center justify-center gap-2 px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-900 font-semibold rounded-lg transition-colors'
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <ArrowLeft className='w-4 h-4' />
+              Go Back
+            </motion.button>
+
+            <Link
+              to='/'
+              className='flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600 text-white font-semibold rounded-lg transition-colors'
+            >
+              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                <Home className='w-4 h-4' />
+              </motion.div>
+              Home
+            </Link>
+          </motion.div>
+
+          {/* Fun facts */}
+          <motion.div
+            className='mt-12 pt-8 border-t border-gray-200'
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+          >
+            <p className='text-sm text-gray-500 mb-4'>Did you know?</p>
+            <p className='text-gray-600 text-sm leading-relaxed'>
+              Dachshunds were originally bred to hunt badgers. Their long bodies let them follow
+              badgers into their burrows. Now they just like burrowing into blankets!
+            </p>
+          </motion.div>
+        </div>
+      </motion.main>
+
+      {/* Footer CTA */}
+      <motion.div
+        className='bg-teal-50 border-t border-teal-100 py-6 px-4'
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.6 }}
+      >
+        <div className='max-w-7xl mx-auto text-center'>
+          <p className='text-gray-700 mb-3'>Looking to donate?</p>
+          <Link
+            to='/donate'
+            className='inline-block px-6 py-2 bg-teal-500 hover:bg-teal-600 text-white font-semibold rounded-lg transition-colors'
+          >
+            Donate
+          </Link>
+        </div>
+      </motion.div>
     </div>
   );
 };
