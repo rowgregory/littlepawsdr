@@ -1,153 +1,108 @@
-import { useEffect, FC, ElementType, useState, useRef, useCallback } from 'react';
+// src/components/ui/Toast.tsx
+import React, { useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { X, CheckCircle, AlertCircle, Info, AlertTriangle } from 'lucide-react';
-import { useAppDispatch, useAppSelector } from '../../redux/toolkitStore';
-import { AlertType, closeToast, Position } from '../../redux/features/toastSlice';
+import { useAppDispatch, useToastSelector } from '../../redux/toolkitStore';
+import { hideToast } from '../../redux/features/toastSlice';
 
-interface TypeStyle {
-  bg: string;
-  text: string;
-  icon: ElementType;
-  iconColor: string;
-}
+// Import your sound files
+// const successSound = new UIfx('/path/to/success-sound.mp3', { volume: 0.4 })
+// const errorSound = new UIfx('/path/to/error-sound.mp3', { volume: 0.4 })
 
-interface ToastProps {
-  duration?: number;
-  position?: Position;
-  showCloseButton?: boolean;
-}
-
-const Toast: FC<ToastProps> = ({ duration = 4000, showCloseButton = true }) => {
+const Toast: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { message, type, id, position } = useAppSelector((state) => state.toast);
-  const [visible, setVisible] = useState(false);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
-  const lastIdRef = useRef<number>(0);
-
-  const handleClose = useCallback(() => {
-    setVisible(false);
-    if (timerRef.current) {
-      clearTimeout(timerRef.current);
-      timerRef.current = null;
-    }
-    dispatch(closeToast());
-  }, [dispatch]);
+  const { isVisible, type, message, description, duration } = useToastSelector();
 
   useEffect(() => {
-    if (message && id !== lastIdRef.current) {
-      lastIdRef.current = id;
-      setVisible(true);
-
-      if (timerRef.current) clearTimeout(timerRef.current);
-
-      timerRef.current = setTimeout(() => {
-        handleClose();
-      }, duration);
-    }
-
-    return () => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-        timerRef.current = null;
+    if (isVisible) {
+      // Play sound based on toast type
+      switch (type) {
+        case 'success':
+          // successSound.play()
+          break;
+        case 'error':
+          // errorSound.play()
+          break;
       }
-    };
-  }, [id, message, duration, handleClose]);
 
-  if (!visible || !message) return null;
+      // Auto-hide toast
+      const timer = setTimeout(() => {
+        dispatch(hideToast());
+      }, duration);
 
-  const typeStyle = getTypeStyles(type);
-  const IconComponent = typeStyle?.icon;
+      return () => clearTimeout(timer);
+    }
+  }, [isVisible, type, dispatch, duration]);
+
+  const getIcon = () => {
+    switch (type) {
+      case 'success':
+        return <CheckCircle className='w-6 h-6 text-green-400' />;
+      case 'error':
+        return <AlertCircle className='w-6 h-6 text-red-400' />;
+      case 'warning':
+        return <AlertTriangle className='w-6 h-6 text-yellow-400' />;
+      case 'info':
+        return <Info className='w-6 h-6 text-blue-400' />;
+    }
+  };
+
+  const getBackgroundColor = () => {
+    switch (type) {
+      case 'success':
+        return 'bg-green-950/80';
+      case 'error':
+        return 'bg-red-950/80';
+      case 'warning':
+        return 'bg-yellow-950/80';
+      case 'info':
+        return 'bg-blue-950/80';
+    }
+  };
+
+  if (!isVisible) return null;
 
   return (
-    <div
-      className={`
-        fixed z-50 max-w-sm w-full mx-auto
-        ${getPositionClasses(position)}
-        ${getSlideAnimation(position, visible)}
-      `}
-    >
-      <div
-        className={`
-        ${typeStyle.bg} ${typeStyle.text}
-        border rounded-lg shadow-lg p-4
-        flex items-start gap-3
-      `}
-      >
-        <IconComponent className={`${typeStyle.iconColor} w-5 h-5 mt-0.5 flex-shrink-0`} />
-
-        <div className='flex-1 min-w-0'>
-          <p className='text-sm font-medium leading-relaxed'>{message}</p>
-        </div>
-
-        {showCloseButton && (
-          <button
-            onClick={handleClose}
-            className={`
-              ${typeStyle.iconColor} hover:opacity-70 
-              transition-opacity p-0.5 flex-shrink-0
-            `}
-            aria-label='Close notification'
-          >
-            <X className='w-4 h-4' />
-          </button>
-        )}
-      </div>
-    </div>
+    <AnimatePresence>
+      {isVisible && (
+        <motion.div
+          key='toast'
+          initial={{ opacity: 0, x: '100%' }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{
+            opacity: 0,
+            x: '100%',
+            transition: {
+              duration: 0.3,
+              ease: 'easeInOut',
+            },
+          }}
+          transition={{
+            type: 'tween',
+            duration: 0.3,
+            ease: 'easeInOut',
+          }}
+          className={`
+          fixed top-4 right-4 left-4 lg:left-auto z-[200] ${getBackgroundColor()} backdrop-blur-md rounded-xl border border-white/10 shadow-2xl p-4 lg:max-w-sm
+        `}
+        >
+          <div className='flex items-center space-x-3'>
+            {getIcon()}
+            <div className='flex-1'>
+              <h3 className='text-white font-semibold'>{message}</h3>
+              {description && <p className='text-gray-400 text-sm mt-1'>{description}</p>}
+            </div>
+            <button
+              onClick={() => dispatch(hideToast())}
+              className='text-gray-400 hover:text-white transition-colors'
+            >
+              <X className='w-5 h-5' />
+            </button>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };
 
 export default Toast;
-
-// helper functions
-const getPositionClasses = (pos: Position): string => {
-  const positions: Record<Position, string> = {
-    tl: 'top-4 left-4',
-    tc: 'top-4 left-1/2 -translate-x-1/2',
-    tr: 'top-4 right-4',
-    bl: 'bottom-4 left-4',
-    bc: 'bottom-4 left-1/2 -translate-x-1/2',
-    br: 'bottom-4 right-4',
-  };
-  return positions[pos];
-};
-
-const getSlideAnimation = (pos: Position, visible: boolean): string => {
-  const animations: Record<Position, { in: string; out: string }> = {
-    tl: { in: 'animate-slide-in-left', out: 'animate-slide-out-left' },
-    tc: { in: 'animate-slide-in-down', out: 'animate-slide-out-up' },
-    tr: { in: 'animate-slide-in-right', out: 'animate-slide-out-right' },
-    bl: { in: 'animate-slide-in-left', out: 'animate-slide-out-left' },
-    bc: { in: 'animate-slide-in-up', out: 'animate-slide-out-down' },
-    br: { in: 'animate-slide-in-right', out: 'animate-slide-out-right' },
-  };
-  return visible ? animations[pos]?.in : animations[pos]?.out;
-};
-
-const getTypeStyles = (alertType: AlertType): TypeStyle => {
-  const styles: Record<AlertType, TypeStyle> = {
-    success: {
-      bg: 'bg-green-50 border-green-200',
-      text: 'text-green-800',
-      icon: CheckCircle,
-      iconColor: 'text-green-500',
-    },
-    error: {
-      bg: 'bg-red-50 border-red-200',
-      text: 'text-red-800',
-      icon: AlertCircle,
-      iconColor: 'text-red-500',
-    },
-    warning: {
-      bg: 'bg-yellow-50 border-yellow-200',
-      text: 'text-yellow-800',
-      icon: AlertTriangle,
-      iconColor: 'text-yellow-500',
-    },
-    info: {
-      bg: 'bg-blue-50 border-blue-200',
-      text: 'text-blue-800',
-      icon: Info,
-      iconColor: 'text-blue-500',
-    },
-  };
-  return styles[alertType] ?? styles.success;
-};

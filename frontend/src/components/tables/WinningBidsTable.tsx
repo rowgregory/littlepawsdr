@@ -1,10 +1,10 @@
 import { Fragment, useState } from 'react';
 import { useAppDispatch } from '../../redux/toolkitStore';
 import WinningBidCollapsibleRow from './collapsible-rows/WinningBidCollapsibleRow';
-import { sortTable } from '../../redux/features/campaign/campaignSlice';
-import { useMarkWinningBidAsPaidMutation } from '../../redux/services/campaignApi';
-import { openToast } from '../../redux/features/toastSlice';
 import { Clock, Loader2 } from 'lucide-react';
+import { useMarkWinningBidAsPaidMutation } from '../../redux/services/auctionApi';
+import { sortTable } from '../../redux/features/tableSlice';
+import { showToast } from '../../redux/features/toastSlice';
 
 const paymentMethods = [
   { value: 'venmo', label: 'Venmo' },
@@ -51,17 +51,15 @@ const WinningBidsTable = ({ filteredData }: { filteredData: any }) => {
     });
   };
 
-  const handleSort = (key: string) => {
-    dispatch(sortTable({ arrayToSort: filteredData, key }));
-  };
+  const handleSort = (key: string) => dispatch(sortTable({ data: filteredData, key }));
 
   const handleMarkAsPaid = async (bidderId: string, paymentMethod: string) => {
     setProcessingBidderId(bidderId);
     try {
       await markAsPaid({ id: bidderId, paymentMethod }).unwrap();
-      dispatch(openToast({ message: 'Successfully marked as paid!', type: 'success', position: 'tr' }));
+      dispatch(showToast({ message: 'Successfully marked as paid!', type: 'success' }));
     } catch (error) {
-      dispatch(openToast({ message: 'Failed to mark as paid.', type: 'error', position: 'tr' }));
+      dispatch(showToast({ message: 'Failed to mark as paid.', type: 'error' }));
     } finally {
       setProcessingBidderId(null);
     }
@@ -97,22 +95,34 @@ const WinningBidsTable = ({ filteredData }: { filteredData: any }) => {
       <thead className='whitespace-nowrap px-4 pb-4 pt-2'>
         <tr className='bg-zinc-50'>
           <th className='px-4 border-b border-gray-100 font-Matter-Regular py-2'></th>
-          <th onClick={() => handleSort('user.name')} className='px-4 border-b border-gray-100 font-Matter-Regular py-2'>
+          <th
+            onClick={() => handleSort('user.name')}
+            className='px-4 border-b border-gray-100 font-Matter-Regular py-2'
+          >
             <div className='text-sm flex flex-nowrap items-center gap-2 cursor-pointer -mx-1.5 -my-1 w-fit px-1.5 py-1 rounded-md hover:bg-gray-200'>
               Winner
             </div>
           </th>
-          <th onClick={() => handleSort('auctionItem.name')} className='px-4 border-b border-gray-100 font-Matter-Regular py-2'>
+          <th
+            onClick={() => handleSort('auctionItem.name')}
+            className='px-4 border-b border-gray-100 font-Matter-Regular py-2'
+          >
             <div className='text-sm flex flex-nowrap items-center gap-2 cursor-pointer -mx-1.5 -my-1 w-fit px-1.5 py-1 rounded-md hover:bg-gray-200'>
               Items
             </div>
           </th>
-          <th onClick={() => handleSort('totalPrice')} className='px-4 border-b border-gray-100 font-Matter-Regular py-2'>
+          <th
+            onClick={() => handleSort('totalPrice')}
+            className='px-4 border-b border-gray-100 font-Matter-Regular py-2'
+          >
             <div className='text-sm flex flex-nowrap items-center gap-2 cursor-pointer -mx-1.5 -my-1 w-fit px-1.5 py-1 rounded-md hover:bg-gray-200'>
               Sold price
             </div>
           </th>
-          <th onClick={() => handleSort('emailNotificationCount')} className='px-4 border-b border-gray-100 font-Matter-Regular py-2'>
+          <th
+            onClick={() => handleSort('emailNotificationCount')}
+            className='px-4 border-b border-gray-100 font-Matter-Regular py-2'
+          >
             <div className='text-sm flex flex-nowrap items-center gap-2 cursor-pointer -mx-1.5 -my-1 w-fit px-1.5 py-1 rounded-md hover:bg-gray-200'>
               Reminders
             </div>
@@ -120,7 +130,10 @@ const WinningBidsTable = ({ filteredData }: { filteredData: any }) => {
           <th className='px-4 border-b border-gray-100 font-Matter-Regular py-2'>
             <div className='text-sm flex flex-nowrap items-center gap-2'>Winning Bid Id</div>
           </th>
-          <th onClick={() => handleSort('winningBidPaymentStatus')} className='px-4 border-b border-gray-100 font-Matter-Regular py-2'>
+          <th
+            onClick={() => handleSort('winningBidPaymentStatus')}
+            className='px-4 border-b border-gray-100 font-Matter-Regular py-2'
+          >
             <div className=' text-sm flex flex-nowrap items-center gap-2 cursor-pointer -mx-1.5 -my-1 w-fit px-1.5 py-1 rounded-md hover:bg-gray-200'>
               Status
             </div>
@@ -151,8 +164,14 @@ const WinningBidsTable = ({ filteredData }: { filteredData: any }) => {
                 </td>
                 <td>
                   <div className='flex items-center gap-2'>
-                    <span className='text-sm font-Matter-Regular px-4 truncate'>{bidder?.user?.name}</span>
-                    {isManualPayment && <span className='px-1.5 py-0.5 bg-amber-100 text-amber-700 text-xs rounded font-Matter-Medium'>Manual</span>}
+                    <span className='text-sm font-Matter-Regular px-4 truncate'>
+                      {bidder?.user?.name}
+                    </span>
+                    {isManualPayment && (
+                      <span className='px-1.5 py-0.5 bg-amber-100 text-amber-700 text-xs rounded font-Matter-Medium'>
+                        Manual
+                      </span>
+                    )}
                   </div>
                 </td>
                 <td>
@@ -179,7 +198,9 @@ const WinningBidsTable = ({ filteredData }: { filteredData: any }) => {
                   </span>
                 </td>
                 <td className='px-4'>
-                  <span className='text-gray-900 text-xs font-Matter-Regular items-center whitespace-nowrap'>{bidder?._id}</span>
+                  <span className='text-gray-900 text-xs font-Matter-Regular items-center whitespace-nowrap'>
+                    {bidder?._id}
+                  </span>
                 </td>
                 <td className='px-4 py-3'>
                   <div className='flex flex-col gap-1'>
@@ -202,7 +223,9 @@ const WinningBidsTable = ({ filteredData }: { filteredData: any }) => {
                   {bidder.winningBidPaymentStatus !== 'Paid' && (
                     <div className='relative'>
                       <button
-                        onClick={() => setShowPaymentMethod(showPaymentMethod === bidder._id ? null : bidder._id)}
+                        onClick={() =>
+                          setShowPaymentMethod(showPaymentMethod === bidder._id ? null : bidder._id)
+                        }
                         disabled={isThisButtonLoading}
                         className='px-3 py-1 bg-green-500 hover:bg-green-600 disabled:bg-gray-400 disabled:cursor-not-allowed text-white text-xs rounded-md font-Matter-Regular transition-colors flex items-center gap-1 whitespace-nowrap'
                       >
@@ -220,7 +243,9 @@ const WinningBidsTable = ({ filteredData }: { filteredData: any }) => {
                       {showPaymentMethod === bidder._id && !isThisButtonLoading && (
                         <div className='absolute right-0 top-full mt-1 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50'>
                           <div className='p-2'>
-                            <div className='text-xs text-gray-500 font-Matter-Medium px-2 py-1 mb-1'>Select Payment Method</div>
+                            <div className='text-xs text-gray-500 font-Matter-Medium px-2 py-1 mb-1'>
+                              Select Payment Method
+                            </div>
                             {paymentMethods.map((method) => (
                               <button
                                 key={method.value}

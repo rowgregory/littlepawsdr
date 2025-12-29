@@ -1,38 +1,38 @@
-import { createSlice } from '@reduxjs/toolkit';
+// src/store/slices/toastSlice.ts
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-export type Position = 'tl' | 'tc' | 'tr' | 'bl' | 'bc' | 'br';
-export type AlertType = 'success' | 'error' | 'warning' | 'info';
+export interface ToastState {
+  isVisible: boolean;
+  type: 'success' | 'error' | 'info' | 'warning';
+  message: string;
+  description?: string;
+  duration?: number;
+}
 
-const initialState = {
-  message: null,
-  open: false,
-  toastId: 0,
-  id: 0,
-  position: 'bc' as Position,
-  type: 'success' as AlertType,
+const initialState: ToastState = {
+  isVisible: false,
+  type: 'success',
+  message: '',
+  description: '',
+  duration: 7000,
 };
 
-let toastId = 0;
-
-const toastSlice = createSlice({
+export const toastSlice = createSlice({
   name: 'toast',
   initialState,
   reducers: {
-    openToast: (state, { payload }) => {
-      state.message = payload.message;
-      state.open = true;
-      state.toastId = Date.now();
-      state.id = ++toastId;
-      state.type = payload.type;
-      state.position = payload.position;
+    showToast: (state, action: PayloadAction<Omit<ToastState, 'isVisible'>>) => {
+      state.isVisible = true;
+      state.type = action.payload.type;
+      state.message = action.payload.message;
+      state.description = action.payload.description;
+      state.duration = action.payload.duration || 4000;
     },
-    closeToast: (state) => {
-      state.message = null;
-      state.open = false;
+    hideToast: (state) => {
+      state.isVisible = false;
     },
   },
 });
 
-export const { openToast, closeToast } = toastSlice.actions;
-
+export const { showToast, hideToast } = toastSlice.actions;
 export const toastReducer = toastSlice.reducer;

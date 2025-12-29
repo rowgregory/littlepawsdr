@@ -1,11 +1,12 @@
 import React, { FC } from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 
 interface MotionLinkProps {
-  href: string;
+  to: string; // ✅ Changed from href to to
   children: React.ReactNode;
   className?: string;
-  variant?: 'default' | 'button' | 'ghost' | 'underline' | 'scale' | 'slide';
+  variant?: 'default' | 'button' | 'ghost' | 'underline' | 'scale' | 'slide' | 'icon';
   size?: 'sm' | 'md' | 'lg';
   color?: 'primary' | 'secondary' | 'accent' | 'success' | 'warning' | 'danger';
   external?: boolean;
@@ -19,7 +20,7 @@ interface MotionLinkProps {
 }
 
 const MotionLink: FC<MotionLinkProps> = ({
-  href,
+  to,
   children,
   className = '',
   variant = 'default',
@@ -76,32 +77,8 @@ const MotionLink: FC<MotionLinkProps> = ({
       transition: { duration: 0.2 },
     },
     ghost: {
-      className: `inline-flex items-center font-medium rounded-lg border-2 transition-all ${sizeClasses[size]} border-${
-        color === 'primary'
-          ? 'blue'
-          : color === 'secondary'
-          ? 'gray'
-          : color === 'accent'
-          ? 'purple'
-          : color === 'success'
-          ? 'green'
-          : color === 'warning'
-          ? 'yellow'
-          : 'red'
-      }-600 ${colorClasses[color]} hover:bg-${
-        color === 'primary'
-          ? 'blue'
-          : color === 'secondary'
-          ? 'gray'
-          : color === 'accent'
-          ? 'purple'
-          : color === 'success'
-          ? 'green'
-          : color === 'warning'
-          ? 'yellow'
-          : 'red'
-      }-50`,
-      whileHover: { scale: 1.03, borderWidth: 3 },
+      className: `inline-flex items-center font-medium rounded-lg border-2 transition-all ${sizeClasses[size]} border-current ${colorClasses[color]}`,
+      whileHover: { scale: 1.03 },
       whileTap: { scale: 0.97 },
       transition: { duration: 0.2 },
     },
@@ -123,12 +100,20 @@ const MotionLink: FC<MotionLinkProps> = ({
       whileTap: { x: 2 },
       transition: { duration: 0.2 },
     },
+    icon: {
+      // ✅ Add this
+      className: `inline-flex items-center justify-center p-2 rounded-full text-gray-600 hover:bg-gray-100 transition-colors`,
+      whileHover: { scale: 1.05 },
+      whileTap: { scale: 0.95 },
+      transition: { duration: 0.2 },
+    },
   };
 
   const variantConfig = variants[variant];
-  const combinedClassName = `${variantConfig.className} ${className} ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`.trim();
+  const combinedClassName = `${variantConfig.className} ${className} ${
+    disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+  }`.trim();
 
-  // Merge custom animations with defaults
   const finalWhileHover = whileHover || variantConfig.whileHover;
   const finalWhileTap = whileTap || variantConfig.whileTap;
   const finalTransition = transition || variantConfig.transition;
@@ -137,17 +122,17 @@ const MotionLink: FC<MotionLinkProps> = ({
     <>
       {icon && iconPosition === 'left' && (
         <motion.span
-          className='mr-2'
+          className='mr-2 flex-shrink-0'
           animate={{ rotate: variant === 'scale' ? [0, 10, -10, 0] : 0 }}
           transition={{ duration: 2, repeat: variant === 'scale' ? Infinity : 0 }}
         >
           {icon}
         </motion.span>
       )}
-      <span>{children}</span>
+      <span>{children}</span> {/* ✅ Removed w-full */}
       {icon && iconPosition === 'right' && (
         <motion.span
-          className='ml-2'
+          className='ml-2 flex-shrink-0'
           animate={{
             x: variant === 'slide' ? [0, 3, 0] : 0,
             rotate: variant === 'scale' ? [0, 10, -10, 0] : 0,
@@ -171,16 +156,12 @@ const MotionLink: FC<MotionLinkProps> = ({
     </>
   );
 
-  const MotionComponent = motion.a;
-  const linkProps = {
-    href,
-    target: external ? '_blank' : undefined,
-    rel: external ? 'noopener noreferrer' : undefined,
-  };
+  // ✅ Use motion(Link) instead of motion.a
+  const MotionComponent = motion.create(Link);
 
   return (
     <MotionComponent
-      {...linkProps}
+      to={to} // ✅ Use 'to' instead of 'href'
       className={combinedClassName}
       whileHover={disabled ? {} : finalWhileHover}
       whileTap={disabled ? {} : finalWhileTap}

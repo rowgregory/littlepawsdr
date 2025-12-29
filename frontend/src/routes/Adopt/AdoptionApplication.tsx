@@ -3,15 +3,13 @@ import { useNavigate, useParams, Link } from 'react-router-dom';
 import NothingHere from '../../components/assets/404_dog01.png';
 import SessionExpired from '../../components/assets/session-expired.png';
 import ProgressTracker from '../../components/adopt/application/ProgressTracker';
-import CountdownTimer from '../../components/CountdownTImer';
-import ContactLoader from '../../components/Loaders/ContactLoader/ContactLoader';
+import CountdownTimer from '../../components/common/CountdownTImer';
 import { useJwtCheckValidityAdoptionFeeMutation } from '../../redux/services/adoptionApplicationFeeApi';
 import Skeleton from '../../components/Loaders/Skeleton';
 
 const AdoptionApplication = () => {
   const navigate = useNavigate();
   const { token } = useParams();
-  const [iFrameLoaded, setIFrameLoaded] = useState(true);
   const [countdownEnded, setCountdownEnded] = useState(false);
 
   const [jwtCheckValidityAdoptionFee, { isLoading, data, error }] =
@@ -64,7 +62,6 @@ const AdoptionApplication = () => {
 
   return (
     <div className='w-full px-3 pt-16 pb-32 fade-in'>
-      {iFrameLoaded && <ContactLoader text='Loading your application' />}
       <h1 className='font-QBold text-charcoal text-xl sm:text-2xl mb-3 text-center'>
         Little Paws Dachshund Rescue {new Date().getFullYear()} Adoption Application
       </h1>
@@ -79,7 +76,6 @@ const AdoptionApplication = () => {
       <div className='max-w-screen-md mx-auto border border-gray-200 rounded-xl mt-6'>
         <iframe
           className='h-[600px] overflow-y-scroll w-full'
-          onLoad={() => setIFrameLoaded(false)}
           title='Adoption Application'
           src='https://toolkit.rescuegroups.org/of/f?c=WHMQCBRV'
         />

@@ -11,7 +11,8 @@ const urlsToExclude = (pathname: string) =>
     'email-confirmation',
     '404',
     'auction',
-    'campaigns',
+    'auctions',
+    'supporter',
   ].some((a: string) => pathname?.includes(a));
 
 export default urlsToExclude;

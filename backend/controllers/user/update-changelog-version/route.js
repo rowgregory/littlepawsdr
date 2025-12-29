@@ -4,27 +4,31 @@ import { logEvent, prepareLog } from '../../../utils/logHelpers.js';
 import Error from '../../../models/errorModel.js';
 
 /**
- * Admin controller to update a user's lastSeenChangelogVersion
+ * Admin controller to update a user's lastSeenChangelogVersion w currentVersion
  */
-const handleUpdateLastSeenChangelogVersion = asyncHandler(async (req, res) => {
+export const handleUpdateLastSeenChangelogVersion = asyncHandler(async (req, res) => {
   try {
     const log = await prepareLog('UPDATE_LAST_SEEN_CHANGELOG_VERSION');
 
-    const { lastSeenChangelogVersion } = req.body;
+    const { currentVersion } = req.body;
 
-    if (!lastSeenChangelogVersion || typeof lastSeenChangelogVersion !== 'string') {
+    if (!currentVersion || typeof currentVersion !== 'string') {
       return res.status(400).json({
-        message: 'Invalid lastSeenChangelogVersion',
+        message: `Invalid currentVersion - ${currentVersion}`,
         sliceName: 'userApi',
       });
     }
 
     logEvent(log, 'UPDATING USER LAST SEEN CHANGELOG VERSION', {
       userId: req.user._id,
-      lastSeenChangelogVersion,
+      currentVersion,
     });
 
-    const updatedUser = await User.findByIdAndUpdate(req.user._id, { lastSeenChangelogVersion }, { new: true });
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user._id,
+      { lastSeenChangelogVersion: currentVersion },
+      { new: true }
+    );
 
     if (!updatedUser) {
       return res.status(404).json({
@@ -35,12 +39,12 @@ const handleUpdateLastSeenChangelogVersion = asyncHandler(async (req, res) => {
 
     logEvent(log, 'USER LAST SEEN CHANGELOG VERSION UPDATED', {
       userId: updatedUser._id,
-      lastSeenChangelogVersion: updatedUser.lastSeenChangelogVersion,
+      lastSeenChangelogVersion: currentVersion,
     });
 
     res.status(200).json({
       success: true,
-      lastSeenChangelogVersion: updatedUser.lastSeenChangelogVersion,
+      lastSeenChangelogVersion: currentVersion,
       sliceName: 'userApi',
     });
   } catch (err) {
@@ -58,5 +62,3 @@ const handleUpdateLastSeenChangelogVersion = asyncHandler(async (req, res) => {
     });
   }
 });
-
-export default handleUpdateLastSeenChangelogVersion;

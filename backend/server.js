@@ -1,7 +1,6 @@
 import express from 'express';
 import path from 'path';
 import dotenv from 'dotenv';
-import colors from 'colors';
 import morgan from 'morgan';
 import connectDB from './config/db.js';
 import cronJobs from './utils/cronJobs.js';
@@ -16,10 +15,13 @@ import adoptionFeeRoutes from './routes/adoptionFeeRoutes.js';
 import dashboardRoutes from './routes/dashboardRoutes.js';
 import errorRoutes from './routes/errorRoutes.js';
 import actionHistoryRoutes from './routes/actionHistoryRoutes.js';
-import campaignRoutes from './routes/campaignRoutes.js';
+import auctionRoutes from './routes/auctionRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import donationRoutes from './routes/donationRoutes.js';
 import merchAndEcardsRoutes from './routes/merchAndEcardsRoutes.js';
+import newsletterIssueRoutes from './routes/newsletterIssueRoutes.js';
+import publicRoutes from './routes/publicRoutes.js';
+import bugRoutes from './routes/bugRoutes.js';
 import cors from 'cors';
 import http from 'http';
 import { Server } from 'socket.io';
@@ -82,17 +84,24 @@ app.use('/api/adoption-fee', adoptionFeeRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/error', errorRoutes);
 app.use('/api/action-history', actionHistoryRoutes);
-app.use('/api/campaign', campaignRoutes);
+app.use('/api/auction', auctionRoutes);
 app.use('/api/merch-and-ecards', merchAndEcardsRoutes);
+app.use('/api/newsletter-issue', newsletterIssueRoutes);
+app.use('/api/public', publicRoutes);
+app.use('/api/bug', bugRoutes);
 
 const __dirname = path.resolve();
 
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '/frontend/build')));
 
-  app.get('*', (req, res) => res.sendFile(path.resolve(__dirname, 'frontend', 'build', 'index.html')));
+  app.get('*', (req, res) =>
+    res.sendFile(path.resolve(__dirname, 'frontend', 'build', 'index.html'))
+  );
 }
 
-server.listen(PORT, console.log(`⚡ Server running on port`.gray + `${PORT}`.white));
+server.listen(PORT, () => {
+  console.log(`⚡ Server running on port ${PORT}`);
+});
 
 export { io };

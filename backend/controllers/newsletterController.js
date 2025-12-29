@@ -1,7 +1,7 @@
 import asyncHandler from 'express-async-handler';
 import Newsletter from '../models/newsLetterModel.js';
 import Error from '../models/errorModel.js';
-import { validateEmailRegex } from '../utils/regex-utils.js';
+import { validateEmailRegex } from '../utils/regex.js';
 
 /**
 @desc    Create newsletter email

@@ -5,8 +5,8 @@ import User from '../../../models/userModel.js';
 import Address from '../../../models/addressModel.js';
 import { generateToken } from '../../../utils/generateToken.js';
 import { prepareLog, logEvent } from '../../../utils/logHelpers.js';
-import { CURRENT_VERSION } from '../../../appVersion.js';
 import semver from 'semver';
+import { CURRENT_VERSION } from '../../../appVersion.js';
 
 /**
  @desc    Login user
@@ -26,7 +26,6 @@ const login = asyncHandler(async (req, res) => {
       logEvent(log, 'LOGIN FAILED - INVALID CREDENTIALS', email);
       return res.status(401).json({
         message: 'Invalid email or password',
-        sliceName: 'authApi',
       });
     }
 
@@ -113,7 +112,8 @@ const login = asyncHandler(async (req, res) => {
     // Check if user has an addressRef (either string ID or populated object)
     const hasAddressRef =
       addressRef &&
-      ((typeof addressRef === 'string' && addressRef.trim() !== '') || (typeof addressRef === 'object' && addressRef !== null && addressRef._id));
+      ((typeof addressRef === 'string' && addressRef.trim() !== '') ||
+        (typeof addressRef === 'object' && addressRef !== null && addressRef._id));
 
     // For users without embedded shipping address, just update hasAddress
     if (!hasEmbeddedShippingAddress) {
@@ -128,7 +128,7 @@ const login = asyncHandler(async (req, res) => {
     const userToReturn = await User.findById(user._id)
       .populate('addressRef')
       .select(
-        '_id name email isAdmin lastLoginTime firstNameFirstInitial lastNameFirstInitial firstName lastName updatedAt hasAddress anonymousBidding lastSeenChangelogVersion'
+        '_id name email isAdmin lastLoginTime firstNameFirstInitial lastNameFirstInitial firstName lastName updatedAt hasAddress anonymousBidding lastSeenChangelogVersion yourHome dachshundPreferences isPublic jobTitle workSchedule'
       );
 
     logEvent(log, 'USER DATA FETCHED', userToReturn._id);
@@ -140,16 +140,27 @@ const login = asyncHandler(async (req, res) => {
       logEvent(log, 'hasAddress FIELD UPDATED', updatedUser.hasAddress);
     }
 
-    const showChangelog = semver.gt(CURRENT_VERSION, userToReturn?.lastSeenChangelogVersion || '0.0.0');
+    const showChangelog = semver.gt(
+      CURRENT_VERSION,
+      userToReturn?.lastSeenChangelogVersion || '0.0.0'
+    );
 
-    const token = generateToken({ id: userToReturn._id, isAdmin: userToReturn.isAdmin, showChangelog, currentVersion: CURRENT_VERSION }, '7d');
+    const token = generateToken(
+      {
+        id: userToReturn._id,
+        isAdmin: userToReturn.isAdmin,
+        showChangelog,
+        currentVersion: CURRENT_VERSION,
+      },
+      '30d'
+    );
     logEvent(log, 'TOKEN GENERATED', userToReturn._id);
 
     res.cookie('authToken', token, {
       httpOnly: false,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
     });
 
     logEvent(log, 'LOGIN SUCCESSFUL', {
@@ -158,7 +169,11 @@ const login = asyncHandler(async (req, res) => {
       addressMigrated: hasEmbeddedShippingAddress,
     });
 
-    res.status(200).json({ user: userToReturn, showChangelog, currentVersion: CURRENT_VERSION, sliceName: 'authApi' });
+    res.status(200).json({
+      user: { ...userToReturn.toObject(), currentVersion: CURRENT_VERSION },
+      showChangelog,
+      isAuthenticated: true,
+    });
   } catch (err) {
     logEvent(log, 'LOGIN ERROR', err.message);
 
@@ -171,7 +186,6 @@ const login = asyncHandler(async (req, res) => {
 
     res.status(500).json({
       message: `Error authenticating user`,
-      sliceName: 'authApi',
     });
   }
 });

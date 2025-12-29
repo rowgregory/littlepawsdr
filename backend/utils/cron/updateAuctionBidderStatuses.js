@@ -1,24 +1,34 @@
-import { AuctionBidder } from '../../models/campaignModel.js';
-import { logEvent } from '../logHelpers.js';
+import { AuctionBidder } from '../../models/auctionBidderModel.js';
 
-async function updateAuctionBidderStatuses(auctionId, log) {
-  // Get all auction bidders for this auction, populating their bids
-  const auctionBidders = await AuctionBidder.find({ auction: auctionId }).populate('bids');
+async function updateAuctionBidderStatuses(auctionId, session) {
+  // Get bidders with winning bids
+  const auctionBidders = await AuctionBidder.find({ auction: auctionId })
+    .populate('bids')
+    .session(session);
 
-  for (const bidder of auctionBidders) {
-    // Check if any of their bids have status 'Top Bid'
-    const hasWinningBid = bidder.bids.some((bid) => bid.status === 'Top Bid');
+  const winnerIds = auctionBidders
+    .filter((bidder) => bidder.bids.some((bid) => bid.status === 'Top Bid'))
+    .map((bidder) => bidder._id);
 
-    const newStatus = hasWinningBid ? 'Winner' : 'Lost';
+  const loserIds = auctionBidders
+    .filter((bidder) => !bidder.bids.some((bid) => bid.status === 'Top Bid'))
+    .map((bidder) => bidder._id);
 
-    if (bidder.status !== newStatus) {
-      bidder.status = newStatus;
-      await bidder.save();
-      logEvent(log, 'AUCTION BIDDER STATUS UPDATED', {
-        auctionBidderId: bidder._id,
-        newStatus,
-      });
-    }
+  // ✅ Update all at once with session
+  if (winnerIds.length > 0) {
+    await AuctionBidder.updateMany(
+      { _id: { $in: winnerIds } },
+      { $set: { status: 'Winner' } },
+      { session }
+    );
+  }
+
+  if (loserIds.length > 0) {
+    await AuctionBidder.updateMany(
+      { _id: { $in: loserIds } },
+      { $set: { status: 'Lost' } },
+      { session }
+    );
   }
 }
 

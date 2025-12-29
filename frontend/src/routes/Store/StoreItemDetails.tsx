@@ -8,6 +8,17 @@ import { addToCart, toggleCartDrawer } from '../../redux/features/cart/cartSlice
 import { useAppDispatch } from '../../redux/toolkitStore';
 import { Link } from 'react-router-dom';
 
+interface CartItem {
+  _id: any;
+  name: any;
+  image: any;
+  images: any[];
+  price: any;
+  shippingPrice: any;
+  isPhysicalProduct: any;
+  countInStock: any;
+}
+
 const StoreItemDetails = () => {
   const { id } = useParams();
   const dispatch = useAppDispatch();
@@ -26,21 +37,18 @@ const StoreItemDetails = () => {
     setSize(selectedSize?.size);
   }, [product, size]);
 
-  const addToCartHandler = (item?: any) => {
+  const addToCartHandler = (item: CartItem) => {
     const productCartItem = {
+      itemType: 'product',
+      itemId: item?._id,
+      itemName: item?.name,
+      itemImage: item?.image || item?.images?.[0],
       price: item?.price,
-      productImage: item?.image,
-      productName: item?.name,
-      productId: item?._id,
       quantity: Number(qty),
       size,
-      sizes: product?.sizes,
-      countInStock: product?.countInStock,
-      isEcard: false,
-      isProduct: true,
-      isWelcomeWiener: false,
-      shippingPrice: product?.shippingPrice,
-      status: 'Not Shipped',
+      countInStock: item.countInStock,
+      shippingPrice: item?.shippingPrice || 0,
+      isPhysicalProduct: item?.isPhysicalProduct,
     };
     dispatch(addToCart({ item: productCartItem }));
     dispatch(toggleCartDrawer(true));
@@ -59,8 +67,20 @@ const StoreItemDetails = () => {
       </div>
       <div className='grid grid-cols-12 gap-y-8 sm:gap-6 mt-3'>
         <MerchImages loading={isLoading} product={product} />
-        <MerchNamePriceDescription product={product} size={size} setSize={setSize} loading={isLoading} />
-        <AddToCartSection product={product} qty={qty} setQty={setQty} addToCartHandler={addToCartHandler} loading={isLoading} size={size} />
+        <MerchNamePriceDescription
+          product={product}
+          size={size}
+          setSize={setSize}
+          loading={isLoading}
+        />
+        <AddToCartSection
+          product={product}
+          qty={qty}
+          setQty={setQty}
+          addToCartHandler={addToCartHandler}
+          loading={isLoading}
+          size={size}
+        />
       </div>
     </div>
   );

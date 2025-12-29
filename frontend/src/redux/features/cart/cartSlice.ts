@@ -1,56 +1,63 @@
-import { PayloadAction, Reducer, createSlice } from '@reduxjs/toolkit';
-import addToExistingCartItem from '../../../utils/cart-utils/addToExistingCartItem';
-import addNewCartItem from '../../../utils/cart-utils/addNewCartItem';
-import cartRemoveItem from '../../../utils/cart-utils/cartRemoveItem';
-import cartDeleteItemSuccess from '../../../utils/cart-utils/cartDeleteItemSuccess';
-import CryptoJS from 'crypto-js';
-
-const secretKey = process.env.SECRET_KEY || 'default-secret-key';
+import { Reducer, createSlice } from '@reduxjs/toolkit';
 
 interface CartStatePayload {
-  loading: boolean;
-  success: boolean;
-  error: string | false | null;
-  message?: string;
-  cartItems: [];
-  cartItem: {};
+  cartItems: CartItem[];
+  cartItem: CartItem | null;
   cartDrawer: boolean;
   cartItemsAmount: number;
   subtotal: number;
   shippingPrice: number;
   isPhysicalProduct: boolean;
   totalPrice: number;
-  step: {
-    step1: boolean;
-    step2: boolean;
-    step3: boolean;
-  };
-  isProduct: boolean;
-  showModal: boolean;
-  fields: {} | null | any;
+}
+
+interface CartItem {
+  itemId: string;
+  itemType: 'product' | 'ecard' | 'welcomeWiener';
+  itemName: string;
+  itemImage: string;
+  quantity: number;
+  price: number;
+  shippingPrice: number;
+  isPhysicalProduct?: boolean;
+  size?: string;
+  message?: string;
+  dateToSend?: Date;
+  sendNow?: 'send-now' | 'send-later';
+  recipientsEmail?: string;
+  recipientsFullName?: string;
+  dachshundName?: string;
 }
 
 const initialCartState: CartStatePayload = {
-  loading: false,
-  success: false,
-  error: null,
-  message: '',
   cartItems: [],
-  cartItem: {},
+  cartItem: null,
   cartDrawer: false,
   cartItemsAmount: 0,
   subtotal: 0,
   shippingPrice: 0,
   isPhysicalProduct: false,
   totalPrice: 0,
-  step: {
-    step1: true,
-    step2: false,
-    step3: false,
-  },
-  isProduct: false,
-  showModal: false,
-  fields: null,
+};
+
+// Helper function
+const updateCartTotals = (state: any) => {
+  const { shippingPrice, totalItems, subtotal } = state.cartItems.reduce(
+    (acc: any, item: any) => ({
+      shippingPrice: acc.shippingPrice + (item.shippingPrice || 0) * item.quantity,
+      totalItems: acc.totalItems + item.quantity,
+      subtotal: acc.subtotal + item.price * item.quantity,
+    }),
+    { shippingPrice: 0, totalItems: 0, subtotal: 0 }
+  );
+
+  state.cartItemsAmount = totalItems;
+  state.subtotal = subtotal;
+  state.shippingPrice = shippingPrice;
+  state.isPhysicalProduct = state.cartItems.some((item: any) => item.isPhysicalProduct);
+  state.totalPrice = shippingPrice + subtotal;
+
+  localStorage.setItem('cartData', JSON.stringify(state.cartItems));
 };
 
 export const cartSlice = createSlice({
@@ -62,137 +69,64 @@ export const cartSlice = createSlice({
     },
     addToCart: (state, { payload }) => {
       const item = payload.item;
-      const existingItem: any = state.cartItems.find((x: any) =>
-        item?.dachshundId
-          ? x?.productId === item?.productId && x?.dachshundId === item?.dachshundId
-          : x?.productId === item?.productId && x?.size === item?.size
+
+      // Simple match: itemId + size (if exists)
+      const existingItem: any = state.cartItems.find(
+        (x: any) => x.itemId === item.itemId && x.size === item.size
       );
 
-      if (existingItem && !item.isEcard) {
-        return addToExistingCartItem(item, state, existingItem);
+      if (existingItem && item.itemType !== 'ecard') {
+        existingItem.quantity += 1;
+        state.cartItem = existingItem;
+      } else {
+        const newItem = { ...item, quantity: item.quantity || 1 };
+        state.cartItems.push(newItem);
+        state.cartItem = newItem;
       }
-      return addNewCartItem(item, state);
+
+      updateCartTotals(state);
     },
     removeFromCart: (state, { payload }) => {
       const item = payload.item;
-      return cartRemoveItem(item, state);
+      state.cartItems = state.cartItems.filter(
+        (x: any) => !(x.itemId === item.itemId && x.size === item.size)
+      );
+      updateCartTotals(state);
     },
+
     deleteProductFromCart: (state, { payload }) => {
       const item = payload.item;
-      return cartDeleteItemSuccess(item, state);
-    },
-    resetCart: () => {
-      return initialCartState;
-    },
-    setStep: (state, { payload }) => {
-      state.step = payload;
-    },
-    setShowModal: (state, { payload }) => {
-      state.showModal = payload;
-    },
-    saveFormData: (_, { payload }) => {
-      const encryptedData = localStorage.getItem('formData');
-      let existingData = {};
 
-      if (encryptedData) {
-        try {
-          const bytes = CryptoJS.AES.decrypt(encryptedData, secretKey);
-          existingData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
-        } catch (error) {
-          console.error('Failed to decrypt form data:', error);
+      const existingItem = state.cartItems.find(
+        (x: any) => x.itemId === item.itemId && x.size === item.size
+      );
+
+      if (existingItem) {
+        existingItem.quantity -= 1;
+
+        // Remove entirely if quantity reaches 0
+        if (existingItem.quantity <= 0) {
+          state.cartItems = state.cartItems.filter(
+            (x: any) => !(x.itemId === item.itemId && x.size === item.size)
+          );
         }
       }
 
-      // Combine existing data with new data
-      const updatedData = {
-        ...existingData,
-        ...payload.inputs,
-      };
-
-      // Encrypt the updated data
-      const newEncryptedData = CryptoJS.AES.encrypt(JSON.stringify(updatedData), secretKey).toString();
-
-      // Save the updated encrypted data to local storage
-      localStorage.setItem('formData', newEncryptedData);
+      updateCartTotals(state);
     },
-    updateFormData: (_, { payload }) => {
-      let existingData = {};
-
-      const encryptedData = localStorage.getItem('formData');
-      if (encryptedData) {
-        try {
-          const bytes = CryptoJS.AES.decrypt(encryptedData, secretKey);
-          existingData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
-        } catch (error) {
-          console.error('Failed to decrypt form data:', error);
-        }
-      }
-
-      // Merge existing data with new data
-      const updatedData = {
-        ...existingData,
-        ...payload.inputs,
-      };
-
-      // Encrypt the updated data
-      const newEncryptedData = CryptoJS.AES.encrypt(JSON.stringify(updatedData), secretKey).toString();
-
-      // Save the updated encrypted data to local storage
-      localStorage.setItem('formData', newEncryptedData);
-    },
-    decryptFormData: (state) => {
-      const encryptedData = localStorage.getItem('formData');
-
-      // If no data is found, simply return without logging anything
-      if (!encryptedData) {
-        return;
-      }
-
-      try {
-        // Attempt to decrypt the data
-        const bytes = CryptoJS.AES.decrypt(encryptedData, secretKey);
-        const decryptedString = bytes.toString(CryptoJS.enc.Utf8);
-        // Ensure the decrypted string is valid before parsing
-        if (!decryptedString) {
-          console.error('Decryption returned an empty string or invalid data.', decryptedString);
-          return;
-        }
-
-        const decryptedData = JSON.parse(decryptedString);
-        state.fields = decryptedData;
-      } catch (error) {
-        console.error('Failed to decrypt or parse form data:', error);
-      }
-    },
-    resetForm: (state) => {
-      state.loading = false;
-      state.success = false;
-      state.fields = null;
-    },
-    setCartFromStorage: (state, { payload }) => {
-      state.cartItems = payload;
-      state.cartItemsAmount = payload.length;
-    },
-    setCart: (state, action: PayloadAction<CartStatePayload>) => {
-      return action.payload; // replace the whole cart state
+    resetCart: (state) => {
+      state.cartItems = [];
+      state.cartItem = null;
+      state.subtotal = 0;
+      state.cartItemsAmount = 0;
+      state.cartDrawer = false;
+      state.totalPrice = 0;
+      state.isPhysicalProduct = false;
     },
   },
 });
 
 export const cartReducer = cartSlice.reducer as Reducer<CartStatePayload>;
 
-export const {
-  toggleCartDrawer,
-  addToCart,
-  removeFromCart,
-  deleteProductFromCart,
-  resetCart,
-  setStep,
-  setShowModal,
-  saveFormData,
-  updateFormData,
-  decryptFormData,
-  resetForm,
-  setCartFromStorage,
-  setCart,
-} = cartSlice.actions;
+export const { toggleCartDrawer, addToCart, removeFromCart, deleteProductFromCart, resetCart } =
+  cartSlice.actions;

@@ -1,28 +1,23 @@
 import { useEffect, useState } from 'react';
-import { useGetOrdersQuery, useUpdateOrderStatusMutation } from '../../redux/services/orderApi';
-import MagnifyingGlass from '../../components/svg/MagnifyingGlass';
-import Pagination from '../../components/common/Pagination';
+import { useGetOrdersQuery } from '../../redux/services/orderApi';
 import { formatDateWithTimezone } from '../../utils/dateFunctions';
 import toFixed from '../../utils/toFixed';
-import OrderDrawer from '../../components/admin/orders/OrderDrawer';
 import { useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { openToast } from '../../redux/features/toastSlice';
+import { AlertCircle, Search } from 'lucide-react';
+import { setOpenOrderDrawer } from '../../redux/features/ordersSlice';
+import { setInputs } from '../../redux/features/form/formSlice';
 import { useAppDispatch } from '../../redux/toolkitStore';
 
 const Orders = () => {
   const [searchParams] = useSearchParams();
-  const [orderOpened, setOrderOpened] = useState({}) as any;
-  const [text, setText] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
   const { data } = useGetOrdersQuery();
   const orders = data?.orders;
-  const noOrders = orders?.length === 0;
-  const [updateOrderStatus] = useUpdateOrderStatusMutation();
   const dispatch = useAppDispatch();
-  const [isLoading, setIsLoading] = useState<Record<string, boolean>>({});
 
   const filteredOrders = orders?.filter((order: any) => {
-    const searchText = text?.toLowerCase();
+    const searchText = searchTerm?.toLowerCase();
     return (
       order?.name?.toLowerCase().includes(searchText) ||
       order?.email?.toLowerCase().includes(searchText) ||
@@ -35,193 +30,170 @@ const Orders = () => {
     const order = orders?.filter((order: any) => order._id === orderId)[0];
 
     if (order) {
-      setOrderOpened({ open: true, order });
+      dispatch(setOpenOrderDrawer());
+      dispatch(setInputs({ formName: 'adminOrderForm', data: order }));
     }
-  }, [orders, searchParams]);
-
-  const handleCompleteOrder = async (orderId: string) => {
-    try {
-      setIsLoading({ [orderId]: true });
-      await updateOrderStatus({ orderId }).unwrap();
-      dispatch(openToast({ message: 'Order Status Updated', type: 'success', position: 'tr' }));
-    } catch (error) {
-      dispatch(openToast({ message: 'An error occurred', type: 'error', position: 'tr' }));
-    } finally {
-      setIsLoading({ [orderId]: false });
-    }
-  };
+  }, [dispatch, orders, searchParams]);
 
   return (
     <>
-      <OrderDrawer setOrderOpened={setOrderOpened} orderOpened={orderOpened} />
-      <div className='min-h-dvh w-full p-6'>
-        <div className='max-w-7xl mx-auto'>
-          <div
-            onClick={() => setOrderOpened({ open: false, order: {} })}
-            className={`duration-200 min-h-screen w-full ${orderOpened.open ? 'bg-black/50 fixed top-0 left-0 min-h-screen z-40' : 'hidden'}`}
-          ></div>
-          <div className='col-span-12 pb-12'>
-            <motion.div
-              className='flex flex-col lg:flex-row lg:items-center lg:justify-between mb-8'
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              <div className='flex items-center space-x-4 mb-4 lg:mb-0'>
-                <motion.h1
-                  className='text-3xl font-bold text-gray-900'
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.2, duration: 0.5 }}
-                >
-                  Orders
-                </motion.h1>
-                <motion.span
-                  className='bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full'
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ delay: 0.4, duration: 0.3, type: 'spring' }}
-                >
-                  {orders?.length}
-                </motion.span>
-              </div>
-            </motion.div>
-            <div className='grid grid-cols-12 h-10 justify-between'>
-              <div className='col-span-7 md:col-span-6 flex items-center font-Matter-Light border border-grey-200 rounded-md bg-white py-2 px-[16px] '>
-                <MagnifyingGlass />
-                <input
-                  id='orders'
-                  alt='Order search'
-                  onChange={(e: any) => setText(e.target.value)}
-                  className='w-full h-full focus:outline-0 rounded-md ml-2'
-                  placeholder='Search'
-                />
-              </div>
+      {/* Header */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className='bg-white border-b border-gray-200'
+      >
+        <div className='max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between'>
+          <div>
+            <h1 className='text-lg sm:text-2xl font-bold text-gray-900'>Orders</h1>
+            <p className='text-xs sm:text-sm text-gray-600 mt-0.5'>{orders?.length} total</p>
+          </div>
+        </div>
+      </motion.div>
+      <div className='min-h-dvh w-full bg-gray-50'>
+        {/* Main Content */}
+        <div className='max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6'>
+          {/* Search */}
+          <motion.div
+            className='space-y-3 sm:space-y-0 sm:flex gap-3'
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            <div className='relative flex-1 max-w-md'>
+              <Search className='absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4' />
+              <input
+                type='text'
+                placeholder='Search orders...'
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className='w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent text-sm'
+              />
             </div>
-            <div className='bg-white w-full mt-3 border border-slate-100 rounded-lg'>
-              {noOrders ? (
-                <div className='flex flex-col justify-center max-w-48 w-full items-center mx-auto  py-10'>
-                  <div className='rounded-xl bg-gray-100 h-12 w-12 flex justify-center items-center'>
-                    <MagnifyingGlass />
-                  </div>
-                  <div className='font-Matter-Medium my-2'>You have no orders</div>
-                </div>
-              ) : (
-                <div className='rounded-lg bg-white overflow-x-scroll sm:overflow-x-hidden relative'>
-                  <Pagination
-                    render={(startIndex: number, endIndex: number) => (
-                      <table className='w-full'>
-                        <thead className='whitespace-nowrap px-4 pb-4 pt-2'>
-                          <tr className='bg-zinc-50'>
-                            <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
-                              <div className='text-sm -mx-1.5 -my-1 w-fit px-1.5 py-1 rounded-md flex flex-nowrap items-center gap-2'>Customer</div>
-                            </th>
-                            <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
-                              <div className='text-sm flex flex-nowrap items-center gap-2'>Email</div>
-                            </th>
-                            <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
-                              <div className='text-sm flex flex-nowrap items-center gap-2'>Total</div>
-                            </th>
-                            <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
-                              <div className='text-sm flex flex-nowrap items-center gap-2'>Date & Time</div>
-                            </th>
-                            <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
-                              <div className='text-sm flex flex-nowrap items-center gap-2'>Status</div>
-                            </th>
-                            <th className='px-4 border-b border-gray-100 font-Matter-Regular text-star py-2 first:-ml-4 first:pl-6 last:pr-6 select-none'>
-                              <div className='text-sm flex flex-nowrap items-center gap-2'>Action</div>
-                            </th>
-                            <th>
-                              <div className='flex flex-nowrap items-center gap-2'></div>
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {filteredOrders?.slice(startIndex, endIndex).map((order: any, i: number) => (
-                            <tr className='z-1 h-[3.25rem] group bg-white [&_td]:focus-within:bg-gray-100 [&_td]:hover:bg-gray-100 relative' key={i}>
-                              <td>
-                                <div className='m-0 w-full p-0 decoration-inherit hover:text-inherit hover:decoration-inherit !flex h-[3.25rem] items-center px-4 whitespace-nowrap'>
-                                  <div className='max-w-[15rem]'>
-                                    <span className='text-sm font-Matter-Regular truncate'>{order?.name}</span>
-                                  </div>
-                                </div>
-                              </td>
-                              <td>
-                                <p className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>{order?.email}</p>
-                              </td>
-                              <td>
-                                <p className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>
-                                  ${toFixed(order?.totalPrice)}
-                                </p>
-                              </td>
-                              <td>
-                                <p className='text-gray-900 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>
-                                  {formatDateWithTimezone(order?.createdAt)}
-                                </p>
-                              </td>
-                              <td>
-                                <p
-                                  className={`text-gray-900 text-sm font-Matter-Regular items-center px-2.5 whitespace-nowrap w-fit ${
-                                    !order.isProduct
-                                      ? 'text-indigo-500 bg-indigo-50 py-0.5 rounded-2xl'
-                                      : order?.status === 'Complete'
-                                      ? 'text-green-500 bg-green-50 px-2 py-0.5 rounded-3xl'
-                                      : 'text-red-500 bg-red-50 px-2 py-0.5 rounded-3xl'
-                                  }`}
-                                >
-                                  {order?.status}
-                                </p>
-                              </td>
-                              <td>
-                                <div className='flex items-center px-4 whitespace-nowrap'>
-                                  {order?.isProduct ? (
-                                    order?.status !== 'Complete' ? (
-                                      <>
-                                        {isLoading[order?._id] ? (
-                                          <div className='w-4 h-4 rounded-full border-2 border-teal-400 border-t-0 animate-spin' />
-                                        ) : (
-                                          <button
-                                            onClick={() => handleCompleteOrder(order._id)}
-                                            className='text-sm text-gray-600 hover:text-green-600 hover:bg-green-50 px-2 py-1 rounded transition-colors'
-                                          >
-                                            <i className='fa-solid fa-check mr-1.5'></i>
-                                            Complete
-                                          </button>
-                                        )}
-                                      </>
-                                    ) : (
-                                      <span className='text-sm text-gray-400'>
-                                        <i className='fa-solid fa-check mr-1'></i>
-                                      </span>
-                                    )
-                                  ) : (
-                                    <></>
-                                  )}
-                                </div>
-                              </td>
-                              <td>
-                                <div className='relative'>
-                                  <div
-                                    onClick={() => {
-                                      setOrderOpened({ open: true, order });
-                                    }}
-                                    className='m-0 w-full border-0 p-0 items-center px-4 relative flex justify-center'
-                                  >
-                                    <button className='flex h-7 cursor-pointer items-center justify-center rounded p-2 hover:bg-gray-300 text-gray-900'>
-                                      <i className='fa-solid fa-ellipsis-vertical'></i>
-                                    </button>
-                                  </div>
-                                </div>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    )}
-                    totalItems={orders?.length}
-                  ></Pagination>
-                </div>
-              )}
+          </motion.div>
+          <div className='rounded-lg bg-white border border-gray-200 w-full overflow-hidden'>
+            <div className='overflow-x-auto'>
+              <table className='w-full'>
+                <thead className='sticky top-0 whitespace-nowrap bg-gray-50'>
+                  <tr>
+                    <th className='px-4 border-b border-gray-200 text-xs font-semibold text-gray-600 py-3 text-left uppercase'>
+                      Supporter
+                    </th>
+                    <th className='px-4 border-b border-gray-200 text-xs font-semibold text-gray-600 py-3 text-left uppercase'>
+                      Email
+                    </th>
+                    <th className='px-4 border-b border-gray-200 text-xs font-semibold text-gray-600 py-3 text-left uppercase'>
+                      Total
+                    </th>
+
+                    <th className='px-4 border-b border-gray-200 text-xs font-semibold text-gray-600 py-3 text-left uppercase'>
+                      Payment Status
+                    </th>
+                    <th className='px-4 border-b border-gray-200 text-xs font-semibold text-gray-600 py-3 text-left uppercase'>
+                      Shipping Status
+                    </th>
+                    <th className='px-4 border-b border-gray-200 text-xs font-semibold text-gray-600 py-3 text-left uppercase'>
+                      Date & Time
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className='divide-y divide-gray-100'>
+                  {(filteredOrders?.length || 0) > 0 ? (
+                    filteredOrders?.map((order: any, index: number) => {
+                      const hasPhysicalProduct = order?.items?.some(
+                        (item: any) => item.itemType === 'product' && item.isPhysicalProduct
+                      );
+
+                      const needsAction =
+                        (hasPhysicalProduct && order?.shippingStatus === 'not-shipped') ||
+                        order?.status !== 'completed';
+
+                      return (
+                        <motion.tr
+                          onClick={() => {
+                            dispatch(setOpenOrderDrawer());
+                            dispatch(setInputs({ formName: 'adminOrderForm', data: { order } }));
+                          }}
+                          key={index}
+                          className={`transition-colors cursor-pointer ${
+                            needsAction
+                              ? 'bg-amber-50 hover:bg-amber-100 border-l-4 border-amber-500'
+                              : 'bg-white hover:bg-gray-50'
+                          }`}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: index * 0.02 }}
+                        >
+                          <td className='px-4 py-3 text-sm font-medium text-gray-900 whitespace-nowrap'>
+                            {order?.name}
+                            {needsAction && (
+                              <span className='ml-2 inline-flex items-center gap-1 text-xs font-semibold text-amber-600 bg-amber-100 px-2 py-1 rounded-full'>
+                                <AlertCircle className='w-3 h-3' />
+                                Action Needed
+                              </span>
+                            )}
+                          </td>
+                          <td className='px-4 py-3 text-sm font-medium text-gray-900 whitespace-nowrap'>
+                            {order?.email}
+                          </td>
+                          <td className='px-4 py-3 text-sm font-medium text-gray-900 whitespace-nowrap'>
+                            ${toFixed(order?.totalPrice)}
+                          </td>
+
+                          <td className='px-4 py-3 whitespace-nowrap'>
+                            <span
+                              className={`inline-flex px-3 py-1 rounded-full text-xs font-semibold ${
+                                order?.status === 'completed'
+                                  ? 'bg-green-100 text-green-700'
+                                  : 'bg-red-100 text-red-700'
+                              }`}
+                            >
+                              {order?.status}
+                            </span>
+                          </td>
+
+                          {/* Shipping Status - Only show if has physical products */}
+                          {hasPhysicalProduct ? (
+                            <td className='px-4 py-3 whitespace-nowrap'>
+                              <span
+                                className={`inline-flex px-3 py-1 rounded-full text-xs font-semibold ${
+                                  order?.shippingStatus === 'delivered'
+                                    ? 'bg-green-100 text-green-700'
+                                    : order?.shippingStatus === 'shipped'
+                                    ? 'bg-blue-100 text-blue-700'
+                                    : order?.shippingStatus === 'processing'
+                                    ? 'bg-yellow-100 text-yellow-700'
+                                    : order?.shippingStatus === 'not-shipped'
+                                    ? 'bg-red-100 text-red-700'
+                                    : 'bg-gray-100 text-gray-700'
+                                }`}
+                              >
+                                {order?.shippingStatus}
+                              </span>
+                            </td>
+                          ) : (
+                            <td className='px-4 py-3 whitespace-nowrap'>
+                              <span className='inline-flex px-3 py-1 rounded-full text-xs font-semibold bg-purple-100 text-purple-700'>
+                                digital
+                              </span>
+                            </td>
+                          )}
+
+                          <td className='px-4 py-3 text-sm font-medium text-gray-900 whitespace-nowrap'>
+                            {formatDateWithTimezone(order?.createdAt)}
+                          </td>
+                        </motion.tr>
+                      );
+                    })
+                  ) : (
+                    <tr>
+                      <td colSpan={7} className='px-4 py-8 text-center'>
+                        <p className='text-gray-500 text-sm'>No orders found</p>
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>

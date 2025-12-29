@@ -18,7 +18,9 @@ const protect = asyncHandler(async (req, res, next) => {
     req.user = await User.findById(decoded.id).select('-password');
 
     if (!req.user) {
-      return res.status(401).json({ message: 'NOT_AUTHORIZED_USER_NOT_FOUND', sliceName: 'authApi' });
+      return res
+        .status(401)
+        .json({ message: 'NOT_AUTHORIZED_USER_NOT_FOUND', sliceName: 'authApi' });
     }
 
     next();
@@ -41,9 +43,18 @@ const admin = (req, res, next) => {
 
 const forceLogoutMiddleware = async (req, res, next) => {
   // Skip middleware entirely for static assets
-  const skipPaths = ['/static/', '/assets/', '/favicon.ico', '/robots.txt', '/manifest.json', '/.well-known'];
+  const skipPaths = [
+    '/static/',
+    '/assets/',
+    '/favicon.ico',
+    '/robots.txt',
+    '/manifest.json',
+    '/.well-known',
+  ];
 
-  const shouldSkip = skipPaths.some((path) => req.path.startsWith(path)) || req.path.match(/\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot)$/);
+  const shouldSkip =
+    skipPaths.some((path) => req.path.startsWith(path)) ||
+    req.path.match(/\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot)$/);
 
   if (shouldSkip) {
     return next();

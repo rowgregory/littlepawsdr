@@ -1,13 +1,19 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { toggleNavigationDrawer } from '../../redux/features/navbar/navbarSlice';
-import { RootState, useAppDispatch, useAppSelector } from '../../redux/toolkitStore';
+import {
+  useAppDispatch,
+  useAuctionSelector,
+  useCartSelector,
+  useNavbarSelector,
+  useUserSelector,
+} from '../../redux/toolkitStore';
 import urlsToExclude from '../../utils/urlsToExclude';
 import { shoppingCartIcon, userShieldIcon, usersIcon } from '../../icons';
 import { bottomHeaderLinks } from '../data/navbar-data';
 import TopHeaderInfoBox from './TopHeaderInfoBox';
 import { formatDateTime } from '../../utils/formatDateTime';
 import { motion } from 'framer-motion';
-import RainbowBurgerMenu from '../RainbowBurgerMenu';
+import RainbowBurgerMenu from './RainbowBurgerMenu';
 import MotionLink from '../common/MotionLink';
 
 const BottomHeader = () => {
@@ -15,10 +21,10 @@ const BottomHeader = () => {
   const dispatch = useAppDispatch();
   const { pathname } = useLocation();
   const shouldExclude = urlsToExclude(pathname);
-  const { user } = useAppSelector((state: RootState) => state.user);
-  const { toggle } = useAppSelector((state: RootState) => state.navbar);
-  const { cartItemsAmount } = useAppSelector((state: RootState) => state.cart);
-  const { campaign } = useAppSelector((state: RootState) => state.campaign); // Add this line to get campaign from state
+  const { user } = useUserSelector();
+  const { toggle } = useNavbarSelector();
+  const { cartItemsAmount } = useCartSelector();
+  const { auction } = useAuctionSelector();
 
   const handleClick = () => {
     if (user?._id) {
@@ -28,20 +34,22 @@ const BottomHeader = () => {
     }
   };
 
-  const handleCampaignClick = () => {
+  const handleAuctionClick = () => {
     if (user?._id && user?.hasAddress) {
-      navigate(`/campaigns/${campaign?.customCampaignLink}/auction`);
+      navigate(`/auctions/${auction?.customAuctionLink}`);
     } else if (user?._id && !user.hasAddress) {
-      navigate(`/settings/profile`);
+      navigate(`/supporter/profile`);
     } else {
-      navigate(`/auth/register?customCampaignLink=${campaign?.customCampaignLink}&conversionSource=header_banner`);
+      navigate(
+        `/auth/register?customAuctionLink=${auction?.customAuctionLink}&conversionSource=header_banner`
+      );
     }
   };
 
-  const isActiveCampaign = campaign?.campaignStatus === 'Active Campaign';
-  const isUpcomingCampaign = campaign?.campaignStatus === 'Pre-Campaign';
+  const isActiveAuction = auction?.isLive;
+  const isUpcomingAuction = auction?.status === 'DRAFT';
 
-  const isActiveOrUpcoming = isActiveCampaign || isUpcomingCampaign;
+  const isActiveOrUpcoming = isActiveAuction || isUpcomingAuction;
 
   return (
     <div className={`top-0 px-3 z-[100] ${shouldExclude ? 'hidden' : 'sticky block'}`}>
@@ -51,7 +59,10 @@ const BottomHeader = () => {
         } max-w-screen-2xl mx-auto w-full bg-white -mt-10 shadow-lg z-50`}
       >
         <div className='h-20 flex items-center justify-between px-6 sm:px-5'>
-          <RainbowBurgerMenu onClick={() => dispatch(toggleNavigationDrawer({ navigationDrawer: true }))} isOpen={toggle.navigationDrawer} />
+          <RainbowBurgerMenu
+            onClick={() => dispatch(toggleNavigationDrawer({ navigationDrawer: true }))}
+            isOpen={toggle.navigationDrawer}
+          />
           <div className='hidden 1190:flex items-center lg:gap-x-7'>
             {bottomHeaderLinks(pathname).map((link, i) => (
               <motion.div
@@ -140,22 +151,25 @@ const BottomHeader = () => {
                       ? 'First Time Logged In'
                       : `Last login: ${formatDateTime(user?.lastLoginTime)}`
                     : 'Login',
-                  textKey: user?._id ? `${user?.firstName} ${user?.lastName}` : 'Access Your Account',
+                  textKey: user?._id
+                    ? `${user?.firstName} ${user?.lastName}`
+                    : 'Access Your Account',
                 }}
               />
             </section>
 
             <MotionLink
-              href='/donate'
+              to='/donate'
               className='relative flex flex-col justify-between cursor-pointer text-white group hover:text-white'
-              whileHover={{ scale: 1.1, y: -2 }}
+              whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.95 }}
               transition={{ duration: 0.2 }}
             >
               <motion.div
-                className='rounded-full shadow-lg px-9 py-3 w-fit h-fit text-lg font-bold relative overflow-hidden border-2 border-red-400/50'
+                className='rounded-full shadow-lg px-9 py-3 w-fit h-fit text-lg font-bold relative overflow-hidden border-2 border-blue-200/40 backdrop-blur-sm'
                 style={{
-                  backgroundImage: 'linear-gradient(90deg, #dc2626, #059669, #ef4444, #10b981, #b91c1c, #047857, #dc2626)',
+                  backgroundImage:
+                    'linear-gradient(135deg, #e0f2fe, #bae6fd, #7dd3fc, #38bdf8, #0ea5e9, #0284c7, #e0f2fe)',
                   backgroundSize: '300% 100%',
                 }}
                 animate={{
@@ -169,42 +183,18 @@ const BottomHeader = () => {
                   },
                 }}
                 whileHover={{
-                  boxShadow: ['0 0 20px rgba(239, 68, 68, 0.6)', '0 0 30px rgba(16, 185, 129, 0.7)', '0 0 20px rgba(239, 68, 68, 0.6)'],
+                  boxShadow: [
+                    '0 0 20px rgba(226, 232, 240, 0.6), inset 0 0 10px rgba(191, 219, 254, 0.3)',
+                    '0 0 40px rgba(56, 189, 248, 0.8), inset 0 0 15px rgba(191, 219, 254, 0.5)',
+                    '0 0 20px rgba(226, 232, 240, 0.6), inset 0 0 10px rgba(191, 219, 254, 0.3)',
+                  ],
                 }}
               >
-                {/* Twinkling lights overlay */}
+                {/* Icy crystalline effect */}
                 <motion.div
-                  className='absolute inset-0 bg-white'
+                  className='absolute inset-0 bg-gradient-to-tr from-transparent via-blue-100/20 to-transparent'
                   animate={{
-                    opacity: [0, 0, 0, 0.4, 0, 0, 0, 0, 0.3, 0],
-                  }}
-                  transition={{
-                    duration: 1,
-                    repeat: Infinity,
-                    repeatDelay: 2,
-                    times: [0, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4, 0.7, 0.75, 1],
-                  }}
-                />
-
-                {/* Shimmering gold effect */}
-                <motion.div
-                  className='absolute inset-0 bg-gradient-to-r from-transparent via-yellow-200/30 to-transparent'
-                  animate={{
-                    x: ['-100%', '100%'],
-                  }}
-                  transition={{
-                    duration: 2.5,
-                    repeat: Infinity,
-                    repeatDelay: 1,
-                    ease: 'linear',
-                  }}
-                />
-
-                {/* Snowflake overlay */}
-                <motion.div
-                  className='absolute inset-0 bg-white/10'
-                  animate={{
-                    opacity: [0.1, 0.2, 0.1],
+                    opacity: [0.2, 0.5, 0.2],
                   }}
                   transition={{
                     duration: 3,
@@ -213,133 +203,84 @@ const BottomHeader = () => {
                   }}
                 />
 
+                {/* Shimmering frost effect */}
+                <motion.div
+                  className='absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent'
+                  animate={{
+                    x: ['-100%', '100%'],
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    repeatDelay: 0.5,
+                    ease: 'linear',
+                  }}
+                />
+
+                {/* Snowflake pattern overlay */}
+                <motion.div
+                  className='absolute inset-0 bg-white/5'
+                  animate={{
+                    opacity: [0.05, 0.15, 0.05],
+                  }}
+                  transition={{
+                    duration: 4,
+                    repeat: Infinity,
+                    ease: 'easeInOut',
+                  }}
+                />
+
                 <motion.span
                   className='relative z-10 flex items-center gap-2'
                   animate={{
-                    textShadow: ['0 0 8px rgba(239, 68, 68, 0.9)', '0 0 15px rgba(16, 185, 129, 0.9)', '0 0 8px rgba(239, 68, 68, 0.9)'],
+                    textShadow: [
+                      '0 0 10px rgba(2, 132, 199, 0.8)',
+                      '0 0 20px rgba(56, 189, 248, 0.9)',
+                      '0 0 10px rgba(2, 132, 199, 0.8)',
+                    ],
                   }}
                   transition={{
-                    duration: 2,
+                    duration: 2.5,
                     repeat: Infinity,
                     ease: 'easeInOut',
                   }}
                 >
-                  Donate
+                  ❄️ Donate
                 </motion.span>
               </motion.div>
 
               {/* Falling snowflakes */}
-              <motion.div
-                className='absolute -top-2 left-6 w-1.5 h-1.5 bg-white rounded-full shadow-lg'
-                animate={{
-                  y: [0, 40, 40],
-                  x: [0, 3, -3],
-                  opacity: [1, 1, 0],
-                  rotate: [0, 180, 360],
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  delay: 0,
-                }}
-              />
-
-              <motion.div
-                className='absolute -top-2 right-8 w-1 h-1 bg-red-300 rounded-full shadow-lg'
-                animate={{
-                  y: [0, 35, 35],
-                  x: [0, -4, 4],
-                  opacity: [1, 1, 0],
-                  rotate: [0, -180, -360],
-                }}
-                transition={{
-                  duration: 2.5,
-                  repeat: Infinity,
-                  delay: 0.5,
-                }}
-              />
-
-              <motion.div
-                className='absolute -top-1 left-12 w-1 h-1 bg-emerald-300 rounded-full shadow-lg'
-                animate={{
-                  y: [0, 30, 30],
-                  x: [0, 5, -2],
-                  opacity: [1, 1, 0],
-                  rotate: [0, 270, 540],
-                }}
-                transition={{
-                  duration: 4,
-                  repeat: Infinity,
-                  delay: 1,
-                }}
-              />
-
-              <motion.div
-                className='absolute -top-3 right-4 w-1.5 h-1.5 bg-yellow-200 rounded-full shadow-lg'
-                animate={{
-                  y: [0, 38, 38],
-                  x: [0, -2, 3],
-                  opacity: [1, 1, 0],
-                  rotate: [0, 360, 720],
-                  scale: [1, 0.8, 1],
-                }}
-                transition={{
-                  duration: 3.5,
-                  repeat: Infinity,
-                  delay: 1.5,
-                }}
-              />
-
-              {/* Christmas lights sparkles */}
-              <motion.div
-                className='absolute top-1/2 -left-1 w-2 h-2 bg-red-500 rounded-full blur-sm'
-                animate={{
-                  scale: [0, 1.2, 0],
-                  opacity: [0, 1, 0],
-                }}
-                transition={{
-                  duration: 1.5,
-                  repeat: Infinity,
-                  delay: 0,
-                }}
-              />
-
-              <motion.div
-                className='absolute top-1/2 -right-1 w-2 h-2 bg-green-500 rounded-full blur-sm'
-                animate={{
-                  scale: [0, 1.2, 0],
-                  opacity: [0, 1, 0],
-                }}
-                transition={{
-                  duration: 1.5,
-                  repeat: Infinity,
-                  delay: 0.75,
-                }}
-              />
             </MotionLink>
           </div>
         </div>
       </div>
 
-      {/* Active Campaign Banner */}
-      {isActiveCampaign && (
-        <div onClick={handleCampaignClick} className='max-w-screen-2xl mx-auto w-full cursor-pointer'>
+      {/* ACTIVE Banner */}
+      {isActiveAuction && (
+        <div
+          onClick={handleAuctionClick}
+          className='max-w-screen-2xl mx-auto w-full cursor-pointer'
+        >
           <div className='bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 animate-gradient-x h-7 flex items-center justify-center px-3 sm:px-6 rounded-b-2xl'>
             <div className='flex items-center justify-center w-full'>
               {/* Mobile Layout */}
               <div className='flex sm:hidden items-center gap-2'>
                 <div className='w-2.5 h-2.5 bg-white rounded-full animate-pulse'></div>
-                <span className='text-white font-bold text-sm'>🔥 {campaign?.title} LIVE!</span>
+                <span className='text-white font-bold text-sm'>🔥 {auction?.title} LIVE!</span>
               </div>
 
               {/* Desktop Layout */}
               <div className='hidden sm:flex items-center gap-3'>
                 <div className='flex items-center gap-2'>
                   <div className='w-3 h-3 bg-white rounded-full animate-pulse'></div>
-                  <span className='text-white font-bold text-lg'>🔥 {campaign?.title} is LIVE!</span>
+                  <span className='text-white font-bold text-lg'>🔥 {auction?.title} is LIVE!</span>
                 </div>
                 <div className='text-white/90 text-sm font-medium'>
-                  {!user?._id ? 'Join now to bid →' : user?._id && !user?.hasAddress ? 'Click to enter address →' : 'Click to join the auction →'}
+                  {!user?._id
+                    ? 'Join now to bid →'
+                    : user?._id && !user?.hasAddress
+                    ? 'Click to enter address →'
+                    : 'Click to join the auction →'}
                 </div>
               </div>
             </div>
@@ -347,8 +288,11 @@ const BottomHeader = () => {
         </div>
       )}
 
-      {isUpcomingCampaign && (
-        <div onClick={handleCampaignClick} className='max-w-screen-2xl mx-auto w-full cursor-pointer'>
+      {isUpcomingAuction && (
+        <div
+          onClick={handleAuctionClick}
+          className='max-w-screen-2xl mx-auto w-full cursor-pointer'
+        >
           <div className='bg-gradient-to-r from-blue-600 via-cyan-500 to-teal-400 animate-gradient-x h-7 flex items-center justify-center px-3 sm:px-6 rounded-b-2xl'>
             <div className='flex items-center justify-center w-full'>
               {/* Mobile Layout */}
@@ -361,10 +305,16 @@ const BottomHeader = () => {
               <div className='hidden sm:flex items-center gap-3'>
                 <div className='flex items-center gap-2'>
                   <div className='w-3 h-3 bg-white rounded-full animate-bounce'></div>
-                  <span className='text-white font-bold text-lg'>⏰ {campaign?.title} Coming Soon!</span>
+                  <span className='text-white font-bold text-lg'>
+                    ⏰ {auction?.title} Coming Soon!
+                  </span>
                 </div>
                 <div className='text-white/90 text-sm font-medium'>
-                  {!user?._id ? 'Sign up to participate →' : user?._id && !user?.hasAddress ? 'Complete address to participate →' : 'Get Ready! →'}
+                  {!user?._id
+                    ? 'Sign up to participate →'
+                    : user?._id && !user?.hasAddress
+                    ? 'Complete address to participate →'
+                    : 'Get Ready! →'}
                 </div>
               </div>
             </div>

@@ -47,16 +47,12 @@ const formInitialState = {
     inputs: {},
     errors: {},
   },
-  campaignAuctionForm: {
+  auctionForm: {
     inputs: {},
     errors: {},
   },
-  auctionItemCreateForm: {
+  auctionItemForm: {
     inputs: { requiresShipping: true, sellingFormat: 'auction' },
-    errors: {},
-  },
-  auctionItemUpdateForm: {
-    inputs: {},
     errors: {},
   },
   adddressForm: {
@@ -64,6 +60,10 @@ const formInitialState = {
     errors: {},
   },
   userForm: {
+    inputs: {},
+    errors: {},
+  },
+  donationForm: {
     inputs: {},
     errors: {},
   },
@@ -128,12 +128,18 @@ const formSlice = createSlice({
         },
       };
     },
-    handleSelect: (state, { payload }: PayloadAction<{ formName: string; name: string; value: string }>) => {
+    handleSelect: (
+      state,
+      { payload }: PayloadAction<{ formName: string; name: string; value: string }>
+    ) => {
       const { formName, name, value } = payload;
       if (!state[formName]) return;
       state[formName].inputs[name] = value;
     },
-    handleToggle: (state, { payload }: PayloadAction<{ formName: string; name: string; checked: boolean }>) => {
+    handleToggle: (
+      state,
+      { payload }: PayloadAction<{ formName: string; name: string; checked: boolean }>
+    ) => {
       const { formName, name, checked } = payload;
       const form = state[formName];
 
@@ -148,7 +154,14 @@ const formSlice = createSlice({
         },
       };
     },
-    handleFileUpload: (state, action: PayloadAction<{ formName: string; imageUrl: string | ArrayBuffer | null; file: File | null }>) => {
+    handleFileUpload: (
+      state,
+      action: PayloadAction<{
+        formName: string;
+        imageUrl: string | ArrayBuffer | null;
+        file: File | null;
+      }>
+    ) => {
       const { formName, imageUrl, file } = action.payload;
       state[formName] = {
         ...state[formName],
@@ -159,7 +172,14 @@ const formSlice = createSlice({
         },
       };
     },
-    handleVideoUpload: (state, action: PayloadAction<{ formName: string; videoUrl: string | ArrayBuffer | null; videoFile: File | null }>) => {
+    handleVideoUpload: (
+      state,
+      action: PayloadAction<{
+        formName: string;
+        videoUrl: string | ArrayBuffer | null;
+        videoFile: File | null;
+      }>
+    ) => {
       const { formName, videoUrl, videoFile } = action.payload;
       state[formName] = {
         ...state[formName],
@@ -199,16 +219,33 @@ export const createFormActions = (formName: string, dispatch: any) => ({
   setInputs: (data: any) => dispatch(formSlice.actions.setInputs({ formName, data })),
   clearInputs: () => dispatch(formSlice.actions.clearInputs({ formName })),
   setErrors: (errors: Errors) => dispatch(formSlice.actions.setErrors({ formName, errors })),
-  setSubmitted: (submitted: boolean) => dispatch(formSlice.actions.setSubmitted({ formName, submitted })),
-  handleInput: (e: any) => dispatch(formSlice.actions.handleInput({ formName, name: e.target.name, value: e.target.value })),
-  handleSelect: (e: any) => dispatch(formSlice.actions.handleSelect({ formName, name: e.target.name, value: e.target.value })),
-  handleToggle: (e: any) => dispatch(formSlice.actions.handleToggle({ formName, name: e.target.name, checked: e.target.checked })),
+  setSubmitted: (submitted: boolean) =>
+    dispatch(formSlice.actions.setSubmitted({ formName, submitted })),
+  handleInput: (e: any) =>
+    dispatch(
+      formSlice.actions.handleInput({ formName, name: e.target.name, value: e.target.value })
+    ),
+  handleSelect: (e: any) =>
+    dispatch(
+      formSlice.actions.handleSelect({ formName, name: e.target.name, value: e.target.value })
+    ),
+  handleToggle: (e: any) =>
+    dispatch(
+      formSlice.actions.handleToggle({ formName, name: e.target.name, checked: e.target.checked })
+    ),
   handleFileChange: (event: ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
-    if (files && files[0] && files[0].type.startsWith('image/') && !files[0].type.startsWith('image/heic')) {
+    if (
+      files &&
+      files[0] &&
+      files[0].type.startsWith('image/') &&
+      !files[0].type.startsWith('image/heic')
+    ) {
       const reader = new FileReader();
       reader.onload = () => {
-        dispatch(formSlice.actions.handleFileUpload({ formName, imageUrl: reader.result, file: files[0] }));
+        dispatch(
+          formSlice.actions.handleFileUpload({ formName, imageUrl: reader.result, file: files[0] })
+        );
       };
       reader.readAsDataURL(files[0]);
     }
@@ -218,17 +255,30 @@ export const createFormActions = (formName: string, dispatch: any) => ({
     if (files && files[0] && files[0].type.startsWith('video/')) {
       const reader = new FileReader();
       reader.onload = () => {
-        dispatch(formSlice.actions.handleVideoUpload({ formName, videoUrl: reader.result, videoFile: files[0] }));
+        dispatch(
+          formSlice.actions.handleVideoUpload({
+            formName,
+            videoUrl: reader.result,
+            videoFile: files[0],
+          })
+        );
       };
       reader.readAsDataURL(files[0]);
     }
   },
   handleFileDrop: (event: React.DragEvent<HTMLDivElement>) => {
     const files = event.dataTransfer.files;
-    if (files && files[0] && files[0].type.startsWith('image/') && !files[0].type.startsWith('image/heic')) {
+    if (
+      files &&
+      files[0] &&
+      files[0].type.startsWith('image/') &&
+      !files[0].type.startsWith('image/heic')
+    ) {
       const reader = new FileReader();
       reader.onload = () => {
-        dispatch(formSlice.actions.handleFileUpload({ formName, imageUrl: reader.result, file: files[0] }));
+        dispatch(
+          formSlice.actions.handleFileUpload({ formName, imageUrl: reader.result, file: files[0] })
+        );
       };
       reader.readAsDataURL(files[0]);
     }
@@ -239,15 +289,24 @@ export const createFormActions = (formName: string, dispatch: any) => ({
     if (files && files[0] && files[0].type.startsWith('video/')) {
       const reader = new FileReader();
       reader.onload = () => {
-        dispatch(formSlice.actions.handleVideoUpload({ formName, videoUrl: reader.result, videoFile: files[0] }));
+        dispatch(
+          formSlice.actions.handleVideoUpload({
+            formName,
+            videoUrl: reader.result,
+            videoFile: files[0],
+          })
+        );
       };
       reader.readAsDataURL(files[0]);
     }
   },
   handleUploadProgress: (progress: any) => dispatch(formSlice.actions.setUploadProgress(progress)),
-  setPasswordStrength: (password: string) => dispatch(formSlice.actions.setPasswordStrength(calculatePasswordStrength(password))),
-  setShowPassword: (showPassword: boolean) => dispatch(formSlice.actions.setShowPassword(showPassword)),
+  setPasswordStrength: (password: string) =>
+    dispatch(formSlice.actions.setPasswordStrength(calculatePasswordStrength(password))),
+  setShowPassword: (showPassword: boolean) =>
+    dispatch(formSlice.actions.setShowPassword(showPassword)),
 });
 
-export const { resetForm, setIsCreating, setIsNotCreating, setInputs, clearInputs, clearErrors } = formSlice.actions;
+export const { resetForm, setIsCreating, setIsNotCreating, setInputs, clearInputs, clearErrors } =
+  formSlice.actions;
 export const formReducer = formSlice.reducer;

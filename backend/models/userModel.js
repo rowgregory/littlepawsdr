@@ -3,16 +3,26 @@ import bcrypt from 'bcryptjs';
 
 const userSchema = mongoose.Schema(
   {
-    campaigns: [
+    auctions: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Campaign',
+        ref: 'Auction',
       },
     ],
     orders: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Order',
+      },
+    ],
+    addressRef: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Address',
+    },
+    bugs: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Bug',
       },
     ],
     name: {
@@ -43,10 +53,7 @@ const userSchema = mongoose.Schema(
       zipPostalCode: { type: String },
       country: { type: String },
     },
-    addressRef: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Address',
-    },
+
     lastLoginTime: { type: String },
     resetPasswordToken: { type: String },
     resetPasswordExpires: { type: Date },
@@ -73,6 +80,41 @@ const userSchema = mongoose.Schema(
       default: null,
     },
     lastSeenChangelogVersion: { type: String, default: '0.0.0' },
+
+    // Professional Info
+    jobTitle: String,
+    workSchedule: { type: String, enum: ['home', 'part-time', 'full-time', 'retired'] },
+
+    isPublic: { type: Boolean, default: false },
+
+    profileGradient: {
+      type: String,
+      default: 'from-gray-500 to-gray-700',
+    },
+
+    // Dog/Pet Experience
+    yourHome: {
+      homeType: { type: String, enum: ['apartment', 'house', 'farm', 'other'] },
+      yardType: { type: String, enum: ['none', 'small', 'medium', 'large'] },
+      hasYardFence: { type: Boolean, default: false },
+      hasOtherDogs: { type: Boolean, default: false },
+      numberOfDogs: { type: Number, default: 0 },
+      willingToTrain: { type: Boolean, default: true },
+      childrenInHome: { type: Boolean, default: false },
+      childAges: [Number], // e.g., [5, 8, 12]
+    },
+
+    // Dachshund Preferences
+    dachshundPreferences: {
+      preferredSize: { type: String, enum: ['miniature', 'standard', 'no-preference'] },
+      preferredAge: {
+        type: String,
+        enum: ['puppy', 'young-adult', 'adult', 'senior', 'no-preference'],
+      },
+      preferredCoat: [{ type: String, enum: ['smooth', 'wirehaired', 'longhaired'] }],
+      preferredTemperament: [String], // e.g., ['friendly', 'calm', 'playful', 'independent']
+      trainingExperience: { type: Boolean, default: false },
+    },
   },
   {
     timestamps: true,
@@ -83,19 +125,56 @@ userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
-userSchema.pre('save', async function (next) {
+userSchema.pre('save', async function () {
   if (!this.isModified('password')) {
-    return next();
+    return;
   }
 
   try {
     const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt); // ✅ proper await here
-    next(); // ✅ only call next after password is updated
+    this.password = await bcrypt.hash(this.password, salt);
   } catch (error) {
-    next(error); // ✅ pass errors to next
+    throw error;
   }
 });
+
+// Virtuals for all related data
+userSchema.virtual('bids', {
+  ref: 'Bid',
+  localField: '_id',
+  foreignField: 'user',
+  justOne: false,
+});
+
+userSchema.virtual('instantBuys', {
+  ref: 'AuctionItemInstantBuyer',
+  localField: 'email',
+  foreignField: 'email',
+  justOne: false,
+});
+
+userSchema.virtual('winningBids', {
+  ref: 'AuctionWinningBidder',
+  localField: '_id',
+  foreignField: 'user',
+  justOne: false,
+});
+
+userSchema.virtual('adoptionFees', {
+  ref: 'AdoptionFee',
+  localField: 'email',
+  foreignField: 'emailAddress',
+  justOne: false,
+});
+
+userSchema.virtual('donations', {
+  ref: 'Donation',
+  localField: 'email',
+  foreignField: 'email',
+  justOne: false,
+});
+
+userSchema.set('toJSON', { virtuals: true });
 
 const User = mongoose.model('User', userSchema);
 

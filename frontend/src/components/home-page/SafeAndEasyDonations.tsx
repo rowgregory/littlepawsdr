@@ -1,12 +1,9 @@
 import { Link } from 'react-router-dom';
-import { useGetWelcomeWienersQuery } from '../../redux/services/welcomeWienerApi';
-import { RootState, useAppSelector } from '../../redux/toolkitStore';
+import { useWelcomeWienerSelector } from '../../redux/toolkitStore';
 import WelcomeWienerCard from './WelcomeWienerCard';
 
 const SafeAndEasyDonations = () => {
-  const welcomeWiener = useAppSelector((state: RootState) => state.welcomeWiener);
-  const welcomeWieners = welcomeWiener.welcomeWieners;
-  useGetWelcomeWienersQuery();
+  const { welcomeWieners } = useWelcomeWienerSelector();
 
   return (
     <div className='px-3'>

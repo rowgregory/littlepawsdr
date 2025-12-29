@@ -19,7 +19,7 @@ export const useTimeUntil = (targetDate: string) => {
       const hours = Math.floor((totalMinutes % (60 * 24)) / 60);
       const minutes = totalMinutes % 60;
 
-      const parts = [];
+      const parts: string[] = [];
       if (days > 0) parts.push(`${days} day${days !== 1 ? 's' : ''}`);
       if (hours > 0) parts.push(`${hours} hour${hours !== 1 ? 's' : ''}`);
       if (minutes > 0) parts.push(`${minutes} minute${minutes !== 1 ? 's' : ''}`);

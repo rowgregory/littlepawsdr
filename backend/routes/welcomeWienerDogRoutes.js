@@ -3,14 +3,13 @@ import {
   getAllWelcomeWienerDogs,
   getWelcomeWienerDogById,
   createWelcomeWienerDog,
-  updateWelcomeWienerDog,
   deleteWelcomeWienerDog,
   toggleWelcomeWienerDog,
 } from '../controllers/welcomeWienerDogController.js';
 const router = express.Router();
 
 import { protect, admin } from '../middleware/authMiddleware.js';
-
+import updateWelcomeWienerDog from '../controllers/welcome-wiener/update/route.js';
 
 // GET all welcomeWienerDogs
 router.get('/', getAllWelcomeWienerDogs);

@@ -4,7 +4,7 @@ import imageCompression from 'browser-image-compression';
 
 import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 
-const uploadFileToFirebase = async (file?: File, isCampaign?: boolean) => {
+const uploadFileToFirebase = async (file?: File, isAuction?: boolean) => {
   const options = {
     maxSizeMb: 0.1,
     maxWidthOrHeight: 600,
@@ -32,7 +32,7 @@ const uploadFileToFirebase = async (file?: File, isCampaign?: boolean) => {
     const snapshot = await uploadBytes(storageRef, compressedFile);
     const downloadURL = await getDownloadURL(snapshot.ref);
 
-    return isCampaign
+    return isAuction
       ? {
           url: downloadURL,
           name: snapshot.metadata.name,
@@ -40,14 +40,13 @@ const uploadFileToFirebase = async (file?: File, isCampaign?: boolean) => {
         }
       : downloadURL;
   } catch (error) {
-    console.error('Error uploading file:', error);
     return null;
   }
 };
 
-const uploadMultipleFilesToFirebase = async (files: FileList | File[], isCampaign?: boolean) => {
+const uploadMultipleFilesToFirebase = async (files: FileList | File[], isAuction?: boolean) => {
   const downloadURLs = await Promise.all(
-    Array.from(files).map((file) => uploadFileToFirebase(file, isCampaign))
+    Array.from(files).map((file) => uploadFileToFirebase(file, isAuction))
   );
   return downloadURLs;
 };

@@ -1,5 +1,4 @@
 import { Reducer, createSlice } from '@reduxjs/toolkit';
-import { authApi } from '../../services/authApi';
 
 interface AuthStatePayload {
   loading: boolean;
@@ -32,44 +31,12 @@ export const authSlice = createSlice({
     hydrateAuthState: (state, { payload }) => {
       state.isAuthenticated = payload.isAuthenticated;
     },
-  },
-  extraReducers: (builder) => {
-    builder
-      .addMatcher(authApi.endpoints.login.matchFulfilled, (state: any, { payload }: any) => {
-        state.isAuthenticated = true;
-      })
-      .addMatcher(authApi.endpoints.register.matchFulfilled, (state: any, { payload }: any) => {
-        state.isAuthenticated = payload.isAuthenticated;
-      })
-      .addMatcher(authApi.endpoints.forgotPasswordEmail.matchFulfilled, (state: any, { payload }: any) => {
-        state.message = payload.message;
-      })
-      .addMatcher(authApi.endpoints.validateForgotPasswordToken.matchFulfilled, (state: any, { payload }: any) => {
-        state.message = payload.message;
-        state.tokenIsValid = payload.tokenIsValid;
-      })
-      .addMatcher(authApi.endpoints.resetPassword.matchFulfilled, (state: any, { payload }: any) => {
-        state.message = payload.message;
-        state.success = payload.success;
-        state.tokenIsValid = payload.tokenIsValid;
-      })
-      .addMatcher(authApi.endpoints.logout.matchFulfilled, (state: any, { payload }: any) => {
-        state.message = payload.message;
-      })
-      .addMatcher(authApi.endpoints.updatePassword.matchFulfilled, (state, { payload }: any) => {
-        state.message = payload.message;
-        state.updateSuccess = payload.updateSuccess;
-      })
-      .addMatcher(
-        (action: any) => action.type.endsWith('/rejected') && action.payload?.data?.sliceName === 'authApi',
-        (state: any, action: any) => {
-          state.loading = false;
-          state.error = action.payload.data.message;
-        }
-      );
+    flushAuthState: (state) => {
+      state.isAuthenticated = false;
+    },
   },
 });
 
 export const authReducer = authSlice.reducer as Reducer<AuthStatePayload>;
 
-export const { resetAuthError, hydrateAuthState } = authSlice.actions;
+export const { resetAuthError, hydrateAuthState, flushAuthState } = authSlice.actions;

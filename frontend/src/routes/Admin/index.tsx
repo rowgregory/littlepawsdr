@@ -1,39 +1,60 @@
 import { lazy } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
+import RequireAdmin from '../../lib/utils/auth/RequireAdmin';
 import Dashboard from './Dashboard';
-import OneTimeDonations from './OneTimeDonations';
-import DashboardLayout from '../../components/layouts/DashboardLayout';
+import AdminLayout from './layout';
 import { LazyModulePromise } from '../../types/common-types';
-import RequireAdmin from '../../components/auth/RequireAdmin';
-import { useFetchDashboardDataQuery } from '../../redux/services/dashboardApi';
 import Orders from './Orders';
 import Changelog from './Changelog';
 import { ChangelogModal } from '../../components/modals/ChangelogModal';
+import AdminMobileNavigationDrawer from '../../components/drawers/AdminMobileNavigationDrawer';
+import AuctionItemDrawer from '../../components/drawers/AuctionItemDrawer';
+import Users from './Users';
+import UserDrawer from '../../components/drawers/UserDrawer';
+import Store from './Store';
+import AdminBugs from './Bugs';
+import BugDrawer from '../../components/drawers/BugDrawer';
+import WelcomeWienerDrawer from '../../components/drawers/WelcomeWienerDrawer';
+import ProductDrawer from '../../components/drawers/ProductDrawer';
+import EcardDrawer from '../../components/drawers/EcardDrawer';
+import Donations from './Donations';
+import OrderDrawer from '../../components/drawers/OrderDrawer';
+import AuctionItemBidsDrawer from '../../components/drawers/AuctionItemBidsDrawer';
+import AdminNewsletterIssues from './AdminNewsletterIssues';
 
-const Campaigns = lazy((): LazyModulePromise => import('./Campaigns'));
-const Contacts = lazy((): LazyModulePromise => import('./Contacts'));
-const Store = lazy((): LazyModulePromise => import('./Store'));
+const Auctions = lazy((): LazyModulePromise => import('./Auction'));
 const AdoptionApplication = lazy((): LazyModulePromise => import('./AdoptionApplication'));
 
 const AdminRoutes = () => {
-  const { data } = useFetchDashboardDataQuery();
-
   return (
     <RequireAdmin>
+      {/* Drawers */}
+      <AdminMobileNavigationDrawer />
+      <AuctionItemBidsDrawer />
+      <AuctionItemDrawer />
+      <BugDrawer />
       <ChangelogModal />
-      <DashboardLayout>
+      <EcardDrawer />
+      <OrderDrawer />
+      <ProductDrawer />
+      <UserDrawer />
+      <WelcomeWienerDrawer />
+
+      <AdminLayout>
         <Routes>
-          <Route path='/' element={<Dashboard data={data} />} />
-          <Route path='campaigns/*' element={<Campaigns />} />
-          <Route path='contacts/*' element={<Contacts />} />
-          <Route path='one-time-donations' element={<OneTimeDonations />} />
-          <Route path='store/*' element={<Store />} />
+          <Route path='dashboard' element={<Dashboard />} />
+          <Route path='users' element={<Users />} />
+          <Route path='store' element={<Store />} />
+          <Route path='donations' element={<Donations />} />
           <Route path='orders' element={<Orders />} />
-          <Route path='adoption-application/*' element={<AdoptionApplication />} />
+          <Route path='bugs' element={<AdminBugs />} />
           <Route path='changelog' element={<Changelog />} />
+          <Route path='auctions/*' element={<Auctions />} />
+          <Route path='adoption-application/*' element={<AdoptionApplication />} />
+          <Route path='newsletters' element={<AdminNewsletterIssues />} />
           <Route path='*' element={<Navigate to='/404' replace />} />
         </Routes>
-      </DashboardLayout>
+      </AdminLayout>
     </RequireAdmin>
   );
 };

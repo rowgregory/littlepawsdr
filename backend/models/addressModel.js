@@ -1,9 +1,10 @@
 import mongoose, { Schema } from 'mongoose';
 
-const AddressSchema = new Schema(
+export const AddressSchema = new Schema(
   {
     name: { type: String },
     address: { type: String },
+    addressLine2: { type: String },
     city: { type: String },
     state: { type: String },
     zipPostalCode: { type: String },

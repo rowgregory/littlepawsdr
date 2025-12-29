@@ -9,12 +9,7 @@ interface ForceLogoutError {
 
 const baseQuery = fetchBaseQuery({
   baseUrl: '/api',
-  credentials: 'include', // 👈 this is critical for sending cookies!
-  prepareHeaders: (headers) => {
-    // You can still set content type if needed
-    (headers as Headers).set('Content-Type', 'application/json');
-    return headers;
-  },
+  credentials: 'include',
 });
 
 // Enhanced base query with force logout handling
@@ -43,21 +38,22 @@ export const api = createApi({
   reducerPath: 'splitApi',
   baseQuery: baseQueryWithRetry,
   tagTypes: [
+    'Adoption-Application-Fee',
+    'Auction',
     'Auth',
+    'Cart',
+    'Dachshund',
     'Dashboard',
+    'Merch-And-Ecards',
+    'Newsletter-Email',
+    'Newsletter-Issue',
     'Order',
-    'Welcome-Wiener',
-    'Welcome-Wiener-Product',
     'Product',
     'User',
-    'Newsletter-Email',
-    'Cart',
-    'Campaign',
-    'Auction-Item',
-    'Auction',
-    'Adoption-Application-Fee',
-    'Dachshund',
-    'Merch-And-Ecards',
+    'Welcome-Wiener',
+    'Welcome-Wiener-Product',
+    'Bug',
+    'Public',
   ],
   endpoints: () => ({}),
 }) as any;

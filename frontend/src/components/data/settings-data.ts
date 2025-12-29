@@ -1,7 +1,7 @@
 const navbarLinks = [
   {
     textKey: 'Profile',
-    linkKey: '/settings/profile',
+    linkKey: '/supporter/profile',
     urlKey: 'profile',
   },
   {
@@ -10,9 +10,9 @@ const navbarLinks = [
     urlKey: 'security',
   },
   {
-    textKey: 'Campaign',
-    linkKey: '/settings/campaign/settings',
-    urlKey: 'campaign',
+    textKey: 'Auction',
+    linkKey: '/settings/auction/settings',
+    urlKey: 'auction',
   },
   {
     textKey: 'Digital goods & merch',
@@ -21,25 +21,25 @@ const navbarLinks = [
   },
 ];
 
-const campaignLinks = [
+const auctionLinks = [
   {
     textKey: 'Settings',
-    linkKey: '/settings/campaign/settings',
+    linkKey: '/settings/auction/settings',
     urlKey: 'settings',
   },
   {
     textKey: 'Bids',
-    linkKey: '/settings/campaign/bids',
+    linkKey: '/settings/auction/bids',
     urlKey: 'bids',
   },
   {
     textKey: 'Winning Bids',
-    linkKey: '/settings/campaign/winning-bids',
+    linkKey: '/settings/auction/winning-bids',
     urlKey: 'winning-bids',
   },
   {
     textKey: ' Instant Buys',
-    linkKey: '/settings/campaign/instant-buys',
+    linkKey: '/settings/auction/instant-buys',
     urlKey: 'instant-buys',
   },
 ];
@@ -62,4 +62,4 @@ const digitalGoodsAndMerchLinks = [
   },
 ];
 
-export { navbarLinks, campaignLinks, digitalGoodsAndMerchLinks };
+export { navbarLinks, auctionLinks, digitalGoodsAndMerchLinks };

@@ -2,18 +2,30 @@ import { Link, useParams } from 'react-router-dom';
 import { Package, Settings, Shield, User } from 'lucide-react';
 
 const tabs = (params: any) => [
-  { id: 'profile', label: 'Profile', icon: User, linkKey: '/settings/profile', active: params['*'] === 'profile' },
-  { id: 'security', label: 'Security', icon: Shield, linkKey: '/settings/security', active: params['*'] === 'security' },
   {
-    id: 'campaign',
-    label: 'Campaign',
+    id: 'profile',
+    label: 'Profile',
+    icon: User,
+    linkKey: '/supporter/profile',
+    active: params['*'] === 'profile',
+  },
+  {
+    id: 'security',
+    label: 'Security',
+    icon: Shield,
+    linkKey: '/settings/security',
+    active: params['*'] === 'security',
+  },
+  {
+    id: 'auction',
+    label: 'Auction',
     icon: Settings,
-    linkKey: '/settings/campaign/settings',
+    linkKey: '/settings/auction/settings',
     active:
-      params['*'] === 'campaign/settings' ||
-      params['*'] === 'campaign/bids' ||
-      params['*'] === 'campaign/winning-bids' ||
-      params['*'] === 'campaign/instant-buys',
+      params['*'] === 'auction/settings' ||
+      params['*'] === 'auction/bids' ||
+      params['*'] === 'auction/winning-bids' ||
+      params['*'] === 'auction/instant-buys',
   },
   {
     id: 'purchases',
@@ -40,7 +52,9 @@ const SettingsNavbar = () => {
               to={tab.linkKey}
               key={tab.id}
               className={`flex items-center space-x-3 px-8 py-4 font-medium transition-all duration-200 border-b-2 whitespace-nowrap ${
-                tab.active ? 'text-teal-600 border-teal-600 bg-teal-50' : 'text-gray-600 border-transparent hover:text-gray-900 hover:bg-gray-50'
+                tab.active
+                  ? 'text-teal-600 border-teal-600 bg-teal-50'
+                  : 'text-gray-600 border-transparent hover:text-gray-900 hover:bg-gray-50'
               }`}
             >
               <Icon className='w-5 h-5' />

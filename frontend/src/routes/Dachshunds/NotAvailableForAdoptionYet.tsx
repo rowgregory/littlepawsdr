@@ -1,4 +1,4 @@
-import DachshundCard from '../../components/DachshundCard';
+import DachshundCard from '../../components/dachshund/DachshundCard';
 import { RootState, useAppSelector } from '../../redux/toolkitStore';
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
@@ -19,17 +19,19 @@ const NotAvailableForAdoptionYet = () => {
       <PageBanner imgSrc={NotAvailableYet} title='Not Available For Adoption Yet' />
       <div className='max-w-screen-lg w-full mx-auto mt-12 px-3 mb-32'>
         <h1 className='font-matter-medium text-4xl text-teal-400 text-center mb-24'>
-          In addition to our Dog&apos;s Available for Adoption page we&apos;re also sharing our dogs in foster homes being evaluated for future
-          adoptions.
+          In addition to our Dog&apos;s Available for Adoption page we&apos;re also sharing our dogs
+          in foster homes being evaluated for future adoptions.
         </h1>
         <div className='grid grid-cols-12 gap-y-10 md:gap-10 items-center mb-24 w-full'>
           <div className='col-span-12 md:col-span-5 flex flex-col gap-y-5'>
             <h2 className='font-matter-bold text-3xl text-center'>
-              These dogs are at different stages of the evaluation process. They are all safe, happy, and well cared for in their foster homes.
+              These dogs are at different stages of the evaluation process. They are all safe,
+              happy, and well cared for in their foster homes.
             </h2>
             <h4 className='font-matter-regular text-2xl text-center'>
-              We&apos;re providing you with some basic information about each dog. We hope these dogs will be up for adoption soon and we will share
-              additional details as they become available.
+              We&apos;re providing you with some basic information about each dog. We hope these
+              dogs will be up for adoption soon and we will share additional details as they become
+              available.
             </h4>
           </div>
           <img
@@ -39,8 +41,8 @@ const NotAvailableForAdoptionYet = () => {
           />
         </div>
         <h3 className='text-3xl font-matter-bold text-slate-800 text-center mb-10'>
-          Keep an eye on our Available Dogs page for updates on when your desired dog is ready for adoption. We&apos;ll gladly accept your application
-          at that time!
+          Keep an eye on our Available Dogs page for updates on when your desired dog is ready for
+          adoption. We&apos;ll gladly accept your application at that time!
         </h3>
 
         {/* Support Foster Link with animated background */}

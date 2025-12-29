@@ -2,25 +2,45 @@ import { format } from 'date-fns';
 
 function formatDateWithTimezone(dateCreated: any) {
   if (!dateCreated) {
-    return ''; // Return an empty string if dateCreated is undefined or null
+    return '';
   }
 
   const parsedDate = new Date(dateCreated);
 
   if (isNaN(parsedDate.getTime())) {
-    return ''; // Return an empty string if dateCreated is invalid
+    return '';
   }
 
-  return parsedDate.toLocaleDateString('en-US', {
+  // Convert UTC to EST/EDT
+  const estTime = new Date(parsedDate.toLocaleString('en-US', { timeZone: 'America/New_York' }));
+
+  return estTime.toLocaleDateString('en-US', {
     month: 'short',
     day: 'numeric',
     year: 'numeric',
-    hour: 'numeric',
-    minute: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
     hour12: true,
-    timeZone: 'America/New_York',
   });
 }
+
+export const convertESTToUTC = (dateString: string, hour: string) => {
+  const [year, month, day] = dateString.split('-');
+  const utcDate = new Date(
+    Date.UTC(parseInt(year), parseInt(month) - 1, parseInt(day), parseInt(hour), 0, 0)
+  );
+
+  const isDST = isDaylightSavingTime(utcDate);
+  const offset = isDST ? 4 : 5;
+
+  return new Date(utcDate.getTime() + offset * 60 * 60 * 1000);
+};
+
+export const isDaylightSavingTime = (date: Date) => {
+  const standardOffset = new Date(date.getFullYear(), 0, 1).getTimezoneOffset();
+  const currentOffset = date.getTimezoneOffset();
+  return currentOffset < standardOffset;
+};
 
 const getShortMonthAndDay = (dateString: any) => {
   const date = new Date(dateString);
@@ -31,28 +51,23 @@ const getShortMonthAndDay = (dateString: any) => {
 
 const formatDateForCalendar = (date: any) => {
   if (!date) {
-    return; // You could return a default value like the current date here if you prefer
+    return '';
   }
 
-  // Try parsing the date
   const parsedDate = new Date(date);
 
-  // Check if the parsed date is valid
   if (isNaN(parsedDate.getTime())) {
-    // Fallback to the current date in case of an invalid date
     const fallbackDate = new Date();
-
     const year = fallbackDate.getFullYear();
     const month = String(fallbackDate.getMonth() + 1).padStart(2, '0');
     const day = String(fallbackDate.getDate()).padStart(2, '0');
-
     return `${year}-${month}-${day}`;
   }
 
-  // Use UTC methods to avoid timezone issues
-  const year = parsedDate.getUTCFullYear();
-  const month = String(parsedDate.getUTCMonth() + 1).padStart(2, '0');
-  const day = String(parsedDate.getUTCDate()).padStart(2, '0');
+  // Use local methods since date is already in EST
+  const year = parsedDate.getFullYear();
+  const month = String(parsedDate.getMonth() + 1).padStart(2, '0');
+  const day = String(parsedDate.getDate()).padStart(2, '0');
 
   return `${year}-${month}-${day}`;
 };
@@ -85,7 +100,11 @@ const convertToEST = (dateToConvert: any) => {
   return `${formattedDate} ${timeZone}`;
 };
 
-const formatDateWithTime = (dateString: string, time: string = '9:00 AM', timezone: string = 'EST') => {
+const formatDateWithTime = (
+  dateString: string,
+  time: string = '9:00 AM',
+  timezone: string = 'EST'
+) => {
   if (!dateString) return '';
 
   let date;
@@ -125,4 +144,35 @@ const formatDate = (dateString: string) => {
   });
 };
 
-export { formatDateWithTimezone, getShortMonthAndDay, formatDateForCalendar, formatDateForEstTimezone, convertToEST, formatDateWithTime, formatDate };
+// Fixed function to extract date from UTC datetime for form display
+const getDateFromUTC = (utcDateString: string) => {
+  if (!utcDateString) return '';
+
+  // Use Intl.DateTimeFormat to properly format the date in the target timezone
+  const formatter = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'America/New_York',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  });
+
+  const utcDate = new Date(utcDateString);
+  const parts = formatter.formatToParts(utcDate);
+
+  const year = parts.find((p) => p.type === 'year')?.value;
+  const month = parts.find((p) => p.type === 'month')?.value;
+  const day = parts.find((p) => p.type === 'day')?.value;
+
+  return `${year}-${month}-${day}`;
+};
+
+export {
+  formatDateWithTimezone,
+  getShortMonthAndDay,
+  formatDateForCalendar,
+  formatDateForEstTimezone,
+  convertToEST,
+  formatDateWithTime,
+  formatDate,
+  getDateFromUTC,
+};

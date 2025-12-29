@@ -4,7 +4,7 @@ import { RootState, useAppDispatch, useAppSelector } from '../../redux/toolkitSt
 import { createFormActions, setInputs } from '../../redux/features/form/formSlice';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronLeft } from 'lucide-react';
-import { setCloseEcardCreateDrawer } from '../../redux/features/ecard/ecardSlice';
+import { setCloseEcardCreateDrawer } from '../../redux/features/ecardSlice';
 
 const EcardCreateDrawer = () => {
   const dispatch = useAppDispatch();
@@ -52,7 +52,10 @@ const EcardCreateDrawer = () => {
             transition={{ duration: 0.3 }}
             className='min-h-screen fixed w-[500px] z-50 top-0 right-0 bg-white py-3'
           >
-            <button onClick={closeEcardDrawer} className='w-fit px-3.5 py-1.5 gap-x-1 flex items-center'>
+            <button
+              onClick={closeEcardDrawer}
+              className='w-fit px-3.5 py-1.5 gap-x-1 flex items-center'
+            >
               <ChevronLeft className='w-4 h-4' />
               <p className='font-Matter-Regular text-sm mt-0.5'>Back to ecards</p>
             </button>

@@ -1,7 +1,7 @@
 import { Fragment, useState } from 'react';
 import { formatDateWithTimezone } from '../../utils/dateFunctions';
 import { useAppDispatch } from '../../redux/toolkitStore';
-import { sortTable } from '../../redux/features/campaign/campaignSlice';
+import { sortTable } from '../../redux/features/tableSlice';
 
 const BiddersTable = ({ filteredData }: { filteredData: any }) => {
   const dispatch = useAppDispatch();

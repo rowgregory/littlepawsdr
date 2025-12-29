@@ -308,7 +308,7 @@ html(lang="en")
                                 = item.name || 'Auction Item'
                             tr
                               td(style="font-size: 18px; font-weight: 700; color: #059669;")
-                                | $#{item.currentBid || '0.00'}
+                                | $#{item.price || '0.00'}
         else
           .no-items
             p No auction items to display

@@ -1,145 +1,155 @@
-import { useAppDispatch } from '../../redux/toolkitStore';
-import { sortTable } from '../../redux/features/campaign/campaignSlice';
+import { sortTable } from '../../redux/features/tableSlice';
+import { useAppDispatch, useTableSelector } from '../../redux/toolkitStore';
+import { motion } from 'framer-motion';
 
 const InstantBuyersTable = ({ filteredData }: { filteredData: any }) => {
   const dispatch = useAppDispatch();
+  const { sortKey, sortDirection } = useTableSelector();
 
   const handleSort = (key: string) => {
-    dispatch(sortTable({ arrayToSort: filteredData, key }));
+    dispatch(sortTable({ data: filteredData, key }));
   };
 
   return (
-    <table className='w-full'>
-      <thead className='whitespace-nowrap px-4 pb-4 pt-2'>
-        <tr className='bg-zinc-50'>
-          <th
-            onClick={() => handleSort('user.name')}
-            className='px-4 border-b border-gray-100 font-Matter-Regular py-2'
-          >
-            <div className='text-sm flex flex-nowrap items-center gap-2 cursor-pointer -mx-1.5 -my-1 w-fit px-1.5 py-1 rounded-md hover:bg-gray-200'>
-              Name
+    <>
+      {/* Desktop Table */}
+      <div className='hidden lg:block'>
+        {/* Table Header */}
+        <div className='bg-gray-50 border-b border-gray-200'>
+          <div className='grid grid-cols-7 gap-4 px-6 py-3 text-xs font-medium text-gray-700'>
+            <div className='cursor-pointer hover:text-gray-900' onClick={() => handleSort('user.name')}>
+              Name {sortKey === 'user.name' && <span>{sortDirection === 'asc' ? '↑' : '↓'}</span>}
             </div>
-          </th>
-          <th
-            onClick={() => handleSort('user.email')}
-            className='px-4 border-b border-gray-100 font-Matter-Regular py-2'
-          >
-            <div className=' text-sm flex flex-nowrap items-center gap-2 cursor-pointer -mx-1.5 -my-1 w-fit px-1.5 py-1 rounded-md hover:bg-gray-200'>
-              Email
+            <div className='cursor-pointer hover:text-gray-900' onClick={() => handleSort('user.email')}>
+              Email {sortKey === 'user.email' && <span>{sortDirection === 'asc' ? '↑' : '↓'}</span>}
             </div>
-          </th>
-          <th
-            onClick={() => handleSort('auctionItem.name')}
-            className='px-4 border-b border-gray-100 font-Matter-Regular py-2'
-          >
-            <div className=' text-sm flex flex-nowrap items-center gap-2 cursor-pointer -mx-1.5 -my-1 w-fit px-1.5 py-1 rounded-md hover:bg-gray-200'>
-              Item
+            <div className='cursor-pointer hover:text-gray-900' onClick={() => handleSort('auctionItem.name')}>
+              Item {sortKey === 'auctionItem.name' && <span>{sortDirection === 'asc' ? '↑' : '↓'}</span>}
             </div>
-          </th>
-          <th
-            onClick={() => handleSort('auctionItem.name')}
-            className='px-4 border-b border-gray-100 font-Matter-Regular py-2'
-          >
-            <div className=' text-sm flex flex-nowrap items-center gap-2 cursor-pointer -mx-1.5 -my-1 w-fit px-1.5 py-1 rounded-md hover:bg-gray-200'>
-              Price
+            <div className='cursor-pointer hover:text-gray-900' onClick={() => handleSort('totalPrice')}>
+              Price {sortKey === 'totalPrice' && <span>{sortDirection === 'asc' ? '↑' : '↓'}</span>}
             </div>
-          </th>
-          <th
-            onClick={() => handleSort('_id')}
-            className='px-4 border-b border-gray-100 font-Matter-Regular py-2'
-          >
-            <div className=' text-sm flex flex-nowrap items-center gap-2 cursor-pointer -mx-1.5 -my-1 w-fit px-1.5 py-1 rounded-md hover:bg-gray-200'>
-              Instant Buyer Id
+            <div className='cursor-pointer hover:text-gray-900' onClick={() => handleSort('shippingStatus')}>
+              Shipping {sortKey === 'shippingStatus' && <span>{sortDirection === 'asc' ? '↑' : '↓'}</span>}
             </div>
-          </th>
+            <div className='cursor-pointer hover:text-gray-900' onClick={() => handleSort('paymentStatus')}>
+              Payment {sortKey === 'paymentStatus' && <span>{sortDirection === 'asc' ? '↑' : '↓'}</span>}
+            </div>
+            <div>ID</div>
+          </div>
+        </div>
 
-          <th
-            onClick={() => handleSort('_id')}
-            className='px-4 border-b border-gray-100 font-Matter-Regular py-2'
-          >
-            <div className=' text-sm flex flex-nowrap items-center gap-2 cursor-pointer -mx-1.5 -my-1 w-fit px-1.5 py-1 rounded-md hover:bg-gray-200'>
-              Shipping Status
-            </div>
-          </th>
-          <th
-            onClick={() => handleSort('_id')}
-            className='px-4 border-b border-gray-100 font-Matter-Regular py-2'
-          >
-            <div className=' text-sm flex flex-nowrap items-center gap-2 cursor-pointer -mx-1.5 -my-1 w-fit px-1.5 py-1 rounded-md hover:bg-gray-200'>
-              Payment Status
-            </div>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        {filteredData?.map((instantBuyer: any, i: number) => (
-          <tr
-            key={i}
-            className='z-1 h-12 group bg-white [&_td]:focus-within:bg-gray-100 [&_td]:hover:bg-gray-100 relative'
-          >
-            <td>
-              <div className='m-0 p-0 decoration-inherit hover:text-inherit hover:decoration-inherit !flex h-[3] items-center pl-3 whitespace-nowrap'>
-                <div className='max-w-[15rem]'>
-                  <span className='text-sm font-Matter-Regular truncate'>
-                    {instantBuyer?.user?.name}
-                  </span>
-                </div>
+        {/* Table Body */}
+        <div className='divide-y divide-gray-100'>
+          {filteredData?.map((instantBuyer: any, i: number) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.05 }}
+              className='grid grid-cols-7 gap-4 px-6 py-4 hover:bg-gray-50 transition-colors text-sm'
+            >
+              <div className='truncate text-gray-900 font-medium'>{instantBuyer?.user?.name}</div>
+              <div className='truncate text-gray-600'>{instantBuyer?.user?.email}</div>
+              <div className='truncate text-gray-900'>{instantBuyer?.auctionItem?.name}</div>
+              <div className='font-semibold text-gray-900'>${instantBuyer?.totalPrice}</div>
+              <div>
+                <span
+                  className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+                    instantBuyer?.shippingStatus === 'Complete'
+                      ? 'bg-green-50 text-green-700'
+                      : instantBuyer?.shippingStatus === 'Digital'
+                      ? 'bg-blue-50 text-blue-700'
+                      : 'bg-gray-100 text-gray-700'
+                  }`}
+                >
+                  {instantBuyer?.shippingStatus}
+                </span>
               </div>
-            </td>
-            <td>
-              <p className='text-gray-800 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>
-                {instantBuyer?.user?.email}
-              </p>
-            </td>
-            <td>
-              <p
-                className={`text-gray-800 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap`}
-              >
-                {instantBuyer?.auctionItem?.name}
-              </p>
-            </td>
-            <td>
-              <p
-                className={`text-gray-800 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap`}
-              >
-                ${instantBuyer?.totalPrice}
-              </p>
-            </td>
-            <td>
-              <p className='text-gray-800 text-sm font-Matter-Regular items-center px-4 whitespace-nowrap'>
-                {instantBuyer?.user?._id}
-              </p>
-            </td>
-            <td>
+              <div>
+                <span
+                  className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+                    instantBuyer?.paymentStatus === 'Paid'
+                      ? 'bg-green-50 text-green-700'
+                      : instantBuyer?.paymentStatus === 'Pending Fulfillment'
+                      ? 'bg-gray-100 text-gray-700'
+                      : 'bg-blue-50 text-blue-700'
+                  }`}
+                >
+                  {instantBuyer?.paymentStatus}
+                </span>
+              </div>
+              <div className='text-xs text-gray-500 truncate' title={instantBuyer?.user?._id}>
+                {instantBuyer?.user?._id?.slice(0, 8)}...
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+
+      {/* Mobile Cards */}
+      <div className='lg:hidden space-y-3 p-4'>
+        {filteredData?.map((instantBuyer: any, i: number) => (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.05 }}
+            className='bg-gray-50 rounded-lg p-4 space-y-3'
+          >
+            {/* Name and Email */}
+            <div>
+              <p className='font-bold text-gray-900 text-sm'>{instantBuyer?.user?.name}</p>
+              <p className='text-xs text-gray-600 truncate'>{instantBuyer?.user?.email}</p>
+            </div>
+
+            {/* Item and Price */}
+            <div className='grid grid-cols-2 gap-3'>
+              <div>
+                <p className='text-xs text-gray-600 mb-1'>Item</p>
+                <p className='text-sm font-medium text-gray-900 line-clamp-2'>{instantBuyer?.auctionItem?.name}</p>
+              </div>
+              <div>
+                <p className='text-xs text-gray-600 mb-1'>Price</p>
+                <p className='text-sm font-bold text-gray-900'>${instantBuyer?.totalPrice}</p>
+              </div>
+            </div>
+
+            {/* Status Badges */}
+            <div className='flex items-center gap-2'>
               <span
-                className={`${
+                className={`flex-1 inline-flex items-center justify-center px-2 py-1.5 rounded text-xs font-medium ${
                   instantBuyer?.shippingStatus === 'Complete'
-                    ? 'text-green-500 bg-green-100'
+                    ? 'bg-green-50 text-green-700'
                     : instantBuyer?.shippingStatus === 'Digital'
-                    ? 'text-indigo-500 bg-indigo-100'
-                    : 'text-gray-900 bg-gray-100'
-                } px-2 py-1 rounded-3xl text-xs font-Matter-Regular flex items-center justify-center whitespace-nowrap`}
+                    ? 'bg-blue-50 text-blue-700'
+                    : 'bg-gray-100 text-gray-700'
+                }`}
               >
                 {instantBuyer?.shippingStatus}
               </span>
-            </td>
-            <td>
               <span
-                className={`${
-                  instantBuyer.paymentStatus === 'Pending Fulfillment'
-                    ? 'text-gray-900 bg-gray-100'
-                    : instantBuyer.paymentStatus === 'Paid'
-                    ? 'text-green-500 bg-green-100'
-                    : 'text-blue-500 bg-blue-100'
-                } px-2 py-1 rounded-3xl text-xs font-Matter-Regular flex items-center justify-center whitespace-nowrap`}
+                className={`flex-1 inline-flex items-center justify-center px-2 py-1.5 rounded text-xs font-medium ${
+                  instantBuyer?.paymentStatus === 'Paid'
+                    ? 'bg-green-50 text-green-700'
+                    : instantBuyer?.paymentStatus === 'Pending Fulfillment'
+                    ? 'bg-gray-100 text-gray-700'
+                    : 'bg-blue-50 text-blue-700'
+                }`}
               >
                 {instantBuyer?.paymentStatus}
               </span>
-            </td>
-          </tr>
+            </div>
+
+            {/* ID */}
+            <div className='text-xs text-gray-500 border-t border-gray-200 pt-3'>
+              <span className='font-medium'>ID: </span>
+              {instantBuyer?.user?._id?.slice(0, 12)}...
+            </div>
+          </motion.div>
         ))}
-      </tbody>
-    </table>
+      </div>
+    </>
   );
 };
 

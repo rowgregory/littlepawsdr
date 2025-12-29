@@ -4,7 +4,7 @@ const donationSchema = mongoose.Schema(
   {
     firstName: { type: String },
     lastName: { type: String },
-    email: { type: String },
+    email: { type: String, index: true },
     donationAmount: { type: Number },
     payPalId: { type: String },
   },

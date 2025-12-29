@@ -1,8 +1,8 @@
 import asyncHandler from 'express-async-handler';
-import { logEvent, prepareLog } from '../../../utils/logHelpers.js';
 import User from '../../../models/userModel.js';
 import Address from '../../../models/addressModel.js';
 import Error from '../../../models/errorModel.js';
+import Log from '../../../models/logModel.js';
 
 /**
  * @desc    Remove user address
@@ -10,27 +10,20 @@ import Error from '../../../models/errorModel.js';
  * @access  Private
  */
 const removeUserAddress = asyncHandler(async (req, res) => {
-  const log = await prepareLog('REMOVE_USER_ADDRESS');
-
   try {
-    const { id: userId } = req.params;
-
-    logEvent(log, 'REMOVE ADDRESS REQUEST', userId);
+    const { userId } = req.params;
 
     const user = await User.findById(userId);
 
     if (!user) {
-      logEvent(log, 'USER NOT FOUND', userId);
       return res.status(404).json({
         message: 'User not found',
-        sliceName: 'userApi',
       });
     }
 
     // If user has addressRef, also delete the Address document
     if (user.addressRef) {
       await Address.findByIdAndDelete(user.addressRef);
-      logEvent(log, 'ADDRESS DOCUMENT DELETED', user.addressRef);
     }
 
     // Update user to remove address reference and set hasAddress to false
@@ -46,17 +39,30 @@ const removeUserAddress = asyncHandler(async (req, res) => {
         },
       },
       { new: true }
-    ).select('_id name email isAdmin lastLoginTime firstNameFirstInitial lastNameFirstInitial firstName lastName updatedAt hasAddress');
+    ).select(
+      '_id firstName lastName name email firstNameFirstInitial lastNameFirstInitial anonymousBidding hasAddress updatedAt jobTitle isAdmin isPublic yourHome dachshundPreferences workSchedule profileGradient'
+    );
 
-    logEvent(log, 'ADDRESS REMOVED SUCCESSFULLY', userId);
+    // Create log entry
+    await Log.create({
+      journey: `DELETE_USER_ADDRESS_${user.firstName}_${user.lastName}`,
+      events: [
+        {
+          message: 'USER ADDRESS DELETED SUCCESSFULLY',
+          data: {
+            userId: user._id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            createdAt: user.createdAt,
+          },
+        },
+      ],
+    });
 
     res.status(200).json({
       user: updatedUser,
-      sliceName: 'userApi',
     });
   } catch (err) {
-    logEvent(log, 'REMOVE ADDRESS ERROR', err.message);
-
     await Error.create({
       functionName: 'REMOVE_USER_ADDRESS',
       name: err.name,
@@ -66,7 +72,6 @@ const removeUserAddress = asyncHandler(async (req, res) => {
 
     res.status(500).json({
       message: 'Error removing address',
-      sliceName: 'userApi',
     });
   }
 });

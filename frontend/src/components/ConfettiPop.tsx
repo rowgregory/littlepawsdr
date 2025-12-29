@@ -1,5 +1,6 @@
-import React, { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import * as THREE from 'three';
+import { useAuctionSelector } from '../redux/toolkitStore';
 
 interface ParticleData {
   startTime: number;
@@ -18,19 +19,16 @@ interface ParticleData {
   fadeSpeed: number;
 }
 
-interface ConfettiPopProps {
-  trigger?: number;
-  particleCount?: number;
-  duration?: number;
-}
-
-const ConfettiPop: React.FC<ConfettiPopProps> = ({ trigger = 0, particleCount = 100, duration = 3000 }) => {
+const ConfettiPop = () => {
   const mountRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<THREE.Scene | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const animationIdRef = useRef<number | null>(null);
   const particlesRef = useRef<THREE.Mesh[]>([]);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
+  const particleCount = 100;
+  const duration = 3000;
+  const { confettiPop } = useAuctionSelector();
 
   const createConfettiBurst = useCallback(() => {
     if (!sceneRef.current) return;
@@ -48,7 +46,10 @@ const ConfettiPop: React.FC<ConfettiPopProps> = ({ trigger = 0, particleCount = 
     particlesRef.current = [];
 
     // Confetti colors
-    const colors: number[] = [0xff6b6b, 0x4ecdc4, 0x45b7d1, 0xf9ca24, 0xf0932b, 0xeb4d4b, 0x6c5ce7, 0xa29bfe, 0xfd79a8, 0x00b894];
+    const colors: number[] = [
+      0xff6b6b, 0x4ecdc4, 0x45b7d1, 0xf9ca24, 0xf0932b, 0xeb4d4b, 0x6c5ce7, 0xa29bfe, 0xfd79a8,
+      0x00b894,
+    ];
 
     // Create burst particles
     const particles: THREE.Mesh[] = [];
@@ -162,7 +163,12 @@ const ConfettiPop: React.FC<ConfettiPopProps> = ({ trigger = 0, particleCount = 
 
     // Scene setup
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const camera = new THREE.PerspectiveCamera(
+      75,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      1000
+    );
     const renderer = new THREE.WebGLRenderer({ alpha: true });
 
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -215,10 +221,10 @@ const ConfettiPop: React.FC<ConfettiPopProps> = ({ trigger = 0, particleCount = 
 
   // Trigger confetti burst when trigger prop changes
   useEffect(() => {
-    if (trigger > 0) {
+    if (confettiPop) {
       createConfettiBurst();
     }
-  }, [trigger, createConfettiBurst]);
+  }, [confettiPop, createConfettiBurst]);
 
   return (
     <div

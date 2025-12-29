@@ -1,4 +1,14 @@
-import { Eye, EyeOff, HelpCircle, Lock, Shield, User, MapPin, Home, ArrowRight } from 'lucide-react';
+import {
+  Eye,
+  EyeOff,
+  HelpCircle,
+  Lock,
+  Shield,
+  User,
+  MapPin,
+  Home,
+  ArrowRight,
+} from 'lucide-react';
 import { FC, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { AuthInput } from '../ui/AuthInput';
@@ -88,9 +98,9 @@ const RegisterForm: FC<RegisterFormProps> = ({
 }) => {
   const [searchParams] = useSearchParams();
   const [currentStep, setCurrentStep] = useState(1);
-  const customCampaignLink = searchParams.get('customCampaignLink');
-  const hasCustomCampaign = Boolean(customCampaignLink);
-  const totalSteps = hasCustomCampaign ? 2 : 1;
+  const customAuctionLink = searchParams.get('customAuctionLink');
+  const hasCustomAuction = Boolean(customAuctionLink);
+  const totalSteps = hasCustomAuction ? 2 : 1;
 
   const getStrengthColor = () => {
     if (passwordStrength <= 20) return 'bg-red-400';
@@ -123,20 +133,32 @@ const RegisterForm: FC<RegisterFormProps> = ({
   };
 
   const isStep1Valid = () => {
-    const required = ['firstName', 'lastName', 'email', 'confirmEmail', 'securityQuestion', 'securityAnswer', 'password'];
-    return required.every((field) => registerForm?.inputs?.[field] && !registerForm?.errors?.[field]);
+    const required = [
+      'firstName',
+      'lastName',
+      'email',
+      'confirmEmail',
+      'securityQuestion',
+      'securityAnswer',
+      'password',
+    ];
+    return required.every(
+      (field) => registerForm?.inputs?.[field] && !registerForm?.errors?.[field]
+    );
   };
 
   return (
     <div className='space-y-4 sm:space-y-6'>
       {/* Progress Bar (only show if multi-step) */}
-      {hasCustomCampaign && (
+      {hasCustomAuction && (
         <div className='mb-6 sm:mb-8'>
           <div className='flex items-center justify-between mb-2'>
             <span className='text-xs sm:text-sm font-medium text-gray-600'>
               Step {currentStep} of {totalSteps}
             </span>
-            <span className='text-xs sm:text-sm text-gray-500'>{currentStep === 1 ? 'Account Details' : 'Shipping Address'}</span>
+            <span className='text-xs sm:text-sm text-gray-500'>
+              {currentStep === 1 ? 'Account Details' : 'Shipping Address'}
+            </span>
           </div>
           <div className='w-full bg-gray-200 rounded-full h-1.5 sm:h-2'>
             <div
@@ -152,8 +174,12 @@ const RegisterForm: FC<RegisterFormProps> = ({
         {currentStep === 1 && (
           <div className='space-y-3 sm:space-y-4'>
             <div className='text-center mb-4 sm:mb-6'>
-              <h3 className='text-lg sm:text-xl font-bold text-gray-800 mb-1 sm:mb-2'>Create Your Account</h3>
-              <p className='text-sm sm:text-base text-gray-600'>Join the Little Paws family today</p>
+              <h3 className='text-lg sm:text-xl font-bold text-gray-800 mb-1 sm:mb-2'>
+                Create Your Account
+              </h3>
+              <p className='text-sm sm:text-base text-gray-600'>
+                Join the Little Paws family today
+              </p>
             </div>
 
             <AuthInput
@@ -223,7 +249,9 @@ const RegisterForm: FC<RegisterFormProps> = ({
                   value={registerForm?.inputs?.password || ''}
                   onChange={handleInput}
                   className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 pr-10 sm:pr-12 border-2 rounded-xl text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-teal-300 transition-colors ${
-                    registerForm?.errors?.password ? 'border-red-300 bg-red-50' : 'border-gray-200 focus:border-teal-400'
+                    registerForm?.errors?.password
+                      ? 'border-red-300 bg-red-50'
+                      : 'border-gray-200 focus:border-teal-400'
                   }`}
                   placeholder='Create a strong password'
                 />
@@ -232,7 +260,11 @@ const RegisterForm: FC<RegisterFormProps> = ({
                   onClick={() => setShowPassword(!showPassword)}
                   className='absolute right-2 sm:right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-teal-500 transition-colors p-1'
                 >
-                  {showPassword ? <EyeOff className='w-4 h-4 sm:w-5 sm:h-5' /> : <Eye className='w-4 h-4 sm:w-5 sm:h-5' />}
+                  {showPassword ? (
+                    <EyeOff className='w-4 h-4 sm:w-5 sm:h-5' />
+                  ) : (
+                    <Eye className='w-4 h-4 sm:w-5 sm:h-5' />
+                  )}
                 </button>
               </div>
               {registerForm?.inputs?.password && (
@@ -261,17 +293,23 @@ const RegisterForm: FC<RegisterFormProps> = ({
                   </div>
                 </div>
               )}
-              {registerForm?.errors?.password && <p className='text-red-500 text-xs mt-1'>{registerForm?.errors?.password}</p>}
+              {registerForm?.errors?.password && (
+                <p className='text-red-500 text-xs mt-1'>{registerForm?.errors?.password}</p>
+              )}
             </div>
           </div>
         )}
 
-        {/* Step 2: Address Information (only if customCampaignLink exists) */}
-        {currentStep === 2 && hasCustomCampaign && (
+        {/* Step 2: Address Information (only if customAuctionLink exists) */}
+        {currentStep === 2 && hasCustomAuction && (
           <div className='space-y-3 sm:space-y-4'>
             <div className='text-center mb-4 sm:mb-6'>
-              <h3 className='text-lg sm:text-xl font-bold text-gray-800 mb-1 sm:mb-2'>Shipping Address</h3>
-              <p className='text-sm sm:text-base text-gray-600'>Where should we send your auction wins?</p>
+              <h3 className='text-lg sm:text-xl font-bold text-gray-800 mb-1 sm:mb-2'>
+                Shipping Address
+              </h3>
+              <p className='text-sm sm:text-base text-gray-600'>
+                Where should we send your auction wins?
+              </p>
             </div>
             <AuthInput
               label='Street Address *'
@@ -317,7 +355,7 @@ const RegisterForm: FC<RegisterFormProps> = ({
 
         {/* Navigation Buttons */}
         <div className='flex flex-col sm:flex-row gap-2 sm:gap-4 pt-3 sm:pt-4'>
-          {hasCustomCampaign && currentStep > 1 && (
+          {hasCustomAuction && currentStep > 1 && (
             <button
               type='button'
               onClick={handlePrevStep}
@@ -327,7 +365,7 @@ const RegisterForm: FC<RegisterFormProps> = ({
             </button>
           )}
 
-          {hasCustomCampaign && currentStep < totalSteps ? (
+          {hasCustomAuction && currentStep < totalSteps ? (
             <button
               type='button'
               onClick={handleNextStep}
@@ -352,7 +390,9 @@ const RegisterForm: FC<RegisterFormProps> = ({
                   <span className='sm:hidden'>Creating...</span>
                 </div>
               ) : (
-                <div className='flex items-center justify-center gap-1.5 sm:gap-2'>{hasCustomCampaign ? 'Complete' : 'Join Now'}</div>
+                <div className='flex items-center justify-center gap-1.5 sm:gap-2'>
+                  {hasCustomAuction ? 'Complete' : 'Join Now'}
+                </div>
               )}
             </button>
           )}

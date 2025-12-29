@@ -9,7 +9,7 @@ import TopHeaderInfoBox from './TopHeaderInfoBox';
 import { useLocation, useNavigate } from 'react-router-dom';
 import TailwindSpinner from '../Loaders/TailwindSpinner';
 import { validateEmailRegex } from '../../utils/regex';
-import { openToast } from '../../redux/features/toastSlice';
+import { showToast } from '../../redux/features/toastSlice';
 
 const TopHeader = () => {
   const dispatch = useAppDispatch();
@@ -26,17 +26,17 @@ const TopHeader = () => {
 
     const isValid = validateEmailRegex.test(inputs.email);
     if (!isValid) {
-      dispatch(openToast({ message: 'Invalid email', type: 'warning' }));
+      dispatch(showToast({ message: 'Invalid email', type: 'warning' }));
       return;
     }
 
     try {
       await createNewsletterEmail({ email: inputs.email }).unwrap();
 
-      dispatch(openToast({ message: 'Email submitted for newsletter', type: 'success', position: 'tc' }));
+      dispatch(showToast({ message: 'Email submitted for newsletter', type: 'success' }));
       setInputs({});
     } catch (err: any) {
-      dispatch(openToast({ message: 'Error, please try again', type: 'warning', position: 'tc' }));
+      dispatch(showToast({ message: 'Error, please try again', type: 'warning' }));
     }
   };
 

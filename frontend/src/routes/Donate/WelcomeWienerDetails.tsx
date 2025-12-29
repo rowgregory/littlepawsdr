@@ -2,32 +2,31 @@ import { useParams } from 'react-router-dom';
 import { useGetWelcomeWienerQuery } from '../../redux/services/welcomeWienerApi';
 import { useAppDispatch } from '../../redux/toolkitStore';
 import { addToCart, toggleCartDrawer } from '../../redux/features/cart/cartSlice';
-import { Fragment, useState } from 'react';
+import { useState } from 'react';
 import VerticalLogo from '../../components/common/VerticalLogo';
 import { Link } from 'react-router-dom';
 import { WWHigh } from '../../components/assets';
 import PageBanner from '../../components/common/PageBanner';
-import AwesomeIcon from '../../components/common/AwesomeIcon';
-import { chevronLeftIcon } from '../../icons';
+import { ChevronLeft, ShoppingCart } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const WelcomeWienerDetails = () => {
   const dispatch = useAppDispatch();
   const { id } = useParams<{ id: string }>();
   const { data } = useGetWelcomeWienerQuery(id, { refetchOnMountOrArgChange: true });
   const welcomeWiener = data?.welcomeWiener;
-  const [mainPhoto, setMainPhoto] = useState(null);
+  const [mainPhoto, setMainPhoto] = useState<string | null>(null);
 
   const addToCartHandler = (product: any) => {
     const cartItem = {
+      itemType: 'welcomeWiener',
       price: product?.price,
-      productImage: welcomeWiener?.displayUrl,
-      productName: product?.name,
-      productId: product?._id,
+      itemImage: welcomeWiener?.images?.[0] || welcomeWiener?.displayUrl,
+      itemName: product?.name,
+      itemId: product?._id,
       quantity: 1,
       dachshundName: welcomeWiener?.name,
-      productIcon: product?.icon,
       dachshundId: welcomeWiener?._id,
-      from: 'cart',
       isPhysicalProduct: false,
       isWelcomeWiener: true,
       shippingPrice: 0,
@@ -36,94 +35,149 @@ const WelcomeWienerDetails = () => {
     dispatch(toggleCartDrawer(true));
   };
 
+  const currentImage = mainPhoto || welcomeWiener?.images?.[0] || welcomeWiener?.displayUrl;
+  const bioText = welcomeWiener?.bio || '';
+  const bioSentences = bioText.split('.');
+
   return (
-    <Fragment>
+    <>
       <VerticalLogo />
       <PageBanner imgSrc={WWHigh} title={welcomeWiener?.name} />
-      <div className='px-3 pb-12'>
-        <section className='grid grid-cols-12 gap-5 w-full mx-auto max-w-screen-xl px-3 my-12'>
-          <div className='col-span-12 md:col-span-8 lg:col-span-9 pt-1'>
-            <p className='text-4xl mt-24 font-Matter-Medium mb-3 mx-auto'>{welcomeWiener?.bio?.split('.')[0]}</p>
-            <div className='grid grid-cols-12 gap-4'>
-              <p className='col-span-12 md:col-span-8 lg:col-span-9 text-lg font-Matter-Light w-full'>
-                {(welcomeWiener?.bio?.split('.') || []).slice(1).join('.')}
-              </p>
-            </div>
-          </div>
-          <div className='col-span-12 md:col-span-4 lg:col-span-3'>
-            <div className='border-[6px] border-slate-100 flex flex-col justify-between h-fit rounded-md w-full p-4 md:aspect-square md:-mt-24 bg-white sticky top-[65px]'>
-              <div>
-                <p className='font-Matter-Medium text-2xl mb-4'>Make a Difference</p>
-                <p className='font-Matter-Light text-lg mb-5'>Every Donation Matters, Every Dachshund is Meaningful</p>
-              </div>
-              <Link
-                to='/donate'
-                className='w-full text-center rounded-md text-white bg-[#9863a8] font-Museo-Slab-700 py-3 text-2xl hover:no-underline hover:shadow-lg duration-200'
-              >
-                DONATE
-              </Link>
-            </div>
-          </div>
-        </section>
-        <section className='grid grid-cols-12 gap-5 w-full mx-auto max-w-screen-xl px-3 mb-12'>
-          <Link to='/donate/welcome-wieners' className='col-span-12 flex items-center gap-x-3'>
-            <AwesomeIcon icon={chevronLeftIcon} className='w-4 h-4 text-teal-400' /> Back
+
+      <div className='min-h-screen bg-gray-50'>
+        <div className='max-w-6xl mx-auto px-6 py-12'>
+          {/* Back Button */}
+          <Link
+            to='/donate/welcome-wieners'
+            className='inline-flex items-center gap-2 text-teal-600 hover:text-teal-700 font-semibold mb-8 transition-colors'
+          >
+            <ChevronLeft className='w-4 h-4' />
+            Back
           </Link>
-          {welcomeWiener?.images?.length > 1 && (
-            <div className='col-span-12 h-fit sm:col-span-3 md:col-span-2 lg:col-span-1 flex md:flex-col order-2 md:order-1 gap-3'>
-              {welcomeWiener?.images?.map((photo: any, i: number) => (
-                <div
-                  key={i}
-                  className='w-28 md:w-full flex items-center justify-center bg-white aspect-square rounded-md'
-                  onMouseOver={() => setMainPhoto(photo)}
-                >
-                  <img src={photo} alt='Welcome Wiener' className='aspect-square object-cover' />
-                </div>
-              ))}
-            </div>
-          )}
-          <div className='col-span-12 md:col-span-7 order-1 md:order-2'>
-            <div className='bg-gray-100 col-start-3 col-span-10 rounded-md'>
-              <img
-                src={mainPhoto ?? (welcomeWiener?.images?.length ? welcomeWiener?.images[0] : undefined) ?? welcomeWiener?.displayUrl}
-                className='object-cover w-full aspect-square'
-                alt='Welcome Wiener'
-              />
-            </div>
-          </div>
-        </section>
-        <section className='grid grid-cols-12 gap-4 md:gap-7 w-full mx-auto max-w-screen-xl px-3'>
-          {welcomeWiener?.associatedProducts?.map((wiener: any) => (
-            <div
-              className='col-span-12 sm:col-span-6 lg:col-span-4 md:aspect-video border-[0.5px] border-gray-200 p-3.5 rounded-sm flex flex-col fade-in justify-between'
-              key={wiener?._id}
-            >
-              <div className='mb-2'>
-                <div className='flex items-center'>
-                  <div className={`bg-[#f8e2ff] text-sm h-12 w-12 rounded-full flex items-center justify-center font-Matter-Medium mr-3`}>
-                    <p className='text-xl text-[#9863a8]'>${Math.round(wiener?.price)}</p>
-                  </div>
-                  <p className='font-Matter-Light whitespace-nowrap truncate'>
-                    <i className={`${wiener?.icon} mr-2`}></i>
-                    {wiener?.name}
-                  </p>
-                </div>
-                <p className='font-Matter-Regular my-2'>{wiener?.description}</p>
-              </div>
-              <button
-                className='px-4 py-2 text-lg rounded-lg text-[#fff] bg-teal-500 font-Matter-Bold hover:bg-teal-600 duration-200 hover:tracking-wider hover:shadow-lg'
-                onClick={() => addToCartHandler(wiener)}
+
+          {/* Main Content Grid */}
+          <div className='grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16'>
+            {/* Left Section - Bio */}
+            <div className='lg:col-span-2'>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className='mb-12'
               >
-                Add to{' '}
-                <span>
-                  <i className='fa-solid fa-shopping-cart text-white'></i>
-                </span>
-              </button>
+                <h2 className='text-4xl md:text-5xl font-bold text-gray-900 mb-6'>
+                  {bioSentences[0]}
+                </h2>
+                <p className='text-lg text-gray-700 leading-relaxed'>
+                  {bioSentences.slice(1).join('.').trim()}
+                </p>
+              </motion.div>
+
+              {/* Image Gallery */}
+              <div className='bg-white rounded-lg border border-gray-200 overflow-hidden'>
+                <div className='aspect-square bg-gray-100 overflow-hidden'>
+                  <motion.img
+                    key={currentImage}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    src={currentImage}
+                    alt={welcomeWiener?.name}
+                    className='w-full h-full object-cover'
+                  />
+                </div>
+
+                {/* Thumbnail Gallery */}
+                {welcomeWiener?.images && welcomeWiener.images.length > 1 && (
+                  <div className='flex gap-2 p-4 bg-gray-50 overflow-x-auto'>
+                    {welcomeWiener.images.map((photo: string, i: number) => (
+                      <motion.button
+                        key={i}
+                        whileHover={{ scale: 1.05 }}
+                        onClick={() => setMainPhoto(photo)}
+                        className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-colors ${
+                          mainPhoto === photo || (i === 0 && !mainPhoto)
+                            ? 'border-teal-500'
+                            : 'border-gray-300 hover:border-gray-400'
+                        }`}
+                      >
+                        <img
+                          src={photo}
+                          alt={`${welcomeWiener?.name} ${i}`}
+                          className='w-full h-full object-cover'
+                        />
+                      </motion.button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
-          ))}
-        </section>
+
+            {/* Right Section - Donation Card */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className='lg:col-span-1'
+            >
+              <div className='bg-white rounded-lg border border-gray-200 p-8 sticky top-24 h-fit'>
+                <h3 className='text-2xl font-bold text-gray-900 mb-3'>Make a Difference</h3>
+                <p className='text-gray-600 mb-6'>
+                  Every donation directly supports {welcomeWiener?.name}'s needs including food,
+                  bedding, medication, and toys.
+                </p>
+
+                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                  <Link
+                    to='/donate'
+                    className='block w-full text-center px-6 py-3 bg-teal-500 text-white font-semibold rounded-lg hover:bg-teal-600 transition-colors'
+                  >
+                    Donate Now
+                  </Link>
+                </motion.div>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Associated Products */}
+          {welcomeWiener?.associatedProducts && welcomeWiener.associatedProducts.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className='mb-8'
+            >
+              <h3 className='text-3xl font-bold text-gray-900 mb-8'>Support Items</h3>
+              <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+                {welcomeWiener.associatedProducts.map((product: any) => (
+                  <motion.div
+                    key={product._id}
+                    whileHover={{ y: -5 }}
+                    className='bg-white rounded-lg border border-gray-200 p-6 flex flex-col justify-between hover:shadow-lg transition-shadow'
+                  >
+                    <div className='mb-4'>
+                      <div className='flex items-center gap-3 mb-3'>
+                        <div className='w-12 h-12 rounded-full bg-teal-100 flex items-center justify-center text-teal-600 font-bold text-lg'>
+                          ${Math.round(product?.price)}
+                        </div>
+                        <h4 className='font-semibold text-gray-900'>{product?.name}</h4>
+                      </div>
+                      <p className='text-gray-600 text-sm'>{product?.description}</p>
+                    </div>
+
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => addToCartHandler(product)}
+                      className='w-full flex items-center justify-center gap-2 px-4 py-3 bg-teal-500 text-white font-semibold rounded-lg hover:bg-teal-600 transition-colors'
+                    >
+                      <ShoppingCart className='w-4 h-4' />
+                      Add to Cart
+                    </motion.button>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </div>
       </div>
-    </Fragment>
+    </>
   );
 };
 

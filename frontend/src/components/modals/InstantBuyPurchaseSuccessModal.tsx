@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom';
 import { Sparkles, Heart, Gift, ArrowRight, Mail, CheckCircle } from 'lucide-react';
 import { FC } from 'react';
-
 import { motion, AnimatePresence } from 'framer-motion';
 
-const InstantBuyPurchaseSuccessModal: FC<{ instantBuySuccess: boolean }> = ({ instantBuySuccess }) => {
+const InstantBuyPurchaseSuccessModal: FC<{ instantBuySuccess: boolean }> = ({
+  instantBuySuccess,
+}) => {
   return (
     <AnimatePresence>
       {instantBuySuccess && (
@@ -138,7 +139,12 @@ const InstantBuyPurchaseSuccessModal: FC<{ instantBuySuccess: boolean }> = ({ in
               </motion.div>
 
               {/* Celebration Header with Staggered Animation */}
-              <motion.div className='mb-6' initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 1, duration: 0.6 }}>
+              <motion.div
+                className='mb-6'
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 1, duration: 0.6 }}
+              >
                 <motion.h1
                   className='text-4xl md:text-5xl font-black text-white mb-2'
                   animate={{ scale: [1, 1.05, 1] }}
@@ -173,10 +179,13 @@ const InstantBuyPurchaseSuccessModal: FC<{ instantBuySuccess: boolean }> = ({ in
               >
                 <div className='flex items-center justify-center mb-2'>
                   <Heart className='w-5 h-5 text-red-300 mr-2' />
-                  <span className='text-white font-semibold text-sm'>You're helping rescue dachshunds!</span>
+                  <span className='text-white font-semibold text-sm'>
+                    You're helping rescue dachshunds!
+                  </span>
                 </div>
                 <p className='text-white/80 text-sm'>
-                  Your purchase directly supports Little Paws Rescue's mission to save and care for dachshunds in need.
+                  Your purchase directly supports Little Paws Rescue's mission to save and care for
+                  dachshunds in need.
                 </p>
               </motion.div>
 
@@ -191,7 +200,9 @@ const InstantBuyPurchaseSuccessModal: FC<{ instantBuySuccess: boolean }> = ({ in
                   <Mail className='w-4 h-4 text-white/80 mr-2' />
                   <span className='text-white/90 font-medium text-sm'>Confirmation Sent</span>
                 </div>
-                <p className='text-white/70 text-sm'>A payment confirmation has been sent to your email.</p>
+                <p className='text-white/70 text-sm'>
+                  A payment confirmation has been sent to your email.
+                </p>
               </motion.div>
 
               {/* Action Button with Bounce-in */}
@@ -202,7 +213,7 @@ const InstantBuyPurchaseSuccessModal: FC<{ instantBuySuccess: boolean }> = ({ in
                 transition={{ delay: 2, duration: 0.6, type: 'spring' }}
               >
                 <Link
-                  to='/settings/campaign/instant-buys'
+                  to='/supporter/auctions'
                   className='flex-1 bg-white hover:bg-gray-50 text-green-600 font-bold px-6 py-3 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg flex items-center justify-center group hover:no-underline'
                 >
                   <Gift className='w-4 h-4 mr-2 group-hover:animate-bounce' />

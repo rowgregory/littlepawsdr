@@ -1,9 +1,9 @@
 import { Fragment, useState } from 'react';
 import { useGetActionHistoriesQuery } from '../../../redux/services/actionHistoryApi';
 import GreenRotatingTransparentCircle from '../../../components/Loaders/GreenRotatingTransparentCircle';
-import MagnifyingGlass from '../../../components/svg/MagnifyingGlass';
 import { formatDateWithTimezone } from '../../../utils/dateFunctions';
 import Pagination from '../../../components/common/Pagination';
+import { Search } from 'lucide-react';
 
 const ActionHistoryList = () => {
   const [text, setText] = useState('');
@@ -23,7 +23,7 @@ const ActionHistoryList = () => {
       <div className='font-Matter-Medium text-2xl mb-3.5'>Adoption Fee History Log</div>
       <div className='grid grid-cols-12 h-10 justify-between'>
         <div className='col-span-7 md:col-span-6 flex items-center font-Matter-Light border border-grey-200 rounded-md bg-white py-2 px-[16px] '>
-          <MagnifyingGlass />
+          <Search className='w-4 h-4' />
           <input
             onChange={(e: any) => setText(e.target.value)}
             className='w-full h-full focus:outline-0 rounded-md ml-2'
@@ -35,7 +35,7 @@ const ActionHistoryList = () => {
         {noHistory ? (
           <div className='flex flex-col justify-center max-w-48 w-full items-center mx-auto  py-10'>
             <div className='rounded-xl bg-gray-100 h-12 w-12 flex justify-center items-center'>
-              <MagnifyingGlass />
+              <Search className='w-4 h-4' />
             </div>
             <div className='font-Matter-Medium my-2'>You have no history</div>
           </div>

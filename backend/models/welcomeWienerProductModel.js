@@ -2,7 +2,6 @@ import mongoose from 'mongoose';
 
 const welcomeWienerProductSchema = mongoose.Schema(
   {
-    icon: { type: String },
     name: { type: String },
     price: { type: Number },
     description: { type: String },
@@ -10,8 +9,5 @@ const welcomeWienerProductSchema = mongoose.Schema(
   { timestamps: true }
 );
 
-const WelcomeWienerProduct = mongoose.model(
-  'WelcomeWienerProduct',
-  welcomeWienerProductSchema
-);
+const WelcomeWienerProduct = mongoose.model('WelcomeWienerProduct', welcomeWienerProductSchema);
 export default WelcomeWienerProduct;

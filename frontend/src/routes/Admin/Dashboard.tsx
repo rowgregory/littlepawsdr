@@ -18,6 +18,7 @@ import {
 import { Link } from 'react-router-dom';
 import { formatDateWithTimezone } from '../../utils/dateFunctions';
 import CopyClipboardButton from '../../components/admin/dashboard/CopyClipBoardButton';
+import { useFetchDashboardDataQuery } from '../../redux/services/dashboardApi';
 
 const statConfigMap: any = {
   Orders: {
@@ -68,7 +69,8 @@ const getStatusColor = (status: string) => {
   }
 };
 
-const Dashboard = ({ data }: any) => {
+const Dashboard = () => {
+  const { data } = useFetchDashboardDataQuery();
   const dashboardData = data?.data;
   const recentOrders = dashboardData?.recentOrders;
 
@@ -111,18 +113,30 @@ const Dashboard = ({ data }: any) => {
             return (
               <div key={index} className='bg-white rounded-lg border border-gray-200 p-6'>
                 <div className='flex items-center justify-between mb-4'>
-                  <div className={`w-12 h-12 ${stat.color} rounded-lg flex items-center justify-center`}>
+                  <div
+                    className={`w-12 h-12 ${stat.color} rounded-lg flex items-center justify-center`}
+                  >
                     <Icon className='w-6 h-6 text-white' />
                   </div>
-                  <div className={`flex items-center gap-1 text-sm ${stat.trend === 'up' ? 'text-green-600' : 'text-red-600'}`}>
-                    {stat.trend === 'up' ? <TrendingUp className='w-4 h-4' /> : <TrendingDown className='w-4 h-4' />}
+                  <div
+                    className={`flex items-center gap-1 text-sm ${
+                      stat.trend === 'up' ? 'text-green-600' : 'text-red-600'
+                    }`}
+                  >
+                    {stat.trend === 'up' ? (
+                      <TrendingUp className='w-4 h-4' />
+                    ) : (
+                      <TrendingDown className='w-4 h-4' />
+                    )}
                     {stat.change}
                   </div>
                 </div>
                 <div>
                   <h3 className='text-2xl font-bold text-gray-900 mb-1'>{stat.value}</h3>
                   <p className='text-sm text-gray-600 mb-1'>{stat.title}</p>
-                  {stat.amount && <p className='text-lg font-semibold text-green-600'>{stat.amount}</p>}
+                  {stat.amount && (
+                    <p className='text-lg font-semibold text-green-600'>{stat.amount}</p>
+                  )}
                 </div>
               </div>
             );
@@ -136,7 +150,10 @@ const Dashboard = ({ data }: any) => {
             <div className='px-6 py-4 border-b border-gray-200'>
               <div className='flex items-center justify-between'>
                 <h2 className='text-lg font-semibold text-gray-900'>Recent Orders</h2>
-                <Link to='/admin/orders' className='text-blue-600 hover:text-blue-700 text-sm font-medium'>
+                <Link
+                  to='/admin/orders'
+                  className='text-blue-600 hover:text-blue-700 text-sm font-medium'
+                >
                   View all
                 </Link>
               </div>
@@ -145,12 +162,24 @@ const Dashboard = ({ data }: any) => {
               <table className='w-full'>
                 <thead className='bg-gray-50'>
                   <tr>
-                    <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>Order</th>
-                    <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>Customer</th>
-                    <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>Type</th>
-                    <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>Amount</th>
-                    <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>Status</th>
-                    <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>View</th>
+                    <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
+                      Order
+                    </th>
+                    <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
+                      Customer
+                    </th>
+                    <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
+                      Type
+                    </th>
+                    <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
+                      Amount
+                    </th>
+                    <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
+                      Status
+                    </th>
+                    <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
+                      View
+                    </th>
                   </tr>
                 </thead>
                 <tbody className='divide-y divide-gray-200'>
@@ -158,19 +187,34 @@ const Dashboard = ({ data }: any) => {
                     <tr key={index} className='hover:bg-gray-50'>
                       <td className='px-6 py-4 whitespace-nowrap'>
                         <div className='font-medium text-gray-900'>#{order.id?.slice(-5)}</div>
-                        <div className='text-[13px] text-gray-500'>{formatDateWithTimezone(order.date)}</div>
+                        <div className='text-[13px] text-gray-500'>
+                          {formatDateWithTimezone(order.date)}
+                        </div>
                       </td>
-                      <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-900'>{order.customer}</td>
-                      <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>{order.type}</td>
-                      <td className='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900'>{order.amount}</td>
+                      <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-900'>
+                        {order.customer}
+                      </td>
+                      <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>
+                        {order.type}
+                      </td>
+                      <td className='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900'>
+                        {order.amount}
+                      </td>
                       <td className='px-6 py-4 whitespace-nowrap'>
-                        <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(order.status)}`}>
+                        <span
+                          className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(
+                            order.status
+                          )}`}
+                        >
                           {order.status}
                         </span>
                       </td>
                       <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>
                         <div className='flex items-center justify-center gap-2'>
-                          <Link to={`/admin/orders?orderId=${order.id}`} className='text-blue-600 hover:text-blue-700'>
+                          <Link
+                            to={`/admin/orders?orderId=${order.id}`}
+                            className='text-blue-600 hover:text-blue-700'
+                          >
                             <Eye className='w-4 h-4' />
                           </Link>
                         </div>
@@ -187,7 +231,10 @@ const Dashboard = ({ data }: any) => {
             <div className='px-6 py-4 border-b border-gray-200'>
               <div className='flex items-center justify-between'>
                 <h2 className='text-lg font-semibold text-gray-900'>Recent Applications</h2>
-                <Link to='/admin/adoption-application/fees' className='text-blue-600 hover:text-blue-700 text-sm font-medium'>
+                <Link
+                  to='/admin/adoption-application/fees'
+                  className='text-blue-600 hover:text-blue-700 text-sm font-medium'
+                >
                   View all
                 </Link>
               </div>
@@ -198,7 +245,13 @@ const Dashboard = ({ data }: any) => {
                   <div key={index} className='border border-gray-200 rounded-lg p-4'>
                     <div className='flex items-start justify-between mb-2'>
                       <div className='font-medium text-gray-900'>{app.id}</div>
-                      <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(app.state)}`}>{app.state}</span>
+                      <span
+                        className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(
+                          app.state
+                        )}`}
+                      >
+                        {app.state}
+                      </span>
                     </div>
                     <div className='text-sm text-gray-600 mb-1'>{app.applicant}</div>
                     <div className='text-sm text-gray-500 mb-2'>{app.dog}</div>
@@ -215,13 +268,48 @@ const Dashboard = ({ data }: any) => {
           <h2 className='text-lg font-semibold text-gray-900 mb-4'>Quick Actions</h2>
           <div className='grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-4'>
             {[
-              { linkKey: '/admin/store/products/create', label: 'Create Product', icon: ShoppingBag, color: 'bg-blue-500' },
-              { linkKey: '/admin/campaigns', label: 'Create Auction', icon: Hammer, color: 'bg-purple-500' },
-              { linkKey: '/admin/store/ecards/create', label: 'Create Ecard', icon: CreditCard, color: 'bg-red-500' },
-              { linkKey: '/admin/store/welcome-wieners/create', label: 'Create Welcome Wiener', icon: Dog, color: 'bg-green-500' },
-              { linkKey: '/admin/one-time-donations', label: 'View Donations', icon: Heart, color: 'bg-orange-500' },
-              { linkKey: '/admin/orders', label: 'View Orders', icon: ShoppingCart, color: 'bg-indigo-500' },
-              { linkKey: '/admin/adoption-application/fees', label: 'View Adopt Fees', icon: DollarSign, color: 'bg-pink-500' },
+              {
+                linkKey: '/admin/store/products/create',
+                label: 'Create Product',
+                icon: ShoppingBag,
+                color: 'bg-blue-500',
+              },
+              {
+                linkKey: '/admin/auctions',
+                label: 'Create Auction',
+                icon: Hammer,
+                color: 'bg-purple-500',
+              },
+              {
+                linkKey: '/admin/store/ecards/create',
+                label: 'Create Ecard',
+                icon: CreditCard,
+                color: 'bg-red-500',
+              },
+              {
+                linkKey: '/admin/store/welcome-wieners/create',
+                label: 'Create Welcome Wiener',
+                icon: Dog,
+                color: 'bg-green-500',
+              },
+              {
+                linkKey: '/admin/donations',
+                label: 'View Donations',
+                icon: Heart,
+                color: 'bg-orange-500',
+              },
+              {
+                linkKey: '/admin/orders',
+                label: 'View Orders',
+                icon: ShoppingCart,
+                color: 'bg-indigo-500',
+              },
+              {
+                linkKey: '/admin/adoption-application/fees',
+                label: 'View Adopt Fees',
+                icon: DollarSign,
+                color: 'bg-pink-500',
+              },
             ].map((action, index) => {
               const Icon = action.icon;
               return (

@@ -18,29 +18,29 @@ export const productApi = api.injectEndpoints({
         method: 'POST',
         body: product,
       }),
-      invalidatesTags: ['Product'],
+      invalidatesTags: ['Public', 'Product'],
     }),
     updateProduct: build.mutation({
       query: (product: any) => ({
-        url: `${BASE_URL}/${product.id}`,
+        url: `${BASE_URL}/${product._id}`,
         method: 'PUT',
         body: product,
       }),
-      invalidatesTags: ['Product'],
+      invalidatesTags: ['Public', 'Product'],
     }),
     deleteProduct: build.mutation({
       query: (product: any) => ({
         url: `${BASE_URL}/${product.id}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['Product'],
+      invalidatesTags: ['Public', 'Product'],
     }),
     deleteProductPhoto: build.mutation({
       query: (product: any) => ({
         url: `${BASE_URL}/photo/${product.productId}/${product.photoId}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['Product'],
+      invalidatesTags: ['Public', 'Product'],
     }),
   }),
 });

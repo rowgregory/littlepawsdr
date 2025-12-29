@@ -1,5 +1,4 @@
 import { atIcon, shoppingCartIcon, userShieldIcon, usersIcon } from '../../icons';
-import { toggleNavigationDrawer } from '../../redux/features/navbar/navbarSlice';
 import { formatDateWithTimezone } from '../../utils/dateFunctions';
 
 const topHeaderLinks = (user: any, dispatch: any, navigate: any, cartItemsAmount: number) => {
@@ -26,7 +25,7 @@ const topHeaderLinks = (user: any, dispatch: any, navigate: any, cartItemsAmount
                 : `Last login: ${formatDateWithTimezone(user?.lastLoginTime)}`,
             textKey: `${user?.firstName} ${user?.lastName}`,
             className: 'cursor-pointer',
-            onClick: () => dispatch(toggleNavigationDrawer({ navigationDrawer: true })),
+            onClick: () => navigate('/supporter/overview'),
           },
         ]
       : [

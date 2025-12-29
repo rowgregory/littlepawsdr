@@ -3,10 +3,11 @@ import AdoptionFee from '../models/adoptionFeeModel.js';
 import Error from '../models/errorModel.js';
 import { generateToken } from '../utils/generateToken.js';
 import jwt from 'jsonwebtoken';
-import sendEmail from '../utils/sendEmail.js';
 import AdoptionApplicationBypassCode from '../models/adoptionApplicationBypassCodeModel.js';
 import { createActionHistoryLog } from './actionHistoryController.js';
 import { logEvent, prepareLog } from '../utils/logHelpers.js';
+import sendEmailWithRetry from '../utils/cron/sendEmailWithRetry.js';
+import createPugEmailClient from '../utils/emailClients.js';
 
 const decryptToken = (token) => {
   try {
@@ -94,6 +95,8 @@ const processSessions = async (sessions, res, req, hasBypassCode) => {
 };
 
 const createAdoptionApplicationFee = async (res, req) => {
+  const pugEmail = await createPugEmailClient();
+
   const log = await prepareLog('CREATE_ADOPTION_APPLICATION_FEE');
   logEvent(log, 'INITIATE CREATE ADOPTION APPLICATION FEE DOCUMENT');
   try {
@@ -124,11 +127,21 @@ const createAdoptionApplicationFee = async (res, req) => {
     fee.exp = decodedToken.exp;
     logEvent(log, 'JWT EXP', { exp: fee.exp });
     const savedAdoptionFee = await fee.save();
-    logEvent(log, 'ADOPTION APPLICATION FEE SAVED WITH TOKEN - SENDING ADOPTION APPLICATION FEE CONFIRMATION EMAIL');
-    await sendEmail(savedAdoptionFee, 'SEND_ADOPTION_FEE_CONFIRMATION');
+    logEvent(
+      log,
+      'ADOPTION APPLICATION FEE SAVED WITH TOKEN - SENDING ADOPTION APPLICATION FEE CONFIRMATION EMAIL'
+    );
+
+    await sendEmailWithRetry(
+      pugEmail,
+      { ...savedAdoptionFee, to: savedAdoptionFee.emailAddress },
+      'sendAdoptionFeeConfirmation'
+    );
 
     createActionHistoryLog({
-      actionType: req.body.feeAmount ? 'Adoption Application Fee Created With Payment' : 'Adoption Application Fee Created Using Bypass Code',
+      actionType: req.body.feeAmount
+        ? 'Adoption Application Fee Created With Payment'
+        : 'Adoption Application Fee Created Using Bypass Code',
       user: {
         name: `${fee.firstName} ${fee.lastName}`,
         email: fee.emailAddress,
@@ -195,7 +208,9 @@ const checkUserAdoptionFeeTokenValidity = asyncHandler(async (req, res) => {
         deviceInfo: req.userAgent,
       });
 
-      return res.status(400).json({ message: 'Invalid bypass code', sliceName: 'adoptionApplicationFeeApi' });
+      return res
+        .status(400)
+        .json({ message: 'Invalid bypass code', sliceName: 'adoptionApplicationFeeApi' });
 
       // if user did not enter a bypass code
     } else {
@@ -281,7 +296,11 @@ const updateAdoptionApplicationFee = asyncHandler(async (req, res) => {
   const id = req.body.id;
 
   try {
-    await AdoptionFee.findByIdAndUpdate(id, { tokenStatus: 'Expired', applicationStatus: 'Inactive', exp: null, token: null }, { new: true });
+    await AdoptionFee.findByIdAndUpdate(
+      id,
+      { tokenStatus: 'Expired', applicationStatus: 'Inactive', exp: null, token: null },
+      { new: true }
+    );
 
     res.status(200).json({ message: 'Adoption application fee updated' });
   } catch (error) {
@@ -298,4 +317,10 @@ const updateAdoptionApplicationFee = asyncHandler(async (req, res) => {
   }
 });
 
-export { createAdoptionFee, checkUserAdoptionFeeTokenValidity, getAdoptionFees, checkJwtValidityAdoptionFee, updateAdoptionApplicationFee };
+export {
+  createAdoptionFee,
+  checkUserAdoptionFeeTokenValidity,
+  getAdoptionFees,
+  checkJwtValidityAdoptionFee,
+  updateAdoptionApplicationFee,
+};

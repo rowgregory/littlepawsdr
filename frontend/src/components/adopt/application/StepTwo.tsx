@@ -13,8 +13,8 @@ import { ADOPTION_APPLICATION_STEP_TWO_FIELDS } from '../../data/form-fields';
 import AwesomeIcon from '../../common/AwesomeIcon';
 import { chevronDownIcon } from '../../../icons';
 import Accordion from '../../common/Accordion';
-import { openToast } from '../../../redux/features/toastSlice';
 import { useAppDispatch } from '../../../redux/toolkitStore';
+import { showToast } from '../../../redux/features/toastSlice';
 
 const StepTwo: FC<StepTwoProps> = ({ setStep }) => {
   const [orderLoader, setOrderLoader] = useState(false);
@@ -22,7 +22,9 @@ const StepTwo: FC<StepTwoProps> = ({ setStep }) => {
   const [paymentStep, setPaymentStep] = useState('basic-info');
   const [openBasic, setOpenBasic] = useState(true);
   const [openPayment, setOpenPayment] = useState(false);
-  const { inputs, errors, handleInput, handleSelect, setInputs, setErrors } = useForm(ADOPTION_APPLICATION_STEP_TWO_FIELDS);
+  const { inputs, errors, handleInput, handleSelect, setInputs, setErrors } = useForm(
+    ADOPTION_APPLICATION_STEP_TWO_FIELDS
+  );
   const dispatch = useAppDispatch();
 
   const [checkIfUserHasActiveAdoptionFeeSession, { isLoading }] = useCheckIfUserHasActiveAdoptionFeeSessionMutation();
@@ -57,7 +59,7 @@ const StepTwo: FC<StepTwoProps> = ({ setStep }) => {
           }
         })
         .catch((err: any) => {
-          dispatch(openToast({ message: err?.data?.message, type: 'error', position: 'tr' }));
+          dispatch(showToast({ message: err?.data?.message, type: 'error' }));
           setOrderLoader(false);
         });
     }

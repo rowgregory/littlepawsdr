@@ -1,68 +1,70 @@
 import ECardOrder from '../../models/eCardOrderModel.js';
+import Error from '../../models/errorModel.js';
+import createPugEmailClient from '../emailClients.js';
 import isDaylightSavingTime from '../isDaylightSavingsTime.js';
-import { logEvent, prepareLog } from '../logHelpers.js';
 
-const sendEcard = async (pugEmail) => {
-  const log = await prepareLog('SEND ECARD');
-  logEvent(log, 'BEGINNING SEND EMAIL CRONJOB');
+const sendEcard = async () => {
+  const pugEmail = await createPugEmailClient();
 
-  const now = new Date();
-  logEvent(log, 'NEW DATE()', now);
+  try {
+    const now = new Date();
+    const isDaylightSavings = isDaylightSavingTime(now);
+    now.setUTCHours(isDaylightSavings ? 13 : 14, 0, 0, 0);
 
-  const isDaylightSavings = isDaylightSavingTime(now);
-  logEvent(log, 'IS DAYLIGHTS SAVINGS TIME?', isDaylightSavings);
+    const eCardsToSend = await ECardOrder.find({
+      isSent: false,
+      $or: [{ dateToSend: { $lte: now } }, { sendNow: 'send-now' }],
+    });
 
-  // Set the time to 1 PM UTC (9 AM EDT)
-  now.setUTCHours(isDaylightSavings ? 13 : 14, 0, 0, 0);
+    if (eCardsToSend.length === 0) return;
 
-  logEvent(log, 'ADJUSTED DATE FOR COMPARISON', now);
+    const results = await Promise.allSettled(
+      eCardsToSend.map((eCard) =>
+        pugEmail
+          .send({
+            template: 'ecard',
+            message: {
+              replyTo: 'no-reply@littlepawsdr.org',
+              to: eCard.recipientsEmail,
+            },
+            locals: {
+              image: eCard.image,
+              message: eCard.message,
+              name: eCard.name,
+            },
+          })
+          .then(() => ({ success: true, eCardId: eCard._id }))
+          .catch((err) => ({ success: false, eCardId: eCard._id, error: err }))
+      )
+    );
 
-  const aggregatedECards = await ECardOrder.find({
-    $or: [
-      { dateToSend: { $lte: now }, isSent: false },
-      { sendNow: 'send-now', isSent: false },
-    ],
-  });
+    const successful = results.filter((r) => r.value?.success).map((r) => r.value.eCardId);
+    const failed = results.filter((r) => !r.value?.success || r.status === 'rejected');
 
-  if (!aggregatedECards) {
-    logEvent(log, 'NO ECARDS TO SEND', aggregatedECards);
+    if (successful.length > 0) {
+      await ECardOrder.updateMany({ _id: { $in: successful } }, { isSent: true, status: 'Sent' });
+    }
 
-    return;
+    if (failed.length > 0) {
+      await Error.insertMany(
+        failed.map((f) => ({
+          functionName: 'sendEcard',
+          detail: `Failed eCard: ${f.value?.eCardId}`,
+          message: f.value?.error?.message || f.reason?.message,
+          name: f.value?.error?.name || f.reason?.name,
+          status: f.value?.error?.status || 500,
+        }))
+      );
+    }
+  } catch (err) {
+    await Error.create({
+      functionName: 'sendEcard',
+      detail: 'Cronjob failed',
+      message: err.message,
+      name: err.name,
+      status: err.status || 500,
+    });
   }
-
-  const eCardsToSend = Object.keys(aggregatedECards).length > 0;
-  logEvent(log, 'ECARDS TO SEND', eCardsToSend);
-
-  aggregatedECards?.forEach((eCard) => {
-    pugEmail
-      .send({
-        template: 'ecard',
-        message: {
-          from: 'Little Paws Dachshund Rescue <no-reply@littlepawsdr.org',
-          to: eCard.recipientsEmail,
-        },
-        locals: {
-          image: eCard.image,
-          message: eCard.message,
-          name: eCard.name,
-        },
-      })
-      .then(async () => {
-        try {
-          const ecardOrder = await ECardOrder.findByIdAndUpdate(eCard._id, { isSent: true, status: 'Sent' }, { new: true });
-          logEvent(log, 'ECARDS_SUCCESSFULLY_SENT', {
-            id: ecardOrder?._id,
-            isSent: ecardOrder?.isSent,
-            status: ecardOrder?.status,
-          });
-        } catch (err) {
-          logEvent(log, 'ERROR SENDING ECARDS', { message: err.message, name: err.name });
-        }
-      })
-      .catch(async (err) => {
-        logEvent(log, 'ERROR SENDING ECARDS', { message: err.message, name: err.name });
-      });
-  });
 };
 
 export default sendEcard;

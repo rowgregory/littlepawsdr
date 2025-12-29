@@ -41,14 +41,14 @@ export const authApi = api.injectEndpoints({
     logout: build.mutation({
       query: (user: any) => ({
         url: `${BASE_URL}/logout`,
-        method: 'PUT',
+        method: 'PATCH',
         body: user,
       }),
     }),
     updatePassword: build.mutation({
       query: (user: any) => ({
         url: `${BASE_URL}/update-password/${user.id}`,
-        method: 'POST',
+        method: 'PATCH',
         body: user,
       }),
     }),

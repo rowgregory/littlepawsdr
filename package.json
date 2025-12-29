@@ -1,6 +1,6 @@
 {
   "name": "lpdr",
-  "version": "2.1.0",
+  "version": "3.0.0",
   "description": "Dachshund Rescue",
   "main": "server.js",
   "type": "module",
@@ -18,12 +18,11 @@
   "license": "MIT",
   "dependencies": {
     "bcryptjs": "^3.0.2",
-    "colors": "^1.4.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "date-fns": "^4.1.0",
     "dotenv": "^8.2.0",
-    "email-templates": "^12.0.2",
+    "email-templates": "^12.0.3",
     "express": "^4.17.1",
     "express-async-handler": "^1.1.4",
     "googleapis": "^149.0.0",
@@ -32,7 +31,8 @@
     "morgan": "^1.10.0",
     "node-cron": "^4.0.7",
     "node-fetch": "^2.7.0",
-    "nodemailer": "^6.7.2",
+    "nodemailer": "^7.0.11",
+    "preview-email": "^3.1.0",
     "pug": "^3.0.2",
     "semver": "^7.7.3",
     "socket.io": "^4.7.2",
@@ -42,9 +42,18 @@
     "@babel/plugin-transform-private-property-in-object": "^7.27.1",
     "@types/dotenv": "^6.1.1",
     "@types/email-templates": "^10.0.4",
+    "@types/express": "^5.0.6",
     "@types/nodemailer": "^6.4.17",
     "@types/pug": "^2.0.10",
     "concurrently": "^9.1.2",
     "nodemon": "^3.1.9"
+  },
+  "overrides": {
+    "email-templates": {
+      "nodemailer": "^7.0.11"
+    },
+    "preview-email": {
+      "nodemailer": "^7.0.11"
+    }
   }
 }

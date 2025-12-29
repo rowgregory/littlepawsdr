@@ -18,22 +18,22 @@ export const ecardApi = api.injectEndpoints({
         method: 'POST',
         body: ecard,
       }),
-      invalidatesTags: ['Ecard'],
+      invalidatesTags: ['Public', 'Ecard'],
     }),
     updateEcard: build.mutation({
       query: (ecard: any) => ({
-        url: `${BASE_URL}/${ecard.id}`,
+        url: `${BASE_URL}/${ecard._id}`,
         method: 'PUT',
         body: ecard,
       }),
-      invalidatesTags: ['Ecard'],
+      invalidatesTags: ['Public', 'Ecard'],
     }),
     deleteEcard: build.mutation({
       query: (ecard: any) => ({
         url: `${BASE_URL}/${ecard.id}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['Ecard'],
+      invalidatesTags: ['Public', 'Ecard'],
     }),
   }),
 });

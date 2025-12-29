@@ -1,18 +1,24 @@
 import express from 'express';
 const router = express.Router();
-import { getUsers, getUser, deleteUser, updateUserRole } from '../controllers/userController.js';
-import { protect, admin } from '../middleware/authMiddleware.js';
-import updateUserProfile from '../controllers/user/patch/updateUserProfile.js';
-import fetchUserProfile from '../controllers/user/fetch-user-profile/route.js';
-import removeUserAddress from '../controllers/user/delete-user-address/route.js';
-import handleUpdateLastSeenChangelogVersion from '../controllers/user/update-changelog-version/route.js';
+import { admin, protect } from '../middleware/authMiddleware.js';
+import { getUsers } from '../controllers/user/get-users/route.js';
+import { getUserById } from '../controllers/user/get-user-by-id/route.js';
+import { deleteUser } from '../controllers/user/delete-user/route.js';
+import { updateUserRole } from '../controllers/user/update-user-role/route.js';
+import { getUserProfile } from '../controllers/user/get-user-profile/route.js';
+import { updateUserProfile } from '../controllers/user/update-user-profile/route.js';
+import deleteUserAddress from '../controllers/user/delete-user-address/route.js';
+import { handleUpdateLastSeenChangelogVersion } from '../controllers/user/update-changelog-version/route.js';
 
 router.route('/').get(protect, admin, getUsers);
-router.route('/:id/address').delete(protect, removeUserAddress);
-router.route('/fetch-user-profile').get(protect, fetchUserProfile);
+router
+  .route('/update-last-seen-changelog-version')
+  .patch(protect, admin, handleUpdateLastSeenChangelogVersion);
+router.route('/get-user-profile').get(protect, getUserProfile);
 router.route('/update-user-profile').patch(protect, updateUserProfile);
-router.route('/role/:id').put(protect, admin, updateUserRole);
-router.route('/:id').get(protect, admin, getUser).delete(deleteUser, protect, admin);
-router.route('/update-last-seen-changelog-version').patch(protect, admin, handleUpdateLastSeenChangelogVersion);
+
+router.route('/role/:id').patch(protect, admin, updateUserRole);
+router.route('/:id').get(protect, admin, getUserById).delete(protect, admin, deleteUser);
+router.route('/:userId/address').delete(protect, deleteUserAddress);
 
 export default router;

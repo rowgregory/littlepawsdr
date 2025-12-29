@@ -41,7 +41,7 @@ const VolunteerApplication = () => {
           </h3>
           <p className='font-Matter-Light text-lg mb-16'>
             We need your help! We are also looking for artists and crafters for our{' '}
-            <Link to='/campaigns' className='text-teal-400 font-Matter-Regular'>
+            <Link to='/auctions' className='text-teal-400 font-Matter-Regular'>
               upcoming auctions
             </Link>
             . Thank you for applying to volunteer with Little Paws Dachshund Rescue (LPDR)! This

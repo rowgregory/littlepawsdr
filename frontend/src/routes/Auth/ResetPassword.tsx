@@ -1,18 +1,31 @@
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { RootState, useAppDispatch, useAppSelector } from '../../redux/toolkitStore';
-import { useResetPasswordMutation, useValidateForgotPasswordTokenQuery } from '../../redux/services/authApi';
+import {
+  useResetPasswordMutation,
+  useValidateForgotPasswordTokenQuery,
+} from '../../redux/services/authApi';
 import { createFormActions } from '../../redux/features/form/formSlice';
 import { Eye, EyeOff, Heart, Lock } from 'lucide-react';
 import { useEffect } from 'react';
+import { showToast } from '../../redux/features/toastSlice';
 
 const ResetPassword = () => {
   const { token } = useParams();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { resetPasswordForm, passwordStrength, showPassword } = useAppSelector((state: RootState) => state.form);
-  const { handleInput, setShowPassword, setPasswordStrength } = createFormActions('resetPasswordForm', dispatch);
+  const { resetPasswordForm, passwordStrength, showPassword } = useAppSelector(
+    (state: RootState) => state.form
+  );
+  const { handleInput, setShowPassword, setPasswordStrength } = createFormActions(
+    'resetPasswordForm',
+    dispatch
+  );
   const [resetPassword, { isLoading: loadingReset }] = useResetPasswordMutation();
-  const { data: tokenValidationData, error, isLoading: loadingTokenValidation } = useValidateForgotPasswordTokenQuery({ token });
+  const {
+    data: tokenValidationData,
+    error,
+    isLoading: loadingTokenValidation,
+  } = useValidateForgotPasswordTokenQuery({ token });
 
   useEffect(() => {
     if (resetPasswordForm?.inputs?.password) {
@@ -49,7 +62,9 @@ const ResetPassword = () => {
         }).unwrap();
 
         navigate('/auth/reset-password/success');
-      } catch {}
+      } catch {
+        dispatch(showToast({ message: 'Failed to reset password', type: 'error' }));
+      }
     }
   };
 
@@ -67,8 +82,12 @@ const ResetPassword = () => {
         <div className='max-w-md w-full'>
           <div className='flex flex-col items-center justify-center shadow-lg rounded-3xl py-5 px-3.5'>
             <i className='fa-solid fa-circle-exclamation text-red-500 fa-4x flex justify-center mb-3'></i>
-            <p className='text-red-500 text-lg font-Matter-Medium text-center mb-2'>{error?.data?.message || 'This reset link has expired.'}</p>
-            <p className='text-sm text-gray-400 font-Matter-Light text-center mb-3.5'>Please request a new reset link to continue.</p>
+            <p className='text-red-500 text-lg font-Matter-Medium text-center mb-2'>
+              {error?.data?.message || 'This reset link has expired.'}
+            </p>
+            <p className='text-sm text-gray-400 font-Matter-Light text-center mb-3.5'>
+              Please request a new reset link to continue.
+            </p>
             <Link
               to='/auth/forgot-password'
               className='text-white text-sm bg-red-500 rounded-md py-1.5 px-8 font-Matter-Regular duration-300 hover:no-underline hover:bg-red-600'
@@ -91,14 +110,20 @@ const ResetPassword = () => {
           <h1 className='text-2xl font-bold text-white mb-2'>Little Paws Dachshund Rescue</h1>
           <div className='flex justify-center gap-1 mt-3'>
             {[...Array(5)].map((_, i) => (
-              <Heart key={i} className='w-4 h-4 text-white fill-current animate-pulse' style={{ animationDelay: `${i * 0.2}s` }} />
+              <Heart
+                key={i}
+                className='w-4 h-4 text-white fill-current animate-pulse'
+                style={{ animationDelay: `${i * 0.2}s` }}
+              />
             ))}
           </div>
         </div>
         <div className='p-8'>
           <div className='text-center mb-6'>
             <h2 className='text-2xl font-bold text-gray-800 mb-2'>Reset Your Password</h2>
-            <p className='text-gray-600 text-sm'>Enter your new password to regain access to your account</p>
+            <p className='text-gray-600 text-sm'>
+              Enter your new password to regain access to your account
+            </p>
           </div>
           <form onSubmit={handleSubmit} className='flex flex-col w-full space-y-4'>
             <div>
@@ -113,7 +138,9 @@ const ResetPassword = () => {
                   value={resetPasswordForm?.inputs?.password || ''}
                   onChange={handleInput}
                   className={`w-full px-4 py-3 pr-12 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-300 transition-colors ${
-                    resetPasswordForm?.errors?.password ? 'border-red-300 bg-red-50' : 'border-gray-200 focus:border-amber-400'
+                    resetPasswordForm?.errors?.password
+                      ? 'border-red-300 bg-red-50'
+                      : 'border-gray-200 focus:border-amber-400'
                   }`}
                   placeholder='Create a strong password'
                 />
@@ -151,7 +178,9 @@ const ResetPassword = () => {
                   </div>
                 </div>
               )}
-              {resetPasswordForm?.errors?.password && <p className='text-red-500 text-xs mt-1'>{resetPasswordForm?.errors?.password}</p>}
+              {resetPasswordForm?.errors?.password && (
+                <p className='text-red-500 text-xs mt-1'>{resetPasswordForm?.errors?.password}</p>
+              )}
             </div>
             <button
               type='submit'

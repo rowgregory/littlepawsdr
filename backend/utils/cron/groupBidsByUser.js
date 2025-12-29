@@ -1,9 +1,7 @@
-import { logEvent } from '../logHelpers.js';
-
 /**
  * Group top bids by user and calculate totals
  */
-const groupBidsByUser = (topBids, log) => {
+const groupBidsByUser = (topBids) => {
   const grouped = {};
 
   for (const bid of topBids) {
@@ -11,8 +9,9 @@ const groupBidsByUser = (topBids, log) => {
 
     if (!grouped[userId]) {
       grouped[userId] = {
-        email: bid.email,
         user: bid.user,
+        email: bid.user.email,
+        userName: `${bid.user.firstName} ${bid.user.lastName}`,
         auction: bid.auction,
         bids: [],
         totalPrice: 0,
@@ -25,17 +24,18 @@ const groupBidsByUser = (topBids, log) => {
     const total = shipping + itemPrice;
 
     grouped[userId].bids.push({
-      auctionItem: bid.auctionItem,
+      _id: bid._id, // ✅ Add this - the actual Bid document ID
+      bidId: bid._id, // Keep this too for clarity
+      auctionItemId: bid.auctionItem._id,
+      itemName: bid.auctionItem?.name || 'Unknown Item',
+      itemImage: bid.auctionItem?.photos?.[0]?.url || null,
       itemPrice,
       shipping,
       total,
-      _bid: bid, // keep reference to update sent flags later
     });
 
     grouped[userId].totalPrice += total;
   }
-
-  logEvent(log, 'GROUPED BIDS BY USER', grouped);
 
   return grouped;
 };

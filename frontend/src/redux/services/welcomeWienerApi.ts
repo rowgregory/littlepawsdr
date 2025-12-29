@@ -19,22 +19,22 @@ export const welcomeWienerApi = api.injectEndpoints({
         method: 'POST',
         body: welcomeWiener,
       }),
-      invalidatesTags: ['Welcome-Wiener'],
+      invalidatesTags: ['Public', 'Welcome-Wiener'],
     }),
     updateWelcomeWiener: build.mutation({
       query: (welcomeWiener: any) => ({
-        url: `${BASE_URL_WELCOME_WIENER}/${welcomeWiener.id}`,
+        url: `${BASE_URL_WELCOME_WIENER}/${welcomeWiener._id}`,
         method: 'PUT',
         body: welcomeWiener,
       }),
-      invalidatesTags: ['Welcome-Wiener'],
+      invalidatesTags: ['Public', 'Welcome-Wiener'],
     }),
     deleteWelcomeWiener: build.mutation({
       query: (welcomeWiener: any) => ({
         url: `${BASE_URL_WELCOME_WIENER}/${welcomeWiener.id}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['Welcome-Wiener'],
+      invalidatesTags: ['Public', 'Welcome-Wiener'],
     }),
     getWelcomeWienerProducts: build.query({
       query: () => BASE_URL_WELCOME_WIENER_PRODUCT,
@@ -52,7 +52,7 @@ export const welcomeWienerApi = api.injectEndpoints({
         method: 'POST',
         body: welcomeWienerProduct,
       }),
-      invalidatesTags: ['Welcome-Wiener-Product'],
+      invalidatesTags: ['Public', 'Welcome-Wiener', 'Welcome-Wiener-Product'],
     }),
     updateWelcomeWienerProduct: build.mutation({
       query: (welcomeWienerProduct: any) => ({
@@ -60,22 +60,14 @@ export const welcomeWienerApi = api.injectEndpoints({
         method: 'PUT',
         body: welcomeWienerProduct,
       }),
-      invalidatesTags: ['Welcome-Wiener', 'Welcome-Wiener-Product'],
+      invalidatesTags: ['Public', 'Welcome-Wiener', 'Welcome-Wiener-Product'],
     }),
     deleteWelcomeWienerProduct: build.mutation({
       query: (welcomeWienerProduct: any) => ({
         url: `${BASE_URL_WELCOME_WIENER_PRODUCT}/${welcomeWienerProduct.id}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['Welcome-Wiener-Product'],
-    }),
-    toggleLive: build.mutation({
-      query: (welcomeWiener: any) => ({
-        url: `${BASE_URL_WELCOME_WIENER}/toggle-live`,
-        method: 'PUT',
-        body: welcomeWiener,
-      }),
-      invalidatesTags: ['Welcome-Wiener'],
+      invalidatesTags: ['Public', 'Welcome-Wiener-Product'],
     }),
   }),
 });
@@ -91,5 +83,4 @@ export const {
   useCreateWelcomeWienerProductMutation,
   useUpdateWelcomeWienerProductMutation,
   useDeleteWelcomeWienerProductMutation,
-  useToggleLiveMutation,
 } = welcomeWienerApi;

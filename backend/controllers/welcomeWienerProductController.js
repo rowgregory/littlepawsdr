@@ -8,7 +8,7 @@ import WelcomeWienerProduct from '../models/welcomeWienerProductModel.js';
 */
 const getAllWelcomeWienerProducts = async (req, res) => {
   try {
-    const welcomeWienerProducts = await WelcomeWienerProduct.find()
+    const welcomeWienerProducts = await WelcomeWienerProduct.find();
 
     res.status(200).json({ welcomeWienerProducts });
   } catch (err) {
@@ -68,7 +68,9 @@ const updateWelcomeWienerProduct = async (req, res) => {
       { new: true }
     );
 
-    res.status(200).json({ message: 'Welcome wiener product updated', sliceName: 'welcomeWienerApi' });
+    res
+      .status(200)
+      .json({ message: 'Welcome wiener product updated', sliceName: 'welcomeWienerApi' });
   } catch (err) {
     await Error.create({
       functionName: 'UPDATE_WELCOME_WIENER_PRODUCT_PRIVATE_ADMIN',
@@ -90,18 +92,17 @@ const updateWelcomeWienerProduct = async (req, res) => {
  @access  Private Admin
 */
 const createWelcomeWienerProduct = async (req, res) => {
-  const { icon, name, price, description } = req.body;
+  const { name, price, description } = req.body;
 
   try {
     const newWelcomeWienerProduct = new WelcomeWienerProduct({
-      icon,
       name,
       price,
       description,
     });
-    await newWelcomeWienerProduct.save();
+    const savedWelcomeWiener = await newWelcomeWienerProduct.save();
 
-    res.status(201).json({ message: 'Welcome wiener product created', sliceName: 'welcomeWienerApi' });
+    res.status(201).json({ message: 'Welcome wiener product created', savedWelcomeWiener });
   } catch (err) {
     await Error.create({
       functionName: 'CREATE_WELCOME_WIENER_PRODUCT_PRIVATE_ADMIN',
@@ -131,7 +132,7 @@ const deleteWelcomeWienerProduct = async (req, res) => {
 
     res.status(200).json({
       message: 'Welcome Wiener Product deleted',
-      sliceName: 'welcomeWienerApi'
+      sliceName: 'welcomeWienerApi',
     });
   } catch (err) {
     await Error.create({

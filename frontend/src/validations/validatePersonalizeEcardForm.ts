@@ -1,5 +1,5 @@
 interface ValidationErrors {
-  name: string;
+  senderName: string;
   email: string;
   recipientsFullName: string;
   recipientsEmail: string;
@@ -9,8 +9,8 @@ interface ValidationErrors {
 
 const validatePersonalizeEcardForm = (inputs: ValidationErrors, setErrors: any) => {
   const errors = {} as any;
-  if (!inputs?.name?.trim()) {
-    errors.name = 'Your name is required';
+  if (!inputs?.senderName?.trim()) {
+    errors.senderName = 'Your name is required';
   }
   if (!inputs?.email?.trim()) {
     errors.email = 'Your email is required';

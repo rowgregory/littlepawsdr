@@ -1,11 +1,11 @@
 import asyncHandler from 'express-async-handler';
 import AdoptionFee from '../../../models/adoptionFeeModel.js';
-import { Campaign } from '../../../models/campaignModel.js';
 import Donation from '../../../models/donationModel.js';
-import Order from '../../../models/orderModel.js';
 import User from '../../../models/userModel.js';
 import Newsletter from '../../../models/newsLetterModel.js';
 import AdoptionApplicationBypassCode from '../../../models/adoptionApplicationBypassCodeModel.js';
+import Order from '../../../models/orderModel.js';
+import { Auction } from '../../../models/auctionModel.js';
 
 /**
  * GET /api/dashboard/stats
@@ -57,7 +57,7 @@ const fetchDashboardData = asyncHandler(async (req, res) => {
         : {
             createdAt: { $gte: startDate, $lte: endDate },
           },
-      campaigns: isAllTime
+      auctions: isAllTime
         ? {}
         : {
             createdAt: { $gte: startDate, $lte: endDate },
@@ -80,70 +80,98 @@ const fetchDashboardData = asyncHandler(async (req, res) => {
     };
 
     // Parallel execution of all aggregations for better performance
-    const [orderStats, campaignStats, donationStats, adoptionFeeStats, userStats, newsletterStats, recentOrders, recentApplications] =
-      await Promise.all([
-        // Orders aggregation - ALL TIME
-        Order.aggregate([
-          {
-            $facet: {
-              total: [{ $group: { _id: null, count: { $sum: 1 }, totalPrice: { $sum: '$totalPrice' } } }],
-            },
+    const [
+      orderStats,
+      auctionStats,
+      donationStats,
+      adoptionFeeStats,
+      userStats,
+      newsletterStats,
+      recentOrders,
+      recentApplications,
+    ] = await Promise.all([
+      // Orders aggregation - ALL TIME
+      Order.aggregate([
+        {
+          $facet: {
+            total: [
+              { $group: { _id: null, count: { $sum: 1 }, totalPrice: { $sum: '$totalPrice' } } },
+            ],
           },
-        ]),
+        },
+      ]),
 
-        // Campaigns (Auctions) aggregation - ALL TIME
-        Campaign.aggregate([
-          {
-            $facet: {
-              total: [{ $group: { _id: null, count: { $sum: 1 }, totalRevenue: { $sum: '$totalCampaignRevenue' } } }],
-            },
+      // Auctions aggregation - ALL TIME
+      Auction.aggregate([
+        {
+          $facet: {
+            total: [
+              {
+                $group: {
+                  _id: null,
+                  count: { $sum: 1 },
+                  totalRevenue: { $sum: '$totalAuctionRevenue' },
+                },
+              },
+            ],
           },
-        ]),
+        },
+      ]),
 
-        // Donations aggregation - ALL TIME
-        Donation.aggregate([
-          {
-            $facet: {
-              total: [{ $group: { _id: null, count: { $sum: 1 }, totalAmount: { $sum: '$donationAmount' } } }],
-            },
+      // Donations aggregation - ALL TIME
+      Donation.aggregate([
+        {
+          $facet: {
+            total: [
+              {
+                $group: { _id: null, count: { $sum: 1 }, totalAmount: { $sum: '$donationAmount' } },
+              },
+            ],
           },
-        ]),
+        },
+      ]),
 
-        // Adoption Fees aggregation - ALL TIME
-        AdoptionFee.aggregate([
-          {
-            $facet: {
-              total: [{ $group: { _id: null, count: { $sum: 1 }, totalAmount: { $sum: '$feeAmount' } } }],
-            },
+      // Adoption Fees aggregation - ALL TIME
+      AdoptionFee.aggregate([
+        {
+          $facet: {
+            total: [
+              { $group: { _id: null, count: { $sum: 1 }, totalAmount: { $sum: '$feeAmount' } } },
+            ],
           },
-        ]),
+        },
+      ]),
 
-        // Users aggregation - ALL TIME
-        User.aggregate([
-          {
-            $facet: {
-              total: [{ $group: { _id: null, count: { $sum: 1 } } }],
-            },
+      // Users aggregation - ALL TIME
+      User.aggregate([
+        {
+          $facet: {
+            total: [{ $group: { _id: null, count: { $sum: 1 } } }],
           },
-        ]),
+        },
+      ]),
 
-        Newsletter.aggregate([
-          {
-            $facet: {
-              total: [{ $group: { _id: null, count: { $sum: 1 } } }],
-            },
+      Newsletter.aggregate([
+        {
+          $facet: {
+            total: [{ $group: { _id: null, count: { $sum: 1 } } }],
           },
-        ]),
+        },
+      ]),
 
-        // Recent orders for the table (last 10, but still recent)
-        Order.find({}).populate('user', 'firstName lastName email').sort({ createdAt: -1 }).limit(10).lean(),
+      // Recent orders for the table (last 10, but still recent)
+      Order.find({})
+        .populate('user', 'firstName lastName email')
+        .sort({ createdAt: -1 })
+        .limit(10)
+        .lean(),
 
-        // Recent adoption applications (last 10)
-        AdoptionFee.find({})
-          .sort({ createdAt: -1 }) // or paidDate, applicationDate - whatever date field you use
-          .limit(5)
-          .lean(),
-      ]);
+      // Recent adoption applications (last 10)
+      AdoptionFee.find({})
+        .sort({ createdAt: -1 }) // or paidDate, applicationDate - whatever date field you use
+        .limit(5)
+        .lean(),
+    ]);
 
     // Helper function to safely extract aggregation results
     const extractAggResult = (aggResult) => {
@@ -154,7 +182,7 @@ const fetchDashboardData = asyncHandler(async (req, res) => {
           result?.totalRevenue ||
           result?.totalAmount ||
           result?.feeAmount ||
-          result?.totalCampaignRevenue ||
+          result?.totalAuctionRevenue ||
           result?.donationAmount ||
           result?.totalPrice ||
           0,
@@ -168,8 +196,14 @@ const fetchDashboardData = asyncHandler(async (req, res) => {
       const previousStartDate = new Date(startDate.getTime() - periodLength);
 
       const [current, previous] = await Promise.all([
-        model.aggregate([{ $match: dateFilter }, { $group: { _id: null, total: { $sum: field } } }]),
-        model.aggregate([{ $match: { createdAt: { $gte: previousStartDate, $lt: startDate } } }, { $group: { _id: null, total: { $sum: field } } }]),
+        model.aggregate([
+          { $match: dateFilter },
+          { $group: { _id: null, total: { $sum: field } } },
+        ]),
+        model.aggregate([
+          { $match: { createdAt: { $gte: previousStartDate, $lt: startDate } } },
+          { $group: { _id: null, total: { $sum: field } } },
+        ]),
       ]);
 
       const currentTotal = current[0]?.total || 0;
@@ -186,23 +220,25 @@ const fetchDashboardData = asyncHandler(async (req, res) => {
 
     // Extract results
     const orderData = extractAggResult(orderStats);
-    const campaignData = extractAggResult(campaignStats);
+    const auctionData = extractAggResult(auctionStats);
     const donationData = extractAggResult(donationStats);
     const adoptionFeeData = extractAggResult(adoptionFeeStats);
     const userData = extractAggResult(userStats);
     const newsletterData = extractAggResult(newsletterStats);
 
     // Calculate changes for trending
-    const [orderChange, campaignChange, donationChange, adoptionChange, userChange] = await Promise.all([
-      calculateChange(Order, '$totalPrice', dateFilters.orders, 'createdAt'),
-      calculateChange(Campaign, '$totalCampaignRevenue', dateFilters.campaigns, 'createdAt'),
-      calculateChange(Donation, '$donationAmount', dateFilters.donations, 'donationDate'),
-      calculateChange(AdoptionFee, '$feeAmount', dateFilters.adoptionFees, 'paidDate'),
-      calculateChange(User, 1, dateFilters.users, 'createdAt'), // Count of users
-    ]);
+    const [orderChange, auctionChange, donationChange, adoptionChange, userChange] =
+      await Promise.all([
+        calculateChange(Order, '$totalPrice', dateFilters.orders, 'createdAt'),
+        calculateChange(Auction, '$totalAuctionRevenue', dateFilters.auctions, 'createdAt'),
+        calculateChange(Donation, '$donationAmount', dateFilters.donations, 'donationDate'),
+        calculateChange(AdoptionFee, '$feeAmount', dateFilters.adoptionFees, 'paidDate'),
+        calculateChange(User, 1, dateFilters.users, 'createdAt'), // Count of users
+      ]);
 
     const adoptionApplicationFeeBypassCode = await AdoptionApplicationBypassCode.findOne();
-    if (!adoptionApplicationFeeBypassCode) return res.status(404).json({ message: 'Bypass code could not be found' });
+    if (!adoptionApplicationFeeBypassCode)
+      return res.status(404).json({ message: 'Bypass code could not be found' });
 
     const bypassCode = adoptionApplicationFeeBypassCode.bypassCode;
 
@@ -219,10 +255,10 @@ const fetchDashboardData = asyncHandler(async (req, res) => {
         },
         {
           title: 'Auctions',
-          value: campaignData.count.toLocaleString(),
-          amount: `$${campaignData.totalRevenue.toLocaleString()}`,
-          change: `${campaignChange.change}%`,
-          trend: campaignChange.trend,
+          value: auctionData.count.toLocaleString(),
+          amount: `$${auctionData.totalRevenue.toLocaleString()}`,
+          change: `${auctionChange.change}%`,
+          trend: auctionChange.trend,
           type: 'auctions',
         },
         {
@@ -278,7 +314,7 @@ const fetchDashboardData = asyncHandler(async (req, res) => {
       summary: {
         totalRevenue: (
           orderData.totalRevenue +
-          campaignData.totalRevenue +
+          auctionData.totalRevenue +
           donationData.totalRevenue +
           adoptionFeeData.totalRevenue
         ).toLocaleString(),

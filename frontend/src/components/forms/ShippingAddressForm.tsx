@@ -30,7 +30,7 @@ const ShippingAddressForm: FC<ShippingAddressProps> = ({
           Address
         </label>
         <input
-          className='bg-[#fff] border-[1px] border-gray-200 rounded-md mb-2 py-2.5 px-4 font-Matter-Regular focus:outline-none campaign-input'
+          className='bg-[#fff] border-[1px] border-gray-200 rounded-md mb-2 py-2.5 px-4 font-Matter-Regular focus:outline-none auction-input'
           name='address'
           onChange={handleInput}
           type='text'
@@ -44,7 +44,7 @@ const ShippingAddressForm: FC<ShippingAddressProps> = ({
             City
           </label>
           <input
-            className='bg-[#fff] border-[1px] border-gray-200 rounded-md py-2.5 px-4 font-Matter-Regular focus:outline-none campaign-input'
+            className='bg-[#fff] border-[1px] border-gray-200 rounded-md py-2.5 px-4 font-Matter-Regular focus:outline-none auction-input'
             name='city'
             onChange={handleInput}
             type='text'
@@ -62,7 +62,7 @@ const ShippingAddressForm: FC<ShippingAddressProps> = ({
             value={inputs.state || ''}
             onChange={handleInput}
             aria-label='Select state'
-            className='bg-[#fff] border-[1px] h-[46px] border-gray-200 rounded-md py-2.5 px-4 font-Matter-Regular focus:outline-none text-sm cursor-pointer campaign-input'
+            className='bg-[#fff] border-[1px] h-[46px] border-gray-200 rounded-md py-2.5 px-4 font-Matter-Regular focus:outline-none text-sm cursor-pointer auction-input'
           >
             {STATES.map((state: any, i: number) => (
               <option className='text-zinc-300' key={i}>
@@ -76,7 +76,7 @@ const ShippingAddressForm: FC<ShippingAddressProps> = ({
             Zip code
           </label>
           <input
-            className='bg-[#fff] border-[1px] border-gray-200 rounded-md py-2.5 px-4 font-Matter-Regular focus:outline-none campaign-input'
+            className='bg-[#fff] border-[1px] border-gray-200 rounded-md py-2.5 px-4 font-Matter-Regular focus:outline-none auction-input'
             name='zipPostalCode'
             onChange={handleInput}
             type='text'
@@ -112,7 +112,7 @@ const ShippingAddressForm: FC<ShippingAddressProps> = ({
         {location?.state?.cameFromInstantBuy && user?.user?.shippingAddress && (
           <Link
             className='bg-yellow-to-green px-4 h-10 rounded-lg flex items-center justify-center font-Matter-Medium text-[#fff] hover:text-[#fff] hover:no-underline cursor-pointer hover:shadow-lg duration-200'
-            to={`/campaigns/${location.state?.customLinkId}/auction/item/${location.state?.auctionItemId}`}
+            to={`/auctions/${location.state?.customAuctionLink}/auction/item/${location.state?.auctionItemId}`}
           >
             Take me back to item!
           </Link>

@@ -5,8 +5,9 @@ import { createFormActions } from '../../redux/features/form/formSlice';
 import { Heart } from 'lucide-react';
 import validateLoginForm from '../../validations/validateLoginForm';
 import LoginForm from '../../components/forms/LoginForm';
-import { openToast } from '../../redux/features/toastSlice';
-import { hydrateUserState } from '../../redux/features/user/userSlice';
+import { hydrateUserState } from '../../redux/features/userSlice';
+import { showToast } from '../../redux/features/toastSlice';
+import { hydrateAuthState } from '../../redux/features/auth/authSlice';
 
 const Login = () => {
   const dispatch = useAppDispatch();
@@ -22,16 +23,21 @@ const Login = () => {
     if (!isValid) return;
 
     try {
-      const response = await login({ email: loginForm?.inputs?.email.toLowerCase(), password: loginForm?.inputs?.password }).unwrap();
+      const response = await login({
+        email: loginForm?.inputs?.email.toLowerCase(),
+        password: loginForm?.inputs?.password,
+      }).unwrap();
 
-      dispatch(hydrateUserState({ user: response?.user }));
+      dispatch(hydrateUserState(response));
+      dispatch(hydrateAuthState(response));
+      dispatch(showToast({ message: 'Login success!', type: 'success' }));
       if (response?.user?.isAdmin) {
-        navigate('/admin');
+        navigate('/admin/dashboard');
       } else {
-        navigate('/settings/profile');
+        navigate('/supporter/overview');
       }
     } catch (err: any) {
-      dispatch(openToast({ message: err?.data?.message, type: 'error', position: 'bc' }));
+      dispatch(showToast({ message: err?.data?.message, type: 'error' }));
     }
   };
 
@@ -43,7 +49,11 @@ const Login = () => {
             <h1 className='text-2xl font-bold text-white mb-2'>Little Paws Dachshund Rescue</h1>
             <div className='hidden sm:flex justify-center gap-1 mt-3'>
               {[...Array(5)].map((_, i) => (
-                <Heart key={i} className='w-4 h-4 text-white fill-current animate-pulse' style={{ animationDelay: `${i * 0.2}s` }} />
+                <Heart
+                  key={i}
+                  className='w-4 h-4 text-white fill-current animate-pulse'
+                  style={{ animationDelay: `${i * 0.2}s` }}
+                />
               ))}
             </div>
           </div>
@@ -64,7 +74,10 @@ const Login = () => {
           <div className='mt-6 text-center'>
             <p className='text-sm text-gray-600'>
               New to Little Paws?{' '}
-              <Link to='/auth/register?conversionSource=organic_signup' className='text-cyan-600 hover:text-cyan-700 font-medium'>
+              <Link
+                to='/auth/register?conversionSource=organic_signup'
+                className='text-cyan-600 hover:text-cyan-700 font-medium'
+              >
                 Sign Up
               </Link>
             </p>

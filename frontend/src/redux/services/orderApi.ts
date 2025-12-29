@@ -12,13 +12,12 @@ export const orderApi = api.injectEndpoints({
       query: (orderId: string) => `${BASE_URL}/${orderId}`,
       providesTags: (result: any, error: any, arg: any) => [{ type: 'Order', id: arg }],
     }),
-    updateOrderStatus: build.mutation({
-      query: (body: any) => ({
-        url: `${BASE_URL}/update-order-status`,
+    updateShippingStatus: build.mutation({
+      query: ({ orderId }) => ({
+        url: `${BASE_URL}/${orderId}/update-shipping-status`,
         method: 'PATCH',
-        body,
       }),
-      invalidatesTags: ['Order', 'User'],
+      invalidatesTags: ['Public', 'Order', 'User'],
     }),
     createOrder: build.mutation({
       query: (body: any) => ({
@@ -26,7 +25,7 @@ export const orderApi = api.injectEndpoints({
         method: 'POST',
         body,
       }),
-      invalidatesTags: ['Order', 'Product', 'User'],
+      invalidatesTags: ['Public', 'Order', 'Product', 'User'],
     }),
     getMyOrders: build.query({
       query: () => `${BASE_URL}/my-orders`,
@@ -34,4 +33,10 @@ export const orderApi = api.injectEndpoints({
   }),
 });
 
-export const { useGetOrdersQuery, useGetOrderQuery, useUpdateOrderStatusMutation, useCreateOrderMutation, useGetMyOrdersQuery } = orderApi;
+export const {
+  useGetOrdersQuery,
+  useGetOrderQuery,
+  useUpdateShippingStatusMutation,
+  useCreateOrderMutation,
+  useGetMyOrdersQuery,
+} = orderApi;

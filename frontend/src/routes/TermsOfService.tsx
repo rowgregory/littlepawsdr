@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { Shield, Heart, FileText, Users, AlertCircle, Scale, Lock } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { containerVariants, itemVariants } from '../lib/constants/motion';
 
 const TermsOfService = () => {
   const sections = [
@@ -47,28 +48,6 @@ const TermsOfService = () => {
       content: `All content on this website, including text, graphics, logos, images, and software, is the property of Little Paws Dachshund Rescue and protected by United States and international copyright laws. Unauthorized use is prohibited.`,
     },
   ];
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.5,
-        ease: 'easeOut',
-      },
-    },
-  };
 
   return (
     <div className='min-h-screen bg-gradient-to-br from-teal-via-cyan-50 to-blue-100'>

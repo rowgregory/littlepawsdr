@@ -1,58 +1,55 @@
 import { useState } from 'react';
 import { useCreateDonationMutation } from '../../redux/services/donationApi';
-import GreenRotatingTransparentCircle from '../Loaders/GreenRotatingTransparentCircle';
 import { PayPalButtons } from '@paypal/react-paypal-js';
 import toFixed from '../../utils/toFixed';
+import { createFormActions, setInputs } from '../../redux/features/form/formSlice';
+import { useAppDispatch, useFormSelector, useUserSelector } from '../../redux/toolkitStore';
+import { useFormInitialize } from '../../hooks/useFormInitialize';
+import { motion } from 'framer-motion';
 
-const validateDonationIdentityForm = (values: any) => {
-  const errors = {} as any;
-  if (!values?.email) {
-    errors.email = 'Email Required';
-  } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values?.email)) {
-    errors.email = 'Invalid email address';
+const validateDonationIdentityForm = (inputs: any, setErrors: (errors) => void) => {
+  const newErrors = {} as any;
+
+  if (!inputs?.email?.trim()) {
+    newErrors.email = 'Email Required';
+  } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(inputs?.email)) {
+    newErrors.email = 'Invalid email address';
   }
 
-  if (!values?.firstName) {
-    errors.firstName = 'First Name Required';
-  } else if (values?.firstName.length > 50) {
-    errors.firstName = 'Must be 50 characters or less';
+  if (!inputs?.firstName?.trim()) {
+    newErrors.firstName = 'First Name Required';
+  } else if (inputs?.firstName.length > 50) {
+    newErrors.firstName = 'Must be 50 characters or less';
   }
 
-  if (!values?.lastName) {
-    errors.lastName = 'Last Name Required';
-  } else if (values?.lastName.length > 50) {
-    errors.lastName = 'Must be 50 characters or less';
+  if (!inputs?.lastName?.trim()) {
+    newErrors.lastName = 'Last Name Required';
+  } else if (inputs?.lastName.length > 50) {
+    newErrors.lastName = 'Must be 50 characters or less';
   }
 
-  return errors;
+  setErrors(newErrors);
+  return Object.keys(newErrors).length === 0;
 };
 
-const useDonationForm = () => {
-  const [inputs, setInputs] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    donationAmount: 35,
-    otherAmount: '',
-  });
+const validateGiftAmountForm = (inputs: any, setErrors: (errors) => void) => {
+  const newErrors = {} as any;
 
-  const handleInput = (e: any) => {
-    const { name, value } = e.target;
+  if (parseInt(inputs.donationAmount) < 10) {
+    newErrors.donationAmount = 'Amount needs to be greater than 10';
+  }
 
-    setInputs((inputs: any) => ({
-      ...inputs,
-      [name]: value,
-    }));
-  };
-
-  return { inputs, handleInput, setInputs };
+  setErrors(newErrors);
+  return Object.keys(newErrors).length === 0;
 };
 
 export const OneTimeDonationProgressTracker = ({ step, setStep, type }: any) => (
   <div className={`${type === 'one-time' ? 'block' : 'hidden'}`}>
     <div className='hidden md:flex justify-evenly mt-4 mb-8 gap-4'>
       <div
-        onClick={() => (step.step2 || step.step3 ? setStep({ step1: true, step2: false, step3: false }) : {})}
+        onClick={() =>
+          step.step2 || step.step3 ? setStep({ step1: true, step2: false, step3: false }) : {}
+        }
         className={`${step.step1 ? 'border-teal-500' : 'border-gray-300 text-gray-300'} ${
           step.step2 || step.step3 ? 'cursor-pointer' : ''
         } border-b-4 text-xl font-Matter-Medium tracking wider px-8 w-full text-center pb-1 whitespace-nowrap`}
@@ -60,7 +57,9 @@ export const OneTimeDonationProgressTracker = ({ step, setStep, type }: any) => 
         1. Gift Amount
       </div>
       <div
-        onClick={() => (step.step3 ? setStep((prev: any) => ({ ...prev, step2: true, step3: false })) : {})}
+        onClick={() =>
+          step.step3 ? setStep((prev: any) => ({ ...prev, step2: true, step3: false })) : {}
+        }
         className={`${step.step2 ? 'border-teal-500' : 'border-gray-300 text-gray-300'} ${
           step.step3 ? 'cursor-pointer' : ''
         } border-b-4 text-xl font-Matter-Medium tracking wider px-8 w-full text-center pb-1`}
@@ -77,7 +76,9 @@ export const OneTimeDonationProgressTracker = ({ step, setStep, type }: any) => 
     </div>
     <div className='flex justify-between w-72 mx-auto md:hidden mt-4 mb-8'>
       <div className='relative'>
-        <p className='font-Matter-Medium text-gray-300 text-center absolute -top-6 -left-4 whitespace-nowrap'>Gift Amount</p>
+        <p className='font-Matter-Medium text-gray-300 text-center absolute -top-6 -left-4 whitespace-nowrap'>
+          Gift Amount
+        </p>
         <div
           className={`${
             step.step1 ? 'bg-teal-500' : 'bg-gray-300'
@@ -87,7 +88,9 @@ export const OneTimeDonationProgressTracker = ({ step, setStep, type }: any) => 
         </div>
       </div>
       <div className='relative'>
-        <p className='font-Matter-Medium text-gray-300 text-center absolute -top-6 -left-1 whitespace-nowrap'>Identity</p>
+        <p className='font-Matter-Medium text-gray-300 text-center absolute -top-6 -left-1 whitespace-nowrap'>
+          Identity
+        </p>
         <div
           className={`${
             step.step2 ? 'bg-teal-500' : 'bg-gray-300'
@@ -97,7 +100,9 @@ export const OneTimeDonationProgressTracker = ({ step, setStep, type }: any) => 
         </div>
       </div>
       <div className='relative'>
-        <p className='font-Matter-Medium text-gray-300 text-center absolute -top-6 -left-2 whitespace-nowrap'>Payment</p>
+        <p className='font-Matter-Medium text-gray-300 text-center absolute -top-6 -left-2 whitespace-nowrap'>
+          Payment
+        </p>
         <div
           className={`${
             step.step3 ? 'bg-teal-500' : 'bg-gray-300'
@@ -112,35 +117,45 @@ export const OneTimeDonationProgressTracker = ({ step, setStep, type }: any) => 
 
 const oneTimeDonationOptions = [25, 35, 50, 150, 500];
 
-export const OneTimeDonationForm = ({ type, step, setStep, setOpenModal }: any) => {
-  const [orderLoader, setOrderLoader] = useState(false);
-  const { inputs, handleInput, setInputs } = useDonationForm();
-  const [createDonation] = useCreateDonationMutation();
-  const [errors, setErrors] = useState({}) as any;
+interface StepFunc {
+  preventDefault: () => void;
+}
 
-  const handleStep2 = (e: any) => {
+export const OneTimeDonationForm = ({ type, step, setStep, setOpenModal }: any) => {
+  const dispatch = useAppDispatch();
+  const [orderLoader, setOrderLoader] = useState(false);
+  const { handleInput, setErrors } = createFormActions('donationForm', dispatch);
+  const [createDonation] = useCreateDonationMutation();
+  const { donationForm } = useFormSelector();
+  const { user } = useUserSelector();
+
+  const inputs = donationForm?.inputs;
+  const errors = donationForm?.errors;
+
+  useFormInitialize({
+    formName: 'donationForm',
+    data: {
+      firstName: user?.firstName,
+      lastName: user?.lastName,
+      email: user?.email,
+      donationAmount: inputs?.donationAmount || 50,
+    },
+  });
+
+  const handleStep2 = (e: StepFunc) => {
     e.preventDefault();
-    const errors = validateDonationIdentityForm(inputs);
-    if (Object.keys(errors).length > 0) {
-      setErrors(errors);
-    } else {
-      setErrors({});
-      setStep((prev: any) => ({ ...prev, step2: false, step3: true }));
-    }
+
+    if (!validateDonationIdentityForm(inputs, setErrors)) return;
+
+    setStep((prev: any) => ({ ...prev, step2: false, step3: true }));
   };
 
-  const handleStep1 = (e: any) => {
+  const handleStep1 = (e: StepFunc) => {
     e.preventDefault();
 
-    if (inputs.donationAmount === 0 && +inputs.otherAmount < 10) {
-      setErrors((prev: any) => ({
-        ...prev,
-        donationAmount: 'Amount needs to be greater than or equal to 10',
-      }));
-    } else {
-      setErrors({});
-      setStep((prev: any) => ({ ...prev, step1: false, step2: true }));
-    }
+    if (!validateGiftAmountForm(inputs, setErrors)) return;
+
+    setStep((prev: any) => ({ ...prev, step1: false, step2: true }));
   };
 
   const payPalComponents = {
@@ -163,44 +178,53 @@ export const OneTimeDonationForm = ({ type, step, setStep, setOpenModal }: any) 
     onApprove: (data: any, actions: any) => {
       setOrderLoader(true);
       return actions.order.capture().then(async (details: any) => {
-        await createDonation({
-          firstName: inputs.firstName,
-          lastName: inputs.lastName,
-          email: inputs.email,
-          donationAmount: Number(inputs.donationAmount || +inputs.otherAmount),
-          oneTimeDonationAmount: Number(inputs.donationAmount || +inputs.otherAmount),
-          payPalId: details.id,
-        })
-          .unwrap()
-          .then(() => {
-            setOpenModal(true);
-            setOrderLoader(false);
-            setStep({ step1: true, step2: false, step3: false });
-          })
-          .catch((err: any) => {
-            setOrderLoader(false);
-            setStep({ step1: true, step2: false, step3: false });
-          });
+        try {
+          await createDonation({
+            firstName: inputs.firstName,
+            lastName: inputs.lastName,
+            email: inputs.email,
+            donationAmount: Number(inputs.donationAmount || +inputs.otherAmount),
+            payPalId: details.id,
+          }).unwrap();
+
+          setOpenModal(true);
+          setStep({ step1: true, step2: false, step3: false });
+        } catch (error) {
+          setStep({ step1: true, step2: false, step3: false });
+        } finally {
+          setOrderLoader(false);
+        }
       });
     },
   } as any;
 
   return (
     <form className={`${type === 'one-time' ? 'block' : 'hidden'}`}>
-      {orderLoader && <GreenRotatingTransparentCircle />}
       {step.step3 ? (
-        <div className='max-w-sm mx-auto'>
+        <div className='mb-8 relative'>
           <PayPalButtons
             style={payPalComponents.style}
             forceReRender={payPalComponents.forceRerender}
             createOrder={payPalComponents.createOrder}
             onApprove={payPalComponents.onApprove}
           />
+
+          {orderLoader && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className='absolute inset-0 bg-white rounded-lg flex items-center justify-center z-[100]'
+            >
+              <div className='w-6 h-6 border-2 border-gray-900/20 border-t-gray-900 rounded-full animate-spin' />
+            </motion.div>
+          )}
         </div>
       ) : step.step2 ? (
         <div className='grid grid-cols-12 gap-4'>
           <p className='col-span-12 font-Matter-Light text-sm'>
-            Donation Amount: <span className='text-sm font-Matter-Medium'>${toFixed(inputs.donationAmount || +inputs.otherAmount)}</span>
+            Donation Amount:{' '}
+            <span className='text-sm font-Matter-Medium'>${toFixed(inputs.donationAmount)}</span>
           </p>
           <div className='col-span-12 md:col-span-6'>
             <label className='font-Matter-Medium text-sm mb-1' htmlFor='firstName'>
@@ -213,7 +237,9 @@ export const OneTimeDonationForm = ({ type, step, setStep, setOpenModal }: any) 
               className='auth-input bg-white border-[1px] w-full border-gray-300 rounded-md py-2.5 px-4 font-Matter-Regular focus:outline-none'
               value={inputs?.firstName || ''}
             />
-            {errors?.firstName && <p className='font-Matter-Regular text-sm text-red-500'>{errors?.firstName}</p>}
+            {errors?.firstName && (
+              <p className='font-Matter-Regular text-sm text-red-500'>{errors?.firstName}</p>
+            )}
           </div>
           <div className='col-span-12 md:col-span-6'>
             <label className='font-Matter-Medium text-sm mb-1' htmlFor='lastName'>
@@ -226,7 +252,9 @@ export const OneTimeDonationForm = ({ type, step, setStep, setOpenModal }: any) 
               className='auth-input bg-white border-[1px] w-full border-gray-300 rounded-md py-2.5 px-4 font-Matter-Regular focus:outline-none'
               value={inputs.lastName || ''}
             />
-            {errors?.lastName && <p className='font-Matter-Regular text-sm text-red-500'>{errors?.lastName}</p>}
+            {errors?.lastName && (
+              <p className='font-Matter-Regular text-sm text-red-500'>{errors?.lastName}</p>
+            )}
           </div>
           <div className='col-span-12'>
             <label className='font-Matter-Medium text-sm mb-1' htmlFor='firstName'>
@@ -239,7 +267,9 @@ export const OneTimeDonationForm = ({ type, step, setStep, setOpenModal }: any) 
               className='auth-input bg-white border-[1px] w-full border-gray-300 rounded-md py-2.5 px-4 font-Matter-Regular focus:outline-none'
               value={inputs.email || ''}
             />
-            {errors?.email && <p className='font-Matter-Regular text-sm text-red-500'>{errors?.email}</p>}
+            {errors?.email && (
+              <p className='font-Matter-Regular text-sm text-red-500'>{errors?.email}</p>
+            )}
           </div>
           <button
             onClick={handleStep2}
@@ -252,32 +282,34 @@ export const OneTimeDonationForm = ({ type, step, setStep, setOpenModal }: any) 
         <div className='flex flex-col'>
           <div className='flex flex-wrap gap-4'>
             {oneTimeDonationOptions.map((num: number, i: number) => (
-              <div
+              <button
+                type='button'
                 onClick={() => {
-                  setInputs((prev: any) => ({
-                    ...prev,
-                    donationAmount: num,
-                    otherAmount: '',
-                  }));
+                  dispatch(setInputs({ formName: 'donationForm', data: { donationAmount: num } }));
                 }}
                 key={i}
-                className={`py-[16px] px-[22px] rounded-lg flex items-center justify-center text-white font-Matter-Medium cursor-pointer ${
-                  num === inputs.donationAmount ? 'bg-teal-500' : 'bg-gray-300'
+                className={`py-4 px-6 rounded-lg flex items-center justify-center text-white font-medium cursor-pointer transition-colors ${
+                  inputs.donationAmount === num ? 'bg-teal-500' : 'bg-gray-300 hover:bg-gray-400'
                 }`}
               >
                 ${num}
-              </div>
+              </button>
             ))}
+
             <input
-              name='otherAmount'
+              name='donationAmount'
               onChange={handleInput}
               placeholder='Other'
-              className='border-2 border-gray-300 py-[16px] px-[18px] w-[100px] rounded-lg focus:outline-none font-Matter-Medium'
-              value={inputs.otherAmount || ''}
-              onClick={() => setInputs((prev: any) => ({ ...prev, donationAmount: 0 }))}
+              type='number'
+              className='border-2 border-gray-300 py-4 px-4 w-24 rounded-lg focus:outline-none focus:border-teal-500 font-medium'
+              value={inputs.donationAmount || ''}
             />
           </div>
-          {errors?.donationAmount && <p className='font-Matter-Regular text-sm text-red-500 mt-0.5'>{errors?.donationAmount}</p>}
+          {errors?.donationAmount && (
+            <p className='font-Matter-Regular text-sm text-red-500 mt-0.5'>
+              {errors?.donationAmount}
+            </p>
+          )}
           <button
             onClick={handleStep1}
             className='bg-teal-500 text-white px-16 h-24 flex items-center justify-center font-Matter-Bold text-3xl mx-auto my-16'

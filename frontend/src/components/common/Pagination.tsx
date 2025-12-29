@@ -1,5 +1,4 @@
-import { useRef, useState } from 'react';
-import Draggable from './Draggable';
+import { useState } from 'react';
 
 const usePagination = (totalItems: number) => {
   const itemsPerPage = 20;
@@ -35,13 +34,10 @@ const usePagination = (totalItems: number) => {
 
 const Pagination = ({ render, totalItems }: any) => {
   const { currentPage, nextPage, prevPage, goToPage, totalPages } = usePagination(totalItems ?? 0);
-  const startIndex = (currentPage - 1) * 50;
-  const endIndex = startIndex + 50;
-  const scrollRef = useRef(null) as any;
 
   // Function to generate the pagination buttons
   const renderPaginationButtons = () => {
-    const buttons = [];
+    const buttons: React.ReactNode[] = [];
 
     // Render buttons for the first 10 pages
     for (let i = 0; i < Math.min(totalPages, 10); i++) {
@@ -83,8 +79,11 @@ const Pagination = ({ render, totalItems }: any) => {
 
   return (
     <>
-      <Draggable scrollRef={scrollRef}>{render(startIndex, endIndex)}</Draggable>
-      <div className={`${totalItems <= 20 ? 'hidden' : 'block'} centered-content flex justify-center items-center w-full mt-5 mb-3.5`}>
+      <div
+        className={`${
+          totalItems <= 20 ? 'hidden' : 'block'
+        } centered-content flex justify-center items-center w-full mt-5 mb-3.5`}
+      >
         <button
           onClick={prevPage}
           disabled={currentPage === 1}

@@ -18,7 +18,17 @@
     "jsx": "react-jsx",
     "typeRoots": ["./node_modules/@types", "./types"],
     "types": ["node", "express"],
+    "noImplicitAny": false
   },
-  "include": ["src", "../backend/utils/crypto.js", "audio.d.ts", "crypto.d.ts", "index.d.ts", "types/**/*", "declration.d.ts"],
+  "include": [
+    "src",
+    "../backend/utils/crypto.js",
+    "audio.d.ts",
+    "crypto.d.ts",
+    "index.d.ts",
+    "types/**/*",
+    "declration.d.ts",
+    "../backend/enums"
+  ],
   "exclude": ["node_modules"]
 }

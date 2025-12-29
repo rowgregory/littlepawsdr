@@ -1,107 +1,13 @@
 import { Fragment } from 'react';
 import { motion } from 'framer-motion';
-import { CheckCircle, Heart, MapPin, Truck, Clock, Shield, Users, ArrowRight } from 'lucide-react';
+import { CheckCircle, Heart, MapPin, Truck, Clock, Shield, Users } from 'lucide-react';
 import PageBanner from '../../components/common/PageBanner';
 import { AdoptionInfo } from '../../components/assets';
-
-// Mock data - replace with your actual data
-const adoptionGuidelinesAndRequirements = [
-  'All adopters must be at least 21 years of age',
-  'You must own your home or have written permission from your landlord',
-  'All current pets must be spayed/neutered and up-to-date on vaccinations',
-  'You must have a secure, fenced yard or adequate exercise plan',
-  'Previous pet ownership experience is strongly preferred',
-  'Home visits may be required for certain dogs',
-  'You must be financially prepared for ongoing veterinary care',
-];
-
-const fiveStepProcess = [
-  {
-    titleKey: 'Submit Application',
-    text: 'Complete our comprehensive adoption application with detailed information about your lifestyle and experience.',
-    linkKey: 'Start Application',
-    path: '/adopt',
-  },
-  {
-    titleKey: 'Application Review',
-    text: 'Our team will review your application and contact your references within 3-5 business days.',
-    text2: 'We may contact you for additional information if needed.',
-  },
-  {
-    titleKey: 'Meet & Greet',
-    text: 'Schedule a meeting with your potential new companion and their foster family.',
-    text2: 'This helps ensure compatibility and allows you to ask questions.',
-  },
-  {
-    titleKey: 'Home Check',
-    text: 'A brief home visit to ensure your space is safe and suitable for your new pet.',
-    text3: 'This can often be done virtually for approved adopters.',
-  },
-  {
-    titleKey: 'Adoption Day',
-    text: 'Finalize paperwork, pay adoption fee, and welcome your new family member home!',
-    text2: 'We provide ongoing support during the transition period.',
-  },
-];
-
-const statesWeRescue = [
-  'Florida',
-  'Georgia',
-  'South Carolina',
-  'North Carolina',
-  'Virginia',
-  'Maryland',
-  'Delaware',
-  'Pennsylvania',
-  'New Jersey',
-  'New York',
-  'Connecticut',
-];
-
-const ProcessStep = ({ titleKey, text, text2, text3, linkKey, path, index }: any) => (
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.5, delay: index * 0.1 }}
-    className='flex gap-4 p-6 bg-white rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow'
-  >
-    <div className='flex-shrink-0'>
-      <div className='w-8 h-8 bg-teal-500 text-white rounded-full flex items-center justify-center font-semibold text-sm'>{index + 1}</div>
-    </div>
-    <div className='flex-1'>
-      <h4 className='font-semibold text-xl text-gray-800 mb-2'>{titleKey}</h4>
-      <p className='text-gray-600 leading-relaxed mb-2'>{text}</p>
-      {text2 && <p className='text-gray-600 leading-relaxed mb-2'>{text2}</p>}
-      {text3 && <p className='text-gray-600 leading-relaxed mb-2'>{text3}</p>}
-      {linkKey && (
-        <motion.a href={path} whileHover={{ x: 5 }} className='inline-flex items-center gap-2 text-teal-600 hover:text-teal-700 font-medium mt-2'>
-          {linkKey} <ArrowRight className='w-4 h-4' />
-        </motion.a>
-      )}
-    </div>
-  </motion.div>
-);
+import { fadeInUp, staggerContainer, staggerItem } from '../../lib/constants/motion';
+import { adoptionGuidelinesAndRequirements, fiveStepProcess, statesWeRescue } from '../../lib/constants/adopt';
+import ProcessStep from '../../components/adopt/info/ProcessStep';
 
 const AdoptionInformation = () => {
-  const fadeInUp = {
-    initial: { opacity: 0, y: 40 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.6, ease: 'easeOut' },
-  };
-
-  const staggerContainer = {
-    animate: {
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
-  };
-
-  const staggerItem = {
-    initial: { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0 },
-  };
-
   return (
     <Fragment>
       <PageBanner imgSrc={AdoptionInfo} title='Adoption Information' />

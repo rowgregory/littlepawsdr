@@ -1,15 +1,16 @@
 import { Link } from 'react-router-dom';
 import { useForgotPasswordEmailMutation } from '../../redux/services/authApi';
-import { RootState, useAppDispatch, useAppSelector } from '../../redux/toolkitStore';
+import { useAppDispatch, useFormSelector } from '../../redux/toolkitStore';
 import { createFormActions } from '../../redux/features/form/formSlice';
 import validateForgotPasswordForm from '../../validations/validateForgotPasswordForm';
 import { Heart, User, Mail, CheckCircle, ArrowLeft } from 'lucide-react';
 import { AuthInput } from '../../components/ui/AuthInput';
 import { useState } from 'react';
+import { showToast } from '../../redux/features/toastSlice';
 
 const ForgotPassword = () => {
   const dispatch = useAppDispatch();
-  const { forgotPasswordForm } = useAppSelector((state: RootState) => state.form);
+  const { forgotPasswordForm } = useFormSelector();
   const { handleInput, setErrors } = createFormActions('forgotPasswordForm', dispatch);
   const [forgotPassword, { isLoading }] = useForgotPasswordEmailMutation();
   const [message, setMessage] = useState<string>('');
@@ -22,13 +23,10 @@ const ForgotPassword = () => {
     if (!isValid) return;
 
     try {
-      const response = await forgotPassword({ email: forgotPasswordForm?.inputs?.email.toLowerCase() }).unwrap();
-
-      if (response?.message) {
-        setMessage(response.message);
-        setIsSuccess(true);
-      }
-    } catch {}
+      await forgotPassword({ email: forgotPasswordForm?.inputs?.email.toLowerCase() }).unwrap();
+    } catch {
+      dispatch(showToast({ message: 'Failed to send forgot password email', type: 'error' }));
+    }
   };
 
   const resetForm = () => {
@@ -47,7 +45,11 @@ const ForgotPassword = () => {
             <h1 className='text-2xl font-bold text-white mb-2'>Little Paws Dachshund Rescue</h1>
             <div className='flex justify-center gap-1 mt-3'>
               {[...Array(5)].map((_, i) => (
-                <Heart key={i} className='w-4 h-4 text-white fill-current animate-pulse' style={{ animationDelay: `${i * 0.2}s` }} />
+                <Heart
+                  key={i}
+                  className='w-4 h-4 text-white fill-current animate-pulse'
+                  style={{ animationDelay: `${i * 0.2}s` }}
+                />
               ))}
             </div>
           </div>
@@ -57,7 +59,9 @@ const ForgotPassword = () => {
             <>
               <div className='text-center mb-6'>
                 <h2 className='text-2xl font-bold text-gray-800 mb-2'>Forgot Your Password?</h2>
-                <p className='text-gray-600 text-sm'>Enter your email and we&apos;ll send you a link to reset your password.</p>
+                <p className='text-gray-600 text-sm'>
+                  Enter your email and we&apos;ll send you a link to reset your password.
+                </p>
               </div>
               <form onSubmit={handleSubmit} className='flex flex-col w-full space-y-4'>
                 <AuthInput
@@ -90,7 +94,10 @@ const ForgotPassword = () => {
               <div className='mt-6 text-center'>
                 <p className='text-sm text-gray-600'>
                   Return to{' '}
-                  <Link to='/auth/login' className='text-amber-600 hover:text-amber-700 font-medium'>
+                  <Link
+                    to='/auth/login'
+                    className='text-amber-600 hover:text-amber-700 font-medium'
+                  >
                     Login
                   </Link>
                 </p>
@@ -125,7 +132,9 @@ const ForgotPassword = () => {
                     <Mail className='w-4 h-4' />
                     <span className='text-sm font-medium'>Email sent to:</span>
                   </div>
-                  <p className='text-amber-900 font-semibold mt-1'>{forgotPasswordForm.inputs.email}</p>
+                  <p className='text-amber-900 font-semibold mt-1'>
+                    {forgotPasswordForm.inputs.email}
+                  </p>
                 </div>
               )}
 

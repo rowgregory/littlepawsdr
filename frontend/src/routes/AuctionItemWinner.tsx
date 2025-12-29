@@ -1,23 +1,26 @@
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { useGetWinningBidderQuery, useUpdateAuctionWinningBidderMutation } from '../redux/services/campaignApi';
 import AuctionItemWinnerSuccessPaymentModal from '../components/modals/AuctionItemWinnerSuccessPaymentModal';
-import AuctionItemWinnerContainer from '../components/campaign/auction-winner/AuctionItemWinnerContainer';
+import AuctionItemWinnerContainer from '../components/auction/AuctionItemWinnerContainer';
 import DachshundLoader from '../components/Loaders/DachshundLoader';
 import { motion } from 'framer-motion';
 import { Heart, ArrowLeft, Trophy, Crown, Sparkles } from 'lucide-react';
+import {
+  useGetWinningBidderQuery,
+  useRecordWinningBidPaymentMutation,
+} from '../redux/services/auctionApi';
 
 const AuctionItemWinner = () => {
   const [orderLoader, setOrderLoader] = useState(false);
   const params = useParams();
   const { data: queryData } = useGetWinningBidderQuery(params?.id);
-  const winningBid = queryData?.winningBidder;
-  const [payforAuctionItem, { data }] = useUpdateAuctionWinningBidderMutation();
+  const winningBid = queryData?.winningAuctionItemBidderWithCustomAuctionLink;
+  const [payforAuctionItem, { data }] = useRecordWinningBidPaymentMutation();
 
   return (
     <>
       {orderLoader && <DachshundLoader />}
-      <AuctionItemWinnerSuccessPaymentModal open={data?.paymentSuccess} winningBid={winningBid} />
+      <AuctionItemWinnerSuccessPaymentModal open={data?.paymentSuccess} />
       <div className='min-h-dvh bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900'>
         {/* Header */}
         <motion.div
@@ -93,7 +96,11 @@ const AuctionItemWinner = () => {
               </motion.div>
 
               {/* Animated text content */}
-              <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6, delay: 0.3 }}>
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+              >
                 <motion.h1
                   className='text-xl font-bold text-white flex items-center gap-2'
                   initial={{ opacity: 0 }}
@@ -101,7 +108,11 @@ const AuctionItemWinner = () => {
                   transition={{ delay: 0.5 }}
                 >
                   Little Paws Dachshund Rescue
-                  <motion.div initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.7, type: 'spring' }}>
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.7, type: 'spring' }}
+                  >
                     <Trophy className='w-5 h-5 text-yellow-400' />
                   </motion.div>
                 </motion.h1>
@@ -119,8 +130,12 @@ const AuctionItemWinner = () => {
             </div>
 
             {/* Animated back button */}
-            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6, delay: 0.4 }}>
-              <Link to={`/campaigns/${winningBid?.customCampaignLink}/auction`} className='group'>
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+            >
+              <Link to={`/auctions/${winningBid?.customAuctionLink}`} className='group'>
                 <motion.div
                   className='flex items-center space-x-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg px-4 py-2 text-white transition-all duration-300 w-fit mt-4 md:mt-0'
                   whileHover={{
@@ -179,7 +194,11 @@ const AuctionItemWinner = () => {
         </motion.div>
 
         <div className='relative z-10 max-w-6xl mx-auto px-4 pb-8'>
-          <AuctionItemWinnerContainer winningBid={winningBid} setOrderLoader={setOrderLoader} payForAuctionItem={payforAuctionItem} />
+          <AuctionItemWinnerContainer
+            winningBid={winningBid}
+            setOrderLoader={setOrderLoader}
+            payForAuctionItem={payforAuctionItem}
+          />
         </div>
       </div>
     </>

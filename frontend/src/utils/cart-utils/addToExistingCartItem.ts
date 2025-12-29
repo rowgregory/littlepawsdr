@@ -2,12 +2,18 @@ const addToExistingCartItem = (item: any, state: any, existingItem: any) => {
   if (item?.from === 'cart') existingItem.quantity += 1;
   else existingItem.quantity = item?.quantity;
 
-  const updatedCartItems = state.cartItems.map((x: any) =>
-    (x.productId === item?.productId && x.size === item?.size) ||
-    (x.productId === item?.productId && item?.isEcard)
-      ? existingItem
-      : x
-  );
+  const updatedCartItems = state.cartItems.map((x: any) => {
+    // Check if this is the item to update
+    const isMatch =
+      // Welcome wiener match
+      (item?.dachshundId && x?.itemId === item?.itemId && x?.dachshundId === item?.dachshundId) ||
+      // Product with size match
+      (item?.size && x?.itemId === item?.itemId && x?.size === item?.size) ||
+      // Product without size or ecard match
+      (!item?.dachshundId && !item?.size && x?.itemId === item?.itemId);
+
+    return isMatch ? existingItem : x;
+  });
 
   const { shippingPrice, totalItems, subtotal } = updatedCartItems?.reduce(
     (acc: any, item: any) => {

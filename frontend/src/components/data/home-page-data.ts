@@ -16,7 +16,7 @@ const hightlightCardData = [
     btnText: 'Donate',
   },
   {
-    linkKey: '/campaigns',
+    linkKey: '/auctions',
     titleKey: 'Bid in Auctions',
     textKey: 'Place bids in auctions to directly aid our rescue initiatives.',
     icon: gavelIcon,

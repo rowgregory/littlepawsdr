@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { Shield, Heart, Lock, Eye, Database, Share2, Cookie, UserCheck, AlertTriangle, Globe } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { containerVariants, itemVariants } from '../lib/constants/motion';
 
 const PrivacyPolicy = () => {
   const sections = [
@@ -101,28 +102,6 @@ const PrivacyPolicy = () => {
       content: `We retain your personal information for as long as necessary to fulfill the purposes outlined in this privacy policy, unless a longer retention period is required or permitted by law. Adoption records and donation information may be retained indefinitely for historical and legal compliance purposes.`,
     },
   ];
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.08,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, x: -20 },
-    visible: {
-      opacity: 1,
-      x: 0,
-      transition: {
-        duration: 0.5,
-        ease: 'easeOut',
-      },
-    },
-  };
 
   return (
     <div className='min-h-screen bg-gradient-to-br from-teal-50 via-cyan-50 to-blue-50'>

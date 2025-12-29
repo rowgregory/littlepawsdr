@@ -2,7 +2,14 @@ import { Save } from 'lucide-react';
 import { uploadFileToFirebase } from '../../utils/uploadToFirebase';
 import ecardCategories from '../data/merch-and-ecards/ecard-categories-data';
 
-const AdminEcardForm = ({ handleSubmit, handleInput, inputs, loading, setInputs, dispatch }: any) => {
+const AdminEcardForm = ({
+  handleSubmit,
+  handleInput,
+  inputs,
+  loading,
+  setInputs,
+  dispatch,
+}: any) => {
   const editPhotoHandler = async (e: any) => {
     const imgData: any = await uploadFileToFirebase(e.target.files[0], true);
 
@@ -16,7 +23,9 @@ const AdminEcardForm = ({ handleSubmit, handleInput, inputs, loading, setInputs,
       <div className='grid grid-cols-12 gap-3'>
         <div className='col-span-12'>
           <p className='text-lg font-Matter-Medium'>Main details</p>
-          <p className='font-Matter-Light text-sm tracking-wide'>Choose a name and category for your ecard.</p>
+          <p className='font-Matter-Light text-sm tracking-wide'>
+            Choose a name and category for your ecard.
+          </p>
         </div>
         <div className='col-span-12'>
           <div className='flex flex-col gap-3'>
@@ -81,14 +90,24 @@ const AdminEcardForm = ({ handleSubmit, handleInput, inputs, loading, setInputs,
               className='w-60 h-60 aspect-square rounded-lg border-dashed border-gray-200 border-2 flex flex-col items-center justify-center p-3 cursor-pointer'
             >
               {inputs?.image ? (
-                <img src={inputs?.image} alt='Ecard' className='object-cover cursor-pointer h-full w-full bg-gray-100 rounded-lg' />
+                <img
+                  src={inputs?.image}
+                  alt='Ecard'
+                  className='object-cover cursor-pointer h-full w-full bg-gray-100 rounded-lg'
+                />
               ) : (
                 <>
                   <i className='fa-solid fa-cloud-arrow-up fa-xl mb-2 bg-gray-200 rounded-full flex justify-center items-center h-12 w-12 text-gray-700'></i>
                   <p className='font-Matter-Regular underline text-gray-400'>Click to add photo</p>
                 </>
               )}
-              <input id='image-file' name='image' type='file' onChange={editPhotoHandler} className='hidden' />
+              <input
+                id='image-file'
+                name='image'
+                type='file'
+                onChange={editPhotoHandler}
+                className='hidden'
+              />
             </label>
           </div>
         </div>
@@ -107,7 +126,7 @@ const AdminEcardForm = ({ handleSubmit, handleInput, inputs, loading, setInputs,
         ) : (
           <>
             <Save className='w-4 h-4' />
-            Save Campaign Details
+            Save Details
           </>
         )}
       </button>

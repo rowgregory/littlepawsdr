@@ -47,7 +47,7 @@ export const pagesToExclude = (pathname: string) =>
     '/order',
     '/email-confirmation',
     '/404',
-    '/campaigns',
+    '/auctions',
     '/auction-items',
   ].some((a: string) => pathname.includes(a));
 

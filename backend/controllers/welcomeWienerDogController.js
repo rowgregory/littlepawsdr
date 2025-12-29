@@ -66,7 +66,7 @@ const getWelcomeWienerDogById = async (req, res) => {
  @access  Private Admin
 */
 const createWelcomeWienerDog = async (req, res) => {
-  const { displayUrl, name, bio, age, associatedProducts, images } = req.body;
+  const { displayUrl, name, bio, age, associatedProducts, images, isLive } = req.body;
 
   try {
     const objectIds = associatedProducts?.map((id) => new mongoose.Types.ObjectId(id));
@@ -78,6 +78,7 @@ const createWelcomeWienerDog = async (req, res) => {
       age,
       associatedProducts: objectIds,
       images,
+      isLive,
     });
 
     res.status(201).json({ message: 'Welcome Wiener created', sliceName: 'welcomeWienerApi' });
@@ -91,37 +92,6 @@ const createWelcomeWienerDog = async (req, res) => {
 
     res.status(500).json({
       message: 'Error creating welcome wiener dog',
-      sliceName: 'welcomeWienerApi',
-    });
-  }
-};
-
-/**
- @desc    Get welcome wiener dog
- @route   PUT /api/welcome-wiener-dog/:id
- @access  Private Admin
-*/
-const updateWelcomeWienerDog = async (req, res) => {
-  const { id } = req.params;
-  const { displayUrl, name, bio, age, associatedProducts, images } = req.body;
-
-  try {
-    await WelcomeWienerDog.findByIdAndUpdate(
-      id,
-      { displayUrl, name, bio, age, associatedProducts, images },
-      { new: true }
-    );
-    res.status(200).json({ message: 'Welcome Wiener updated', sliceName: 'welcomeWienerApi' });
-  } catch (err) {
-    await Error.create({
-      functionName: 'UPDATE_WELCOME_WIENER_DOG_PRIVATE_ADMIN',
-      name: err.name,
-      message: err.message,
-      user: { id: req?.user?._id, email: req?.user?.email },
-    });
-
-    res.status(500).json({
-      message: 'Error updating welcome wiener dog',
       sliceName: 'welcomeWienerApi',
     });
   }
@@ -193,7 +163,6 @@ export {
   getAllWelcomeWienerDogs,
   getWelcomeWienerDogById,
   createWelcomeWienerDog,
-  updateWelcomeWienerDog,
   deleteWelcomeWienerDog,
   toggleWelcomeWienerDog,
 };

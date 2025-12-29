@@ -8,14 +8,14 @@ export const userApi = api.injectEndpoints({
       query: () => BASE_URL,
       providesTags: ['User'],
     }),
-    getUser: build.query({
+    getUserById: build.query({
       query: (userId: string) => `${BASE_URL}/${userId}`,
       providesTags: (result: any, error: any, arg: any) => [{ type: 'User', id: arg }],
     }),
     updateUserRole: build.mutation({
       query: (user: any) => ({
         url: `${BASE_URL}/role/${user.id}`,
-        method: 'PUT',
+        method: 'PATCH',
         body: user,
       }),
       invalidatesTags: ['User'],
@@ -27,9 +27,9 @@ export const userApi = api.injectEndpoints({
       }),
       invalidatesTags: ['User'],
     }),
-    fetchUserProfile: build.query({
-      query: () => `${BASE_URL}/fetch-user-profile`,
-      providesTags: ['User', 'Campaign', 'Adoption-Application-Fee'],
+    getUserProfile: build.query({
+      query: () => `${BASE_URL}/get-user-profile`,
+      providesTags: ['User', 'Auction', 'Adoption-Application-Fee'],
     }),
     updateUserProfile: build.mutation({
       query: (user: any) => ({
@@ -37,9 +37,9 @@ export const userApi = api.injectEndpoints({
         method: 'PATCH',
         body: user,
       }),
-      invalidatesTags: ['User', 'Campaign'],
+      // invalidatesTags: ['User', 'Auction'],
     }),
-    removeUserAddress: build.mutation({
+    deleteUserAddress: build.mutation({
       query: ({ userId }: { userId: string }) => ({
         url: `${BASE_URL}/${userId}/address`,
         method: 'DELETE',
@@ -47,10 +47,10 @@ export const userApi = api.injectEndpoints({
       invalidatesTags: ['User'],
     }),
     updateLastSeenChangelogVersion: build.mutation({
-      query: ({ lastSeenChangelogVersion }: { lastSeenChangelogVersion: string }) => ({
+      query: (currentVersion: string) => ({
         url: `${BASE_URL}/update-last-seen-changelog-version`,
         method: 'PATCH',
-        body: { lastSeenChangelogVersion },
+        body: currentVersion,
       }),
       invalidatesTags: ['User'],
     }),
@@ -59,11 +59,11 @@ export const userApi = api.injectEndpoints({
 
 export const {
   useGetUsersQuery,
-  useGetUserQuery,
+  useGetUserByIdQuery,
   useUpdateUserRoleMutation,
   useDeleteUserMutation,
-  useFetchUserProfileQuery,
+  useGetUserProfileQuery,
   useUpdateUserProfileMutation,
-  useRemoveUserAddressMutation,
+  useDeleteUserAddressMutation,
   useUpdateLastSeenChangelogVersionMutation,
 } = userApi;

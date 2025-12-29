@@ -1,65 +1,54 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
+import { AddressSchema } from '../models/addressModel.js';
 
-const orderSchema = mongoose.Schema(
+const OrderSchema = new Schema(
   {
-    name: { type: String, required: true },
-    email: { type: String, required: true },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
     },
-    products: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'ProductOrder',
-        default: [],
-      },
-    ],
-    welcomeWieners: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'WelcomeWienerOrder',
-        default: [],
-      },
-    ],
-    ecards: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'ECardOrder',
-        default: [],
-      },
-    ],
-
-    paypalOrderId: { type: String, required: true },
-    confirmationEmailHasBeenSent: { type: Boolean, default: false },
-    orderShippedconfirmationEmailHasBeenSent: { type: Boolean },
-    orderNotificationEmailHasBeenSent: { type: Boolean },
-
-    shippingAddress: {
-      address: { type: String },
-      city: { type: String },
-      state: { type: String },
-      zipPostalCode: { type: String },
+    email: {
+      type: String,
+      required: true,
     },
-    shippingPrice: { type: Number, default: 0.0 },
-    isShipped: { type: Boolean, default: false },
-    shippedOn: { type: Date },
-    shippingProvider: { type: String },
-    trackingNumber: { type: String },
-    requiresShipping: { type: Boolean },
-    subtotal: { type: Number },
-    totalPrice: { type: Number, required: true, default: 0.0 },
-    totalItems: { type: Number },
-    status: { type: String },
-    isEcard: { type: Boolean },
-    isWelcomeWiener: { type: Boolean },
-    isProduct: { type: Boolean },
+    name: {
+      type: String,
+      required: true,
+    },
+    shippingAddress: AddressSchema,
+    items: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'OrderItem',
+      },
+    ],
+    subtotal: {
+      type: Number,
+      required: true,
+    },
+    shippingPrice: {
+      type: Number,
+      default: 0,
+    },
+    totalPrice: {
+      type: Number,
+      required: true,
+    },
+    paypalOrderId: String,
+    status: {
+      type: String,
+      enum: ['pending', 'completed', 'cancelled', 'refunded'],
+      default: 'completed',
+    },
+    shippingStatus: {
+      type: String,
+      enum: ['not-shipped', 'processing', 'shipped', 'delivered', 'cancelled', 'digital'],
+      default: 'not-shipped',
+    },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
-const Order = mongoose.model('Order', orderSchema);
+const Order = mongoose.models.Order || mongoose.model('Order', OrderSchema);
 
 export default Order;

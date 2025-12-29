@@ -4,10 +4,11 @@ import { FC } from 'react';
 
 interface AuctionItemWinnerSuccessPaymentModalProps {
   open: boolean;
-  winningBid: any;
 }
 
-const AuctionItemWinnerSuccessPaymentModal: FC<AuctionItemWinnerSuccessPaymentModalProps> = ({ open, winningBid }) => {
+const AuctionItemWinnerSuccessPaymentModal: FC<AuctionItemWinnerSuccessPaymentModalProps> = ({
+  open,
+}) => {
   const confettiPieces = Array.from({ length: 50 }, (_, i) => ({
     id: i,
     color: ['#10B981', '#3B82F6', '#8B5CF6', '#F59E0B', '#EF4444'][i % 5],
@@ -169,24 +170,11 @@ const AuctionItemWinnerSuccessPaymentModal: FC<AuctionItemWinnerSuccessPaymentMo
                   className='relative'
                 >
                   <Link
-                    to='/settings/campaign/winning-bids'
+                    to='/supporter/auctions'
                     className='block w-full bg-white text-orange-600 font-bold px-8 py-4 rounded-xl transition-all duration-300 hover:no-underline hover:text-orange-700 text-center shadow-lg hover:shadow-xl transform hover:-translate-y-1'
                   >
                     View My Winning Bids
                   </Link>
-
-                  {/* Button glow effect */}
-                  <motion.div
-                    className='absolute inset-0 bg-white rounded-xl opacity-20'
-                    animate={{
-                      scale: [1, 1.05, 1],
-                      opacity: [0.2, 0.1, 0.2],
-                    }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                    }}
-                  />
                 </motion.div>
               </div>
             </motion.div>

@@ -8,7 +8,6 @@ const eCardSchema = mongoose.Schema(
     name: { type: String },
     isEcard: { type: Boolean, default: true },
     thumb: { type: String },
-    sendNow: { type: Boolean, default: true }
   },
   {
     timestamps: true,
