@@ -77,7 +77,7 @@ const AdminSidebar = ({ onClose }: { onClose?: () => void }) => {
         {
           icon: Inbox,
           label: 'Newsletter',
-          path: '/admin/newsletter/issues',
+          path: '/admin/newsletters',
         },
       ],
     },
