@@ -17,6 +17,68 @@ interface ChangelogEntry {
 
 const changelogData: ChangelogEntry[] = [
   {
+    version: '3.0.2',
+    date: '2025-12-30',
+    changes: [
+      {
+        type: 'feature',
+        title: 'Multi-Photo Upload for Admins',
+        description:
+          'Admins can now upload multiple photos per newsletter issue. Upload interface accepts multiple files with support. Photos are stored as separate Photo documents and referenced in newsletter.',
+        impact: 'high',
+      },
+      {
+        type: 'refactor',
+        title: 'NewsletterIssue Schema Update',
+        description:
+          'Updated NewsletterIssue schema with photos array containing Photo document references. Removed deprecated imageUrl string attribute. Photos now properly referenced as ObjectIds with populate support.',
+        impact: 'high',
+      },
+      {
+        type: 'feature',
+        title: 'Photo Model & Management',
+        description:
+          'Created dedicated Photo model for storing image metadata (url, name, size). Refactored newsletter and other image uploads to use Photo references instead of storing URLs directly.',
+        impact: 'medium',
+      },
+      {
+        type: 'feature',
+        title: 'Multi-Image Newsletter Viewer',
+        description:
+          'Enhanced newsletter viewer to support multiple images per issue. Added image navigation with previous/next buttons, image counter (X of Y), and smooth transitions between photos.',
+        impact: 'medium',
+      },
+      {
+        type: 'refactor',
+        title: 'Newsletter CRUD Operations',
+        description:
+          'Updated createNewsletterIssue and updateNewsletterIssue endpoints to properly handle Photo model. Implemented photo comparison logic to only update when photos actually change. Added journeyId-based logging.',
+        impact: 'high',
+      },
+      {
+        type: 'ui',
+        title: 'FeedAFoster Page Redesign',
+        description:
+          'Completely modernized FeedAFoster campaign page with professional split layout. Added gradient backgrounds, donation card grid, trust indicators, and improved countdown timer design. Uses teal color scheme.',
+        impact: 'low',
+      },
+      {
+        type: 'ui',
+        title: '404 Page Creation',
+        description:
+          'Created modern 404 error page with header navigation (logo + login), cute dachshund emoji animations, helpful CTAs (Go Back, Home), and link to auctions page.',
+        impact: 'low',
+      },
+      {
+        type: 'ui',
+        title: 'Split-Screen Authentication Pages',
+        description:
+          'Redesigned all auth pages (login, register, forgot password, reset password) with modern split-screen layout. Left side has branded messaging and animations, right side has clean form inputs. Includes PasswordInput component with show/hide toggle.',
+        impact: 'low',
+      },
+    ],
+  },
+  {
     version: '3.0.0',
     date: '2025-12-29',
     changes: [

@@ -137,3 +137,5 @@ export const useBugSelector = () => useAppSelector((state: RootState) => state.b
 export const useEcardSelector = () => useAppSelector((state: RootState) => state.ecard);
 export const useProductSelector = () => useAppSelector((state: RootState) => state.product);
 export const useOrderSelector = () => useAppSelector((state: RootState) => state.orders);
+export const useNewsletterIssueSelector = () =>
+  useAppSelector((state: RootState) => state.newsletterIssue);

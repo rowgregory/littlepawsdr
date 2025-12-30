@@ -21,6 +21,7 @@ import Donations from './Donations';
 import OrderDrawer from '../../components/drawers/OrderDrawer';
 import AuctionItemBidsDrawer from '../../components/drawers/AuctionItemBidsDrawer';
 import AdminNewsletterIssues from './AdminNewsletterIssues';
+import NewsletterIssueDrawer from '../../components/drawers/NewsletterIssueDrawer';
 
 const Auctions = lazy((): LazyModulePromise => import('./Auction'));
 const AdoptionApplication = lazy((): LazyModulePromise => import('./AdoptionApplication'));
@@ -39,6 +40,7 @@ const AdminRoutes = () => {
       <ProductDrawer />
       <UserDrawer />
       <WelcomeWienerDrawer />
+      <NewsletterIssueDrawer />
 
       <AdminLayout>
         <Routes>

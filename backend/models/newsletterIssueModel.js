@@ -23,10 +23,12 @@ const newsletterIssueSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    imageUrl: {
-      type: String,
-      required: true,
-    },
+    photos: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Photo',
+      },
+    ],
     publishedAt: {
       type: Date,
       default: Date.now,
@@ -41,4 +43,5 @@ const newsletterIssueSchema = new mongoose.Schema(
 // Compound index to ensure unique year/quarter combinations
 newsletterIssueSchema.index({ year: 1, quarter: 1 }, { unique: true });
 
-export const NewsletterIssue = mongoose.models.NewsletterIssue || mongoose.model('NewsletterIssue', newsletterIssueSchema);
+export const NewsletterIssue =
+  mongoose.models.NewsletterIssue || mongoose.model('NewsletterIssue', newsletterIssueSchema);

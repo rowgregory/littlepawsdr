@@ -7,7 +7,9 @@ import Error from '../../models/errorModel.js';
 // @access  Public
 export const getNewsletterIssues = asyncHandler(async (req, res) => {
   try {
-    const newsletterIssues = await NewsletterIssue.find().sort({ year: -1, quarter: -1 });
+    const newsletterIssues = await NewsletterIssue.find()
+      .sort({ year: -1, quarter: -1 })
+      .populate('photos');
 
     res.status(200).json({
       success: true,

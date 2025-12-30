@@ -7,7 +7,7 @@ import { NewsletterIssue } from '../../../models/newsletterIssueModel.js';
 // @access  Public
 export const getNewsletterIssueById = asyncHandler(async (req, res) => {
   try {
-    const newsletterIssue = await NewsletterIssue.findById(req.params.id);
+    const newsletterIssue = await NewsletterIssue.findById(req.params.id).populate('photos');
 
     if (!newsletterIssue) {
       res.status(404);

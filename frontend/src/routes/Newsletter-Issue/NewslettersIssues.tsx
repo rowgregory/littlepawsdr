@@ -97,7 +97,7 @@ const NewsletterIssues = () => {
                             {/* Placeholder image background */}
 
                             <img
-                              src={newsletter.imageUrl}
+                              src={newsletter.photos[0].url}
                               alt={newsletter.title}
                               className='w-full h-full object-cover'
                             />

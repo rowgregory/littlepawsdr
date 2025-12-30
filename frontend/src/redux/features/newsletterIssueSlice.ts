@@ -1,15 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
-interface NewsletterIssue {
-  _id: string;
-  year: number;
-  quarter: string;
-  title: string;
-  description: string;
-  imageUrl: string;
-  publishedAt: string;
-  createdAt: string;
-}
+import { NewsletterIssue } from '../../types/entities/newsletter-issue';
 
 interface NewsletterIssueState {
   newsletterIssues: NewsletterIssue[];
@@ -17,6 +7,7 @@ interface NewsletterIssueState {
   isLoading: boolean;
   error: string | null;
   expandedYears: number[];
+  newsletterIssueDrawer: boolean;
 }
 
 const initialState: NewsletterIssueState = {
@@ -25,6 +16,7 @@ const initialState: NewsletterIssueState = {
   isLoading: false,
   error: null,
   expandedYears: [],
+  newsletterIssueDrawer: false,
 };
 
 const newsletterIssueSlice = createSlice({
@@ -78,9 +70,11 @@ const newsletterIssueSlice = createSlice({
     clearError: (state) => {
       state.error = null;
     },
-
-    resetNewsletterState: (state) => {
-      return initialState;
+    setOpenNewsletterIssueDrawer: (state) => {
+      state.newsletterIssueDrawer = true;
+    },
+    setCloseNewsletterIssueDrawer: (state) => {
+      state.newsletterIssueDrawer = false;
     },
   },
 });
@@ -96,7 +90,8 @@ export const {
   toggleExpandedYear,
   setExpandedYears,
   clearError,
-  resetNewsletterState,
+  setOpenNewsletterIssueDrawer,
+  setCloseNewsletterIssueDrawer,
 } = newsletterIssueSlice.actions;
 
 export const newsletterIssueReducer = newsletterIssueSlice.reducer;

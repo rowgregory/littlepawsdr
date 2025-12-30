@@ -67,6 +67,13 @@ const formInitialState = {
     inputs: {},
     errors: {},
   },
+  newsletterIssueForm: {
+    inputs: {
+      year: 2026,
+      quarter: 'Q1',
+    },
+    errors: {},
+  },
 } as any;
 
 const formSlice = createSlice({
