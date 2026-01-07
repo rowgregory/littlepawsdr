@@ -18,7 +18,7 @@ const createOrder = asyncHandler(async (req, res) => {
   const journeyId = `CREATE_ORDER_${Date.now()}`;
   const events = [];
 
-  const pugEmail = createPugEmailClient();
+  const pugEmail = await createPugEmailClient();
 
   try {
     const {

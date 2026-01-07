@@ -100,13 +100,10 @@ const Orders = () => {
                 <tbody className='divide-y divide-gray-100'>
                   {(filteredOrders?.length || 0) > 0 ? (
                     filteredOrders?.map((order: any, index: number) => {
-                      const hasPhysicalProduct = order?.items?.some(
-                        (item: any) => item.itemType === 'product' && item.isPhysicalProduct
-                      );
+                      const hasPhysicalProduct = order?.shippingPrice > 0;
 
                       const needsAction =
-                        (hasPhysicalProduct && order?.shippingStatus === 'not-shipped') ||
-                        order?.status !== 'completed';
+                        hasPhysicalProduct && order?.shippingStatus === 'not-shipped';
 
                       return (
                         <motion.tr
@@ -143,7 +140,7 @@ const Orders = () => {
                           <td className='px-4 py-3 whitespace-nowrap'>
                             <span
                               className={`inline-flex px-3 py-1 rounded-full text-xs font-semibold ${
-                                order?.status === 'completed'
+                                order?.status === 'Complete' || order?.status === 'completed'
                                   ? 'bg-green-100 text-green-700'
                                   : 'bg-red-100 text-red-700'
                               }`}

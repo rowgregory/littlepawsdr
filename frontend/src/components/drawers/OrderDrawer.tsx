@@ -15,9 +15,10 @@ const OrderDrawer = () => {
   const order = inputs?.order;
   const onClose = () => dispatch(setCloseOrderDrawer());
 
-  const hasPhysicalProduct = order?.items?.some(
-    (item: any) => item.itemType === 'product' && item.isPhysicalProduct === true
-  );
+  const hasPhysicalProduct =
+    order?.items?.some(
+      (item: any) => item.itemType === 'product' && item.isPhysicalProduct === true
+    ) || order?.isProduct;
 
   const handleCompleteOrder = async (orderId: string) => {
     try {
@@ -239,17 +240,15 @@ const OrderDrawer = () => {
                         {order?.shippingStatus || 'not-shipped'}
                       </span>
 
-                      {order?.shippingStatus !== 'shipped' && (
-                        <motion.button
-                          whileHover={{ scale: isLoading ? 1 : 1.05 }}
-                          whileTap={{ scale: isLoading ? 1 : 0.95 }}
-                          onClick={() => handleCompleteOrder(order?._id)}
-                          disabled={isLoading}
-                          className='ml-auto px-3 py-1.5 text-xs font-semibold bg-gray-900 text-white hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-colors'
-                        >
-                          {isLoading ? 'Updating...' : 'Mark Shipped'}
-                        </motion.button>
-                      )}
+                      <motion.button
+                        whileHover={{ scale: isLoading ? 1 : 1.05 }}
+                        whileTap={{ scale: isLoading ? 1 : 0.95 }}
+                        onClick={() => handleCompleteOrder(order?._id)}
+                        disabled={isLoading}
+                        className='ml-auto px-3 py-1.5 text-xs font-semibold bg-gray-900 text-white hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-colors'
+                      >
+                        {isLoading ? 'Updating...' : 'Mark Shipped'}
+                      </motion.button>
                     </div>
                   </div>
                 )}

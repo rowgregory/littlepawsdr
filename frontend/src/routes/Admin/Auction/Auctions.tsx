@@ -84,7 +84,7 @@ const AuctionsDashboard = () => {
         </motion.div>
 
         {/* Main Content */}
-        <div className='max-w-7xl mx-auto space-y-6'>
+        <div className='max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6'>
           {/* Search and Filter */}
           <motion.div
             className='space-y-3 sm:space-y-0 sm:flex gap-3'

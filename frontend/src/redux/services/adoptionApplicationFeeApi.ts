@@ -8,45 +8,31 @@ export const adoptionApplicationFeeApi = api.injectEndpoints({
       query: () => BASE_URL,
       providesTags: ['Adoption-Application-Fee'],
     }),
-    createAdoptionApplicationFee: build.mutation({
+    createAdoptionFee: build.mutation({
       query: (fee: any) => ({
         url: BASE_URL,
         method: 'POST',
         body: fee,
       }),
-      invalidatesTags: ['User'],
+      invalidatesTags: ['Adoption-Application-Fee'],
     }),
-    checkIfUserHasActiveAdoptionFeeSession: build.mutation({
-      query: (product: any) => ({
-        url: `${BASE_URL}/active-session`,
-        method: 'POST',
-        body: product,
+    checkAdoptionSession: build.mutation({
+      query: (data: any) => ({
+        url: `${BASE_URL}/check-session/${data.id}`,
+        method: 'GET',
       }),
       invalidatesTags: ['Adoption-Application-Fee'],
     }),
-    jwtCheckValidityAdoptionFee: build.mutation({
-      query: (token: any) => ({
-        url: `${BASE_URL}/check-jwt-validity`,
-        method: 'POST',
-        body: token,
-      }),
-      invalidatesTags: ['Adoption-Application-Fee'],
-    }),
-    updateAdoptionApplicationFee: build.mutation({
-      query: (id: any) => ({
-        url: `${BASE_URL}/expired`,
-        method: 'PATCH',
-        body: id,
-      }),
-      invalidatesTags: ['User', 'Adoption-Application-Fee'],
+    getAdoptionApplicationBypassCode: build.query({
+      query: () => `${BASE_URL}/bypass-code`,
+      providesTags: ['Adoption-Application-Fee'],
     }),
   }),
 });
 
 export const {
   useGetAdoptionApplicationFeesQuery,
-  useCreateAdoptionApplicationFeeMutation,
-  useCheckIfUserHasActiveAdoptionFeeSessionMutation,
-  useJwtCheckValidityAdoptionFeeMutation,
-  useUpdateAdoptionApplicationFeeMutation,
+  useCreateAdoptionFeeMutation,
+  useCheckAdoptionSessionMutation,
+  useGetAdoptionApplicationBypassCodeQuery,
 } = adoptionApplicationFeeApi;

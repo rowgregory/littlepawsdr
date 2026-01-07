@@ -1,25 +1,25 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
-import NothingHere from '../../components/assets/404_dog01.png';
-import SessionExpired from '../../components/assets/session-expired.png';
-import ProgressTracker from '../../components/adopt/application/ProgressTracker';
-import CountdownTimer from '../../components/common/CountdownTImer';
-import { useJwtCheckValidityAdoptionFeeMutation } from '../../redux/services/adoptionApplicationFeeApi';
 import Skeleton from '../../components/Loaders/Skeleton';
+import { useCheckAdoptionSessionMutation } from '../../redux/services/adoptionApplicationFeeApi';
+import { motion } from 'framer-motion';
+import { ChevronRight } from 'lucide-react';
+import { useUserSelector } from '../../redux/toolkitStore';
+import CountdownTimer from '../../components/common/CountdownTImer';
 
 const AdoptionApplication = () => {
   const navigate = useNavigate();
-  const { token } = useParams();
+  const { user } = useUserSelector();
+  const { id } = useParams();
   const [countdownEnded, setCountdownEnded] = useState(false);
 
-  const [jwtCheckValidityAdoptionFee, { isLoading, data, error }] =
-    useJwtCheckValidityAdoptionFeeMutation();
+  const [checkAdoptionSession, { isLoading, data, error }] = useCheckAdoptionSessionMutation();
 
   useEffect(() => {
-    if (token) {
-      jwtCheckValidityAdoptionFee({ token });
+    if (id) {
+      checkAdoptionSession({ id });
     }
-  }, [jwtCheckValidityAdoptionFee, token]);
+  }, [checkAdoptionSession, id]);
 
   useEffect(() => {
     if (countdownEnded) {
@@ -35,26 +35,76 @@ const AdoptionApplication = () => {
     );
   }
 
-  if (data?.isExpired) {
+  if (error || !data?.isActive) {
     return (
-      <div className='min-h-screen w-full mx-auto bg-gradient-to-t from-[#eadfce] to-[#f4f4f4] flex justify-center items-center p-4'>
-        <div className='outer-container flex flex-col items-center max-w-xl w-full bg-white rounded-xl p-4 shadow-[0_1px_20px_10px_rgba(0,0,0,0.12)]'>
-          <img
-            className='max-w-48 w-full'
-            src={data?.statusCode === 404 ? NothingHere : SessionExpired}
-            alt='404 Error'
-          />
-          <h1 className='mt-7 text-2xl text-[#5f738b] font-medium text-center'>{data?.message}</h1>
-          {error && <p className='text-center text-red-600 mt-2'>{error}</p>}
-          <h6 className='mt-2 mb-7 text-center text-[#7f91a6] text-base font-normal'>
-            Return to the adoption terms and conditions.
-          </h6>
-          <Link
-            to='/adopt'
-            className='register bg-gradient-to-l from-[#3ec3a4] to-[#6fd7a3] text-white font-normal px-7 py-2 rounded-full text-center inline-block hover:no-underline'
+      <div className='h-[calc(100vh-773px)] w-full bg-gradient-to-b from-gray-50 to-white flex items-center justify-center px-4'>
+        <div className='max-w-md w-full space-y-8'>
+          {/* Content */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className='text-center space-y-4'
           >
-            Terms & Conditions
-          </Link>
+            <h1 className='text-4xl font-bold text-gray-900'>Session Expired</h1>
+            <p className='text-lg text-gray-600'>Your 7-day access period has ended.</p>
+            {error && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className='p-4 bg-red-50 border border-red-200 rounded-lg'
+              >
+                <p className='text-red-700 text-sm'>{error}</p>
+              </motion.div>
+            )}
+          </motion.div>
+
+          {/* CTA Buttons */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className='space-y-3'
+          >
+            <Link
+              to='/adopt'
+              className='w-full px-6 py-3 bg-teal-600 hover:bg-teal-700 text-white font-semibold rounded-lg transition-colors flex items-center justify-center space-x-2'
+            >
+              <span>Start New Application</span>
+              <ChevronRight className='w-4 h-4' />
+            </Link>
+            <Link
+              to='/'
+              className='block w-full px-6 py-3 border border-gray-300 hover:bg-gray-50 text-gray-900 font-semibold rounded-lg transition-colors text-center'
+            >
+              Back to Home
+            </Link>
+            <Link
+              to={user?._id ? '/supporter/overview' : '/auth/register'}
+              className='block w-full px-6 py-3 border border-gray-300 hover:bg-gray-50 text-gray-900 font-semibold rounded-lg transition-colors text-center'
+            >
+              My Profile
+            </Link>
+          </motion.div>
+
+          {/* Info Box */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            className='bg-gray-50 border border-gray-200 rounded-lg p-4 space-y-2'
+          >
+            <p className='text-sm font-medium text-gray-900'>Need help?</p>
+            <p className='text-xs text-gray-600'>
+              Contact us at{' '}
+              <a
+                href='mailto:applications@littlepawsdr.org'
+                className='text-teal-600 hover:text-teal-700'
+              >
+                lpdr@littlepawsdr.org
+              </a>
+            </p>
+          </motion.div>
         </div>
       </div>
     );
@@ -65,14 +115,13 @@ const AdoptionApplication = () => {
       <h1 className='font-QBold text-charcoal text-xl sm:text-2xl mb-3 text-center'>
         Little Paws Dachshund Rescue {new Date().getFullYear()} Adoption Application
       </h1>
-      {data?.exp && (
+      {data?.expiresAt && (
         <CountdownTimer
-          exp={data.exp}
+          expiresAt={data.expiresAt}
           setCountdownEnded={setCountdownEnded}
           styles='relative text-charcoal font-QBold text-center'
         />
       )}
-      <ProgressTracker step={{ step1: true, step2: true, step3: true, step4: true }} />
       <div className='max-w-screen-md mx-auto border border-gray-200 rounded-xl mt-6'>
         <iframe
           className='h-[600px] overflow-y-scroll w-full'

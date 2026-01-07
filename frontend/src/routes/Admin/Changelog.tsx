@@ -17,6 +17,68 @@ interface ChangelogEntry {
 
 const changelogData: ChangelogEntry[] = [
   {
+    version: '16.0.3',
+    date: '2025-01-07',
+    changes: [
+      {
+        type: 'feature',
+        title: 'Responsive Navigation with Custom Breakpoints',
+        description:
+          'Navigation links now disappear progressively at different breakpoints instead of all disappearing at once. Each link has its own custom breakpoint (880px, 1075px, 1230px, 1360px) allowing graceful degradation as viewport width decreases. Links are hidden individually to prevent crowding.',
+        impact: 'medium',
+      },
+      {
+        type: 'improvement',
+        title: 'Tailwind Custom Breakpoints',
+        description:
+          'Added custom screen sizes to tailwind.config.js (880px, 1075px, 1230px, 1360px) for fine-grained responsive control over navigation menu items.',
+        impact: 'low',
+      },
+      {
+        type: 'feature',
+        title: 'Newsletter Link Added to Navigation',
+        description:
+          'Added "Newsletters" link to bottom header navigation, pointing to newsletter issues page. Link appears at 1360px breakpoint and above, ensuring navigation remains clean on smaller screens.',
+        impact: 'high',
+      },
+      {
+        type: 'feature',
+        title: 'Daily Expiration Cron Job',
+        description:
+          'Added Node-cron job that runs daily at 9 AM to automatically expire all adoption fees with expiresAt dates in the past. Marks expired applications as Inactive and tokenStatus as Expired.',
+        impact: 'medium',
+      },
+      {
+        type: 'feature',
+        title: 'Adoption Application Fee System Redesigned',
+        description:
+          'Complete overhaul of adoption application fee process. Replaced JWT token-based sessions with simple expiration dates. Users now get 7-day access after payment. Sessions stored in database with expiresAt field for automatic expiration.',
+        impact: 'high',
+      },
+      {
+        type: 'feature',
+        title: 'Daily Expiration Cron Job',
+        description:
+          'Added Node-cron job that runs daily at 9 AM to automatically expire all adoption fees with expiresAt dates in the past. Marks expired applications as Inactive and tokenStatus as Expired.',
+        impact: 'medium',
+      },
+      {
+        type: 'improvement',
+        title: 'Admin Dashboard Adoption Fees View',
+        description:
+          'Updated admin adoption fees table to show Application Status, Token Status, active/inactive counts, and top 5 purchasers by name grouping. Added bypass code badge to indicate which users used bypass codes.',
+        impact: 'low',
+      },
+      {
+        type: 'ui',
+        title: 'Session Expired Error Page',
+        description:
+          'New lightweight session expired page with options to start new application or return home. Includes contact information for support.',
+        impact: 'low',
+      },
+    ],
+  },
+  {
     version: '3.0.2',
     date: '2025-12-30',
     changes: [

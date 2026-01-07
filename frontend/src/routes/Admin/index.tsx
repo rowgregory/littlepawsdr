@@ -22,9 +22,9 @@ import OrderDrawer from '../../components/drawers/OrderDrawer';
 import AuctionItemBidsDrawer from '../../components/drawers/AuctionItemBidsDrawer';
 import AdminNewsletterIssues from './AdminNewsletterIssues';
 import NewsletterIssueDrawer from '../../components/drawers/NewsletterIssueDrawer';
+import AdoptionFeeList from './AdoptionFeeList';
 
 const Auctions = lazy((): LazyModulePromise => import('./Auction'));
-const AdoptionApplication = lazy((): LazyModulePromise => import('./AdoptionApplication'));
 
 const AdminRoutes = () => {
   return (
@@ -51,9 +51,9 @@ const AdminRoutes = () => {
           <Route path='orders' element={<Orders />} />
           <Route path='bugs' element={<AdminBugs />} />
           <Route path='changelog' element={<Changelog />} />
-          <Route path='auctions/*' element={<Auctions />} />
-          <Route path='adoption-application/*' element={<AdoptionApplication />} />
+          <Route path='adoption-fees' element={<AdoptionFeeList />} />
           <Route path='newsletters' element={<AdminNewsletterIssues />} />
+          <Route path='auctions/*' element={<Auctions />} />
           <Route path='*' element={<Navigate to='/404' replace />} />
         </Routes>
       </AdminLayout>

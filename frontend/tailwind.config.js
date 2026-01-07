@@ -3,8 +3,14 @@ export const theme = {
   extend: {
     screens: {
       xs: '480px',
+      880: '880px',
+      1000: '1000px',
+      1075: '1075px',
+      1150: '1150px',
       1190: '1190px',
       1230: '1230px',
+      1270: '1270px',
+      1360: '1360px',
     },
     boxShadow: {
       'right-side': '0 35px 60px -15px rgba(0, 0, 0, 0.3)',
@@ -211,7 +217,8 @@ export const safelist = [
   'hover:bg-pink-700',
   'hover:bg-blue-700',
   {
-    pattern: /(text|bg|border)-(red|orange|yellow|green|lime|blue|cyan|teal|purple|indigo|gray|zinc|slate)-(100|200|300|400|500|600|700|800|900)/,
+    pattern:
+      /(text|bg|border)-(red|orange|yellow|green|lime|blue|cyan|teal|purple|indigo|gray|zinc|slate)-(100|200|300|400|500|600|700|800|900)/,
     variants: ['lg', 'hover', 'focus', 'lg:hover'],
   },
 ];

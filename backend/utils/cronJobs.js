@@ -1,6 +1,5 @@
 import cron from 'node-cron';
 import AdoptionApplicationBypassCode from '../models/adoptionApplicationBypassCodeModel.js';
-import { logEvent, prepareLog } from './logHelpers.js';
 import updateAuctionToBegin from './cron/updateAuctionToBegin.js';
 import resolveUnsoldAuctionItems from './cron/resolveUnsoldAuctionItems.js';
 import generateAdoptionApplicationFeeBypassCode from './cron/generateAdoptionApplicationBypassCode.js';
@@ -18,6 +17,7 @@ import sendWinnerEmailsAndUpdateBids from './cron/sendWinnerEmailsAndUpdateBids.
 import sendEmailWithRetry from './cron/sendEmailWithRetry.js';
 import createPugEmailClient from './emailClients.js';
 import Error from '../models/errorModel.js';
+import AdoptionFee from '../models/adoptionFeeModel.js';
 
 const cronJobs = (io) => {
   return {
@@ -411,6 +411,61 @@ const cronJobs = (io) => {
         timezone: 'America/New_York',
       }
     ),
+    // Every day at 9:00AM
+    startExpireAdoptionFeesJob: cron.schedule('0 9 * * *', async () => {
+      const journeyId = `CRON_EXPIRE_ADOPTION_FEES_${Date.now()}`;
+      const events = [];
+
+      try {
+        events.push({
+          message: 'CRON_STARTED',
+          data: { cronName: 'expireAdoptionFees' },
+        });
+
+        const result = await AdoptionFee.updateMany(
+          {
+            expiresAt: { $lt: new Date() },
+            applicationStatus: 'Active',
+          },
+          {
+            $set: {
+              applicationStatus: 'Inactive',
+              tokenStatus: 'Invalid',
+            },
+          }
+        );
+
+        events.push({
+          message: 'ADOPTION_FEES_EXPIRED',
+          data: {
+            modifiedCount: result.modifiedCount,
+            matchedCount: result.matchedCount,
+          },
+        });
+
+        events.push({
+          message: 'CRON_COMPLETED',
+          data: { status: 'success' },
+        });
+
+        await Log.create({ journey: journeyId, events });
+      } catch (error) {
+        events.push({
+          message: 'CRON_ERROR',
+          data: {
+            error: error.message,
+            stack: error.stack,
+          },
+        });
+
+        events.push({
+          message: 'CRON_FAILED',
+          data: { status: 'failed' },
+        });
+
+        await Log.create({ journey: journeyId, events });
+      }
+    }),
   };
 };
 

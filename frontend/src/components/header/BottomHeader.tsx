@@ -63,7 +63,7 @@ const BottomHeader = () => {
             onClick={() => dispatch(toggleNavigationDrawer({ navigationDrawer: true }))}
             isOpen={toggle.navigationDrawer}
           />
-          <div className='hidden 1190:flex items-center lg:gap-x-7'>
+          <div className='absolute left-1/2 -translate-x-1/2 flex items-center gap-x-5'>
             {bottomHeaderLinks(pathname).map((link, i) => (
               <motion.div
                 key={i}
@@ -81,7 +81,9 @@ const BottomHeader = () => {
                   to={link.linkKey}
                   className={`${
                     link.active ? 'text-teal-400' : 'text-charcoal'
-                  } font-QBook hover:text-teal-400 duration-300 text-[13px] lg:text-base relative z-10 py-2 rounded-lg transition-all hover:bg-teal-50 group-hover:scale-105`}
+                  } font-QBook hover:text-teal-400 duration-300 text-base relative z-10 py-2 rounded-lg transition-all hover:bg-teal-50 group-hover:scale-105 whitespace-nowrap ${
+                    link.className
+                  }`}
                 >
                   {link.linkText}
 

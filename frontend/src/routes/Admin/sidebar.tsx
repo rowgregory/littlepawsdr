@@ -66,8 +66,8 @@ const AdminSidebar = ({ onClose }: { onClose?: () => void }) => {
       items: [
         {
           icon: DollarSign,
-          label: 'Adoption Applications',
-          path: '/admin/adoption-application/fees',
+          label: 'Adoption Application Fees',
+          path: '/admin/adoption-fees',
         },
         {
           icon: Users,

@@ -108,9 +108,16 @@ const SupporterOverview = () => {
                   </div>
 
                   <div className='flex-1 min-w-0'>
-                    <p className='text-sm font-semibold text-gray-900'>
-                      {adoptionFee.firstName} {adoptionFee.lastName}
-                    </p>
+                    <div className='flex items-center gap-2'>
+                      <p className='text-sm font-semibold text-gray-900'>
+                        {adoptionFee.firstName} {adoptionFee.lastName}
+                      </p>
+                      {adoptionFee.bypassCode && (
+                        <span className='text-xs font-bold px-2 py-1 bg-purple-100 text-purple-700 rounded-full'>
+                          Bypass Code
+                        </span>
+                      )}
+                    </div>
                     <div className='flex items-center gap-2 mt-1 flex-wrap'>
                       <span
                         className={`text-xs font-medium px-2 py-0.5 rounded ${

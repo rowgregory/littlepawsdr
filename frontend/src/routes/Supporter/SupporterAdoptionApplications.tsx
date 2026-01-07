@@ -3,17 +3,13 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Search } from 'lucide-react';
 import { useUserSelector } from '../../redux/toolkitStore';
-import { useUpdateAdoptionApplicationFeeMutation } from '../../redux/services/adoptionApplicationFeeApi';
-import CountdownTimer from '../../components/common/CountdownTImer';
 import { formatDateWithTimezone } from '../../utils/dateFunctions';
+import CountdownTimer from '../../components/common/CountdownTImer';
 
 const SupporterAdoptionApplications = () => {
   const { user } = useUserSelector();
   const [searchTerm, setSearchTerm] = useState('');
-  const [updateFee, setUpdateFee] = useState({ update: false, id: '' });
   const [filteredFees, setFilteredFees] = useState(user?.adoptionFees);
-
-  const [updateAdoptionApplicationFee] = useUpdateAdoptionApplicationFeeMutation();
 
   useEffect(() => {
     const filtered = user?.adoptionFees?.filter(
@@ -24,12 +20,6 @@ const SupporterAdoptionApplications = () => {
     );
     setFilteredFees(filtered);
   }, [searchTerm, user?.adoptionFees]);
-
-  useEffect(() => {
-    if (updateFee.update) {
-      updateAdoptionApplicationFee({ id: updateFee.id });
-    }
-  }, [updateFee, updateAdoptionApplicationFee]);
 
   const toFixed = (value: number) => {
     return value?.toFixed(2) || '0.00';
@@ -45,7 +35,7 @@ const SupporterAdoptionApplications = () => {
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
         <div>
           <h2 className='text-3xl font-bold text-gray-900'>Adoption Applications</h2>
-          <p className='text-sm text-gray-600 mt-1'>Your application application history</p>
+          <p className='text-sm text-gray-600 mt-1'>Your application history</p>
         </div>
       </motion.div>
 
@@ -88,6 +78,9 @@ const SupporterAdoptionApplications = () => {
               <th className='px-4 border-b border-gray-200 text-xs font-semibold text-gray-600 py-3 text-left uppercase'>
                 Application Status
               </th>
+              <th className='px-4 border-b border-gray-200 text-xs font-semibold text-gray-600 py-3 text-left uppercase'>
+                Token Status
+              </th>
             </tr>
           </thead>
           <tbody className='h-full overflow-y-scroll'>
@@ -120,7 +113,11 @@ const SupporterAdoptionApplications = () => {
                   <td>
                     <p className='text-gray-900 text-sm font-medium items-center px-4 whitespace-nowrap'>
                       <Link
-                        to={`/adopt/application/verified/${fee?.token}`}
+                        to={
+                          fee?.applicationStatus === 'Active'
+                            ? `/adopt/application/verified/${fee?._id}`
+                            : '/adopt'
+                        }
                         className='text-gray-900 hover:text-gray-700 font-semibold hover:underline'
                       >
                         Click here
@@ -128,19 +125,15 @@ const SupporterAdoptionApplications = () => {
                     </p>
                   </td>
                   <td className='px-4'>
-                    {fee.exp === null ? (
-                      <p className='text-purple-600 bg-purple-100 px-2.5 py-0.5 font-medium rounded-full text-xs w-fit'>
-                        {fee?.tokenStatus}
-                      </p>
+                    {fee.expiresAt && new Date() < new Date(fee.expiresAt) ? (
+                      <CountdownTimer
+                        expiresAt={fee.expiresAt}
+                        styles='font-medium text-xs whitespace-nowrap'
+                      />
                     ) : (
-                      fee.exp && (
-                        <CountdownTimer
-                          exp={fee.exp}
-                          styles={`font-medium text-xs whitespace-nowrap`}
-                          setUpdateFee={setUpdateFee}
-                          id={fee._id}
-                        />
-                      )
+                      <p className='text-red-600 bg-red-100 px-2.5 py-0.5 font-medium rounded-full text-xs w-fit'>
+                        Expired
+                      </p>
                     )}
                   </td>
                   <td className='px-4'>
@@ -148,17 +141,28 @@ const SupporterAdoptionApplications = () => {
                       className={`${
                         fee?.applicationStatus === 'Active'
                           ? 'text-green-600 bg-green-100'
-                          : 'text-orange-600 bg-orange-100'
+                          : 'text-red-600 bg-red-100'
                       } px-2.5 py-0.5 font-medium rounded-full text-xs w-fit whitespace-nowrap`}
                     >
                       {fee?.applicationStatus}
+                    </p>
+                  </td>
+                  <td className='px-4'>
+                    <p
+                      className={`${
+                        fee?.tokenStatus === 'Valid'
+                          ? 'text-blue-600 bg-blue-100'
+                          : 'text-yellow-600 bg-yellow-100'
+                      } px-2.5 py-0.5 font-medium rounded-full text-xs w-fit whitespace-nowrap`}
+                    >
+                      {fee?.tokenStatus}
                     </p>
                   </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan={7} className='px-4 py-8 text-center'>
+                <td colSpan={8} className='px-4 py-8 text-center'>
                   <p className='text-gray-500 text-sm'>No adoption fees found</p>
                 </td>
               </tr>

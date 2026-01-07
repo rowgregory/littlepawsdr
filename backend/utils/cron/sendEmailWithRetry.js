@@ -65,7 +65,7 @@ async function sendEmailWithRetry(pugEmail, data, templateName, maxRetries = 3, 
           await pugEmail.send({
             template: 'ordernotification',
             message: {
-              to: data.to,
+              to: 'lpdr@littlepawsdr.org',
               replyTo: 'no-reply@littlepawsdr.org',
             },
           });

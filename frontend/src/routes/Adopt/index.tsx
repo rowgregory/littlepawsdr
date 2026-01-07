@@ -10,7 +10,7 @@ const AdoptRoutes = () => {
   return (
     <Routes>
       <Route path='/' element={<AdoptionApplicationTermsAndPayment />} />
-      <Route path='application/verified/:token' element={<AdoptionApplication />} />
+      <Route path='application/verified/:id' element={<AdoptionApplication />} />
       <Route path='info' element={<AdoptionInformation />} />
       <Route path='fees' element={<AdoptionFees />} />
       <Route path='senior' element={<AdoptASenior />} />

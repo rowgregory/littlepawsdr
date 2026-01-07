@@ -1,13 +1,13 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import User from './models/userModel.js';
-import connectDB from './config/db.js';
+import User from '../models/userModel.js';
+import connectDB from '../config/db.js';
 
 dotenv.config();
 
 connectDB();
 
-const lowercaseEmails = async () => {
+const lowercaseAllEmails = async () => {
   try {
     console.log('Fetching all users...');
 
@@ -32,7 +32,9 @@ const lowercaseEmails = async () => {
 
       // Skip if this lowercase email was already processed (duplicate)
       if (processedEmails.has(lowercasedEmail)) {
-        console.log(`⚠️  Skipping duplicate: ${user.email} (would conflict with existing ${lowercasedEmail})`);
+        console.log(
+          `⚠️  Skipping duplicate: ${user.email} (would conflict with existing ${lowercasedEmail})`
+        );
         errors++;
         continue;
       }
@@ -75,12 +77,12 @@ const confirmAction = async () => {
 
   await new Promise((resolve) => setTimeout(resolve, 3000));
 
-  lowercaseEmails();
+  lowercaseAllEmails();
 };
 
 if (process.argv[2] === '-f') {
   // Force without confirmation
-  lowercaseEmails();
+  lowercaseAllEmails();
 } else {
   // Run with confirmation delay
   confirmAction();
