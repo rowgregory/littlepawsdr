@@ -6,6 +6,7 @@ import Newsletter from '../../../models/newsLetterModel.js';
 import AdoptionApplicationBypassCode from '../../../models/adoptionApplicationBypassCodeModel.js';
 import Order from '../../../models/orderModel.js';
 import { Auction } from '../../../models/auctionModel.js';
+import Campaign from '../../../models/campaignModel.js';
 
 /**
  * GET /api/dashboard/stats
@@ -62,6 +63,11 @@ const fetchDashboardData = asyncHandler(async (req, res) => {
         : {
             createdAt: { $gte: startDate, $lte: endDate },
           },
+      campaigns: isAllTime
+        ? {}
+        : {
+            createdAt: { $gte: startDate, $lte: endDate },
+          },
       donations: isAllTime
         ? {}
         : {
@@ -83,6 +89,7 @@ const fetchDashboardData = asyncHandler(async (req, res) => {
     const [
       orderStats,
       auctionStats,
+      campaignStats,
       donationStats,
       adoptionFeeStats,
       userStats,
@@ -104,6 +111,11 @@ const fetchDashboardData = asyncHandler(async (req, res) => {
       // Auctions aggregation - ALL TIME
       Auction.aggregate([
         {
+          $match: {
+            totalAuctionRevenue: { $exists: true, $ne: null },
+          },
+        },
+        {
           $facet: {
             total: [
               {
@@ -111,6 +123,21 @@ const fetchDashboardData = asyncHandler(async (req, res) => {
                   _id: null,
                   count: { $sum: 1 },
                   totalRevenue: { $sum: '$totalAuctionRevenue' },
+                },
+              },
+            ],
+          },
+        },
+      ]),
+      Campaign.aggregate([
+        {
+          $facet: {
+            total: [
+              {
+                $group: {
+                  _id: null,
+                  count: { $sum: 1 },
+                  totalRevenue: { $sum: '$totalCampaignRevenue' },
                 },
               },
             ],
@@ -217,20 +244,21 @@ const fetchDashboardData = asyncHandler(async (req, res) => {
         trend: changePercent >= 0 ? 'up' : 'down',
       };
     };
-
     // Extract results
     const orderData = extractAggResult(orderStats);
     const auctionData = extractAggResult(auctionStats);
+    const campaignData = extractAggResult(campaignStats);
     const donationData = extractAggResult(donationStats);
     const adoptionFeeData = extractAggResult(adoptionFeeStats);
     const userData = extractAggResult(userStats);
     const newsletterData = extractAggResult(newsletterStats);
 
     // Calculate changes for trending
-    const [orderChange, auctionChange, donationChange, adoptionChange, userChange] =
+    const [orderChange, auctionChange, campaignChange, donationChange, adoptionChange, userChange] =
       await Promise.all([
         calculateChange(Order, '$totalPrice', dateFilters.orders, 'createdAt'),
         calculateChange(Auction, '$totalAuctionRevenue', dateFilters.auctions, 'createdAt'),
+        calculateChange(Campaign, '$totalCampaignRevenue', dateFilters.campaigns, 'createdAt'),
         calculateChange(Donation, '$donationAmount', dateFilters.donations, 'donationDate'),
         calculateChange(AdoptionFee, '$feeAmount', dateFilters.adoptionFees, 'paidDate'),
         calculateChange(User, 1, dateFilters.users, 'createdAt'), // Count of users
@@ -255,10 +283,10 @@ const fetchDashboardData = asyncHandler(async (req, res) => {
         },
         {
           title: 'Auctions',
-          value: auctionData.count.toLocaleString(),
-          amount: `$${auctionData.totalRevenue.toLocaleString()}`,
-          change: `${auctionChange.change}%`,
-          trend: auctionChange.trend,
+          value: auctionData.count + campaignData.count,
+          amount: `$${(auctionData.totalRevenue + campaignData.totalRevenue).toLocaleString()}`,
+          change: `${auctionChange.change + campaignChange.change}%`,
+          trend: auctionChange.trend + campaignChange.trend,
           type: 'auctions',
         },
         {

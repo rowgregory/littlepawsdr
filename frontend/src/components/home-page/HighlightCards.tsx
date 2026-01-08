@@ -26,7 +26,7 @@ const HighlightCards = () => {
                   : i === 1
                   ? 'rounded-2xl sm:rounded-bl-none sm:rounded-tl-none sm:rounded-tr-2xl sm:rounded-br-2xl mb-5 lg:mb-0 lg:rounded-tr-none lg:rounded-br-none'
                   : 'rounded-2xl mb-5 lg:mb-0 sm:rounded-tl-2xl rounded-bl-2xl sm:rounded-tr-none sm:rounded-br-none lg:rounded-tl-none lg:rounded-bl-none lg:rounded-tr-2xl lg:rounded-br-2xl'
-              } col-span-12 md:col-span-6 lg:col-span-3 shadow-lg gap-3 flex flex-col justify-between items-start p-6 xl:p-8 bg-white z-20 relative overflow-hidden border border-gray-100 hover:border-cyan-200 transition-colors`}
+              } col-span-12 md:col-span-6 lg:col-span-3 shadow-lg gap-3 flex flex-col justify-between items-start p-6 xl:p-8 bg-white z-20 relative overflow-hidden border border-gray-100 hover:border-cyan-200 transition-colors font-QBook`}
               variants={cardVariants}
               whileHover={{
                 y: -8,
@@ -68,7 +68,7 @@ const HighlightCards = () => {
         <motion.div
           className='rounded-2xl mb-5 lg:mb-0 md:rounded-tr-2xl md:rounded-tl-none md:rounded-bl-none md:rounded-br-2xl lg:rounded-2xl 
       col-span-12 md:col-span-6 lg:col-span-3 shadow-lg gap-2.5 flex flex-col justify-between 
-      items-start p-6 xl:p-8 z-20 lg:ml-3 relative overflow-hidden bg-gradient-to-br from-cyan-600 to-blue-700'
+      items-start p-6 xl:p-8 z-20 lg:ml-3 relative overflow-hidden bg-gradient-to-br from-cyan-600 to-blue-700 font-QBook'
           variants={spookyCardVariants}
           whileHover={{
             y: -8,

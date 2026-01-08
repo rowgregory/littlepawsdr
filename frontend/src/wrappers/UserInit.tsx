@@ -26,6 +26,8 @@ const UserInit = ({ children }: { children: ReactNode }) => {
       dispatch(setAuctions(appData?.auctions));
       if (appData?.liveAuction) {
         dispatch(updateAuctionInState(appData?.liveAuction));
+      } else if (appData?.upcomingAuction) {
+        dispatch(updateAuctionInState(appData?.upcomingAuction));
       }
       dispatch(setNewsletterIssues(appData?.newsletterIssues));
       dispatch(setWelcomeWienerDogs(appData?.welcomeWieners));

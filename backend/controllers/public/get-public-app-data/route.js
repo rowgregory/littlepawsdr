@@ -11,6 +11,7 @@ export const getPublicAppData = asyncHandler(async (req, res) => {
   try {
     const [
       liveAuction,
+      upcomingAuction,
       allAuctions,
       newsletterIssues,
       welcomeWieners,
@@ -29,8 +30,19 @@ export const getPublicAppData = asyncHandler(async (req, res) => {
           },
         ])
         .lean(),
+      Auction.findOne({ status: 'DRAFT' })
+        .populate([
+          { path: 'items', populate: [{ path: 'photos' }] },
+          { path: 'bidders', populate: [{ path: 'user' }] },
+          { path: 'bids', populate: [{ path: 'user' }] },
+          {
+            path: 'instantBuyers',
+            populate: [{ path: 'auctionItem' }, { path: 'user' }],
+          },
+        ])
+        .lean(),
 
-      Auction.find()
+      Auction.find({ status: { $in: ['DRAFT', 'ACTIVE', 'ENDED'] } })
         .populate([
           { path: 'items', populate: [{ path: 'photos' }] },
           { path: 'bidders', populate: [{ path: 'user' }] },
@@ -68,6 +80,7 @@ export const getPublicAppData = asyncHandler(async (req, res) => {
 
     res.status(200).json({
       liveAuction: liveAuction || null,
+      upcomingAuction,
       auctions: allAuctions,
       newsletterIssues,
       welcomeWieners,

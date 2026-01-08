@@ -113,8 +113,8 @@ const NavigationDrawer = () => {
                   onClick={handleClose}
                   className={`mx-3 mt-4 p-4 rounded-xl flex items-start gap-3 relative overflow-hidden shadow-lg ${
                     isAuctionActive
-                      ? 'bg-gradient-to-br from-cyan-500 to-blue-600'
-                      : 'bg-gradient-to-br from-amber-500 to-amber-600'
+                      ? 'bg-gradient-to-br from-emerald-500 to-green-600'
+                      : 'bg-gradient-to-br from-cyan-500 to-blue-600'
                   }`}
                 >
                   {/* Animated background glow */}
