@@ -422,9 +422,13 @@ const cronJobs = (io) => {
           data: { cronName: 'expireAdoptionFees' },
         });
 
-        const result = await AdoptionFee.updateMany(
+        const now = new Date();
+        const nowUnix = Math.floor(now.getTime() / 1000);
+
+        // Update old format (exp field - Unix timestamp in seconds)
+        const oldFormatResult = await AdoptionFee.updateMany(
           {
-            expiresAt: { $lt: new Date() },
+            exp: { $lt: nowUnix },
             applicationStatus: 'Active',
           },
           {
@@ -436,10 +440,34 @@ const cronJobs = (io) => {
         );
 
         events.push({
-          message: 'ADOPTION_FEES_EXPIRED',
+          message: 'OLD_FORMAT_ADOPTION_FEES_EXPIRED',
           data: {
-            modifiedCount: result.modifiedCount,
-            matchedCount: result.matchedCount,
+            modifiedCount: oldFormatResult.modifiedCount,
+            matchedCount: oldFormatResult.matchedCount,
+            format: 'exp (Unix timestamp)',
+          },
+        });
+
+        // Update new format (expiresAt field - Date object)
+        const newFormatResult = await AdoptionFee.updateMany(
+          {
+            expiresAt: { $lt: now },
+            applicationStatus: 'Active',
+          },
+          {
+            $set: {
+              applicationStatus: 'Inactive',
+              tokenStatus: 'Invalid',
+            },
+          }
+        );
+
+        events.push({
+          message: 'NEW_FORMAT_ADOPTION_FEES_EXPIRED',
+          data: {
+            modifiedCount: newFormatResult.modifiedCount,
+            matchedCount: newFormatResult.matchedCount,
+            format: 'expiresAt (Date)',
           },
         });
 
