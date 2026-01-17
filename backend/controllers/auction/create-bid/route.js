@@ -44,14 +44,14 @@ const createBid = asyncHandler(async (req, res) => {
           status: 'Top Bid',
         },
       ],
-      { session }
+      { session },
     );
 
     // Update other bids status
     await Bid.updateMany(
       { auctionItem: auctionItemId, _id: { $ne: createdBid._id } },
       { status: 'Outbid' },
-      { session }
+      { session },
     );
 
     // Update auction item
@@ -62,10 +62,10 @@ const createBid = asyncHandler(async (req, res) => {
       {
         $push: { bids: createdBid._id },
         currentBid: bidAmount,
-        minimumBid: bidAmount + 1,
+        minimumBid: Number(bidAmount) + 1,
         totalBids: bidsCount,
       },
-      { session }
+      { session },
     );
 
     // Handle bidder
@@ -78,20 +78,20 @@ const createBid = asyncHandler(async (req, res) => {
       await AuctionBidder.findByIdAndUpdate(
         existingBidder._id,
         { $push: { bids: createdBid._id } },
-        { session }
+        { session },
       );
 
       await Auction.findByIdAndUpdate(auctionId, { $push: { bids: createdBid._id } }, { session });
     } else {
       const [newBidder] = await AuctionBidder.create(
         [{ auction: auctionId, user: req.user._id, bids: [createdBid._id], status: 'Bidding' }],
-        { session }
+        { session },
       );
 
       await Auction.findByIdAndUpdate(
         auctionId,
         { $push: { bidders: newBidder._id, bids: createdBid._id } },
-        { session }
+        { session },
       );
     }
 
@@ -115,7 +115,7 @@ const createBid = asyncHandler(async (req, res) => {
           itemName: previousTopBid.auctionItem.name,
           link: `https://www.littlepawsdr.org/auctions/${previousTopBid.auction.customAuctionLink}/item/${auctionItemId}`,
         },
-        'outBidNotification' // ✅ Template name
+        'outBidNotification', // ✅ Template name
       );
       await Bid.findByIdAndUpdate(previousTopBid._id, { outBidEmailSent: true }, { new: true });
     }
