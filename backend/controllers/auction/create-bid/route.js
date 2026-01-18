@@ -26,6 +26,7 @@ const createBid = asyncHandler(async (req, res) => {
     // Get previous top bid (before transaction operations)
     const previousTopBid = await Bid.findOne({ auctionItem: auctionItemId })
       .sort({ bidAmount: -1 })
+      .session(session)
       .populate([
         { path: 'auctionItem', populate: [{ path: 'photos' }] },
         { path: 'auction', select: 'customAuctionLink' },
