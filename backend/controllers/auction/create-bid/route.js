@@ -31,8 +31,8 @@ const createBid = asyncHandler(async (req, res) => {
         { path: 'auction', select: 'customAuctionLink' },
       ]);
 
-    // Create new bid
-    const [createdBid] = await Bid.create(
+    // Create new bid - use single object instead of array
+    const createdBid = await Bid.create(
       [
         {
           auction: auctionId,
@@ -47,9 +47,12 @@ const createBid = asyncHandler(async (req, res) => {
       { session },
     );
 
+    // Get first bid from array
+    const bid = createdBid[0];
+
     // Update other bids status
     await Bid.updateMany(
-      { auctionItem: auctionItemId, _id: { $ne: createdBid._id } },
+      { auctionItem: auctionItemId, _id: { $ne: bid._id } },
       { status: 'Outbid' },
       { session },
     );
@@ -60,7 +63,7 @@ const createBid = asyncHandler(async (req, res) => {
     await AuctionItem.findByIdAndUpdate(
       auctionItemId,
       {
-        $push: { bids: createdBid._id },
+        $push: { bids: bid._id },
         currentBid: bidAmount,
         minimumBid: Number(bidAmount) + 1,
         totalBids: bidsCount,
@@ -77,20 +80,20 @@ const createBid = asyncHandler(async (req, res) => {
     if (existingBidder) {
       await AuctionBidder.findByIdAndUpdate(
         existingBidder._id,
-        { $push: { bids: createdBid._id } },
+        { $push: { bids: bid._id } },
         { session },
       );
 
-      await Auction.findByIdAndUpdate(auctionId, { $push: { bids: createdBid._id } }, { session });
+      await Auction.findByIdAndUpdate(auctionId, { $push: { bids: bid._id } }, { session });
     } else {
       const [newBidder] = await AuctionBidder.create(
-        [{ auction: auctionId, user: req.user._id, bids: [createdBid._id], status: 'Bidding' }],
+        [{ auction: auctionId, user: req.user._id, bids: [bid._id], status: 'Bidding' }],
         { session },
       );
 
       await Auction.findByIdAndUpdate(
         auctionId,
-        { $push: { bidders: newBidder._id, bids: createdBid._id } },
+        { $push: { bidders: newBidder._id, bids: bid._id } },
         { session },
       );
     }
@@ -115,13 +118,16 @@ const createBid = asyncHandler(async (req, res) => {
           itemName: previousTopBid.auctionItem.name,
           link: `https://www.littlepawsdr.org/auctions/${previousTopBid.auction.customAuctionLink}/item/${auctionItemId}`,
         },
-        'outBidNotification', // ✅ Template name
+        'outBidNotification',
       );
       await Bid.findByIdAndUpdate(previousTopBid._id, { outBidEmailSent: true }, { new: true });
     }
 
     res.status(200).json({ confirmedBidAmount: bidAmount });
   } catch (err) {
+    await session.abortTransaction();
+    session.endSession();
+
     await Error.create({
       functionName: 'CREATE_BID_PRIVATE',
       name: err.name,

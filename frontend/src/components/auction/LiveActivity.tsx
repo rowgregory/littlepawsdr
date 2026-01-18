@@ -44,7 +44,7 @@ const LiveActivity = () => {
       // Combine and sort by newest first
       const combined = [...mappedBids, ...mappedInstantBuyers];
       const sortedActivities: any = combined.sort(
-        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
       );
 
       setActivities(sortedActivities);
