@@ -53,7 +53,7 @@ async function sendEmailWithRetry(pugEmail, data, templateName, maxRetries = 3, 
           break;
         case 'outBidNotification':
           await pugEmail.send({
-            template: 'outBidNotification',
+            template: 'outbidnotification',
             message: {
               to: data.to,
               replyTo: 'no-reply@littlepawsdr.org',
