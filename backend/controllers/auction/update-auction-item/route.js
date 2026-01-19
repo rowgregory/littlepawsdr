@@ -32,26 +32,14 @@ const updateAuctionItem = asyncHandler(async (req, res) => {
       'isDigital',
     ];
 
-    // If auction is live, check if user is trying to update restricted fields
-    if (isAuctionLive) {
-      const attemptedRestrictedUpdates = restrictedFields.filter(
-        (field) => req.body[field] !== undefined && field !== 'photos'
-      );
-
-      if (attemptedRestrictedUpdates.length > 0) {
-        return res.status(403).json({
-          message:
-            'Cannot update pricing, quantity, or format fields while auction is live. You can only update name, description, quantity and photos.',
-          blockedFields: attemptedRestrictedUpdates,
-        });
-      }
-    }
-
     // Handle photo updates (always allowed)
-    const newPhotosToCreate = req.body.photos.filter(
-      (bodyPhoto) =>
-        !auctionItem.photos.some((auctionItemPhoto) => auctionItemPhoto._id.equals(bodyPhoto._id))
-    );
+    const newPhotosToCreate =
+      req.body.photos?.filter(
+        (bodyPhoto) =>
+          !auctionItem.photos.some((auctionItemPhoto) =>
+            auctionItemPhoto._id.equals(bodyPhoto._id),
+          ),
+      ) || [];
 
     const auctionItemPhotos = await Promise.all(
       newPhotosToCreate.map(async (photo) => {
@@ -66,7 +54,7 @@ const updateAuctionItem = asyncHandler(async (req, res) => {
         } else {
           return existingPhoto;
         }
-      })
+      }),
     );
 
     const newPhotoIds = auctionItemPhotos.map((photo) => photo._id);
@@ -74,22 +62,17 @@ const updateAuctionItem = asyncHandler(async (req, res) => {
       ...new Set([...auctionItem.photos.map((photo) => photo._id), ...newPhotoIds]),
     ];
 
-    // Build update object based on auction status
-    let updateData = {
-      photos: updatedPhotoIds,
-    };
-
-    if (isAuctionLive) {
-      // Only allow safe updates
-      if (req.body.name !== undefined) updateData.name = req.body.name;
-      if (req.body.description !== undefined) updateData.description = req.body.description;
-    } else {
-      // Allow all updates when not live
-      updateData = {
-        ...req.body,
-        photos: updatedPhotoIds,
-      };
-    }
+    // Build update object - filter out restricted fields if auction is live
+    const updateData = Object.keys(req.body).reduce(
+      (acc, key) => {
+        if (key === 'id') return acc; // Skip id field
+        if (key === 'photos') return acc; // Handle photos separately
+        if (isAuctionLive && restrictedFields.includes(key)) return acc; // Skip restricted fields when live
+        acc[key] = req.body[key];
+        return acc;
+      },
+      { photos: updatedPhotoIds },
+    );
 
     const updatedAuctionItem = await AuctionItem.findByIdAndUpdate(auctionItem._id, updateData, {
       new: true,
