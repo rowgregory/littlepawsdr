@@ -104,13 +104,6 @@ const ForgotPassword = () => {
         transition={{ duration: 0.6, delay: 0.2 }}
       >
         <div className='w-full max-w-md'>
-          {/* Logo for mobile */}
-          <Link to='/' className='lg:hidden flex justify-center mb-8'>
-            <div className='bg-gradient-to-br from-teal-400 to-sky-400 rounded-full w-16 h-16 flex items-center justify-center shadow-lg'>
-              <span className='text-3xl'>🐾</span>
-            </div>
-          </Link>
-
           {/* Heading */}
           <motion.div
             className='text-center mb-8'

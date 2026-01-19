@@ -25,7 +25,7 @@ const Register = () => {
   const { registerForm, passwordStrength, showPassword } = useFormSelector();
   const { handleInput, setErrors, setPasswordStrength, setShowPassword } = createFormActions(
     'registerForm',
-    dispatch
+    dispatch,
   );
   const [register, { isLoading }] = useRegisterMutation();
   const navigate = useNavigate();
@@ -83,7 +83,7 @@ const Register = () => {
       'password',
     ];
     return required.every(
-      (field) => registerForm?.inputs?.[field] && !registerForm?.errors?.[field]
+      (field) => registerForm?.inputs?.[field] && !registerForm?.errors?.[field],
     );
   };
 
@@ -152,13 +152,6 @@ const Register = () => {
         transition={{ duration: 0.6, delay: 0.2 }}
       >
         <div className='w-full max-w-md'>
-          {/* Logo for mobile */}
-          <Link to='/' className='lg:hidden flex justify-center mb-8'>
-            <div className='bg-gradient-to-br from-teal-400 to-sky-400 rounded-full w-16 h-16 flex items-center justify-center shadow-lg'>
-              <span className='text-3xl'>🐾</span>
-            </div>
-          </Link>
-
           {/* Heading */}
           <motion.div
             className='text-center mb-8'
@@ -354,10 +347,10 @@ const Register = () => {
                             passwordStrength <= 40
                               ? 'text-red-500'
                               : passwordStrength <= 60
-                              ? 'text-yellow-500'
-                              : passwordStrength <= 80
-                              ? 'text-blue-500'
-                              : 'text-green-500'
+                                ? 'text-yellow-500'
+                                : passwordStrength <= 80
+                                  ? 'text-blue-500'
+                                  : 'text-green-500'
                           }`}
                         >
                           {getStrengthText()}

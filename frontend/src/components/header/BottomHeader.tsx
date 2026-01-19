@@ -41,12 +41,12 @@ const BottomHeader = () => {
       navigate(`/supporter/profile`);
     } else {
       navigate(
-        `/auth/register?customAuctionLink=${auction?.customAuctionLink}&conversionSource=header_banner`
+        `/auth/register?customAuctionLink=${auction?.customAuctionLink}&conversionSource=header_banner`,
       );
     }
   };
 
-  const isActiveAuction = auction?.isLive;
+  const isActiveAuction = auction?.status === 'ACTIVE';
   const isUpcomingAuction = auction?.status === 'DRAFT';
 
   const isActiveOrUpcoming = isActiveAuction || isUpcomingAuction;
@@ -268,21 +268,21 @@ const BottomHeader = () => {
               {/* Mobile Layout */}
               <div className='flex sm:hidden items-center gap-2'>
                 <div className='w-2.5 h-2.5 bg-white rounded-full animate-pulse'></div>
-                <span className='text-white font-bold text-sm'>🔥 {auction?.title} LIVE!</span>
+                <span className='text-white font-bold text-sm'>{auction?.title} LIVE!</span>
               </div>
 
               {/* Desktop Layout */}
               <div className='hidden sm:flex items-center gap-3'>
                 <div className='flex items-center gap-2'>
                   <div className='w-3 h-3 bg-white rounded-full animate-pulse'></div>
-                  <span className='text-white font-bold text-lg'>🔥 {auction?.title} is LIVE!</span>
+                  <span className='text-white font-bold text-lg'> {auction?.title} is LIVE!</span>
                 </div>
                 <div className='text-white/90 text-sm font-medium'>
                   {!user?._id
                     ? 'Join now to bid →'
                     : user?._id && !user?.hasAddress
-                    ? 'Click to enter address →'
-                    : 'Click to join the auction →'}
+                      ? 'Click to enter address →'
+                      : 'Click to join the auction →'}
                 </div>
               </div>
             </div>
@@ -315,8 +315,8 @@ const BottomHeader = () => {
                   {!user?._id
                     ? 'Sign up to participate →'
                     : user?._id && !user?.hasAddress
-                    ? 'Complete address to participate →'
-                    : 'Get Ready! →'}
+                      ? 'Complete address to participate →'
+                      : 'Get Ready! →'}
                 </div>
               </div>
             </div>
