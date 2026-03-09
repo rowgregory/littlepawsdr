@@ -17,7 +17,7 @@ const DachshundDetails = () => {
   const { dachshund, dogStatusId } = useAppSelector((state: RootState) => state.dachshund);
 
   const { next, previous, currentIndex, totalItems, setCurrentIndex } = useSingleItemCarousel(
-    dachshund?.attributes.photos || []
+    dachshund?.attributes.photos || [],
   );
 
   if (isLoading) {
@@ -94,7 +94,10 @@ const DachshundDetails = () => {
         <p
           className='font-QLight'
           dangerouslySetInnerHTML={{
-            __html: dachshund?.attributes?.descriptionHtml || '',
+            __html:
+              dachshund?.attributes?.descriptionHtml ||
+              dachshund?.attributes?.descriptionText ||
+              '',
           }}
         ></p>
       </section>
