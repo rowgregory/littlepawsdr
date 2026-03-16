@@ -74,6 +74,10 @@ const formInitialState = {
     },
     errors: {},
   },
+  productForm: {
+    inputs: {},
+    errors: {},
+  },
 } as any;
 
 const formSlice = createSlice({
@@ -137,7 +141,7 @@ const formSlice = createSlice({
     },
     handleSelect: (
       state,
-      { payload }: PayloadAction<{ formName: string; name: string; value: string }>
+      { payload }: PayloadAction<{ formName: string; name: string; value: string }>,
     ) => {
       const { formName, name, value } = payload;
       if (!state[formName]) return;
@@ -145,7 +149,7 @@ const formSlice = createSlice({
     },
     handleToggle: (
       state,
-      { payload }: PayloadAction<{ formName: string; name: string; checked: boolean }>
+      { payload }: PayloadAction<{ formName: string; name: string; checked: boolean }>,
     ) => {
       const { formName, name, checked } = payload;
       const form = state[formName];
@@ -167,7 +171,7 @@ const formSlice = createSlice({
         formName: string;
         imageUrl: string | ArrayBuffer | null;
         file: File | null;
-      }>
+      }>,
     ) => {
       const { formName, imageUrl, file } = action.payload;
       state[formName] = {
@@ -185,7 +189,7 @@ const formSlice = createSlice({
         formName: string;
         videoUrl: string | ArrayBuffer | null;
         videoFile: File | null;
-      }>
+      }>,
     ) => {
       const { formName, videoUrl, videoFile } = action.payload;
       state[formName] = {
@@ -230,15 +234,15 @@ export const createFormActions = (formName: string, dispatch: any) => ({
     dispatch(formSlice.actions.setSubmitted({ formName, submitted })),
   handleInput: (e: any) =>
     dispatch(
-      formSlice.actions.handleInput({ formName, name: e.target.name, value: e.target.value })
+      formSlice.actions.handleInput({ formName, name: e.target.name, value: e.target.value }),
     ),
   handleSelect: (e: any) =>
     dispatch(
-      formSlice.actions.handleSelect({ formName, name: e.target.name, value: e.target.value })
+      formSlice.actions.handleSelect({ formName, name: e.target.name, value: e.target.value }),
     ),
   handleToggle: (e: any) =>
     dispatch(
-      formSlice.actions.handleToggle({ formName, name: e.target.name, checked: e.target.checked })
+      formSlice.actions.handleToggle({ formName, name: e.target.name, checked: e.target.checked }),
     ),
   handleFileChange: (event: ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -251,7 +255,7 @@ export const createFormActions = (formName: string, dispatch: any) => ({
       const reader = new FileReader();
       reader.onload = () => {
         dispatch(
-          formSlice.actions.handleFileUpload({ formName, imageUrl: reader.result, file: files[0] })
+          formSlice.actions.handleFileUpload({ formName, imageUrl: reader.result, file: files[0] }),
         );
       };
       reader.readAsDataURL(files[0]);
@@ -267,7 +271,7 @@ export const createFormActions = (formName: string, dispatch: any) => ({
             formName,
             videoUrl: reader.result,
             videoFile: files[0],
-          })
+          }),
         );
       };
       reader.readAsDataURL(files[0]);
@@ -284,7 +288,7 @@ export const createFormActions = (formName: string, dispatch: any) => ({
       const reader = new FileReader();
       reader.onload = () => {
         dispatch(
-          formSlice.actions.handleFileUpload({ formName, imageUrl: reader.result, file: files[0] })
+          formSlice.actions.handleFileUpload({ formName, imageUrl: reader.result, file: files[0] }),
         );
       };
       reader.readAsDataURL(files[0]);
@@ -301,7 +305,7 @@ export const createFormActions = (formName: string, dispatch: any) => ({
             formName,
             videoUrl: reader.result,
             videoFile: files[0],
-          })
+          }),
         );
       };
       reader.readAsDataURL(files[0]);
