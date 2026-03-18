@@ -12,7 +12,7 @@ const shopToHelpData = [
   {
     textKey:
       'Support Little Paws by shopping with iGive—your everyday shopping makes a difference!',
-    linkKey: 'http://www.igive.com/welcome/lptest/wr31a.cfm?c=64803&p=19992&jltest=1',
+    linkKey: 'https://www.igive.com/welcome/lptest/wr31a.cfm?c=64803&p=19992&jltest=1',
     img: iGive,
   },
   {
