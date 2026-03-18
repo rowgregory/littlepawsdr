@@ -1,14 +1,14 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight, ChevronLeft, User } from 'lucide-react';
-import { useFormInitialize } from '../../hooks/useFormInitialize';
 import {
+  toolkitStore,
   useAppDispatch,
   useCartSelector,
   useFormSelector,
   useUserSelector,
 } from '../../redux/toolkitStore';
-import { createFormActions } from '../../redux/features/form/formSlice';
+import { createFormActions, setInputs } from '../../redux/features/form/formSlice';
 import { PayPalButtons } from '@paypal/react-paypal-js';
 import toFixed from '../../utils/toFixed';
 import { useCreateOrderMutation } from '../../redux/services/orderApi';
@@ -36,20 +36,33 @@ const Checkout = () => {
   // Get address data
   const shippingAddress = user?.addressRef || user?.shippingAddress;
 
-  useFormInitialize({
-    formName: 'checkoutForm',
-    data: {
-      firstName: user?.firstName || '',
-      lastName: user?.lastName || '',
-      email: user?.email || '',
-      ...(hasPhysical && {
-        address: shippingAddress?.address || '',
-        city: shippingAddress?.city || '',
-        state: shippingAddress?.state || '',
-        zipPostalCode: shippingAddress?.zipPostalCode || '',
-      }),
-    },
-  });
+  useEffect(() => {
+    if (user) {
+      toolkitStore.dispatch(
+        setInputs({
+          formName: 'checkoutForm',
+          data: {
+            firstName: user?.firstName || '',
+            lastName: user?.lastName || '',
+            email: user?.email || '',
+            ...(hasPhysical && {
+              address: shippingAddress?.address || '',
+              city: shippingAddress?.city || '',
+              state: shippingAddress?.state || '',
+              zipPostalCode: shippingAddress?.zipPostalCode || '',
+            }),
+          },
+        }),
+      );
+    }
+  }, [
+    hasPhysical,
+    shippingAddress?.address,
+    shippingAddress?.city,
+    shippingAddress?.state,
+    shippingAddress?.zipPostalCode,
+    user,
+  ]);
 
   const validateStep = (currentStep: number) => {
     const newErrors: any = {};
@@ -149,7 +162,7 @@ const Checkout = () => {
             showToast({
               message: `Failed to create order - ${error?.data?.message}`,
               type: 'error',
-            })
+            }),
           );
         } finally {
           setOrderLoader(false);
@@ -187,7 +200,7 @@ const Checkout = () => {
             <p className='text-gray-600'>Step {step} of 3</p>
           </div>
 
-          <AnimatePresence mode='wait'>
+          <AnimatePresence>
             {/* Step 1: Personal Info */}
             {step === 1 && (
               <motion.div
@@ -390,12 +403,7 @@ const Checkout = () => {
 
             {/* Step 3: Payment */}
             {step === 3 && (
-              <motion.div
-                key='step3'
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-              >
+              <div key='step3'>
                 <h2 className='text-lg font-semibold text-gray-900 mb-6'>Payment</h2>
 
                 <div className='mb-8 relative'>
@@ -428,7 +436,7 @@ const Checkout = () => {
                   <ChevronLeft className='w-4 h-4' />
                   Back
                 </motion.button>
-              </motion.div>
+              </div>
             )}
           </AnimatePresence>
         </div>
@@ -515,7 +523,7 @@ const Checkout = () => {
                 <p className='text-xs font-semibold text-gray-900 mb-3'>CONTACT</p>
                 <p className='text-sm text-gray-600'>{inputs?.email}</p>
 
-                {hasPhysical && (
+                {hasPhysical && inputs?.address && (
                   <>
                     <p className='text-xs font-semibold text-gray-900 mt-4 mb-2'>
                       SHIPPING ADDRESS
@@ -556,7 +564,7 @@ const Checkout = () => {
             </div>
           </div>
 
-          <AnimatePresence mode='wait'>
+          <AnimatePresence>
             {/* Step 1: Personal Info */}
             {step === 1 && (
               <motion.div
@@ -743,12 +751,7 @@ const Checkout = () => {
 
             {/* Step 3: Payment */}
             {step === 3 && (
-              <motion.div
-                key='step3'
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-              >
+              <div key='step3'>
                 <h2 className='text-lg font-semibold text-gray-900 mb-4'>Order Summary</h2>
 
                 <div className='bg-gray-50 rounded-lg p-4 mb-6'>
@@ -810,7 +813,7 @@ const Checkout = () => {
                   <ChevronLeft className='w-4 h-4' />
                   Back
                 </motion.button>
-              </motion.div>
+              </div>
             )}
           </AnimatePresence>
         </div>

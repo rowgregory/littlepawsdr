@@ -62,7 +62,7 @@ const ProductDrawer = () => {
               images: [...currentImages, e.target?.result as string],
               newImages: [...currentNewImages, file],
             },
-          })
+          }),
         );
       };
       reader.readAsDataURL(file);
@@ -80,7 +80,7 @@ const ProductDrawer = () => {
           images: currentImages.filter((_: any, i: number) => i !== index),
           newImages: currentNewImages.filter((_: any, i: number) => i !== index),
         },
-      })
+      }),
     );
   };
 
@@ -98,12 +98,12 @@ const ProductDrawer = () => {
           showToast({
             message: 'Uploading images...',
             type: 'info',
-          })
+          }),
         );
 
         const uploadedFiles = await uploadMultipleFilesToFirebase(inputs.newImages, false);
         uploadedImageUrls = uploadedFiles.filter(
-          (url): url is string => typeof url === 'string' && url !== null
+          (url): url is string => typeof url === 'string' && url !== null,
         );
       }
 
@@ -146,16 +146,20 @@ const ProductDrawer = () => {
         showToast({
           message: isUpdating ? 'Product updated!' : 'Product created!',
           type: 'success',
-        })
+        }),
       );
       dispatch(resetForm('productForm'));
       onClose();
     } catch (error: any) {
+      console.error('Product submit error:', error);
       dispatch(
         showToast({
-          message: isUpdating ? 'Failed to update product' : 'Failed to create product',
+          message:
+            error?.data?.message ||
+            error?.message ||
+            (isUpdating ? 'Failed to update product' : 'Failed to create product'),
           type: 'error',
-        })
+        }),
       );
     }
   };
