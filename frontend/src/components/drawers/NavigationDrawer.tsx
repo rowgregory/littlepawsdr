@@ -19,7 +19,6 @@ import {
   Gavel,
   ArrowRight,
 } from 'lucide-react';
-import { containerVariants, iconVariants, itemVariants } from '../../lib/constants/motion';
 import { Link, useLocation } from 'react-router-dom';
 import { navigationLinks } from '../../lib/constants/navigation';
 import { useState } from 'react';
@@ -44,7 +43,7 @@ const NavigationDrawer = () => {
 
   const toggleSection = (title: string) => {
     setExpandedSections((prev) =>
-      prev.includes(title) ? prev.filter((t) => t !== title) : [...prev, title]
+      prev.includes(title) ? prev.filter((t) => t !== title) : [...prev, title],
     );
   };
 
@@ -72,7 +71,7 @@ const NavigationDrawer = () => {
         <>
           {/* Backdrop */}
           <motion.div
-            className='fixed inset-0 bg-black/20 backdrop-blur-sm z-[101]'
+            className='fixed inset-0 bg-black/60 backdrop-blur-sm z-[101]'
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -81,306 +80,230 @@ const NavigationDrawer = () => {
 
           {/* Drawer */}
           <motion.div
-            className='fixed left-0 top-0 h-screen w-full sm:w-96 bg-white z-[102] overflow-y-auto'
+            className='fixed left-0 top-0 h-screen w-full sm:w-96 bg-bg-light dark:bg-bg-dark border-r border-border-light dark:border-border-dark z-[102] overflow-y-auto'
             initial={{ x: -500 }}
             animate={{ x: 0 }}
             exit={{ x: -500 }}
             transition={{ duration: 0.3, ease: 'easeOut' }}
           >
-            {/* Header */}
-            <motion.div
-              className='sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between z-10'
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: 0.1 }}
-            >
-              <h2 className='text-lg font-semibold text-gray-900'>Menu</h2>
-              <motion.button
+            {/* ── Header ── */}
+            <div className='sticky top-0 bg-bg-light dark:bg-bg-dark border-b border-border-light dark:border-border-dark px-5 py-4 flex items-center justify-between z-10'>
+              <div className='flex items-center gap-2'>
+                <div
+                  className='w-4 h-px bg-primary-light dark:bg-primary-dark'
+                  aria-hidden='true'
+                />
+                <span className='font-changa text-f10 uppercase tracking-[0.25em] text-primary-light dark:text-primary-dark'>
+                  Little Paws
+                </span>
+              </div>
+              <button
                 onClick={handleClose}
-                whileHover={{ scale: 1.1, rotate: 90 }}
-                whileTap={{ scale: 0.9 }}
-                className='p-2 hover:bg-gray-100 rounded-lg transition-colors'
+                aria-label='Close menu'
+                className='p-1.5 text-muted-light dark:text-muted-dark hover:text-text-light dark:hover:text-text-dark hover:bg-surface-light dark:hover:bg-surface-dark transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-light dark:focus-visible:ring-primary-dark'
               >
-                <X className='w-5 h-5 text-gray-600' />
-              </motion.button>
-            </motion.div>
+                <X className='w-4 h-4' aria-hidden='true' />
+              </button>
+            </div>
 
-            <div className='flex-1 overflow-y-auto pb-56'>
-              {/* Auction Status Banner */}
+            <div className='flex-1 overflow-y-auto pb-20'>
+              {/* ── Auction banner ── */}
               {auction?.status && (isAuctionActive || isAuctionDraft) && (
-                <Link
-                  to={`/auctions/${auction?.customAuctionLink}`}
-                  onClick={handleClose}
-                  className={`mx-3 mt-4 p-4 rounded-xl flex items-start gap-3 relative overflow-hidden shadow-lg ${
-                    isAuctionActive
-                      ? 'bg-gradient-to-br from-emerald-500 to-green-600'
-                      : 'bg-gradient-to-br from-cyan-500 to-blue-600'
-                  }`}
-                >
-                  {/* Animated background glow */}
-                  <motion.div
-                    className={`absolute inset-0 opacity-20 ${
-                      isAuctionActive ? 'bg-teal-400' : 'bg-amber-400'
-                    }`}
-                    animate={{
-                      scale: [1, 1.1, 1],
-                    }}
-                    transition={{
-                      duration: 3,
-                      repeat: Infinity,
-                    }}
-                  />
-
-                  <motion.div
-                    animate={{
-                      scale: [1, 1.2, 1],
-                    }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                    }}
-                    className='relative'
+                <div className='px-4 pt-4'>
+                  <Link
+                    to={`/auctions/${auction?.customAuctionLink}`}
+                    onClick={handleClose}
+                    className={`relative overflow-hidden flex items-start gap-3 p-4 border ${
+                      isAuctionActive
+                        ? 'border-cyan-600/30 dark:border-violet-400/30 bg-cyan-600/10 dark:bg-violet-400/10'
+                        : 'border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark'
+                    } transition-colors`}
                   >
-                    <Gavel className='w-5 h-5 text-white flex-shrink-0' />
-                  </motion.div>
-
-                  <div className='relative flex-1'>
-                    <p className='text-sm font-bold text-white'>
-                      {isAuctionActive
-                        ? `${auction?.title} Live Now!`
-                        : `${auction?.title} Coming Soon`}
-                    </p>
-                    <p className='text-xs mt-1 text-white/90 font-medium'>
-                      {isAuctionActive ? 'Bid now on amazing items' : 'Get ready to bid'}
-                    </p>
-                  </div>
-
-                  {isAuctionActive && (
                     <motion.div
-                      animate={{
-                        x: [0, 4, 0],
-                      }}
-                      transition={{
-                        duration: 1.5,
-                        repeat: Infinity,
-                      }}
-                      className='relative'
+                      animate={{ scale: [1, 1.15, 1] }}
+                      transition={{ duration: 2, repeat: Infinity }}
                     >
-                      <span className='text-white font-bold'>→</span>
+                      <Gavel
+                        className='w-4 h-4 text-primary-light dark:text-primary-dark shrink-0 mt-0.5'
+                        aria-hidden='true'
+                      />
                     </motion.div>
-                  )}
-                </Link>
+                    <div className='flex-1 min-w-0'>
+                      <p className='font-changa text-xs uppercase tracking-wide text-text-light dark:text-text-dark leading-snug'>
+                        {isAuctionActive
+                          ? `${auction?.title} — Live Now`
+                          : `${auction?.title} — Coming Soon`}
+                      </p>
+                      <p className='font-lato text-f10 text-muted-light dark:text-muted-dark mt-0.5'>
+                        {isAuctionActive ? 'Bid now on amazing items' : 'Get ready to bid'}
+                      </p>
+                    </div>
+                    {isAuctionActive && (
+                      <motion.span
+                        animate={{ x: [0, 4, 0] }}
+                        transition={{ duration: 1.5, repeat: Infinity }}
+                        className='text-primary-light dark:text-primary-dark text-sm shrink-0'
+                        aria-hidden='true'
+                      >
+                        →
+                      </motion.span>
+                    )}
+                  </Link>
+                </div>
               )}
 
-              {/* User/Auth Section */}
-              <motion.div
-                className='px-4 py-4 space-y-2'
-                initial='hidden'
-                animate='visible'
-                variants={containerVariants}
-              >
+              {/* ── User / auth ── */}
+              <div className='px-4 py-4 space-y-1'>
                 {user?._id ? (
                   <>
                     {user.isAdmin && (
-                      <motion.div variants={itemVariants}>
-                        <Link
-                          to='/admin/dashboard'
-                          onClick={handleClose}
-                          className='flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors group'
-                        >
-                          <motion.div
-                            variants={iconVariants}
-                            initial='rest'
-                            whileHover='hover'
-                            className='text-teal-600'
-                          >
-                            <LayoutDashboard className='w-4 h-4' />
-                          </motion.div>
-                          <span className='text-sm font-medium'>Dashboard</span>
-                          <motion.div
-                            className='ml-auto'
-                            initial={{ opacity: 0, x: -8 }}
-                            whileHover={{ opacity: 1, x: 0 }}
-                          >
-                            <span className='text-xs text-teal-600'>→</span>
-                          </motion.div>
-                        </Link>
-                      </motion.div>
+                      <Link
+                        to='/admin/dashboard'
+                        onClick={handleClose}
+                        className='flex items-center gap-3 px-4 py-3 text-muted-light dark:text-muted-dark hover:text-text-light dark:hover:text-text-dark hover:bg-surface-light dark:hover:bg-surface-dark transition-colors'
+                      >
+                        <LayoutDashboard className='w-4 h-4 shrink-0' aria-hidden='true' />
+                        <span className='font-changa text-xs uppercase tracking-[0.15em]'>
+                          Dashboard
+                        </span>
+                      </Link>
                     )}
-
-                    <motion.div variants={itemVariants}>
-                      <Link
-                        to='/supporter/profile'
-                        onClick={handleClose}
-                        className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors group ${
-                          isLinkActive('/profile')
-                            ? 'bg-teal-50 text-teal-700'
-                            : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
-                        }`}
-                      >
-                        <motion.div variants={iconVariants} initial='rest' whileHover='hover'>
-                          <User className='w-4 h-4' />
-                        </motion.div>
-                        <span className='text-sm font-medium'>Profile</span>
-                      </Link>
-                    </motion.div>
-
-                    <motion.div variants={itemVariants}>
-                      <Link
-                        to='/cart'
-                        onClick={handleClose}
-                        className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors group ${
-                          isLinkActive('/cart')
-                            ? 'bg-teal-50 text-teal-700'
-                            : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
-                        }`}
-                      >
-                        <motion.div variants={iconVariants} initial='rest' whileHover='hover'>
-                          <ShoppingCart className='w-4 h-4' />
-                        </motion.div>
-                        <span className='text-sm font-medium'>Cart</span>
-                      </Link>
-                    </motion.div>
+                    <Link
+                      to='/supporter/profile'
+                      onClick={handleClose}
+                      className={`flex items-center gap-3 px-4 py-3 transition-colors ${
+                        isLinkActive('/profile')
+                          ? 'text-primary-light dark:text-primary-dark bg-surface-light dark:bg-surface-dark'
+                          : 'text-muted-light dark:text-muted-dark hover:text-text-light dark:hover:text-text-dark hover:bg-surface-light dark:hover:bg-surface-dark'
+                      }`}
+                    >
+                      <User className='w-4 h-4 shrink-0' aria-hidden='true' />
+                      <span className='font-changa text-xs uppercase tracking-[0.15em]'>
+                        Profile
+                      </span>
+                    </Link>
+                    <Link
+                      to='/cart'
+                      onClick={handleClose}
+                      className={`flex items-center gap-3 px-4 py-3 transition-colors ${
+                        isLinkActive('/cart')
+                          ? 'text-primary-light dark:text-primary-dark bg-surface-light dark:bg-surface-dark'
+                          : 'text-muted-light dark:text-muted-dark hover:text-text-light dark:hover:text-text-dark hover:bg-surface-light dark:hover:bg-surface-dark'
+                      }`}
+                    >
+                      <ShoppingCart className='w-4 h-4 shrink-0' aria-hidden='true' />
+                      <span className='font-changa text-xs uppercase tracking-[0.15em]'>Cart</span>
+                    </Link>
                   </>
                 ) : (
-                  <motion.div variants={itemVariants} className='px-4 py-3'>
+                  <div className='px-4 py-4 border-l-2 border-primary-light dark:border-primary-dark pl-4'>
                     <Link
                       to='/auth/login'
                       onClick={handleClose}
-                      className='text-sm font-semibold text-teal-600 hover:text-teal-700 transition-colors'
+                      className='font-changa text-xs uppercase tracking-[0.25em] text-primary-light dark:text-primary-dark hover:text-secondary-light dark:hover:text-secondary-dark transition-colors'
                     >
                       Sign In
                     </Link>
-                    <p className='text-xs text-gray-600 mt-2'>
+                    <p className='font-lato text-xs text-muted-light dark:text-muted-dark mt-1.5 leading-relaxed'>
                       Sign in to view your profile, orders, and more.
                     </p>
-                  </motion.div>
+                  </div>
                 )}
-              </motion.div>
-
-              {/* Newsletter Section */}
-              <motion.div
-                className='px-4 py-6'
-                initial='hidden'
-                animate='visible'
-                variants={containerVariants}
-              >
-                <motion.div variants={itemVariants}>
-                  <p className='text-xs text-gray-500 uppercase tracking-wider font-semibold mb-2'>
-                    Stay Updated
-                  </p>
-                  <p className='text-sm text-gray-700 mb-4'>
-                    Subscribe to our newsletter for rescues, events, and adoption opportunities!
-                  </p>
-                  <form onSubmit={handleSubmit} className='space-y-2'>
-                    <motion.input
-                      name='email'
-                      type='email'
-                      placeholder='sqysh@sqysh.io'
-                      value={inputs?.email || ''}
-                      onChange={handleInput}
-                      className='w-full px-4 py-2.5 rounded-lg bg-gray-100 border border-gray-200 focus:border-teal-400 focus:outline-none focus:ring-1 focus:ring-teal-400 text-sm text-gray-900 placeholder:text-gray-500 transition-colors'
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.3, delay: 0.05 }}
-                      whileFocus={{ scale: 1.02 }}
-                    />
-                    <motion.button
-                      type='submit'
-                      disabled={isLoading}
-                      className='w-full py-2.5 px-4 bg-teal-500 hover:bg-teal-600 disabled:bg-teal-400 disabled:cursor-not-allowed text-white rounded-lg font-medium text-sm transition-colors flex items-center justify-center gap-2'
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.3, delay: 0.1 }}
-                      whileHover={!isLoading ? { scale: 1.02 } : {}}
-                      whileTap={!isLoading ? { scale: 0.98 } : {}}
-                    >
-                      {isLoading ? (
-                        <>
-                          <motion.div
-                            animate={{ rotate: 360 }}
-                            transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                            className='w-4 h-4 border-2 border-white border-t-transparent rounded-full'
-                          />
-                          <span>Subscribing...</span>
-                        </>
-                      ) : (
-                        'Subscribe'
-                      )}
-                    </motion.button>
-                  </form>
-
-                  {/* View Newsletter Link */}
-                  <motion.div className='mt-4' variants={itemVariants} transition={{ delay: 0.15 }}>
-                    <Link
-                      onClick={handleClose}
-                      to='/newsletter-issues'
-                      className='inline-flex items-center gap-2 text-sm font-semibold text-teal-600 hover:text-teal-700 transition-colors group'
-                    >
-                      View Newsletters
-                      <motion.div
-                        animate={{ x: [0, 4, 0] }}
-                        transition={{ duration: 2, repeat: Infinity }}
-                      >
-                        <ArrowRight className='w-4 h-4' />
-                      </motion.div>
-                    </Link>
-                  </motion.div>
-                </motion.div>
-              </motion.div>
+              </div>
 
               {/* Divider */}
-              <div className='mx-4 border-t border-gray-200' />
+              <div className='mx-4 border-t border-border-light dark:border-border-dark' />
 
-              {/* Navigation Links */}
-              <motion.div
-                className='px-4 py-4 space-y-1'
-                initial='hidden'
-                animate='visible'
-                variants={containerVariants}
-              >
+              {/* ── Newsletter ── */}
+              <div className='px-4 py-5'>
+                <p className='font-changa text-f10 uppercase tracking-[0.25em] text-muted-light dark:text-muted-dark mb-1'>
+                  Stay Updated
+                </p>
+                <p className='font-lato text-xs text-muted-light dark:text-muted-dark mb-4 leading-relaxed'>
+                  Subscribe to our newsletter for rescues, events, and adoption opportunities!
+                </p>
+                <form onSubmit={handleSubmit} className='space-y-2'>
+                  <input
+                    name='email'
+                    type='email'
+                    placeholder='your@email.com'
+                    value={inputs?.email || ''}
+                    onChange={handleInput}
+                    className='w-full px-3.5 py-2.5 border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark text-text-light dark:text-text-dark placeholder:text-muted-light dark:placeholder:text-muted-dark font-lato text-sm focus:outline-none focus-visible:border-primary-light dark:focus-visible:border-primary-dark transition-colors'
+                  />
+                  <button
+                    type='submit'
+                    disabled={isLoading}
+                    className='w-full py-2.5 px-4 bg-primary-light dark:bg-primary-dark hover:bg-secondary-light dark:hover:bg-secondary-dark disabled:opacity-50 disabled:cursor-not-allowed text-white font-changa text-f10 uppercase tracking-[0.25em] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-light dark:focus-visible:ring-primary-dark'
+                  >
+                    {isLoading ? (
+                      <span className='flex items-center justify-center gap-2'>
+                        <motion.div
+                          animate={{ rotate: 360 }}
+                          transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                          className='w-3.5 h-3.5 border-2 border-white/30 border-t-white'
+                          aria-hidden='true'
+                        />
+                        Subscribing...
+                      </span>
+                    ) : (
+                      'Subscribe'
+                    )}
+                  </button>
+                </form>
+                <Link
+                  onClick={handleClose}
+                  to='/newsletter-issues'
+                  className='inline-flex items-center gap-2 mt-4 font-changa text-f10 uppercase tracking-[0.25em] text-primary-light dark:text-primary-dark hover:text-secondary-light dark:hover:text-secondary-dark transition-colors'
+                >
+                  View Newsletters
+                  <motion.div
+                    animate={{ x: [0, 4, 0] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  >
+                    <ArrowRight className='w-3.5 h-3.5' aria-hidden='true' />
+                  </motion.div>
+                </Link>
+              </div>
+
+              {/* Divider */}
+              <div className='mx-4 border-t border-border-light dark:border-border-dark' />
+
+              {/* ── Nav links ── */}
+              <nav className='px-4 py-4 space-y-0.5' aria-label='Mobile navigation'>
                 {navigationLinks(auction).map((navLink, idx) => (
-                  <motion.div key={idx} variants={itemVariants}>
+                  <div key={idx}>
                     {navLink.link ? (
                       <Link
                         to={navLink.link}
                         onClick={handleClose}
-                        className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors group ${
+                        className={`flex items-center gap-3 px-4 py-3 transition-colors ${
                           isLinkActive(navLink.link)
-                            ? 'bg-teal-50 text-teal-700'
-                            : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
+                            ? 'text-primary-light dark:text-primary-dark bg-surface-light dark:bg-surface-dark border-l-2 border-primary-light dark:border-primary-dark'
+                            : 'text-muted-light dark:text-muted-dark hover:text-text-light dark:hover:text-text-dark hover:bg-surface-light dark:hover:bg-surface-dark'
                         }`}
                       >
-                        <motion.div
-                          variants={iconVariants}
-                          initial='rest'
-                          whileHover='hover'
-                          className={isLinkActive(navLink.link) ? 'text-teal-600' : ''}
-                        >
-                          {navLink.icon}
-                        </motion.div>
-                        <span className='text-sm font-medium'>{navLink.title}</span>
+                        <span className='shrink-0'>{navLink.icon}</span>
+                        <span className='font-changa text-xs uppercase tracking-[0.15em]'>
+                          {navLink.title}
+                        </span>
                       </Link>
                     ) : (
-                      <motion.button
+                      <button
                         onClick={() => toggleSection(navLink.title)}
-                        className='w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors group'
+                        className='w-full flex items-center gap-3 px-4 py-3 text-muted-light dark:text-muted-dark hover:text-text-light dark:hover:text-text-dark hover:bg-surface-light dark:hover:bg-surface-dark transition-colors focus-visible:outline-none'
                       >
-                        <motion.div variants={iconVariants} initial='rest' whileHover='hover'>
-                          {navLink.icon}
-                        </motion.div>
-                        <span className='text-sm font-medium flex-1 text-left'>
+                        <span className='shrink-0'>{navLink.icon}</span>
+                        <span className='font-changa text-xs uppercase tracking-[0.15em] flex-1 text-left'>
                           {navLink.title}
                         </span>
                         <motion.div
-                          animate={{
-                            rotate: expandedSections.includes(navLink.title) ? 180 : 0,
-                          }}
+                          animate={{ rotate: expandedSections.includes(navLink.title) ? 180 : 0 }}
                           transition={{ duration: 0.2 }}
                         >
-                          <ChevronDown className='w-4 h-4 text-gray-400' />
+                          <ChevronDown className='w-3.5 h-3.5' aria-hidden='true' />
                         </motion.div>
-                      </motion.button>
+                      </button>
                     )}
 
                     {/* Submenu */}
@@ -391,22 +314,22 @@ const NavigationDrawer = () => {
                           animate={{ opacity: 1, height: 'auto' }}
                           exit={{ opacity: 0, height: 0 }}
                           transition={{ duration: 0.2 }}
-                          className='pl-8 space-y-1 mt-1'
+                          className='pl-10 space-y-0.5'
                         >
                           {navLink.links.map((subLink, subIdx) => (
                             <motion.div
                               key={subIdx}
                               initial={{ opacity: 0, x: -8 }}
                               animate={{ opacity: 1, x: 0 }}
-                              transition={{ duration: 0.2, delay: subIdx * 0.05 }}
+                              transition={{ duration: 0.2, delay: subIdx * 0.04 }}
                             >
                               <Link
                                 to={subLink.linkKey}
                                 onClick={handleClose}
-                                className={`block px-4 py-2 rounded-lg text-sm transition-colors ${
+                                className={`block px-4 py-2 font-lato text-xs transition-colors ${
                                   isLinkActive(subLink.linkKey)
-                                    ? 'text-teal-700 bg-teal-50 font-medium'
-                                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                                    ? 'text-primary-light dark:text-primary-dark font-semibold'
+                                    : 'text-muted-light dark:text-muted-dark hover:text-text-light dark:hover:text-text-dark hover:bg-surface-light dark:hover:bg-surface-dark'
                                 }`}
                               >
                                 {subLink.linkText}
@@ -416,9 +339,9 @@ const NavigationDrawer = () => {
                         </motion.div>
                       )}
                     </AnimatePresence>
-                  </motion.div>
+                  </div>
                 ))}
-              </motion.div>
+              </nav>
             </div>
           </motion.div>
         </>

@@ -1,3 +1,20 @@
+:root {
+  --color-bg-light: #ffffff;
+  --color-bg-dark: #09090f;
+  --color-surface-light: #f4f4f5;
+  --color-surface-dark: #13131f;
+  --color-border-light: #e4e4e7;
+  --color-border-dark: #1e1b4b;
+  --color-text-light: #09090b;
+  --color-text-dark: #f1f0ff;
+  --color-muted-light: #71717a;
+  --color-muted-dark: #7c6fcd;
+  --color-primary-light: #0891b2;
+  --color-primary-dark: #a78bfa;
+  --color-secondary-light: #0e7490;
+  --color-secondary-dark: #f472b6;
+}
+
 html,
 body,
 * {
@@ -31,7 +48,11 @@ tr:first-child td:last-child {
 
 .dashboard-sidebar-links.isActive:after {
   clip-path: polygon(100% 100%, 0% 100%, 100% 0%);
-  background-image: linear-gradient(129deg, rgba(193, 224, 255, 1) 35%, rgba(224, 205, 245, 1) 100%);
+  background-image: linear-gradient(
+    129deg,
+    rgba(193, 224, 255, 1) 35%,
+    rgba(224, 205, 245, 1) 100%
+  );
 }
 
 .dashboard-sidebar-title:after {
