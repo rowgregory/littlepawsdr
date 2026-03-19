@@ -3,7 +3,6 @@ import { useGetOrdersQuery } from '../../redux/services/orderApi';
 import { formatDateWithTimezone } from '../../utils/dateFunctions';
 import toFixed from '../../utils/toFixed';
 import { useSearchParams } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import { AlertCircle, Search } from 'lucide-react';
 import { setOpenOrderDrawer } from '../../redux/features/ordersSlice';
 import { setInputs } from '../../redux/features/form/formSlice';
@@ -17,18 +16,17 @@ const Orders = () => {
   const dispatch = useAppDispatch();
 
   const filteredOrders = orders?.filter((order: any) => {
-    const searchText = searchTerm?.toLowerCase();
+    const s = searchTerm.toLowerCase();
     return (
-      order?.name?.toLowerCase().includes(searchText) ||
-      order?.email?.toLowerCase().includes(searchText) ||
-      order?.createdAt?.toLowerCase().includes(searchText)
+      order?.name?.toLowerCase().includes(s) ||
+      order?.email?.toLowerCase().includes(s) ||
+      formatDateWithTimezone(order?.createdAt)?.toLowerCase().includes(s)
     );
   });
 
   useEffect(() => {
     const orderId = searchParams.get('orderId');
-    const order = orders?.filter((order: any) => order._id === orderId)[0];
-
+    const order = orders?.find((o: any) => o._id === orderId);
     if (order) {
       dispatch(setOpenOrderDrawer());
       dispatch(setInputs({ formName: 'adminOrderForm', data: order }));
@@ -37,155 +35,168 @@ const Orders = () => {
 
   return (
     <>
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className='bg-white border-b border-gray-200'
-      >
-        <div className='max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between'>
-          <div>
-            <h1 className='text-lg sm:text-2xl font-bold text-gray-900'>Orders</h1>
-            <p className='text-xs sm:text-sm text-gray-600 mt-0.5'>{orders?.length} total</p>
+      <div className='bg-bg-light dark:bg-bg-dark border-b border-border-light dark:border-border-dark'>
+        <div className='max-w-7xl mx-auto px-4 sm:px-6 h-[86px] flex flex-col justify-center'>
+          <div className='flex items-center gap-3 mb-1'>
+            <div className='w-4 h-px bg-primary-light dark:bg-primary-dark' aria-hidden='true' />
+            <span className='font-changa text-f10 uppercase tracking-[0.25em] text-primary-light dark:text-primary-dark'>
+              Admin
+            </span>
           </div>
+          <h1 className='font-changa text-xl sm:text-2xl uppercase leading-none text-text-light dark:text-text-dark'>
+            Orders
+          </h1>
+          <p className='font-lato text-xs text-muted-light dark:text-muted-dark mt-1'>
+            {orders?.length ?? 0} total
+          </p>
         </div>
-      </motion.div>
-      <div className='min-h-dvh w-full bg-gray-50'>
-        {/* Main Content */}
-        <div className='max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6'>
-          {/* Search */}
-          <motion.div
-            className='space-y-3 sm:space-y-0 sm:flex gap-3'
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-          >
-            <div className='relative flex-1 max-w-md'>
-              <Search className='absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4' />
-              <input
-                type='text'
-                placeholder='Search orders...'
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className='w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent text-sm'
-              />
-            </div>
-          </motion.div>
-          <div className='rounded-lg bg-white border border-gray-200 w-full overflow-hidden'>
-            <div className='overflow-x-auto'>
-              <table className='w-full'>
-                <thead className='sticky top-0 whitespace-nowrap bg-gray-50'>
-                  <tr>
-                    <th className='px-4 border-b border-gray-200 text-xs font-semibold text-gray-600 py-3 text-left uppercase'>
-                      Supporter
-                    </th>
-                    <th className='px-4 border-b border-gray-200 text-xs font-semibold text-gray-600 py-3 text-left uppercase'>
-                      Email
-                    </th>
-                    <th className='px-4 border-b border-gray-200 text-xs font-semibold text-gray-600 py-3 text-left uppercase'>
-                      Total
-                    </th>
+      </div>
 
-                    <th className='px-4 border-b border-gray-200 text-xs font-semibold text-gray-600 py-3 text-left uppercase'>
-                      Payment Status
-                    </th>
-                    <th className='px-4 border-b border-gray-200 text-xs font-semibold text-gray-600 py-3 text-left uppercase'>
-                      Shipping Status
-                    </th>
-                    <th className='px-4 border-b border-gray-200 text-xs font-semibold text-gray-600 py-3 text-left uppercase'>
-                      Date & Time
-                    </th>
+      {/* ── Content ── */}
+      <div className='min-h-dvh bg-surface-light dark:bg-surface-dark'>
+        <div className='max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-5'>
+          {/* ── Search ── */}
+          <div className='relative max-w-md'>
+            <Search
+              className='absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-light dark:text-muted-dark'
+              aria-hidden='true'
+            />
+            <label htmlFor='order-search' className='sr-only'>
+              Search orders
+            </label>
+            <input
+              id='order-search'
+              type='search'
+              placeholder='Search by name, email or date...'
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className='w-full pl-9 pr-4 py-2.5 border-l-2 border-l-primary-light dark:border-l-primary-dark border-t border-r border-b border-border-light dark:border-border-dark bg-bg-light dark:bg-bg-dark text-text-light dark:text-text-dark placeholder:text-muted-light dark:placeholder:text-muted-dark font-lato text-sm outline-none focus:border-primary-light dark:focus:border-primary-dark transition-colors'
+            />
+          </div>
+
+          {/* ── Table ── */}
+          <div className='border border-border-light dark:border-border-dark bg-bg-light dark:bg-bg-dark overflow-hidden'>
+            <div className='overflow-x-auto'>
+              <table className='w-full' role='table' aria-label='Orders'>
+                <thead>
+                  <tr className='border-b border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark'>
+                    {['Supporter', 'Email', 'Total', 'Payment', 'Shipping', 'Date'].map((col) => (
+                      <th
+                        key={col}
+                        scope='col'
+                        className='px-4 py-3 text-left font-changa text-f10 uppercase tracking-[0.2em] text-muted-light dark:text-muted-dark whitespace-nowrap'
+                      >
+                        {col}
+                      </th>
+                    ))}
                   </tr>
                 </thead>
-                <tbody className='divide-y divide-gray-100'>
-                  {(filteredOrders?.length || 0) > 0 ? (
+                <tbody className='divide-y divide-border-light dark:divide-border-dark'>
+                  {(filteredOrders?.length ?? 0) > 0 ? (
                     filteredOrders?.map((order: any, index: number) => {
-                      const hasPhysicalProduct = order?.shippingPrice > 0;
-
-                      const needsAction =
-                        hasPhysicalProduct && order?.shippingStatus === 'not-shipped';
+                      const isPhysical = order?.items?.some((item: any) => item.isPhysicalProduct);
+                      const needsAction = isPhysical && order?.shippingStatus !== 'shipped';
+                      const isCompleted =
+                        order?.status === 'Complete' ||
+                        order?.status === 'completed' ||
+                        order?.status === 'Digital Order';
 
                       return (
-                        <motion.tr
+                        <tr
+                          key={index}
+                          role='button'
+                          tabIndex={0}
+                          aria-label={`Order from ${order?.name}`}
                           onClick={() => {
                             dispatch(setOpenOrderDrawer());
                             dispatch(setInputs({ formName: 'adminOrderForm', data: { order } }));
                           }}
-                          key={index}
-                          className={`transition-colors cursor-pointer ${
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                              dispatch(setOpenOrderDrawer());
+                              dispatch(setInputs({ formName: 'adminOrderForm', data: { order } }));
+                            }
+                          }}
+                          className={`cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-light dark:focus-visible:ring-primary-dark ${
                             needsAction
-                              ? 'bg-amber-50 hover:bg-amber-100 border-l-4 border-amber-500'
-                              : 'bg-white hover:bg-gray-50'
+                              ? 'border-l-2 border-l-amber-500 bg-amber-50/50 dark:bg-amber-500/5 hover:bg-amber-50 dark:hover:bg-amber-500/10'
+                              : 'hover:bg-surface-light dark:hover:bg-surface-dark'
                           }`}
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: index * 0.02 }}
                         >
-                          <td className='px-4 py-3 text-sm font-medium text-gray-900 whitespace-nowrap'>
-                            {order?.name}
-                            {needsAction && (
-                              <span className='ml-2 inline-flex items-center gap-1 text-xs font-semibold text-amber-600 bg-amber-100 px-2 py-1 rounded-full'>
-                                <AlertCircle className='w-3 h-3' />
-                                Action Needed
+                          {/* Supporter */}
+                          <td className='px-4 py-3 whitespace-nowrap'>
+                            <div className='flex items-center gap-2'>
+                              <span className='font-changa text-xs uppercase tracking-wide text-text-light dark:text-text-dark'>
+                                {order?.name}
                               </span>
-                            )}
+                              {needsAction && (
+                                <span className='inline-flex items-center gap-1 font-changa text-[9px] uppercase tracking-widest px-2 py-0.5 bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400'>
+                                  <AlertCircle className='w-2.5 h-2.5' aria-hidden='true' />
+                                  Action Needed
+                                </span>
+                              )}
+                            </div>
                           </td>
-                          <td className='px-4 py-3 text-sm font-medium text-gray-900 whitespace-nowrap'>
+
+                          {/* Email */}
+                          <td className='px-4 py-3 whitespace-nowrap font-lato text-xs text-muted-light dark:text-muted-dark'>
                             {order?.email}
                           </td>
-                          <td className='px-4 py-3 text-sm font-medium text-gray-900 whitespace-nowrap'>
+
+                          {/* Total */}
+                          <td className='px-4 py-3 whitespace-nowrap font-changa text-xs tabular-nums text-text-light dark:text-text-dark'>
                             ${toFixed(order?.totalPrice)}
                           </td>
 
+                          {/* Payment status */}
                           <td className='px-4 py-3 whitespace-nowrap'>
                             <span
-                              className={`inline-flex px-3 py-1 rounded-full text-xs font-semibold ${
-                                order?.status === 'Complete' || order?.status === 'completed'
-                                  ? 'bg-green-100 text-green-700'
-                                  : 'bg-red-100 text-red-700'
+                              className={`font-changa text-[9px] uppercase tracking-widest px-2 py-0.5 ${
+                                isCompleted
+                                  ? 'bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400'
+                                  : 'bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400'
                               }`}
                             >
-                              {order?.status}
+                              {order?.status === 'Digital Order' ? 'Completed' : order?.status}
                             </span>
                           </td>
 
-                          {/* Shipping Status - Only show if has physical products */}
-                          {hasPhysicalProduct ? (
-                            <td className='px-4 py-3 whitespace-nowrap'>
+                          {/* Shipping status */}
+                          <td className='px-4 py-3 whitespace-nowrap'>
+                            {isPhysical ? (
                               <span
-                                className={`inline-flex px-3 py-1 rounded-full text-xs font-semibold ${
+                                className={`font-changa text-[9px] uppercase tracking-widest px-2 py-0.5 ${
                                   order?.shippingStatus === 'delivered'
-                                    ? 'bg-green-100 text-green-700'
+                                    ? 'bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400'
                                     : order?.shippingStatus === 'shipped'
-                                    ? 'bg-blue-100 text-blue-700'
-                                    : order?.shippingStatus === 'processing'
-                                    ? 'bg-yellow-100 text-yellow-700'
-                                    : order?.shippingStatus === 'not-shipped'
-                                    ? 'bg-red-100 text-red-700'
-                                    : 'bg-gray-100 text-gray-700'
+                                      ? 'bg-primary-light/10 dark:bg-primary-dark/10 text-primary-light dark:text-primary-dark'
+                                      : order?.shippingStatus === 'processing'
+                                        ? 'bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400'
+                                        : 'bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400'
                                 }`}
                               >
                                 {order?.shippingStatus}
                               </span>
-                            </td>
-                          ) : (
-                            <td className='px-4 py-3 whitespace-nowrap'>
-                              <span className='inline-flex px-3 py-1 rounded-full text-xs font-semibold bg-purple-100 text-purple-700'>
-                                digital
+                            ) : (
+                              <span className='font-changa text-[9px] uppercase tracking-widest px-2 py-0.5 bg-surface-light dark:bg-surface-dark text-muted-light dark:text-muted-dark'>
+                                Digital
                               </span>
-                            </td>
-                          )}
+                            )}
+                          </td>
 
-                          <td className='px-4 py-3 text-sm font-medium text-gray-900 whitespace-nowrap'>
+                          {/* Date */}
+                          <td className='px-4 py-3 whitespace-nowrap font-lato text-xs text-muted-light dark:text-muted-dark'>
                             {formatDateWithTimezone(order?.createdAt)}
                           </td>
-                        </motion.tr>
+                        </tr>
                       );
                     })
                   ) : (
                     <tr>
-                      <td colSpan={7} className='px-4 py-8 text-center'>
-                        <p className='text-gray-500 text-sm'>No orders found</p>
+                      <td colSpan={6} className='px-4 py-12 text-center'>
+                        <p className='font-lato text-sm text-muted-light dark:text-muted-dark'>
+                          No orders found
+                        </p>
                       </td>
                     </tr>
                   )}
