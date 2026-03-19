@@ -1,16 +1,41 @@
-import { FormEvent } from 'react';
-import useForm from '../../hooks/useForm';
-import { useCreateNewsletterEmailMutation } from '../../redux/services/newsletterEmailApi';
+import { type FormEvent } from 'react';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { AtSign, ShoppingCart, Shield, User, Send, Loader2 } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { useAppDispatch, useCartSelector, useUserSelector } from '../../redux/toolkitStore';
 import urlsToExclude from '../../utils/urlsToExclude';
-import Logo from '../common/Logo';
-import { topHeaderLinks } from '../data/navbar-data';
-import TopHeaderInfoBox from './TopHeaderInfoBox';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import useForm from '../../hooks/useForm';
+import { useCreateNewsletterEmailMutation } from '../../redux/services/newsletterEmailApi';
 import { validateEmailRegex } from '../../utils/regex';
 import { showToast } from '../../redux/features/toastSlice';
+import Logo from '../common/Logo';
+import { formatDateWithTimezone } from '../../utils/dateFunctions';
 
+// ─── Info box ─────────────────────────────────────────────────────────────────
+export const InfoBox = ({ icon: Icon, titleKey, textKey, onClick, className = '' }: any) => (
+  <div
+    onClick={onClick}
+    role={onClick ? 'button' : undefined}
+    tabIndex={onClick ? 0 : undefined}
+    onKeyDown={onClick ? (e) => e.key === 'Enter' && onClick() : undefined}
+    className={`flex items-center gap-2 group ${onClick ? 'cursor-pointer' : ''} ${className}`}
+  >
+    <Icon
+      className='w-3.5 h-3.5 text-primary-light dark:text-primary-dark shrink-0'
+      aria-hidden='true'
+    />
+    <div>
+      <p className='font-changa text-[8px] uppercase tracking-[0.2em] text-muted-dark whitespace-nowrap'>
+        {titleKey}
+      </p>
+      <p className='font-changa text-[9px] uppercase tracking-wide text-text-dark whitespace-nowrap group-hover:text-primary-light transition-colors'>
+        {textKey}
+      </p>
+    </div>
+  </div>
+);
+
+// ─── Main component ───────────────────────────────────────────────────────────
 const TopHeader = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -23,71 +48,102 @@ const TopHeader = () => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-
-    const isValid = validateEmailRegex.test(inputs.email);
-    if (!isValid) {
+    if (!validateEmailRegex.test(inputs.email)) {
       dispatch(showToast({ message: 'Invalid email', type: 'warning' }));
       return;
     }
-
     try {
       await createNewsletterEmail({ email: inputs.email }).unwrap();
-      dispatch(showToast({ message: 'Email submitted for newsletter', type: 'success' }));
+      dispatch(showToast({ message: 'Subscribed to newsletter!', type: 'success' }));
       setInputs({});
-    } catch (err: any) {
+    } catch {
       dispatch(showToast({ message: 'Error, please try again', type: 'warning' }));
     }
   };
 
+  if (shouldExclude) return null;
+
   return (
-    <div className='w-full bg-[#1a1f28] px-3'>
-      <div
-        className={`max-w-screen-2xl relative mx-auto w-full pt-1 lg:pt-4 pb-12 flex flex-col lg:flex-row items-center justify-center lg:justify-between ${
-          shouldExclude ? 'hidden' : 'block'
-        }`}
-      >
-        <Logo className='w-40 md:w-28 lg:w-32 lg:-ml-3 mb-3.5 lg:mb-0' />
-        <div className='flex items-center gap-x-12'>
-          <div className='w-fit p-4 text-white items-center hidden 1230:block'>
-            <form
-              onSubmit={handleSubmit}
-              className='grid grid-cols-12 items-center gap-1.5 sm:gap-3'
+    <div className='w-full bg-topbar-light dark:bg-topbar-dark border-b border-white/5'>
+      <div className='max-w-screen-2xl mx-auto px-4 sm:px-6 py-2 flex items-center justify-between gap-6'>
+        {/* ── Logo ── */}
+        <Link
+          to='/'
+          aria-label='Little Paws Dachshund Rescue — home'
+          className='shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-light'
+        >
+          <Logo className='w-24' />
+        </Link>
+
+        {/* ── Right side ── */}
+        <div className='flex items-center gap-6 1230:gap-8'>
+          {/* Newsletter */}
+          <form
+            onSubmit={handleSubmit}
+            className='hidden 1230:flex items-center gap-2'
+            aria-label='Subscribe to newsletter'
+          >
+            <input
+              name='email'
+              type='email'
+              autoComplete='email'
+              value={inputs.email || ''}
+              onChange={handleInput}
+              placeholder='Subscribe, Support, Rescue'
+              aria-label='Email address for newsletter'
+              className='w-64 px-3.5 py-1.5 border border-white/10 bg-white/5 text-text-dark placeholder:text-muted-dark/40 font-lato text-xs outline-none focus:border-primary-light transition-colors'
+            />
+            <button
+              type='submit'
+              disabled={isLoading}
+              aria-label={isLoading ? 'Subscribing...' : 'Subscribe'}
+              className='w-8 h-8 flex items-center justify-center bg-primary-light dark:bg-primary-dark hover:bg-secondary-light disabled:opacity-50 text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-light'
             >
-              <input
-                name='email'
-                type='text'
-                className='col-span-11 rounded-xl focus:outline-none text-charcoal p-3 w-full min-w-80 font-QBook placeholder:font-QBook'
-                onChange={handleInput}
-                value={inputs.email || ''}
-                placeholder='Subscribe, Support, Rescue'
+              {isLoading ? (
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                >
+                  <Loader2 className='w-3 h-3' aria-hidden='true' />
+                </motion.div>
+              ) : (
+                <Send className='w-3 h-3' aria-hidden='true' />
+              )}
+            </button>
+          </form>
+
+          {/* Info boxes */}
+          <nav
+            aria-label='Account and cart'
+            className='hidden md:flex items-center gap-6 1230:gap-8'
+          >
+            <InfoBox icon={AtSign} titleKey='Email' textKey='lpdr@littlepawsdr.org' />
+            <InfoBox
+              icon={ShoppingCart}
+              titleKey='Cart'
+              textKey={cartItemsAmount}
+              onClick={() => navigate('/cart')}
+            />
+            {user?._id ? (
+              <InfoBox
+                icon={Shield}
+                titleKey={
+                  formatDateWithTimezone(user?.lastLoginTime) === 'Invalid Date'
+                    ? 'First login'
+                    : `Last login: ${formatDateWithTimezone(user?.lastLoginTime)}`
+                }
+                textKey={`${user.firstName} ${user.lastName}`}
+                onClick={() => navigate('/supporter/overview')}
               />
-              <button
-                type='submit'
-                className='col-span-1 h-12 w-14 rounded-xl bg-teal-400 text-white flex items-center justify-center group overflow-hidden relative'
-              >
-                {isLoading ? (
-                  <>
-                    <motion.div
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 1, repeat: Infinity }}
-                      className='w-5 h-5 border-2 border-white border-t-transparent rounded-full'
-                    />
-                    Creating...
-                  </>
-                ) : (
-                  <>
-                    <i className='fas fa-paper-plane fa-xs absolute -translate-x-10 translate-y-10 group-hover:translate-x-0 group-hover:translate-y-0 duration-500' />
-                    <i className='fas fa-paper-plane fa-xs absolute translate-x-0 translate-y-0 group-hover:translate-x-10 group-hover:-translate-y-10 duration-500' />
-                  </>
-                )}
-              </button>
-            </form>
-          </div>
-          <div className='hidden md:flex items-center md:mb-3 lg:mb-0 gap-x-12'>
-            {topHeaderLinks(user, navigate, cartItemsAmount).map((obj, i) => (
-              <TopHeaderInfoBox key={i} obj={obj} />
-            ))}
-          </div>
+            ) : (
+              <InfoBox
+                icon={User}
+                titleKey='Login'
+                textKey='My Account'
+                onClick={() => navigate('/auth/login')}
+              />
+            )}
+          </nav>
         </div>
       </div>
     </div>

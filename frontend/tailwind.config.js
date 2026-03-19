@@ -30,6 +30,10 @@ export const theme = {
       'primary-dark': 'var(--color-primary-dark)',
       'secondary-light': 'var(--color-secondary-light)',
       'secondary-dark': 'var(--color-secondary-dark)',
+      'topbar-light': 'var(--color-topbar-light)',
+      'topbar-dark': 'var(--color-topbar-dark)',
+      'navbar-light': 'var(--color-navbar-light)',
+      'navbar-dark': 'var(--color-navbar-dark)',
     },
     fontSize: {
       f6: '0.375rem',

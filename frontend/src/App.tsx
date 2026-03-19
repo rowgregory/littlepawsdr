@@ -9,7 +9,7 @@ const PayPalOptions = {
   'client-id': process.env.REACT_APP_PAYPAL_CLIENT_ID,
   currency: 'USD',
   intent: 'capture',
-  'disable-funding': 'venmo',
+  'disable-funding': 'venmo,paylater',
 } as any;
 
 const App = () => (

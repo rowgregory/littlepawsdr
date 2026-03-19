@@ -113,7 +113,6 @@ const getAdoptionFees = asyncHandler(async (req, res) => {
 const getAdoptionFeeBypassCode = asyncHandler(async (req, res) => {
   try {
     const data = await AdoptionApplicationBypassCode.findOne({});
-    console.log('DATA: ', data);
 
     res.status(200).json({ bypassCode: data.bypassCode });
   } catch (err) {

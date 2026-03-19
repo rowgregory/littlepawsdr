@@ -1,5 +1,6 @@
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { toggleNavigationDrawer } from '../../redux/features/navbar/navbarSlice';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { ShoppingCart, Shield, User, Heart, Gavel } from 'lucide-react';
 import {
   useAppDispatch,
   useAuctionSelector,
@@ -8,13 +9,11 @@ import {
   useUserSelector,
 } from '../../redux/toolkitStore';
 import urlsToExclude from '../../utils/urlsToExclude';
-import { bottomHeaderLinks } from '../data/navbar-data';
-import TopHeaderInfoBox from './TopHeaderInfoBox';
-import { formatDateTime } from '../../utils/formatDateTime';
-import { motion } from 'framer-motion';
+import { toggleNavigationDrawer } from '../../redux/features/navbar/navbarSlice';
 import RainbowBurgerMenu from './RainbowBurgerMenu';
-import MotionLink from '../common/MotionLink';
-import { Shield, ShoppingCart, User } from 'lucide-react';
+import { bottomHeaderLinks } from '../data/navbar-data';
+import { InfoBox } from './TopHeader';
+import { formatDateTime } from '../../utils/formatDateTime';
 
 const BottomHeader = () => {
   const navigate = useNavigate();
@@ -38,7 +37,7 @@ const BottomHeader = () => {
     if (user?._id && user?.hasAddress) {
       navigate(`/auctions/${auction?.customAuctionLink}`);
     } else if (user?._id && !user.hasAddress) {
-      navigate(`/supporter/profile`);
+      navigate('/supporter/profile');
     } else {
       navigate(
         `/auth/register?customAuctionLink=${auction?.customAuctionLink}&conversionSource=header_banner`,
@@ -49,279 +48,163 @@ const BottomHeader = () => {
   const isActiveAuction = auction?.status === 'ACTIVE';
   const isUpcomingAuction = auction?.status === 'DRAFT';
 
-  const isActiveOrUpcoming = isActiveAuction || isUpcomingAuction;
+  if (shouldExclude) return null;
 
   return (
-    <div className={`top-0 px-3 z-[100] ${shouldExclude ? 'hidden' : 'sticky block'}`}>
-      <div
-        className={`${
-          isActiveOrUpcoming ? 'rounded-tl-2xl rounded-tr-2xl' : 'rounded-2xl'
-        } max-w-screen-2xl mx-auto w-full bg-white -mt-10 shadow-lg z-50`}
-      >
-        <div className='h-20 flex items-center justify-between px-6 sm:px-5'>
-          <RainbowBurgerMenu
-            onClick={() => dispatch(toggleNavigationDrawer({ navigationDrawer: true }))}
-            isOpen={toggle.navigationDrawer}
-          />
-          <div className='absolute left-1/2 -translate-x-1/2 flex items-center gap-x-5'>
-            {bottomHeaderLinks(pathname).map((link, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  delay: i * 0.1,
-                  duration: 0.5,
-                  ease: 'easeOut',
-                }}
-                whileHover={{ y: -2 }}
-                className='relative group'
-              >
+    <div className='sticky top-0 z-[100]'>
+      {/* ── Main nav bar ── */}
+      <div className='bg-navbar-light dark:bg-navbar-dark border-b border-white/5 shadow-sm'>
+        <div className='max-w-screen-2xl mx-auto w-full'>
+          <div className='h-16 flex items-center justify-between px-4 sm:px-6'>
+            {/* Burger */}
+            <RainbowBurgerMenu
+              onClick={() => dispatch(toggleNavigationDrawer({ navigationDrawer: true }))}
+              isOpen={toggle.navigationDrawer}
+            />
+
+            {/* ── Center nav links ── */}
+            <nav
+              aria-label='Main navigation'
+              className='absolute left-1/2 -translate-x-1/2 hidden md:flex items-center gap-6 lg:gap-8'
+            >
+              {bottomHeaderLinks(pathname).map((link, i) => (
                 <Link
+                  key={i}
                   to={link.linkKey}
-                  className={`${
-                    link.active ? 'text-teal-400' : 'text-charcoal'
-                  } font-QBook hover:text-teal-400 duration-300 text-base relative z-10 py-2 rounded-lg transition-all hover:bg-teal-50 group-hover:scale-105 whitespace-nowrap ${
-                    link.className
-                  }`}
+                  className={`relative group py-1 font-changa text-f10 uppercase tracking-[0.2em] transition-colors focus-visible:outline-none whitespace-nowrap ${
+                    link.active
+                      ? 'text-primary-light dark:text-primary-dark'
+                      : 'text-text-dark hover:text-primary-light dark:hover:text-primary-dark'
+                  } ${link.className ?? ''}`}
                 >
                   {link.linkText}
 
-                  {/* Active indicator */}
+                  {/* Active underline */}
                   {link.active && (
                     <motion.div
                       layoutId='activeTab'
-                      className='absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-6 h-0.5 bg-gradient-to-r from-teal-400 to-cyan-400 rounded-full'
+                      className='absolute -bottom-0.5 left-0 right-0 h-px bg-primary-light dark:bg-primary-dark'
                       initial={false}
-                      transition={{
-                        type: 'spring',
-                        stiffness: 500,
-                        damping: 30,
-                      }}
+                      transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                     />
                   )}
 
                   {/* Hover underline */}
-                  <motion.div
-                    className='absolute -bottom-1 left-1/2 transform -translate-x-1/2 h-0.5 bg-gradient-to-r from-teal-300 to-cyan-300 rounded-full'
-                    initial={{ width: 0 }}
-                    whileHover={{ width: '100%' }}
-                    transition={{ duration: 0.3 }}
+                  <span
+                    className='absolute -bottom-0.5 left-0 h-px w-0 bg-primary-light dark:bg-primary-dark group-hover:w-full transition-all duration-300'
+                    aria-hidden='true'
                   />
                 </Link>
+              ))}
+            </nav>
 
-                {/* Hover glow effect */}
-                <motion.div
-                  className='absolute inset-0 bg-gradient-to-r from-teal-400/0 via-teal-400/10 to-cyan-400/0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm'
-                  initial={false}
+            {/* ── Right: info + donate ── */}
+            <div className='flex items-center gap-4 sm:gap-6'>
+              {/* Cart + account — sm only */}
+              <div className='hidden sm:flex md:hidden items-center gap-5'>
+                <InfoBox
+                  icon={ShoppingCart}
+                  titleKey='Cart'
+                  textKey={cartItemsAmount}
+                  onClick={() => navigate('/cart')}
                 />
+                <InfoBox
+                  icon={user?._id ? Shield : User}
+                  titleKey={
+                    user?._id
+                      ? formatDateTime(user?.lastLoginTime) === 'Invalid Date'
+                        ? 'First login'
+                        : `Last login: ${formatDateTime(user?.lastLoginTime)}`
+                      : 'Login'
+                  }
+                  textKey={user?._id ? `${user.firstName} ${user.lastName}` : 'My Account'}
+                  onClick={handleClick}
+                />
+              </div>
 
-                {/* Sparkle on hover */}
-                <motion.div
-                  className='absolute -top-1 -right-1 text-teal-400 text-xs pointer-events-none'
-                  initial={{ scale: 0, rotate: 0 }}
-                  whileHover={{
-                    scale: [0, 1.2, 1],
-                    rotate: [0, 180, 360],
-                    opacity: [0, 1, 0],
-                  }}
-                  transition={{ duration: 0.6 }}
-                >
-                  ✨
-                </motion.div>
-              </motion.div>
-            ))}
-          </div>
-          <div className='flex items-center gap-x-6'>
-            <section className='hidden sm:flex sm:items-center md:hidden gap-x-6'>
-              <TopHeaderInfoBox
-                obj={{
-                  className: 'cursor-pointer',
-                  onClick: () => navigate('/cart'),
-                  icon: ShoppingCart,
-                  titleKey: 'Cart ITems',
-                  textKey: cartItemsAmount,
-                }}
-              />
-              <TopHeaderInfoBox
-                obj={{
-                  className: 'cursor-pointer',
-                  onClick: handleClick,
-                  icon: user?._id ? Shield : User,
-                  titleKey: user?._id
-                    ? formatDateTime(user?.lastLoginTime) === 'Invalid Date'
-                      ? 'First Time Logged In'
-                      : `Last login: ${formatDateTime(user?.lastLoginTime)}`
-                    : 'Login',
-                  textKey: user?._id
-                    ? `${user?.firstName} ${user?.lastName}`
-                    : 'Access Your Account',
-                }}
-              />
-            </section>
-
-            <MotionLink
-              to='/donate'
-              className='relative flex flex-col justify-between cursor-pointer text-white group hover:text-white'
-              whileHover={{ scale: 1.05, y: -2 }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ duration: 0.2 }}
-            >
-              <motion.div
-                className='rounded-full shadow-lg px-9 py-3 w-fit h-fit text-lg font-bold relative overflow-hidden border-2 border-blue-200/40 backdrop-blur-sm'
-                style={{
-                  backgroundImage:
-                    'linear-gradient(135deg, #e0f2fe, #bae6fd, #7dd3fc, #38bdf8, #0ea5e9, #0284c7, #e0f2fe)',
-                  backgroundSize: '300% 100%',
-                }}
-                animate={{
-                  backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
-                }}
-                transition={{
-                  backgroundPosition: {
-                    duration: 8,
-                    repeat: Infinity,
-                    ease: 'linear',
-                  },
-                }}
-                whileHover={{
-                  boxShadow: [
-                    '0 0 20px rgba(226, 232, 240, 0.6), inset 0 0 10px rgba(191, 219, 254, 0.3)',
-                    '0 0 40px rgba(56, 189, 248, 0.8), inset 0 0 15px rgba(191, 219, 254, 0.5)',
-                    '0 0 20px rgba(226, 232, 240, 0.6), inset 0 0 10px rgba(191, 219, 254, 0.3)',
-                  ],
-                }}
+              {/* Donate button */}
+              <Link
+                to='/donate'
+                className='group relative overflow-hidden flex items-center gap-2 px-5 py-2 font-changa text-f10 uppercase tracking-[0.2em] text-white bg-primary-light dark:bg-primary-dark hover:bg-secondary-light dark:hover:bg-secondary-dark transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-light dark:focus-visible:ring-primary-dark'
               >
-                {/* Icy crystalline effect */}
-                <motion.div
-                  className='absolute inset-0 bg-gradient-to-tr from-transparent via-blue-100/20 to-transparent'
-                  animate={{
-                    opacity: [0.2, 0.5, 0.2],
-                  }}
-                  transition={{
-                    duration: 3,
-                    repeat: Infinity,
-                    ease: 'easeInOut',
-                  }}
+                <span
+                  className='absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/15 to-transparent group-hover:animate-[shimmer_1.4s_ease_infinite] pointer-events-none'
+                  aria-hidden='true'
                 />
-
-                {/* Shimmering frost effect */}
-                <motion.div
-                  className='absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent'
-                  animate={{
-                    x: ['-100%', '100%'],
-                  }}
-                  transition={{
-                    duration: 3,
-                    repeat: Infinity,
-                    repeatDelay: 0.5,
-                    ease: 'linear',
-                  }}
-                />
-
-                {/* Snowflake pattern overlay */}
-                <motion.div
-                  className='absolute inset-0 bg-white/5'
-                  animate={{
-                    opacity: [0.05, 0.15, 0.05],
-                  }}
-                  transition={{
-                    duration: 4,
-                    repeat: Infinity,
-                    ease: 'easeInOut',
-                  }}
-                />
-
-                <motion.span
-                  className='relative z-10 flex items-center gap-2'
-                  animate={{
-                    textShadow: [
-                      '0 0 10px rgba(2, 132, 199, 0.8)',
-                      '0 0 20px rgba(56, 189, 248, 0.9)',
-                      '0 0 10px rgba(2, 132, 199, 0.8)',
-                    ],
-                  }}
-                  transition={{
-                    duration: 2.5,
-                    repeat: Infinity,
-                    ease: 'easeInOut',
-                  }}
-                >
-                  ❄️ Donate
-                </motion.span>
-              </motion.div>
-
-              {/* Falling snowflakes */}
-            </MotionLink>
+                <Heart className='w-3.5 h-3.5' aria-hidden='true' />
+                Donate
+              </Link>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* ACTIVE Banner */}
+      {/* ── Active auction banner ── */}
       {isActiveAuction && (
-        <div
+        <button
+          type='button'
           onClick={handleAuctionClick}
-          className='max-w-screen-2xl mx-auto w-full cursor-pointer'
+          className='w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-white'
+          aria-label={`${auction?.title} is live — click to join`}
         >
-          <div className='bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 animate-gradient-x h-7 flex items-center justify-center px-3 sm:px-6 rounded-b-2xl'>
-            <div className='flex items-center justify-center w-full'>
-              {/* Mobile Layout */}
-              <div className='flex sm:hidden items-center gap-2'>
-                <div className='w-2.5 h-2.5 bg-white rounded-full animate-pulse'></div>
-                <span className='text-white font-bold text-sm'>{auction?.title} LIVE!</span>
+          <div className='bg-cyan-600 dark:bg-violet-600 h-8 flex items-center justify-center px-4 sm:px-6'>
+            <div className='max-w-screen-2xl mx-auto w-full flex items-center justify-center gap-3'>
+              <div className='flex items-center gap-2'>
+                <motion.div
+                  className='w-2 h-2 bg-white rounded-full'
+                  animate={{ opacity: [1, 0.3, 1] }}
+                  transition={{ duration: 1.5, repeat: Infinity }}
+                  aria-hidden='true'
+                />
+                <Gavel className='w-3.5 h-3.5 text-white' aria-hidden='true' />
+                <span className='font-changa text-f10 sm:text-xs uppercase tracking-[0.2em] text-white'>
+                  {auction?.title} — Live Now
+                </span>
               </div>
-
-              {/* Desktop Layout */}
-              <div className='hidden sm:flex items-center gap-3'>
-                <div className='flex items-center gap-2'>
-                  <div className='w-3 h-3 bg-white rounded-full animate-pulse'></div>
-                  <span className='text-white font-bold text-lg'> {auction?.title} is LIVE!</span>
-                </div>
-                <div className='text-white/90 text-sm font-medium'>
-                  {!user?._id
-                    ? 'Join now to bid →'
-                    : user?._id && !user?.hasAddress
-                      ? 'Click to enter address →'
-                      : 'Click to join the auction →'}
-                </div>
-              </div>
+              <span className='hidden sm:block font-lato text-[10px] text-white/80'>
+                {!user?._id
+                  ? 'Sign up to bid →'
+                  : !user?.hasAddress
+                    ? 'Add address to participate →'
+                    : 'Click to join →'}
+              </span>
             </div>
           </div>
-        </div>
+        </button>
       )}
 
+      {/* ── Upcoming auction banner ── */}
       {isUpcomingAuction && (
-        <div
+        <button
+          type='button'
           onClick={handleAuctionClick}
-          className='max-w-screen-2xl mx-auto w-full cursor-pointer'
+          className='w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-white'
+          aria-label={`${auction?.title} coming soon — click to learn more`}
         >
-          <div className='bg-gradient-to-r from-blue-600 via-cyan-500 to-teal-400 animate-gradient-x h-7 flex items-center justify-center px-3 sm:px-6 rounded-b-2xl'>
-            <div className='flex items-center justify-center w-full'>
-              {/* Mobile Layout */}
-              <div className='flex sm:hidden items-center gap-2'>
-                <div className='w-2.5 h-2.5 bg-white rounded-full animate-bounce'></div>
-                <span className='text-white font-bold text-sm'>⏰ Coming Soon!</span>
+          <div className='bg-cyan-700 dark:bg-violet-800 h-8 flex items-center justify-center px-4 sm:px-6'>
+            <div className='max-w-screen-2xl mx-auto w-full flex items-center justify-center gap-3'>
+              <div className='flex items-center gap-2'>
+                <motion.div
+                  className='w-2 h-2 bg-white rounded-full'
+                  animate={{ y: [0, -3, 0] }}
+                  transition={{ duration: 1, repeat: Infinity }}
+                  aria-hidden='true'
+                />
+                <Gavel className='w-3.5 h-3.5 text-white/80' aria-hidden='true' />
+                <span className='font-changa text-f10 sm:text-xs uppercase tracking-[0.2em] text-white'>
+                  {auction?.title} — Coming Soon
+                </span>
               </div>
-
-              {/* Desktop Layout */}
-              <div className='hidden sm:flex items-center gap-3'>
-                <div className='flex items-center gap-2'>
-                  <div className='w-3 h-3 bg-white rounded-full animate-bounce'></div>
-                  <span className='text-white font-bold text-lg'>
-                    ⏰ {auction?.title} Coming Soon!
-                  </span>
-                </div>
-                <div className='text-white/90 text-sm font-medium'>
-                  {!user?._id
-                    ? 'Sign up to participate →'
-                    : user?._id && !user?.hasAddress
-                      ? 'Complete address to participate →'
-                      : 'Get Ready! →'}
-                </div>
-              </div>
+              <span className='hidden sm:block font-lato text-[10px] text-white/70'>
+                {!user?._id
+                  ? 'Sign up to participate →'
+                  : !user?.hasAddress
+                    ? 'Complete address to participate →'
+                    : 'Get ready →'}
+              </span>
             </div>
           </div>
-        </div>
+        </button>
       )}
     </div>
   );

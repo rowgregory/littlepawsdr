@@ -1,315 +1,393 @@
-import { useAppDispatch, useCartSelector } from '../../redux/toolkitStore';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import {
+  ChevronLeft,
+  ChevronRight,
+  Minus,
+  Plus,
+  Trash2,
+  AlertCircle,
+  ShoppingBag,
+  User,
+} from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useAppDispatch, useCartSelector } from '../../redux/toolkitStore';
 import {
   addToCart,
   deleteProductFromCart,
   removeFromCart,
 } from '../../redux/features/cart/cartSlice';
-import { AlertCircle, ChevronLeft, ChevronRight, Minus, Plus, Trash2, User } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { containerVariants, itemVariants } from '../../lib/constants/motion';
-import toFixed from '../../utils/toFixed';
-import MotionLink from '../../components/common/MotionLink';
 import hasPhysicalProduct from '../../utils/shop-utils/hasPhysicalProduct';
 
+const toFixed = (n: number) => (n || 0).toFixed(2);
+
+// ─── Cart Item ────────────────────────────────────────────────────────────────
 const CartItem = ({ item }: { item: any }) => {
   const dispatch = useAppDispatch();
   const [isRemoving, setIsRemoving] = useState(false);
 
-  const addOneItem = (item: any) => {
-    const productAmount = item?.sizes?.find((p: any) => p.size === item.size)?.amount;
+  const qty = item.qty ?? item.quantity ?? 1;
 
-    if (
-      item.quantity + 1 <= productAmount ||
+  const addOneItem = () => {
+    const productAmount = item?.sizes?.find((p: any) => p.size === item.size)?.amount;
+    const canAdd =
       item.dachshundId ||
-      item.quantity + 1 <= item.countInStock
-    ) {
-      dispatch(addToCart({ item }));
-    } else {
-    }
+      (productAmount != null ? qty + 1 <= productAmount : qty + 1 <= item.countInStock);
+    if (canAdd) dispatch(addToCart({ item }));
   };
 
-  const deleteOneItem = (item: any) => {
-    const currentQty = item.qty ?? item?.quantity;
-    if (currentQty === 1) {
-      return;
-    }
-
+  const deleteOneItem = () => {
+    if (qty <= 1) return;
     dispatch(deleteProductFromCart({ item }));
   };
 
   const handleRemove = () => {
     setIsRemoving(true);
-    setTimeout(() => {
-      dispatch(removeFromCart({ item }));
-    }, 300);
+    setTimeout(() => dispatch(removeFromCart({ item })), 300);
   };
+
+  const isLowStock =
+    item?.countInStock === 1 && item?.itemType === 'product' && item?.isPhysicalProduct;
 
   return (
     <motion.div
       initial={{ opacity: 1, x: 0 }}
-      animate={isRemoving ? { opacity: 0, x: -100 } : { opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -100 }}
-      transition={{ duration: 0.3 }}
-      className={`border rounded-lg p-4 hover:shadow-md transition-all ${
-        item?.countInStock === 1 ? 'border-amber-300 bg-amber-50' : 'border-gray-200'
+      animate={isRemoving ? { opacity: 0, x: -40 } : { opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -40 }}
+      transition={{ duration: 0.25 }}
+      className={`border ${
+        isLowStock
+          ? 'border-amber-300 dark:border-amber-500/40 bg-amber-50/50 dark:bg-amber-500/5'
+          : 'border-border-light dark:border-border-dark bg-bg-light dark:bg-bg-dark'
       }`}
     >
-      {/* Low Stock Banner */}
-      {item?.countInStock === 1 && item?.itemType === 'product' && item?.isPhysicalProduct && (
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className='mb-3 p-2 bg-amber-100 border border-amber-300 rounded-lg flex items-center gap-2'
-        >
-          <AlertCircle className='w-4 h-4 text-amber-600 flex-shrink-0' />
-          <p className='text-xs font-semibold text-amber-700'>Only 1 left in stock!</p>
-        </motion.div>
+      {/* Low stock warning */}
+      {isLowStock && (
+        <div className='flex items-center gap-2 px-4 py-2.5 border-b border-amber-200 dark:border-amber-500/20 bg-amber-50 dark:bg-amber-500/10'>
+          <AlertCircle
+            className='w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0'
+            aria-hidden='true'
+          />
+          <p className='font-changa text-f10 uppercase tracking-widest text-amber-700 dark:text-amber-400'>
+            Only 1 left in stock
+          </p>
+        </div>
       )}
 
-      <div className='flex gap-4'>
-        {/* Product Image */}
-        <div className='flex-shrink-0'>
-          <img
-            src={item?.itemImage}
-            alt={item?.name}
-            className='w-20 h-20 rounded-lg object-cover bg-gray-100'
-          />
-        </div>
+      <div className='p-4'>
+        <div className='flex gap-4'>
+          {/* Image */}
+          {item.itemImage && (
+            <img
+              src={item.itemImage}
+              alt={item.itemName ?? 'Cart item'}
+              className='w-18 h-18 object-cover shrink-0 border border-border-light dark:border-border-dark'
+              style={{ width: 72, height: 72 }}
+            />
+          )}
 
-        {/* Product Info */}
-        <div className='flex-1 min-w-0'>
-          <Link
-            to={
-              item?.dachshundId
-                ? `/donate/welcome-wieners/${item?.dachshundId}`
-                : item?.itemType === 'ecard'
-                ? `/store/ecards/personalize/${item?.itemId}`
-                : `/store/${item?.itemId}`
-            }
-            className='text-sm font-semibold text-gray-900 hover:text-teal-600 transition-colors'
-          >
-            {item?.itemType === 'ecard' ? (
-              <div className='space-y-1'>
-                <p className='line-clamp-1'>{item?.itemName}</p>
-                <p className='text-xs text-gray-600'>
-                  To: {item?.recipientsFullName || item?.recipientsEmail}
-                </p>
-                {item?.message && (
-                  <p className='text-xs text-gray-500 italic line-clamp-2'>"{item?.message}"</p>
+          {/* Info */}
+          <div className='flex-1 min-w-0'>
+            <Link
+              to={
+                item.dachshundId
+                  ? `/donate/welcome-wieners/${item.dachshundId}`
+                  : item.itemType === 'ecard'
+                    ? `/store/ecards/personalize/${item.itemId}`
+                    : `/store/${item.itemId}`
+              }
+              className='block font-changa text-xs uppercase tracking-wide text-text-light dark:text-text-dark hover:text-primary-light dark:hover:text-primary-dark transition-colors leading-snug focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-light dark:focus-visible:ring-primary-dark'
+            >
+              {item.itemName}
+              {item.dachshundName && (
+                <span className='font-lato normal-case tracking-normal text-muted-light dark:text-muted-dark'>
+                  {' '}
+                  for {item.dachshundName}
+                </span>
+              )}
+            </Link>
+
+            {item.itemType === 'ecard' && (
+              <div className='mt-1 space-y-0.5'>
+                {item.recipientsFullName && (
+                  <p className='font-lato text-[10px] text-muted-light dark:text-muted-dark'>
+                    To: {item.recipientsFullName}
+                  </p>
+                )}
+                {item.message && (
+                  <p className='font-lato text-[10px] text-muted-light dark:text-muted-dark italic line-clamp-1'>
+                    "{item.message}"
+                  </p>
                 )}
               </div>
-            ) : (
-              <div>
-                {item?.itemName}
-                {item?.dachshundName && ` for ${item?.dachshundName}`}
-              </div>
             )}
-          </Link>
 
-          {item?.size && <p className='text-xs text-gray-600 mt-1'>Size: {item?.size}</p>}
-        </div>
-
-        {/* Price */}
-        <div className='text-right flex-shrink-0'>
-          <p className='text-sm font-semibold text-gray-900'>
-            ${toFixed(item?.price * (item.qty ?? item?.quantity))}
-          </p>
-          <p className='text-xs text-gray-600 mt-1'>${toFixed(item?.price)} each</p>
-        </div>
-      </div>
-
-      {/* Quantity and Remove */}
-      <div
-        className={`flex items-center ${
-          item?.itemType !== 'ecard' ? 'justify-between' : 'justify-end'
-        } mt-4 pt-4 border-t border-gray-100`}
-      >
-        {item?.itemType !== 'ecard' && (
-          <div className='flex items-center gap-2'>
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              onClick={() => deleteOneItem(item)}
-              className='p-1.5 hover:bg-gray-100 rounded-lg transition-colors'
-              aria-label='Decrease quantity'
-            >
-              <Minus className='w-4 h-4 text-gray-600' />
-            </motion.button>
-
-            <span className='w-8 text-center text-sm font-semibold text-gray-900'>
-              {item.qty ?? item?.quantity}
-            </span>
-
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              onClick={() => addOneItem({ ...item, from: 'cart' })}
-              className='p-1.5 hover:bg-gray-100 rounded-lg transition-colors'
-              aria-label='Increase quantity'
-            >
-              <Plus className='w-4 h-4 text-gray-600' />
-            </motion.button>
+            {item.size && (
+              <p className='font-lato text-[10px] text-muted-light dark:text-muted-dark mt-0.5'>
+                Size: {item.size}
+              </p>
+            )}
           </div>
-        )}
 
-        <motion.button
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          onClick={handleRemove}
-          className='p-1.5 hover:bg-red-50 rounded-lg transition-colors'
-          aria-label='Remove item'
+          {/* Price */}
+          <div className='text-right shrink-0'>
+            <p className='font-changa text-sm tabular-nums text-primary-light dark:text-primary-dark'>
+              ${toFixed(item.price * qty)}
+            </p>
+            {qty > 1 && (
+              <p className='font-lato text-[10px] text-muted-light dark:text-muted-dark mt-0.5'>
+                ${toFixed(item.price)} each
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* Actions */}
+        <div
+          className={`flex items-center mt-4 pt-3.5 border-t border-border-light dark:border-border-dark ${
+            item.itemType !== 'ecard' ? 'justify-between' : 'justify-end'
+          }`}
         >
-          <Trash2 className='w-4 h-4 text-red-600' />
-        </motion.button>
+          {item.itemType !== 'ecard' && (
+            <div className='flex items-center border border-border-light dark:border-border-dark'>
+              <button
+                type='button'
+                onClick={deleteOneItem}
+                disabled={qty <= 1}
+                aria-label='Decrease quantity'
+                className='w-8 h-8 flex items-center justify-center text-muted-light dark:text-muted-dark hover:text-primary-light dark:hover:text-primary-dark hover:bg-surface-light dark:hover:bg-surface-dark disabled:opacity-30 disabled:cursor-not-allowed transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-light dark:focus-visible:ring-primary-dark'
+              >
+                <Minus className='w-3 h-3' aria-hidden='true' />
+              </button>
+              <span
+                className='w-8 h-8 flex items-center justify-center font-changa text-xs tabular-nums text-text-light dark:text-text-dark border-x border-border-light dark:border-border-dark'
+                aria-live='polite'
+                aria-label={`Quantity: ${qty}`}
+              >
+                {qty}
+              </span>
+              <button
+                type='button'
+                onClick={addOneItem}
+                disabled={!item.dachshundId && qty >= item.countInStock}
+                aria-label='Increase quantity'
+                className='w-8 h-8 flex items-center justify-center text-muted-light dark:text-muted-dark hover:text-primary-light dark:hover:text-primary-dark hover:bg-surface-light dark:hover:bg-surface-dark disabled:opacity-30 disabled:cursor-not-allowed transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-light dark:focus-visible:ring-primary-dark'
+              >
+                <Plus className='w-3 h-3' aria-hidden='true' />
+              </button>
+            </div>
+          )}
+
+          <button
+            type='button'
+            onClick={handleRemove}
+            aria-label={`Remove ${item.itemName} from cart`}
+            className='p-1.5 text-muted-light dark:text-muted-dark hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500'
+          >
+            <Trash2 className='w-3.5 h-3.5' aria-hidden='true' />
+          </button>
+        </div>
       </div>
     </motion.div>
   );
 };
 
+// ─── Cart page ────────────────────────────────────────────────────────────────
 const Cart = () => {
   const { cartItems, subtotal } = useCartSelector();
-
   const hasPhysical = hasPhysicalProduct(cartItems);
 
+  // ── Empty state ──
   if (cartItems.length === 0) {
     return (
-      <div className='min-h-screen bg-gray-50 flex items-center justify-center'>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className='text-center max-w-md px-6'
-        >
-          <div className='w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-6'>
-            <Trash2 className='w-8 h-8 text-gray-600' />
+      <div className='min-h-screen bg-bg-light dark:bg-bg-dark flex items-center justify-center px-4'>
+        <div className='text-center max-w-sm'>
+          <div className='w-14 h-14 flex items-center justify-center bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark mx-auto mb-6'>
+            <ShoppingBag
+              className='w-6 h-6 text-muted-light dark:text-muted-dark'
+              aria-hidden='true'
+            />
           </div>
-          <h2 className='text-2xl font-bold text-gray-900 mb-2'>Your cart is empty</h2>
-          <p className='text-gray-600 mb-8'>Start shopping to add items to your cart.</p>
+          <div className='flex items-center justify-center gap-2 mb-3'>
+            <div className='w-4 h-px bg-primary-light dark:bg-primary-dark' aria-hidden='true' />
+            <span className='font-changa text-f10 uppercase tracking-[0.25em] text-primary-light dark:text-primary-dark'>
+              Cart
+            </span>
+          </div>
+          <h1 className='font-changa text-2xl uppercase text-text-light dark:text-text-dark mb-2'>
+            Your cart is empty
+          </h1>
+          <p className='font-lato text-sm text-muted-light dark:text-muted-dark mb-8 leading-relaxed'>
+            Start shopping to add items to your cart.
+          </p>
           <Link
             to='/store'
-            className='w-full px-6 py-3 bg-gray-900 text-white font-semibold rounded-lg hover:bg-gray-800 transition-colors'
+            className='inline-flex items-center gap-2 px-6 py-3 bg-primary-light dark:bg-primary-dark hover:bg-secondary-light dark:hover:bg-secondary-dark text-white font-changa text-f10 uppercase tracking-[0.2em] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-light dark:focus-visible:ring-primary-dark'
           >
-            Continue Shopping
+            Browse Store
+            <ChevronRight className='w-4 h-4' aria-hidden='true' />
           </Link>
-        </motion.div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className='min-h-screen bg-white'>
-      {/* Header */}
-      <div className='border-b border-gray-200 bg-gray-50'>
-        <div className='max-w-7xl mx-auto px-8 py-4 flex items-center justify-between'>
-          <MotionLink
+    <div className='min-h-screen bg-bg-light dark:bg-bg-dark'>
+      {/* ── Header ── */}
+      <header className='border-b border-border-light dark:border-border-dark bg-bg-light dark:bg-bg-dark'>
+        <div className='max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between'>
+          <Link
             to='/'
-            className='flex items-center gap-2'
-            variant='default'
-            color='secondary'
-            transition={{ duration: 0.5 }}
+            className='flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-light dark:focus-visible:ring-primary-dark'
           >
-            <span className='font-bold text-gray-900'>Little Paws Dachshund Rescue</span>
-          </MotionLink>
-
-          <MotionLink to='/supporter/overview' variant='icon' transition={{ duration: 0.5 }}>
-            <User className='w-5 h-5' />
-          </MotionLink>
+            <div className='w-4 h-px bg-primary-light dark:bg-primary-dark' aria-hidden='true' />
+            <span className='font-changa text-f10 uppercase tracking-[0.25em] text-primary-light dark:text-primary-dark'>
+              Little Paws Dachshund Rescue
+            </span>
+          </Link>
+          <Link
+            to='/supporter/overview'
+            aria-label='My account'
+            className='p-1.5 text-muted-light dark:text-muted-dark hover:text-text-light dark:hover:text-text-dark transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-light dark:focus-visible:ring-primary-dark'
+          >
+            <User className='w-4 h-4' aria-hidden='true' />
+          </Link>
         </div>
-      </div>
+      </header>
 
-      {/* Main Content */}
-      <div className='grid lg:grid-cols-12 gap-y-12 lg:gap-12 max-w-7xl mx-auto px-8 py-12'>
-        <div className='lg:col-span-7'>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className='mb-8'
-          >
-            <h1 className='text-3xl sm:text-4xl font-bold text-gray-900 mb-2'>Shopping Cart</h1>
-            <p className='text-gray-600'>{cartItems.length} item(s)</p>
-          </motion.div>
+      {/* ── Main ── */}
+      <main className='max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-14'>
+        <div className='grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-8 lg:gap-12 items-start'>
+          {/* ── Left: Items ── */}
+          <div>
+            {/* Page heading */}
+            <div className='mb-8'>
+              <div className='flex items-center gap-3 mb-3'>
+                <div
+                  className='w-4 h-px bg-primary-light dark:bg-primary-dark'
+                  aria-hidden='true'
+                />
+                <span className='font-changa text-f10 uppercase tracking-[0.25em] text-primary-light dark:text-primary-dark'>
+                  Your Cart
+                </span>
+              </div>
+              <h1 className='font-changa text-3xl sm:text-4xl uppercase leading-none text-text-light dark:text-text-dark'>
+                Shopping Cart
+              </h1>
+              <p className='font-lato text-xs text-muted-light dark:text-muted-dark mt-2'>
+                {cartItems.length} item{cartItems.length !== 1 ? 's' : ''}
+              </p>
+            </div>
 
-          {/* Cart Items */}
+            {/* Items list */}
+            <ul className='space-y-3'>
+              <AnimatePresence>
+                {cartItems.map((item: any, idx: number) => (
+                  <li key={item.itemId ?? idx}>
+                    <CartItem item={item} />
+                  </li>
+                ))}
+              </AnimatePresence>
+            </ul>
 
-          <motion.div
-            variants={containerVariants}
-            initial='hidden'
-            animate='visible'
-            className='space-y-4'
-          >
-            {cartItems.map((item: any, idx: number) => (
-              <motion.div key={idx} variants={itemVariants}>
-                <CartItem item={item} />
-              </motion.div>
-            ))}
-          </motion.div>
-          <div className='mt-8 flex flex-col sm:flex-row gap-y-5 sm:gap-x-5 sm:justify-between'>
-            <Link to='/store' className='order-2 sm:order-1'>
-              <motion.div
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className='flex items-center gap-2 px-8 py-3 bg-gray-100 text-gray-900 font-semibold rounded-lg hover:bg-gray-200 transition-colors sm:w-fit'
+            {/* Bottom actions */}
+            <div className='flex flex-col-reverse sm:flex-row gap-3 mt-8'>
+              <Link
+                to='/store'
+                className='flex items-center justify-center gap-2 px-6 py-3 border border-border-light dark:border-border-dark hover:border-primary-light dark:hover:border-primary-dark text-muted-light dark:text-muted-dark hover:text-primary-light dark:hover:text-primary-dark font-changa text-f10 uppercase tracking-[0.2em] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-light dark:focus-visible:ring-primary-dark'
               >
-                <ChevronLeft className='w-4 h-4' />
+                <ChevronLeft className='w-3.5 h-3.5' aria-hidden='true' />
                 Continue Shopping
-              </motion.div>
-            </Link>
-            <Link
-              to='/cart/checkout'
-              className='order-1 sm:order-2 flex items-center justify-end sm:justify-start gap-2 px-8 py-3 bg-gray-900 text-white font-semibold rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors'
-            >
-              Proceed to Checkout
-              <ChevronRight className='w-4 h-4 flex-shrink-0' />
-            </Link>
+              </Link>
+              <Link
+                to='/cart/checkout'
+                className='group relative flex-1 overflow-hidden flex items-center justify-between px-6 py-3.5 bg-primary-light dark:bg-primary-dark hover:bg-secondary-light dark:hover:bg-secondary-dark text-white font-changa text-sm uppercase tracking-widest transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-light dark:focus-visible:ring-primary-dark'
+              >
+                <span
+                  className='absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/15 to-transparent group-hover:animate-[shimmer_1.4s_ease_infinite] pointer-events-none'
+                  aria-hidden='true'
+                />
+                <span>Proceed to Checkout</span>
+                <ChevronRight className='w-4 h-4' aria-hidden='true' />
+              </Link>
+            </div>
           </div>
-        </div>
 
-        <div className='lg:col-span-5'>
-          {/* Order Summary */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className='lg:col-span-1'
-          >
-            <div className='bg-white rounded-lg border border-gray-200 p-6 sticky top-6'>
-              <h2 className='text-xl font-bold text-gray-900 mb-6'>Order Summary</h2>
+          {/* ── Right: Order summary ── */}
+          <aside aria-label='Order summary' className='lg:sticky lg:top-8'>
+            <div className='border border-border-light dark:border-border-dark bg-bg-light dark:bg-bg-dark'>
+              {/* Summary header */}
+              <div className='flex items-center gap-2 px-5 py-4 border-b border-border-light dark:border-border-dark'>
+                <div
+                  className='w-3 h-px bg-primary-light dark:bg-primary-dark'
+                  aria-hidden='true'
+                />
+                <h2 className='font-changa text-f10 uppercase tracking-[0.25em] text-muted-light dark:text-muted-dark'>
+                  Order Summary
+                </h2>
+              </div>
 
-              {/* Items Preview */}
-              <div className='space-y-3 mb-6 pb-6 max-h-64 overflow-y-auto'>
+              {/* Items preview */}
+              <ul
+                aria-label='Cart items summary'
+                className='divide-y divide-border-light dark:divide-border-dark max-h-56 overflow-y-auto'
+              >
                 {cartItems.map((item: any, i: number) => (
-                  <div key={i} className='flex gap-2 text-sm'>
-                    <span className='text-gray-600 flex-shrink-0'>
+                  <li key={i} className='flex items-center gap-3 px-5 py-3'>
+                    <span className='font-lato text-[10px] text-muted-light dark:text-muted-dark shrink-0'>
                       ×{item.qty ?? item.quantity}
                     </span>
-                    <span className='text-gray-900 truncate flex-1'>{item.itemName}</span>
-                    <span className='font-semibold text-gray-900 flex-shrink-0'>
+                    <span className='font-changa text-[10px] uppercase tracking-wide text-text-light dark:text-text-dark truncate flex-1'>
+                      {item.itemName}
+                    </span>
+                    <span className='font-changa text-xs tabular-nums text-text-light dark:text-text-dark shrink-0'>
                       ${toFixed(item.price * (item.qty ?? item.quantity))}
                     </span>
-                  </div>
+                  </li>
                 ))}
-              </div>
+              </ul>
 
               {/* Totals */}
-              <div className='space-y-3 mb-6'>
+              <div className='px-5 py-4 border-t border-border-light dark:border-border-dark space-y-2.5'>
                 {hasPhysical && (
-                  <div className='flex justify-between text-sm'>
-                    <span className='text-gray-600'>Subtotal</span>
-                    <span className='text-gray-900'>${toFixed(subtotal)}</span>
+                  <div className='flex justify-between items-center'>
+                    <span className='font-lato text-xs text-muted-light dark:text-muted-dark'>
+                      Subtotal
+                    </span>
+                    <span className='font-changa text-xs tabular-nums text-text-light dark:text-text-dark'>
+                      ${toFixed(subtotal)}
+                    </span>
                   </div>
                 )}
-
-                <div className='flex justify-between text-lg font-semibold pt-3 border-t border-gray-200'>
-                  <span className='text-gray-900'>Total</span>
-                  <span className='text-gray-900'>${toFixed(subtotal)}</span>
+                <div className='flex justify-between items-center pt-2.5 border-t border-border-light dark:border-border-dark'>
+                  <span className='font-changa text-xs uppercase tracking-wide text-text-light dark:text-text-dark'>
+                    Total
+                  </span>
+                  <span className='font-changa text-xl tabular-nums text-primary-light dark:text-primary-dark'>
+                    ${toFixed(subtotal)}
+                  </span>
                 </div>
               </div>
+
+              {/* CTA */}
+              <div className='px-5 pb-5'>
+                <Link
+                  to='/cart/checkout'
+                  className='group relative w-full overflow-hidden flex items-center justify-between px-5 py-3.5 bg-primary-light dark:bg-primary-dark hover:bg-secondary-light dark:hover:bg-secondary-dark text-white font-changa text-sm uppercase tracking-widest transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-light dark:focus-visible:ring-primary-dark'
+                >
+                  <span
+                    className='absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/15 to-transparent group-hover:animate-[shimmer_1.4s_ease_infinite] pointer-events-none'
+                    aria-hidden='true'
+                  />
+                  <span>Checkout</span>
+                  <ChevronRight className='w-4 h-4' aria-hidden='true' />
+                </Link>
+              </div>
             </div>
-          </motion.div>
+          </aside>
         </div>
-      </div>
+      </main>
     </div>
   );
 };

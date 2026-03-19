@@ -1,163 +1,163 @@
 import { Link } from 'react-router-dom';
 import { useEcardSelector, useProductSelector } from '../../redux/toolkitStore';
-import { motion } from 'framer-motion';
-import { AlertCircle, Check, ShoppingCart } from 'lucide-react';
+import { AlertCircle, Check, ShoppingCart, ChevronRight } from 'lucide-react';
 
-// Fresh StoreItem component
+// ─── Store item card ──────────────────────────────────────────────────────────
 const StoreItem = ({ item }: { item: any }) => {
+  const outOfStock = item?.isOutofStock || item?.countInStock === 0;
+
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.3 }}
-      className='group relative bg-white rounded-xl sm:rounded-2xl border border-gray-200 hover:border-gray-300 hover:shadow-lg sm:hover:shadow-xl transition-all duration-300 overflow-hidden h-full flex flex-col'
-    >
-      {/* Image Container */}
-      <div className='relative overflow-hidden bg-gray-50 aspect-square'>
+    <div className='group flex flex-col border border-border-light dark:border-border-dark bg-bg-light dark:bg-bg-dark hover:border-primary-light dark:hover:border-primary-dark transition-colors duration-200 h-full'>
+      {/* Image */}
+      <div className='relative overflow-hidden bg-surface-light dark:bg-surface-dark aspect-square'>
         <img
-          src={item.image || '/api/placeholder/300/300'}
+          src={item.image || item.images?.[0] || '/placeholder.jpg'}
           alt={item.name}
           className='w-full h-full object-cover group-hover:scale-105 transition-transform duration-500'
         />
 
-        {/* Overlay */}
-        <div className='absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-all duration-300' />
-
-        {/* Price Badge */}
-        <motion.div
-          className='absolute top-2 sm:top-3 right-2 sm:right-3 bg-white/95 backdrop-blur-sm rounded-full px-2.5 sm:px-3 py-1'
-          whileHover={{ scale: 1.05 }}
-        >
-          <span className='text-xs sm:text-sm font-bold text-gray-900'>
-            ${parseFloat(item.price || '0').toFixed(2)}
-          </span>
-        </motion.div>
-
-        {/* Stock Status Badge */}
+        {/* Stock badge */}
         <div
-          className={`absolute top-2 sm:top-3 left-2 sm:left-3 flex items-center gap-1 px-2.5 sm:px-3 py-1 rounded-full text-xs sm:text-xs font-medium ${
-            item?.isOutofStock ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'
+          className={`absolute top-3 left-3 flex items-center gap-1 px-2.5 py-1 font-changa text-[9px] uppercase tracking-widest ${
+            outOfStock
+              ? 'bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400'
+              : 'bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400'
           }`}
+          aria-label={outOfStock ? 'Sold out' : 'In stock'}
         >
-          {item?.isOutofStock ? (
+          {outOfStock ? (
             <>
-              <AlertCircle className='w-3 h-3' />
+              <AlertCircle className='w-2.5 h-2.5' aria-hidden='true' />
               <span>Sold Out</span>
             </>
           ) : (
             <>
-              <Check className='w-3 h-3' />
+              <Check className='w-2.5 h-2.5' aria-hidden='true' />
               <span className='hidden sm:inline'>In Stock</span>
             </>
           )}
         </div>
+
+        {/* Price badge */}
+        <div className='absolute top-3 right-3 bg-bg-light dark:bg-bg-dark border border-border-light dark:border-border-dark px-2.5 py-1'>
+          <span className='font-changa text-xs uppercase tracking-wide text-text-light dark:text-text-dark'>
+            ${parseFloat(item.price || '0').toFixed(2)}
+          </span>
+        </div>
       </div>
 
       {/* Content */}
-      <div className='flex-1 p-3 sm:p-4 flex flex-col'>
-        {/* Title & Description */}
-        <div className='mb-2 sm:mb-3 flex-1'>
-          <h3 className='font-semibold text-sm sm:text-base text-gray-900 group-hover:text-gray-700 transition-colors line-clamp-2'>
+      <div className='flex flex-col flex-1 p-4'>
+        <div className='flex-1 mb-4'>
+          <h3 className='font-changa text-sm uppercase tracking-wide text-text-light dark:text-text-dark leading-snug line-clamp-2 mb-1.5'>
             {item.name}
           </h3>
-          <p className='text-gray-600 text-xs sm:text-sm mt-1 line-clamp-2'>{item.description}</p>
-        </div>
-
-        {/* Category Badge */}
-        {item.category && (
-          <motion.div className='inline-block mb-2 sm:mb-3' whileHover={{ scale: 1.05 }}>
-            <span className='bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-full font-medium'>
+          <p className='font-lato text-xs text-muted-light dark:text-muted-dark leading-relaxed line-clamp-2'>
+            {item.description}
+          </p>
+          {item.category && (
+            <span className='inline-block mt-2 font-changa text-[9px] uppercase tracking-widest px-2 py-0.5 border border-border-light dark:border-border-dark text-muted-light dark:text-muted-dark'>
               {item.category}
             </span>
-          </motion.div>
-        )}
+          )}
+        </div>
 
-        {/* Button */}
-        <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className='mt-auto'>
-          <Link
-            to={item.isEcard ? `/store/ecards/${item._id}` : `/store/${item._id}`}
-            className={`w-full flex items-center justify-center gap-2 rounded-lg sm:rounded-xl py-2 sm:py-2.5 px-3 sm:px-4 font-medium text-xs sm:text-sm transition-all duration-200 ${
-              item?.isOutofStock
-                ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                : 'bg-gray-900 hover:bg-gray-800 text-white hover:shadow-lg hover:-translate-y-0.5'
-            }`}
-            onClick={(e) => item?.isOutofStock && e.preventDefault()}
-          >
-            <ShoppingCart className='w-4 h-4' />
-            <span className='hidden sm:inline'>{item.isEcard ? 'View Ecard' : 'View Product'}</span>
-            <span className='sm:hidden'>View</span>
-          </Link>
-        </motion.div>
+        <Link
+          to={item.isEcard ? `/store/ecards/${item._id}` : `/store/${item._id}`}
+          aria-label={`${outOfStock ? 'View' : 'Shop'} ${item.name}${outOfStock ? ' — sold out' : ''}`}
+          onClick={(e) => outOfStock && e.preventDefault()}
+          aria-disabled={outOfStock}
+          className={`flex items-center justify-between px-4 py-2.5 font-changa text-[10px] uppercase tracking-[0.2em] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-light dark:focus-visible:ring-primary-dark ${
+            outOfStock
+              ? 'border border-border-light dark:border-border-dark text-muted-light dark:text-muted-dark cursor-not-allowed'
+              : 'bg-primary-light dark:bg-primary-dark hover:bg-secondary-light dark:hover:bg-secondary-dark text-white'
+          }`}
+        >
+          <span className='flex items-center gap-2'>
+            <ShoppingCart className='w-3.5 h-3.5' aria-hidden='true' />
+            {outOfStock ? 'Sold Out' : item.isEcard ? 'View Ecard' : 'View Product'}
+          </span>
+          {!outOfStock && (
+            <ChevronRight
+              className='w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform'
+              aria-hidden='true'
+            />
+          )}
+        </Link>
       </div>
-    </motion.div>
+    </div>
   );
 };
 
+// ─── Public store ─────────────────────────────────────────────────────────────
 const Store = () => {
   const { ecards } = useEcardSelector();
   const { products } = useProductSelector();
 
-  const combined = [...ecards, ...products];
+  const combined = [...(products ?? []), ...(ecards ?? [])];
+  const inStock = combined.filter((i) => !i.isOutofStock && (i.countInStock ?? 1) > 0).length;
 
   return (
-    <div className='min-h-screen bg-white relative overflow-hidden'>
-      {/* Subtle background pattern */}
-      <div className='absolute inset-0 opacity-[0.02]'>
-        <div
-          className='absolute top-0 left-0 w-full h-full'
-          style={{
-            backgroundImage: `radial-gradient(circle at 25px 25px, #000 2px, transparent 0)`,
-            backgroundSize: '50px 50px',
-          }}
-        ></div>
-      </div>
-
-      {/* Fresh hero section */}
-      <div className='relative z-10 pt-12 pb-8'>
-        <div className='text-center'>
-          <div className='inline-block'>
-            <h1 className='text-4xl md:text-6xl font-black text-gray-900 mb-2 tracking-tight'>
-              Merch & Ecards
-            </h1>
-            <div className='h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 rounded-full'></div>
+    <div className='min-h-screen bg-bg-light dark:bg-bg-dark'>
+      {/* ── Hero ── */}
+      <section className='px-4 sm:px-6 md:px-12 pt-12 sm:pt-16 pb-10' aria-label='Store hero'>
+        <div className='max-w-screen-xl mx-auto'>
+          <div className='flex items-center gap-3 mb-4'>
+            <div className='w-5 h-px bg-primary-light dark:bg-primary-dark' aria-hidden='true' />
+            <span className='font-changa text-f10 uppercase tracking-[0.25em] text-primary-light dark:text-primary-dark'>
+              Little Paws
+            </span>
           </div>
-          <p className='text-gray-600 text-lg mt-4 font-light max-w-md mx-auto'>
-            Discover unique products and digital cards crafted just for you
+          <h1 className='font-changa text-4xl sm:text-5xl md:text-6xl uppercase leading-none text-text-light dark:text-text-dark mb-4'>
+            Merch &amp; Ecards
+          </h1>
+          <p className='font-lato text-base sm:text-lg text-muted-light dark:text-muted-dark max-w-lg leading-relaxed mb-6'>
+            Every purchase supports rescued dachshunds finding their forever homes.
           </p>
-        </div>
-      </div>
 
-      <div className='relative z-10 px-4 pb-20'>
-        <div className='max-w-screen-2xl w-full mx-auto'>
-          <div className='flex flex-col space-y-8'>
-            {/* Enhanced filter section */}
-            <div className='flex items-center justify-between flex-wrap gap-4'>
-              {/* Modern stats card */}
-              <div className='bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl px-4 py-2 border border-gray-200'>
-                <div className='flex items-center gap-2'>
-                  <div className='w-2 h-2 bg-green-500 rounded-full animate-pulse'></div>
-                  <span className='text-gray-700 text-sm font-medium'>
-                    {combined?.length || 0} items available
-                  </span>
-                </div>
-              </div>
+          {/* Stats strip */}
+          <dl className='flex flex-wrap gap-6 sm:gap-10'>
+            <div>
+              <dt className='font-changa text-f10 uppercase tracking-[0.25em] text-muted-light dark:text-muted-dark'>
+                Items
+              </dt>
+              <dd className='font-changa text-2xl sm:text-3xl uppercase text-text-light dark:text-text-dark tabular-nums'>
+                {combined.length}
+              </dd>
             </div>
+            <div>
+              <dt className='font-changa text-f10 uppercase tracking-[0.25em] text-muted-light dark:text-muted-dark'>
+                In Stock
+              </dt>
+              <dd className='font-changa text-2xl sm:text-3xl uppercase text-primary-light dark:text-primary-dark tabular-nums'>
+                {inStock}
+              </dd>
+            </div>
+          </dl>
+        </div>
+      </section>
 
-            {/* Product grid with fresh styling */}
-            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
-              {combined?.map((item) => (
-                <div
-                  key={item._id}
-                  className='transform hover:scale-105 transition-all duration-300 hover:-translate-y-1 opacity-100'
-                >
+      {/* ── Divider ── */}
+      <div className='border-t border-border-light dark:border-border-dark' />
+
+      {/* ── Grid ── */}
+      <section className='px-4 sm:px-6 md:px-12 py-10 sm:py-14' aria-label='Store items'>
+        <div className='max-w-screen-xl mx-auto'>
+          {combined.length === 0 ? (
+            <p className='font-lato text-sm text-muted-light dark:text-muted-dark text-center py-16'>
+              No items available right now. Check back soon!
+            </p>
+          ) : (
+            <ul className='grid grid-cols-1 min-[400px]:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5'>
+              {combined.map((item) => (
+                <li key={item._id}>
                   <StoreItem item={item} />
-                </div>
+                </li>
               ))}
-            </div>
-          </div>
+            </ul>
+          )}
         </div>
-      </div>
+      </section>
     </div>
   );
 };

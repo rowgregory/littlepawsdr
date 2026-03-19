@@ -1,117 +1,114 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { ArrowRight } from 'lucide-react';
 import useVideo from '../../hooks/useVideo';
 import { LandingVideo } from '../assets/videos';
 
 const Banner = () => {
   const { videoRef } = useVideo();
 
-  // Generate snowflakes
-  const snowflakes = Array.from({ length: 50 }, (_, i) => ({
-    id: i,
-    left: Math.random() * 100,
-    delay: Math.random() * 5,
-    duration: 5 + Math.random() * 10,
-    size: 2 + Math.random() * 4,
-    opacity: 0.3 + Math.random() * 0.7,
-  }));
-
   return (
-    <div className='w-full relative mt-[-68px]'>
+    <div className='w-full relative overflow-hidden'>
+      {/* ── Video ── */}
       <motion.video
         ref={videoRef}
-        className='w-full h-[600px] sm:h-[850px] block object-cover z-0'
+        className='w-full h-[560px] sm:h-[720px] lg:h-[820px] block object-cover'
         autoPlay
         muted
         loop
         playsInline
         preload='auto'
-        initial={{ opacity: 0, scale: 1.1 }}
+        initial={{ opacity: 0, scale: 1.06 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 1.2, ease: 'easeOut' }}
+        transition={{ duration: 1.4, ease: 'easeOut' }}
+        aria-hidden='true'
       >
         <source src={LandingVideo} type='video/mp4' />
-        Your browser does not support the video tag.
       </motion.video>
 
-      {/* Falling Snow Layer */}
-      <div className='absolute inset-0 overflow-hidden pointer-events-none z-10'>
-        {snowflakes.map((flake) => (
-          <motion.div
-            key={flake.id}
-            className='absolute rounded-full bg-white'
-            style={{
-              left: `${flake.left}%`,
-              width: `${flake.size}px`,
-              height: `${flake.size}px`,
-              opacity: flake.opacity,
-            }}
-            initial={{ y: -20, x: 0 }}
-            animate={{
-              y: '110vh',
-              x: [0, 20, -20, 20, 0],
-            }}
-            transition={{
-              y: {
-                duration: flake.duration,
-                repeat: Infinity,
-                delay: flake.delay,
-                ease: 'linear',
-              },
-              x: {
-                duration: 3,
-                repeat: Infinity,
-                ease: 'easeInOut',
-              },
-            }}
-          />
-        ))}
-      </div>
+      {/* ── Overlay ── */}
+      <div
+        className='absolute inset-0 bg-linear-to-b from-black/50 via-black/30 to-black/60'
+        aria-hidden='true'
+      />
 
-      <motion.div
-        className='px-3 pt-14 absolute z-20 top-0 left-0 flex-col w-full h-[600px] sm:h-[850px] flex justify-center bg-[#1c1c1c]/30'
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.8, delay: 0.3 }}
-      >
-        <div className='max-w-screen-2xl w-full mx-auto px-3 xl:px-0 flex flex-col gap-5'>
-          <motion.h1
-            className='hidden sm:block mb-5 text-white font-QLight'
-            initial={{ opacity: 0, y: -30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6, ease: 'easeOut' }}
+      {/* ── Content ── */}
+      <div className='absolute inset-0 flex flex-col justify-center px-4 sm:px-6 md:px-12'>
+        <div className='max-w-screen-2xl mx-auto w-full'>
+          {/* Eyebrow */}
+          <motion.div
+            className='flex items-center gap-3 mb-5'
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.7, delay: 0.5, ease: 'easeOut' }}
           >
-            Your compassion can turn their world around. By supporting us, <br />
-            you help abandoned animals find the love and care they deserve.
+            <div className='w-8 h-px bg-primary-light dark:bg-primary-dark' aria-hidden='true' />
+            <span className='font-changa text-f10 uppercase tracking-[0.35em] text-primary-light dark:text-primary-dark'>
+              Little Paws Dachshund Rescue
+            </span>
+          </motion.div>
+
+          {/* Heading */}
+          <motion.h1
+            className='font-changa text-4xl sm:text-5xl lg:text-7xl uppercase leading-none text-white mb-5 max-w-2xl'
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.7, ease: 'easeOut' }}
+          >
+            Help Abandoned
+            <br />
+            <span className='text-primary-light dark:text-primary-dark'>Animals</span> Find
+            <br />a Loving Home
           </motion.h1>
 
+          {/* Subheading */}
           <motion.p
-            className='w-fit text-white text-3xl sm:text-4xl lg:text-6xl tracking-wider font-QBold leading-10'
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{
-              duration: 0.8,
-              delay: 0.9,
-              type: 'spring',
-              stiffness: 100,
-              damping: 15,
-            }}
+            className='hidden sm:block font-lato text-sm sm:text-base text-white/80 leading-relaxed max-w-xl mb-8'
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.9, ease: 'easeOut' }}
           >
-            Help Abandoned Animals <br /> Find a Loving Home
+            Your compassion can turn their world around. By supporting us, you help abandoned
+            animals find the love and care they deserve.
           </motion.p>
 
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 1.2, ease: 'easeOut' }}>
+          {/* CTA */}
+          <motion.div
+            className='flex flex-wrap items-center gap-3'
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 1.1, ease: 'easeOut' }}
+          >
             <Link
               to='/adopt'
-              className='inline-block bg-teal-400 text-white py-4 px-9 rounded-lg font-QBold hover:shadow-lg hover:bg-teal-500 duration-300'
+              className='group relative overflow-hidden flex items-center gap-2 px-7 py-3.5 font-changa text-sm uppercase tracking-widest text-white bg-primary-light dark:bg-primary-dark hover:bg-secondary-light dark:hover:bg-secondary-dark transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-transparent'
             >
-              <motion.span whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ duration: 0.2 }} className='block'>
-                Get Started
-              </motion.span>
+              <span
+                className='absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/20 to-transparent group-hover:animate-[shimmer_1.4s_ease_infinite] pointer-events-none'
+                aria-hidden='true'
+              />
+              Get Started
+              <ArrowRight
+                className='w-4 h-4 group-hover:translate-x-0.5 transition-transform'
+                aria-hidden='true'
+              />
+            </Link>
+
+            <Link
+              to='/donate'
+              className='flex items-center gap-2 px-7 py-3.5 font-changa text-sm uppercase tracking-widest text-white border border-white/30 hover:border-white/60 hover:bg-white/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white'
+            >
+              Donate
             </Link>
           </motion.div>
         </div>
-      </motion.div>
+      </div>
+
+      {/* ── Bottom fade ── */}
+      <div
+        className='absolute bottom-0 left-0 right-0 h-24 bg-linear-to-t from-bg-light dark:from-bg-dark to-transparent'
+        aria-hidden='true'
+      />
     </div>
   );
 };

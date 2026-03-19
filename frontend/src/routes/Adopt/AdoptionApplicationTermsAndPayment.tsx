@@ -51,7 +51,6 @@ const AdoptionApplicationTermsAndPayment = () => {
 
       try {
         // If bypass code is provided, validate and create fee
-        console.log('DATA BYPASS CODE:: ', data?.bypassCode, 'FORM DATA: ', formData.bypassCode);
         if (formData.bypassCode === data?.bypassCode) {
           const result = await createAdoptionFee({
             firstName: formData.firstName,
@@ -68,7 +67,7 @@ const AdoptionApplicationTermsAndPayment = () => {
           }
         } else if (formData.bypassCode !== bypassCode) {
           toolkitStore.dispatch(
-            showToast({ message: 'Optional bypass code is incorrect', type: 'warning' })
+            showToast({ message: 'Optional bypass code is incorrect', type: 'warning' }),
           );
           return;
         } else {
@@ -171,8 +170,8 @@ const AdoptionApplicationTermsAndPayment = () => {
                         step.number < currentStep
                           ? 'bg-green-100 text-green-700'
                           : step.number === currentStep
-                          ? 'bg-teal-600 text-white'
-                          : 'bg-gray-200 text-gray-600'
+                            ? 'bg-teal-600 text-white'
+                            : 'bg-gray-200 text-gray-600'
                       }`}
                     >
                       {step.number < currentStep ? (
