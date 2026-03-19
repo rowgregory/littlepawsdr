@@ -5,9 +5,11 @@ import createOrder from '../controllers/order/create/route.js';
 import getOrderById from '../controllers/order/get-order-by-id/route.js';
 import getOrders from '../controllers/order/route.js';
 import updateShippingStatus from '../controllers/order/update-shipping-status/route.js';
+import { createFailedOrder } from '../controllers/order/create-failed-order/route.js';
 const router = express.Router();
 
 router.route('/').get(protect, admin, getOrders).post(createOrder);
+router.route('/create-failed-order').post(createFailedOrder);
 router.route('/update-order-status').patch(protect, admin, updateOrderStatus);
 router.route('/:id').get(getOrderById);
 router.route('/:id/update-shipping-status').patch(updateShippingStatus);

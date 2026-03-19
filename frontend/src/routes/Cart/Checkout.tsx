@@ -7,7 +7,10 @@ import {
   useUserSelector,
 } from '../../redux/toolkitStore';
 import { createFormActions, setInputs } from '../../redux/features/form/formSlice';
-import { useCreateOrderMutation } from '../../redux/services/orderApi';
+import {
+  useCreateFailedOrderMutation,
+  useCreateOrderMutation,
+} from '../../redux/services/orderApi';
 import { useNavigate } from 'react-router-dom';
 import { showToast } from '../../redux/features/toastSlice';
 import hasPhysicalProduct from '../../utils/shop-utils/hasPhysicalProduct';
@@ -24,9 +27,11 @@ const Checkout = () => {
   const inputs = checkoutForm?.inputs;
   const errors = checkoutForm?.errors;
   const [createOrder] = useCreateOrderMutation();
+  const [createFailedOrder] = useCreateFailedOrderMutation();
   const hasPhysical = hasPhysicalProduct(cartItems);
   const [step, setStep] = useState(1);
   const [orderLoader, setOrderLoader] = useState(false);
+  const [orderError, setOrderError] = useState<null | string>(null);
   const shippingAddress = user?.addressRef || user?.shippingAddress;
 
   // Pre-fill form from user profile
@@ -123,11 +128,19 @@ const Checkout = () => {
           dispatch(showToast({ message: 'Order successfully created!', type: 'success' }));
           dispatch(resetCart());
         } catch (error: any) {
-          dispatch(
-            showToast({
-              message: `Failed to create order — ${error?.data?.message}`,
-              type: 'error',
-            }),
+          // Log to backend — PayPal was charged but order creation failed
+          await createFailedOrder({
+            paypalOrderId: details.id,
+            name: `${inputs?.firstName} ${inputs?.lastName}`,
+            email: inputs?.email,
+            totalPrice,
+            error: error?.data?.message ?? 'Unknown error',
+          })
+            .unwrap()
+            .catch(() => {}); // swallow logging errors silently
+
+          setOrderError(
+            "Your payment was processed but we ran into an issue creating your order. Please contact us at lpdr@littlepawsdr.org with your PayPal confirmation and we'll get it sorted right away.",
           );
         } finally {
           setOrderLoader(false);
@@ -156,6 +169,7 @@ const Checkout = () => {
       payPalComponents={payPalComponents}
       orderLoader={orderLoader}
       toFixed={toFixed}
+      orderError={orderError}
     />
   );
 };

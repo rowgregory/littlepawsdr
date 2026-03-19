@@ -10,7 +10,7 @@ export const orderApi = api.injectEndpoints({
     }),
     getOrder: build.query({
       query: (orderId: string) => `${BASE_URL}/${orderId}`,
-      providesTags: (result: any, error: any, arg: any) => [{ type: 'Order', id: arg }],
+      providesTags: (_: any, __: any, arg: any) => [{ type: 'Order', id: arg }],
     }),
     updateShippingStatus: build.mutation({
       query: ({ orderId }) => ({
@@ -30,6 +30,14 @@ export const orderApi = api.injectEndpoints({
     getMyOrders: build.query({
       query: () => `${BASE_URL}/my-orders`,
     }),
+    createFailedOrder: build.mutation({
+      query: (body: any) => ({
+        url: `${BASE_URL}/create-failed-order`,
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: ['Public', 'Order', 'Product', 'User'],
+    }),
   }),
 });
 
@@ -39,4 +47,5 @@ export const {
   useUpdateShippingStatusMutation,
   useCreateOrderMutation,
   useGetMyOrdersQuery,
+  useCreateFailedOrderMutation,
 } = orderApi;

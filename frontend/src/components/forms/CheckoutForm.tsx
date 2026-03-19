@@ -1,7 +1,7 @@
 'use client';
 
 import { Link } from 'react-router-dom';
-import { ChevronLeft, ChevronRight, User } from 'lucide-react';
+import { AlertCircle, ChevronLeft, ChevronRight, User } from 'lucide-react';
 import { usePayPalScriptReducer, PayPalButtons } from '@paypal/react-paypal-js';
 import { STATES } from '../data/states';
 
@@ -9,9 +9,11 @@ import { STATES } from '../data/states';
 function PayPalSection({
   payPalComponents,
   orderLoader,
+  orderError,
 }: {
   payPalComponents: any;
   orderLoader: boolean;
+  orderError: string | null;
 }) {
   const [{ isPending, isRejected }] = usePayPalScriptReducer();
 
@@ -49,6 +51,19 @@ function PayPalSection({
           createOrder={payPalComponents.createOrder}
           onApprove={payPalComponents.onApprove}
         />
+      )}
+
+      {orderError && (
+        <div
+          role='alert'
+          aria-live='assertive'
+          className='mt-4 flex items-start gap-3 px-4 py-3 border-l-2 border-red-500 bg-red-50 dark:bg-red-500/5'
+        >
+          <AlertCircle className='w-4 h-4 text-red-500 shrink-0 mt-0.5' aria-hidden='true' />
+          <p className='font-lato text-xs text-red-600 dark:text-red-400 leading-relaxed'>
+            {orderError}
+          </p>
+        </div>
       )}
 
       {orderLoader && (
@@ -153,6 +168,7 @@ export default function CheckoutPage({
   payPalComponents,
   orderLoader,
   toFixed,
+  orderError,
 }: any) {
   const totalSteps = hasPhysical ? 3 : 2;
 
@@ -388,7 +404,11 @@ export default function CheckoutPage({
                   Payment
                 </h2>
 
-                <PayPalSection payPalComponents={payPalComponents} orderLoader={orderLoader} />
+                <PayPalSection
+                  payPalComponents={payPalComponents}
+                  orderLoader={orderLoader}
+                  orderError={orderError}
+                />
 
                 <button
                   type='button'
