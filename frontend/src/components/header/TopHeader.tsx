@@ -25,10 +25,10 @@ export const InfoBox = ({ icon: Icon, titleKey, textKey, onClick, className = ''
       aria-hidden='true'
     />
     <div>
-      <p className='font-changa text-[8px] uppercase tracking-[0.2em] text-muted-dark whitespace-nowrap'>
+      <p className='text-[8px] uppercase tracking-[0.2em] text-muted-light dark:text-muted-dark whitespace-nowrap'>
         {titleKey}
       </p>
-      <p className='font-changa text-[9px] uppercase tracking-wide text-text-dark whitespace-nowrap group-hover:text-primary-light transition-colors'>
+      <p className='text-[9px] uppercase tracking-wide text-text-dark whitespace-nowrap group-hover:text-primary-light transition-colors'>
         {textKey}
       </p>
     </div>
