@@ -130,13 +130,13 @@ const SupporterProfile = () => {
       const yourHome = getChangedFields(
         currentUser?.yourHome || {},
         formInputs,
-        YOUR_HOME_FORM_FIELDS
+        YOUR_HOME_FORM_FIELDS,
       );
 
       const dachshundPreferences = getChangedFields(
         currentUser?.dachshundPreferences || {},
         formInputs,
-        DACHSHUND_PREFERENCES_FORM_FIELDS
+        DACHSHUND_PREFERENCES_FORM_FIELDS,
       );
 
       const hasChanges =
@@ -170,7 +170,7 @@ const SupporterProfile = () => {
       }
 
       const updatedUser = await updateUserProfile(allChanges).unwrap();
-      dispatch(hydrateUserState(updatedUser));
+      dispatch(hydrateUserState({ user: updatedUser }));
       dispatch(showToast({ message: `Profile updated successfully!`, type: 'success' }));
       setIsEditing(false);
     } catch (error: any) {
@@ -178,7 +178,7 @@ const SupporterProfile = () => {
         showToast({
           message: error?.data?.message || 'Error updating profile',
           type: 'error',
-        })
+        }),
       );
     }
   };
@@ -189,7 +189,7 @@ const SupporterProfile = () => {
         userId: user?._id,
       }).unwrap();
 
-      dispatch(hydrateUserState(updatedUser));
+      dispatch(hydrateUserState({ user: updatedUser }));
       dispatch(showToast({ message: 'Address deleted successfully', type: 'success' }));
       setShowAddressConfirm(false);
     } catch (error: any) {
@@ -197,7 +197,7 @@ const SupporterProfile = () => {
         showToast({
           message: error?.data?.message || 'Error removing address',
           type: 'error',
-        })
+        }),
       );
     }
   };
@@ -880,7 +880,10 @@ const SupporterProfile = () => {
                             ? [...current, coat]
                             : current.filter((c: string) => c !== coat);
                           dispatch(
-                            setInputs({ formName: 'profileForm', data: { preferredCoat: updated } })
+                            setInputs({
+                              formName: 'profileForm',
+                              data: { preferredCoat: updated },
+                            }),
                           );
                         }}
                         disabled={!isEditing}

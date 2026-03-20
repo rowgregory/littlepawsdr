@@ -45,17 +45,66 @@ const register = asyncHandler(async (req, res) => {
       });
     }
 
+    // ── Check for existing user ───────────────────────
     const userExists = await User.findOne({ email: email?.toLowerCase() });
-    if (userExists) {
+
+    if (userExists && !userExists.isGuest) {
       events.push({ message: 'USER_EXISTS', data: { email: userExists.email } });
       await Log.create({ journey: journeyId, events });
-
       return res.status(400).json({
         message: 'An account exists with this email',
       });
     }
 
-    // Validate shipping address if provided
+    // ── Guest account conversion ──────────────────────
+    if (userExists && userExists.isGuest) {
+      events.push({ message: 'GUEST_ACCOUNT_CONVERSION', data: { email: userExists.email } });
+
+      userExists.firstName = firstName;
+      userExists.lastName = lastName;
+      userExists.name = `${firstName} ${lastName}`;
+      userExists.password = password;
+      userExists.firstNameFirstInitial = firstName?.charAt(0);
+      userExists.lastNameFirstInitial = lastName?.charAt(0);
+      userExists.securityQuestion = securityQuestion;
+      userExists.securityAnswer = securityAnswer;
+      userExists.isGuest = false;
+      userExists.conversionSource = conversionSource;
+      await userExists.save();
+
+      events.push({ message: 'GUEST_CONVERTED', data: { userId: userExists._id } });
+      await Log.create({ journey: journeyId, events });
+
+      const token = jwt.sign(
+        { id: userExists._id, isAdmin: userExists.isAdmin },
+        process.env.JWT_SECRET,
+        { expiresIn: '30d' },
+      );
+
+      res.cookie('authToken', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'Strict',
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+      });
+
+      return res.status(200).json({
+        user: {
+          _id: userExists._id,
+          name: userExists.name,
+          email: userExists.email,
+          isAdmin: userExists.isAdmin,
+          firstName: userExists.firstName,
+          lastName: userExists.lastName,
+          firstNameFirstInitial: userExists.firstNameFirstInitial,
+          lastNameFirstInitial: userExists.lastNameFirstInitial,
+          hasAddress: userExists.hasAddress,
+          addressRef: userExists.addressRef,
+        },
+      });
+    }
+
+    // ── Validate shipping address if provided ──────────────────────────
     if (shippingAddress && Object.keys(shippingAddress).length > 0) {
       const { address, city, state, zipPostalCode } = shippingAddress;
       if (!address || !city || !state || !zipPostalCode) {
@@ -70,7 +119,7 @@ const register = asyncHandler(async (req, res) => {
       }
     }
 
-    // Database transaction
+    // ── Database transaction ──────────────────────────
     const session = await mongoose.startSession();
     let createdUser;
 
@@ -89,7 +138,7 @@ const register = asyncHandler(async (req, res) => {
                 country: 'U.S.',
               },
             ],
-            { session }
+            { session },
           );
           addressRef = createdAddress._id;
           events.push({ message: 'ADDRESS_CREATED', data: { addressId: createdAddress._id } });
@@ -113,7 +162,7 @@ const register = asyncHandler(async (req, res) => {
               conversionSource,
             },
           ],
-          { session }
+          { session },
         );
 
         createdUser = newUser;
@@ -134,7 +183,7 @@ const register = asyncHandler(async (req, res) => {
     const token = jwt.sign(
       { id: createdUser._id, isAdmin: createdUser.isAdmin },
       process.env.JWT_SECRET,
-      { expiresIn: '30d' }
+      { expiresIn: '30d' },
     );
 
     // Set cookie

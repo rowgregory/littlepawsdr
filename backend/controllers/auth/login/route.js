@@ -29,6 +29,15 @@ const login = asyncHandler(async (req, res) => {
       });
     }
 
+    // ── Guest account check ──────────────────────────
+    if (user.isGuest) {
+      logEvent(log, 'LOGIN FAILED - GUEST ACCOUNT', email);
+      return res.status(401).json({
+        message: 'Please set up your password to access your account.',
+        isGuest: true,
+      });
+    }
+
     logEvent(log, 'USER FOUND', user._id);
 
     let updatedUser = {};
@@ -73,7 +82,7 @@ const login = asyncHandler(async (req, res) => {
                 country: user.shippingAddress.country || 'U.S.',
               },
             ],
-            { session }
+            { session },
           );
 
           addressRef = createdAddress._id;
@@ -91,7 +100,7 @@ const login = asyncHandler(async (req, res) => {
                 shippingAddress: 1, // Remove the embedded shippingAddress
               },
             },
-            { session }
+            { session },
           );
 
           logEvent(log, 'USER UPDATED WITH ADDRESS REF', {
@@ -128,7 +137,7 @@ const login = asyncHandler(async (req, res) => {
     const userToReturn = await User.findById(user._id)
       .populate('addressRef')
       .select(
-        '_id name email isAdmin lastLoginTime firstNameFirstInitial lastNameFirstInitial firstName lastName updatedAt hasAddress anonymousBidding lastSeenChangelogVersion yourHome dachshundPreferences isPublic jobTitle workSchedule'
+        '_id name email isAdmin lastLoginTime firstNameFirstInitial lastNameFirstInitial firstName lastName updatedAt hasAddress anonymousBidding lastSeenChangelogVersion yourHome dachshundPreferences isPublic jobTitle workSchedule',
       );
 
     logEvent(log, 'USER DATA FETCHED', userToReturn._id);
@@ -142,7 +151,7 @@ const login = asyncHandler(async (req, res) => {
 
     const showChangelog = semver.gt(
       CURRENT_VERSION,
-      userToReturn?.lastSeenChangelogVersion || '0.0.0'
+      userToReturn?.lastSeenChangelogVersion || '0.0.0',
     );
 
     const token = generateToken(
@@ -152,7 +161,7 @@ const login = asyncHandler(async (req, res) => {
         showChangelog,
         currentVersion: CURRENT_VERSION,
       },
-      '30d'
+      '30d',
     );
     logEvent(log, 'TOKEN GENERATED', userToReturn._id);
 

@@ -3,7 +3,7 @@ import { useForgotPasswordEmailMutation } from '../../redux/services/authApi';
 import { useAppDispatch, useFormSelector } from '../../redux/toolkitStore';
 import { createFormActions, resetForm } from '../../redux/features/form/formSlice';
 import validateForgotPasswordForm from '../../validations/validateForgotPasswordForm';
-import { ArrowRight, Heart, HelpCircle, PawPrint } from 'lucide-react';
+import { HelpCircle } from 'lucide-react';
 import { showToast } from '../../redux/features/toastSlice';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
@@ -30,121 +30,147 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className='min-h-screen bg-white flex overflow-hidden'>
-      {/* Left Side - Branding */}
+    <div className='min-h-screen bg-bg-light dark:bg-bg-dark flex overflow-hidden'>
+      {/* ── Left Side — Brand panel ── */}
       <motion.div
-        className='hidden lg:flex lg:w-1/2 bg-gradient-to-br from-teal-400 via-teal-400 to-sky-500 flex-col items-center justify-center p-12 relative overflow-hidden'
+        className='hidden lg:flex lg:w-1/2 bg-surface-light dark:bg-surface-dark border-r border-border-light dark:border-border-dark flex-col items-center justify-center p-12 relative overflow-hidden'
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.6 }}
+        transition={{ duration: 0.8 }}
+        aria-hidden='true'
       >
-        {/* Animated background elements */}
-        <motion.div
-          className='absolute top-20 left-20 w-40 h-40 bg-white/10 rounded-full blur-3xl'
-          animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
-          transition={{ duration: 4, repeat: Infinity }}
-        />
-        <motion.div
-          className='absolute bottom-40 right-20 w-60 h-60 bg-white/10 rounded-full blur-3xl'
-          animate={{ scale: [1.2, 1, 1.2], opacity: [0.3, 0.5, 0.3] }}
-          transition={{ duration: 5, repeat: Infinity, delay: 0.5 }}
+        {/* Decorative grid */}
+        <div
+          className='absolute inset-0 opacity-[0.03] dark:opacity-[0.06]'
+          style={{
+            backgroundImage:
+              'linear-gradient(var(--color-border) 1px, transparent 1px), linear-gradient(90deg, var(--color-border) 1px, transparent 1px)',
+            backgroundSize: '40px 40px',
+          }}
         />
 
-        {/* Content */}
+        {/* Accent line top */}
+        <div className='absolute top-0 left-12 right-12 h-px bg-primary-light dark:bg-primary-dark opacity-30' />
+
         <motion.div
-          className='relative z-10 flex items-center justify-center flex-col'
+          className='relative z-10 flex flex-col items-start w-full max-w-sm'
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
         >
-          <Link to='/' className='text-4xl lg:text-5xl font-bold text-white mb-4 text-center'>
-            Little Paws Dachshund Rescue
-          </Link>
+          <div className='flex items-center gap-3 mb-8'>
+            <span className='block w-5 h-px bg-primary-light dark:bg-primary-dark' />
+            <p className='text-[10px] font-mono tracking-[0.2em] uppercase text-primary-light dark:text-primary-dark'>
+              Since 2009
+            </p>
+          </div>
 
-          <p className='text-white/90 text-lg mb-8 max-w-sm text-center'>
-            Help us rescue and care for dachshunds in need. Every contribution makes a difference.
+          <h2 className='font-quicksand text-3xl font-bold text-text-light dark:text-text-dark leading-tight mb-4'>
+            Every long dog
+            <br />
+            <span className='font-light text-muted-light dark:text-muted-dark'>
+              deserves a home.
+            </span>
+          </h2>
+
+          <p className='text-sm text-muted-light dark:text-muted-dark leading-relaxed mb-12'>
+            Volunteer-run and 100% dedicated to rescuing dachshunds and dachshund mixes across the
+            East Coast.
           </p>
 
-          {/* Animated hearts */}
-          <div className='flex justify-center gap-2 mb-8'>
-            {[...Array(5)].map((_, i) => (
+          <dl className='space-y-6 w-full'>
+            {[
+              { stat: '2,400+', label: 'Dogs rescued' },
+              { stat: '100%', label: 'Volunteer operated' },
+              { stat: '50+', label: 'Active foster homes' },
+            ].map(({ stat, label }, i) => (
               <motion.div
-                key={i}
-                animate={{ scale: [1, 1.2, 1] }}
-                transition={{ duration: 1, repeat: Infinity, delay: i * 0.15 }}
+                key={stat}
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.4, delay: 0.6 + i * 0.1 }}
+                className='flex items-baseline gap-4'
               >
-                <Heart className='w-5 h-5 text-white fill-current' />
+                <dt className='font-quicksand font-black text-2xl text-primary-light dark:text-primary-dark tabular-nums shrink-0 w-20'>
+                  {stat}
+                </dt>
+                <dd className='text-[11px] font-mono text-muted-light dark:text-muted-dark'>
+                  {label}
+                </dd>
               </motion.div>
             ))}
-          </div>
+          </dl>
 
-          {/* Trust indicators */}
-          <div className='space-y-3 text-white/80 text-sm'>
-            <div className='flex items-center gap-2 justify-center'>
-              <PawPrint className='w-4 h-4' />
-              <span>Secure & Private</span>
-            </div>
-            <div className='flex items-center gap-2 justify-center'>
-              <PawPrint className='w-4 h-4' />
-              <span>15+ Years Experience</span>
-            </div>
-            <div className='flex items-center gap-2 justify-center'>
-              <PawPrint className='w-4 h-4' />
-              <span>Non-Profit Organization</span>
-            </div>
-          </div>
+          <div className='mt-12 h-px w-full bg-border-light dark:bg-border-dark' />
+          <p className='mt-4 text-[10px] font-mono text-muted-light/60 dark:text-muted-dark/60 tracking-wide'>
+            littlepawsdr.org
+          </p>
         </motion.div>
       </motion.div>
 
-      {/* Right Side - Form */}
+      {/* ── Right Side — Form ── */}
       <motion.div
-        className='w-full lg:w-1/2 flex flex-col items-center justify-center p-6 sm:p-12'
+        className='w-full lg:w-1/2 flex flex-col items-center justify-center px-6 py-12 sm:px-12'
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.6, delay: 0.2 }}
       >
         <div className='w-full max-w-md'>
-          {/* Heading */}
+          {/* Eyebrow + Heading */}
           <motion.div
-            className='text-center mb-8'
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className='mb-10'
           >
-            <div className='flex items-center justify-center gap-2 mb-2'>
-              <h2 className='text-3xl font-bold text-gray-900'>Forgot Password Reset</h2>
-              <motion.button
+            <div className='flex items-center gap-3 mb-4'>
+              <span
+                className='block w-8 h-px bg-primary-light dark:bg-primary-dark'
+                aria-hidden='true'
+              />
+              <p className='text-[10px] font-mono tracking-[0.2em] uppercase text-primary-light dark:text-primary-dark'>
+                Little Paws Dachshund Rescue
+              </p>
+            </div>
+            <div className='flex items-center gap-3'>
+              <h1 className='font-quicksand text-4xl font-bold text-text-light dark:text-text-dark leading-tight'>
+                Forgot your{' '}
+                <span className='font-light text-muted-light dark:text-muted-dark'>password</span>
+              </h1>
+              <button
                 type='button'
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
                 onClick={() => setShowInfo(!showInfo)}
-                className='p-1.5 hover:bg-gray-100 rounded-full transition-colors text-gray-500 hover:text-gray-700'
-                title='Why reset your password?'
+                aria-expanded={showInfo}
+                aria-controls='reset-info'
+                aria-label='Why do I need to reset my password?'
+                className='shrink-0 text-muted-light dark:text-muted-dark hover:text-primary-light dark:hover:text-primary-dark transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-light dark:focus-visible:ring-primary-dark p-1'
               >
-                <HelpCircle className='w-5 h-5' />
-              </motion.button>
+                <HelpCircle className='w-4 h-4' aria-hidden='true' />
+              </button>
             </div>
 
+            {/* Info panel */}
             <AnimatePresence>
               {showInfo && (
                 <motion.div
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 10 }}
-                  transition={{ duration: 0.3 }}
-                  className='bg-teal-50 border border-teal-200 rounded-lg p-3 mt-3 text-left'
+                  id='reset-info'
+                  role='note'
+                  initial={{ opacity: 0, y: -6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  transition={{ duration: 0.2 }}
+                  className='mt-4 px-4 py-3 border-l-2 border-primary-light dark:border-primary-dark bg-surface-light dark:bg-surface-dark'
                 >
-                  <p className='text-teal-900 text-sm leading-relaxed'>
-                    Your password is locked in a super secret box. Even we can't open it! So you
-                    need to create a brand new password. It's like getting a new key to your house -
-                    extra safe!
+                  <p className='text-[11px] font-mono text-muted-light dark:text-muted-dark leading-relaxed'>
+                    Your password is stored encrypted — even we can't see it. Enter your email below
+                    and we'll send you a link to set a new one.
                   </p>
                 </motion.div>
               )}
             </AnimatePresence>
 
-            <p className='text-gray-600 mt-3'>
-              Enter your email and we&apos;ll send you a link to reset your password.
+            <p className='text-sm text-muted-light dark:text-muted-dark mt-4 leading-relaxed'>
+              Enter your email and we'll send you a link to reset your password.
             </p>
           </motion.div>
 
@@ -154,62 +180,89 @@ const ForgotPassword = () => {
             className='space-y-4'
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            noValidate
+            aria-label='Reset password form'
           >
             <div>
-              <label className='block text-sm font-medium text-gray-700 mb-2'>Email Address</label>
-              <motion.input
+              <label
+                htmlFor='forgot-email'
+                className='block text-[10px] font-mono tracking-[0.2em] uppercase text-muted-light dark:text-muted-dark mb-2'
+              >
+                Email Address
+              </label>
+              <input
+                id='forgot-email'
                 type='email'
                 name='email'
                 value={forgotPasswordForm?.inputs?.email || ''}
                 onChange={handleInput}
                 placeholder='you@example.com'
-                className='w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-200 transition-all'
-                whileFocus={{ scale: 1.02 }}
+                autoComplete='email'
+                required
+                aria-required='true'
+                aria-invalid={!!forgotPasswordForm?.errors?.email}
+                aria-describedby={
+                  forgotPasswordForm?.errors?.email ? 'forgot-email-error' : undefined
+                }
+                className='w-full px-3.5 py-3 text-sm border-2 border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark text-text-light dark:text-text-dark placeholder:text-muted-light/50 dark:placeholder:text-muted-dark/50 transition-colors duration-200 focus:outline-none focus-visible:border-primary-light dark:focus-visible:border-primary-dark'
               />
               {forgotPasswordForm?.errors?.email && (
-                <p className='text-red-500 text-sm mt-1'>{forgotPasswordForm.errors.email}</p>
+                <p
+                  id='forgot-email-error'
+                  role='alert'
+                  className='text-[11px] text-red-500 dark:text-red-400 font-mono mt-1.5'
+                >
+                  {forgotPasswordForm.errors.email}
+                </p>
               )}
             </div>
 
-            {/* Submit Button */}
+            {/* Submit */}
             <motion.button
               type='submit'
               disabled={isLoading}
-              className='w-full bg-gradient-to-r from-teal-400 to-sky-400 hover:from-teal-500 hover:to-sky-500 disabled:from-gray-300 disabled:to-gray-300 text-white font-bold py-3 px-6 rounded-lg transition-all duration-200 disabled:cursor-not-allowed flex items-center justify-center gap-2'
               whileHover={!isLoading ? { scale: 1.02 } : {}}
               whileTap={!isLoading ? { scale: 0.98 } : {}}
+              aria-disabled={isLoading}
+              className={`
+                w-full py-4 font-black text-[11px] tracking-[0.2em] uppercase font-mono transition-colors duration-200
+                focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-light dark:focus-visible:ring-primary-dark
+                ${
+                  isLoading
+                    ? 'bg-surface-light dark:bg-surface-dark text-muted-light dark:text-muted-dark border-2 border-border-light dark:border-border-dark cursor-not-allowed'
+                    : 'bg-primary-light dark:bg-primary-dark hover:bg-secondary-light dark:hover:bg-secondary-dark text-white cursor-pointer'
+                }
+              `}
             >
               {isLoading ? (
-                <>
-                  <motion.div
+                <span className='flex items-center justify-center gap-2' aria-live='polite'>
+                  <motion.span
                     animate={{ rotate: 360 }}
-                    transition={{ duration: 1, repeat: Infinity }}
-                    className='w-5 h-5 border-2 border-white border-t-transparent rounded-full'
+                    transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                    className='block w-3.5 h-3.5 border-2 border-current/30 border-t-current rounded-full'
+                    aria-hidden='true'
                   />
                   Sending...
-                </>
+                </span>
               ) : (
-                <>
-                  Send Reset Link
-                  <ArrowRight className='w-4 h-4' />
-                </>
+                'Send Reset Link'
               )}
             </motion.button>
           </motion.form>
 
-          {/* Footer */}
+          {/* Sign in link */}
           <motion.div
-            className='mt-6 text-center'
+            className='mt-6 pt-6 border-t border-border-light dark:border-border-dark'
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
+            transition={{ duration: 0.5, delay: 0.5 }}
           >
-            <p className='text-gray-600 text-sm'>
+            <p className='text-[11px] font-mono text-muted-light dark:text-muted-dark text-center'>
               Remember your password?{' '}
               <Link
                 to='/auth/login'
-                className='text-teal-600 hover:text-teal-700 font-semibold transition-colors'
+                className='text-primary-light dark:text-primary-dark hover:text-secondary-light dark:hover:text-secondary-dark transition-colors focus:outline-none focus-visible:underline'
               >
                 Sign In
               </Link>

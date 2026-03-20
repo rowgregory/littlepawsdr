@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { ArrowRight, Eye, EyeOff, Heart, PawPrint } from 'lucide-react';
-import { useAppDispatch, useFormSelector } from '../../redux/toolkitStore';
-import { createFormActions, resetForm } from '../../redux/features/form/formSlice';
+import { ArrowRight, Eye, EyeOff } from 'lucide-react';
+import { toolkitStore, useAppDispatch, useFormSelector } from '../../redux/toolkitStore';
+import { createFormActions, resetForm, setInputs } from '../../redux/features/form/formSlice';
 import validateRegisterForm from '../../validations/validateRegisterForm';
 import { useRegisterMutation } from '../../redux/services/authApi';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -9,6 +9,8 @@ import { hydrateUserState } from '../../redux/features/userSlice';
 import { showToast } from '../../redux/features/toastSlice';
 import { motion } from 'framer-motion';
 import { STATES } from '../../components/data/states';
+import { setOnConfettiPop } from '../../redux/features/auctionSlice';
+import { hydrateAuthState } from '../../redux/features/auth/authSlice';
 
 const securityQuestions = [
   'What was the name of your first pet?',
@@ -39,16 +41,20 @@ const Register = () => {
   const customAuctionLink = params.get('customAuctionLink');
   const auctionItemId = params.get('auctionItemId');
   const conversionSource = params.get('conversionSource');
+  const guestEmail = params.get('email');
   const hasCustomAuction = Boolean(customAuctionLink);
   const totalSteps = hasCustomAuction ? 2 : 1;
 
-  const getStrengthColor = () => {
-    if (passwordStrength <= 20) return 'bg-red-400';
-    if (passwordStrength <= 40) return 'bg-orange-400';
-    if (passwordStrength <= 60) return 'bg-yellow-400';
-    if (passwordStrength <= 80) return 'bg-blue-400';
-    return 'bg-green-400';
-  };
+  useEffect(() => {
+    if (guestEmail) {
+      toolkitStore.dispatch(
+        setInputs({
+          formName: 'registerForm',
+          data: { email: guestEmail, confirmEmail: guestEmail },
+        }),
+      );
+    }
+  }, [guestEmail]);
 
   const getStrengthText = () => {
     if (passwordStrength <= 20) return 'Very Weak';
@@ -121,7 +127,9 @@ const Register = () => {
         conversionSource,
       }).unwrap();
 
-      dispatch(hydrateUserState(response?.user));
+      toolkitStore.dispatch(setOnConfettiPop());
+      dispatch(hydrateUserState({ user: response?.user }));
+      dispatch(hydrateAuthState({ isAuthenticated: true }));
       dispatch(showToast({ message: 'Successful registration!', type: 'success' }));
 
       if (response?.user?.addressRef && customAuctionLink) {
@@ -133,7 +141,7 @@ const Register = () => {
 
         if (customAuctionLink) params.append('customAuctionLink', customAuctionLink);
         if (auctionItemId) params.append('auctionItemId', auctionItemId);
-
+        console.log('NAVIGATING TO SUPPORTER PROFILE', params.toString());
         navigate(`/supporter/profile?${params.toString()}`);
       }
     } catch (err: any) {
@@ -143,47 +151,71 @@ const Register = () => {
   };
 
   return (
-    <div className='min-h-screen bg-white flex overflow-hidden'>
-      {/* Left Side */}
+    <div className='min-h-screen bg-bg-light dark:bg-bg-dark flex overflow-hidden'>
+      {/* ── Left Side — Form ── */}
       <motion.div
-        className='w-full lg:w-1/2 flex flex-col items-center justify-center p-6 sm:p-12'
+        className='w-full lg:w-1/2 flex flex-col items-center justify-center px-6 py-12 sm:px-12'
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.6, delay: 0.2 }}
       >
         <div className='w-full max-w-md'>
-          {/* Heading */}
+          {/* Eyebrow + Heading */}
           <motion.div
-            className='text-center mb-8'
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className='mb-8'
           >
-            <div className='flex items-center justify-center gap-2 mb-2'>
-              <h2 className='text-3xl font-bold text-gray-900'>Sign Up</h2>
-            </div>
-
-            <p className='text-gray-600 mt-3'>Create your account to get started.</p>
+            <Link to='/' className='flex items-center gap-3 mb-4'>
+              <span
+                className='block w-8 h-px bg-primary-light dark:bg-primary-dark'
+                aria-hidden='true'
+              />
+              <p className='text-[10px] font-mono tracking-[0.2em] uppercase text-primary-light dark:text-primary-dark'>
+                Little Paws Dachshund Rescue
+              </p>
+            </Link>
+            <h1 className='font-quicksand text-4xl font-bold text-text-light dark:text-text-dark leading-tight'>
+              Create an{' '}
+              <span className='font-light text-muted-light dark:text-muted-dark'>account</span>
+            </h1>
+            <p className='text-sm text-muted-light dark:text-muted-dark mt-3 leading-relaxed'>
+              Join the Little Paws community and support our mission.
+            </p>
           </motion.div>
 
-          {/* Progress Bar (only show if multi-step) */}
+          {/* ── Progress bar (multi-step only) ── */}
           {hasCustomAuction && (
-            <div className='mb-6 sm:mb-8'>
+            <motion.div
+              className='mb-8'
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.35 }}
+            >
               <div className='flex items-center justify-between mb-2'>
-                <span className='text-xs sm:text-sm font-medium text-gray-600'>
+                <span className='text-[10px] font-mono tracking-[0.15em] uppercase text-muted-light dark:text-muted-dark'>
                   Step {currentStep} of {totalSteps}
                 </span>
-                <span className='text-xs sm:text-sm text-gray-500'>
+                <span className='text-[10px] font-mono text-muted-light dark:text-muted-dark'>
                   {currentStep === 1 ? 'Account Details' : 'Shipping Address'}
                 </span>
               </div>
-              <div className='w-full bg-gray-200 rounded-full h-1.5 sm:h-2'>
-                <div
-                  className='bg-gradient-to-r from-teal-400 to-cyan-400 h-1.5 sm:h-2 rounded-full transition-all duration-500'
-                  style={{ width: `${(currentStep / totalSteps) * 100}%` }}
-                ></div>
+              <div
+                className='w-full h-px bg-border-light dark:bg-border-dark relative'
+                role='progressbar'
+                aria-valuenow={currentStep}
+                aria-valuemin={1}
+                aria-valuemax={totalSteps}
+                aria-label={`Step ${currentStep} of ${totalSteps}`}
+              >
+                <motion.div
+                  className='absolute top-0 left-0 h-px bg-primary-light dark:bg-primary-dark'
+                  animate={{ width: `${(currentStep / totalSteps) * 100}%` }}
+                  transition={{ duration: 0.4, ease: 'easeInOut' }}
+                />
               </div>
-            </div>
+            </motion.div>
           )}
 
           <motion.form
@@ -191,9 +223,11 @@ const Register = () => {
             className='space-y-4'
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            noValidate
+            aria-label='Create account form'
           >
-            {/* Form - Step 1 */}
+            {/* ── Step 1 ── */}
             {currentStep === 1 && (
               <motion.div
                 className='space-y-4'
@@ -201,177 +235,301 @@ const Register = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4 }}
               >
-                {/* First Name */}
-                <div>
-                  <label className='block text-sm font-medium text-gray-700 mb-2'>First Name</label>
-                  <motion.input
-                    type='text'
-                    name='firstName'
-                    value={inputs?.firstName || ''}
-                    onChange={handleInput}
-                    placeholder='Sqysh'
-                    className='w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-200 transition-all'
-                    whileFocus={{ scale: 1.02 }}
-                  />
-                  {errors?.firstName && (
-                    <p className='text-red-500 text-sm mt-1'>{errors?.firstName}</p>
-                  )}
-                </div>
-
-                {/* Last Name */}
-                <div>
-                  <label className='block text-sm font-medium text-gray-700 mb-2'>Last Name</label>
-                  <motion.input
-                    type='text'
-                    name='lastName'
-                    value={inputs?.lastName || ''}
-                    onChange={handleInput}
-                    placeholder='io'
-                    className='w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-200 transition-all'
-                    whileFocus={{ scale: 1.02 }}
-                  />
-                  {errors?.lastName && (
-                    <p className='text-red-500 text-sm mt-1'>{errors?.lastName}</p>
-                  )}
+                {/* First + Last name row */}
+                <div className='grid grid-cols-1 min-[420px]:grid-cols-2 gap-3'>
+                  <div>
+                    <label
+                      htmlFor='reg-firstName'
+                      className='block text-[10px] font-mono tracking-[0.2em] uppercase text-muted-light dark:text-muted-dark mb-2'
+                    >
+                      First Name
+                    </label>
+                    <input
+                      id='reg-firstName'
+                      type='text'
+                      name='firstName'
+                      value={inputs?.firstName || ''}
+                      onChange={handleInput}
+                      placeholder='Jane'
+                      autoComplete='given-name'
+                      required
+                      aria-required='true'
+                      aria-invalid={!!errors?.firstName}
+                      aria-describedby={errors?.firstName ? 'firstName-error' : undefined}
+                      className='w-full px-3.5 py-3 text-sm border-2 border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark text-text-light dark:text-text-dark placeholder:text-muted-light/50 dark:placeholder:text-muted-dark/50 transition-colors duration-200 focus:outline-none focus-visible:border-primary-light dark:focus-visible:border-primary-dark'
+                    />
+                    {errors?.firstName && (
+                      <p
+                        id='firstName-error'
+                        role='alert'
+                        className='text-[11px] text-red-500 dark:text-red-400 font-mono mt-1.5'
+                      >
+                        {errors.firstName}
+                      </p>
+                    )}
+                  </div>
+                  <div>
+                    <label
+                      htmlFor='reg-lastName'
+                      className='block text-[10px] font-mono tracking-[0.2em] uppercase text-muted-light dark:text-muted-dark mb-2'
+                    >
+                      Last Name
+                    </label>
+                    <input
+                      id='reg-lastName'
+                      type='text'
+                      name='lastName'
+                      value={inputs?.lastName || ''}
+                      onChange={handleInput}
+                      placeholder='Smith'
+                      autoComplete='family-name'
+                      required
+                      aria-required='true'
+                      aria-invalid={!!errors?.lastName}
+                      aria-describedby={errors?.lastName ? 'lastName-error' : undefined}
+                      className='w-full px-3.5 py-3 text-sm border-2 border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark text-text-light dark:text-text-dark placeholder:text-muted-light/50 dark:placeholder:text-muted-dark/50 transition-colors duration-200 focus:outline-none focus-visible:border-primary-light dark:focus-visible:border-primary-dark'
+                    />
+                    {errors?.lastName && (
+                      <p
+                        id='lastName-error'
+                        role='alert'
+                        className='text-[11px] text-red-500 dark:text-red-400 font-mono mt-1.5'
+                      >
+                        {errors.lastName}
+                      </p>
+                    )}
+                  </div>
                 </div>
 
                 {/* Email */}
                 <div>
-                  <label className='block text-sm font-medium text-gray-700 mb-2'>
+                  <label
+                    htmlFor='reg-email'
+                    className='block text-[10px] font-mono tracking-[0.2em] uppercase text-muted-light dark:text-muted-dark mb-2'
+                  >
                     Email Address
                   </label>
-                  <motion.input
+                  <input
+                    id='reg-email'
                     type='email'
                     name='email'
                     value={inputs?.email || ''}
                     onChange={handleInput}
-                    placeholder='sqysh@sqysh.io'
-                    className='w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-200 transition-all'
-                    whileFocus={{ scale: 1.02 }}
+                    placeholder='jane@example.com'
+                    autoComplete='email'
+                    required
+                    aria-required='true'
+                    aria-invalid={!!errors?.email}
+                    aria-describedby={errors?.email ? 'reg-email-error' : undefined}
+                    className='w-full px-3.5 py-3 text-sm border-2 border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark text-text-light dark:text-text-dark placeholder:text-muted-light/50 dark:placeholder:text-muted-dark/50 transition-colors duration-200 focus:outline-none focus-visible:border-primary-light dark:focus-visible:border-primary-dark'
                   />
-                  {errors?.email && <p className='text-red-500 text-sm mt-1'>{errors?.email}</p>}
+                  {errors?.email && (
+                    <p
+                      id='reg-email-error'
+                      role='alert'
+                      className='text-[11px] text-red-500 dark:text-red-400 font-mono mt-1.5'
+                    >
+                      {errors.email}
+                    </p>
+                  )}
                 </div>
 
                 {/* Confirm Email */}
                 <div>
-                  <label className='block text-sm font-medium text-gray-700 mb-2'>
+                  <label
+                    htmlFor='reg-confirmEmail'
+                    className='block text-[10px] font-mono tracking-[0.2em] uppercase text-muted-light dark:text-muted-dark mb-2'
+                  >
                     Confirm Email
                   </label>
-                  <motion.input
+                  <input
+                    id='reg-confirmEmail'
                     type='email'
                     name='confirmEmail'
                     value={inputs?.confirmEmail || ''}
                     onChange={handleInput}
                     placeholder='Confirm your email'
-                    className='w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-200 transition-all'
-                    whileFocus={{ scale: 1.02 }}
+                    autoComplete='email'
+                    required
+                    aria-required='true'
+                    aria-invalid={!!errors?.confirmEmail}
+                    aria-describedby={errors?.confirmEmail ? 'confirmEmail-error' : undefined}
+                    className='w-full px-3.5 py-3 text-sm border-2 border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark text-text-light dark:text-text-dark placeholder:text-muted-light/50 dark:placeholder:text-muted-dark/50 transition-colors duration-200 focus:outline-none focus-visible:border-primary-light dark:focus-visible:border-primary-dark'
                   />
                   {errors?.confirmEmail && (
-                    <p className='text-red-500 text-sm mt-1'>{errors?.confirmEmail}</p>
+                    <p
+                      id='confirmEmail-error'
+                      role='alert'
+                      className='text-[11px] text-red-500 dark:text-red-400 font-mono mt-1.5'
+                    >
+                      {errors.confirmEmail}
+                    </p>
                   )}
                 </div>
 
                 {/* Security Question */}
                 <div>
-                  <label className='block text-sm font-medium text-gray-700 mb-2'>
+                  <label
+                    htmlFor='reg-securityQuestion'
+                    className='block text-[10px] font-mono tracking-[0.2em] uppercase text-muted-light dark:text-muted-dark mb-2'
+                  >
                     Security Question
                   </label>
-                  <motion.select
+                  <select
+                    id='reg-securityQuestion'
                     name='securityQuestion'
                     value={inputs?.securityQuestion || ''}
                     onChange={handleInput}
-                    className='w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-200 transition-all bg-white'
-                    whileFocus={{ scale: 1.02 }}
+                    required
+                    aria-required='true'
+                    aria-invalid={!!errors?.securityQuestion}
+                    aria-describedby={
+                      errors?.securityQuestion ? 'securityQuestion-error' : undefined
+                    }
+                    className='w-full px-3.5 py-3 text-sm border-2 border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark text-text-light dark:text-text-dark transition-colors duration-200 focus:outline-none focus-visible:border-primary-light dark:focus-visible:border-primary-dark'
                   >
                     <option value=''>Select a security question</option>
-                    {securityQuestions?.map((question, i) => (
+                    {securityQuestions?.map((question: string, i: number) => (
                       <option key={i} value={question}>
                         {question}
                       </option>
                     ))}
-                  </motion.select>
+                  </select>
                   {errors?.securityQuestion && (
-                    <p className='text-red-500 text-sm mt-1'>{errors?.securityQuestion}</p>
+                    <p
+                      id='securityQuestion-error'
+                      role='alert'
+                      className='text-[11px] text-red-500 dark:text-red-400 font-mono mt-1.5'
+                    >
+                      {errors.securityQuestion}
+                    </p>
                   )}
                 </div>
 
                 {/* Security Answer */}
                 <div>
-                  <label className='block text-sm font-medium text-gray-700 mb-2'>
+                  <label
+                    htmlFor='reg-securityAnswer'
+                    className='block text-[10px] font-mono tracking-[0.2em] uppercase text-muted-light dark:text-muted-dark mb-2'
+                  >
                     Security Answer
                   </label>
-                  <motion.input
+                  <input
+                    id='reg-securityAnswer'
                     type='text'
                     name='securityAnswer'
                     value={inputs?.securityAnswer || ''}
                     onChange={handleInput}
                     placeholder='Your answer'
-                    className='w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-200 transition-all'
-                    whileFocus={{ scale: 1.02 }}
+                    required
+                    aria-required='true'
+                    aria-invalid={!!errors?.securityAnswer}
+                    aria-describedby={errors?.securityAnswer ? 'securityAnswer-error' : undefined}
+                    className='w-full px-3.5 py-3 text-sm border-2 border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark text-text-light dark:text-text-dark placeholder:text-muted-light/50 dark:placeholder:text-muted-dark/50 transition-colors duration-200 focus:outline-none focus-visible:border-primary-light dark:focus-visible:border-primary-dark'
                   />
                   {errors?.securityAnswer && (
-                    <p className='text-red-500 text-sm mt-1'>{errors?.securityAnswer}</p>
+                    <p
+                      id='securityAnswer-error'
+                      role='alert'
+                      className='text-[11px] text-red-500 dark:text-red-400 font-mono mt-1.5'
+                    >
+                      {errors.securityAnswer}
+                    </p>
                   )}
                 </div>
 
                 {/* Password */}
                 <div>
-                  <label className='block text-sm font-medium text-gray-700 mb-2'>Password</label>
+                  <label
+                    htmlFor='reg-password'
+                    className='block text-[10px] font-mono tracking-[0.2em] uppercase text-muted-light dark:text-muted-dark mb-2'
+                  >
+                    Password
+                  </label>
                   <div className='relative'>
-                    <motion.input
+                    <input
+                      id='reg-password'
                       type={showPassword ? 'text' : 'password'}
                       name='password'
                       value={inputs?.password || ''}
                       onChange={handleInput}
                       placeholder='Create a strong password'
-                      className='w-full px-4 py-3 pr-12 rounded-lg border border-gray-300 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-200 transition-all'
-                      whileFocus={{ scale: 1.02 }}
+                      autoComplete='new-password'
+                      required
+                      aria-required='true'
+                      aria-invalid={!!errors?.password}
+                      aria-describedby='password-strength-desc'
+                      className='w-full pl-3.5 pr-11 py-3 text-sm border-2 border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark text-text-light dark:text-text-dark placeholder:text-muted-light/50 dark:placeholder:text-muted-dark/50 transition-colors duration-200 focus:outline-none focus-visible:border-primary-light dark:focus-visible:border-primary-dark'
                     />
-                    <motion.button
+                    <button
                       type='button'
                       onClick={() => setShowPassword(!showPassword)}
-                      className='absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors p-1'
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.95 }}
-                      title={showPassword ? 'Hide password' : 'Show password'}
+                      aria-label={showPassword ? 'Hide password' : 'Show password'}
+                      className='absolute right-3 top-1/2 -translate-y-1/2 text-muted-light dark:text-muted-dark hover:text-text-light dark:hover:text-text-dark transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-light dark:focus-visible:ring-primary-dark p-1'
                     >
-                      {showPassword ? <EyeOff className='w-5 h-5' /> : <Eye className='w-5 h-5' />}
-                    </motion.button>
+                      {showPassword ? (
+                        <EyeOff className='w-4 h-4' aria-hidden='true' />
+                      ) : (
+                        <Eye className='w-4 h-4' aria-hidden='true' />
+                      )}
+                    </button>
                   </div>
+
+                  {/* Strength meter */}
                   {inputs?.password && (
-                    <div className='mt-2'>
-                      <div className='flex justify-between items-center mb-1'>
-                        <span className='text-xs text-gray-600'>Password Strength:</span>
+                    <div className='mt-2' id='password-strength-desc'>
+                      <div className='flex items-center justify-between mb-1.5'>
+                        <span className='text-[10px] font-mono text-muted-light dark:text-muted-dark'>
+                          Strength
+                        </span>
                         <span
-                          className={`text-xs font-medium ${
+                          className={`text-[10px] font-mono font-bold ${
                             passwordStrength <= 40
-                              ? 'text-red-500'
+                              ? 'text-red-500 dark:text-red-400'
                               : passwordStrength <= 60
-                                ? 'text-yellow-500'
+                                ? 'text-yellow-500 dark:text-yellow-400'
                                 : passwordStrength <= 80
-                                  ? 'text-blue-500'
-                                  : 'text-green-500'
+                                  ? 'text-primary-light dark:text-primary-dark'
+                                  : 'text-green-500 dark:text-green-400'
                           }`}
                         >
                           {getStrengthText()}
                         </span>
                       </div>
-                      <div className='w-full bg-gray-200 rounded-full h-1.5 sm:h-2'>
-                        <div
-                          className={`h-1.5 sm:h-2 rounded-full transition-all duration-300 ${getStrengthColor()}`}
-                          style={{ width: `${passwordStrength}%` }}
-                        ></div>
+                      <div
+                        className='w-full h-px bg-border-light dark:bg-border-dark relative'
+                        aria-hidden='true'
+                      >
+                        <motion.div
+                          className={`absolute top-0 left-0 h-px transition-colors duration-300 ${
+                            passwordStrength <= 40
+                              ? 'bg-red-500'
+                              : passwordStrength <= 60
+                                ? 'bg-yellow-500'
+                                : passwordStrength <= 80
+                                  ? 'bg-primary-light dark:bg-primary-dark'
+                                  : 'bg-green-500'
+                          }`}
+                          animate={{ width: `${passwordStrength}%` }}
+                          transition={{ duration: 0.3 }}
+                        />
                       </div>
                     </div>
                   )}
+
                   {errors?.password && (
-                    <p className='text-red-500 text-sm mt-1'>{errors?.password}</p>
+                    <p
+                      role='alert'
+                      className='text-[11px] text-red-500 dark:text-red-400 font-mono mt-1.5'
+                    >
+                      {errors.password}
+                    </p>
                   )}
                 </div>
               </motion.div>
             )}
 
-            {/* Form - Step 2 */}
+            {/* ── Step 2 — Shipping Address ── */}
             {currentStep === 2 && hasCustomAuction && (
               <motion.div
                 className='space-y-4'
@@ -379,116 +537,162 @@ const Register = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4 }}
               >
-                {/* Heading */}
-                <motion.div
-                  className='text-center mb-6'
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.1 }}
-                >
-                  <h3 className='text-2xl font-bold text-gray-900 mb-2'>Shipping Address</h3>
-                  <p className='text-gray-600'>Where should we send your auction wins?</p>
-                </motion.div>
+                <div className='mb-6'>
+                  <h2 className='font-quicksand text-2xl font-bold text-text-light dark:text-text-dark'>
+                    Shipping{' '}
+                    <span className='font-light text-muted-light dark:text-muted-dark'>
+                      address
+                    </span>
+                  </h2>
+                  <p className='text-sm text-muted-light dark:text-muted-dark mt-1'>
+                    Where should we send your auction wins?
+                  </p>
+                </div>
 
-                {/* Street Address */}
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.15 }}
-                >
-                  <label className='block text-sm font-medium text-gray-700 mb-2'>
-                    Street Address *
+                {/* Street */}
+                <div>
+                  <label
+                    htmlFor='reg-address'
+                    className='block text-[10px] font-mono tracking-[0.2em] uppercase text-muted-light dark:text-muted-dark mb-2'
+                  >
+                    Street Address
                   </label>
-                  <motion.input
+                  <input
+                    id='reg-address'
                     type='text'
                     name='address'
                     value={registerForm?.inputs?.address || ''}
                     onChange={handleInput}
                     placeholder='123 Main Street'
-                    className='w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-200 transition-all'
-                    whileFocus={{ scale: 1.02 }}
+                    autoComplete='street-address'
+                    required
+                    aria-required='true'
+                    aria-invalid={!!registerForm?.errors?.address}
+                    aria-describedby={registerForm?.errors?.address ? 'address-error' : undefined}
+                    className='w-full px-3.5 py-3 text-sm border-2 border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark text-text-light dark:text-text-dark placeholder:text-muted-light/50 dark:placeholder:text-muted-dark/50 transition-colors duration-200 focus:outline-none focus-visible:border-primary-light dark:focus-visible:border-primary-dark'
                   />
                   {registerForm?.errors?.address && (
-                    <p className='text-red-500 text-sm mt-1'>{registerForm.errors.address}</p>
+                    <p
+                      id='address-error'
+                      role='alert'
+                      className='text-[11px] text-red-500 dark:text-red-400 font-mono mt-1.5'
+                    >
+                      {registerForm.errors.address}
+                    </p>
                   )}
-                </motion.div>
+                </div>
 
-                {/* City */}
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 }}
-                >
-                  <label className='block text-sm font-medium text-gray-700 mb-2'>City *</label>
-                  <motion.input
-                    type='text'
-                    name='city'
-                    value={registerForm?.inputs?.city || ''}
-                    onChange={handleInput}
-                    placeholder='San Francisco'
-                    className='w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-200 transition-all'
-                    whileFocus={{ scale: 1.02 }}
-                  />
-                  {registerForm?.errors?.city && (
-                    <p className='text-red-500 text-sm mt-1'>{registerForm.errors.city}</p>
-                  )}
-                </motion.div>
-
-                {/* State */}
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.25 }}
-                >
-                  <label className='block text-sm font-medium text-gray-700 mb-2'>State *</label>
-                  <motion.select
-                    name='state'
-                    value={registerForm?.inputs?.state || ''}
-                    onChange={handleInput}
-                    className='w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-200 transition-all bg-white'
-                    whileFocus={{ scale: 1.02 }}
-                  >
-                    <option value=''>Select a State</option>
-                    {STATES?.map((state) => (
-                      <option key={state.value} value={state.value}>
-                        {state.text}
+                {/* City + State row */}
+                <div className='grid grid-cols-1 min-[420px]:grid-cols-2 gap-3'>
+                  <div>
+                    <label
+                      htmlFor='reg-city'
+                      className='block text-[10px] font-mono tracking-[0.2em] uppercase text-muted-light dark:text-muted-dark mb-2'
+                    >
+                      City
+                    </label>
+                    <input
+                      id='reg-city'
+                      type='text'
+                      name='city'
+                      value={registerForm?.inputs?.city || ''}
+                      onChange={handleInput}
+                      placeholder='Boston'
+                      autoComplete='address-level2'
+                      required
+                      aria-required='true'
+                      aria-invalid={!!registerForm?.errors?.city}
+                      aria-describedby={registerForm?.errors?.city ? 'city-error' : undefined}
+                      className='w-full px-3.5 py-3 text-sm border-2 border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark text-text-light dark:text-text-dark placeholder:text-muted-light/50 dark:placeholder:text-muted-dark/50 transition-colors duration-200 focus:outline-none focus-visible:border-primary-light dark:focus-visible:border-primary-dark'
+                    />
+                    {registerForm?.errors?.city && (
+                      <p
+                        id='city-error'
+                        role='alert'
+                        className='text-[11px] text-red-500 dark:text-red-400 font-mono mt-1.5'
+                      >
+                        {registerForm.errors.city}
+                      </p>
+                    )}
+                  </div>
+                  <div>
+                    <label
+                      htmlFor='reg-state'
+                      className='block text-[10px] font-mono tracking-[0.2em] uppercase text-muted-light dark:text-muted-dark mb-2'
+                    >
+                      State
+                    </label>
+                    <select
+                      id='reg-state'
+                      name='state'
+                      value={registerForm?.inputs?.state || ''}
+                      onChange={handleInput}
+                      required
+                      aria-required='true'
+                      aria-invalid={!!registerForm?.errors?.state}
+                      aria-describedby={registerForm?.errors?.state ? 'state-error' : undefined}
+                      className='w-full px-3.5 py-3 text-sm border-2 border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark text-text-light dark:text-text-dark transition-colors duration-200 focus:outline-none focus-visible:border-primary-light dark:focus-visible:border-primary-dark'
+                    >
+                      <option value='' disabled>
+                        Select state
                       </option>
-                    ))}
-                  </motion.select>
-                  {registerForm?.errors?.state && (
-                    <p className='text-red-500 text-sm mt-1'>{registerForm.errors.state}</p>
-                  )}
-                </motion.div>
+                      {STATES?.map((state: { value: string; text: string }) => (
+                        <option key={state.value} value={state.value}>
+                          {state.text}
+                        </option>
+                      ))}
+                    </select>
+                    {registerForm?.errors?.state && (
+                      <p
+                        id='state-error'
+                        role='alert'
+                        className='text-[11px] text-red-500 dark:text-red-400 font-mono mt-1.5'
+                      >
+                        {registerForm.errors.state}
+                      </p>
+                    )}
+                  </div>
+                </div>
 
-                {/* ZIP Code */}
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 }}
-                >
-                  <label className='block text-sm font-medium text-gray-700 mb-2'>
-                    ZIP/Postal Code *
+                {/* ZIP */}
+                <div>
+                  <label
+                    htmlFor='reg-zip'
+                    className='block text-[10px] font-mono tracking-[0.2em] uppercase text-muted-light dark:text-muted-dark mb-2'
+                  >
+                    ZIP / Postal Code
                   </label>
-                  <motion.input
+                  <input
+                    id='reg-zip'
                     type='text'
                     name='zipPostalCode'
                     value={registerForm?.inputs?.zipPostalCode || ''}
                     onChange={handleInput}
-                    placeholder='94105'
-                    className='w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-200 transition-all'
-                    whileFocus={{ scale: 1.02 }}
+                    placeholder='02101'
+                    autoComplete='postal-code'
+                    required
+                    aria-required='true'
+                    aria-invalid={!!registerForm?.errors?.zipPostalCode}
+                    aria-describedby={registerForm?.errors?.zipPostalCode ? 'zip-error' : undefined}
+                    className='w-full px-3.5 py-3 text-sm border-2 border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark text-text-light dark:text-text-dark placeholder:text-muted-light/50 dark:placeholder:text-muted-dark/50 transition-colors duration-200 focus:outline-none focus-visible:border-primary-light dark:focus-visible:border-primary-dark'
                   />
                   {registerForm?.errors?.zipPostalCode && (
-                    <p className='text-red-500 text-sm mt-1'>{registerForm.errors.zipPostalCode}</p>
+                    <p
+                      id='zip-error'
+                      role='alert'
+                      className='text-[11px] text-red-500 dark:text-red-400 font-mono mt-1.5'
+                    >
+                      {registerForm.errors.zipPostalCode}
+                    </p>
                   )}
-                </motion.div>
+                </div>
               </motion.div>
             )}
 
-            {/* Navigation Buttons */}
+            {/* ── Navigation buttons ── */}
             <motion.div
-              className='flex flex-col-reverse sm:flex-row gap-3 pt-6'
-              initial={{ opacity: 0, y: 20 }}
+              className='flex flex-col-reverse min-[420px]:flex-row gap-3 pt-4'
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
             >
@@ -496,9 +700,9 @@ const Register = () => {
                 <motion.button
                   type='button'
                   onClick={handlePrevStep}
-                  className='flex-1 bg-gray-200 hover:bg-gray-300 text-gray-900 font-semibold py-3 px-6 rounded-lg transition-all duration-200'
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
+                  className='flex-1 py-4 font-black text-[11px] tracking-[0.2em] uppercase font-mono border-2 border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark text-muted-light dark:text-muted-dark hover:border-primary-light dark:hover:border-primary-dark hover:text-text-light dark:hover:text-text-dark transition-colors duration-200 focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-light dark:focus-visible:ring-primary-dark'
                 >
                   Back
                 </motion.button>
@@ -509,50 +713,105 @@ const Register = () => {
                   type='button'
                   onClick={handleNextStep}
                   disabled={!isStep1Valid()}
-                  className='flex-1 bg-gradient-to-r from-teal-400 to-cyan-400 hover:from-teal-500 hover:to-cyan-500 disabled:from-gray-300 disabled:to-gray-300 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 disabled:cursor-not-allowed flex items-center justify-center gap-2'
-                  whileHover={!isStep1Valid() ? {} : { scale: 1.02 }}
-                  whileTap={!isStep1Valid() ? {} : { scale: 0.98 }}
+                  whileHover={isStep1Valid() ? { scale: 1.02 } : {}}
+                  whileTap={isStep1Valid() ? { scale: 0.98 } : {}}
+                  aria-disabled={!isStep1Valid()}
+                  className={`flex-1 py-4 font-black text-[11px] tracking-[0.2em] uppercase font-mono transition-colors duration-200 focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-light dark:focus-visible:ring-primary-dark flex items-center justify-center gap-2
+                    ${
+                      isStep1Valid()
+                        ? 'bg-primary-light dark:bg-primary-dark hover:bg-secondary-light dark:hover:bg-secondary-dark text-white cursor-pointer'
+                        : 'bg-surface-light dark:bg-surface-dark text-muted-light dark:text-muted-dark border-2 border-border-light dark:border-border-dark cursor-not-allowed'
+                    }`}
                 >
-                  <span>Next Step</span>
-                  <ArrowRight className='w-4 h-4' />
+                  Next Step
+                  <ArrowRight className='w-3.5 h-3.5' aria-hidden='true' />
                 </motion.button>
               ) : (
                 <motion.button
                   type='submit'
                   disabled={isLoading}
-                  className='flex-1 bg-gradient-to-r from-teal-400 to-cyan-400 hover:from-teal-500 hover:to-cyan-500 disabled:from-gray-300 disabled:to-gray-300 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 disabled:cursor-not-allowed flex items-center justify-center gap-2'
-                  whileHover={isLoading ? {} : { scale: 1.02 }}
-                  whileTap={isLoading ? {} : { scale: 0.98 }}
+                  whileHover={!isLoading ? { scale: 1.02 } : {}}
+                  whileTap={!isLoading ? { scale: 0.98 } : {}}
+                  aria-disabled={isLoading}
+                  className={`flex-1 py-4 font-black text-[11px] tracking-[0.2em] uppercase font-mono transition-colors duration-200 focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-light dark:focus-visible:ring-primary-dark
+                    ${
+                      isLoading
+                        ? 'bg-surface-light dark:bg-surface-dark text-muted-light dark:text-muted-dark border-2 border-border-light dark:border-border-dark cursor-not-allowed'
+                        : 'bg-primary-light dark:bg-primary-dark hover:bg-secondary-light dark:hover:bg-secondary-dark text-white cursor-pointer'
+                    }`}
                 >
                   {isLoading ? (
-                    <>
-                      <motion.div
+                    <span className='flex items-center justify-center gap-2' aria-live='polite'>
+                      <motion.span
                         animate={{ rotate: 360 }}
-                        transition={{ duration: 1, repeat: Infinity }}
-                        className='w-4 h-4 border-2 border-white border-t-transparent rounded-full'
+                        transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                        className='block w-3.5 h-3.5 border-2 border-current/30 border-t-current'
+                        aria-hidden='true'
                       />
-                      <span>{hasCustomAuction ? 'Creating Account...' : 'Joining...'}</span>
-                    </>
+                      {hasCustomAuction ? 'Creating account...' : 'Joining...'}
+                    </span>
+                  ) : hasCustomAuction ? (
+                    'Complete Registration'
                   ) : (
-                    <span>{hasCustomAuction ? 'Complete Registration' : 'Join Now'}</span>
+                    'Join Now'
                   )}
                 </motion.button>
               )}
             </motion.div>
+
+            {passwordStrength > 0 && passwordStrength < 80 && currentStep === 1 && (
+              <ul className='space-y-1' aria-live='polite'>
+                {[
+                  {
+                    test: registerForm?.inputs?.password?.length >= 10,
+                    label: '10+ characters',
+                  },
+                  {
+                    test: /[A-Z]/.test(registerForm?.inputs?.password || ''),
+                    label: 'One uppercase letter',
+                  },
+                  {
+                    test: /[a-z]/.test(registerForm?.inputs?.password || ''),
+                    label: 'One lowercase letter',
+                  },
+                  {
+                    test: /[0-9]/.test(registerForm?.inputs?.password || ''),
+                    label: 'One number',
+                  },
+                  {
+                    test: /[!@#$%^&*(),.?":{}|<>]/.test(registerForm?.inputs?.password || ''),
+                    label: 'One special character',
+                  },
+                ]
+                  .filter((req) => !req.test)
+                  .map((req) => (
+                    <li
+                      key={req.label}
+                      className='text-[10px] font-mono text-muted-light dark:text-muted-dark flex items-center gap-2'
+                    >
+                      <span
+                        className='w-1 h-1 shrink-0 bg-muted-light dark:bg-muted-dark'
+                        aria-hidden='true'
+                      />
+                      {req.label}
+                    </li>
+                  ))}
+              </ul>
+            )}
           </motion.form>
 
-          {/* Sign In Link */}
+          {/* Sign in link */}
           <motion.div
-            className='mt-6 pt-6 border-t border-gray-200 text-center'
+            className='mt-6 pt-6 border-t border-border-light dark:border-border-dark'
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
+            transition={{ duration: 0.5, delay: 0.5 }}
           >
-            <p className='text-gray-600 text-sm'>
-              Have have an account?{' '}
+            <p className='text-[11px] font-mono text-muted-light dark:text-muted-dark text-center'>
+              Already have an account?{' '}
               <Link
                 to='/auth/login'
-                className='text-teal-600 hover:text-teal-700 font-semibold transition-colors'
+                className='text-primary-light dark:text-primary-dark hover:text-secondary-light dark:hover:text-secondary-dark transition-colors focus:outline-none focus-visible:underline'
               >
                 Sign In
               </Link>
@@ -561,63 +820,80 @@ const Register = () => {
         </div>
       </motion.div>
 
-      {/* Right Side */}
-      <motion.div className='hidden lg:flex lg:w-1/2 bg-gradient-to-br from-teal-400 via-teal-400 to-sky-500 flex-col items-center justify-center p-12 relative overflow-hidden'>
-        {/* Animated background elements */}
-        <motion.div
-          className='absolute top-20 left-20 w-40 h-40 bg-white/10 rounded-full blur-3xl'
-          animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
-          transition={{ duration: 4, repeat: Infinity }}
-        />
-        <motion.div
-          className='absolute bottom-40 right-20 w-60 h-60 bg-white/10 rounded-full blur-3xl'
-          animate={{ scale: [1.2, 1, 1.2], opacity: [0.3, 0.5, 0.3] }}
-          transition={{ duration: 5, repeat: Infinity, delay: 0.5 }}
+      {/* ── Right Side — Brand panel ── */}
+      <motion.div
+        className='hidden lg:flex lg:w-1/2 bg-surface-light dark:bg-surface-dark border-l border-border-light dark:border-border-dark flex-col items-center justify-center p-12 relative overflow-hidden'
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
+        aria-hidden='true'
+      >
+        {/* Decorative grid */}
+        <div
+          className='absolute inset-0 opacity-[0.03] dark:opacity-[0.06]'
+          style={{
+            backgroundImage:
+              'linear-gradient(var(--color-border) 1px, transparent 1px), linear-gradient(90deg, var(--color-border) 1px, transparent 1px)',
+            backgroundSize: '40px 40px',
+          }}
         />
 
-        {/* Content */}
+        {/* Accent line top */}
+        <div className='absolute top-0 left-12 right-12 h-px bg-primary-light dark:bg-primary-dark opacity-30' />
+
         <motion.div
-          className='relative z-10 flex items-center justify-center flex-col'
+          className='relative z-10 flex flex-col items-start w-full max-w-sm'
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
         >
-          <Link to='/' className='text-4xl lg:text-5xl font-bold text-white mb-4 text-center'>
-            Little Paws Dachshund Rescue
-          </Link>
+          <div className='flex items-center gap-3 mb-8'>
+            <span className='block w-5 h-px bg-primary-light dark:bg-primary-dark' />
+            <p className='text-[10px] font-mono tracking-[0.2em] uppercase text-primary-light dark:text-primary-dark'>
+              Since 2009
+            </p>
+          </div>
 
-          <p className='text-white/90 text-lg mb-8 max-w-sm text-center'>
-            Help us rescue and care for dachshunds in need. Every contribution makes a difference.
+          <h2 className='font-quicksand text-3xl font-bold text-text-light dark:text-text-dark leading-tight mb-4'>
+            Join the pack.
+            <br />
+            <span className='font-light text-muted-light dark:text-muted-dark'>
+              Make a difference.
+            </span>
+          </h2>
+
+          <p className='text-sm text-muted-light dark:text-muted-dark leading-relaxed mb-12'>
+            Your account lets you track donations, bid on auction items, and stay connected with
+            every dog you've helped along the way.
           </p>
 
-          {/* Animated hearts */}
-          <div className='flex justify-center gap-2 mb-8'>
-            {[...Array(5)].map((_, i) => (
+          <dl className='space-y-6 w-full'>
+            {[
+              { stat: '2,400+', label: 'Dogs rescued' },
+              { stat: '100%', label: 'Volunteer operated' },
+              { stat: '50+', label: 'Active foster homes' },
+            ].map(({ stat, label }, i) => (
               <motion.div
-                key={i}
-                animate={{ scale: [1, 1.2, 1] }}
-                transition={{ duration: 1, repeat: Infinity, delay: i * 0.15 }}
+                key={stat}
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.4, delay: 0.6 + i * 0.1 }}
+                className='flex items-baseline gap-4'
               >
-                <Heart className='w-5 h-5 text-white fill-current' />
+                <dt className='font-quicksand font-black text-2xl text-primary-light dark:text-primary-dark tabular-nums shrink-0 w-20'>
+                  {stat}
+                </dt>
+                <dd className='text-[11px] font-mono text-muted-light dark:text-muted-dark'>
+                  {label}
+                </dd>
               </motion.div>
             ))}
-          </div>
+          </dl>
 
-          {/* Trust indicators */}
-          <div className='space-y-3 text-white/80 text-sm'>
-            <div className='flex items-center gap-2 justify-center'>
-              <PawPrint className='w-4 h-4' />
-              <span>Secure & Private</span>
-            </div>
-            <div className='flex items-center gap-2 justify-center'>
-              <PawPrint className='w-4 h-4' />
-              <span>15+ Years Experience</span>
-            </div>
-            <div className='flex items-center gap-2 justify-center'>
-              <PawPrint className='w-4 h-4' />
-              <span>Non-Profit Organization</span>
-            </div>
-          </div>
+          <div className='mt-12 h-px w-full bg-border-light dark:bg-border-dark' />
+          <p className='mt-4 text-[10px] font-mono text-muted-light/60 dark:text-muted-dark/60 tracking-wide'>
+            littlepawsdr.org
+          </p>
         </motion.div>
       </motion.div>
     </div>

@@ -2,7 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useLoginMutation } from '../../redux/services/authApi';
 import { useAppDispatch, useFormSelector } from '../../redux/toolkitStore';
 import { createFormActions } from '../../redux/features/form/formSlice';
-import { ArrowRight, Eye, EyeOff, Heart, PawPrint } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
 import validateLoginForm from '../../validations/validateLoginForm';
 import { hydrateUserState } from '../../redux/features/userSlice';
 import { showToast } from '../../redux/features/toastSlice';
@@ -39,32 +39,52 @@ const Login = () => {
         navigate('/supporter/overview');
       }
     } catch (err: any) {
-      dispatch(showToast({ message: err?.data?.message, type: 'error' }));
+      if (err?.data?.isGuest) {
+        navigate(`/auth/register?email=${encodeURIComponent(inputs.email)}`);
+        dispatch(
+          showToast({
+            message: 'Please set up your password to access your account.',
+            type: 'info',
+          }),
+        );
+      } else {
+        dispatch(showToast({ message: err?.data?.message, type: 'error' }));
+      }
     }
   };
 
   return (
-    <div className='min-h-screen bg-white flex overflow-hidden'>
-      {/* Left Side */}
+    <div className='min-h-screen bg-bg-light dark:bg-bg-dark flex overflow-hidden'>
+      {/* ── Left Side — Form ── */}
       <motion.div
-        className='w-full lg:w-1/2 flex flex-col items-center justify-center p-6 sm:p-12'
+        className='w-full lg:w-1/2 flex flex-col items-center justify-center px-6 py-12 sm:px-12'
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.6, delay: 0.2 }}
       >
         <div className='w-full max-w-md'>
-          {/* Heading */}
+          {/* Eyebrow */}
           <motion.div
-            className='text-center mb-8'
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className='mb-10'
           >
-            <div className='flex items-center justify-center gap-2 mb-2'>
-              <h2 className='text-3xl font-bold text-gray-900'>Sign In</h2>
-            </div>
-
-            <p className='text-gray-600 mt-3'>Welcome back! Sign in to your account to continue.</p>
+            <Link to='/' className='flex items-center gap-3 mb-4'>
+              <span
+                className='block w-8 h-px bg-primary-light dark:bg-primary-dark'
+                aria-hidden='true'
+              />
+              <p className='text-[10px] font-mono tracking-[0.2em] uppercase text-primary-light dark:text-primary-dark'>
+                Little Paws Dachshund Rescue
+              </p>
+            </Link>
+            <h1 className='font-quicksand text-4xl font-bold text-text-light dark:text-text-dark leading-tight'>
+              Welcome <span className='font-light text-muted-light dark:text-muted-dark'>back</span>
+            </h1>
+            <p className='text-sm text-muted-light dark:text-muted-dark mt-3 leading-relaxed'>
+              Sign in to your account to continue supporting the rescue.
+            </p>
           </motion.div>
 
           {/* Form */}
@@ -73,91 +93,142 @@ const Login = () => {
             className='space-y-4'
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            noValidate
+            aria-label='Sign in form'
           >
+            {/* Email */}
             <div>
-              <label className='block text-sm font-medium text-gray-700 mb-2'>Email Address</label>
-              <motion.input
+              <label
+                htmlFor='login-email'
+                className='block text-[10px] font-mono tracking-[0.2em] uppercase text-muted-light dark:text-muted-dark mb-2'
+              >
+                Email Address
+              </label>
+              <input
+                id='login-email'
                 type='email'
                 name='email'
                 value={inputs?.email || ''}
                 onChange={handleInput}
                 placeholder='you@example.com'
-                className='w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-200 transition-all'
-                whileFocus={{ scale: 1.02 }}
+                autoComplete='email'
+                required
+                aria-required='true'
+                aria-invalid={!!errors?.email}
+                aria-describedby={errors?.email ? 'email-error' : undefined}
+                className='w-full px-3.5 py-3 text-sm border-2 border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark text-text-light dark:text-text-dark placeholder:text-muted-light/50 dark:placeholder:text-muted-dark/50 transition-colors duration-200 focus:outline-none focus-visible:border-primary-light dark:focus-visible:border-primary-dark'
               />
-              {errors?.email && <p className='text-red-500 text-sm mt-1'>{errors?.email}</p>}
+              {errors?.email && (
+                <p
+                  id='email-error'
+                  role='alert'
+                  className='text-[11px] text-red-500 dark:text-red-400 font-mono mt-1.5'
+                >
+                  {errors.email}
+                </p>
+              )}
             </div>
 
+            {/* Password */}
             <div>
               <div className='flex items-center justify-between mb-2'>
-                <label className='block text-sm font-medium text-gray-700'>Password</label>
+                <label
+                  htmlFor='login-password'
+                  className='block text-[10px] font-mono tracking-[0.2em] uppercase text-muted-light dark:text-muted-dark'
+                >
+                  Password
+                </label>
                 <Link
                   to='/auth/forgot-password'
-                  className='text-xs text-teal-600 hover:text-teal-700 font-medium transition-colors'
+                  className='text-[10px] font-mono tracking-[0.15em] uppercase text-primary-light dark:text-primary-dark hover:text-secondary-light dark:hover:text-secondary-dark transition-colors focus:outline-none focus-visible:underline'
                 >
                   Forgot?
                 </Link>
               </div>
               <div className='relative'>
-                <motion.input
+                <input
+                  id='login-password'
                   type={showPassword ? 'text' : 'password'}
                   name='password'
                   value={inputs?.password || ''}
                   onChange={handleInput}
-                  className='w-full px-4 py-3 pr-12 rounded-lg border border-gray-300 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-200 transition-all'
-                  whileFocus={{ scale: 1.02 }}
+                  autoComplete='current-password'
+                  required
+                  aria-required='true'
+                  aria-invalid={!!errors?.password}
+                  aria-describedby={errors?.password ? 'password-error' : undefined}
+                  className='w-full pl-3.5 pr-11 py-3 text-sm border-2 border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark text-text-light dark:text-text-dark transition-colors duration-200 focus:outline-none focus-visible:border-primary-light dark:focus-visible:border-primary-dark'
                 />
                 <button
                   type='button'
                   onClick={() => setShowPassword(!showPassword)}
-                  className='absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors p-1'
-                  title={showPassword ? 'Hide password' : 'Show password'}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  className='absolute right-3 top-1/2 -translate-y-1/2 text-muted-light dark:text-muted-dark hover:text-text-light dark:hover:text-text-dark transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-light dark:focus-visible:ring-primary-dark p-1'
                 >
-                  {showPassword ? <EyeOff className='w-5 h-5' /> : <Eye className='w-5 h-5' />}
+                  {showPassword ? (
+                    <EyeOff className='w-4 h-4' aria-hidden='true' />
+                  ) : (
+                    <Eye className='w-4 h-4' aria-hidden='true' />
+                  )}
                 </button>
               </div>
-              {errors?.password && <p className='text-red-500 text-sm mt-1'>{errors?.password}</p>}
+              {errors?.password && (
+                <p
+                  id='password-error'
+                  role='alert'
+                  className='text-[11px] text-red-500 dark:text-red-400 font-mono mt-1.5'
+                >
+                  {errors.password}
+                </p>
+              )}
             </div>
 
-            {/* Submit Button */}
+            {/* Submit */}
             <motion.button
               type='submit'
               disabled={isLoading}
-              className='w-full bg-gradient-to-r from-teal-400 to-sky-400 hover:from-teal-500 hover:to-sky-500 disabled:from-gray-300 disabled:to-gray-300 text-white font-bold py-3 px-6 rounded-lg transition-all duration-200 disabled:cursor-not-allowed flex items-center justify-center gap-2'
               whileHover={!isLoading ? { scale: 1.02 } : {}}
               whileTap={!isLoading ? { scale: 0.98 } : {}}
+              aria-disabled={isLoading}
+              className={`
+                w-full py-4 font-black text-[11px] tracking-[0.2em] uppercase font-mono transition-colors duration-200
+                focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-light dark:focus-visible:ring-primary-dark
+                ${
+                  isLoading
+                    ? 'bg-surface-light dark:bg-surface-dark text-muted-light dark:text-muted-dark border-2 border-border-light dark:border-border-dark cursor-not-allowed'
+                    : 'bg-primary-light dark:bg-primary-dark hover:bg-secondary-light dark:hover:bg-secondary-dark text-white cursor-pointer'
+                }
+              `}
             >
               {isLoading ? (
-                <>
-                  <motion.div
+                <span className='flex items-center justify-center gap-2' aria-live='polite'>
+                  <motion.span
                     animate={{ rotate: 360 }}
-                    transition={{ duration: 1, repeat: Infinity }}
-                    className='w-5 h-5 border-2 border-white border-t-transparent rounded-full'
+                    transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                    className='block w-3.5 h-3.5 border-2 border-current/30 border-t-current'
+                    aria-hidden='true'
                   />
                   Signing in...
-                </>
+                </span>
               ) : (
-                <>
-                  Sign In
-                  <ArrowRight className='w-4 h-4' />
-                </>
+                'Sign In'
               )}
             </motion.button>
           </motion.form>
 
-          {/* Sign Up Link */}
+          {/* Register link */}
           <motion.div
-            className='mt-6 pt-6 border-t border-gray-200 text-center'
+            className='mt-6 pt-6 border-t border-border-light dark:border-border-dark'
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
+            transition={{ duration: 0.5, delay: 0.5 }}
           >
-            <p className='text-gray-600 text-sm'>
+            <p className='text-[11px] font-mono text-muted-light dark:text-muted-dark text-center'>
               Don't have an account?{' '}
               <Link
                 to='/auth/register'
-                className='text-teal-600 hover:text-teal-700 font-semibold transition-colors'
+                className='text-primary-light dark:text-primary-dark hover:text-secondary-light dark:hover:text-secondary-dark transition-colors focus:outline-none focus-visible:underline'
               >
                 Sign Up
               </Link>
@@ -166,63 +237,83 @@ const Login = () => {
         </div>
       </motion.div>
 
-      {/* Right Side */}
-      <motion.div className='hidden lg:flex lg:w-1/2 bg-gradient-to-br from-teal-400 via-teal-400 to-sky-500 flex-col items-center justify-center p-12 relative overflow-hidden'>
-        {/* Animated background elements */}
-        <motion.div
-          className='absolute top-20 left-20 w-40 h-40 bg-white/10 rounded-full blur-3xl'
-          animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
-          transition={{ duration: 4, repeat: Infinity }}
-        />
-        <motion.div
-          className='absolute bottom-40 right-20 w-60 h-60 bg-white/10 rounded-full blur-3xl'
-          animate={{ scale: [1.2, 1, 1.2], opacity: [0.3, 0.5, 0.3] }}
-          transition={{ duration: 5, repeat: Infinity, delay: 0.5 }}
+      {/* ── Right Side — Brand panel ── */}
+      <motion.div
+        className='hidden lg:flex lg:w-1/2 bg-surface-light dark:bg-surface-dark border-l border-border-light dark:border-border-dark flex-col items-center justify-center p-12 relative overflow-hidden'
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
+        aria-hidden='true'
+      >
+        {/* Decorative grid */}
+        <div
+          className='absolute inset-0 opacity-[0.03] dark:opacity-[0.06]'
+          style={{
+            backgroundImage:
+              'linear-gradient(var(--color-border) 1px, transparent 1px), linear-gradient(90deg, var(--color-border) 1px, transparent 1px)',
+            backgroundSize: '40px 40px',
+          }}
         />
 
-        {/* Content */}
+        {/* Accent line top */}
+        <div className='absolute top-0 left-12 right-12 h-px bg-primary-light dark:bg-primary-dark opacity-30' />
+
         <motion.div
-          className='relative z-10 flex items-center justify-center flex-col'
+          className='relative z-10 flex flex-col items-start w-full max-w-sm'
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
         >
-          <Link to='/' className='text-4xl lg:text-5xl font-bold text-white mb-4 text-center'>
-            Little Paws Dachshund Rescue
-          </Link>
+          {/* Eyebrow */}
+          <div className='flex items-center gap-3 mb-8'>
+            <span className='block w-5 h-px bg-primary-light dark:bg-primary-dark' />
+            <p className='text-[10px] font-mono tracking-[0.2em] uppercase text-primary-light dark:text-primary-dark'>
+              Since 2009
+            </p>
+          </div>
 
-          <p className='text-white/90 text-lg mb-8 max-w-sm text-center'>
-            Help us rescue and care for dachshunds in need. Every contribution makes a difference.
+          <h2 className='font-quicksand text-3xl font-bold text-text-light dark:text-text-dark leading-tight mb-4'>
+            Every long dog
+            <br />
+            <span className='font-light text-muted-light dark:text-muted-dark'>
+              deserves a home.
+            </span>
+          </h2>
+
+          <p className='text-sm text-muted-light dark:text-muted-dark leading-relaxed mb-12'>
+            Volunteer-run and 100% dedicated to rescuing dachshunds and dachshund mixes across the
+            East Coast.
           </p>
 
-          {/* Animated hearts */}
-          <div className='flex justify-center gap-2 mb-8'>
-            {[...Array(5)].map((_, i) => (
+          {/* Stats */}
+          <dl className='space-y-6 w-full'>
+            {[
+              { stat: '2,400+', label: 'Dogs rescued' },
+              { stat: '100%', label: 'Volunteer operated' },
+              { stat: '50+', label: 'Active foster homes' },
+            ].map(({ stat, label }, i) => (
               <motion.div
-                key={i}
-                animate={{ scale: [1, 1.2, 1] }}
-                transition={{ duration: 1, repeat: Infinity, delay: i * 0.15 }}
+                key={stat}
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.4, delay: 0.6 + i * 0.1 }}
+                className='flex items-baseline gap-4'
               >
-                <Heart className='w-5 h-5 text-white fill-current' />
+                <dt className='font-quicksand font-black text-2xl text-primary-light dark:text-primary-dark tabular-nums shrink-0 w-20'>
+                  {stat}
+                </dt>
+                <dd className='text-[11px] font-mono text-muted-light dark:text-muted-dark'>
+                  {label}
+                </dd>
               </motion.div>
             ))}
-          </div>
+          </dl>
 
-          {/* Trust indicators */}
-          <div className='space-y-3 text-white/80 text-sm'>
-            <div className='flex items-center gap-2 justify-center'>
-              <PawPrint className='w-4 h-4' />
-              <span>Secure & Private</span>
-            </div>
-            <div className='flex items-center gap-2 justify-center'>
-              <PawPrint className='w-4 h-4' />
-              <span>15+ Years Experience</span>
-            </div>
-            <div className='flex items-center gap-2 justify-center'>
-              <PawPrint className='w-4 h-4' />
-              <span>Non-Profit Organization</span>
-            </div>
-          </div>
+          {/* Bottom accent */}
+          <div className='mt-12 h-px w-full bg-border-light dark:bg-border-dark' />
+          <p className='mt-4 text-[10px] font-mono text-muted-light/60 dark:text-muted-dark/60 tracking-wide'>
+            littlepawsdr.org
+          </p>
         </motion.div>
       </motion.div>
     </div>

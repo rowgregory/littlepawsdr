@@ -1,5 +1,5 @@
 import { type FormEvent } from 'react';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { AtSign, ShoppingCart, Shield, User, Send, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAppDispatch, useCartSelector, useUserSelector } from '../../redux/toolkitStore';
@@ -67,13 +67,7 @@ const TopHeader = () => {
     <div className='w-full bg-topbar-light dark:bg-topbar-dark border-b border-white/5'>
       <div className='max-w-screen-2xl mx-auto px-4 sm:px-6 py-2 flex items-center justify-between gap-6'>
         {/* ── Logo ── */}
-        <Link
-          to='/'
-          aria-label='Little Paws Dachshund Rescue — home'
-          className='shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-light'
-        >
-          <Logo className='w-24' />
-        </Link>
+        <Logo className='w-24' />
 
         {/* ── Right side ── */}
         <div className='flex items-center gap-6 1230:gap-8'>

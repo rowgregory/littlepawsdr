@@ -1,25 +1,25 @@
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { RootState, useAppDispatch, useAppSelector } from '../../redux/toolkitStore';
+import { useAppDispatch, useFormSelector } from '../../redux/toolkitStore';
 import {
   useResetPasswordMutation,
   useValidateForgotPasswordTokenQuery,
 } from '../../redux/services/authApi';
 import { createFormActions } from '../../redux/features/form/formSlice';
-import { ArrowLeft, Eye, EyeOff, Lock } from 'lucide-react';
-import { useEffect } from 'react';
+import { ArrowLeft, Eye, EyeOff } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { showToast } from '../../redux/features/toastSlice';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 
 const ResetPassword = () => {
   const { token } = useParams();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { resetPasswordForm, passwordStrength, showPassword } = useAppSelector(
-    (state: RootState) => state.form
-  );
+  const [resetSuccess, setResetSuccess] = useState(false);
+  const [countdown, setCountdown] = useState(7);
+  const { resetPasswordForm, passwordStrength, showPassword } = useFormSelector();
   const { handleInput, setShowPassword, setPasswordStrength } = createFormActions(
     'resetPasswordForm',
-    dispatch
+    dispatch,
   );
   const [resetPassword, { isLoading: loadingReset }] = useResetPasswordMutation();
   const {
@@ -35,14 +35,6 @@ const ResetPassword = () => {
       setPasswordStrength('0');
     }
   }, [resetPasswordForm, setPasswordStrength]);
-
-  const getStrengthColor = () => {
-    if (passwordStrength <= 20) return 'bg-red-400';
-    if (passwordStrength <= 40) return 'bg-orange-400';
-    if (passwordStrength <= 60) return 'bg-yellow-400';
-    if (passwordStrength <= 80) return 'bg-blue-400';
-    return 'bg-green-400';
-  };
 
   const getStrengthText = () => {
     if (passwordStrength <= 20) return 'Very Weak';
@@ -62,8 +54,18 @@ const ResetPassword = () => {
           password: resetPasswordForm?.inputs?.password,
         }).unwrap();
 
-        dispatch(showToast({ message: 'Successfully reset password', type: 'success' }));
-        navigate('/auth/login');
+        setResetSuccess(true);
+
+        const interval = setInterval(() => {
+          setCountdown((prev) => {
+            if (prev <= 1) {
+              clearInterval(interval);
+              navigate('/auth/login');
+              return 0;
+            }
+            return prev - 1;
+          });
+        }, 1000);
       } catch {
         dispatch(showToast({ message: 'Failed to reset password', type: 'error' }));
       }
@@ -72,11 +74,13 @@ const ResetPassword = () => {
 
   if (loadingTokenValidation) {
     return (
-      <div className='min-h-screen flex items-center justify-center bg-white'>
-        <motion.div
+      <div className='min-h-screen flex items-center justify-center bg-bg-light dark:bg-bg-dark'>
+        <motion.span
           animate={{ rotate: 360 }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
-          className='w-12 h-12 border-4 border-gray-200 border-t-teal-400 rounded-full'
+          transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+          className='block w-6 h-6 border-2 border-border-light dark:border-border-dark border-t-primary-light dark:border-t-primary-dark rounded-full'
+          aria-label='Validating reset link'
+          role='status'
         />
       </div>
     );
@@ -84,233 +88,448 @@ const ResetPassword = () => {
 
   if (error || !tokenValidationData?.tokenIsValid) {
     return (
-      <div className='min-h-screen bg-white flex items-center justify-center p-4'>
+      <div className='min-h-screen bg-bg-light dark:bg-bg-dark flex items-center justify-center px-6 py-12'>
         <motion.div
-          className='max-w-md w-full bg-white rounded-xl border border-gray-200 p-6 sm:p-8'
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
+          className='max-w-md w-full'
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
         >
-          <motion.div
-            className='text-red-500 text-5xl mb-4 text-center'
-            animate={{ scale: [1, 1.1, 1] }}
-            transition={{ duration: 1, repeat: Infinity }}
-          >
-            ⚠️
-          </motion.div>
-          <h2 className='text-xl font-bold text-gray-900 text-center mb-2'>Link Expired</h2>
-          <p className='text-gray-600 text-center mb-6'>
-            {error?.data?.message || 'This reset link has expired. Please request a new one.'}
+          <div className='flex items-center gap-3 mb-6'>
+            <span className='block w-8 h-px bg-red-500 dark:bg-red-400' aria-hidden='true' />
+            <p className='text-[10px] font-mono tracking-[0.2em] uppercase text-red-500 dark:text-red-400'>
+              Link Expired
+            </p>
+          </div>
+
+          <h1 className='font-quicksand text-3xl font-bold text-text-light dark:text-text-dark mb-3'>
+            This link has{' '}
+            <span className='font-light text-muted-light dark:text-muted-dark'>expired</span>
+          </h1>
+          <p className='text-sm text-muted-light dark:text-muted-dark leading-relaxed mb-8'>
+            {error?.data?.message ||
+              'This reset link has expired or already been used. Please request a new one.'}
           </p>
+
           <Link
             to='/auth/forgot-password'
-            className='w-full inline-block text-center bg-teal-500 hover:bg-teal-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors'
+            className='inline-block w-full py-4 text-center font-black text-[11px] tracking-[0.2em] uppercase font-mono bg-primary-light dark:bg-primary-dark hover:bg-secondary-light dark:hover:bg-secondary-dark text-white transition-colors duration-200 focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-light dark:focus-visible:ring-primary-dark'
           >
             Request New Link
           </Link>
+
+          <div className='mt-6 pt-6 border-t border-border-light dark:border-border-dark'>
+            <p className='text-[11px] font-mono text-muted-light dark:text-muted-dark text-center'>
+              Remember your password?{' '}
+              <Link
+                to='/auth/login'
+                className='text-primary-light dark:text-primary-dark hover:text-secondary-light dark:hover:text-secondary-dark transition-colors focus:outline-none focus-visible:underline'
+              >
+                Sign In
+              </Link>
+            </p>
+          </div>
         </motion.div>
       </div>
     );
   }
 
   return (
-    <div className='min-h-screen bg-white flex overflow-hidden'>
-      {/* Left Side - Branding */}
+    <div className='min-h-screen bg-bg-light dark:bg-bg-dark flex overflow-hidden'>
+      {/* ── Left Side — Brand panel ── */}
       <motion.div
-        className='hidden lg:flex lg:w-1/2 bg-gradient-to-br from-teal-400 via-teal-400 to-sky-500 flex-col items-center justify-center p-12 relative overflow-hidden'
+        className='hidden lg:flex lg:w-1/2 bg-surface-light dark:bg-surface-dark border-r border-border-light dark:border-border-dark flex-col items-center justify-center p-12 relative overflow-hidden'
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.6 }}
+        transition={{ duration: 0.8 }}
+        aria-hidden='true'
       >
-        {/* Animated background elements */}
-        <motion.div
-          className='absolute top-20 left-20 w-40 h-40 bg-white/10 rounded-full blur-3xl'
-          animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
-          transition={{ duration: 4, repeat: Infinity }}
-        />
-        <motion.div
-          className='absolute bottom-40 right-20 w-60 h-60 bg-white/10 rounded-full blur-3xl'
-          animate={{ scale: [1.2, 1, 1.2], opacity: [0.3, 0.5, 0.3] }}
-          transition={{ duration: 5, repeat: Infinity, delay: 0.5 }}
+        {/* Decorative grid */}
+        <div
+          className='absolute inset-0 opacity-[0.03] dark:opacity-[0.06]'
+          style={{
+            backgroundImage:
+              'linear-gradient(var(--color-border) 1px, transparent 1px), linear-gradient(90deg, var(--color-border) 1px, transparent 1px)',
+            backgroundSize: '40px 40px',
+          }}
         />
 
-        {/* Content */}
+        <div className='absolute top-0 left-12 right-12 h-px bg-primary-light dark:bg-primary-dark opacity-30' />
+
         <motion.div
-          className='relative z-10 flex items-center justify-center flex-col'
+          className='relative z-10 flex flex-col items-start w-full max-w-sm'
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
         >
-          <motion.div
-            className='w-24 h-24 bg-white rounded-full mx-auto mb-6 flex items-center justify-center shadow-2xl'
-            animate={{ scale: [1, 1.05, 1] }}
-            transition={{ duration: 3, repeat: Infinity }}
-          >
-            <span className='text-5xl'>🐾</span>
-          </motion.div>
+          <div className='flex items-center gap-3 mb-8'>
+            <span className='block w-5 h-px bg-primary-light dark:bg-primary-dark' />
+            <p className='text-[10px] font-mono tracking-[0.2em] uppercase text-primary-light dark:text-primary-dark'>
+              Since 2009
+            </p>
+          </div>
 
-          <h1 className='text-4xl lg:text-5xl font-bold text-white mb-4'>
-            Little Paws Dachshund Rescue
-          </h1>
+          <h2 className='font-quicksand text-3xl font-bold text-text-light dark:text-text-dark leading-tight mb-4'>
+            Every long dog
+            <br />
+            <span className='font-light text-muted-light dark:text-muted-dark'>
+              deserves a home.
+            </span>
+          </h2>
 
-          <p className='text-white/90 text-lg mb-8 max-w-sm text-center'>
-            Secure your account and get back to supporting rescue efforts.
+          <p className='text-sm text-muted-light dark:text-muted-dark leading-relaxed mb-12'>
+            Volunteer-run and 100% dedicated to rescuing dachshunds and dachshund mixes across the
+            East Coast.
           </p>
 
-          <div className='space-y-3 text-white/80 text-sm'>
-            <div className='flex items-center gap-2 justify-center'>
-              <Lock className='w-4 h-4' />
-              <span>Extra Secure</span>
-            </div>
-            <div className='flex items-center gap-2 justify-center'>
-              <Lock className='w-4 h-4' />
-              <span>Password Protected</span>
-            </div>
-            <div className='flex items-center gap-2 justify-center'>
-              <Lock className='w-4 h-4' />
-              <span>Your Data is Safe</span>
-            </div>
-          </div>
+          <dl className='space-y-6 w-full'>
+            {[
+              { stat: '2,400+', label: 'Dogs rescued' },
+              { stat: '100%', label: 'Volunteer operated' },
+              { stat: '50+', label: 'Active foster homes' },
+            ].map(({ stat, label }, i) => (
+              <motion.div
+                key={stat}
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.4, delay: 0.6 + i * 0.1 }}
+                className='flex items-baseline gap-4'
+              >
+                <dt className='font-quicksand font-black text-2xl text-primary-light dark:text-primary-dark tabular-nums shrink-0 w-20'>
+                  {stat}
+                </dt>
+                <dd className='text-[11px] font-mono text-muted-light dark:text-muted-dark'>
+                  {label}
+                </dd>
+              </motion.div>
+            ))}
+          </dl>
+
+          <div className='mt-12 h-px w-full bg-border-light dark:bg-border-dark' />
+          <p className='mt-4 text-[10px] font-mono text-muted-light/60 dark:text-muted-dark/60 tracking-wide'>
+            littlepawsdr.org
+          </p>
         </motion.div>
       </motion.div>
 
-      {/* Right Side - Form */}
+      {/* ── Right Side — Form ── */}
       <motion.div
-        className='w-full lg:w-1/2 flex flex-col items-center justify-center p-6 sm:p-12'
+        className='w-full lg:w-1/2 flex flex-col items-center justify-center px-6 py-12 sm:px-12'
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.6, delay: 0.2 }}
       >
         <div className='w-full max-w-md'>
-          {/* Logo for mobile */}
-          <Link to='/' className='lg:hidden flex justify-center mb-8'>
-            <div className='bg-gradient-to-br from-teal-400 to-cyan-400 rounded-full w-16 h-16 flex items-center justify-center shadow-lg'>
-              <span className='text-3xl'>🐾</span>
-            </div>
-          </Link>
-
-          {/* Heading */}
+          {/* Eyebrow + Heading */}
           <motion.div
-            className='text-center mb-8'
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className='mb-10'
           >
-            <h2 className='text-3xl font-bold text-gray-900 mb-2'>Reset Password</h2>
-            <p className='text-gray-600'>Create a new password for your account</p>
+            <div className='flex items-center gap-3 mb-4'>
+              <span
+                className='block w-8 h-px bg-primary-light dark:bg-primary-dark'
+                aria-hidden='true'
+              />
+              <p className='text-[10px] font-mono tracking-[0.2em] uppercase text-primary-light dark:text-primary-dark'>
+                Little Paws Dachshund Rescue
+              </p>
+            </div>
+
+            <AnimatePresence mode='wait'>
+              {resetSuccess ? (
+                <motion.div
+                  key='success-heading'
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <h1 className='font-quicksand text-4xl font-bold text-text-light dark:text-text-dark leading-tight'>
+                    All{' '}
+                    <span className='font-light text-muted-light dark:text-muted-dark'>done</span>
+                  </h1>
+                  <p className='text-sm text-muted-light dark:text-muted-dark mt-3 leading-relaxed'>
+                    Your password has been updated.
+                  </p>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key='form-heading'
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <h1 className='font-quicksand text-4xl font-bold text-text-light dark:text-text-dark leading-tight'>
+                    New{' '}
+                    <span className='font-light text-muted-light dark:text-muted-dark'>
+                      password
+                    </span>
+                  </h1>
+                  <p className='text-sm text-muted-light dark:text-muted-dark mt-3 leading-relaxed'>
+                    Create a new password for your account.
+                  </p>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </motion.div>
 
           {/* Form */}
-          <motion.form
-            onSubmit={handleSubmit}
-            className='space-y-4'
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-          >
-            {/* Password Input */}
-            <div>
-              <label className='block text-sm font-medium text-gray-700 mb-2'>New Password</label>
-              <div className='relative'>
-                <motion.input
-                  type={showPassword ? 'text' : 'password'}
-                  name='password'
-                  value={resetPasswordForm?.inputs?.password || ''}
-                  onChange={handleInput}
-                  placeholder='Create a strong password'
-                  className='w-full px-4 py-3 pr-12 rounded-lg border border-gray-300 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-200 transition-all'
-                  whileFocus={{ scale: 1.02 }}
-                />
-                <motion.button
-                  type='button'
-                  onClick={() => setShowPassword(!showPassword)}
-                  className='absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors p-1'
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                  title={showPassword ? 'Hide password' : 'Show password'}
-                >
-                  {showPassword ? <EyeOff className='w-5 h-5' /> : <Eye className='w-5 h-5' />}
-                </motion.button>
-              </div>
-              {resetPasswordForm?.errors?.password && (
-                <p className='text-red-500 text-sm mt-1'>{resetPasswordForm.errors.password}</p>
-              )}
-            </div>
-
-            {/* Password Strength */}
-            {resetPasswordForm?.inputs?.password && (
+          <AnimatePresence mode='wait'>
+            {resetSuccess ? (
               <motion.div
+                key='success'
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
-                className='space-y-2'
+                exit={{ opacity: 0 }}
+                className='space-y-6'
+                role='status'
+                aria-live='polite'
               >
-                <div className='flex items-center justify-between'>
-                  <span className='text-sm text-gray-600'>Password Strength:</span>
-                  <span
-                    className={`text-sm font-semibold ${
-                      passwordStrength <= 40
-                        ? 'text-red-500'
-                        : passwordStrength <= 60
-                        ? 'text-yellow-500'
-                        : passwordStrength <= 80
-                        ? 'text-blue-500'
-                        : 'text-green-500'
-                    }`}
-                  >
-                    {getStrengthText()}
+                <div className='h-px bg-border-light dark:bg-border-dark' aria-hidden='true' />
+
+                <div>
+                  <p className='text-[10px] font-mono tracking-[0.2em] uppercase text-primary-light dark:text-primary-dark mb-3'>
+                    Password updated
+                  </p>
+                  <p className='text-sm text-muted-light dark:text-muted-dark leading-relaxed'>
+                    Your password has been reset successfully. You'll be redirected to the sign in
+                    page in a moment.
+                  </p>
+                </div>
+
+                {/* Countdown */}
+                <div className='flex items-center gap-4'>
+                  <span className='font-quicksand font-black text-4xl text-primary-light dark:text-primary-dark tabular-nums'>
+                    {countdown}
+                  </span>
+                  <span className='text-[11px] font-mono text-muted-light dark:text-muted-dark leading-snug'>
+                    Redirecting to
+                    <br />
+                    sign in...
                   </span>
                 </div>
-                <div className='w-full bg-gray-200 rounded-full h-2 overflow-hidden'>
+
+                {/* Progress bar */}
+                <div
+                  className='w-full h-px bg-border-light dark:bg-border-dark relative'
+                  aria-hidden='true'
+                >
                   <motion.div
-                    className={`h-full rounded-full transition-all ${getStrengthColor()}`}
-                    initial={{ width: 0 }}
-                    animate={{ width: `${passwordStrength}%` }}
-                    transition={{ duration: 0.5 }}
+                    className='absolute top-0 left-0 h-px bg-primary-light dark:bg-primary-dark'
+                    initial={{ width: '100%' }}
+                    animate={{ width: '0%' }}
+                    transition={{ duration: 7, ease: 'linear' }}
                   />
                 </div>
+
+                <Link
+                  to='/auth/login'
+                  className='inline-block text-[10px] font-mono tracking-[0.2em] uppercase text-primary-light dark:text-primary-dark hover:text-secondary-light dark:hover:text-secondary-dark transition-colors focus:outline-none focus-visible:underline'
+                >
+                  Sign in now →
+                </Link>
               </motion.div>
+            ) : (
+              <motion.form
+                onSubmit={handleSubmit}
+                className='space-y-4'
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+                noValidate
+                aria-label='Reset password form'
+              >
+                {/* New password */}
+                <div>
+                  <label
+                    htmlFor='reset-password'
+                    className='block text-[10px] font-mono tracking-[0.2em] uppercase text-muted-light dark:text-muted-dark mb-2'
+                  >
+                    New Password
+                  </label>
+                  <div className='relative'>
+                    <input
+                      id='reset-password'
+                      type={showPassword ? 'text' : 'password'}
+                      name='password'
+                      value={resetPasswordForm?.inputs?.password || ''}
+                      onChange={handleInput}
+                      placeholder='Create a strong password'
+                      autoComplete='new-password'
+                      required
+                      aria-required='true'
+                      aria-invalid={!!resetPasswordForm?.errors?.password}
+                      aria-describedby='reset-strength-desc'
+                      className='w-full pl-3.5 pr-11 py-3 text-sm border-2 border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark text-text-light dark:text-text-dark placeholder:text-muted-light/50 dark:placeholder:text-muted-dark/50 transition-colors duration-200 focus:outline-none focus-visible:border-primary-light dark:focus-visible:border-primary-dark'
+                    />
+                    <button
+                      type='button'
+                      onClick={() => setShowPassword(!showPassword)}
+                      aria-label={showPassword ? 'Hide password' : 'Show password'}
+                      className='absolute right-3 top-1/2 -translate-y-1/2 text-muted-light dark:text-muted-dark hover:text-text-light dark:hover:text-text-dark transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-light dark:focus-visible:ring-primary-dark p-1'
+                    >
+                      {showPassword ? (
+                        <EyeOff className='w-4 h-4' aria-hidden='true' />
+                      ) : (
+                        <Eye className='w-4 h-4' aria-hidden='true' />
+                      )}
+                    </button>
+                  </div>
+
+                  {/* Strength meter */}
+                  {resetPasswordForm?.inputs?.password && (
+                    <motion.div
+                      id='reset-strength-desc'
+                      initial={{ opacity: 0, y: -4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className='mt-2'
+                    >
+                      <div className='flex items-center justify-between mb-1.5'>
+                        <span className='text-[10px] font-mono text-muted-light dark:text-muted-dark'>
+                          Strength
+                        </span>
+                        <span
+                          className={`text-[10px] font-mono font-bold ${
+                            passwordStrength <= 40
+                              ? 'text-red-500 dark:text-red-400'
+                              : passwordStrength <= 60
+                                ? 'text-yellow-500 dark:text-yellow-400'
+                                : passwordStrength <= 80
+                                  ? 'text-primary-light dark:text-primary-dark'
+                                  : 'text-green-500 dark:text-green-400'
+                          }`}
+                        >
+                          {getStrengthText()}
+                        </span>
+                      </div>
+                      <div
+                        className='w-full h-px bg-border-light dark:bg-border-dark relative'
+                        aria-hidden='true'
+                      >
+                        <motion.div
+                          className={`absolute top-0 left-0 h-px transition-colors duration-300 ${
+                            passwordStrength <= 40
+                              ? 'bg-red-500'
+                              : passwordStrength <= 60
+                                ? 'bg-yellow-500'
+                                : passwordStrength <= 80
+                                  ? 'bg-primary-light dark:bg-primary-dark'
+                                  : 'bg-green-500'
+                          }`}
+                          animate={{ width: `${passwordStrength}%` }}
+                          transition={{ duration: 0.3 }}
+                        />
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {resetPasswordForm?.errors?.password && (
+                    <p
+                      role='alert'
+                      className='text-[11px] text-red-500 dark:text-red-400 font-mono mt-1.5'
+                    >
+                      {resetPasswordForm.errors.password}
+                    </p>
+                  )}
+                </div>
+
+                {/* Submit */}
+                <motion.button
+                  type='submit'
+                  disabled={loadingReset || passwordStrength < 80}
+                  whileHover={!loadingReset && passwordStrength >= 80 ? { scale: 1.02 } : {}}
+                  whileTap={!loadingReset && passwordStrength >= 80 ? { scale: 0.98 } : {}}
+                  aria-disabled={loadingReset || passwordStrength < 80}
+                  className={`
+                w-full py-4 font-black text-[11px] tracking-[0.2em] uppercase font-mono transition-colors duration-200
+                focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-light dark:focus-visible:ring-primary-dark
+                ${
+                  loadingReset || passwordStrength < 80
+                    ? 'bg-surface-light dark:bg-surface-dark text-muted-light dark:text-muted-dark border-2 border-border-light dark:border-border-dark cursor-not-allowed'
+                    : 'bg-primary-light dark:bg-primary-dark hover:bg-secondary-light dark:hover:bg-secondary-dark text-white cursor-pointer'
+                }
+              `}
+                >
+                  {loadingReset ? (
+                    <span className='flex items-center justify-center gap-2' aria-live='polite'>
+                      <motion.span
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                        className='block w-3.5 h-3.5 border-2 border-current/30 border-t-current rounded-full'
+                        aria-hidden='true'
+                      />
+                      Resetting password...
+                    </span>
+                  ) : (
+                    'Reset Password'
+                  )}
+                </motion.button>
+
+                {passwordStrength > 0 && passwordStrength < 80 && (
+                  <ul className='space-y-1' aria-live='polite'>
+                    {[
+                      {
+                        test: resetPasswordForm?.inputs?.password?.length >= 10,
+                        label: '10+ characters',
+                      },
+                      {
+                        test: /[A-Z]/.test(resetPasswordForm?.inputs?.password || ''),
+                        label: 'One uppercase letter',
+                      },
+                      {
+                        test: /[a-z]/.test(resetPasswordForm?.inputs?.password || ''),
+                        label: 'One lowercase letter',
+                      },
+                      {
+                        test: /[0-9]/.test(resetPasswordForm?.inputs?.password || ''),
+                        label: 'One number',
+                      },
+                      {
+                        test: /[!@#$%^&*(),.?":{}|<>]/.test(
+                          resetPasswordForm?.inputs?.password || '',
+                        ),
+                        label: 'One special character',
+                      },
+                    ]
+                      .filter((req) => !req.test)
+                      .map((req) => (
+                        <li
+                          key={req.label}
+                          className='text-[10px] font-mono text-muted-light dark:text-muted-dark flex items-center gap-2'
+                        >
+                          <span
+                            className='w-1 h-1 shrink-0 bg-muted-light dark:bg-muted-dark'
+                            aria-hidden='true'
+                          />
+                          {req.label}
+                        </li>
+                      ))}
+                  </ul>
+                )}
+              </motion.form>
             )}
+          </AnimatePresence>
 
-            {/* Submit Button */}
-            <motion.button
-              type='submit'
-              disabled={loadingReset || passwordStrength < 80}
-              className='w-full bg-gradient-to-r from-teal-400 to-cyan-400 hover:from-teal-500 hover:to-cyan-500 disabled:from-gray-300 disabled:to-gray-300 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 disabled:cursor-not-allowed flex items-center justify-center gap-2'
-              whileHover={!loadingReset && passwordStrength >= 80 ? { scale: 1.02 } : {}}
-              whileTap={!loadingReset && passwordStrength >= 80 ? { scale: 0.98 } : {}}
-            >
-              {loadingReset ? (
-                <>
-                  <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 1, repeat: Infinity }}
-                    className='w-5 h-5 border-2 border-white border-t-transparent rounded-full'
-                  />
-                  Resetting Password...
-                </>
-              ) : (
-                <>
-                  <Lock className='w-4 h-4' />
-                  Reset Password
-                </>
-              )}
-            </motion.button>
-          </motion.form>
-
-          {/* Back Link */}
+          {/* Back to login */}
           <motion.div
-            className='mt-6 text-center'
+            className='mt-6 pt-6 border-t border-border-light dark:border-border-dark'
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
+            transition={{ duration: 0.5, delay: 0.5 }}
           >
-            <Link
-              to='/auth/login'
-              className='inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 font-medium transition-colors'
-            >
-              <ArrowLeft className='w-4 h-4' />
-              Back to Login
-            </Link>
+            <p className='text-[11px] font-mono text-muted-light dark:text-muted-dark text-center'>
+              <Link
+                to='/auth/login'
+                className='inline-flex items-center justify-center gap-1.5 text-primary-light dark:text-primary-dark hover:text-secondary-light dark:hover:text-secondary-dark transition-colors focus:outline-none focus-visible:underline'
+              >
+                <ArrowLeft className='w-3 h-3' aria-hidden='true' />
+                Back to login
+              </Link>
+            </p>
           </motion.div>
         </div>
       </motion.div>
