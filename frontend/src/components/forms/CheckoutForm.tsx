@@ -171,6 +171,7 @@ export default function CheckoutPage({
   orderError,
 }: any) {
   const totalSteps = hasPhysical ? 3 : 2;
+  const displayStep = hasPhysical ? step : step === 3 ? 2 : step;
 
   return (
     <div className='min-h-screen bg-bg-light dark:bg-bg-dark'>
@@ -213,7 +214,7 @@ export default function CheckoutPage({
               <h1 className='font-changa text-2xl sm:text-3xl uppercase leading-none text-text-light dark:text-text-dark mb-5'>
                 Complete Your Order
               </h1>
-              <Progress step={step} total={totalSteps} />
+              <Progress step={displayStep} total={totalSteps} />
             </div>
 
             {/* ── Step 1: Personal Info ── */}
@@ -395,7 +396,7 @@ export default function CheckoutPage({
             )}
 
             {/* ── Payment step ── */}
-            {step === totalSteps && (
+            {displayStep === totalSteps && (
               <section aria-labelledby='step-payment-heading'>
                 <h2
                   id='step-payment-heading'
@@ -517,7 +518,7 @@ export default function CheckoutPage({
                         <br />
                         {inputs.address}
                         <br />
-                        {inputs.city}, {inputs.state} {inputs.zipPostalCode}
+                        {inputs.city && `${inputs.city},`} {inputs.state} {inputs.zipPostalCode}
                       </p>
                     </div>
                   )}
