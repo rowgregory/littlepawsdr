@@ -135,6 +135,15 @@ const Checkout = () => {
             email: inputs?.email,
             totalPrice,
             error: error?.data?.message ?? 'Unknown error',
+            ...(hasPhysical && {
+              shippingAddress: {
+                name: `${inputs?.firstName} ${inputs?.lastName}`,
+                address: inputs?.address,
+                city: inputs?.city,
+                state: inputs?.state,
+                zipPostalCode: inputs?.zipPostalCode,
+              },
+            }),
           })
             .unwrap()
             .catch(() => {}); // swallow logging errors silently

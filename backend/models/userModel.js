@@ -38,7 +38,9 @@ const userSchema = mongoose.Schema(
     },
     password: {
       type: String,
-      required: true,
+      required: function () {
+        return !this.isGuest;
+      },
     },
     isAdmin: {
       type: Boolean,
@@ -115,10 +117,12 @@ const userSchema = mongoose.Schema(
       preferredTemperament: [String], // e.g., ['friendly', 'calm', 'playful', 'independent']
       trainingExperience: { type: Boolean, default: false },
     },
+
+    isGuest: { type: Boolean, default: false },
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 userSchema.methods.matchPassword = async function (enteredPassword) {
