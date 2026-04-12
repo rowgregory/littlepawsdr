@@ -6,7 +6,7 @@ import { Menu } from 'lucide-react';
 const AdminLayout: FC<{ children: ReactNode }> = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   return (
-    <div className='flex h-screen bg-gray-50'>
+    <div className='flex h-dvh bg-bg-light dark:bg-bg-dark'>
       {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (
         <motion.div

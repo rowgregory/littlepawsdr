@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, ExternalLink, FileText } from 'lucide-react';
 import { useGetNewsletterIssuesQuery } from '../../redux/services/newsletterIssueApi';
 
 const NewsletterIssues = () => {
@@ -29,7 +28,7 @@ const NewsletterIssues = () => {
 
   return (
     <div className='min-h-screen bg-bg-light dark:bg-bg-dark'>
-      {/* ── Hero ── */}
+      {/* Hero */}
       <section
         className='px-4 sm:px-6 md:px-12 pt-12 sm:pt-16 pb-10 border-b border-border-light dark:border-border-dark'
         aria-label='Newsletter issues hero'
@@ -45,113 +44,100 @@ const NewsletterIssues = () => {
             Newsletters
           </h1>
           <p className='font-lato text-base sm:text-lg text-muted-light dark:text-muted-dark leading-relaxed max-w-lg'>
-            Quarterly updates from our rescue family.
+            Monthly updates from our rescue family.
           </p>
         </div>
       </section>
 
-      {/* ── Issues by year ── */}
+      {/* Issues by year */}
       <main className='px-4 sm:px-6 md:px-12 py-10 sm:py-14'>
         <div className='max-w-screen-xl mx-auto space-y-4'>
-          {groupedNewsletters?.map(
-            (yearGroup: { year: number; newsletters: any[] }, yearIdx: number) => (
-              <div key={yearGroup.year}>
-                {/* Year accordion button */}
-                <button
-                  type='button'
-                  onClick={() => toggleYear(yearGroup.year)}
-                  aria-expanded={expandedYears.includes(yearGroup.year)}
-                  aria-controls={`year-${yearGroup.year}`}
-                  className='w-full flex items-center justify-between px-5 py-4 border border-border-light dark:border-border-dark bg-bg-light dark:bg-bg-dark hover:border-primary-light dark:hover:border-primary-dark transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-light dark:focus-visible:ring-primary-dark group'
+          {groupedNewsletters?.map((yearGroup: { year: number; newsletters: any[] }) => (
+            <div key={yearGroup.year}>
+              {/* Year accordion button */}
+              <button
+                type='button'
+                onClick={() => toggleYear(yearGroup.year)}
+                aria-expanded={expandedYears.includes(yearGroup.year)}
+                aria-controls={`year-${yearGroup.year}`}
+                className='w-full flex items-center justify-between px-5 py-4 border border-border-light dark:border-border-dark bg-bg-light dark:bg-bg-dark hover:border-primary-light dark:hover:border-primary-dark transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-light dark:focus-visible:ring-primary-dark group'
+              >
+                <div className='flex items-center gap-3'>
+                  <div
+                    className='w-3 h-px bg-primary-light dark:bg-primary-dark'
+                    aria-hidden='true'
+                  />
+                  <h2 className='font-changa text-xl uppercase tracking-wide text-text-light dark:text-text-dark'>
+                    {yearGroup.year}
+                  </h2>
+                  <span className='font-changa text-f10 uppercase tracking-widest text-muted-light dark:text-muted-dark'>
+                    {yearGroup.newsletters.length} issue
+                    {yearGroup.newsletters.length !== 1 ? 's' : ''}
+                  </span>
+                </div>
+                <motion.div
+                  animate={{ rotate: expandedYears.includes(yearGroup.year) ? 180 : 0 }}
+                  transition={{ duration: 0.25 }}
                 >
-                  <div className='flex items-center gap-3'>
-                    <div
-                      className='w-3 h-px bg-primary-light dark:bg-primary-dark'
-                      aria-hidden='true'
-                    />
-                    <h2 className='font-changa text-xl uppercase tracking-wide text-text-light dark:text-text-dark'>
-                      {yearGroup.year}
-                    </h2>
-                    <span className='font-changa text-f10 uppercase tracking-widest text-muted-light dark:text-muted-dark'>
-                      {yearGroup.newsletters.length} issue
-                      {yearGroup.newsletters.length !== 1 ? 's' : ''}
-                    </span>
-                  </div>
+                  <ChevronDown
+                    className='w-4 h-4 text-muted-light dark:text-muted-dark group-hover:text-primary-light dark:group-hover:text-primary-dark transition-colors'
+                    aria-hidden='true'
+                  />
+                </motion.div>
+              </button>
+
+              {/* Issues grid */}
+              <AnimatePresence>
+                {expandedYears.includes(yearGroup.year) && (
                   <motion.div
-                    animate={{ rotate: expandedYears.includes(yearGroup.year) ? 180 : 0 }}
-                    transition={{ duration: 0.25 }}
+                    id={`year-${yearGroup.year}`}
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                    className='overflow-hidden'
                   >
-                    <ChevronDown
-                      className='w-4 h-4 text-muted-light dark:text-muted-dark group-hover:text-primary-light dark:group-hover:text-primary-dark transition-colors'
-                      aria-hidden='true'
-                    />
-                  </motion.div>
-                </button>
-
-                {/* Issues grid */}
-                <AnimatePresence>
-                  {expandedYears.includes(yearGroup.year) && (
-                    <motion.div
-                      id={`year-${yearGroup.year}`}
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      exit={{ opacity: 0, height: 0 }}
-                      transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-                      className='overflow-hidden'
-                    >
-                      <ul className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-border-light dark:bg-border-dark border border-border-light dark:border-border-dark mt-px'>
-                        {yearGroup.newsletters.map((newsletter: any, idx: number) => (
-                          <li key={idx}>
-                            <Link
-                              to={`/newsletter-issues/${newsletter._id}`}
-                              className='group flex flex-col bg-bg-light dark:bg-bg-dark hover:border-primary-light dark:hover:border-primary-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-light dark:focus-visible:ring-primary-dark h-full'
-                              aria-label={`${newsletter.title} — ${newsletter.quarter} ${yearGroup.year}`}
+                    <ul className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-border-light dark:bg-border-dark border border-border-light dark:border-border-dark mt-px'>
+                      {yearGroup.newsletters.map((newsletter: any) => {
+                        const label = new Date(
+                          newsletter.year,
+                          newsletter.month - 1,
+                        ).toLocaleString('default', { month: 'long' });
+                        return (
+                          <li key={newsletter._id}>
+                            <a
+                              href={newsletter.pdfUrl}
+                              target='_blank'
+                              rel='noopener noreferrer'
+                              aria-label={`Open ${label} ${newsletter.year} Newsletter PDF`}
+                              className='group flex flex-col items-center justify-center gap-3 bg-bg-light dark:bg-bg-dark hover:border-primary-light dark:hover:border-primary-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-light dark:focus-visible:ring-primary-dark p-8 h-full transition-colors'
                             >
-                              {/* Image */}
-                              <div className='relative aspect-[4/3] overflow-hidden bg-surface-light dark:bg-surface-dark'>
-                                {newsletter.photos?.[0]?.url && (
-                                  <img
-                                    src={newsletter.photos[0].url}
-                                    alt={newsletter.title}
-                                    className='w-full h-full object-cover group-hover:scale-105 transition-transform duration-500'
-                                  />
-                                )}
-
-                                {/* Quarter badge */}
-                                <div className='absolute top-3 left-3'>
-                                  <span className='font-changa text-[9px] uppercase tracking-widest px-2 py-1 bg-bg-light dark:bg-bg-dark text-primary-light dark:text-primary-dark'>
-                                    {newsletter.quarter}
-                                  </span>
-                                </div>
-
-                                {/* Hover overlay */}
-                                <div
-                                  className='absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300'
-                                  aria-hidden='true'
-                                />
-                              </div>
-
-                              {/* Card info */}
-                              <div className='flex-1 p-4 border-t border-border-light dark:border-border-dark'>
-                                <p className='font-changa text-xs uppercase tracking-wide text-text-light dark:text-text-dark leading-snug line-clamp-1 mb-1'>
-                                  {newsletter.title}
+                              <FileText
+                                className='w-6 h-6 text-muted-light dark:text-muted-dark group-hover:text-primary-light dark:group-hover:text-primary-dark transition-colors'
+                                aria-hidden='true'
+                              />
+                              <div className='text-center'>
+                                <p className='font-changa text-sm uppercase tracking-wide text-text-light dark:text-text-dark leading-snug'>
+                                  {label}
                                 </p>
-                                {newsletter.description && (
-                                  <p className='font-lato text-[10px] text-muted-light dark:text-muted-dark leading-relaxed line-clamp-2'>
-                                    {newsletter.description}
-                                  </p>
-                                )}
+                                <p className='font-changa text-f10 uppercase tracking-widest text-muted-light dark:text-muted-dark mt-0.5'>
+                                  {newsletter.year}
+                                </p>
                               </div>
-                            </Link>
+                              <span className='font-changa text-[9px] uppercase tracking-widest text-primary-light dark:text-primary-dark flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity'>
+                                Open PDF
+                                <ExternalLink size={9} aria-hidden='true' />
+                              </span>
+                            </a>
                           </li>
-                        ))}
-                      </ul>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            ),
-          )}
+                        );
+                      })}
+                    </ul>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          ))}
         </div>
       </main>
     </div>

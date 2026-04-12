@@ -54,10 +54,7 @@ export const getPublicAppData = asyncHandler(async (req, res) => {
         ])
         .lean(),
 
-      NewsletterIssue.find()
-        .select('year quarter title imageUrl publishedAt')
-        .sort({ publishedAt: -1 })
-        .lean(),
+      NewsletterIssue.find().select('pdfUrl month year').lean(),
 
       WelcomeWienerDog.find().populate('associatedProducts').lean(),
 

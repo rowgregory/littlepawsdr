@@ -3,6 +3,7 @@
     "target": "es6",
     "downlevelIteration": true,
     "lib": ["dom", "dom.iterable", "esnext", "es2017"],
+    "ignoreDeprecations": "6.0",
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,

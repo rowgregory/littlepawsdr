@@ -70,7 +70,6 @@ const formInitialState = {
   newsletterIssueForm: {
     inputs: {
       year: 2026,
-      quarter: 'Q1',
     },
     errors: {},
   },

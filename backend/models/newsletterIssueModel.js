@@ -2,46 +2,16 @@ import mongoose from 'mongoose';
 
 const newsletterIssueSchema = new mongoose.Schema(
   {
-    year: {
-      type: Number,
-      required: true,
-      index: true,
-    },
-    quarter: {
-      type: String,
-      enum: ['Q1', 'Q2', 'Q3', 'Q4'],
-      required: true,
-      index: true,
-    },
-    title: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    description: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    photos: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Photo',
-      },
-    ],
-    publishedAt: {
-      type: Date,
-      default: Date.now,
-      index: true,
-    },
+    pdfUrl: { type: String, required: true },
+    month: { type: Number, required: true, min: 1, max: 12 },
+    year: { type: Number, required: true },
   },
   {
     timestamps: true,
-  }
+  },
 );
 
-// Compound index to ensure unique year/quarter combinations
-newsletterIssueSchema.index({ year: 1, quarter: 1 }, { unique: true });
+newsletterIssueSchema.index({ month: 1, year: 1 }, { unique: true });
 
 export const NewsletterIssue =
   mongoose.models.NewsletterIssue || mongoose.model('NewsletterIssue', newsletterIssueSchema);

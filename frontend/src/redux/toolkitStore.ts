@@ -25,6 +25,7 @@ import { auctionReducer } from './features/auctionSlice';
 import { tableReducer } from './features/tableSlice';
 import { toastReducer } from './features/toastSlice';
 import { bugReducer } from './features/bugSlice';
+import { uiReducer } from './features/uiSlice';
 
 const userPersistConfig = {
   key: 'user',
@@ -95,6 +96,7 @@ const rootReducer = combineReducers({
   auction: auctionReducer,
   table: tableReducer,
   bug: bugReducer,
+  ui: uiReducer,
   [rescueGroupsApi.reducerPath]: rescueGroupsApi.reducer,
   [api.reducerPath]: api.reducer,
 });
@@ -139,3 +141,4 @@ export const useProductSelector = () => useAppSelector((state: RootState) => sta
 export const useOrderSelector = () => useAppSelector((state: RootState) => state.orders);
 export const useNewsletterIssueSelector = () =>
   useAppSelector((state: RootState) => state.newsletterIssue);
+export const useUiSelector = () => useAppSelector((state: RootState) => state.ui);
