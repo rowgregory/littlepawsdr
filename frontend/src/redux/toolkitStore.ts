@@ -27,34 +27,6 @@ import { toastReducer } from './features/toastSlice';
 import { bugReducer } from './features/bugSlice';
 import { uiReducer } from './features/uiSlice';
 
-const userPersistConfig = {
-  key: 'user',
-  storage: storage,
-  whitelist: ['user'],
-  nested: {
-    user: {
-      whitelist: [
-        'firstName',
-        'lastName',
-        'firstNameFirstInitial',
-        'lastNameFirstInitial',
-        'email',
-        'jobTitle',
-        'workSchedule',
-        'isPublic',
-        'isAdmin',
-        'hasAddress',
-        'addressRef',
-        'yourHome',
-        'dachshundPreferences',
-        'lastLoginTime',
-        'anonymousBidding',
-        'conversionSource',
-        'lastSeenChangelogVersion',
-      ],
-    },
-  },
-};
 const cartPersistConfig = {
   key: 'cart',
   storage: storage,
@@ -85,7 +57,7 @@ const rootReducer = combineReducers({
   ecard: ecardReducer,
   product: productReducuer,
   adoptionApplicationFee: adoptionApplicationFeeReducuer,
-  user: persistReducer(userPersistConfig, userReducuer),
+  user: userReducuer,
   newsletterEmail: newsletterEmailReducuer,
   cart: persistReducer(cartPersistConfig, cartReducer),
   navbar: navbarReducer,

@@ -122,13 +122,89 @@ const AdoptionApplication = () => {
           styles='relative text-charcoal font-QBold text-center'
         />
       )}
-      <div className='max-w-screen-md mx-auto border border-gray-200 rounded-xl mt-6'>
+      <div className='max-w-screen-md mx-auto border border-gray-200 rounded-xl mt-6 mb-12'>
         <iframe
           className='h-[600px] overflow-y-scroll w-full'
           title='Adoption Application'
           src='https://toolkit.rescuegroups.org/of/f?c=WHMQCBRV'
         />
       </div>
+
+      {/* Transportation */}
+      <section className='max-w-screen-md mx-auto'>
+        <div className='text-center mb-12'>
+          <div className='flex items-center justify-center gap-2 mb-4'>
+            <div className='w-4 h-px bg-primary-light dark:bg-primary-dark' aria-hidden='true' />
+            <span className='font-changa text-f10 uppercase tracking-[0.25em] text-primary-light dark:text-primary-dark'>
+              Logistics
+            </span>
+            <div className='w-4 h-px bg-primary-light dark:bg-primary-dark' aria-hidden='true' />
+          </div>
+          <h3 className='text-3xl font-quicksand font-black text-text-light dark:text-text-dark'>
+            Transportation Help
+          </h3>
+        </div>
+
+        <div className='bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark p-8 space-y-6'>
+          <p className='text-muted-light dark:text-muted-dark leading-relaxed'>
+            We do not have a physical location, as all our dogs are fostered in individual homes on
+            the east coast. A LPDR volunteer transport may be arranged to bring a dog to you;
+            however, the distance of the transport must be reasonable.
+          </p>
+
+          <div className='grid md:grid-cols-2 gap-4'>
+            <div className='border border-border-light dark:border-border-dark p-5 space-y-3'>
+              <div className='flex items-center gap-2'>
+                <div
+                  className='w-2 h-px bg-primary-light dark:bg-primary-dark'
+                  aria-hidden='true'
+                />
+                <h4 className='font-changa text-f10 uppercase tracking-[0.25em] text-primary-light dark:text-primary-dark'>
+                  Travel Restrictions
+                </h4>
+              </div>
+              <ul className='space-y-2 text-sm text-muted-light dark:text-muted-dark leading-relaxed'>
+                <li>
+                  Dogs in the south may not be available for transport to northern states and vice
+                  versa
+                </li>
+                <li>
+                  Dogs in southern Florida and southern Georgia have travel restrictions limited to
+                  Florida and parts of South Carolina
+                </li>
+              </ul>
+            </div>
+
+            <div className='border border-border-light dark:border-border-dark p-5 space-y-3'>
+              <div className='flex items-center gap-2'>
+                <div
+                  className='w-2 h-px bg-primary-light dark:bg-primary-dark'
+                  aria-hidden='true'
+                />
+                <h4 className='font-changa text-f10 uppercase tracking-[0.25em] text-primary-light dark:text-primary-dark'>
+                  Transport Costs
+                </h4>
+              </div>
+              <ul className='space-y-2 text-sm text-muted-light dark:text-muted-dark leading-relaxed'>
+                <li>Includes health certificate required by law when crossing state lines</li>
+                <li>Certificate costs vary and may exceed adoption fees in some cases</li>
+              </ul>
+            </div>
+          </div>
+
+          <p className='text-muted-light dark:text-muted-dark leading-relaxed'>
+            We will inform you if the dog you applied for is not able to travel long distances by
+            car. We want to find the best family for each of our dachshunds, even if they are out of
+            state.
+          </p>
+
+          <p className='text-muted-light dark:text-muted-dark leading-relaxed'>
+            Adopters are also welcome to travel to their newly adopted dog to bring the dog home
+            with them. A crate to safely transport the dog would be the responsibility of the
+            adopter.
+          </p>
+        </div>
+      </section>
     </div>
   );
 };
