@@ -1,5 +1,5 @@
 import { ComponentType, lazy, useEffect } from 'react';
-import { Route, Routes, Navigate } from 'react-router-dom';
+import { Route, Routes, Navigate, useLocation } from 'react-router-dom';
 import Home from './Home';
 import OrderReceipt from './OrderReceipt';
 import PageNotFound from './PageNotFound';
@@ -18,7 +18,7 @@ import UserInit from '../wrappers/UserInit';
 import TermsOfService from './TermsOfService';
 import PrivacyPolicy from './PrivacyPolicy';
 import { io } from 'socket.io-client';
-import { useAppDispatch } from '../redux/toolkitStore';
+import { toolkitStore } from '../redux/toolkitStore';
 import {
   setOpenAuctionCompleteModal,
   setOpenLiveAuctionModal,
@@ -51,45 +51,47 @@ const socket = io(process.env.REACT_APP_API_URL, {
 
 export const MainRoutes = () => {
   useScrollToTop();
-  const dispatch = useAppDispatch();
+  const location = useLocation();
 
   useEffect(() => {
     // Live auction updates
     socket.on('auction:active', (data) => {
-      dispatch(updateAuctionInState(data));
-      dispatch(setOpenLiveAuctionModal());
+      toolkitStore.dispatch(updateAuctionInState(data));
+      toolkitStore.dispatch(setOpenLiveAuctionModal());
     });
 
     socket.on('auction:ended', (data) => {
-      dispatch(updateAuctionInState(data));
-      dispatch(setOpenAuctionCompleteModal());
+      toolkitStore.dispatch(updateAuctionInState(data));
+      toolkitStore.dispatch(setOpenAuctionCompleteModal());
     });
 
     socket.on('auction:updated', (data) => {
-      dispatch(updateAuctionInState(data));
+      toolkitStore.dispatch(updateAuctionInState(data));
     });
 
     // Adoption application bypass code
     socket.on('auction-winners:notified', (data) => {
-      dispatch(showToast({ message: 'Auction winners notified!', type: 'success' }));
+      toolkitStore.dispatch(showToast({ message: 'Auction winners notified!', type: 'success' }));
     });
 
     // Adoption application bypass code
     socket.on('adoption-application-fee:bypass-code', (data) => {
-      dispatch(setAdoptionApplicationBypassCode({ data }));
+      toolkitStore.dispatch(setAdoptionApplicationBypassCode({ data }));
     });
 
     return () => {
       socket.disconnect();
     };
-  }, [dispatch]);
+  }, []);
+
+  const hide = ['/dachshunds/'].some((l) => l.includes(location.pathname));
 
   return (
     <>
       <CookiePolicyPopUp />
       <CartDrawer />
       <NavigationDrawer />
-      <Header />
+      {hide && <Header />}
       <LiveAuctionModal />
       <Toast />
       <AuctionCompleteModal />
@@ -117,7 +119,7 @@ export const MainRoutes = () => {
           <Route path='/404' element={<PageNotFound />} />
         </Routes>
       </UserInit>
-      <Footer />
+      {hide && <Footer />}
     </>
   );
 };
