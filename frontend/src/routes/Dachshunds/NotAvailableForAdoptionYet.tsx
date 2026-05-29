@@ -2,9 +2,11 @@ import DachshundCard from '../../components/dachshund/DachshundCard';
 import { RootState, useAppSelector } from '../../redux/toolkitStore';
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { NotAvaiableForAdoptionYet, NotAvailableYet } from '../../components/assets';
+import { NotAvaiableForAdoptionYet } from '../../components/assets';
 import { useGetDachshundsByStatusMutation } from '../../redux/services/rescueGroupsApi';
-import PageBanner from '../../components/common/PageBanner';
+import { motion } from 'framer-motion';
+import { containerVariants, itemVariants } from '../../lib/constants/motion';
+import { ArrowRight } from 'lucide-react';
 
 const NotAvailableForAdoptionYet = () => {
   const dachshund = useAppSelector((state: RootState) => state.dachshund);
@@ -14,51 +16,118 @@ const NotAvailableForAdoptionYet = () => {
     getDachshunds({ status: 'Hold' });
   }, [getDachshunds]);
 
+  const dogs = dachshund?.dachshunds ?? [];
+
   return (
     <>
-      <PageBanner imgSrc={NotAvailableYet} title='Not Available For Adoption Yet' />
-      <div className='max-w-screen-lg w-full mx-auto mt-12 px-3 mb-32'>
-        <h1 className='font-matter-medium text-4xl text-teal-400 text-center mb-24'>
-          In addition to our Dog&apos;s Available for Adoption page we&apos;re also sharing our dogs
-          in foster homes being evaluated for future adoptions.
-        </h1>
-        <div className='grid grid-cols-12 gap-y-10 md:gap-10 items-center mb-24 w-full'>
-          <div className='col-span-12 md:col-span-5 flex flex-col gap-y-5'>
-            <h2 className='font-matter-bold text-3xl text-center'>
-              These dogs are at different stages of the evaluation process. They are all safe,
-              happy, and well cared for in their foster homes.
-            </h2>
-            <h4 className='font-matter-regular text-2xl text-center'>
-              We&apos;re providing you with some basic information about each dog. We hope these
-              dogs will be up for adoption soon and we will share additional details as they become
-              available.
-            </h4>
-          </div>
-          <img
-            src={NotAvaiableForAdoptionYet}
-            alt='Not Available for Adoption Yet'
-            className='col-span-12 md:col-span-7 aspect-square object-cover w-full'
-          />
-        </div>
-        <h3 className='text-3xl font-matter-bold text-slate-800 text-center mb-10'>
-          Keep an eye on our Available Dogs page for updates on when your desired dog is ready for
-          adoption. We&apos;ll gladly accept your application at that time!
-        </h3>
+      <section aria-labelledby='hold-heading' className='px-3 sm:px-6 bg-bg-light dark:bg-bg-dark'>
+        <div className='max-w-screen-lg w-full mx-auto pt-16 sm:pt-24 pb-24 sm:pb-32'>
+          <motion.div
+            initial='hidden'
+            whileInView='visible'
+            viewport={{ once: true, margin: '-100px' }}
+            variants={containerVariants}
+            className='space-y-8 sm:space-y-10'
+          >
+            {/* Eyebrow + headline */}
+            <motion.div variants={itemVariants}>
+              <div className='flex items-center gap-3 mb-4'>
+                <span
+                  className='block w-8 h-px bg-primary-light dark:bg-primary-dark'
+                  aria-hidden='true'
+                />
+                <h2
+                  id='hold-heading'
+                  className='font-mono text-[11px] sm:text-xs uppercase tracking-[0.2em] text-primary-light dark:text-primary-dark'
+                >
+                  In Foster Care
+                </h2>
+              </div>
+              <h1 className='text-2xl sm:text-4xl lg:text-5xl font-bold text-text-light dark:text-text-dark leading-tight'>
+                Dogs in foster homes being evaluated for future adoption.
+              </h1>
+              <p className='text-base sm:text-lg text-muted-light dark:text-muted-dark mt-3 leading-relaxed'>
+                Alongside our Available for Adoption page, we share the dogs currently in foster
+                care so you can follow along as they get ready for their forever homes.
+              </p>
+            </motion.div>
 
-        {/* Support Foster Link with animated background */}
-        <Link
-          to='/donate'
-          className="relative overflow-hidden block py-16 mt-24 text-center rounded-lg text-white text-2xl font-semibold no-underline before:absolute before:inset-0 before:bg-[url('/src/components/assets/aqua_tile.jpg')] before:bg-repeat before:z-[-1] hover:before:animate-moveLeft"
-        >
-          Support a Foster Here
-        </Link>
+            {/* Intro with image */}
+            <motion.div
+              variants={itemVariants}
+              className='grid grid-cols-1 md:grid-cols-2 gap-0 border border-border-light dark:border-border-dark'
+            >
+              <div className='flex flex-col justify-center gap-4 p-8 sm:p-10 bg-surface-light dark:bg-surface-dark'>
+                <p className='font-mono text-[11px] uppercase tracking-[0.2em] text-primary-light dark:text-primary-dark'>
+                  The Process
+                </p>
+                <p className='text-lg sm:text-xl font-bold text-text-light dark:text-text-dark leading-snug'>
+                  These dogs are at different stages of the evaluation process — all safe, happy,
+                  and well cared for in their foster homes.
+                </p>
+                <p className='text-sm sm:text-base text-muted-light dark:text-muted-dark leading-relaxed'>
+                  We&rsquo;re sharing some basic information about each one. We hope they&rsquo;ll
+                  be up for adoption soon, and we&rsquo;ll add more details as they become
+                  available.
+                </p>
+              </div>
+              <img
+                src={NotAvaiableForAdoptionYet}
+                alt='A dachshund held up in a foster home'
+                className='w-full h-full object-cover min-h-[280px]'
+              />
+            </motion.div>
 
-        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-20'>
-          {dachshund.dachshunds?.map((d: any) => (
-            <DachshundCard key={d?.id} dachshund={d} />
-          ))}
+            {/* Closing note */}
+            <motion.p
+              variants={itemVariants}
+              className='text-xl sm:text-2xl font-bold text-text-light dark:text-text-dark text-center'
+            >
+              Keep an eye on our Available Dogs page for updates — we&rsquo;ll gladly accept your
+              application once your desired dog is ready.
+            </motion.p>
+
+            {/* Support a Foster CTA */}
+            <motion.div variants={itemVariants}>
+              <Link
+                to='/donate'
+                className='group flex items-center justify-between gap-4 p-6 sm:p-8 bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark hover:border-primary-light dark:hover:border-primary-dark transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-light dark:focus-visible:ring-primary-dark'
+              >
+                <div>
+                  <p className='font-mono text-[11px] uppercase tracking-[0.2em] text-primary-light dark:text-primary-dark mb-1'>
+                    Get Involved
+                  </p>
+                  <p className='text-xl sm:text-2xl font-bold text-text-light dark:text-text-dark'>
+                    Support a Foster
+                  </p>
+                </div>
+                <ArrowRight
+                  className='w-6 h-6 shrink-0 text-primary-light dark:text-primary-dark group-hover:translate-x-1 transition-transform motion-reduce:transform-none'
+                  aria-hidden='true'
+                />
+              </Link>
+            </motion.div>
+
+            {/* Dogs grid */}
+            <motion.div variants={itemVariants}>
+              {dogs.length > 0 ? (
+                <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8'>
+                  {dogs.map((d: any, i: number) => (
+                    <DachshundCard key={d?.id || i} dachshund={d} />
+                  ))}
+                </div>
+              ) : (
+                <p
+                  className='font-mono text-xs uppercase tracking-wide text-center text-muted-light dark:text-muted-dark py-16'
+                  role='status'
+                >
+                  No dogs in foster care to show right now
+                </p>
+              )}
+            </motion.div>
+          </motion.div>
         </div>
-      </div>
+      </section>
     </>
   );
 };

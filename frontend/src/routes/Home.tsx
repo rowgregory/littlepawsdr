@@ -7,7 +7,7 @@ import HighlightCards from '../components/home-page/HighlightCards';
 
 const Home = () => {
   return (
-    <div className='min-h-screen'>
+    <div className='min-h-screen bg-bg-light dark:bg-bg-dark'>
       <Banner />
       <HighlightCards />
       <MeetTheDachshunds />

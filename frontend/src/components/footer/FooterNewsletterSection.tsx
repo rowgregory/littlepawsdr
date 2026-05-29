@@ -2,68 +2,85 @@ import { FormEvent, useState } from 'react';
 import useForm from '../../hooks/useForm';
 import { useCreateNewsletterEmailMutation } from '../../redux/services/newsletterEmailApi';
 import TailwindSpinner from '../Loaders/TailwindSpinner';
-import { useAppDispatch } from '../../redux/toolkitStore';
 import { validateEmailRegex } from '../../utils/regex';
-import { showToast } from '../../redux/features/toastSlice';
+import { Send } from 'lucide-react';
 
 const FooterNewsletterSection = () => {
-  const dispatch = useAppDispatch();
   const { inputs, handleInput } = useForm(['email']);
   const [createNewsletterEmail, { isLoading }] = useCreateNewsletterEmailMutation();
-  const [success, setSuccess] = useState<boolean>(false);
+  const [status, setStatus] = useState<'idle' | 'success' | 'error' | 'invalid'>('idle');
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    setStatus('idle');
 
-    if (validateEmailRegex.test(inputs.email)) {
-      await createNewsletterEmail({ email: inputs.email })
-        .unwrap()
-        .then(() => {
-          setSuccess(true);
-          dispatch(showToast({ message: 'Email submitted for newsletter', type: 'success' }));
-        })
-        .catch(() => dispatch(showToast({ message: 'Error, please try again', type: 'error' })));
-    } else {
-      dispatch(showToast({ message: 'Invalid email', type: 'error' }));
+    if (!validateEmailRegex.test(inputs.email || '')) {
+      setStatus('invalid');
+      return;
+    }
+
+    try {
+      await createNewsletterEmail({ email: inputs.email }).unwrap();
+      setStatus('success');
+    } catch {
+      setStatus('error');
     }
   };
 
   return (
-    <div className='grid grid-cols-12 col-span-9 bg-[#1e1e29] rounded-2xl w-full p-4 sm:p-10  text-white items-center'>
-      <div className='col-span-12 sm:col-span-6'>
-        <h5 className='text-lg mb-3 font-QBold text-center sm:text-left text-white'>Subscribe, Support, Rescue</h5>
-        <p className='font-QLight text-sm mb-6 sm:mb-0 text-white'>
-          Stay updated on rescues, events, and <br /> dachshund adoption opportunities!
+    <div className='bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark p-6 sm:p-8 grid grid-cols-1 sm:grid-cols-2 gap-5 items-center'>
+      <div>
+        <h3 className='font-quicksand text-lg font-bold mb-2 text-text-light dark:text-text-dark text-center sm:text-left'>
+          Subscribe, Support, Rescue
+        </h3>
+        <p className='text-sm text-muted-light dark:text-muted-dark text-center sm:text-left'>
+          Stay updated on rescues, events, and dachshund adoption opportunities!
         </p>
       </div>
 
-      {success ? (
-        <div className='col-span-12 sm:col-span-6 flex items-center'>
-          <p className='text-white font-QBook'>Thank you for subscribing! You’re now part of the Little Paws family!</p>
-        </div>
+      {status === 'success' ? (
+        <p className='text-sm text-text-light dark:text-text-dark' role='status'>
+          Thank you for subscribing! You&rsquo;re now part of the Little Paws family.
+        </p>
       ) : (
-        <form onSubmit={handleSubmit} className='col-span-12 sm:col-span-6 flex items-center gap-1.5 sm:gap-3'>
-          <input
-            name='email'
-            type='text'
-            className='rounded-xl focus:outline-none text-charcoal p-3 w-full font-QBook placeholder:font-QBook'
-            onChange={handleInput}
-            value={inputs.email || ''}
-            placeholder='Enter email here!'
-          />
-          <button
-            type='submit'
-            className='h-12 max-w-[56px] w-full rounded-xl bg-teal-400 text-white flex items-center justify-center group relative overflow-hidden'
-          >
-            {isLoading ? (
-              <TailwindSpinner color='fill-[#fff]' />
-            ) : (
-              <>
-                <i className='fas fa-paper-plane fa-xs absolute -translate-x-10 translate-y-10 group-hover:translate-x-0 group-hover:translate-y-0 duration-500' />
-                <i className='fas fa-paper-plane fa-xs absolute translate-x-0 translate-y-0 group-hover:translate-x-10 group-hover:-translate-y-10 duration-500' />
-              </>
-            )}
-          </button>
+        <form onSubmit={handleSubmit} className='flex flex-col gap-2'>
+          <div className='flex items-stretch gap-2'>
+            <label htmlFor='newsletter-email' className='sr-only'>
+              Email address
+            </label>
+            <input
+              id='newsletter-email'
+              name='email'
+              type='email'
+              className='flex-1 min-w-0 p-3 text-base sm:text-sm bg-bg-light dark:bg-bg-dark border border-border-light dark:border-border-dark text-text-light dark:text-text-dark placeholder:text-muted-light/60 dark:placeholder:text-muted-dark/60 focus:outline-none focus-visible:border-primary-light dark:focus-visible:border-primary-dark'
+              onChange={handleInput}
+              value={inputs.email || ''}
+              placeholder='Enter email here'
+              aria-invalid={status === 'invalid'}
+              aria-describedby={
+                status === 'invalid' || status === 'error' ? 'newsletter-error' : undefined
+              }
+            />
+            <button
+              type='submit'
+              disabled={isLoading}
+              aria-label='Subscribe'
+              className='w-12 shrink-0 bg-primary-light dark:bg-primary-dark hover:bg-secondary-light dark:hover:bg-secondary-dark disabled:opacity-60 text-bg-light dark:text-bg-dark flex items-center justify-center transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white'
+            >
+              {isLoading ? (
+                <TailwindSpinner color='fill-current' />
+              ) : (
+                <Send className='w-4 h-4' aria-hidden='true' />
+              )}
+            </button>
+          </div>
+          {(status === 'invalid' || status === 'error') && (
+            <p id='newsletter-error' role='alert' className='font-mono text-[11px] text-red-400'>
+              {status === 'invalid'
+                ? 'Please enter a valid email.'
+                : 'Something went wrong — try again.'}
+            </p>
+          )}
         </form>
       )}
     </div>

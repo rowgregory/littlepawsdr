@@ -141,7 +141,7 @@ const Register = () => {
 
         if (customAuctionLink) params.append('customAuctionLink', customAuctionLink);
         if (auctionItemId) params.append('auctionItemId', auctionItemId);
-        console.log('NAVIGATING TO SUPPORTER PROFILE', params.toString());
+
         navigate(`/supporter/profile?${params.toString()}`);
       }
     } catch (err: any) {

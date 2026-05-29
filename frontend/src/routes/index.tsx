@@ -3,7 +3,7 @@ import { Route, Routes, Navigate, useLocation } from 'react-router-dom';
 import Home from './Home';
 import OrderReceipt from './OrderReceipt';
 import PageNotFound from './PageNotFound';
-import Footer from '../components/footer/Footer';
+import { Footer } from '../components/footer/Footer';
 import ReturnPolicy from './ReturnPolicy';
 import CookiePolicyPopUp from '../components/CookiePolicyPopUp';
 import CookiePolicy from './CookiePolicy';
@@ -91,7 +91,7 @@ export const MainRoutes = () => {
     };
   }, []);
 
-  const hide = ['/dachshunds/'].some((l) => l.includes(location.pathname));
+  const hide = !/^\/dachshunds\/\d+\/?$/.test(location.pathname);
 
   return (
     <>

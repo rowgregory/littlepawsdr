@@ -1,77 +1,138 @@
-import { Fragment } from 'react';
-import { SurrenderBannerImg, SurrenderToUsImg } from '../../components/assets';
-import PageBanner from '../../components/common/PageBanner';
+import { SurrenderToUsImg } from '../../components/assets';
+import { motion } from 'framer-motion';
+import { containerVariants, itemVariants } from '../../lib/constants/motion';
 
 const SurrenderToUs = () => {
   return (
-    <Fragment>
-      <PageBanner imgSrc={SurrenderBannerImg} title='Surrender to Us' />
-      <div className='max-w-screen-lg w-full mx-auto mt-12 px-3'>
-        <h1 className='font-Matter-Medium text-4xl text-teal-400 text-center mb-24'>
-          Ideally, all dogs live in one loving home from puppyhood until death.
-        </h1>
-        <div className='grid grid-cols-12 gap-y-10 md:gap-10 items-center mb-24 w-full'>
-          <img
-            src={SurrenderToUsImg}
-            alt='Adoption Fee Information'
-            className='col-span-12 md:col-span-7 aspect-square object-cover w-full'
-          />
-          <div className='col-span-12 md:col-span-5 flex flex-col gap-y-5'>
-            <h2 className='font-Matter-Bold text-[26px] text-center'>
-              However, LPDR understands this is not always possible. People become ill, die,
-              divorce, move overseas, develop allergies, lose their jobs, lose their homes, etc.
+    <section
+      aria-labelledby='surrender-heading'
+      className='px-3 sm:px-6 bg-bg-light dark:bg-bg-dark'
+    >
+      <div className='max-w-screen-lg w-full mx-auto pt-16 sm:pt-28 pb-24 sm:pb-32'>
+        <motion.div
+          initial='hidden'
+          whileInView='visible'
+          viewport={{ once: true, margin: '-100px' }}
+          variants={containerVariants}
+          className='space-y-6 sm:space-y-8'
+        >
+          {/* Eyebrow */}
+          <motion.div variants={itemVariants} className='flex items-center gap-3'>
+            <span
+              className='block w-8 h-px bg-primary-light dark:bg-primary-dark'
+              aria-hidden='true'
+            />
+            <h3
+              id='surrender-heading'
+              className='font-mono text-[11px] sm:text-xs uppercase tracking-[0.2em] text-primary-light dark:text-primary-dark'
+            >
+              Surrender a Dachshund
+            </h3>
+          </motion.div>
+
+          {/* Header */}
+          <motion.div variants={itemVariants}>
+            <h2 className='text-2xl sm:text-4xl lg:text-5xl font-bold text-text-light dark:text-text-dark mb-3 leading-tight'>
+              Ideally, all dogs live in one loving home from puppyhood until death.
             </h2>
-            <h4 className='font-Matter-Regular text-xl text-center'>
-              Any of these situations, among others, can be a reason for a dog coming into rescue.
+            <p className='text-base sm:text-lg text-muted-light dark:text-muted-dark'>
+              But LPDR understands that isn&rsquo;t always possible — and when it isn&rsquo;t,
+              we&rsquo;re here to help.
+            </p>
+          </motion.div>
+
+          {/* Intro with image */}
+          <motion.div
+            variants={itemVariants}
+            className='grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-10 items-center pt-4'
+          >
+            <img
+              src={SurrenderToUsImg}
+              alt='A dachshund in a loving home'
+              className='md:col-span-7 aspect-square object-cover w-full border border-border-light dark:border-border-dark'
+            />
+            <div className='md:col-span-5 flex flex-col gap-4'>
+              <p className='text-lg font-bold text-text-light dark:text-text-dark leading-snug'>
+                People become ill, die, divorce, move overseas, develop allergies, lose their jobs,
+                or lose their homes.
+              </p>
+              <p className='text-base text-muted-light dark:text-muted-dark'>
+                Any of these situations, among others, can be a reason for a dog coming into rescue.
+              </p>
+            </div>
+          </motion.div>
+
+          {/* Options before surrendering */}
+          <motion.div variants={itemVariants} className='space-y-10 pt-4'>
+            <section>
+              <h4 className='text-xl sm:text-2xl font-bold text-text-light dark:text-text-dark mb-3'>
+                Considering re-homing because of behavior problems?
+              </h4>
+              <p className='text-muted-light dark:text-muted-dark leading-relaxed'>
+                Talk to your vet to ensure the behavior isn&rsquo;t a result of a medical problem,
+                or because the dog hasn&rsquo;t been spayed or neutered. You may also want to
+                consult a behaviorist who can help resolve the problem with training (for you and
+                your dog).
+              </p>
+            </section>
+
+            <section>
+              <h4 className='text-xl sm:text-2xl font-bold text-text-light dark:text-text-dark mb-3'>
+                Considering re-homing because of financial issues or high vet costs?
+              </h4>
+              <p className='text-muted-light dark:text-muted-dark leading-relaxed'>
+                There are foundations that may offer financial assistance. A search of resources
+                serving your geographic area may yield good results, and local governments often
+                offer lower-cost veterinary services.
+              </p>
+            </section>
+
+            <section>
+              <h4 className='text-xl sm:text-2xl font-bold text-text-light dark:text-text-dark mb-3'>
+                Have you explored your own network?
+              </h4>
+              <p className='text-muted-light dark:text-muted-dark leading-relaxed'>
+                Consider trusted friends, family, and co-workers who may be able to provide a good
+                home. When all options have been considered and you believe surrendering is the best
+                choice for you and your dachshund, Little Paws may be able to help. All dachshunds
+                that come into our rescue live in the home of an approved foster — generally staying
+                two weeks before being posted for adoption so we can understand their needs and
+                personality. All potential adopters go through a rigorous, carefully screened
+                application process.
+              </p>
+            </section>
+          </motion.div>
+
+          <motion.div
+            variants={itemVariants}
+            className='w-full h-px bg-border-light dark:bg-border-dark'
+          />
+
+          {/* Form */}
+          <motion.div variants={itemVariants}>
+            <div className='flex items-center gap-3 mb-4'>
+              <span
+                className='block w-8 h-px bg-primary-light dark:bg-primary-dark'
+                aria-hidden='true'
+              />
+              <h3 className='font-mono text-[11px] sm:text-xs uppercase tracking-[0.2em] text-primary-light dark:text-primary-dark'>
+                Surrender Questionnaire
+              </h3>
+            </div>
+            <h4 className='text-2xl sm:text-3xl font-bold text-text-light dark:text-text-dark mb-8 leading-tight'>
+              To be considered for surrender, please complete and submit the form below.
             </h4>
-          </div>
-        </div>
-        <h3 className='text-3xl font-Matter-Bold text-zinc-700 text-center mb-6'>
-          If you are considering re-homing your dachshund because of behavior problems, there may be
-          other options you can consider first.
-        </h3>
-        <p className='text-lg font-Matter-Light mb-10'>
-          Talk to your vet about the issue to ensure the behavior is not a result of a medical
-          problem or perhaps because the dog has not been spayed or neutered. You may also want to
-          consider consulting a behaviorist who may be able to help resolve the problem with
-          training (for you and your dog).
-        </p>
-        <h3 className='text-3xl font-Matter-Bold text-zinc-700 text-center mb-6'>
-          If you are considering re-homing your dachshund because of financial issues or high vet
-          costs/bills, know that there are foundations and other organizations that may be able to
-          offer financial assistance.
-        </h3>
-        <p className='text-lg font-Matter-Light mb-10'>
-          A search of resources serving your geographic area may yield good results. Additionally,
-          local governments offer lower costs veterinary services.
-        </p>
-        <h3 className='text-3xl font-Matter-Bold text-zinc-700 text-center mb-6'>
-          Consider exploring your own personal networks of trusted friends, family, and co-workers
-          who may be able to provide a good home for your dog
-        </h3>
-        <p className='text-lg font-Matter-Light'>
-          When all options have been considered and you believe that surrendering your dog is the
-          best option for you and your dachshund, Little Paws Dachshund Rescue may be able to help.
-          All of the dachshunds that come into our rescue live in the home of an approved foster.
-          Generally, the dog stays with the foster two weeks before the dog is posted on our website
-          for adoption so we can better understand the needs and personality of the dog. All
-          potential adopters go through a rigorous application process and are carefully screened.
-        </p>
-        <div className='w-full h-[1px] bg-gray-200 my-20'></div>
-        <h3 className='text-3xl font-Matter-Bold text-zinc-700 text-center mb-12'>
-          To be considered for surrender, please complete and submit the following Surrender
-          Questionnaire:
-        </h3>
-        <div className='border-[1px] border-gray-200 rounded-xl py-4'>
-          <iframe
-            className='h-[600px] overflow-y-scroll'
-            title='Surrender Application'
-            width='100%'
-            src='https://toolkit.rescuegroups.org/of/f?c=QCVXZJTH'
-          ></iframe>
-        </div>
+            <div className='border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark p-2 sm:p-4'>
+              <iframe
+                className='w-full h-[600px]'
+                title='Surrender questionnaire form'
+                src='https://toolkit.rescuegroups.org/of/f?c=QCVXZJTH'
+              />
+            </div>
+          </motion.div>
+        </motion.div>
       </div>
-    </Fragment>
+    </section>
   );
 };
 

@@ -62,8 +62,6 @@ const checkUserSession = asyncHandler(async (req, res) => {
 
     const isActive = new Date() < new Date(activeFee.expiresAt);
 
-    console.log('ACTIVE FEE: ', activeFee);
-
     return res.status(200).json({
       success: true,
       isActive,

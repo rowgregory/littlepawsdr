@@ -47,9 +47,8 @@ const SingleItemCarousel: React.FC<SingleItemCarouselProps> = ({
         </div>
       </div>
 
-      {/* dots sit over the image, raised above the name overlay */}
       {totalItems > 1 && (
-        <div className='absolute z-30 bottom-40 sm:bottom-44 left-1/2 -translate-x-1/2 flex space-x-2'>
+        <div className='absolute z-30 bottom-4 left-1/2 -translate-x-1/2 flex space-x-2'>
           {Array.from({ length: totalItems }).map((_, index) => (
             <button
               key={index}

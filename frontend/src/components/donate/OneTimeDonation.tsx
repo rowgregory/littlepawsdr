@@ -7,119 +7,95 @@ import { useAppDispatch, useFormSelector, useUserSelector } from '../../redux/to
 import { useFormInitialize } from '../../hooks/useFormInitialize';
 import { motion } from 'framer-motion';
 
-const validateDonationIdentityForm = (inputs: any, setErrors: (errors) => void) => {
-  const newErrors = {} as any;
+const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
 
-  if (!inputs?.email?.trim()) {
-    newErrors.email = 'Email Required';
-  } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(inputs?.email)) {
-    newErrors.email = 'Invalid email address';
-  }
-
-  if (!inputs?.firstName?.trim()) {
-    newErrors.firstName = 'First Name Required';
-  } else if (inputs?.firstName.length > 50) {
-    newErrors.firstName = 'Must be 50 characters or less';
-  }
-
-  if (!inputs?.lastName?.trim()) {
-    newErrors.lastName = 'Last Name Required';
-  } else if (inputs?.lastName.length > 50) {
-    newErrors.lastName = 'Must be 50 characters or less';
-  }
-
-  setErrors(newErrors);
-  return Object.keys(newErrors).length === 0;
+const validateIdentity = (inputs: any, setErrors: (e: any) => void) => {
+  const e: any = {};
+  if (!inputs?.email?.trim()) e.email = 'Email required';
+  else if (!emailRegex.test(inputs.email)) e.email = 'Invalid email address';
+  if (!inputs?.firstName?.trim()) e.firstName = 'First name required';
+  else if (inputs.firstName.length > 50) e.firstName = 'Must be 50 characters or less';
+  if (!inputs?.lastName?.trim()) e.lastName = 'Last name required';
+  else if (inputs.lastName.length > 50) e.lastName = 'Must be 50 characters or less';
+  setErrors(e);
+  return Object.keys(e).length === 0;
 };
 
-const validateGiftAmountForm = (inputs: any, setErrors: (errors) => void) => {
-  const newErrors = {} as any;
-
-  if (parseInt(inputs.donationAmount) < 10) {
-    newErrors.donationAmount = 'Amount needs to be greater than 10';
-  }
-
-  setErrors(newErrors);
-  return Object.keys(newErrors).length === 0;
+const validateAmount = (inputs: any, setErrors: (e: any) => void) => {
+  const e: any = {};
+  if (parseInt(inputs.donationAmount) < 10) e.donationAmount = 'Amount must be greater than $10';
+  setErrors(e);
+  return Object.keys(e).length === 0;
 };
 
-export const OneTimeDonationProgressTracker = ({ step, setStep, type }: any) => (
-  <div className={`${type === 'one-time' ? 'block' : 'hidden'}`}>
-    <div className='hidden md:flex justify-evenly mt-4 mb-8 gap-4'>
-      <div
-        onClick={() =>
-          step.step2 || step.step3 ? setStep({ step1: true, step2: false, step3: false }) : {}
-        }
-        className={`${step.step1 ? 'border-teal-500' : 'border-gray-300 text-gray-300'} ${
-          step.step2 || step.step3 ? 'cursor-pointer' : ''
-        } border-b-4 text-xl font-Matter-Medium tracking wider px-8 w-full text-center pb-1 whitespace-nowrap`}
-      >
-        1. Gift Amount
-      </div>
-      <div
-        onClick={() =>
-          step.step3 ? setStep((prev: any) => ({ ...prev, step2: true, step3: false })) : {}
-        }
-        className={`${step.step2 ? 'border-teal-500' : 'border-gray-300 text-gray-300'} ${
-          step.step3 ? 'cursor-pointer' : ''
-        } border-b-4 text-xl font-Matter-Medium tracking wider px-8 w-full text-center pb-1`}
-      >
-        2. Identity
-      </div>
-      <div
-        className={`${
-          step.step3 ? 'border-teal-500' : 'border-gray-300 text-gray-300'
-        }  border-b-4 text-xl font-Matter-Medium tracking wider px-8 w-full text-center pb-1`}
-      >
-        3. Payment
-      </div>
+const STEPS = ['Gift Amount', 'Identity', 'Payment'];
+
+export const OneTimeDonationProgressTracker = ({ step, setStep, type }: any) => {
+  const current = step.step3 ? 2 : step.step2 ? 1 : 0;
+
+  const goTo = (i: number) => {
+    if (i >= current) return; // only allow going back
+    setStep({ step1: i === 0, step2: i === 1, step3: false });
+  };
+
+  return (
+    <div className={`${type === 'one-time' ? 'flex' : 'hidden'} gap-2 sm:gap-4 mt-4 mb-8`}>
+      {STEPS.map((label, i) => {
+        const active = i === current;
+        const clickable = i < current;
+        return (
+          <button
+            key={label}
+            type='button'
+            onClick={() => goTo(i)}
+            disabled={!clickable}
+            className={`flex-1 border-b-2 pb-2 font-mono text-[11px] sm:text-xs uppercase tracking-wide text-center whitespace-nowrap transition-colors ${
+              active
+                ? 'border-primary-light dark:border-primary-dark text-primary-light dark:text-primary-dark'
+                : 'border-border-light dark:border-border-dark text-muted-light dark:text-muted-dark'
+            } ${clickable ? 'cursor-pointer hover:text-text-light dark:hover:text-text-dark' : 'cursor-default'}`}
+          >
+            <span className='hidden sm:inline'>{i + 1}. </span>
+            {label}
+          </button>
+        );
+      })}
     </div>
-    <div className='flex justify-between w-72 mx-auto md:hidden mt-4 mb-8'>
-      <div className='relative'>
-        <p className='font-Matter-Medium text-gray-300 text-center absolute -top-6 -left-4 whitespace-nowrap'>
-          Gift Amount
-        </p>
-        <div
-          className={`${
-            step.step1 ? 'bg-teal-500' : 'bg-gray-300'
-          } text-2xl font-Museo-Slab-700 w-12 h-12 rounded-full flex items-center justify-center text-white pb-1 aspect-square pt-2 relative after:content-[''] after:w-12 after:absolute after:top-6 after:left-[58px] after:border-2 after:border-gray-300`}
-        >
-          1
-        </div>
-      </div>
-      <div className='relative'>
-        <p className='font-Matter-Medium text-gray-300 text-center absolute -top-6 -left-1 whitespace-nowrap'>
-          Identity
-        </p>
-        <div
-          className={`${
-            step.step2 ? 'bg-teal-500' : 'bg-gray-300'
-          } text-2xl font-Museo-Slab-700 w-12 h-12 rounded-full flex items-center justify-center text-white pb-1 aspect-square pt-2 relative after:content-[''] after:w-12 after:absolute after:top-6 after:left-[58px] after:border-2 after:border-gray-300`}
-        >
-          2
-        </div>
-      </div>
-      <div className='relative'>
-        <p className='font-Matter-Medium text-gray-300 text-center absolute -top-6 -left-2 whitespace-nowrap'>
-          Payment
-        </p>
-        <div
-          className={`${
-            step.step3 ? 'bg-teal-500' : 'bg-gray-300'
-          } text-2xl font-Museo-Slab-700 w-12 h-12 rounded-full flex items-center justify-center text-white pb-1 aspect-square pt-2`}
-        >
-          3
-        </div>
-      </div>
-    </div>
+  );
+};
+
+const PRESET_AMOUNTS = [25, 35, 50, 150, 500];
+
+const Field = ({ name, label, inputs, errors, handleInput, type = 'text' }: any) => (
+  <div>
+    <label
+      htmlFor={name}
+      className='block font-mono text-[11px] uppercase tracking-wide text-muted-light dark:text-muted-dark mb-1.5'
+    >
+      {label}
+    </label>
+    <input
+      id={name}
+      name={name}
+      type={type}
+      onChange={handleInput}
+      value={inputs?.[name] || ''}
+      aria-invalid={!!errors?.[name]}
+      className='w-full bg-bg-light dark:bg-bg-dark border border-border-light dark:border-border-dark py-2.5 px-4 text-base text-text-light dark:text-text-dark focus:outline-none focus-visible:border-primary-light dark:focus-visible:border-primary-dark'
+    />
+    {errors?.[name] && <p className='font-mono text-[11px] text-red-500 mt-1'>{errors[name]}</p>}
   </div>
 );
 
-const oneTimeDonationOptions = [25, 35, 50, 150, 500];
-
-interface StepFunc {
-  preventDefault: () => void;
-}
+const ContinueButton = ({ onClick }: { onClick: (e: any) => void }) => (
+  <button
+    type='button'
+    onClick={onClick}
+    className='w-full font-mono text-sm uppercase tracking-[0.15em] bg-primary-light dark:bg-primary-dark text-bg-light dark:text-bg-dark py-4 mt-8 transition-colors hover:bg-secondary-light dark:hover:bg-secondary-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-light dark:focus-visible:ring-primary-dark'
+  >
+    Continue
+  </button>
+);
 
 export const OneTimeDonationForm = ({ type, step, setStep, setOpenModal }: any) => {
   const dispatch = useAppDispatch();
@@ -131,6 +107,7 @@ export const OneTimeDonationForm = ({ type, step, setStep, setOpenModal }: any) 
 
   const inputs = donationForm?.inputs;
   const errors = donationForm?.errors;
+  const amount = Number(inputs?.donationAmount || +inputs?.otherAmount);
 
   useFormInitialize({
     formName: 'donationForm',
@@ -142,180 +119,120 @@ export const OneTimeDonationForm = ({ type, step, setStep, setOpenModal }: any) 
     },
   });
 
-  const handleStep2 = (e: StepFunc) => {
+  const goToIdentity = (e: any) => {
     e.preventDefault();
-
-    if (!validateDonationIdentityForm(inputs, setErrors)) return;
-
-    setStep((prev: any) => ({ ...prev, step2: false, step3: true }));
+    if (validateAmount(inputs, setErrors))
+      setStep((p: any) => ({ ...p, step1: false, step2: true }));
   };
 
-  const handleStep1 = (e: StepFunc) => {
+  const goToPayment = (e: any) => {
     e.preventDefault();
-
-    if (!validateGiftAmountForm(inputs, setErrors)) return;
-
-    setStep((prev: any) => ({ ...prev, step1: false, step2: true }));
+    if (validateIdentity(inputs, setErrors))
+      setStep((p: any) => ({ ...p, step2: false, step3: true }));
   };
 
-  const payPalComponents = {
-    style: { layout: 'vertical' },
-    forceRerender: [step.step2],
-    createOrder: (data: any, actions: any) => {
-      return actions.order.create({
-        purchase_units: [
-          {
-            amount: {
-              value: Number(toFixed(inputs.donationAmount || +inputs.otherAmount)),
-            },
-          },
-        ],
-        application_context: {
-          shipping_preference: 'NO_SHIPPING',
-        },
-      });
-    },
-    onApprove: (data: any, actions: any) => {
-      setOrderLoader(true);
-      return actions.order.capture().then(async (details: any) => {
-        try {
-          await createDonation({
-            firstName: inputs.firstName,
-            lastName: inputs.lastName,
-            email: inputs.email,
-            donationAmount: Number(inputs.donationAmount || +inputs.otherAmount),
-            payPalId: details.id,
-          }).unwrap();
-
-          setOpenModal(true);
-          setStep({ step1: true, step2: false, step3: false });
-        } catch (error) {
-          setStep({ step1: true, step2: false, step3: false });
-        } finally {
-          setOrderLoader(false);
-        }
-      });
-    },
-  } as any;
+  const fieldProps = { inputs, errors, handleInput };
 
   return (
-    <form className={`${type === 'one-time' ? 'block' : 'hidden'}`}>
-      {step.step3 ? (
-        <div className='mb-8 relative'>
+    <form className={type === 'one-time' ? 'block' : 'hidden'}>
+      {/* Step 3 — Payment */}
+      {step.step3 && (
+        <div className='relative'>
           <PayPalButtons
-            style={payPalComponents.style}
-            forceReRender={payPalComponents.forceRerender}
-            createOrder={payPalComponents.createOrder}
-            onApprove={payPalComponents.onApprove}
+            style={{ layout: 'vertical' }}
+            forceReRender={[step.step2]}
+            createOrder={(_d, actions) => {
+              if (!actions.order) return Promise.reject(new Error('PayPal order unavailable'));
+              return actions.order.create({
+                intent: 'CAPTURE',
+                purchase_units: [{ amount: { currency_code: 'USD', value: toFixed(amount) } }],
+                application_context: { shipping_preference: 'NO_SHIPPING' },
+              });
+            }}
+            onApprove={(_d, actions) => {
+              if (!actions.order) return Promise.resolve();
+              setOrderLoader(true);
+              return actions.order.capture().then(async (details: any) => {
+                try {
+                  await createDonation({
+                    firstName: inputs.firstName,
+                    lastName: inputs.lastName,
+                    email: inputs.email,
+                    donationAmount: amount,
+                    payPalId: details.id,
+                  }).unwrap();
+                  setOpenModal(true);
+                } finally {
+                  setStep({ step1: true, step2: false, step3: false });
+                  setOrderLoader(false);
+                }
+              });
+            }}
           />
-
           {orderLoader && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className='absolute inset-0 bg-white rounded-lg flex items-center justify-center z-[100]'
+              className='absolute inset-0 bg-surface-light dark:bg-surface-dark flex items-center justify-center z-50'
             >
-              <div className='w-6 h-6 border-2 border-gray-900/20 border-t-gray-900 rounded-full animate-spin' />
+              <div className='w-6 h-6 border-2 border-primary-light/30 border-t-primary-light dark:border-primary-dark/30 dark:border-t-primary-dark rounded-full animate-spin' />
             </motion.div>
           )}
         </div>
-      ) : step.step2 ? (
-        <div className='grid grid-cols-12 gap-4'>
-          <p className='col-span-12 font-Matter-Light text-sm'>
+      )}
+
+      {/* Step 2 — Identity */}
+      {step.step2 && (
+        <div className='space-y-4'>
+          <p className='font-mono text-[11px] uppercase tracking-wide text-muted-light dark:text-muted-dark'>
             Donation Amount:{' '}
-            <span className='text-sm font-Matter-Medium'>${toFixed(inputs.donationAmount)}</span>
+            <span className='text-primary-light dark:text-primary-dark'>
+              ${toFixed(inputs.donationAmount)}
+            </span>
           </p>
-          <div className='col-span-12 md:col-span-6'>
-            <label className='font-Matter-Medium text-sm mb-1' htmlFor='firstName'>
-              First name
-            </label>
-            <input
-              name='firstName'
-              id='firstName'
-              onChange={handleInput}
-              className='auth-input bg-white border-[1px] w-full border-gray-300 rounded-md py-2.5 px-4 font-Matter-Regular focus:outline-none'
-              value={inputs?.firstName || ''}
-            />
-            {errors?.firstName && (
-              <p className='font-Matter-Regular text-sm text-red-500'>{errors?.firstName}</p>
-            )}
+          <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
+            <Field name='firstName' label='First name' {...fieldProps} />
+            <Field name='lastName' label='Last name' {...fieldProps} />
           </div>
-          <div className='col-span-12 md:col-span-6'>
-            <label className='font-Matter-Medium text-sm mb-1' htmlFor='lastName'>
-              Last name
-            </label>
-            <input
-              name='lastName'
-              id='lastName'
-              onChange={handleInput}
-              className='auth-input bg-white border-[1px] w-full border-gray-300 rounded-md py-2.5 px-4 font-Matter-Regular focus:outline-none'
-              value={inputs.lastName || ''}
-            />
-            {errors?.lastName && (
-              <p className='font-Matter-Regular text-sm text-red-500'>{errors?.lastName}</p>
-            )}
-          </div>
-          <div className='col-span-12'>
-            <label className='font-Matter-Medium text-sm mb-1' htmlFor='firstName'>
-              Email
-            </label>
-            <input
-              name='email'
-              id='email'
-              onChange={handleInput}
-              className='auth-input bg-white border-[1px] w-full border-gray-300 rounded-md py-2.5 px-4 font-Matter-Regular focus:outline-none'
-              value={inputs.email || ''}
-            />
-            {errors?.email && (
-              <p className='font-Matter-Regular text-sm text-red-500'>{errors?.email}</p>
-            )}
-          </div>
-          <button
-            onClick={handleStep2}
-            className='col-start-2 col-span-10 sm:col-span-6 sm:col-start-4 bg-teal-500 text-white px-16 h-24 flex items-center justify-center font-Matter-Bold text-3xl my-16'
-          >
-            CONTINUE
-          </button>
+          <Field name='email' label='Email' type='email' {...fieldProps} />
+          <ContinueButton onClick={goToPayment} />
         </div>
-      ) : (
-        <div className='flex flex-col'>
-          <div className='flex flex-wrap gap-4'>
-            {oneTimeDonationOptions.map((num: number, i: number) => (
+      )}
+
+      {/* Step 1 — Gift Amount */}
+      {!step.step2 && !step.step3 && (
+        <div>
+          <div className='flex flex-wrap gap-3'>
+            {PRESET_AMOUNTS.map((num) => (
               <button
+                key={num}
                 type='button'
-                onClick={() => {
-                  dispatch(setInputs({ formName: 'donationForm', data: { donationAmount: num } }));
-                }}
-                key={i}
-                className={`py-4 px-6 rounded-lg flex items-center justify-center text-white font-medium cursor-pointer transition-colors ${
-                  inputs.donationAmount === num ? 'bg-teal-500' : 'bg-gray-300 hover:bg-gray-400'
+                onClick={() =>
+                  dispatch(setInputs({ formName: 'donationForm', data: { donationAmount: num } }))
+                }
+                className={`py-3 px-6 font-mono text-sm transition-colors ${
+                  inputs.donationAmount === num
+                    ? 'bg-primary-light dark:bg-primary-dark text-bg-light dark:text-bg-dark'
+                    : 'bg-surface-light dark:bg-surface-dark text-text-light dark:text-text-dark border border-border-light dark:border-border-dark hover:border-primary-light dark:hover:border-primary-dark'
                 }`}
               >
                 ${num}
               </button>
             ))}
-
             <input
               name='donationAmount'
+              type='number'
               onChange={handleInput}
               placeholder='Other'
-              type='number'
-              className='border-2 border-gray-300 py-4 px-4 w-24 rounded-lg focus:outline-none focus:border-teal-500 font-medium'
               value={inputs.donationAmount || ''}
+              aria-label='Other amount'
+              className='w-24 py-3 px-4 font-mono text-sm text-text-light dark:text-text-dark placeholder:text-muted-light/60 dark:placeholder:text-muted-dark/60 bg-bg-light dark:bg-bg-dark border border-border-light dark:border-border-dark focus:outline-none focus-visible:border-primary-light dark:focus-visible:border-primary-dark'
             />
           </div>
           {errors?.donationAmount && (
-            <p className='font-Matter-Regular text-sm text-red-500 mt-0.5'>
-              {errors?.donationAmount}
-            </p>
+            <p className='font-mono text-[11px] text-red-500 mt-2'>{errors.donationAmount}</p>
           )}
-          <button
-            onClick={handleStep1}
-            className='bg-teal-500 text-white px-16 h-24 flex items-center justify-center font-Matter-Bold text-3xl mx-auto my-16'
-          >
-            CONTINUE
-          </button>
+          <ContinueButton onClick={goToIdentity} />
         </div>
       )}
     </form>

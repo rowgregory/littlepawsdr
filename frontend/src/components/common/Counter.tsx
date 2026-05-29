@@ -6,14 +6,21 @@ const Counter = ({
   className,
 }: {
   targetNumber: number;
-  duration: number;
+  duration?: number;
   className?: string;
 }) => {
   const [displayedNumber, setDisplayedNumber] = useState(0);
   const [inView, setInView] = useState(false);
-  const ref = useRef(null);
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // Respect reduced-motion: jump straight to the number, skip the count-up
+    const prefersReduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReduced) {
+      setDisplayedNumber(targetNumber);
+      return;
+    }
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -21,12 +28,11 @@ const Counter = ({
           observer.disconnect();
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
     if (ref.current) observer.observe(ref.current);
-
     return () => observer.disconnect();
-  }, []);
+  }, [targetNumber]);
 
   useEffect(() => {
     if (!inView) return;
@@ -48,10 +54,15 @@ const Counter = ({
   }, [inView, targetNumber, duration]);
 
   return (
-    <div ref={ref} className={`${className ?? 'text-charcoal'} text-4xl sm:text-5xl font-QBold`}>
-      {displayedNumber}
+    <div
+      ref={ref}
+      className={`font-quicksand text-4xl sm:text-5xl font-bold tabular-nums ${
+        className ?? 'text-text-light dark:text-text-dark'
+      }`}
+      aria-label={targetNumber.toLocaleString()}
+    >
+      {displayedNumber.toLocaleString()}
     </div>
   );
 };
-
 export default Counter;

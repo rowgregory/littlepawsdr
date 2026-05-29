@@ -1,42 +1,61 @@
+import { Calendar, Scale } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const SideBySideDachshunds = ({ dachshunds }: { dachshunds: any }) => {
+  const featured = (dachshunds ?? [])?.slice(0, 2);
+
+  if (featured.length === 0) return null;
+
   return (
-    <div className='flex flex-col md:flex-row gap-4 mb-32'>
-      {dachshunds
-        ?.map((obj: any, i: number) => (
+    <div className='flex flex-col md:flex-row gap-4 mb-24 sm:mb-32 max-w-screen-xl w-full mx-auto'>
+      {featured.map((obj: any, i: number) => {
+        const name = obj?.attributes?.name ?? 'This pup';
+        const description = (obj?.attributes?.descriptionText ?? '').replace(/&nbsp;/g, ' ').trim();
+        const snippet = description ? `${description.slice(0, 60)}…` : '';
+
+        return (
           <Link
-            to={`/dachshunds/${obj?.id}`}
-            key={i}
-            className='h-[300px] md:h-[500px] w-full md:flex-1 rounded-2xl bg-cover no-repeat relative'
+            to={`/dachshunds/${obj?._id || obj?.id}`}
+            key={obj?._id || obj?.id || i}
+            aria-label={`View ${name}`}
+            className='group relative h-[280px] md:h-[460px] w-full md:flex-1 bg-cover bg-no-repeat overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-light dark:focus-visible:ring-primary-dark'
             style={{
-              backgroundImage: `url(${obj?.attributes?.photos[1]})`,
+              backgroundImage: `url(${obj?.attributes?.photos?.[1] || obj?.attributes?.photos?.[0]})`,
               backgroundPositionY: '50%',
             }}
           >
-            <div className='absolute inset-0 bg-black/40 rounded-2xl flex text-white justify-end items-end p-6 group'>
-              <div className='flex flex-col items-end justify-end mt-2'>
-                <div className='flex items-center gap-x-4'>
-                  <div className='flex items-center truncate'>
-                    <i className='fas fa-calendar text-teal-400 text-lg mr-2 h-7 w-7'></i>
-                    <p className='font-QBook'>{obj?.attributes?.ageString}</p>
-                  </div>
-                  <div className='flex items-center'>
-                    <i className='fas fa-weight text-teal-400 text-lg h-7 w-7'></i>
-                    <p className='font-QBook'>{obj?.attributes?.sex}</p>
-                  </div>
-                </div>
-                <h1 className='font-QBold text-xl truncate mt-4'>{obj?.attributes?.name}</h1>
-                <p className='font-QLight mt-2 mb-1'>
-                  {obj?.attributes?.descriptionText?.substring(0, 60)?.replace('&nbsp;', '')}...
-                </p>
-                <p className='font-QBold group-hover:text-teal-400'>Read More</p>
+            {/* Scrim for text legibility */}
+            <div className='absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent' />
+
+            <div className='absolute inset-0 flex flex-col justify-end items-end text-right text-white p-5 sm:p-6'>
+              <div className='flex items-center gap-4 mb-2 font-mono text-[11px] uppercase tracking-wide'>
+                <span className='flex items-center gap-1.5'>
+                  <Calendar
+                    className='w-3.5 h-3.5 text-primary-light dark:text-primary-dark'
+                    aria-hidden='true'
+                  />
+                  {obj?.attributes?.ageString}
+                </span>
+                <span className='flex items-center gap-1.5'>
+                  <Scale
+                    className='w-3.5 h-3.5 text-primary-light dark:text-primary-dark'
+                    aria-hidden='true'
+                  />
+                  {obj?.attributes?.sex}
+                </span>
               </div>
+
+              <h3 className='font-quicksand text-xl font-bold truncate max-w-full'>{name}</h3>
+
+              <p className='text-sm text-white/80 mt-2 mb-2 line-clamp-2'>{snippet}</p>
+
+              <p className='font-mono text-[11px] uppercase tracking-[0.15em] text-white group-hover:text-primary-light dark:group-hover:text-primary-dark transition-colors'>
+                Read More →
+              </p>
             </div>
           </Link>
-        ))
-        .filter((_: any, i: number) => i < 2)
-        .reverse()}
+        );
+      })}
     </div>
   );
 };

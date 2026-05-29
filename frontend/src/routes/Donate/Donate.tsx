@@ -1,15 +1,12 @@
 import { useState } from 'react';
-import { AquaTile, Donate1, VenmoQRCode } from '../../components/assets';
+import { Donate1 } from '../../components/assets';
 import DonationConfirmationModal from '../../components/modals/DonationConfirmationModal';
 import { RootState, useAppSelector } from '../../redux/toolkitStore';
 import {
   OneTimeDonationForm,
   OneTimeDonationProgressTracker,
 } from '../../components/donate/OneTimeDonation';
-import {
-  MonthlyDonationForm,
-  MonthlyDonationProgressTracker,
-} from '../../components/donate/MonthlyDonation';
+import { MonthlyDonationForm } from '../../components/donate/MonthlyDonation';
 import { useLocation } from 'react-router-dom';
 
 const Donate = () => {
@@ -23,48 +20,57 @@ const Donate = () => {
   return (
     <>
       <DonationConfirmationModal openModal={openModal} handleClose={handleClose} user={user} />
-      <div className='mx-auto w-full'>
-        <div
-          style={{ backgroundImage: `url(${AquaTile})` }}
-          className='h-[272px] sm:h-[350px] bg-repeat border-b-[7px] border-teal-500'
-        ></div>
-        <div className='flex flex-col mx-auto relative bg-slate-100 min-h-[calc(100vh-732px)] md:min-h-[calc(100vh-780px)] pb-40'>
-          <div className='grid grid-cols-12 gap-4 md:gap-8  sm:px-6 mt-[-192px] md:mt-[-240px] max-w-screen-xl w-full mx-auto h-full'>
-            <div className='col-span-12 lg:col-span-8 pt-[24px] md:pt-[48px] w-full'>
-              <h1 className='text-3xl px-3 md:text-5xl font-Matter-Bold text-[#fff] mb-3 md:mb-4'>
-                Donate to LPDR and Help Dachshunds
-              </h1>
-              <div className='flex items-center md:gap-3.5'>
-                <div
-                  onClick={() => setType('one-time')}
-                  className={`w-full h-20 ${
-                    type === 'one-time' ? 'text-teal-500 bg-[#fff]' : 'text-[#fff] bg-[#9863a8]'
-                  }  text-xl font-Matter-Bold tracking-wide flex items-center justify-center whitespace-nowrap cursor-pointer`}
-                >
-                  ONE TIME
-                  <span
-                    className={`hidden sm:block ${type === 'one-time' ? 'text-teal-500' : 'text-[#fff]'} text-xl`}
-                  >
-                    &nbsp;DONATION
-                  </span>
-                </div>
-                <div
-                  onClick={() => setType('monthly')}
-                  className={`w-full h-20 ${
-                    type === 'monthly' ? 'text-teal-500 bg-[#fff]' : 'text-[#fff] bg-[#9863a8]'
-                  } text-xl font-Matter-Bold tracking-wide flex items-center justify-center whitespace-nowrap cursor-pointer`}
-                >
-                  MONTHLY
-                  <span
-                    className={`hidden sm:block ${type === 'monthly' ? 'text-teal-500' : 'text-[#fff]'} text-xl`}
-                  >
-                    &nbsp;DONATION
-                  </span>
-                </div>
+
+      <div className='bg-bg-light dark:bg-bg-dark min-h-screen'>
+        <div className='max-w-screen-xl w-full mx-auto px-3 sm:px-6 pt-16 sm:pt-24 pb-24 sm:pb-32'>
+          {/* Eyebrow + heading */}
+          <div className='flex items-center gap-3 mb-4'>
+            <span
+              className='block w-8 h-px bg-primary-light dark:bg-primary-dark'
+              aria-hidden='true'
+            />
+            <p className='font-mono text-[11px] sm:text-xs uppercase tracking-[0.2em] text-primary-light dark:text-primary-dark'>
+              Make a Donation
+            </p>
+          </div>
+          <h1 className='text-3xl sm:text-5xl font-bold text-text-light dark:text-text-dark mb-8 leading-tight'>
+            Donate to LPDR and Help Dachshunds
+          </h1>
+
+          <div className='grid grid-cols-1 lg:grid-cols-12 gap-8'>
+            {/* Left — donation flow */}
+            <div className='lg:col-span-8'>
+              {/* One-time / Monthly toggle */}
+              <div
+                className='grid grid-cols-2 border border-border-light dark:border-border-dark mb-px'
+                role='tablist'
+                aria-label='Donation frequency'
+              >
+                {(['one-time', 'monthly'] as const).map((t) => {
+                  const active = type === t;
+                  return (
+                    <button
+                      key={t}
+                      type='button'
+                      role='tab'
+                      aria-selected={active}
+                      onClick={() => setType(t)}
+                      className={`h-16 font-mono text-xs sm:text-sm uppercase tracking-[0.15em] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-light dark:focus-visible:ring-primary-dark ${
+                        active
+                          ? 'bg-primary-light dark:bg-primary-dark text-bg-light dark:text-bg-dark'
+                          : 'bg-surface-light dark:bg-surface-dark text-muted-light dark:text-muted-dark hover:text-text-light dark:hover:text-text-dark'
+                      }`}
+                    >
+                      {t === 'one-time' ? 'One-Time' : 'Monthly'}
+                      <span className='hidden sm:inline'> Donation</span>
+                    </button>
+                  );
+                })}
               </div>
-              <div className='w-full pt-3 px-4 md:px-6 pb-12 bg-white'>
+
+              {/* Form panel */}
+              <div className='border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark p-4 sm:p-6'>
                 <OneTimeDonationProgressTracker step={step} setStep={setStep} type={type} />
-                <MonthlyDonationProgressTracker type={type} />
                 <OneTimeDonationForm
                   type={type}
                   step={step}
@@ -73,30 +79,23 @@ const Donate = () => {
                 />
                 <MonthlyDonationForm type={type} />
               </div>
-              <div className='hidden lg:block mt-8 bg-white w-full p-[16px] md:p-6'>
-                <p className='text-lg font-Matter-Regular mb-4'>Scan our Venmo QR code</p>
-                <div className='border-4 border-teal-500 p-2.5 w-fit'>
-                  <img src={VenmoQRCode} alt='LPDR Venmo QR code' className='max-w-40 w-full' />
-                </div>
-              </div>
             </div>
-            <div className='col-span-12 lg:col-span-4 flex flex-col sm:flex-row lg:flex-col w-full'>
+
+            {/* Right — image + mission */}
+            <div className='lg:col-span-4 flex flex-col sm:flex-row lg:flex-col gap-px border border-border-light dark:border-border-dark'>
               <img
                 src={Donate1}
-                alt='Donate to LPDR'
-                className='max-w-none sm:max-w-80 lg:max-w-none aspect-square object-cover'
+                alt='A rescued dachshund cared for by LPDR'
+                className='w-full sm:w-1/2 lg:w-full aspect-square object-cover'
               />
-              <p className='bg-white px-6 p-8 font-QLight'>
-                Little Paws Dachshund Rescue is a dedicated organization committed to rescuing,
-                rehabilitating, and rehoming dachshunds in need. As a passionate advocate for these
-                beloved dogs, our mission is to provide them with the care and support they require
-                for a second chance at a happy life. Through our efforts, we strive to prevent
-                cruelty and neglect, offering a safe haven for dachshunds who have been abandoned,
-                abused, or surrendered. Your generous contributions enable us to continue our vital
-                work, making a significant impact on the lives of dachshunds in need. Thank you for
-                choosing to support Little Paws Dachshund Rescue and for helping us make a
-                difference in the lives of these wonderful animals
-              </p>
+              <div className='bg-surface-light dark:bg-surface-dark p-6 flex items-center'>
+                <p className='text-sm text-muted-light dark:text-muted-dark leading-relaxed'>
+                  Little Paws Dachshund Rescue is committed to rescuing, rehabilitating, and
+                  rehoming dachshunds in need. Your generous contributions let us continue this
+                  vital work — offering a safe haven for dachshunds who have been abandoned, abused,
+                  or surrendered. Thank you for helping us make a difference in their lives.
+                </p>
+              </div>
             </div>
           </div>
         </div>
