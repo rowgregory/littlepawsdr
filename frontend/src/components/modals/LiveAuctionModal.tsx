@@ -20,8 +20,7 @@ const LiveAuctionModal = () => {
   const navigate = useNavigate();
   const timeUntil = useTimeUntil(auction?.endDate);
 
-  const hasHandledAuctionModal = false;
-  // const hasHandledAuctionModal = localStorage.getItem('handledAuctionModal') === 'true';
+  const hasHandledAuctionModal = localStorage.getItem('handledAuctionModal') === 'true';
   const shouldShowModal = auction?.status === 'ACTIVE' && !hasHandledAuctionModal;
 
   useEffect(() => {
