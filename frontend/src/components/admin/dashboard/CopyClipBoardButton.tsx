@@ -5,42 +5,42 @@ const CopyClipboardButton = ({ code }: { code: string }) => {
   const [copied, setCopied] = useState(false);
 
   const handleCopyToClipboard = async () => {
+    if (!code) return;
     try {
       await navigator.clipboard.writeText(code);
       setCopied(true);
-
-      // Reset the copied state after 2 seconds
-      setTimeout(() => {
-        setCopied(false);
-      }, 2000);
-    } catch {}
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // clipboard unavailable (insecure context / denied) — silently no-op
+    }
   };
 
   return (
     <button
+      type='button'
       onClick={handleCopyToClipboard}
-      className={`
-        ${copied ? 'bg-green-600 hover:bg-green-700' : 'bg-blue-600 hover:bg-blue-700'}
-        text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 
-        flex items-center gap-2 transform hover:scale-105 active:scale-95 w-fit
-        ${copied ? 'animate-pulse' : ''}
-      `}
+      aria-label={copied ? 'Bypass code copied' : 'Copy bypass code'}
+      className={`flex items-center gap-2 px-4 py-2 font-mono text-xs uppercase tracking-wide transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-light dark:focus-visible:ring-primary-dark w-fit ${
+        copied
+          ? 'bg-green-600 text-white hover:bg-green-700'
+          : 'bg-primary-light dark:bg-primary-dark text-bg-light dark:text-bg-dark hover:bg-secondary-light dark:hover:bg-secondary-dark'
+      }`}
     >
-      <div className='flex items-center gap-2'>
-        {copied ? (
-          <>
-            <Check className='w-4 h-4' />
-            Copied!
-          </>
-        ) : (
-          <>
-            <Code className='w-4 h-4' />
-            <span className='hidden sm:inline'>Bypass code</span>
-            <span className='font-mono bg-white/20 px-2 py-1 rounded text-sm'>{code}</span>
-            <Copy className='w-4 h-4 ml-1' />
-          </>
-        )}
-      </div>
+      {copied ? (
+        <>
+          <Check className='w-4 h-4' aria-hidden='true' />
+          Copied
+        </>
+      ) : (
+        <>
+          <Code className='w-4 h-4' aria-hidden='true' />
+          <span className='hidden sm:inline'>Bypass code</span>
+          <span className='bg-bg-light/20 dark:bg-bg-dark/20 px-2 py-1 normal-case tracking-normal'>
+            {code}
+          </span>
+          <Copy className='w-4 h-4' aria-hidden='true' />
+        </>
+      )}
     </button>
   );
 };

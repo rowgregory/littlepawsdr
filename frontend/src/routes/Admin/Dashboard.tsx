@@ -16,39 +16,18 @@ import {
   DollarSign,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { formatDateWithTimezone } from '../../utils/dateFunctions';
+import { formatDate, formatDateWithTimezone } from '../../utils/dateFunctions';
 import CopyClipboardButton from '../../components/admin/dashboard/CopyClipBoardButton';
 import { useFetchDashboardDataQuery } from '../../redux/services/dashboardApi';
 
 const statConfigMap: any = {
-  Orders: {
-    icon: ShoppingBag,
-    color: 'bg-blue-500',
-  },
-  Auctions: {
-    icon: Gavel,
-    color: 'bg-purple-500',
-  },
-  'One Time Donations': {
-    icon: Heart,
-    color: 'bg-red-500',
-  },
-  'Adoption Fees': {
-    icon: FileText,
-    color: 'bg-green-500',
-  },
-  'Welcome Wiener Orders': {
-    icon: Gift,
-    color: 'bg-orange-500',
-  },
-  Users: {
-    icon: Users,
-    color: 'bg-indigo-500',
-  },
-  'Newsletter Subscribers': {
-    icon: Mail,
-    color: 'bg-pink-500',
-  },
+  Orders: { icon: ShoppingBag },
+  Auctions: { icon: Gavel },
+  'One Time Donations': { icon: Heart },
+  'Adoption Fees': { icon: FileText },
+  'Welcome Wiener Orders': { icon: Gift },
+  Users: { icon: Users },
+  'Newsletter Subscribers': { icon: Mail },
 };
 
 const getStatusColor = (status: string) => {
@@ -56,168 +35,171 @@ const getStatusColor = (status: string) => {
     case 'completed':
     case 'approved':
     case 'shipped':
-      return 'bg-green-100 text-green-800';
+      return 'bg-green-500/15 text-green-600 dark:text-green-400';
     case 'processing':
     case 'under review':
     case 'interview scheduled':
-      return 'bg-yellow-100 text-yellow-800';
+      return 'bg-yellow-500/15 text-yellow-700 dark:text-yellow-400';
     case 'pending':
     case 'pending documents':
-      return 'bg-orange-100 text-orange-800';
+      return 'bg-orange-500/15 text-orange-700 dark:text-orange-400';
     default:
-      return 'bg-gray-100 text-gray-800';
+      return 'bg-muted-light/15 dark:bg-muted-dark/15 text-muted-light dark:text-muted-dark';
   }
 };
+
+const quickActions = [
+  { linkKey: '/admin/store/products/create', label: 'Create Product', icon: ShoppingBag },
+  { linkKey: '/admin/auctions', label: 'Create Auction', icon: Hammer },
+  { linkKey: '/admin/store/ecards/create', label: 'Create Ecard', icon: CreditCard },
+  { linkKey: '/admin/store/welcome-wieners/create', label: 'Create Welcome Wiener', icon: Dog },
+  { linkKey: '/admin/donations', label: 'View Donations', icon: Heart },
+  { linkKey: '/admin/orders', label: 'View Orders', icon: ShoppingCart },
+  { linkKey: '/admin/adoption-application/fees', label: 'View Adopt Fees', icon: DollarSign },
+];
 
 const Dashboard = () => {
   const { data } = useFetchDashboardDataQuery();
   const dashboardData = data?.data;
-  const recentOrders = dashboardData?.recentOrders;
+  const recentOrders = dashboardData?.recentOrders ?? [];
+  const recentApplications = dashboardData?.recentApplications ?? [];
 
   const enhancedStats =
     dashboardData?.stats?.map((stat: any) => {
       const config = statConfigMap[stat.title] || statConfigMap[stat.type];
-
-      return {
-        ...stat,
-        icon: config?.icon,
-        color: config?.color,
-      };
+      return { ...stat, icon: config?.icon };
     }) || [];
 
   return (
-    <div className='min-h-dvh'>
+    <div className='min-h-dvh bg-bg-light dark:bg-bg-dark'>
       {/* Header */}
-      <div className='bg-white border-b border-gray-200'>
-        <div className='px-4 sm:px-6 lg:px-8 py-4'>
-          <div className='flex flex-col lg:flex-row lg:items-center justify-between gap-y-3 lg:gap-y-0'>
-            <div className='flex items-center gap-3'>
-              <div className='w-10 h-10 bg-yellow-600 rounded-lg flex items-center justify-center'>
-                <Heart className='w-6 h-6 text-white' />
-              </div>
-              <div>
-                <h1 className='text-2xl font-bold text-gray-900'>Little Paws Dachshund Rescue</h1>
-                <p className='text-sm text-gray-600'>Dashboard Overview</p>
-              </div>
-            </div>
-            <CopyClipboardButton code={dashboardData?.bypassCode} />
+      <div className='h-14 bg-surface-light dark:bg-surface-dark border-b border-border-light dark:border-border-dark'>
+        <div className='h-full px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-3'>
+          <div className='flex items-center gap-2 min-w-0'>
+            <span
+              className='block w-6 h-px bg-primary-light dark:bg-primary-dark shrink-0'
+              aria-hidden='true'
+            />
+            <span className='font-mono text-[11px] uppercase tracking-[0.2em] text-primary-light dark:text-primary-dark shrink-0'>
+              Dashboard
+            </span>
           </div>
+          <CopyClipboardButton code={dashboardData?.bypassCode} />
         </div>
       </div>
 
       <div className='px-4 sm:px-6 lg:px-8 py-6'>
-        {/* Stats Grid */}
-        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8'>
+        {/* Stats */}
+        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8'>
           {enhancedStats.map((stat: any, index: number) => {
             const Icon = stat.icon;
             return (
-              <div key={index} className='bg-white rounded-lg border border-gray-200 p-6'>
+              <div
+                key={stat.title || index}
+                className='bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark p-5'
+              >
                 <div className='flex items-center justify-between mb-4'>
-                  <div
-                    className={`w-12 h-12 ${stat.color} rounded-lg flex items-center justify-center`}
-                  >
-                    <Icon className='w-6 h-6 text-white' />
-                  </div>
-                  <div
-                    className={`flex items-center gap-1 text-sm ${
-                      stat.trend === 'up' ? 'text-green-600' : 'text-red-600'
-                    }`}
-                  >
-                    {stat.trend === 'up' ? (
-                      <TrendingUp className='w-4 h-4' />
-                    ) : (
-                      <TrendingDown className='w-4 h-4' />
+                  <div className='w-10 h-10 bg-bg-light dark:bg-bg-dark border border-border-light dark:border-border-dark flex items-center justify-center'>
+                    {Icon && (
+                      <Icon
+                        className='w-5 h-5 text-primary-light dark:text-primary-dark'
+                        aria-hidden='true'
+                      />
                     )}
-                    {stat.change}
                   </div>
-                </div>
-                <div>
-                  <h3 className='text-2xl font-bold text-gray-900 mb-1'>{stat.value}</h3>
-                  <p className='text-sm text-gray-600 mb-1'>{stat.title}</p>
-                  {stat.amount && (
-                    <p className='text-lg font-semibold text-green-600'>{stat.amount}</p>
+                  {stat.change && (
+                    <div
+                      className={`flex items-center gap-1 font-mono text-[11px] ${
+                        stat.trend === 'up' ? 'text-green-600 dark:text-green-400' : 'text-red-500'
+                      }`}
+                    >
+                      {stat.trend === 'up' ? (
+                        <TrendingUp className='w-3.5 h-3.5' aria-hidden='true' />
+                      ) : (
+                        <TrendingDown className='w-3.5 h-3.5' aria-hidden='true' />
+                      )}
+                      {stat.change}
+                    </div>
                   )}
                 </div>
+                <h3 className='text-2xl font-bold text-text-light dark:text-text-dark tabular-nums'>
+                  {stat.value}
+                </h3>
+                <p className='font-mono text-[11px] uppercase tracking-wide text-muted-light dark:text-muted-dark mt-1'>
+                  {stat.title}
+                </p>
+                {stat.amount && (
+                  <p className='text-base font-semibold text-primary-light dark:text-primary-dark mt-1 tabular-nums'>
+                    {stat.amount}
+                  </p>
+                )}
               </div>
             );
           })}
         </div>
 
-        {/* Main Content Grid */}
+        {/* Main grid */}
         <div className='grid grid-cols-1 lg:grid-cols-3 gap-6'>
           {/* Recent Orders */}
-          <div className='lg:col-span-2 bg-white rounded-lg border border-gray-200'>
-            <div className='px-6 py-4 border-b border-gray-200'>
-              <div className='flex items-center justify-between'>
-                <h2 className='text-lg font-semibold text-gray-900'>Recent Orders</h2>
-                <Link
-                  to='/admin/orders'
-                  className='text-blue-600 hover:text-blue-700 text-sm font-medium'
-                >
-                  View all
-                </Link>
-              </div>
+          <div className='lg:col-span-2 bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark'>
+            <div className='px-5 py-4 border-b border-border-light dark:border-border-dark flex items-center justify-between'>
+              <h2 className='font-bold text-text-light dark:text-text-dark'>Recent Orders</h2>
+              <Link
+                to='/admin/orders'
+                className='font-mono text-[11px] uppercase tracking-wide text-primary-light dark:text-primary-dark hover:text-secondary-light dark:hover:text-secondary-dark'
+              >
+                View all
+              </Link>
             </div>
             <div className='overflow-x-auto'>
               <table className='w-full'>
-                <thead className='bg-gray-50'>
+                <thead className='bg-bg-light dark:bg-bg-dark'>
                   <tr>
-                    <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-                      Order
-                    </th>
-                    <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-                      Customer
-                    </th>
-                    <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-                      Type
-                    </th>
-                    <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-                      Amount
-                    </th>
-                    <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-                      Status
-                    </th>
-                    <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-                      View
-                    </th>
+                    {['Order', 'Customer', 'Type', 'Amount', 'Status', 'View'].map((h) => (
+                      <th
+                        key={h}
+                        className='px-5 py-3 text-left font-mono text-[10px] uppercase tracking-wider text-muted-light dark:text-muted-dark'
+                      >
+                        {h}
+                      </th>
+                    ))}
                   </tr>
                 </thead>
-                <tbody className='divide-y divide-gray-200'>
-                  {recentOrders?.map((order: any, index: number) => (
-                    <tr key={index} className='hover:bg-gray-50'>
-                      <td className='px-6 py-4 whitespace-nowrap'>
-                        <div className='font-medium text-gray-900'>#{order.id?.slice(-5)}</div>
-                        <div className='text-[13px] text-gray-500'>
+                <tbody className='divide-y divide-border-light dark:divide-border-dark'>
+                  {recentOrders.map((order: any, index: number) => (
+                    <tr key={order.id || index} className='hover:bg-bg-light dark:hover:bg-bg-dark'>
+                      <td className='px-5 py-3 whitespace-nowrap'>
+                        <div className='font-medium text-text-light dark:text-text-dark tabular-nums'>
+                          #{order.id?.slice(-5)}
+                        </div>
+                        <div className='text-[11px] text-muted-light dark:text-muted-dark'>
                           {formatDateWithTimezone(order.date)}
                         </div>
                       </td>
-                      <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-900'>
+                      <td className='px-5 py-3 whitespace-nowrap text-sm text-text-light dark:text-text-dark'>
                         {order.customer}
                       </td>
-                      <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>
+                      <td className='px-5 py-3 whitespace-nowrap text-sm text-muted-light dark:text-muted-dark'>
                         {order.type}
                       </td>
-                      <td className='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900'>
+                      <td className='px-5 py-3 whitespace-nowrap text-sm font-medium text-text-light dark:text-text-dark tabular-nums'>
                         {order.amount}
                       </td>
-                      <td className='px-6 py-4 whitespace-nowrap'>
+                      <td className='px-5 py-3 whitespace-nowrap'>
                         <span
-                          className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(
-                            order.status
-                          )}`}
+                          className={`inline-flex px-2 py-1 font-mono text-[10px] uppercase tracking-wide ${getStatusColor(order.status)}`}
                         >
                           {order.status}
                         </span>
                       </td>
-                      <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>
-                        <div className='flex items-center justify-center gap-2'>
-                          <Link
-                            to={`/admin/orders?orderId=${order.id}`}
-                            className='text-blue-600 hover:text-blue-700'
-                          >
-                            <Eye className='w-4 h-4' />
-                          </Link>
-                        </div>
+                      <td className='px-5 py-3 whitespace-nowrap'>
+                        <Link
+                          to={`/admin/orders?orderId=${order.id}`}
+                          aria-label={`View order #${order.id?.slice(-5)}`}
+                          className='inline-flex text-primary-light dark:text-primary-dark hover:text-secondary-light dark:hover:text-secondary-dark'
+                        >
+                          <Eye className='w-4 h-4' aria-hidden='true' />
+                        </Link>
                       </td>
                     </tr>
                   ))}
@@ -226,104 +208,67 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* Recent Adoption Applications */}
-          <div className='bg-white rounded-lg border border-gray-200'>
-            <div className='px-6 py-4 border-b border-gray-200'>
-              <div className='flex items-center justify-between'>
-                <h2 className='text-lg font-semibold text-gray-900'>Recent Applications</h2>
-                <Link
-                  to='/admin/adoption-application/fees'
-                  className='text-blue-600 hover:text-blue-700 text-sm font-medium'
-                >
-                  View all
-                </Link>
-              </div>
+          {/* Recent Applications */}
+          <div className='bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark'>
+            <div className='px-5 py-4 border-b border-border-light dark:border-border-dark flex items-center justify-between'>
+              <h2 className='font-bold text-text-light dark:text-text-dark'>Recent Applications</h2>
+              <Link
+                to='/admin/adoption-application/fees'
+                className='font-mono text-[11px] uppercase tracking-wide text-primary-light dark:text-primary-dark hover:text-secondary-light dark:hover:text-secondary-dark'
+              >
+                View all
+              </Link>
             </div>
-            <div className='p-6'>
-              <div className='space-y-4'>
-                {data?.data?.recentApplications.map((app: any, index: number) => (
-                  <div key={index} className='border border-gray-200 rounded-lg p-4'>
-                    <div className='flex items-start justify-between mb-2'>
-                      <div className='font-medium text-gray-900'>{app.id}</div>
-                      <span
-                        className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(
-                          app.state
-                        )}`}
-                      >
-                        {app.state}
-                      </span>
+            <div className='p-5 space-y-3'>
+              {recentApplications.map((app: any, index: number) => (
+                <div
+                  key={app.id || index}
+                  className='border border-border-light dark:border-border-dark p-3'
+                >
+                  <div className='flex items-start justify-between mb-2 gap-2'>
+                    <div className='font-medium text-text-light dark:text-text-dark text-sm'>
+                      {app.id}
                     </div>
-                    <div className='text-sm text-gray-600 mb-1'>{app.applicant}</div>
-                    <div className='text-sm text-gray-500 mb-2'>{app.dog}</div>
-                    <div className='text-xs text-gray-400'>{app.date}</div>
+                    <span
+                      className={`inline-flex px-2 py-1 font-mono text-[10px] uppercase tracking-wide shrink-0 ${getStatusColor(app.state)}`}
+                    >
+                      {app.state}
+                    </span>
                   </div>
-                ))}
-              </div>
+                  <div className='text-sm text-muted-light dark:text-muted-dark'>
+                    {app.applicant}
+                  </div>
+                  <div className='text-sm text-muted-light dark:text-muted-dark'>{app.dog}</div>
+                  <div className='text-[11px] text-muted-light dark:text-muted-dark/70 mt-1'>
+                    {formatDate(app.date)}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
 
         {/* Quick Actions */}
         <div className='mt-8'>
-          <h2 className='text-lg font-semibold text-gray-900 mb-4'>Quick Actions</h2>
-          <div className='grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-4'>
-            {[
-              {
-                linkKey: '/admin/store/products/create',
-                label: 'Create Product',
-                icon: ShoppingBag,
-                color: 'bg-blue-500',
-              },
-              {
-                linkKey: '/admin/auctions',
-                label: 'Create Auction',
-                icon: Hammer,
-                color: 'bg-purple-500',
-              },
-              {
-                linkKey: '/admin/store/ecards/create',
-                label: 'Create Ecard',
-                icon: CreditCard,
-                color: 'bg-red-500',
-              },
-              {
-                linkKey: '/admin/store/welcome-wieners/create',
-                label: 'Create Welcome Wiener',
-                icon: Dog,
-                color: 'bg-green-500',
-              },
-              {
-                linkKey: '/admin/donations',
-                label: 'View Donations',
-                icon: Heart,
-                color: 'bg-orange-500',
-              },
-              {
-                linkKey: '/admin/orders',
-                label: 'View Orders',
-                icon: ShoppingCart,
-                color: 'bg-indigo-500',
-              },
-              {
-                linkKey: '/admin/adoption-application/fees',
-                label: 'View Adopt Fees',
-                icon: DollarSign,
-                color: 'bg-pink-500',
-              },
-            ].map((action, index) => {
+          <h2 className='font-mono text-[11px] uppercase tracking-[0.2em] text-primary-light dark:text-primary-dark mb-4'>
+            Quick Actions
+          </h2>
+          <div className='grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3'>
+            {quickActions.map((action) => {
               const Icon = action.icon;
               return (
                 <Link
                   to={action.linkKey}
-                  key={index}
-                  className='bg-white flex items-center justify-center flex-col border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow text-center group'
+                  key={action.linkKey}
+                  className='group flex flex-col items-center justify-center text-center p-4 bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark hover:border-primary-light dark:hover:border-primary-dark transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-light dark:focus-visible:ring-primary-dark'
                 >
-                  <div
-                    className={`w-12 h-12 ${action.color} rounded-lg flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform`}
-                  >
-                    <Icon className='w-6 h-6 text-white' />
+                  <Icon
+                    className='w-6 h-6 text-primary-light dark:text-primary-dark mb-2 group-hover:scale-110 transition-transform motion-reduce:transform-none'
+                    aria-hidden='true'
+                  />
+                  <div className='font-mono text-[11px] uppercase tracking-wide text-text-light dark:text-text-dark'>
+                    {action.label}
                   </div>
-                  <div className='text-sm font-medium text-gray-900'>{action.label}</div>
                 </Link>
               );
             })}

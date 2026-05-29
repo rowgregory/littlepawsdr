@@ -8,14 +8,11 @@ import {
   LogOut,
   Home,
   LayoutDashboard,
-  History,
   Inbox,
-  Bug,
   X,
   User,
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
-import { motion } from 'framer-motion';
 
 const AdminSidebar = ({ onClose }: { onClose?: () => void }) => {
   const location = useLocation();
@@ -24,141 +21,85 @@ const AdminSidebar = ({ onClose }: { onClose?: () => void }) => {
     {
       title: 'Dashboard',
       items: [
-        {
-          icon: Home,
-          label: 'Home',
-          path: '/',
-        },
-        {
-          icon: LayoutDashboard,
-          label: 'Dashboard',
-          path: '/admin/dashboard',
-        },
+        { icon: Home, label: 'Home', path: '/' },
+        { icon: LayoutDashboard, label: 'Dashboard', path: '/admin/dashboard' },
       ],
     },
     {
       title: 'Management',
       items: [
-        {
-          icon: Gavel,
-          label: 'Auctions',
-          path: '/admin/auctions',
-        },
-        {
-          icon: Package,
-          label: 'Orders',
-          path: '/admin/orders',
-        },
-        {
-          icon: Heart,
-          label: 'Donations',
-          path: '/admin/donations',
-        },
-        {
-          icon: Store,
-          label: 'Store',
-          path: '/admin/store',
-        },
+        { icon: Gavel, label: 'Auctions', path: '/admin/auctions' },
+        { icon: Package, label: 'Orders', path: '/admin/orders' },
+        { icon: Heart, label: 'Donations', path: '/admin/donations' },
+        { icon: Store, label: 'Store', path: '/admin/store' },
       ],
     },
     {
       title: 'Operations',
       items: [
-        {
-          icon: DollarSign,
-          label: 'Adoption Application Fees',
-          path: '/admin/adoption-fees',
-        },
-        {
-          icon: Users,
-          label: 'Contacts',
-          path: '/admin/users',
-        },
-        {
-          icon: Inbox,
-          label: 'Newsletter',
-          path: '/admin/newsletters',
-        },
-      ],
-    },
-    {
-      title: 'Support',
-      items: [
-        {
-          icon: Bug,
-          label: 'Bug Reports',
-          path: '/admin/bugs',
-        },
-        {
-          icon: History,
-          label: 'Changelog',
-          path: '/admin/changelog',
-        },
+        { icon: DollarSign, label: 'Adoption Fees', path: '/admin/adoption-fees' },
+        { icon: Users, label: 'Contacts', path: '/admin/users' },
+        { icon: Inbox, label: 'Newsletter', path: '/admin/newsletters' },
       ],
     },
     {
       title: 'Account',
       items: [
-        {
-          icon: User,
-          label: 'Profile',
-          path: '/supporter/profile',
-        },
-        {
-          icon: LogOut,
-          label: 'Logout',
-          path: null,
-          isLogout: true,
-        },
+        { icon: User, label: 'Profile', path: '/supporter/profile' },
+        { icon: LogOut, label: 'Logout', path: null, isLogout: true },
       ],
     },
   ];
 
-  const handleNavClick = () => {
-    if (onClose) onClose();
-  };
+  const handleNavClick = () => onClose?.();
 
   return (
-    <aside className='w-64 bg-white border-r border-gray-200 h-screen overflow-y-auto flex flex-col'>
-      <div className='border-b border-gray-200'>
-        <div className='h-[86px] flex items-center justify-between px-6'>
-          <Link to='/' className='text-lg font-bold text-gray-900'>
-            Admin Dashboard
-          </Link>
-          {onClose && (
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={onClose}
-              className='lg:hidden p-2 hover:bg-gray-100 rounded-lg'
-            >
-              <X className='w-5 h-5 text-gray-900' />
-            </motion.button>
-          )}
-        </div>
+    <aside className='w-56 bg-surface-light dark:bg-surface-dark border-r border-border-light dark:border-border-dark h-screen overflow-y-auto flex flex-col'>
+      {/* Header */}
+      <div className='h-14 flex items-center justify-between px-4 border-b border-border-light dark:border-border-dark shrink-0'>
+        <Link
+          to='/'
+          className='font-mono text-xs uppercase tracking-[0.15em] text-text-light dark:text-text-dark'
+        >
+          Little Paws
+        </Link>
+        {onClose && (
+          <button
+            onClick={onClose}
+            aria-label='Close menu'
+            className='lg:hidden p-1.5 text-text-light dark:text-text-dark hover:bg-bg-light dark:hover:bg-bg-dark transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-light dark:focus-visible:ring-primary-dark'
+          >
+            <X className='w-4 h-4' aria-hidden='true' />
+          </button>
+        )}
       </div>
 
-      <nav className='space-y-6 px-6 py-6 flex-1'>
+      {/* Nav */}
+      <nav className='flex-1 px-2 py-3 space-y-4'>
         {adminNavGroups.map((group) => (
           <div key={group.title}>
-            <h3 className='text-xs font-semibold text-gray-500 uppercase mb-3 px-3'>
+            <h3 className='font-mono text-[10px] uppercase tracking-[0.15em] text-muted-light dark:text-muted-dark mb-1.5 px-2'>
               {group.title}
             </h3>
-            <div className='space-y-1'>
+            <div className='space-y-0.5'>
               {group.items.map((item) => {
                 const IconComponent = item.icon;
-                const isActive = item.path && location.pathname.includes(item.path.split('/')[2]);
+                const isActive =
+                  !!item.path && item.path !== '/' && location.pathname.startsWith(item.path);
                 return (
                   <Link
-                    key={item.path}
+                    key={item.label}
                     to={item.path || ''}
                     onClick={handleNavClick}
-                    className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all ${
-                      isActive ? 'bg-gray-900 text-white' : 'text-gray-700 hover:bg-gray-100'
+                    aria-current={isActive ? 'page' : undefined}
+                    className={`flex items-center gap-2.5 px-2 py-1.5 text-[13px] transition-colors ${
+                      isActive
+                        ? 'bg-primary-light dark:bg-primary-dark text-bg-light dark:text-bg-dark'
+                        : 'text-muted-light dark:text-muted-dark hover:bg-bg-light dark:hover:bg-bg-dark hover:text-text-light dark:hover:text-text-dark'
                     }`}
                   >
-                    <IconComponent className='w-4 h-4' />
-                    {item.label}
+                    <IconComponent className='w-4 h-4 shrink-0' aria-hidden='true' />
+                    <span className='truncate'>{item.label}</span>
                   </Link>
                 );
               })}

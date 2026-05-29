@@ -37,7 +37,7 @@ const footerNav = [
     title: 'Adopt',
     links: [
       { label: 'Available Dachshunds', to: '/dachshunds' },
-      { label: 'How to Adopt', to: '/adopt/info' },
+      { label: 'How to Adopt', to: '/dachshunds#how-to-adopt' },
       { label: 'Adoption Application', to: '/adopt' },
       { label: 'Surrender a Dachshund', to: '/dachshunds/surrender' },
     ],
@@ -54,9 +54,16 @@ const footerNav = [
   {
     title: 'Contact',
     links: [
-      { label: 'littlepawsdr@gmail.com', href: 'mailto:littlepawsdr@gmail.com' },
-      { label: 'East Coast, USA', to: '/contact' },
-      { label: 'About Us', to: '/about' },
+      {
+        label: 'Privacy Policy',
+        href: 'https://www.privacypolicies.com/live/c37902bc-11cd-430e-a925-2b82ce905c88',
+      },
+      {
+        label: 'Terms & Conditions',
+        href: 'https://www.termsandconditionsgenerator.com/live.php?token=K9R7fXZjABJKZhIWlXr43oY6qca6jjVn',
+      },
+      { label: 'California Consumer Privacy Act', href: 'https://oag.ca.gov/privacy/ccpa' },
+      { label: 'Return Policy', to: '/return-policy' },
     ],
   },
 ];
