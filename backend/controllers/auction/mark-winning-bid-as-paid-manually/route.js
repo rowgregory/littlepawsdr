@@ -37,9 +37,8 @@ const markWinningBidAsPaidManually = asyncHandler(async (req, res) => {
       return res.status(400).json({ message: 'Invalid payment method' });
     }
 
-    // Update winning bidder status
-    const winningBidder = await AuctionWinningBidder.findByIdAndUpdate(
-      id,
+    const winningBidder = await AuctionWinningBidder.findOneAndUpdate(
+      { _id: id, winningBidPaymentStatus: { $ne: 'Paid' } }, // only if not already paid
       {
         winningBidPaymentStatus: 'Paid',
         auctionItemPaymentStatus: 'Paid',
@@ -48,7 +47,7 @@ const markWinningBidAsPaidManually = asyncHandler(async (req, res) => {
         paidOn: new Date(),
         manualPayment: true,
       },
-      { new: true, session }
+      { new: true, session },
     ).populate([
       { path: 'auction', select: '_id' },
       { path: 'auctionItems' },
@@ -58,6 +57,13 @@ const markWinningBidAsPaidManually = asyncHandler(async (req, res) => {
     if (!winningBidder) {
       await session.abortTransaction();
       session.endSession();
+      // Distinguish "already paid" from "doesn't exist" for a clear admin message
+      const existing = await AuctionWinningBidder.findById(id)
+        .select('winningBidPaymentStatus')
+        .lean();
+      if (existing?.winningBidPaymentStatus === 'Paid') {
+        return res.status(409).json({ message: 'This bid is already marked paid.' });
+      }
       return res.status(404).json({ message: 'Winning bidder not found' });
     }
 
@@ -77,7 +83,7 @@ const markWinningBidAsPaidManually = asyncHandler(async (req, res) => {
     }
 
     auction.supporters = auction.supporterEmails.length;
-    auction.totalAuctionRevenue += winningBidder.totalPrice;
+    auction.totalAuctionRevenue += Number(winningBidder.totalPrice) || 0;
 
     await auction.save({ session });
 

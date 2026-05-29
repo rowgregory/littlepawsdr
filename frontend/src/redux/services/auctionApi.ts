@@ -17,10 +17,6 @@ export const auctionApi = api.injectEndpoints({
       query: (customAuctionLink: string) => `${BASE_URL}/custom-auction-link/${customAuctionLink}`,
       providesTags: (result: any, error: any, arg: any) => [{ type: 'Auction', id: arg }],
     }),
-    getCustomAuctionLink: build.query({
-      query: () => `${BASE_URL}/custom-auction-link`,
-      providesTags: ['Auction'],
-    }),
 
     // QUERIES - Winning bidder
     getWinningBidder: build.query({
@@ -142,7 +138,6 @@ export const {
   useCreateAuctionMutation,
   useGetAuctionsQuery,
   useGetAuctionByCustomAuctionLinkQuery,
-  useGetCustomAuctionLinkQuery,
   useTrackAuctionModalButtonClickMutation,
   useGetAuctionItemQuery,
   useCreateAuctionItemMutation,

@@ -1,117 +1,124 @@
 import { formatDistanceToNow } from 'date-fns';
-import { Heart, Minus } from 'lucide-react';
+import { ChevronDown, ChevronUp, Heart, Zap } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuctionSelector } from '../../redux/toolkitStore';
 
 const LiveActivity = () => {
-  const [activities, setActivities] = useState([]);
-  const [minimized, setMinimized] = useState(false);
+  const [activities, setActivities] = useState<any[]>([]);
+  const [minimized, setMinimized] = useState(true); // start minimized
   const { auction } = useAuctionSelector();
   const bids = auction?.bids;
   const instantBuyers = auction?.instantBuyers;
   const customAuctionLink = auction?.customAuctionLink;
 
   useEffect(() => {
-    if (bids?.length > 0) {
-      const mappedBids = (bids || []).map((activity: any) => ({
-        user: activity?.bidder || 'Anonymous',
-        action: `placed a bid of $${activity.bidAmount} on `,
-        item: activity?.auctionItem?.name || 'Unknown Item',
-        time: activity?.createdAt
-          ? formatDistanceToNow(new Date(activity.createdAt), { addSuffix: true })
-          : 'Recently',
-        auctionItemId: activity?.auctionItem?._id,
-        createdAt: activity?.createdAt || new Date(),
-        type: 'bid',
-        isInstantBuy: false,
-      }));
+    const mappedBids = (bids || []).map((activity: any) => ({
+      user: activity?.bidder || 'Anonymous',
+      action: 'placed a bid of',
+      amount: activity?.bidAmount,
+      item: activity?.auctionItem?.name || 'an item',
+      time: activity?.createdAt
+        ? formatDistanceToNow(new Date(activity.createdAt), { addSuffix: true })
+        : 'Recently',
+      auctionItemId: activity?.auctionItem?._id,
+      createdAt: activity?.createdAt || new Date(),
+      isInstantBuy: false,
+    }));
 
-      // Map and tag instant buyers
-      const mappedInstantBuyers = (instantBuyers || []).map((activity: any) => ({
-        user: activity?.name || 'Anonymous',
-        action: `instantly bought `,
-        item: activity?.auctionItem?.name || 'Unknown Item',
-        time: activity?.createdAt
-          ? formatDistanceToNow(new Date(activity.createdAt), { addSuffix: true })
-          : 'Recently',
-        auctionItemId: activity?.auctionItem?._id,
-        createdAt: activity?.createdAt || new Date(),
-        type: 'instant_buy',
-        isInstantBuy: true,
-      }));
+    const mappedInstantBuyers = (instantBuyers || []).map((activity: any) => ({
+      user: activity?.user?.name || activity?.name || 'Anonymous',
+      action: 'instantly bought',
+      amount: null,
+      item: activity?.auctionItem?.name || 'an item',
+      time: activity?.createdAt
+        ? formatDistanceToNow(new Date(activity.createdAt), { addSuffix: true })
+        : 'Recently',
+      auctionItemId: activity?.auctionItem?._id,
+      createdAt: activity?.createdAt || new Date(),
+      isInstantBuy: true,
+    }));
 
-      // Combine and sort by newest first
-      const combined = [...mappedBids, ...mappedInstantBuyers];
-      const sortedActivities: any = combined.sort(
-        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-      );
+    const combined = [...mappedBids, ...mappedInstantBuyers].sort(
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    );
 
-      setActivities(sortedActivities);
-    }
+    setActivities(combined);
   }, [bids, instantBuyers]);
 
-  if (bids?.length === 0 || auction?.status !== 'ACTIVE') return null;
+  if (activities.length === 0 || auction?.status !== 'ACTIVE') return null;
 
   return (
-    <div className='fixed bottom-6 left-6 z-50 '>
-      <div
-        className={`relative bg-black/80 backdrop-blur-xl border border-white/20 rounded-2xl p-4 max-w-sm`}
-      >
-        {/* Minimize button */}
+    <div className='fixed bottom-4 left-4 right-4 sm:right-auto z-50 sm:max-w-sm'>
+      <div className='relative bg-black/80 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl'>
+        {/* Header — toggles minimize */}
         <button
-          onClick={() => setMinimized(!minimized)}
-          className='absolute top-2 right-2 w-4 h-4 rounded-full bg-yellow-400 flex items-center justify-center hover:bg-yellow-300 transition'
-          title={minimized ? 'Expand' : 'Minimize'}
+          type='button'
+          onClick={() => setMinimized((m) => !m)}
+          aria-expanded={!minimized}
+          aria-controls='live-activity-list'
+          className='w-full flex items-center justify-between gap-2 p-3 sm:p-4 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70 rounded-2xl'
         >
-          <Minus className='w-3 h-3 text-black' />
-        </button>
-
-        {/* Header */}
-        <h3 className='text-white font-bold flex items-center justify-between'>
-          <div className='flex items-center'>
-            <Heart className='w-4 h-4 mr-2 text-red-500 animate-pulse' />
+          <span className='flex items-center gap-2 text-white font-bold text-sm'>
+            <Heart className='w-4 h-4 text-red-400 motion-safe:animate-pulse' aria-hidden='true' />
             Live Activity
-          </div>
-          <span className='text-xs bg-white/10 px-2 py-1 rounded-full text-white/70'>
-            {activities?.length} actions
           </span>
-        </h3>
+          <span className='flex items-center gap-2'>
+            <span className='text-xs bg-white/10 px-2 py-0.5 rounded-full text-white/70 tabular-nums'>
+              {activities.length} {activities.length === 1 ? 'action' : 'actions'}
+            </span>
+            {minimized ? (
+              <ChevronUp className='w-4 h-4 text-white/70' aria-hidden='true' />
+            ) : (
+              <ChevronDown className='w-4 h-4 text-white/70' aria-hidden='true' />
+            )}
+          </span>
+        </button>
 
         {/* Activity list */}
         {!minimized && (
-          <div className='h-80 lg:h-96 overflow-y-auto space-y-2 mt-3'>
+          <div
+            id='live-activity-list'
+            className='max-h-[50dvh] sm:max-h-96 overflow-y-auto space-y-2 px-3 sm:px-4 pb-3 sm:pb-4'
+            role='list'
+            aria-label='Recent auction activity'
+          >
             {activities.map((activity: any, index) => (
               <Link
+                key={`${activity.auctionItemId}-${activity.createdAt}-${index}`}
                 to={`/auctions/${customAuctionLink}/item/${activity?.auctionItemId}`}
-                key={index}
-                className={`block text-white/80 text-sm p-3 rounded-lg transition-all duration-300 hover:scale-[1.02] ${
+                role='listitem'
+                className={`block text-sm p-3 rounded-lg transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70 ${
                   activity.isInstantBuy
-                    ? 'bg-gradient-to-r from-emerald-500/20 to-green-500/20 border border-emerald-400/40 shadow-lg shadow-emerald-500/20 animate-pulse'
-                    : 'bg-white/5 hover:bg-white/10'
-                } ${index === 0 ? 'animate-fade-in' : ''}`}
+                    ? 'bg-emerald-500/15 border border-emerald-400/40 hover:bg-emerald-500/25'
+                    : 'bg-white/5 hover:bg-white/10 border border-transparent'
+                }`}
               >
-                <div className='flex items-center justify-between'>
-                  <div className='flex-1'>
-                    <div className='mt-1'>
-                      <span className='font-semibold text-blue-400'>{activity.user}</span>{' '}
-                      {activity.action}
-                      <span
-                        className={`font-semibold ${
-                          activity.isInstantBuy ? 'text-emerald-300' : 'text-purple-400'
-                        }`}
-                      >
-                        {activity.item}
+                <div className='flex items-start justify-between gap-2'>
+                  <p className='flex-1 text-white/80 leading-snug min-w-0'>
+                    <span className='font-semibold text-blue-300'>{activity.user}</span>{' '}
+                    {activity.action}
+                    {activity.amount != null && (
+                      <span className='font-semibold text-yellow-300 tabular-nums'>
+                        {' '}
+                        ${Number(activity.amount).toLocaleString()}
                       </span>
-                    </div>
-                    <div className='text-white/50 text-xs mt-1'>{activity.time}</div>
-                  </div>
+                    )}{' '}
+                    <span className='text-white/60'>on</span>{' '}
+                    <span
+                      className={`font-semibold ${activity.isInstantBuy ? 'text-emerald-300' : 'text-purple-300'}`}
+                    >
+                      {activity.item}
+                    </span>
+                    <span className='block text-white/40 text-xs mt-1'>{activity.time}</span>
+                  </p>
                   {activity.isInstantBuy && (
-                    <div className='flex-shrink-0 ml-2'>
-                      <div className='w-8 h-8 rounded-full bg-emerald-500/30 flex items-center justify-center'>
-                        <span className='text-emerald-300 text-lg'>⚡</span>
-                      </div>
-                    </div>
+                    <span
+                      className='shrink-0 w-7 h-7 rounded-full bg-emerald-500/30 flex items-center justify-center'
+                      aria-hidden='true'
+                    >
+                      <Zap className='w-4 h-4 text-emerald-300' />
+                    </span>
                   )}
                 </div>
               </Link>

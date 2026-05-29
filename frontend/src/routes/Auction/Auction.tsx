@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useAuctionSelector, useUserSelector } from '../../redux/toolkitStore';
-import { motion } from 'framer-motion';
 import FloatingParticles from '../../components/auction/FloatingParticles';
 import AuctionHeader from '../../components/auction/AuctionHeader';
 import AuctionCountdownTimer from '../../components/auction/AuctionCountdownTimer';
@@ -49,34 +48,48 @@ const calculateIncrementalTotal = (bids: any) => {
 const Auction = () => {
   const { auction } = useAuctionSelector();
   const { user } = useUserSelector();
-  const [activeFilter, setActiveFilter] = useState('all');
+  const [activeFilter, setActiveFilter] = useState<'all' | 'auction' | 'instant' | 'no-bids'>(
+    'all',
+  );
 
-  const totalFromInstantBuys = auction?.instantBuyers?.length
-    ? auction?.instantBuyers.reduce((acc, item) => acc + (item.totalPrice || 0), 0)
-    : 0;
+  const items = auction?.items ?? [];
+
+  // Single source of truth for classifying an item, so counts and the
+  // visible grid never disagree.
+  const isAuctionItem = (item: any) => item.sellingFormat === 'auction' || !item.buyNowPrice;
+  const isInstantItem = (item: any) => item.sellingFormat === 'fixed' || !!item.buyNowPrice;
+  const hasNoBids = (item: any) => !item.bids || item.bids.length === 0;
+
+  const totalFromInstantBuys =
+    auction?.instantBuyers?.reduce((acc, item) => acc + (item.totalPrice || 0), 0) ?? 0;
 
   const moneySecured = calculateIncrementalTotal(auction?.bids) + totalFromInstantBuys;
 
-  const auctionCount = auction?.items?.filter(
-    (item: { sellingFormat: string }) => item.sellingFormat === 'auction'
-  ).length;
+  const auctionCount = items.filter(isAuctionItem).length;
+  const instantCount = items.filter(isInstantItem).length;
+  const noBidsCount = items.filter((i) => isAuctionItem(i) && hasNoBids(i)).length;
 
-  const fixedCount = auction?.items?.filter(
-    (item: { sellingFormat: string }) => item.sellingFormat === 'fixed'
-  ).length;
-
-  const noBidsCount =
-    auction?.items?.filter(
-      (item: { bids: string | any[]; sellingFormat: string }) =>
-        (item.bids?.length || 0) === 0 && item.sellingFormat === 'auction'
-    ).length || 0;
+  const visibleItems = items.filter((item: any) => {
+    switch (activeFilter) {
+      case 'auction':
+        return isAuctionItem(item);
+      case 'instant':
+        return isInstantItem(item);
+      case 'no-bids':
+        return isAuctionItem(item) && hasNoBids(item);
+      default:
+        return true;
+    }
+  });
 
   return (
-    <div className='min-h-dvh pb-60 bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 relative overflow-hidden'>
+    <div className='min-h-dvh pb-32 bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 relative overflow-hidden'>
       <FloatingParticles />
 
-      <div className='relative z-10 container mx-auto px-4 pt-8 pb-40 max-w-screen-2xl'>
-        <AuctionHeader user={user} customAuctionLink={auction?.customAuctionLink ?? ''} />
+      {/* Full-bleed header — sits outside the padded container */}
+      <AuctionHeader user={user} customAuctionLink={auction?.customAuctionLink ?? ''} />
+
+      <div className='relative z-10 mx-auto w-full max-w-screen-2xl px-3 sm:px-4 pt-6 sm:pt-8'>
         <AuctionCountdownTimer
           startDate={auction?.startDate}
           endDate={auction?.endDate}
@@ -84,62 +97,34 @@ const Auction = () => {
         />
 
         <LiveStats
-          totalBidders={auction?.bidders?.length}
+          totalBidders={auction?.bidders?.length ?? 0}
           moneySecured={moneySecured?.toString()}
           status={auction?.status || ''}
           activeFilter={activeFilter}
           onFilterChange={setActiveFilter}
           auctionCount={auctionCount}
-          instantCount={fixedCount}
+          instantCount={instantCount}
           noBidsCounts={noBidsCount}
         />
 
         {/* Main auction grid */}
-        <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-8 mb-12'>
-          {auction?.items
-            ?.filter((item: any) => {
-              if (activeFilter === 'all') return true;
-              if (activeFilter === 'auction')
-                return item.sellingFormat === 'auction' || !item.buyNowPrice;
-              if (activeFilter === 'instant')
-                return item.sellingFormat === 'fixed' || item.buyNowPrice;
-              if (activeFilter === 'no-bids')
-                return (
-                  (item.sellingFormat === 'auction' || !item.buyNowPrice) &&
-                  (!item.bids || item.bids.length === 0)
-                );
-              return true;
-            })
-            ?.map((item: any, index: number) => (
+        {visibleItems.length > 0 ? (
+          <div className='grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 sm:gap-6 mb-12'>
+            {visibleItems.map((item: any) => (
               <AuctionItemCard
-                key={index}
+                key={item._id ?? item.id}
                 auctionItem={item}
-                index={index}
+                index={0}
                 auction={auction}
                 user={user}
               />
             ))}
-        </div>
-
-        {/* Call to action */}
-        <div className='flex justify-center mt-40'>
-          <motion.div
-            className='bg-gradient-to-r from-orange-500 via-amber-500 to-red-500 text-white font-semibold text-base px-6 py-2 rounded-md inline-flex items-center gap-2 shadow-sm border border-teal-300/30'
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2, ease: 'easeOut' }}
-          >
-            <motion.div
-              className='w-2 h-2 bg-white rounded-full'
-              animate={{ rotate: [0, 180, 360] }}
-              transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
-            ></motion.div>
-            <span>
-              {Math.round(((moneySecured || 0) / (auction?.goal || 1)) * 100)}% of $
-              {auction?.goal?.toLocaleString()} Goal
-            </span>
-          </motion.div>
-        </div>
+          </div>
+        ) : (
+          <p className='text-center text-white/70 text-sm py-16' role='status'>
+            No items match this filter.
+          </p>
+        )}
       </div>
     </div>
   );

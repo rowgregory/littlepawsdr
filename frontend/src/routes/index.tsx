@@ -20,6 +20,7 @@ import PrivacyPolicy from './PrivacyPolicy';
 import { io } from 'socket.io-client';
 import { toolkitStore } from '../redux/toolkitStore';
 import {
+  lockAuction,
   setOpenAuctionCompleteModal,
   setOpenLiveAuctionModal,
   updateAuctionInState,
@@ -58,6 +59,12 @@ export const MainRoutes = () => {
     socket.on('auction:active', (data) => {
       toolkitStore.dispatch(updateAuctionInState(data));
       toolkitStore.dispatch(setOpenLiveAuctionModal());
+    });
+
+    // 🔒 Fired the instant the auction ends — locks bidding before
+    // the full populated payload arrives via 'auction:ended'.
+    socket.on('auction:locked', (data) => {
+      toolkitStore.dispatch(lockAuction(data));
     });
 
     socket.on('auction:ended', (data) => {

@@ -45,11 +45,13 @@ const calculateTimeLeft = (targetDate: number) => {
 const renderTitle = (status: string, title: string) => {
   switch (status) {
     case 'DRAFT':
-      return `🎉 The ${title} auction starts soon! 🎉`;
+      return `🎉 The ${title} auction starts soon!`;
     case 'ACTIVE':
-      return `🔥 The ${title} auction is live! 🔥`;
+      return `🔥 The ${title} auction is live!`;
     case 'ENDED':
       return `🔒 The ${title} auction has ended.`;
+    default:
+      return title;
   }
 };
 
@@ -59,7 +61,7 @@ const AuctionCountdownTimer: FC<IAuctionCountdownTimer> = ({ startDate, endDate,
 
   useEffect(() => {
     const updateCountdown = () => {
-      const now = new Date().getTime();
+      const now = Date.now();
       const start = new Date(startDate).getTime();
       const end = new Date(endDate).getTime();
 
@@ -75,180 +77,71 @@ const AuctionCountdownTimer: FC<IAuctionCountdownTimer> = ({ startDate, endDate,
       }
     };
 
-    updateCountdown(); // initial call
+    updateCountdown();
     const timer = setInterval(updateCountdown, 1000);
     return () => clearInterval(timer);
   }, [startDate, endDate]);
 
-  const renderDateInfo = () => {
-    switch (status) {
-      case 'DRAFT':
-        return (
-          <motion.div
-            className='text-white/80 text-sm mb-2'
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
-          >
-            <span className='text-yellow-400'>Starts:</span> {formatDate(startDate)}
-          </motion.div>
-        );
-      case 'ACTIVE':
-        return (
-          <motion.div
-            className='text-white/80 text-sm mb-2'
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
-          >
-            <span className='text-red-400'>Ends:</span> {formatDate(endDate)}
-          </motion.div>
-        );
-      case 'ENDED':
-        return (
-          <motion.div
-            className='text-white/80 text-sm mb-2'
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
-          >
-            <span className='text-gray-400'>Ended:</span> {formatDate(endDate)}
-          </motion.div>
-        );
-    }
-  };
+  const dateLabel =
+    status === 'DRAFT'
+      ? { label: 'Starts', value: formatDate(startDate), color: 'text-yellow-400' }
+      : status === 'ACTIVE'
+        ? { label: 'Ends', value: formatDate(endDate), color: 'text-red-400' }
+        : { label: 'Ended', value: formatDate(endDate), color: 'text-gray-400' };
 
   return (
-    <motion.div
-      className='text-center mb-12'
-      initial={{ opacity: 0, y: 30 }}
+    <motion.section
+      aria-label='Auction countdown'
+      className='text-center mb-6 sm:mb-8'
+      initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, ease: 'easeOut' }}
+      transition={{ duration: 0.5, ease: 'easeOut' }}
     >
       <FloatingParticles />
 
-      <motion.h1
-        className='text-4xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r uppercase from-white via-blue-100 to-purple-200 mb-6'
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.2, duration: 0.8, type: 'spring', stiffness: 100 }}
-      >
-        <motion.span
-          animate={{
-            textShadow: [
-              '0 0 20px rgba(255,255,255,0.3)',
-              '0 0 30px rgba(255,255,255,0.6)',
-              '0 0 20px rgba(255,255,255,0.3)',
-            ],
-          }}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-        >
-          {renderTitle(status, title)}
-        </motion.span>
-      </motion.h1>
+      <h1 className='text-2xl sm:text-4xl md:text-5xl font-black uppercase text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-purple-200 mb-2 sm:mb-3 px-3 leading-tight'>
+        {renderTitle(status, title)}
+      </h1>
 
-      {/* Date information positioned between title and countdown */}
-      {renderDateInfo()}
+      {/* Date info — announced politely, single source */}
+      <p className='text-white/80 text-xs sm:text-sm mb-4' aria-live='polite'>
+        <span className={dateLabel.color}>{dateLabel.label}:</span> {dateLabel.value}
+      </p>
 
       {timeLeft ? (
-        <motion.div
-          className='flex flex-wrap justify-center gap-3 md:gap-4 text-white px-4'
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.8 }}
+        <div
+          className='flex justify-center gap-2 sm:gap-3 text-white px-3'
+          role='timer'
+          aria-live='off'
+          aria-label={`Time ${status === 'DRAFT' ? 'until auction starts' : 'remaining in auction'}: ${Object.entries(
+            timeLeft,
+          )
+            .map(([unit, value]) => `${value} ${unit}`)
+            .join(', ')}`}
         >
-          {Object.entries(timeLeft).map(([unit, value], index) => (
-            <motion.div
+          {Object.entries(timeLeft).map(([unit, value]) => (
+            <div
               key={unit}
-              className='bg-black/30 backdrop-blur-sm border border-white/20 rounded-2xl p-3 md:p-4 min-w-[70px] md:min-w-[80px] relative overflow-hidden'
-              initial={{ opacity: 0, y: 50, scale: 0.8 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{
-                delay: 0.9 + index * 0.1,
-                type: 'spring',
-                stiffness: 150,
-                damping: 12,
-              }}
-              whileHover={{
-                scale: 1.05,
-                y: -3,
-                transition: { type: 'spring', stiffness: 400, damping: 15 },
-              }}
+              className='bg-black/30 backdrop-blur-sm border border-white/20 rounded-xl px-3 py-2 sm:px-4 sm:py-3 min-w-[60px] sm:min-w-[72px] relative overflow-hidden'
             >
-              {/* Shimmer effect */}
-              <motion.div
-                className='absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent'
-                animate={{
-                  x: ['-100%', '100%'],
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  ease: 'linear',
-                  repeatDelay: 4 + index * 0.5,
-                }}
-              />
-
-              {/* Glowing background */}
-              <motion.div
-                className='absolute inset-0 bg-gradient-to-br from-white/10 to-transparent rounded-2xl'
-                animate={{
-                  opacity: [0.3, 0.6, 0.3],
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  ease: 'easeInOut',
-                  delay: index * 0.3,
-                }}
-              />
-
-              <motion.div
-                className='relative text-2xl md:text-3xl font-bold text-yellow-400'
-                key={value} // This will trigger re-render when value changes
-                initial={{ scale: 1 }}
-                animate={{ scale: [1, 1.1, 1] }}
-                transition={{ duration: 0.3 }}
+              <div
+                key={value}
+                className='relative text-xl sm:text-2xl md:text-3xl font-bold text-yellow-400 tabular-nums'
               >
                 {value}
-              </motion.div>
-
-              <motion.div
-                className='relative text-xs md:text-sm uppercase tracking-wide'
-                animate={{
-                  opacity: [0.7, 1, 0.7],
-                }}
-                transition={{
-                  duration: 1.5,
-                  repeat: Infinity,
-                  ease: 'easeInOut',
-                  delay: index * 0.2,
-                }}
-              >
+              </div>
+              <div className='relative text-[8px] sm:text-xs uppercase tracking-wide text-white/70'>
                 {unit}
-              </motion.div>
-            </motion.div>
+              </div>
+            </div>
           ))}
-        </motion.div>
+        </div>
       ) : (
-        <motion.p
-          className='text-white text-lg md:text-xl font-semibold bg-white/10 backdrop-blur-xl rounded-full px-6 py-3 border border-white/20 inline-block'
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.8, type: 'spring', stiffness: 150 }}
-          whileHover={{
-            scale: 1.05,
-            boxShadow: '0 0 30px rgba(255,255,255,0.3)',
-          }}
-        >
+        <p className='text-white text-base sm:text-lg font-semibold bg-white/10 backdrop-blur-xl rounded-full px-5 py-2.5 border border-white/20 inline-block'>
           🎊 Thanks for participating!
-        </motion.p>
+        </p>
       )}
-    </motion.div>
+    </motion.section>
   );
 };
 

@@ -11,14 +11,31 @@ import mongoose from 'mongoose';
  @access  Private
 */
 const createInstantBuy = asyncHandler(async (req, res) => {
+  const { auction, auctionItem, ...data } = req.body;
+
+  // ---- input validation (before opening a session) ----
+  if (!mongoose.isValidObjectId(auction) || !mongoose.isValidObjectId(auctionItem)) {
+    return res.status(400).json({ message: 'Invalid auction or item id' });
+  }
+
   const session = await mongoose.startSession();
   session.startTransaction();
 
   try {
-    const { auction, auctionItem, ...data } = req.body;
+    // ---- 1. Ensure the auction is still live ----
+    const liveAuction = await Auction.findOne(
+      { _id: auction, status: 'ACTIVE' },
+      { _id: 1 },
+    ).session(session);
 
-    // Create instant buyer
-    const instantBuyer = await AuctionItemInstantBuyer.create(
+    if (!liveAuction) {
+      await session.abortTransaction();
+      session.endSession();
+      return res.status(409).json({ message: 'This auction has ended.' });
+    }
+
+    // ---- 2. Create the instant buyer (rolls back if the claim fails) ----
+    const [created] = await AuctionItemInstantBuyer.create(
       [
         {
           auction,
@@ -31,29 +48,42 @@ const createInstantBuy = asyncHandler(async (req, res) => {
           shippingStatus: data.isDigital ? 'Digital' : 'Pending Fulfillment',
         },
       ],
-      { session }
-    ).then((docs) => docs[0].populate([{ path: 'user' }, { path: 'auctionItem' }]));
+      { session },
+    );
 
-    // Update auction item
-    await AuctionItem.findByIdAndUpdate(
-      auctionItem,
+    const instantBuyer = await created.populate([{ path: 'user' }, { path: 'auctionItem' }]);
+
+    // ---- 3. Atomically claim a unit of stock ----
+    // Only succeeds if quantity remains. If two buyers race for the last unit,
+    // one matches { totalQuantity: { $gt: 0 } } and the other gets null → 409.
+    const claimedItem = await AuctionItem.findOneAndUpdate(
+      {
+        _id: auctionItem,
+        totalQuantity: { $gt: 0 },
+      },
       {
         $inc: { totalQuantity: -1 },
         $push: { instantBuyers: instantBuyer._id },
       },
-      { new: false, session }
+      { new: true, session },
     );
 
-    // Update auction
+    if (!claimedItem) {
+      // Aborting rolls back the instant-buyer doc created in step 2 as well.
+      await session.abortTransaction();
+      session.endSession();
+      return res.status(409).json({ message: 'This item is sold out.' });
+    }
+
+    // ---- 4. Update the auction (attach buyer, recompute supporters + revenue) ----
     const updatedAuction = await Auction.findByIdAndUpdate(
       auction,
-      {
-        $push: { instantBuyers: instantBuyer._id },
-      },
-      { new: true, session }
+      { $push: { instantBuyers: instantBuyer._id } },
+      { new: true, session },
     );
 
-    // Add new supporter emails
+    if (!updatedAuction) throw new Error('Auction not found');
+
     const newEmail = instantBuyer?.email;
     if (newEmail && !updatedAuction.supporterEmails.includes(newEmail)) {
       updatedAuction.supporterEmails.push(newEmail);
@@ -69,6 +99,9 @@ const createInstantBuy = asyncHandler(async (req, res) => {
 
     res.status(200).json({ instantBuyer, instantBuySuccess: true });
   } catch (err) {
+    await session.abortTransaction();
+    session.endSession();
+
     await Error.create({
       functionName: 'CREATE_AUCTION_ITEM_INSTANT_BUYER_PRIVATE',
       name: err.name,
@@ -76,9 +109,7 @@ const createInstantBuy = asyncHandler(async (req, res) => {
       user: { id: req?.user?._id, email: req?.user?.email },
     });
 
-    res.status(500).send({
-      message: `Error creating isntant buy`,
-    });
+    res.status(500).send({ message: 'Error creating instant buy' });
   }
 });
 

@@ -27,7 +27,7 @@ const createAuctionItem = asyncHandler(async (req, res) => {
           url: photo.url,
           size: photo.size,
         })),
-        { session }
+        { session },
       );
       photoIds = photos.map((photo) => photo._id);
     }
@@ -55,15 +55,16 @@ const createAuctionItem = asyncHandler(async (req, res) => {
           isDigital: itemData.sellingFormat === 'fixed' ? itemData.isDigital : false,
         },
       ],
-      { session }
+      { session },
     );
 
-    // Update auction with new item
-    await Auction.findByIdAndUpdate(
+    // Update auction with new item — throw if the auction doesn't exist
+    const updatedAuction = await Auction.findByIdAndUpdate(
       auction,
       { $push: { items: auctionItem._id } },
-      { new: false, session }
+      { new: true, session },
     );
+    if (!updatedAuction) throw new Error('Auction not found');
 
     // Commit transaction
     await session.commitTransaction();
@@ -72,7 +73,7 @@ const createAuctionItem = asyncHandler(async (req, res) => {
     // Return fully populated for Redux dispatch
     const populateItem = await auctionItem.populate('photos');
 
-    // Create log entry
+    // Create log entry (outside the transaction)
     await Log.create({
       journey: `CREATE_AUCTION_ITEM_${auctionItem._id}`,
       events: [
@@ -92,6 +93,9 @@ const createAuctionItem = asyncHandler(async (req, res) => {
       .status(201)
       .json({ auctionItem: populateItem, message: 'Successfully created an auction item!' });
   } catch (err) {
+    await session.abortTransaction();
+    session.endSession();
+
     await Error.create({
       functionName: 'ERROR_CREATE_AUCTION_ITEM_ADMIN',
       name: err.name,
@@ -99,9 +103,7 @@ const createAuctionItem = asyncHandler(async (req, res) => {
       user: { id: req?.user?._id, email: req?.user?.email },
     });
 
-    res.status(500).send({
-      message: 'Error creating auction item',
-    });
+    res.status(500).send({ message: 'Error creating auction item' });
   }
 });
 

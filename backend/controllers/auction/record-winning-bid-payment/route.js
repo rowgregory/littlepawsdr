@@ -20,9 +20,8 @@ const recordWinningBidPayment = asyncHandler(async (req, res) => {
   try {
     const { id, payPalId } = req.body;
 
-    // Update winning bidder status
-    const winningBidder = await AuctionWinningBidder.findByIdAndUpdate(
-      id,
+    const winningBidder = await AuctionWinningBidder.findOneAndUpdate(
+      { _id: id, winningBidPaymentStatus: { $ne: 'Paid' } }, // only if not already paid
       {
         winningBidPaymentStatus: 'Paid',
         auctionItemPaymentStatus: 'Paid',
@@ -30,7 +29,7 @@ const recordWinningBidPayment = asyncHandler(async (req, res) => {
         payPalId,
         paidOn: new Date(),
       },
-      { new: true, session }
+      { new: true, session },
     ).populate([
       { path: 'auction', select: '_id' },
       { path: 'auctionItems' },
@@ -40,6 +39,14 @@ const recordWinningBidPayment = asyncHandler(async (req, res) => {
     if (!winningBidder) {
       await session.abortTransaction();
       session.endSession();
+      const existing = await AuctionWinningBidder.findById(id)
+        .select('winningBidPaymentStatus')
+        .lean();
+      // For a PAYMENT path, treat a duplicate as success (idempotent) so a
+      // double-submit / PayPal retry doesn't surface an error to the user.
+      if (existing?.winningBidPaymentStatus === 'Paid') {
+        return res.status(200).json({ paymentSuccess: true, alreadyRecorded: true });
+      }
       return res.status(404).json({ message: 'Winning bidder not found' });
     }
 

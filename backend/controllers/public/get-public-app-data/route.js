@@ -6,6 +6,7 @@ import Product from '../../../models/productModel.js';
 import WelcomeWienerDog from '../../../models/welcomeWienerDogModel.js';
 import asyncHandler from 'express-async-handler';
 import WelcomeWienerProduct from '../../../models/welcomeWienerProductModel.js';
+import { auctionPopulateFields } from '../../../db/populateQueries.js';
 
 export const getPublicAppData = asyncHandler(async (req, res) => {
   try {
@@ -19,49 +20,18 @@ export const getPublicAppData = asyncHandler(async (req, res) => {
       products,
       ecards,
     ] = await Promise.all([
-      Auction.findOne({ status: 'ACTIVE' })
-        .populate([
-          { path: 'items', populate: [{ path: 'photos' }] },
-          { path: 'bidders', populate: [{ path: 'user' }] },
-          { path: 'bids', populate: [{ path: 'user' }] },
-          {
-            path: 'instantBuyers',
-            populate: [{ path: 'auctionItem' }, { path: 'user' }],
-          },
-        ])
-        .lean(),
-      Auction.findOne({ status: 'DRAFT' })
-        .populate([
-          { path: 'items', populate: [{ path: 'photos' }] },
-          { path: 'bidders', populate: [{ path: 'user' }] },
-          { path: 'bids', populate: [{ path: 'user' }] },
-          {
-            path: 'instantBuyers',
-            populate: [{ path: 'auctionItem' }, { path: 'user' }],
-          },
-        ])
-        .lean(),
+      Auction.findOne({ status: 'ACTIVE' }).populate(auctionPopulateFields).lean(),
+      Auction.findOne({ status: 'DRAFT' }).populate(auctionPopulateFields).lean(),
 
+      // List view — keep this LIGHT on purpose (see note below)
       Auction.find({ status: { $in: ['DRAFT', 'ACTIVE', 'ENDED'] } })
-        .populate([
-          { path: 'items', populate: [{ path: 'photos' }] },
-          { path: 'bidders', populate: [{ path: 'user' }] },
-          { path: 'bids', populate: [{ path: 'user' }] },
-          {
-            path: 'instantBuyers',
-            populate: [{ path: 'auctionItem' }, { path: 'user' }],
-          },
-        ])
+        .populate([{ path: 'items', populate: [{ path: 'photos' }] }])
         .lean(),
 
       NewsletterIssue.find().select('pdfUrl month year').lean(),
-
       WelcomeWienerDog.find().populate('associatedProducts').lean(),
-
       WelcomeWienerProduct.find().lean(),
-
       Product.find().lean(),
-
       ECard.find().lean(),
     ]);
 

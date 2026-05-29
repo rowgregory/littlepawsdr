@@ -57,7 +57,7 @@ export const auctionSlice = createSlice({
     },
     handleLiveAuctionModal: (state, action: PayloadAction<any>) => {
       const handledAuctionModal = JSON.parse(
-        localStorage.getItem('handledAuctionModal') || 'false'
+        localStorage.getItem('handledAuctionModal') || 'false',
       );
 
       state.hasHandledAuctionModal = handledAuctionModal;
@@ -139,6 +139,23 @@ export const auctionSlice = createSlice({
     setCloseAuctionItemBidsDrawer: (state) => {
       state.auctionItemBidsDrawer = false;
     },
+    lockAuction: (state, action: PayloadAction<{ auctionId: string; endedAt: number }>) => {
+      const { auctionId } = action.payload;
+
+      // If the single active auction in state matches, lock it
+      if (state.auction && String(state.auction._id) === String(auctionId)) {
+        state.auction.status = 'ENDED';
+      }
+
+      state.status = 'ENDED';
+      state.isLiveAuction = false;
+
+      // If you also keep a list of auctions, update it there too
+      if (Array.isArray(state.auctions)) {
+        const match = state.auctions.find((a) => String(a._id) === String(auctionId));
+        if (match) match.status = 'ENDED';
+      }
+    },
   },
 });
 
@@ -169,6 +186,7 @@ export const {
   setOpenAuctionCompleteModal,
   setCloseAuctionItemBidsDrawer,
   setOpenAuctionItemBidsDrawer,
+  lockAuction,
 } = auctionSlice.actions;
 
 export const auctionReducer = auctionSlice.reducer;

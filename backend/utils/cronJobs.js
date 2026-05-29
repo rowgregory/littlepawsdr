@@ -28,11 +28,11 @@ const cronJobs = (io) => {
         await sendEmailWithRetry(
           _,
           {},
-          'ecard' // ✅ Template name
+          'ecard', // ✅ Template name
         ),
       {
         timezone: 'America/New_York',
-      }
+      },
     ),
     // Every 30 days
     generateAdoptionApplicationFeeBypassCode: cron.schedule(
@@ -54,7 +54,7 @@ const cronJobs = (io) => {
       },
       {
         timezone: 'America/New_York',
-      }
+      },
     ),
     // Runs every hour from 6 AM to 9 PM (6, 7, 8, 9, 10, 11, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9 PM)
     beginAuctionEvent: cron.schedule(
@@ -109,7 +109,7 @@ const cronJobs = (io) => {
       },
       {
         timezone: 'America/New_York',
-      }
+      },
     ),
     // Runs every hour from 6 AM to 9 PM (6, 7, 8, 9, 10, 11, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9 PM)
     finalizeAuctionEvent: cron.schedule(
@@ -131,6 +131,10 @@ const cronJobs = (io) => {
           }
 
           auctionId = auction._id;
+
+          // 🔒 LOCK IMMEDIATELY — tell every client bidding is closed, right now.
+          io.emit('auction:locked', { auctionId: String(auctionId), endedAt: Date.now() });
+
           await updateAuctionBidderStatuses(auctionId, session);
           await resolveUnsoldAuctionItems(session);
 
@@ -187,9 +191,8 @@ const cronJobs = (io) => {
           });
 
           // Fetch and emit
-          const populatedAuction = await Auction.findById(auctionId).populate(
-            auctionPopulateFields
-          );
+          const populatedAuction =
+            await Auction.findById(auctionId).populate(auctionPopulateFields);
 
           io.emit('auction:ended', populatedAuction);
         } catch (error) {
@@ -221,7 +224,7 @@ const cronJobs = (io) => {
           console.error('❌ Cron job failed:', error);
         }
       },
-      { timezone: 'America/New_York' }
+      { timezone: 'America/New_York' },
     ),
     // Every day at 9:00AM
     sendOutPaymentReminderEmailForWinningBidAuctionItem: cron.schedule(
@@ -269,7 +272,7 @@ const cronJobs = (io) => {
                     items: bidder.auctionItems,
                     paymentLink: `https://www.littlepawsdr.org/orders/${bidder._id}/payment`,
                   },
-                  'auctionItemPaymentReminder'
+                  'auctionItemPaymentReminder',
                 );
 
                 await AuctionWinningBidder.findByIdAndUpdate(bidder._id, {
@@ -315,7 +318,7 @@ const cronJobs = (io) => {
       },
       {
         timezone: 'America/New_York',
-      }
+      },
     ),
     // Every day at 9:00AM
     sendOutThirdPaymentReminderEmailForWinningBidAuctionItem: cron.schedule(
@@ -363,7 +366,7 @@ const cronJobs = (io) => {
                     items: bidder.auctionItems,
                     paymentLink: `https://www.littlepawsdr.org/orders/${bidder._id}/payment`,
                   },
-                  'auctionItemPaymentReminder'
+                  'auctionItemPaymentReminder',
                 );
 
                 await AuctionWinningBidder.findByIdAndUpdate(bidder._id, {
@@ -409,7 +412,7 @@ const cronJobs = (io) => {
       },
       {
         timezone: 'America/New_York',
-      }
+      },
     ),
     // Every day at 9:00AM
     startExpireAdoptionFeesJob: cron.schedule('0 9 * * *', async () => {
@@ -436,7 +439,7 @@ const cronJobs = (io) => {
               applicationStatus: 'Inactive',
               tokenStatus: 'Invalid',
             },
-          }
+          },
         );
 
         events.push({
@@ -459,7 +462,7 @@ const cronJobs = (io) => {
               applicationStatus: 'Inactive',
               tokenStatus: 'Invalid',
             },
-          }
+          },
         );
 
         events.push({
