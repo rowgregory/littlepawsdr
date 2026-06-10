@@ -1,15 +1,16 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <style>
+doctype html
+html
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport" content="width=device-width, initial-scale=1.0")
+        style.
             body {
                 line-height: 1.6;
                 color: #333;
                 background-color: #f5f5f5;
                 margin: 0;
                 padding: 0;
+                font-family: Arial, Helvetica, sans-serif;
             }
             .container {
                 max-width: 600px;
@@ -23,23 +24,10 @@
                 padding: 40px 20px;
                 text-align: center;
             }
-            .header h1 {
-                margin: 0;
-                font-size: 28px;
-                font-weight: 700;
-            }
-            .header p {
-                margin: 10px 0 0 0;
-                font-size: 14px;
-                opacity: 0.9;
-            }
-            .content {
-                padding: 40px 20px;
-            }
-            .greeting {
-                font-size: 16px;
-                margin-bottom: 20px;
-            }
+            .header h1 { margin: 0; font-size: 28px; font-weight: 700; }
+            .header p { margin: 10px 0 0 0; font-size: 14px; opacity: 0.9; }
+            .content { padding: 40px 20px; }
+            .greeting { font-size: 16px; margin-bottom: 20px; }
             .alert {
                 background-color: #fff3cd;
                 border-left: 4px solid #ffc107;
@@ -47,14 +35,8 @@
                 margin: 20px 0;
                 border-radius: 4px;
             }
-            .alert p {
-                margin: 0;
-                color: #856404;
-                font-weight: 500;
-            }
-            .items-section {
-                margin: 30px 0;
-            }
+            .alert p { margin: 0; color: #856404; font-weight: 500; }
+            .items-section { margin: 30px 0; }
             .items-section h2 {
                 font-size: 18px;
                 color: #333;
@@ -69,16 +51,8 @@
                 margin-bottom: 15px;
                 border-radius: 4px;
             }
-            .item-name {
-                font-weight: 600;
-                color: #333;
-                margin-bottom: 5px;
-            }
-            .item-price {
-                color: #667eea;
-                font-size: 16px;
-                font-weight: 700;
-            }
+            .item-name { font-weight: 600; color: #333; margin-bottom: 5px; }
+            .item-price { color: #667eea; font-size: 16px; font-weight: 700; }
             .pricing {
                 background-color: #f5f5f5;
                 padding: 20px;
@@ -108,9 +82,6 @@
                 font-weight: 600;
                 margin: 30px 0;
             }
-            .cta-button:hover {
-                opacity: 0.9;
-            }
             .footer {
                 background-color: #f9f9f9;
                 padding: 20px;
@@ -119,10 +90,7 @@
                 font-size: 12px;
                 color: #666;
             }
-            .footer a {
-                color: #667eea;
-                text-decoration: none;
-            }
+            .footer a { color: #667eea; text-decoration: none; }
             .help-text {
                 background-color: #e8f4f8;
                 border-left: 4px solid #17a2b8;
@@ -132,81 +100,62 @@
                 font-size: 14px;
                 color: #0c5460;
             }
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            {/* Header */}
-            <div class="header">
-                <h1>🎉 Payment Reminder</h1>
-                <p>Complete your auction purchase</p>
-            </div>
+    body
+        .container
+            //- Header
+            .header
+                h1 🎉 Payment Reminder
+                p Complete your auction purchase
 
-            {/* Content */}
-            <div class="content">
-                <div class="greeting">
-                    <p>Hi #{userName},</p>
-                    <p>Thank you for winning items in our recent auction! We're excited to get your winnings to you, but we need payment to complete the process.</p>
-                </div>
+            //- Content
+            .content
+                .greeting
+                    p Hi #{userName},
+                    p Thank you for winning items in our recent auction! We're excited to get your winnings to you, but we need payment to complete the process.
 
-                {/* Alert */}
-                <div class="alert">
-                    <p>⏰ This is a reminder that payment is due. Don't miss out on your items!</p>
-                </div>
+                //- Alert
+                .alert
+                    p ⏰ This is a reminder that payment is due. Don't miss out on your items!
 
-                {/* Items Section */}
-                <div class="items-section">
-                    <h2>Your Winning Items (#{itemCount})</h2>
-                    - each(item in items)
+                //- Items
+                .items-section
+                    h2 Your Winning Items (#{itemCount})
+                    each item in items
                         .item
                             .item-name= item.name
                             if item.photos && item.photos.length > 0
                                 img(src=item.photos[0].url, alt=item.name, style="width: 100%; height: auto; border-radius: 4px; margin-top: 8px; max-height: 150px; object-fit: cover;")
                             .item-price= '$' + item.currentBid.toFixed(2)
-                </div>
 
-                {/* Pricing Summary */}
-                <div class="pricing">
-                    <div class="pricing-row">
-                        <span>Subtotal:</span>
-                        <span>= '$' + subtotal.toFixed(2)</span>
-                    </div>
-                    <div class="pricing-row">
-                        <span>Shipping:</span>
-                        <span>= '$' + shipping.toFixed(2)</span>
-                    </div>
-                    <div class="pricing-row total">
-                        <span>Total Due:</span>
-                        <span>= '$' + totalPrice.toFixed(2)</span>
-                    </div>
-                </div>
+                //- Pricing
+                .pricing
+                    .pricing-row
+                        span Subtotal:
+                        span= '$' + subtotal.toFixed(2)
+                    .pricing-row
+                        span Shipping:
+                        span= '$' + shipping.toFixed(2)
+                    .pricing-row.total
+                        span Total Due:
+                        span= '$' + totalPrice.toFixed(2)
 
-                {/* CTA Button */}
-                <div style="text-align: center;">
-                    <a(href=paymentLink, class="cta-button") Complete Payment Now
-                </div>
+                //- CTA
+                .cta-wrap(style="text-align: center;")
+                    a.cta-button(href=paymentLink) Complete Payment Now
 
-                {/* Help Text */}
-                <div class="help-text">
-                    <p><strong>Having trouble?</strong></p>
-                    <p>If you have any questions about your purchase or need help completing payment, please don't hesitate to reach out to our support team.</p>
-                </div>
+                //- Help
+                .help-text
+                    p
+                        strong Having trouble?
+                    p If you have any questions about your purchase or need help completing payment, please don't hesitate to reach out to our support team.
 
-                {/* Footer Message */}
-                <p style="margin-top: 30px; font-size: 14px; color: #666;">
-                    Thank you for supporting Little Paws Dachshund Rescue! Every purchase helps us rescue and care for dachshunds in need. 🐕
-                </p>
-            </div>
+                p(style="margin-top: 30px; font-size: 14px; color: #666;") Thank you for supporting Little Paws Dachshund Rescue! Every purchase helps us rescue and care for dachshunds in need. 🐕
 
-            {/* Footer */}
-            <div class="footer">
-                <p>Little Paws Dachshund Rescue</p>
-                <p>
-                    <a(href="https://www.littlepawsdr.org") Visit Website
-                    | <a(href="mailto:support@littlepawsdr.org") Contact Support
-                </p>
-                <p style="margin-top: 15px; color: #999;">This is an automated reminder email. Please do not reply to this address.</p>
-            </div>
-        </div>
-    </body>
-</html>
+            //- Footer
+            .footer
+                p Little Paws Dachshund Rescue
+                p
+                    a(href="https://www.littlepawsdr.org") Visit Website
+                    |  · 
+                    a(href="mailto:support@littlepawsdr.org") Contact Support
+                p(style="margin-top: 15px; color: #999;") This is an automated reminder email. Please do not reply to this address.

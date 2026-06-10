@@ -227,7 +227,7 @@ const cronJobs = (io) => {
       { timezone: 'America/New_York' },
     ),
     sendDailyPaymentRemindersForWinningBids: cron.schedule(
-      '0 14 * * *',
+      '15 14 * * *',
       async () => {
         const journeyId = `PAYMENT_REMINDER_${Date.now()}`;
         const events = [];
