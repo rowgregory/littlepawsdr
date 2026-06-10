@@ -1,19 +1,13 @@
 const auctionNotificationsData = [
   {
-    textKey: 'Out Bid',
+    textKey: 'Outbid Notification',
     freq: 'Immediate',
+    description: 'Sent when someone places a higher bid',
   },
   {
-    textKey: 'First Payment Reminder',
-    freq: 'Immediate',
-  },
-  {
-    textKey: 'Second Payment Reminder',
-    freq: '2 Days',
-  },
-  {
-    textKey: 'Third Payment Reminder',
-    freq: '4 Days',
+    textKey: 'Payment Reminder',
+    freq: 'Daily',
+    description: 'Sent daily at 9 AM until paid (max 5)',
   },
 ];
 

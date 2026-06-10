@@ -23,9 +23,7 @@ export const getFrequencyStyle = (freq: string) => {
   switch (freq) {
     case 'Immediate':
       return 'bg-red-50 text-red-700';
-    case '2 Days':
-      return 'bg-orange-50 text-orange-700';
-    case '4 Days':
+    case 'Daily':
       return 'bg-blue-50 text-blue-700';
     default:
       return 'bg-gray-50 text-gray-700';

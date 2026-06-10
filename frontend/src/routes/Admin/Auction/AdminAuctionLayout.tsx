@@ -17,7 +17,7 @@ const AdminAuctionLayout = () => {
   }, [data, dispatch]);
 
   return (
-    <div className='px-4 sm:px-6 py-6 w-full mx-auto bg-white min-h-dvh'>
+    <div className='px-4 sm:px-6 py-6 w-full mx-auto bg-white'>
       <AdminAuctionNavbar />
       <main>
         <Outlet />
