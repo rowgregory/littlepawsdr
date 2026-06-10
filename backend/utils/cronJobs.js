@@ -242,7 +242,17 @@ const cronJobs = (io) => {
 
           const MAX_REMINDERS = 5; // stop nagging after 5 days unpaid
 
+          // Most recent auction
+          const latestAuction = await Auction.findOne().sort({ createdAt: -1 }).select('_id');
+
+          if (!latestAuction) {
+            events.push({ message: 'NO_AUCTION_FOUND', data: {} });
+            await Log.create({ journey: journeyId, events });
+            return;
+          }
+
           const auctionWinningBidders = await AuctionWinningBidder.find({
+            auction: latestAuction._id,
             winningBidPaymentStatus: 'Awaiting Payment',
             auctionItemPaymentStatus: 'Pending',
             emailNotificationCount: { $lt: MAX_REMINDERS },
