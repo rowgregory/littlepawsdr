@@ -77,6 +77,7 @@ async function sendEmailWithRetry(pugEmail, data, templateName, maxRetries = 3, 
               to: data.to,
               replyTo: 'no-reply@littlepawsdr.org',
             },
+            locals: data,
           });
           break;
         default:

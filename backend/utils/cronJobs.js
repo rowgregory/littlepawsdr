@@ -227,7 +227,7 @@ const cronJobs = (io) => {
       { timezone: 'America/New_York' },
     ),
     sendDailyPaymentRemindersForWinningBids: cron.schedule(
-      '15 14 * * *',
+      '0 9 * * *',
       async () => {
         const journeyId = `PAYMENT_REMINDER_${Date.now()}`;
         const events = [];
@@ -268,14 +268,28 @@ const cronJobs = (io) => {
 
           for (const bidder of auctionWinningBidders) {
             try {
+              events.push({
+                message: 'DEBUG_ITEM',
+                data: {
+                  itemsType: Array.isArray(bidder.auctionItems)
+                    ? 'array'
+                    : typeof bidder.auctionItems,
+                  count: bidder.auctionItems?.length,
+                  firstItemKeys: bidder.auctionItems?.[0]
+                    ? Object.keys(bidder.auctionItems[0].toObject?.() ?? bidder.auctionItems[0])
+                    : null,
+                },
+              });
               await sendEmailWithRetry(
                 pugEmail,
                 {
                   to: bidder.user.email,
                   userName: bidder.user.firstName,
-                  totalPrice: bidder.totalPrice,
-                  itemCount: bidder.auctionItems.length,
                   items: bidder.auctionItems,
+                  itemCount: bidder.auctionItems.length,
+                  subtotal: bidder.subtotal,
+                  shipping: bidder.shipping,
+                  totalPrice: bidder.totalPrice,
                   paymentLink: `https://www.littlepawsdr.org/auction/winner/${bidder._id}`,
                 },
                 'auctionItemPaymentReminder',
