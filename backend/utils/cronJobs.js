@@ -226,29 +226,26 @@ const cronJobs = (io) => {
       },
       { timezone: 'America/New_York' },
     ),
-    // Every day at 9:00AM
-    sendOutFirstPaymentReminderEmailForWinningBidAuctionItem: cron.schedule(
-      '0 9,14 * * *',
+    sendDailyPaymentRemindersForWinningBids: cron.schedule(
+      '0 14 * * *',
       async () => {
         const journeyId = `PAYMENT_REMINDER_${Date.now()}`;
         const events = [];
 
         try {
           const pugEmail = await createPugEmailClient();
-          const now = new Date();
-          const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
 
           events.push({
             message: 'CRON_STARTED',
-            data: { cronName: 'sendOutFirstPaymentReminderEmailForWinningBidAuctionItem' },
+            data: { cronName: 'sendDailyPaymentRemindersForWinningBids' },
           });
 
+          const MAX_REMINDERS = 5; // stop nagging after 5 days unpaid
+
           const auctionWinningBidders = await AuctionWinningBidder.find({
-            auctionPaymentNotificationEmailHasBeenSent: true,
-            emailNotificationCount: 1,
             winningBidPaymentStatus: 'Awaiting Payment',
             auctionItemPaymentStatus: 'Pending',
-            createdAt: { $lte: twentyFourHoursAgo },
+            emailNotificationCount: { $lt: MAX_REMINDERS },
           }).populate([
             { path: 'auctionItems', populate: [{ path: 'photos' }] },
             { path: 'user', select: 'email name firstName lastName' },
@@ -259,53 +256,45 @@ const cronJobs = (io) => {
             data: { count: auctionWinningBidders.length },
           });
 
-          if (auctionWinningBidders.length > 0) {
-            for (const bidder of auctionWinningBidders) {
-              try {
-                await sendEmailWithRetry(
-                  pugEmail,
-                  {
-                    to: bidder.user.email,
-                    userName: bidder.user.firstName,
-                    totalPrice: bidder.totalPrice,
-                    itemCount: bidder.auctionItems.length,
-                    items: bidder.auctionItems,
-                    paymentLink: `https://www.littlepawsdr.org/orders/${bidder._id}/payment`,
-                  },
-                  'auctionItemPaymentReminder',
-                );
+          for (const bidder of auctionWinningBidders) {
+            try {
+              await sendEmailWithRetry(
+                pugEmail,
+                {
+                  to: bidder.user.email,
+                  userName: bidder.user.firstName,
+                  totalPrice: bidder.totalPrice,
+                  itemCount: bidder.auctionItems.length,
+                  items: bidder.auctionItems,
+                  paymentLink: `https://www.littlepawsdr.org/auction/winner/${bidder._id}`,
+                },
+                'auctionItemPaymentReminder',
+              );
 
-                await AuctionWinningBidder.findByIdAndUpdate(bidder._id, {
-                  emailNotificationCount: 2,
-                });
+              await AuctionWinningBidder.findByIdAndUpdate(bidder._id, {
+                $inc: { emailNotificationCount: 1 },
+              });
 
-                events.push({
-                  message: 'REMINDER_EMAIL_SENT',
-                  data: { bidderId: bidder._id, email: bidder.user.email },
-                });
-              } catch (emailError) {
-                events.push({
-                  message: 'EMAIL_SEND_FAILED',
-                  data: { bidderId: bidder._id, error: emailError.message },
-                });
-              }
+              events.push({
+                message: 'REMINDER_EMAIL_SENT',
+                data: { bidderId: bidder._id, email: bidder.user.email },
+              });
+            } catch (emailError) {
+              events.push({
+                message: 'EMAIL_SEND_FAILED',
+                data: { bidderId: bidder._id, error: emailError.message },
+              });
             }
-          } else {
-            events.push({
-              message: 'NO_BIDDERS_FOUND',
-              data: {},
-            });
+          }
+
+          if (auctionWinningBidders.length === 0) {
+            events.push({ message: 'NO_BIDDERS_FOUND', data: {} });
           }
 
           await Log.create({ journey: journeyId, events });
         } catch (err) {
-          events.push({
-            message: 'CRON_FAILED',
-            data: { error: err.message },
-          });
-
+          events.push({ message: 'CRON_FAILED', data: { error: err.message } });
           await Log.create({ journey: journeyId, events });
-
           await Error.create({
             functionName: 'CRON_PAYMENT_REMINDER',
             detail: 'Failed to send payment reminder emails',
@@ -316,197 +305,7 @@ const cronJobs = (io) => {
           });
         }
       },
-      {
-        timezone: 'America/New_York',
-      },
-    ),
-    // Every day at 9:00AM
-    sendOutSecondPaymentReminderEmailForWinningBidAuctionItem: cron.schedule(
-      '0 9,14 * * *',
-      async () => {
-        const journeyId = `PAYMENT_REMINDER_${Date.now()}`;
-        const events = [];
-
-        try {
-          const pugEmail = await createPugEmailClient();
-          const now = new Date();
-          const fortyEightHoursAgo = new Date(now.getTime() - 48 * 60 * 60 * 1000);
-
-          events.push({
-            message: 'CRON_STARTED',
-            data: { cronName: 'sendOutSecondPaymentReminderEmailForWinningBidAuctionItem' },
-          });
-
-          const auctionWinningBidders = await AuctionWinningBidder.find({
-            auctionPaymentNotificationEmailHasBeenSent: true,
-            emailNotificationCount: 2,
-            winningBidPaymentStatus: 'Awaiting Payment',
-            auctionItemPaymentStatus: 'Pending',
-            createdAt: { $lte: fortyEightHoursAgo },
-          }).populate([
-            { path: 'auctionItems', populate: [{ path: 'photos' }] },
-            { path: 'user', select: 'email name firstName lastName' },
-          ]);
-
-          events.push({
-            message: 'WINNING_BIDDERS_FOUND',
-            data: { count: auctionWinningBidders.length },
-          });
-
-          if (auctionWinningBidders.length > 0) {
-            for (const bidder of auctionWinningBidders) {
-              try {
-                await sendEmailWithRetry(
-                  pugEmail,
-                  {
-                    to: bidder.user.email,
-                    userName: bidder.user.firstName,
-                    totalPrice: bidder.totalPrice,
-                    itemCount: bidder.auctionItems.length,
-                    items: bidder.auctionItems,
-                    paymentLink: `https://www.littlepawsdr.org/orders/${bidder._id}/payment`,
-                  },
-                  'auctionItemPaymentReminder',
-                );
-
-                await AuctionWinningBidder.findByIdAndUpdate(bidder._id, {
-                  emailNotificationCount: 2,
-                });
-
-                events.push({
-                  message: 'REMINDER_EMAIL_SENT',
-                  data: { bidderId: bidder._id, email: bidder.user.email },
-                });
-              } catch (emailError) {
-                events.push({
-                  message: 'EMAIL_SEND_FAILED',
-                  data: { bidderId: bidder._id, error: emailError.message },
-                });
-              }
-            }
-          } else {
-            events.push({
-              message: 'NO_BIDDERS_FOUND',
-              data: {},
-            });
-          }
-
-          await Log.create({ journey: journeyId, events });
-        } catch (err) {
-          events.push({
-            message: 'CRON_FAILED',
-            data: { error: err.message },
-          });
-
-          await Log.create({ journey: journeyId, events });
-
-          await Error.create({
-            functionName: 'CRON_PAYMENT_REMINDER',
-            detail: 'Failed to send payment reminder emails',
-            state: 'cron_payment_reminder',
-            status: 500,
-            name: err.name,
-            message: err.message,
-          });
-        }
-      },
-      {
-        timezone: 'America/New_York',
-      },
-    ),
-    // Every day at 9:00AM
-    sendOutThirdPaymentReminderEmailForWinningBidAuctionItem: cron.schedule(
-      '0 9,14 * * *',
-      async () => {
-        const journeyId = `PAYMENT_REMINDER_${Date.now()}`;
-        const events = [];
-
-        try {
-          const pugEmail = await createPugEmailClient();
-          const now = new Date();
-          const seventyTwoHoursAgo = new Date(now.getTime() - 72 * 60 * 60 * 1000);
-
-          events.push({
-            message: 'CRON_STARTED',
-            data: { cronName: 'sendOutThirdPaymentReminderEmailForWinningBidAuctionItem' },
-          });
-
-          const auctionWinningBidders = await AuctionWinningBidder.find({
-            auctionPaymentNotificationEmailHasBeenSent: true,
-            emailNotificationCount: 2,
-            winningBidPaymentStatus: 'Awaiting Payment',
-            auctionItemPaymentStatus: 'Pending',
-            createdAt: { $lte: seventyTwoHoursAgo },
-          }).populate([
-            { path: 'auctionItems', populate: [{ path: 'photos' }] },
-            { path: 'user', select: 'email name firstName lastName' },
-          ]);
-
-          events.push({
-            message: 'WINNING_BIDDERS_FOUND',
-            data: { count: auctionWinningBidders.length },
-          });
-
-          if (auctionWinningBidders.length > 0) {
-            for (const bidder of auctionWinningBidders) {
-              try {
-                await sendEmailWithRetry(
-                  pugEmail,
-                  {
-                    to: bidder.user.email,
-                    userName: bidder.user.firstName,
-                    totalPrice: bidder.totalPrice,
-                    itemCount: bidder.auctionItems.length,
-                    items: bidder.auctionItems,
-                    paymentLink: `https://www.littlepawsdr.org/orders/${bidder._id}/payment`,
-                  },
-                  'auctionItemPaymentReminder',
-                );
-
-                await AuctionWinningBidder.findByIdAndUpdate(bidder._id, {
-                  emailNotificationCount: 2,
-                });
-
-                events.push({
-                  message: 'REMINDER_EMAIL_SENT',
-                  data: { bidderId: bidder._id, email: bidder.user.email },
-                });
-              } catch (emailError) {
-                events.push({
-                  message: 'EMAIL_SEND_FAILED',
-                  data: { bidderId: bidder._id, error: emailError.message },
-                });
-              }
-            }
-          } else {
-            events.push({
-              message: 'NO_BIDDERS_FOUND',
-              data: {},
-            });
-          }
-
-          await Log.create({ journey: journeyId, events });
-        } catch (err) {
-          events.push({
-            message: 'CRON_FAILED',
-            data: { error: err.message },
-          });
-
-          await Log.create({ journey: journeyId, events });
-
-          await Error.create({
-            functionName: 'CRON_PAYMENT_REMINDER',
-            detail: 'Failed to send payment reminder emails',
-            state: 'cron_payment_reminder',
-            status: 500,
-            name: err.name,
-            message: err.message,
-          });
-        }
-      },
-      {
-        timezone: 'America/New_York',
-      },
+      { timezone: 'America/New_York' },
     ),
     // Every day at 9:00AM
     startExpireAdoptionFeesJob: cron.schedule('0 9 * * *', async () => {
