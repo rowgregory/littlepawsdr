@@ -28,6 +28,7 @@ import {
 import { setAdoptionApplicationBypassCode } from '../redux/features/dashboardSlice';
 import { showToast } from '../redux/features/toastSlice';
 import AuctionCompleteModal from '../components/modals/AuctionCompleteModal';
+import SqyshSplash from './Sqysh';
 
 type LazyModulePromise<T = {}> = Promise<{ default: ComponentType<T> }>;
 
@@ -91,7 +92,9 @@ export const MainRoutes = () => {
     };
   }, []);
 
-  const hide = !/^\/dachshunds\/\d+\/?$/.test(location.pathname);
+  const hide = !(
+    /^\/dachshunds\/\d+\/?$/.test(location.pathname) || /^\/sqysh\/?$/.test(location.pathname)
+  );
 
   return (
     <>
@@ -105,6 +108,7 @@ export const MainRoutes = () => {
       <UserInit>
         <Routes>
           <Route path='/' element={<Home />} />
+          <Route path='/sqysh' element={<SqyshSplash />} />
           <Route path='/terms-of-service' element={<TermsOfService />} />
           <Route path='/privacy-policy' element={<PrivacyPolicy />} />
           <Route path='/supporter/*' element={<Supporter />} />

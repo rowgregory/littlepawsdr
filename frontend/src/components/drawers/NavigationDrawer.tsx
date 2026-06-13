@@ -88,7 +88,7 @@ const NavigationDrawer = () => {
           >
             {/* ── Header ── */}
             <div className='sticky top-0 bg-bg-light dark:bg-bg-dark border-b border-border-light dark:border-border-dark px-5 py-4 flex items-center justify-between z-10'>
-              <div className='flex items-center gap-2'>
+              <div onClick={handleClose} className='flex items-center gap-2'>
                 <div
                   className='w-4 h-px bg-primary-light dark:bg-primary-dark'
                   aria-hidden='true'

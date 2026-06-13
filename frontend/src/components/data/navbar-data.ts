@@ -41,41 +41,13 @@ const topHeaderLinks = (user: any, navigate: any, cartItemsAmount: number) => {
 };
 
 const bottomHeaderLinks = (pathname: string) => [
-  {
-    linkKey: '/dachshunds',
-    linkText: 'Available',
-    active: pathname === '/dachshunds',
-    className: 'hidden md:flex',
-  },
-  {
-    linkKey: '/dachshunds/hold',
-    linkText: 'Not Available For Adoption Yet',
-    active: pathname === '/dachshunds/hold',
-    className: 'hidden md:flex',
-  },
-  {
-    linkKey: '/adopt',
-    linkText: 'Adoption Application',
-    active: pathname === '/adopt',
-    className: 'hidden 880:flex',
-  },
-  {
-    linkKey: '/volunteer/foster-application',
-    linkText: 'Foster Application',
-    active: pathname === '/volunteer/foster-application',
-    className: 'hidden 1075:flex',
-  },
-  {
-    linkKey: '/store',
-    linkText: 'Merch & Ecards',
-    active: pathname === '/store',
-    className: 'hidden 1230:flex',
-  },
+  { linkKey: '/dachshunds', linkText: 'Available', active: pathname === '/dachshunds' },
+  { linkKey: '/adopt', linkText: 'Adopt', active: pathname === '/adopt' },
+  { linkKey: '/store', linkText: 'Merch', active: pathname === '/store' },
   {
     linkKey: '/newsletter-issues',
     linkText: 'Newsletters',
     active: pathname === '/newsletter-issues',
-    className: 'hidden 1360:flex',
   },
 ];
 
