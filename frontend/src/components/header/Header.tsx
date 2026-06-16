@@ -16,7 +16,7 @@ import { toggleNavigationDrawer } from '../../redux/features/navbar/navbarSlice'
 import Logo from '../common/Logo';
 import { bottomHeaderLinks } from '../data/navbar-data';
 import { motion } from 'framer-motion';
-import { AtSign, Gavel, Heart, Loader2, Send, Shield, ShoppingCart, User } from 'lucide-react';
+import { Gavel, Heart, Loader2, Send, Shield, ShoppingCart, User } from 'lucide-react';
 import { formatDateTime } from '../../utils/formatDateTime';
 
 // ─── Info box (labeled, wide screens) ─────────────────────────────────────────
@@ -208,13 +208,6 @@ const Header = () => {
                   )}
                 </button>
               </form>
-
-              <IconAction
-                icon={AtSign}
-                label='Email Little Paws'
-                href='mailto:lpdr@littlepawsdr.org'
-                className='hidden lg:flex'
-              />
 
               <IconAction
                 icon={ShoppingCart}

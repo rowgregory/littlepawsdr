@@ -43,6 +43,11 @@ const topHeaderLinks = (user: any, navigate: any, cartItemsAmount: number) => {
 const bottomHeaderLinks = (pathname: string) => [
   { linkKey: '/dachshunds', linkText: 'Available', active: pathname === '/dachshunds' },
   { linkKey: '/adopt', linkText: 'Adopt', active: pathname === '/adopt' },
+  {
+    linkKey: '/volunteer/foster-application',
+    linkText: 'Foster',
+    active: pathname === '/volunteer/foster-application',
+  },
   { linkKey: '/store', linkText: 'Merch', active: pathname === '/store' },
   {
     linkKey: '/newsletter-issues',
