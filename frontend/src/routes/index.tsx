@@ -109,7 +109,7 @@ export const MainRoutes = () => {
         <Routes>
           <Route path='/' element={<Home />} />
           <Route path='/sqysh' element={<SqyshSplash />} />
-          <Route path='/terms-of-service' element={<TermsOfService />} />
+          <Route path='/terms' element={<TermsOfService />} />
           <Route path='/privacy-policy' element={<PrivacyPolicy />} />
           <Route path='/supporter/*' element={<Supporter />} />
           <Route path='/newsletter-issues/*' element={<NewsletterIssue />} />

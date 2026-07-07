@@ -49,13 +49,13 @@ const getStatusColor = (status: string) => {
 };
 
 const quickActions = [
-  { linkKey: '/admin/store/products/create', label: 'Create Product', icon: ShoppingBag },
+  { linkKey: '/admin/store', label: 'Create Product', icon: ShoppingBag },
   { linkKey: '/admin/auctions', label: 'Create Auction', icon: Hammer },
-  { linkKey: '/admin/store/ecards/create', label: 'Create Ecard', icon: CreditCard },
-  { linkKey: '/admin/store/welcome-wieners/create', label: 'Create Welcome Wiener', icon: Dog },
+  { linkKey: '/admin/store', label: 'Create Ecard', icon: CreditCard },
+  { linkKey: '/admin/store', label: 'Create Welcome Wiener', icon: Dog },
   { linkKey: '/admin/donations', label: 'View Donations', icon: Heart },
   { linkKey: '/admin/orders', label: 'View Orders', icon: ShoppingCart },
-  { linkKey: '/admin/adoption-application/fees', label: 'View Adopt Fees', icon: DollarSign },
+  { linkKey: '/admin/adoption-fees', label: 'View Adopt Fees', icon: DollarSign },
 ];
 
 const Dashboard = () => {

@@ -3,280 +3,196 @@ import CanOfWetFood from '../../components/assets/can-of-wet-food.png';
 import BagOfDryFood from '../../components/assets/bag-of-dry-food.jpeg';
 import CaseOfWetFood from '../../components/assets/case-of-wet-food.png';
 import useCountDown from '../../hooks/useCountDown';
-import FeedAFosterImg from '../../components/assets/ecards-high.jpg';
-import PageBanner from '../../components/common/PageBanner';
-import { motion } from 'framer-motion';
 import { Gift, Heart, PawPrint } from 'lucide-react';
+
+const donationOptions = [
+  {
+    image: CanOfWetFood,
+    title: 'Can of wet food',
+    amount: '$3',
+    description: 'Feed a foster dog for a day',
+    buttonId: 'NARBGDNZ39KHG',
+  },
+  {
+    image: BagOfDryFood,
+    title: 'Bag of dry food',
+    amount: '$12',
+    description: 'Feed a foster dog for a week',
+    buttonId: 'E39725T3HKKVY',
+  },
+  {
+    image: CaseOfWetFood,
+    title: 'Case of wet food',
+    amount: '$35',
+    description: 'Feed a foster dog for a month',
+    buttonId: 'KYKXTQ8DTQZYW',
+  },
+];
 
 const FeedAFoster = () => {
   const year = new Date().getFullYear();
   const { timerComponents, status, loading } = useCountDown(
     `${year}/07/01`,
     `${year}/07/31`,
-    `${year + 1}/07/01`
+    `${year + 1}/07/01`,
   );
-
-  const donationOptions = [
-    {
-      image: CanOfWetFood,
-      title: 'Can of Wet Food',
-      amount: '$3',
-      description: 'Feed a foster dog for a day',
-      buttonId: 'NARBGDNZ39KHG',
-    },
-    {
-      image: BagOfDryFood,
-      title: 'Bag of Dry Food',
-      amount: '$12',
-      description: 'Feed a foster dog for a week',
-      buttonId: 'E39725T3HKKVY',
-    },
-    {
-      image: CaseOfWetFood,
-      title: 'Case of Wet Food',
-      amount: '$35',
-      description: 'Feed a foster dog for a month',
-      buttonId: 'KYKXTQ8DTQZYW',
-    },
-  ];
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-        delayChildren: 0.1,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.5 },
-    },
-  };
 
   return (
     <Fragment>
-      <PageBanner imgSrc={FeedAFosterImg} title='Feed a Foster' />
-
       {status.active ? (
-        <div className='bg-white'>
-          {/* Header Section */}
-          <motion.section
-            className='max-w-6xl mx-auto px-4 sm:px-6 py-16 sm:py-24'
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <div className='text-center mb-12'>
-              <motion.div
-                className='inline-block mb-4'
-                animate={{ scale: [1, 1.05, 1] }}
-                transition={{ duration: 2, repeat: Infinity }}
-              >
-                <span className='bg-teal-100 text-teal-700 px-4 py-2 rounded-full text-sm font-semibold'>
-                  July is Foster Appreciation Month
-                </span>
-              </motion.div>
-
-              <h1 className='text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-4'>
+        <div className='min-h-screen bg-bg-light dark:bg-bg-dark'>
+          {/* Hero */}
+          <div className='bg-primary-light/10 dark:bg-primary-dark/10 border-b border-border-light dark:border-border-dark py-12 sm:py-16'>
+            <div className='max-w-4xl mx-auto px-4 sm:px-6 text-center'>
+              <span className='inline-block font-mono text-[10px] uppercase tracking-[0.2em] text-primary-light dark:text-primary-dark border border-primary-light/40 dark:border-primary-dark/40 px-3 py-1.5 mb-4'>
+                July is Foster Appreciation Month
+              </span>
+              <h1 className='text-2xl sm:text-3xl md:text-4xl font-bold text-text-light dark:text-text-dark mb-3'>
                 Feed a Foster
               </h1>
-              <p className='text-xl text-gray-600'>
-                Help us support our amazing foster families this July
+              <p className='text-sm sm:text-base text-muted-light dark:text-muted-dark max-w-xl mx-auto'>
+                Help us support our amazing foster families this July.
               </p>
             </div>
+          </div>
 
-            {/* Info Cards */}
-            <motion.div
-              className='grid grid-cols-1 md:grid-cols-2 gap-8 mb-12'
-              variants={containerVariants}
-              initial='hidden'
-              whileInView='visible'
-              viewport={{ once: true }}
-            >
-              <motion.div
-                className='bg-gradient-to-br from-teal-50 to-cyan-50 rounded-xl p-8 border border-teal-100'
-                variants={itemVariants}
-              >
-                <div className='flex items-start gap-4 mb-4'>
-                  <div className='p-3 bg-teal-500 rounded-lg'>
-                    <Heart className='w-6 h-6 text-white' />
-                  </div>
-                  <div>
-                    <h3 className='text-xl font-bold text-gray-900 mb-2'>Why Foster Matters</h3>
-                  </div>
+          <div className='max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12'>
+            {/* Info cards */}
+            <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6'>
+              <div className='bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark p-5 sm:p-7'>
+                <div className='flex items-start gap-3 mb-3'>
+                  <Heart
+                    className='w-5 h-5 text-primary-light dark:text-primary-dark shrink-0 mt-0.5'
+                    aria-hidden='true'
+                  />
+                  <h2 className='text-base sm:text-lg font-bold text-text-light dark:text-text-dark'>
+                    Why foster matters
+                  </h2>
                 </div>
-                <p className='text-gray-700 leading-relaxed'>
+                <p className='text-sm sm:text-base text-muted-light dark:text-muted-dark leading-relaxed'>
                   Volunteering to foster a dog is a huge, rewarding commitment. Fostering really
                   does save lives! When a family decides to take in a dachshund to foster, Little
                   Paws provides all medical care. The family is responsible for love, comfort, and
                   food.
                 </p>
-              </motion.div>
+              </div>
 
-              <motion.div
-                className='bg-gradient-to-br from-teal-50 to-cyan-50 rounded-xl p-8 border border-teal-100'
-                variants={itemVariants}
-              >
-                <div className='flex items-start gap-4 mb-4'>
-                  <div className='p-3 bg-teal-500 rounded-lg'>
-                    <PawPrint className='w-6 h-6 text-white' />
-                  </div>
-                  <div>
-                    <h3 className='text-xl font-bold text-gray-900 mb-2'>Our Foster Program</h3>
-                  </div>
+              <div className='bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark p-5 sm:p-7'>
+                <div className='flex items-start gap-3 mb-3'>
+                  <PawPrint
+                    className='w-5 h-5 text-primary-light dark:text-primary-dark shrink-0 mt-0.5'
+                    aria-hidden='true'
+                  />
+                  <h2 className='text-base sm:text-lg font-bold text-text-light dark:text-text-dark'>
+                    Our foster program
+                  </h2>
                 </div>
-                <p className='text-gray-700 leading-relaxed'>
+                <p className='text-sm sm:text-base text-muted-light dark:text-muted-dark leading-relaxed'>
                   We currently have 40 dogs in foster homes with exceptional foster families
                   providing care for special needs doxies and entire litters of puppies. Our
                   Sanctuary Foster Homes care for un-adoptable dogs that need extraordinary
                   attention.
                 </p>
-              </motion.div>
-            </motion.div>
+              </div>
+            </div>
 
-            <motion.div
-              className='bg-teal-50 rounded-xl p-8 border border-teal-100 mb-12'
-              variants={itemVariants}
-              initial='hidden'
-              whileInView='visible'
-              viewport={{ once: true }}
-            >
-              <h3 className='text-2xl font-bold text-gray-900 mb-4'>How Your Donation Helps</h3>
-              <p className='text-gray-700 mb-4'>
-                You can choose how much food you would like to donate. Please know that EVERY bit
+            {/* How it helps */}
+            <div className='bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark p-5 sm:p-7 mb-10'>
+              <h2 className='text-base sm:text-lg font-bold text-text-light dark:text-text-dark mb-3'>
+                How your donation helps
+              </h2>
+              <p className='text-sm sm:text-base text-muted-light dark:text-muted-dark leading-relaxed mb-2'>
+                You can choose how much food you would like to donate. Please know that every bit
                 counts. We currently have 40 dogs in foster homes!
               </p>
-              <p className='text-gray-700'>
+              <p className='text-sm sm:text-base text-muted-light dark:text-muted-dark leading-relaxed'>
                 We also accept Venmo @LittlePawsDR and checks. Your generosity directly supports the
                 daily care of our foster dogs.
               </p>
-            </motion.div>
-          </motion.section>
+            </div>
 
-          {/* Donation Cards */}
-          <motion.section
-            className='max-w-6xl mx-auto px-4 sm:px-6 py-12'
-            variants={containerVariants}
-            initial='hidden'
-            whileInView='visible'
-            viewport={{ once: true }}
-          >
-            <h2 className='text-3xl font-bold text-gray-900 text-center mb-12'>
-              Choose Your Donation
+            {/* Donation cards */}
+            <h2 className='text-lg sm:text-xl font-bold text-text-light dark:text-text-dark mb-5'>
+              Choose your donation
             </h2>
 
-            <div className='grid grid-cols-1 md:grid-cols-3 gap-8'>
+            <div className='grid grid-cols-1 sm:grid-cols-3 gap-4'>
               {donationOptions.map((option, index) => (
-                <motion.div
+                <div
                   key={index}
-                  className='bg-white rounded-xl overflow-hidden border border-gray-200 hover:shadow-xl hover:border-teal-300 transition-all duration-300'
-                  variants={itemVariants}
-                  whileHover={{ y: -5 }}
+                  className='bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark flex flex-col overflow-hidden'
                 >
-                  {/* Image */}
-                  <div className='relative overflow-hidden bg-gray-100 h-64'>
+                  <div className='h-52 overflow-hidden bg-surface-light dark:bg-surface-dark'>
                     <img
                       src={option.image}
                       alt={option.title}
-                      className='w-full h-full object-cover hover:scale-110 transition-transform duration-300'
+                      className='w-full h-full object-cover'
                     />
-                    <div className='absolute inset-0 bg-black/0 hover:bg-black/5 transition-colors' />
                   </div>
 
-                  {/* Content */}
-                  <div className='p-6'>
-                    <h3 className='text-xl font-bold text-gray-900 mb-2'>{option.title}</h3>
-                    <p className='text-sm text-gray-600 mb-4'>{option.description}</p>
+                  <div className='p-5 flex flex-col flex-1'>
+                    <h3 className='text-base font-bold text-text-light dark:text-text-dark mb-1'>
+                      {option.title}
+                    </h3>
+                    <p className='text-xs font-mono tracking-[0.2em] uppercase text-muted-light dark:text-muted-dark mb-4'>
+                      {option.description}
+                    </p>
 
-                    {/* Price */}
-                    <div className='mb-6 pb-6 border-b border-gray-200'>
-                      <p className='text-3xl font-bold text-teal-600'>{option.amount}</p>
-                    </div>
+                    <p className='text-2xl font-bold text-primary-light dark:text-primary-dark mb-5 pb-5 border-b border-border-light dark:border-border-dark'>
+                      {option.amount}
+                    </p>
 
-                    {/* Donate Button */}
                     <form
                       action='https://www.paypal.com/donate'
                       method='post'
                       target='_top'
-                      className='w-full'
+                      className='mt-auto'
                     >
                       <input type='hidden' name='hosted_button_id' value={option.buttonId} />
-                      <motion.button
+                      <button
                         type='submit'
-                        className='w-full bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center gap-2'
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
+                        className='w-full bg-primary-light dark:bg-primary-dark hover:bg-secondary-light dark:hover:bg-secondary-dark text-bg-light dark:text-bg-dark font-semibold py-2.5 px-4 transition-colors flex items-center justify-center gap-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-light dark:focus-visible:ring-primary-dark'
                       >
-                        <Gift className='w-4 h-4' />
-                        Donate Now
-                      </motion.button>
+                        <Gift className='w-4 h-4' aria-hidden='true' />
+                        Donate now
+                      </button>
                     </form>
                   </div>
-                </motion.div>
+                </div>
               ))}
             </div>
-          </motion.section>
+          </div>
         </div>
       ) : (
-        <motion.section
-          className='min-h-screen bg-gradient-to-br from-teal-600 via-teal-500 to-cyan-500 flex items-center justify-center py-12 px-4'
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-        >
-          <div className='text-center'>
-            <motion.h3
-              className='text-white font-semibold text-lg sm:text-xl mb-8'
-              animate={{ opacity: [0.6, 1, 0.6] }}
-              transition={{ duration: 2, repeat: Infinity }}
-            >
-              {status.past
-                ? '🐾 Thank you for your support! See you next July! 🐾'
-                : 'Coming This July! ☀️'}
-            </motion.h3>
+        /* Inactive — countdown or thank you */
+        <div className='min-h-screen bg-topbar-light dark:bg-topbar-dark flex items-center justify-center py-16 px-4'>
+          <div className='text-center max-w-2xl mx-auto'>
+            <p className='font-mono text-[11px] uppercase tracking-[0.2em] text-white/60 mb-6'>
+              {status.past ? '— Thank you for your support —' : '— Coming this July —'}
+            </p>
 
-            <motion.h2
-              className='text-5xl sm:text-6xl lg:text-7xl font-bold text-white mb-12'
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.8 }}
-            >
-              Feed A Foster
-            </motion.h2>
+            <h1 className='text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-12'>
+              Feed a Foster
+            </h1>
 
-            {/* Countdown Timer */}
             {!loading && timerComponents && (
-              <motion.div
-                className='grid grid-cols-4 gap-4 sm:gap-8 max-w-2xl mx-auto'
-                variants={containerVariants}
-                initial='hidden'
-                animate='visible'
-              >
+              <div className='grid grid-cols-4 gap-3 sm:gap-6' aria-label='Countdown timer'>
                 {timerComponents.map((obj: any, i: number) => (
-                  <motion.div
-                    key={i}
-                    className='flex flex-col items-center'
-                    variants={itemVariants}
-                  >
-                    <div className='bg-white/20 backdrop-blur-sm rounded-lg p-4 w-full'>
-                      <p className='text-3xl sm:text-4xl font-bold text-white mb-2'>{obj?.time}</p>
-                      <p className='text-white/80 text-xs sm:text-sm uppercase tracking-wider'>
-                        {obj?.tag}
-                      </p>
+                  <div key={i} className='flex flex-col items-center'>
+                    <div className='bg-white/10 border border-white/10 p-3 sm:p-5 w-full mb-2'>
+                      <p className='text-2xl sm:text-4xl font-bold text-white'>{obj?.time}</p>
                     </div>
-                  </motion.div>
+                    <p className='font-mono text-[10px] uppercase tracking-[0.2em] text-white/50'>
+                      {obj?.tag}
+                    </p>
+                  </div>
                 ))}
-              </motion.div>
+              </div>
             )}
+
+            {status.past && <p className='text-sm text-white/60 mt-10'>See you next July.</p>}
           </div>
-        </motion.section>
+        </div>
       )}
     </Fragment>
   );

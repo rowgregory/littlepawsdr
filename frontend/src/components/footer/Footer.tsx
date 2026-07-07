@@ -56,15 +56,20 @@ const footerNav = [
     links: [
       {
         label: 'Privacy Policy',
-        href: 'https://www.privacypolicies.com/live/c37902bc-11cd-430e-a925-2b82ce905c88',
+        href: '/privacy-policy',
       },
       {
-        label: 'Terms & Conditions',
-        href: 'https://www.termsandconditionsgenerator.com/live.php?token=K9R7fXZjABJKZhIWlXr43oY6qca6jjVn',
+        label: 'Terms of Service',
+        href: '/terms',
       },
       { label: 'California Consumer Privacy Act', href: 'https://oag.ca.gov/privacy/ccpa' },
       { label: 'Return Policy', to: '/return-policy' },
     ],
+  },
+  {
+    title: 'Address',
+    links: [],
+    address: 'PO Box 108\nBrookfield, CT 06804',
   },
 ];
 
@@ -179,32 +184,40 @@ export const Footer = () => {
         </div>
 
         {/* Nav columns */}
-        <nav className='grid grid-cols-2 sm:grid-cols-3 gap-8 py-10' aria-label='Footer'>
+        <nav className='grid grid-cols-2 sm:grid-cols-4 gap-8 py-10' aria-label='Footer'>
           {footerNav.map((col) => (
             <div key={col.title}>
               <h3 className='font-mono text-[11px] uppercase tracking-[0.2em] text-white/70 mb-4'>
                 {col.title}
               </h3>
               <ul className='flex flex-col gap-2.5'>
-                {col.links.map((link) => (
-                  <li key={link.label}>
-                    {link.href ? (
-                      <a
-                        href={link.href}
-                        className='text-sm text-white/80 hover:text-primary-light dark:hover:text-primary-dark transition-colors focus:outline-none focus-visible:underline'
-                      >
-                        {link.label}
-                      </a>
-                    ) : (
-                      <Link
-                        to={link.to!}
-                        className='text-sm text-white/80 hover:text-primary-light dark:hover:text-primary-dark transition-colors focus:outline-none focus-visible:underline'
-                      >
-                        {link.label}
-                      </Link>
-                    )}
-                  </li>
-                ))}
+                {col.address ? (
+                  <address className='not-italic flex flex-col gap-1 text-sm text-white/80'>
+                    {col.address.split('\n').map((line) => (
+                      <span key={line}>{line}</span>
+                    ))}
+                  </address>
+                ) : (
+                  col.links.map((link) => (
+                    <li key={link.label}>
+                      {link.href ? (
+                        <a
+                          href={link.href}
+                          className='text-sm text-white/80 hover:text-primary-light dark:hover:text-primary-dark transition-colors focus:outline-none focus-visible:underline'
+                        >
+                          {link.label}
+                        </a>
+                      ) : (
+                        <Link
+                          to={link.to!}
+                          className='text-sm text-white/80 hover:text-primary-light dark:hover:text-primary-dark transition-colors focus:outline-none focus-visible:underline'
+                        >
+                          {link.label}
+                        </Link>
+                      )}
+                    </li>
+                  ))
+                )}
               </ul>
             </div>
           ))}
